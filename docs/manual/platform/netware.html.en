@@ -29,6 +29,13 @@
 </div>
 
 
+    <div class="warning">
+    <p>Novell NetWare is end-of-life and is no longer supported.
+    This document is retained for historical reference only.
+    Links to Novell resources formerly referenced in this document are
+    no longer functional.</p>
+    </div>
+
     <p>This document explains how to install, configure and run
     Apache 2.0 under Novell NetWare 6.0 and above. If you find any bugs,
     or wish to contribute in other ways, please use our
@@ -40,8 +47,7 @@
     running Apache.  Before you submit a bug report or request, first
     consult this document, the <a href="http://wiki.apache.org/httpd/FAQ">Frequently Asked
     Questions</a> page and the other relevant documentation topics. If
-    you still have a question or problem, post it to the <a href="news://developer-forums.novell.com/novell.devsup.webserver">
-    novell.devsup.webserver</a> newsgroup, where many Apache users are
+    you still have a question or problem, post it to the novell.devsup.webserver (formerly at <code>news://developer-forums.novell.com/novell.devsup.webserver</code>) newsgroup, where many Apache users are
     more than willing to answer new and obscure questions about using
     Apache on NetWare.</p>
 
@@ -68,15 +74,15 @@
     <p>Apache 2.0 is designed to run on NetWare 6.0 service pack 3
     and above. If you are running a service pack less
     than SP3, you must install the latest
-    <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
-    for C (LibC)</a>.</p>
+    NetWare Libraries
+    for C (LibC) (formerly at <code>http://developer.novell.com/ndk/libc.htm</code>).</p>
 
-    <p>NetWare service packs are available <a href="http://support.novell.com/misc/patlst.htm#nw">here</a>.</p>
+    <p>NetWare service packs are available here (formerly at <code>http://support.novell.com/misc/patlst.htm#nw</code>).</p>
 
     <p>Apache 2.0 for NetWare can also be run in a NetWare 5.1 environment
     as long as the latest service pack or the latest version
-    of the <a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
-    for C (LibC)</a> has been installed .  <strong>WARNING:</strong> Apache 2.0
+    of the NetWare Libraries
+    for C (LibC) (formerly at <code>http://developer.novell.com/ndk/libc.htm</code>) has been installed .  <strong>WARNING:</strong> Apache 2.0
     for NetWare has not been targeted for or tested in this environment.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -454,23 +460,23 @@
 
       <ul>
         <li>Metrowerks CodeWarrior 6.0 or higher with the
-        <a href="http://developer.novell.com/ndk/cwpdk.htm">NetWare PDK 3.0</a>
+        NetWare PDK 3.0 (formerly at <code>http://developer.novell.com/ndk/cwpdk.htm</code>)
         or higher.</li>
 
-        <li><a href="http://developer.novell.com/ndk/libc.htm">NetWare Libraries
-        for C (LibC)</a></li>
+        <li>NetWare Libraries
+        for C (LibC) (formerly at <code>http://developer.novell.com/ndk/libc.htm</code>)</li>
 
-        <li><a href="http://developer.novell.com/ndk/cldap.htm">LDAP Libraries
-        for C</a></li>
+        <li>LDAP Libraries
+        for C (formerly at <code>http://developer.novell.com/ndk/cldap.htm</code>)</li>
 
         <li><a href="http://www.gzip.org/zlib/">ZLIB Compression Library source code</a></li>
 
         <li>AWK utility (awk, gawk or similar). AWK can be downloaded from
-        <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>.
+        <code>http://developer.novell.com/ndk/apache.htm</code>.
         The utility must be found in your windows path and must be named <code>awk.exe</code>.</li>
 
         <li>To build using the makefiles, you will need GNU make version 3.78.1 (GMake) available at
-        <a href="http://developer.novell.com/ndk/apache.htm">http://developer.novell.com/ndk/apache.htm</a>.</li>
+        <code>http://developer.novell.com/ndk/apache.htm</code>.</li>
       </ul>
 
     
