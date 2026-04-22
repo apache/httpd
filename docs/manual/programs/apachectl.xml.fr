@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1933137 (outdated) -->
+<!-- English Revision: 1933137 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,11 +29,11 @@
   Apache</title>
 
 <summary>
-     <p><code>apachectl</code> est un frontal pour le serveur HTTP
+     <p><program>apachectl</program> est un frontal pour le serveur HTTP
      Apache. Il a &eacute;t&eacute; con&ccedil;u pour aider l'administrateur &agrave; contr&ocirc;ler le
      fonctionnement du d&eacute;mon Apache <program>httpd</program>.</p>
 
-     <p>Le script <code>apachectl</code> poss&egrave;de deux modes de
+     <p>Le script <program>apachectl</program> poss&egrave;de deux modes de
      fonctionnement. Il peut fonctionner en tant que simple frontal
      de la commande <program>httpd</program> et ne fait alors que
      d&eacute;finir toute variable d'environnement n&eacute;cessaire, puis invoque
@@ -45,13 +45,13 @@
      <program>httpd</program>.</p>
 
      <p>Si votre installation d'Apache utilise des chemins non
-     standards, vous devrez &eacute;diter le script <code>apachectl</code> afin
+     standards, vous devrez &eacute;diter le script <program>apachectl</program> afin
      de d&eacute;finir les chemins appropri&eacute;s pour le binaire
      <program>httpd</program>. Vous pouvez aussi sp&eacute;cifier tout argument
      de ligne de commande de <program>httpd</program> n&eacute;cessaire. Voir
      les commentaires dans le script pour plus de d&eacute;tails.</p>
 
-     <p>Le script <code>apachectl</code> renvoie une valeur &eacute;gale &agrave; 0 en
+     <p>Le script <program>apachectl</program> renvoie une valeur &eacute;gale &agrave; 0 en
      cas de succ&egrave;s, et une valeur sup&eacute;rieure &agrave; 0 en cas de probl&egrave;me.
      Voir les commentaires dans le script pour plus de d&eacute;tails.</p>
 </summary>
@@ -65,12 +65,12 @@ plates-formes</a></seealso>
 
 <section id="synopsis"><title>R&eacute;sum&eacute;</title>
 
-<p>En mode frontal (pass-through), <code>apachectl</code> peut sp&eacute;cifier
+<p>En mode frontal (pass-through), <program>apachectl</program> peut sp&eacute;cifier
 tous les arguments qu'accepte le binaire <program>httpd</program>.</p>
 
 <p><code><strong>apachectl</strong> [ <var>argument-httpd</var> ]</code></p>
 
-<p>En mode script d'initialisation SysV, <code>apachectl</code>
+<p>En mode script d'initialisation SysV, <program>apachectl</program>
 n'accepte qu'un seul des arguments d&eacute;finis ci-dessous.</p>
 
 <p><code><strong>apachectl</strong> <var>commande</var></code></p>
