@@ -306,7 +306,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/httpd/modules/mod_alias.so
 %{_libdir}/httpd/modules/mod_allowhandlers.so
 %{_libdir}/httpd/modules/mod_allowmethods.so
-%{_libdir}/httpd/modules/mod_apreq.so
 %{_libdir}/httpd/modules/mod_asis.so
 %{_libdir}/httpd/modules/mod_auth_basic.so
 %{_libdir}/httpd/modules/mod_auth_digest.so
