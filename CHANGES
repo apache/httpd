@@ -2005,10 +2005,6 @@ Changes with Apache 2.5.0-alpha
   *) mod_authnz_ldap: Resolve crashes with LDAP authz and non-LDAP authn since
      r1608202. [Eric Covener]
 
-  *) apreq: Content-Length header should be always interpreted as a decimal.
-     Leading 0 could be erroneously considered as an octal value. PR 56598.
-     [Chris Card <ctcard hotmail com>]
-
   *) mod_proxy: Now allow for 191 character worker names, with non-fatal
      errors if name is truncated. PR53218. [Jim Jagielski]
 
@@ -2228,8 +2224,6 @@ Changes with Apache 2.5.0-alpha
      requests be reconstructed and replayed. [Graham Leggett]
 
   *) mod_noloris
-
-  *) APREQ
 
   *) Simple MPM
 

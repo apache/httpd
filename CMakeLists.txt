@@ -321,7 +321,6 @@ SET(MODULE_LIST
   "modules/aaa/mod_authz_host+A+host-based authorization control"
   "modules/aaa/mod_authz_owner+I+'require file-owner' authorization control"
   "modules/aaa/mod_authz_user+A+'require user' authorization control"
-  "modules/apreq/mod_apreq+i+Apache Request Filter"
   "modules/arch/win32/mod_isapi+I+isapi extension support"
   "modules/cache/mod_cache+I+dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary."
   "modules/cache/mod_cache_disk+I+disk caching module"
@@ -437,9 +436,6 @@ SET(installed_mod_libs_exps)
 # Define extra definitions, sources, headers, etc. required by some modules.
 # This could be included in the master list of modules above, though it 
 # certainly would get a lot more unreadable.
-SET(mod_apreq_extra_defines          APREQ_DECLARE_EXPORT)
-SET(mod_apreq_extra_sources          modules/apreq/handle.c)
-SET(mod_apreq_main_source            modules/apreq/filter.c)
 SET(mod_authz_dbd_extra_defines      AUTHZ_DBD_DECLARE_EXPORT)
 SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
 SET(mod_authnz_ldap_extra_libs       mod_ldap)
@@ -684,17 +680,6 @@ SET(HTTPD_MAIN_SOURCES
 SET(LIBHTTPD_SOURCES
   ${extra_builtin_modules}
   ${PROJECT_BINARY_DIR}/modules.c
-  server/apreq_cookie.c
-  server/apreq_error.c
-  server/apreq_module.c
-  server/apreq_module_cgi.c
-  server/apreq_module_custom.c
-  server/apreq_param.c
-  server/apreq_parser.c
-  server/apreq_parser_header.c
-  server/apreq_parser_multipart.c
-  server/apreq_parser_urlencoded.c
-  server/apreq_util.c
   modules/arch/win32/mod_win32.c
   modules/core/mod_so.c
   modules/http/byterange_filter.c
@@ -921,7 +906,6 @@ TARGET_COMPILE_DEFINITIONS(libhttpd PRIVATE
   "LONG_NAME=Apache HTTP Server Core"
   "BIN_NAME=libhttpd.dll"
   "AP_DECLARE_EXPORT"
-  "APREQ_DECLARE_EXPORT"
 )
 TARGET_COMPILE_OPTIONS(libhttpd PRIVATE ${PCRE_CFLAGS} ${EXTRA_COMPILE_FLAGS})
 ADD_DEPENDENCIES(libhttpd test_char_header)
