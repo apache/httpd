@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1498321:1933137 (outdated) -->
+<!-- English Revision: 1933137 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,11 +29,11 @@
 externe</title>
 
 <summary>
-     <p><code>suexec</code> permet au serveur HTTP Apache de changer
+     <p><program>suexec</program> permet au serveur HTTP Apache de changer
      d'utilisateur avant d'exécuter un programme CGI. Pour ce faire, il
      doit être exécuté par <code>root</code>. A cet effet, comme le
      démon HTTP ne s'exécute en général pas en tant que
-     <code>root</code>, l'exécutable <code>suexec</code> doit posséder
+     <code>root</code>, l'exécutable <program>suexec</program> doit posséder
      le bit setuid et avoir comme propriétaire <code>root</code>. Seul
      <code>root</code> doit en posséder les droits en écriture.</p>
 
@@ -54,7 +54,7 @@ externe</title>
 <dt><code>-V</code></dt>
 
 <dd>Si vous êtes <code>root</code>, cette option permet d'afficher les
-options de compilation du programme <code>suexec</code>. Pour des
+options de compilation du programme <program>suexec</program>. Pour des
 raisons de sécurité, toutes les options de configuration ne sont
 modifiables qu'à la compilation.</dd>
 

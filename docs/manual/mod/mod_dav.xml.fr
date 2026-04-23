@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932375:1932741 (outdated) -->
+<!-- English Revision: 1932741 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -72,15 +72,17 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     les directives <directive module="mod_unixd">User</directive> et
     <directive module="mod_unixd">Group</directive>.</p>
 
-    <p>Si vous souhaitez limiter l'acc&egrave;s aux r&eacute;pertoires o&ugrave; DAV est
-    activ&eacute;, vous pouvez ajouter une clause <directive module="core"
-    type="section">Limit</directive> dans la section <directive
-    module="core" type="section">Location</directive> consid&eacute;r&eacute;e. Pour
-    d&eacute;finir la quantit&eacute; maximale de donn&eacute;es en octets qu'un client
-    DAV peut envoyer par requ&ecirc;te, vous devez utiliser la directive
-    <directive module="core">LimitXMLRequestBody</directive>, car La
-    directive <directive module="core">LimitRequestBody</directive>
-    "habituelle" n'a aucune incidence sur les requ&ecirc;tes DAV.</p>
+    <p>Dans l’exemple ci-après, la directive <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> permet de s’assurer que les méthodes
+    spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
+    <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
+    authentifiés.</p>
+
+    <p>Pour définir la quantité maximale de données en octets qu'un client DAV
+    peut envoyer par requête, vous devez utiliser la directive <directive
+    module="core">LimitXMLRequestBody</directive>, car La directive <directive
+    module="core">LimitRequestBody</directive> "habituelle" n'a aucune incidence
+    sur les requêtes DAV.</p>
 
     <example><title>Exemple complet</title>
       <highlight language="config">
