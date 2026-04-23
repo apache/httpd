@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1864786:1933179 (outdated) -->
+<!-- English Revision: 1933179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
 <title>htcacheclean - Nettoyage du cache sur disque</title>
 
 <summary>
-    <p><code>htcacheclean</code> permet de maintenir la taille de
+    <p><program>htcacheclean</program> permet de maintenir la taille de
     l'espace de stockage réservé à <module>mod_disk_cache</module> en
     dessous d'une limite de taille donnée ou d'inodes utilisés. Cet
     utilitaire peut s'exécuter
@@ -111,7 +111,7 @@
 
     <dt><code>-n</code></dt>
     <dd>Exécution en retrait. L'exécution du programme est ralentie en
-    faveur des autres processus. <code>htcacheclean</code> s'interrompt
+    faveur des autres processus. <program>htcacheclean</program> s'interrompt
     de temps en temps de façon à ce que a) les entrées/sorties disque
     soient retardées et b) que le noyau puisse mettre ce temps
     processeur à disposition des autres processus.</dd>
@@ -174,7 +174,7 @@
 
 <section id="delete"><title>Suppression d'une URL particulière</title>
     <p>Si une ou plusieurs URLs sont passées en argument à
-    <code>htcacheclean</code>, chacune d'entre elles sera supprimée du
+    <program>htcacheclean</program>, chacune d'entre elles sera supprimée du
     cache. S'il existe plusieurs variantes de ces URLs, elles seront
     toutes supprimées.</p>
 
@@ -218,13 +218,13 @@
 </section>
 
 <section id="exit"><title>Valeur renvoyée</title>
-    <p><code>htcacheclean</code> renvoie zéro ("true") si toutes les
+    <p><program>htcacheclean</program> renvoie zéro ("true") si toutes les
     opérations se sont déroulées normalement, et <code>1</code> dans le
     cas contraire. Si une URL est spécifiée, et si cette URL était
     présente dans le cache et a été supprimée avec succès,
-    <code>htcacheclean</code> renvoie <code>0</code>, et <code>2</code>
+    <program>htcacheclean</program> renvoie <code>0</code>, et <code>2</code>
     dans le cas contraire. Si une erreur est survenue au cours de la
-    suppression de l'URL, <code>htcacheclean</code> renvoie
+    suppression de l'URL, <program>htcacheclean</program> renvoie
     <code>1</code>.</p>
 </section>
 

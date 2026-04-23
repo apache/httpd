@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1926737:1933136 (outdated) -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,12 +28,12 @@
   <title>httpd - Le serveur HTTP d'Apache</title>
 
 <summary>
-     <p><code>httpd</code> est le programme du serveur HTTP d'Apache. Il
+     <p><program>httpd</program> est le programme du serveur HTTP d'Apache. Il
      a été conçu pour fonctionner sous forme de processus démon
      indépendant. Lorsqu'il est utilisé ainsi, il va créer un jeu de
      processus enfants ou de threads qui traiteront les requêtes.</p>
 
-     <p>En général, <code>httpd</code> n'est pas invoqué directement,
+     <p>En général, <program>httpd</program> n'est pas invoqué directement,
      mais plutôt via <program>apachectl</program> sur les systèmes de
      style Unix ou <a
      href="../platform/windows.html#winsvc">en tant que service sous
@@ -92,7 +92,7 @@ module="core">ServerRoot</directive>. La valeur par défaut est
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Permet de démarrer, redémarrer ou arrêter <code>httpd</code>. Voir <a
+<dd>Permet de démarrer, redémarrer ou arrêter <program>httpd</program>. Voir <a
 href="../stopping.html">Arrêter Apache httpd</a> pour plus d'informations.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
@@ -177,12 +177,12 @@ href="#dumpconf">comme indiqué ci-après</a>.</dd>
 
 <dt><code>-v</code></dt>
 
-<dd>Print the version of <code>httpd</code>, and then exit.</dd>
+<dd>Print the version of <program>httpd</program>, and then exit.</dd>
 
 <dt><code>-V</code></dt>
 
 <dd>Le programme affiche la version et les paramètres de compilation de
-<code>httpd</code>, puis se termine.</dd>
+<program>httpd</program>, puis se termine.</dd>
 
 <dt><code>-X</code></dt>
 

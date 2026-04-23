@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1498310:1933136 (outdated) -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,11 +29,11 @@
 externe</title>
 
 <summary>
-     <p><code>suexec</code> permet au serveur HTTP Apache de changer
+     <p><program>suexec</program> permet au serveur HTTP Apache de changer
      d'utilisateur avant d'ex&eacute;cuter un programme CGI. Pour ce faire, il
      doit &ecirc;tre ex&eacute;cut&eacute; par <code>root</code>. A cet effet, comme le
      d&eacute;mon HTTP ne s'ex&eacute;cute en g&eacute;n&eacute;ral pas en tant que
-     <code>root</code>, l'ex&eacute;cutable <code>suexec</code> doit poss&eacute;der
+     <code>root</code>, l'ex&eacute;cutable <program>suexec</program> doit poss&eacute;der
      le bit setuid et avoir comme propri&eacute;taire <code>root</code>. Seul
      <code>root</code> doit en poss&eacute;der les droits en &eacute;criture.</p>
 
@@ -54,7 +54,7 @@ externe</title>
 <dt><code>-V</code></dt>
 
 <dd>Si vous &ecirc;tes <code>root</code>, cette option permet d'afficher les
-options de compilation du programme <code>suexec</code>. Pour des
+options de compilation du programme <program>suexec</program>. Pour des
 raisons de s&eacute;curit&eacute;, toutes les options de configuration ne sont
 modifiables qu'&agrave; la compilation.</dd>
 

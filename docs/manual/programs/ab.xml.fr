@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1897866:1933136 (outdated) -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,7 +29,7 @@
 Apache</title>
 
 <summary>
-    <p><code>ab</code> est un utilitaire qui vous permet de tester les
+    <p><program>ab</program> est un utilitaire qui vous permet de tester les
     performances de votre serveur HTTP Apache. Il a été conçu pour vous
     donner une idée du degré de performances de votre installation
     d'Apache. Il vous permet en particulier de déterminer le nombre de
@@ -184,7 +184,7 @@ Apache</title>
     authentication needed" ou non).</dd>
 
     <dt><code>-q</code></dt>
-    <dd>Lorsque plus de 150 requêtes sont traitées, <code>ab</code>
+    <dd>Lorsque plus de 150 requêtes sont traitées, <program>ab</program>
     affiche la progression du traitement sur <code>stderr</code> tous
     les 10% du nombre total ou toutes les 100 requêtes. Le drapeau
     <code>-q</code> permet de supprimer ces messages.</dd>
@@ -273,7 +273,7 @@ Apache</title>
 
 <section id="output"><title>Sortie</title>
     <p>Vous touverez dans ce qui suit la liste des valeurs retournées
-    par <code>ab</code> :
+    par <program>ab</program> :
     </p>
 
     <dl>
@@ -376,7 +376,7 @@ Apache</title>
     relativement intense de <code>strstr(3)</code> provoque un affichage
     en tête de profil, ce qui peut faire croire à un problème de
     performances ; en d'autres termes, vous mesurez les performances de
-    <code>ab</code> plutôt que celles du serveur.</p>
+    <program>ab</program> plutôt que celles du serveur.</p>
 </section>
 
 </manualpage>

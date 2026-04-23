@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1928022:1933179 (outdated) -->
+<!-- English Revision: 1933179 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -660,6 +660,10 @@ pour pouvoir traiter les pics de requêtes</description>
     <module>mpm_netware</module>. Pour <module>mpmt_os2</module>, la
     valeur par défaut est <code>5</code>.</p>
 
+    <p>La valeur de la directive <directive>MinSpareThreads</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -730,9 +734,9 @@ le serveur HTTP Apache</a></seealso>
     <p>Le serveur va fixer la taille du tampon TCP en entrée au
     nombre d'octets spécifié.</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -755,9 +759,9 @@ le serveur HTTP Apache</a></seealso>
     à dire</em> de l'ordre de 100ms comme sur les liaisons rapides
     transcontinentales).</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 
     <p>L'amélioration des performances des connexions à grande vitesse
     et à temps de latence élevé, peut nécessiter
@@ -844,6 +848,10 @@ processus</description>
       modifier la valeur de MAX_SERVER_LIMIT dans le fichier source du
       mpm et recompiler le serveur.</p>
     </note>
+
+    <p>La valeur de la directive <directive>ServerLimit</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 </usage>
 <seealso><a href="../stopping.html">Arrêter et redémarrer
 le serveur HTTP Apache</a></seealso>
@@ -876,6 +884,12 @@ démarrage</description>
     <code>StartServers 3</code> ; la valeur par défaut est
     <code>5</code> pour <module>prefork</module> et <code>2</code>
     pour <module>mpmt_os2</module>.</p>
+
+    <p>La valeur de la directive <directive>StartServers</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé. Pour le module
+    <module>mpmt_os2</module>, la valeur 0 est aussi acceptée ; les valeurs
+    inférieures à 0 sont automatiquement augmentées à 1.</p>
 </usage>
 </directivesynopsis>
 
@@ -956,6 +970,10 @@ processus enfant</description>
       MAX_THREAD_LIMIT dans le fichier source du mpm et recompiler le
       serveur.</p>
     </note>
+
+    <p>La valeur de la directive <directive>ThreadLimit</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 </usage>
 </directivesynopsis>
 
@@ -993,6 +1011,10 @@ enfant</description>
     avertissement sera enregistré dans le journal. La relation entre ces deux
     directives est expliquée dans la <directive
     module="mpm_common">documentation de la directive ThreadLimit</directive>.</p>
+
+    <p>La valeur de la directive <directive>ThreadsPerChild</directive> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 </usage>
 </directivesynopsis>
 
