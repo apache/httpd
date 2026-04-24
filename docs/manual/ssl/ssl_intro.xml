@@ -643,8 +643,8 @@ href="http://en.wikipedia.org/wiki/X.509"
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>,
 RSA Laboratories Technical Notes, See <a
-href="http://www.rsasecurity.com/rsalabs/pkcs/"
->http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+href="https://en.wikipedia.org/wiki/PKCS"
+>https://en.wikipedia.org/wiki/PKCS</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
