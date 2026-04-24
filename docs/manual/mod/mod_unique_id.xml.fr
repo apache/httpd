@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1657403:1932665 (outdated) -->
+<!-- English Revision: 1932665 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -175,25 +175,25 @@ identifiant unique pour chaque requ&ecirc;te</description>
     red&eacute;marrage.</p>
 
     <!-- FIXME: thread_index is unsigned int, so not always 32bit.-->
-    <p>La variable d'environnement <code>UNIQUE_ID</code> est construite
-    par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
-    sur 32 bits, rep&egrave;re de temps sur 32 bits, compteur 16 bits et index
-    de threads sur 32 bits) en
-    utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une mani&egrave;re
-    similaire &agrave; celle du codage MIME base64, et sa valeur se pr&eacute;sente
-    sous la forme d'une cha&icirc;ne de 24 caract&egrave;res. L'alphabet MIME base64
-    est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caract&egrave;res
-    <code>+</code> et <code>/</code> n&eacute;cessitent un codage particulier
-    dans les URLs, ce qui rend leur utilisation peu commode. Toutes les
-    valeurs sont cod&eacute;es dans l'ordre des octets d'une adresse r&eacute;seau de
-    fa&ccedil;on &agrave; ce
-    que le codage soit comparable entre des architectures o&ugrave; l'ordre des
-    octets est diff&eacute;rent. L'ordre r&eacute;el de codage est : rep&egrave;re de temps,
-    adresse IP, pid, compteur. Cet ordre de codage poss&egrave;de un but
-    pr&eacute;cis, mais il faut souligner que les applications n'ont aucun
-    int&eacute;r&ecirc;t &agrave; entrer dans les d&eacute;tails de ce codage. Les applications
-    doivent se contenter de traiter la variable <code>UNIQUE_ID</code>
-    comme un symbole opaque, qui peut &ecirc;tre compar&eacute; avec d'autres
+    <p>La variable d'environnement <code>UNIQUE_ID</code> est construite par
+    codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid sur 32 bits,
+    rep&egrave;re de temps sur 32 bits, compteur 16 bits et index de threads sur
+    32 bits) en utilisant l'alphabet <code>[A-Za-z0-9_-]</code>
+    (<code>[A-Za-z0-9@-]</code>) avant la version 2.4.47) d'une mani&egrave;re
+    similaire &agrave; celle du codage MIME base64, et sa valeur se
+    pr&eacute;sente sous la forme d'une cha&icirc;ne de 24 caract&egrave;res.
+    L'alphabet MIME base64 est en fait <code>[A-Za-z0-9+/]</code> ; cependant,
+    les caract&egrave;res <code>+</code> et <code>/</code> n&eacute;cessitent un
+    codage particulier dans les URLs, ce qui rend leur utilisation peu commode.
+    Toutes les valeurs sont cod&eacute;es dans l'ordre des octets d'une adresse
+    r&eacute;seau de fa&ccedil;on &agrave; ce que le codage soit comparable
+    entre des architectures o&ugrave; l'ordre des octets est diff&eacute;rent.
+    L'ordre r&eacute;el de codage est : rep&egrave;re de temps, adresse IP, pid,
+    compteur. Cet ordre de codage poss&egrave;de un but pr&eacute;cis, mais il
+    faut souligner que les applications n'ont aucun int&eacute;r&ecirc;t
+    &agrave; entrer dans les d&eacute;tails de ce codage. Les applications
+    doivent se contenter de traiter la variable <code>UNIQUE_ID</code> comme un
+    symbole opaque, qui peut &ecirc;tre compar&eacute; avec d'autres
     <code>UNIQUE_ID</code>s en ne testant que leur &eacute;galit&eacute;.</p>
 
     <p>L'ordre a &eacute;t&eacute; choisi de fa&ccedil;on &agrave; ce qu'il soit possible de
