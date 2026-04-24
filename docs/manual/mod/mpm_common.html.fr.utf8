@@ -32,8 +32,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une série de directives implémentées par plusieurs
 modules multi-processus (MPM)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr></table>
@@ -573,6 +571,10 @@ pour pouvoir traiter les pics de requêtes</td></tr>
     <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. Pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, la
     valeur par défaut est <code>5</code>.</p>
 
+    <p>La valeur de la directive <code class="directive">MinSpareThreads</code> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -633,9 +635,9 @@ de processus du démon</td></tr>
     <p>Le serveur va fixer la taille du tampon TCP en entrée au
     nombre d'octets spécifié.</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -696,9 +698,9 @@ le serveur HTTP Apache</a></li>
     à dire</em> de l'ordre de 100ms comme sur les liaisons rapides
     transcontinentales).</p>
 
-    <p>Si la directive est définie à <code>0</code>, le serveur va
-    utiliser la valeur par défaut adoptée par le système
-    d'exploitation.</p>
+    <p>Si la directive est définie à <code>0</code>, le serveur va utiliser la
+    valeur par défaut adoptée par le système d'exploitation. Sinon, elle doit
+    être supérieure ou égale à <code>512</code>.</p>
 
     <p>L'amélioration des performances des connexions à grande vitesse
     et à temps de latence élevé, peut nécessiter
@@ -766,6 +768,10 @@ processus</td></tr>
       mpm et recompiler le serveur.</p>
     </div>
 
+    <p>La valeur de la directive <code class="directive">ServerLimit</code> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../stopping.html">Arrêter et redémarrer
@@ -794,6 +800,12 @@ démarrage</td></tr>
     <code>StartServers 3</code> ; la valeur par défaut est
     <code>5</code> pour <code class="module"><a href="../mod/prefork.html">prefork</a></code> et <code>2</code>
     pour <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>.</p>
+
+    <p>La valeur de la directive <code class="directive">StartServers</code> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé. Pour le module
+    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, la valeur 0 est aussi acceptée ; les valeurs
+    inférieures à 0 sont automatiquement augmentées à 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -862,6 +874,10 @@ processus enfant</td></tr>
       serveur.</p>
     </div>
 
+    <p>La valeur de la directive <code class="directive">ThreadLimit</code> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="threadsperchild" id="threadsperchild">Directive</a> <a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a></h2>
@@ -894,6 +910,10 @@ enfant</td></tr>
     supérieure, elle sera automatiquement réduite au démarrage du serveur et un
     avertissement sera enregistré dans le journal. La relation entre ces deux
     directives est expliquée dans la <code class="directive"><a href="#documentation de la directive threadlimit">documentation de la directive ThreadLimit</a></code>.</p>
+
+    <p>La valeur de la directive <code class="directive">ThreadsPerChild</code> doit
+    être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
+    augmentée à 1 et un avertissement sera journalisé.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

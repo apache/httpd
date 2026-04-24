@@ -37,8 +37,7 @@ mandataire.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_html_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_html.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
-Disponible en tant que module tiers dans les versions 2.x antérieures</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module fournit un filtre en sortie permettant de réécrire les liens
@@ -121,6 +120,7 @@ dynamiquement au cours du traitement d'une requête.
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un jeu de caractères pour la sortie de
 mod_proxy_html.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLCharsetOut UTF-8</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -215,6 +215,13 @@ des évènements de type scripting et de leur appliquer les règles
 <code class="directive"><a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></code> lorsqu'elles ont été définies. Vous
 pouvez spécifier un nombre quelconque d'attributs dans une ou plusieurs
 directives <code class="directive">ProxyHTMLEvents</code>.</p>
+<div class="note"><h3>Nécessite ProxyHTMLExtended</h3>
+<p>Les évènements de type scripting  ne sont traités que si la directive
+<code class="directive"><a href="#proxyhtmlextended">ProxyHTMLExtended</a></code> est définie à
+<var>On</var>. Dans le cas contraire, les attributs d’évènement sont transmis
+sans modification, même s’ils sont listés dans la directive
+<code class="directive">ProxyHTMLEvents</code>.</p>
+</div>
 <p>Normalement, cette directive est définie globalement. Si vous
 définissez <code class="directive">ProxyHTMLEvents</code> à plusieurs niveaux, certains niveaux
 l'emportant sur d'autres, vous devrez spécifier un jeu complet
@@ -261,6 +268,7 @@ correspondances erronées.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Corrige les erreurs HTML simples.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLFixups none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>

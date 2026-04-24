@@ -787,7 +787,7 @@ indexing</td></tr>
       directive, the module usually includes the contents of the file
       after a standard HTML preamble (<code>&lt;html&gt;</code>,
       <code>&lt;head&gt;</code>, <em>et cetera</em>). The
-      <code>SuppressHTMLPreamble</code> option disables this behaviour,
+      <code>SuppressHTMLPreamble</code> option disables this behavior,
       causing the module to start the display with the header file
       contents. The header file must contain appropriate HTML instructions
       in this case. If there is no header file, the preamble is generated

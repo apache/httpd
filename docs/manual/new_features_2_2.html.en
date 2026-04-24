@@ -262,7 +262,7 @@
       example when several modules each maintain their own connections.</p>
 
       <p>Apache 2.1 and later provides the <code>ap_dbd</code> API for
-      managing database connections (including optimised strategies
+      managing database connections (including optimized strategies
       for threaded and unthreaded MPMs), while APR 1.2 and later provides
       the <code>apr_dbd</code> API for interacting with the database.</p>
 

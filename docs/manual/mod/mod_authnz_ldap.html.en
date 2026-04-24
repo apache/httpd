@@ -45,17 +45,14 @@ for HTTP Basic authentication.</td></tr>
 
     <ul>
       <li>Known to support the <a href="http://www.openldap.org/">OpenLDAP SDK</a> (both 1.x
-      and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
-      Novell LDAP SDK</a> and the <a href="http://www.iplanet.com/downloads/developer/">iPlanet
-      (Netscape)</a> SDK.</li>
+      and 2.x).</li>
 
       <li>Complex authorization policies can be implemented by
       representing the policy with LDAP filters.</li>
 
       <li>Uses extensive caching of LDAP operations via <a href="mod_ldap.html">mod_ldap</a>.</li>
 
-      <li>Support for LDAP over SSL (requires the Netscape SDK) or
-      TLS (requires the OpenLDAP 2.x SDK or Novell LDAP SDK).</li>
+      <li>Support for LDAP over SSL/TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
 
     <p>When using <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, this module is invoked

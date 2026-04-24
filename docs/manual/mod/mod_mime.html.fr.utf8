@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_mime.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langue,
 jeu de caractère et codage)</td></tr>
@@ -163,17 +161,18 @@ multiples</a></h2>
     qui sera utilisé, et il sera donc traité en tant que fichier
     imagemap.</p>
 
-    <p>Si vous préférez que seule la dernière partie d'un nom de fichier
-    séparée du reste du nom par un point soit associée à une métadonnée
-    particulière, n'utilisez pas les directives <code>Add*</code>. Par
-    exemple, si vous souhaitez que le fichier <code>foo.html.cgi</code>
-    soit traité en tant que script CGI, mais pas le fichier
-    <code>bar.cgi.html</code>, alors, au lieu d'utiliser
-    <code>AddHandler cgi-script .cgi</code>, utilisez plutôt :</p>
+    <p>Si vous préférez que seule la dernière partie d'un nom de fichier séparée
+    du reste du nom par un point soit associée à une métadonnée particulière,
+    n'utilisez pas les directives <code>Add*</code>. Par exemple, si vous
+    souhaitez que le fichier <code>foo.html.asis</code> soit servi par le
+    gestionnaire <code>send-as-is</code> fourni par le module
+    <code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>, mais pas le fichier <code>bar.asis.html</code>,
+    alors, au lieu d'utiliser <code>AddHandler send-asis .asis</code>, utilisez
+    plutôt :</p>
 
     <div class="example"><h3>Configuration du gestionnaire en se basant seulement
-    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch "[^.]+\.cgi$"&gt;
-  SetHandler cgi-script
+    sur la dernière extension</h3><pre class="prettyprint lang-config">&lt;FilesMatch "[^.]+\.asis$"&gt;
+  SetHandler send-asis
 &lt;/FilesMatch&gt;</pre>
 </div>
 
@@ -380,20 +379,16 @@ gestionnaire spécifié</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
-    <p>Les fichiers dont le nom a pour extension <var>extension</var>
-    seront servis par le <var><a href="../handler.html">nom-gestionnaire</a></var> spécifié. Cette
-    association est ajoutée à toutes les autres déjà en vigueur, et
-    écrase toute association préexistante pour la même
-    <var>extension</var>. Par exemple, pour associer les scripts CGI
-    avec l'extension de fichier <code>.cgi</code>, vous pouvez utiliser
-    :</p>
+    <p>Les fichiers dont le nom a pour extension <var>extension</var> seront
+    servis par le <var><a href="../handler.html">nom-gestionnaire</a></var>
+    spécifié. Cette association est ajoutée à toutes les autres déjà en vigueur,
+    et écrase toute association préexistante pour la même <var>extension</var>.
+    Par exemple, pour associer les fichiers <code>.var</code> au gestionnaire
+    <code>type-map</code> fourni par le module <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>,
+    vous pouvez utiliser :</p>
 
-    <pre class="prettyprint lang-config">AddHandler cgi-script .cgi</pre>
+    <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
 
-
-    <p>Une fois cette ligne insérée dans votre fichier httpd.conf, tout
-    fichier possédant l'extension <code>.cgi</code> sera traité en tant
-    que programme CGI.</p>
 
     <p>L'argument <var>extension</var> est insensible à la casse et peut
     être spécifié avec ou sans le point initial. Les noms de fichiers

@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Journalisation des requêtes envoyées au
 serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -194,7 +192,9 @@ d'Apache</a></li>
         <td>La chaîne d'arguments (préfixée par un <code>?</code> si une
 	chaîne d'arguments existe, sinon une chaîne vide)</td></tr>
 <tr class="odd"><td><code>%r</code></td>
-        <td>La première ligne de la requête</td></tr>
+        <td>La première ligne de la requête. Ne tient pas compte de la directive
+	<code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code> (autrement dit, pas de
+	fusion, même si cette dernière est à ON).</td></tr>
 <tr><td><code>%R</code></td>
         <td>Le gestionnaire qui génère la réponse (s'il y en a un).</td></tr>
 <tr class="odd"><td><code>%s</code></td>
@@ -242,7 +242,9 @@ d'Apache</a></li>
 	si le statut de retour (<code>%s</code>) est 401).</td></tr>
 <tr class="odd"><td><code>%U</code></td>
         <td>Le chemin de la requête, à l'exclusion de toute chaîne
-	d'arguments.</td></tr>
+	d'arguments. Tient compte de la directive
+	<code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code> (autrement dit, les
+	barres obliques sont fusionnées si cette dernière est à ON).</td></tr>
 <tr><td><code>%v</code></td>
         <td>Le nom canonique du serveur qui a servi la requête, défini
 	par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
@@ -319,22 +321,61 @@ d'Apache</a></li>
 
     <h3><a name="format-notes" id="format-notes">Quelques Notes</a></h3>
 
-      <p>Pour des raisons de sécurité, à partir de la version 2.0.46,
-      les caractères non imprimables et autres caractères spéciaux dans
-      les directives <code>%r</code>, <code>%i</code> et <code>%o</code>
-      doivent être échappés à l'aide des séquences
-      <code>\x<var>hh</var></code>,
-      où <var>hh</var> est le code hexadécimal du caractère spécial.
-      Comme exceptions à cette règle, les caractères <code>"</code> et
-      <code>\</code> doivent être échappés par un anti-slash, et tous
-      les "blancs" doivent être écrits selon leur notation de style C
-      (<code>\n</code>, <code>\t</code>, etc...). Avant la version
-      2.0.46, aucun échappement n'était effectué sur ces chaînes, et il
-      fallait être très prudent lors de l'exploitation des journaux
-      bruts.</p>
+      <p>Pour des raisons de sécurité, à partir de la version 2.0.46, les
+      caractères non imprimables et autres caractères spéciaux dans une chaîne
+      de formatage qui peut contenir des données de chaîne arbitraires doivent
+      être échappés à l'aide des séquences <code>\x<var>hh</var></code>, où
+      <var>hh</var> est le code hexadécimal du caractère spécial.  Comme
+      exceptions à cette règle, les caractères <code>"</code> et <code>\</code>
+      doivent être échappés par un anti-slash, et tous les "blancs" doivent être
+      écrits selon leur notation de style C (<code>\n</code>, <code>\t</code>,
+      etc...). Avant la version 2.0.46, aucun échappement n'était effectué sur
+      ces chaînes, et il fallait être très prudent lors de l'exploitation des
+      journaux bruts.</p>
 
-      <p>A la différence de la version 1.3, depuis httpd 2.0, les chaînes
-      de format <code>%b</code> et <code>%B</code> ne représentent pas
+      <table>
+      
+      <tr><th>Format</th><th>Description</th><th>Échappé</th></tr>
+      <tr><td><code>%C</code></td><td>Valeur de Cookie</td><td>Oui</td></tr>
+      <tr><td><code>%e</code></td><td>Variable d’environnement</td><td>Oui</td></tr>
+      <tr><td><code>%f</code></td><td>Nom de fichier de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%h</code></td><td>Nom hôte distant</td><td>Oui</td></tr>
+      <tr><td><code>%H</code></td><td>Protocole de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%i</code></td><td>En-tête de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%l</code></td><td>Nom de connexion distant</td><td>Oui</td></tr>
+      <tr><td><code>%m</code></td><td>Méthode de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%n</code></td><td>Note</td><td>Oui</td></tr>
+      <tr><td><code>%o</code></td><td>En-tête de la réponse</td><td>Oui</td></tr>
+      <tr><td><code>%q</code></td><td>Chaîne de paramètres</td><td>Oui</td></tr>
+      <tr><td><code>%r</code></td><td>Ligne de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%R</code></td><td>Gestionnaire</td><td>Oui</td></tr>
+      <tr><td><code>%u</code></td><td>Utilisateur distant</td><td>Oui</td></tr>
+      <tr><td><code>%U</code></td><td>URI de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%v</code></td><td>Nom d’hôte du serveur</td><td>Oui</td></tr>
+      <tr><td><code>%V</code></td><td>Nom canonique du serveur</td><td>Oui</td></tr>
+      <tr><td><code>%^ti</code></td><td>Données en fin de requête</td><td>Oui</td></tr>
+      <tr><td><code>%^to</code></td><td>Données en fin de réponse</td><td>Oui</td></tr>
+      <tr><td><code>%a</code></td><td>Adresse IP distante</td><td>Non (adresse
+IP)</td></tr>
+      <tr><td><code>%A</code></td><td>Adresse IP locale</td><td>Non (adresse IP)</td></tr>
+      <tr><td><code>%b</code>, <code>%B</code></td><td>Nombre d’octets
+envoyés</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%D</code></td><td>Durée de la requête
+ (microsecondes)</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%k</code></td><td>Requêtes en cours</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%L</code></td><td>Identifiant de connexion</td><td>Non
+(généré en interne)</td></tr>
+      <tr><td><code>%p</code></td><td>Port du serveur</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%P</code></td><td>PID/TID</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%s</code></td><td>Code d’état</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%t</code></td><td>Moment de la requête</td><td>Non (temps
+formaté)</td></tr>
+      <tr><td><code>%T</code></td><td>Durée de la requête (secondes)</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%X</code></td><td>État de la connexion</td><td>Non (un seul caractère)</td></tr>
+      </table>
+
+
+      <p><code>%b</code> et <code>%B</code> ne représentent pas
       le nombre d'octets envoyés au client, mais simplement la taille en
       octets de la réponse HTTP (les deux étant différents, par exemple,
       si la connexion est abandonnée, ou si SSL est utilisé). Le format

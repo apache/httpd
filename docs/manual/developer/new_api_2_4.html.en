@@ -61,7 +61,7 @@
     
     <p>Introduces a new API to parse and evaluate boolean and algebraic
        expressions, including provision for a standard syntax and
-       customised variants.</p>
+       customized variants.</p>
   
 
   <h3><a name="ap_listen" id="ap_listen">ap_listen (changed; backwards-compatible)</a></h3>

@@ -70,7 +70,7 @@
 <div class="section">
 <h2><a name="pooling" id="pooling">Connection Pooling</a></h2>
     <p>This module manages database connections, in a manner
-    optimised for the platform.  On non-threaded platforms,
+    optimized for the platform.  On non-threaded platforms,
     it provides a persistent connection in the manner of
     classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
     On threaded platform, it provides an altogether more

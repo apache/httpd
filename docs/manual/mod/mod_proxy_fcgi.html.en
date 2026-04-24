@@ -38,14 +38,13 @@
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the
-    <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
+    <a href="https://fastcgi-archives.github.io/">FastCGI</a> protocol.</p>
 
     <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
     protocol, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> have to be present in the server.</p>
 
-    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> has no provision for starting the
     application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided
     (on some platforms) for that purpose. Alternatively, external launching
@@ -180,7 +179,7 @@
 <div class="section">
 <h2><a name="env" id="env">Environment Variables</a></h2>
     <p>In addition to the configuration directives that control the
-    behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
+    behavior of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, there are a number of
     <dfn>environment variables</dfn> that control the FCGI protocol
     provider:</p>
     <dl>

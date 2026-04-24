@@ -30,14 +30,12 @@ externe</h1>
 <a href="../ko/programs/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-     <p><code>suexec</code> permet au serveur HTTP Apache de changer
+     <p><code class="program"><a href="../programs/suexec.html">suexec</a></code> permet au serveur HTTP Apache de changer
      d'utilisateur avant d'exécuter un programme CGI. Pour ce faire, il
      doit être exécuté par <code>root</code>. A cet effet, comme le
      démon HTTP ne s'exécute en général pas en tant que
-     <code>root</code>, l'exécutable <code>suexec</code> doit posséder
+     <code>root</code>, l'exécutable <code class="program"><a href="../programs/suexec.html">suexec</a></code> doit posséder
      le bit setuid et avoir comme propriétaire <code>root</code>. Seul
      <code>root</code> doit en posséder les droits en écriture.</p>
 
@@ -60,7 +58,7 @@ externe</h1>
 <dt><code>-V</code></dt>
 
 <dd>Si vous êtes <code>root</code>, cette option permet d'afficher les
-options de compilation du programme <code>suexec</code>. Pour des
+options de compilation du programme <code class="program"><a href="../programs/suexec.html">suexec</a></code>. Pour des
 raisons de sécurité, toutes les options de configuration ne sont
 modifiables qu'à la compilation.</dd>
 

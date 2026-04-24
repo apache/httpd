@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalité de création et gestion de versions de
 documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -93,13 +91,14 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et
     <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>.</p>
 
-    <p>Si vous souhaitez limiter l'accès aux répertoires où DAV est
-    activé, vous pouvez ajouter une clause <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> dans la section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> considérée. Pour
-    définir la quantité maximale de données en octets qu'un client
-    DAV peut envoyer par requête, vous devez utiliser la directive
-    <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code>, car La
-    directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>
-    "habituelle" n'a aucune incidence sur les requêtes DAV.</p>
+    <p>Dans l’exemple ci-après, la directive <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code> permet de s’assurer que les méthodes
+    spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
+    <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
+    authentifiés.</p>
+
+    <p>Pour définir la quantité maximale de données en octets qu'un client DAV
+    peut envoyer par requête, vous devez utiliser la directive <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code>, car La directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> "habituelle" n'a aucune incidence
+    sur les requêtes DAV.</p>
 
     <div class="example"><h3>Exemple complet</h3><pre class="prettyprint lang-config">DavLockDB "/usr/local/apache2/var/DavLock"
 

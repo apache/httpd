@@ -266,7 +266,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
     If this is not the server name you
     wish to use, a bogus entry (eg. <code>ServerName
     none.example.com</code>) can be added to get around this
-    behaviour.</p>
+    behavior.</p>
 </div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

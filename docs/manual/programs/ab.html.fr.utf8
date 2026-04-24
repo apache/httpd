@@ -30,10 +30,8 @@ Apache</h1>
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p><code>ab</code> est un utilitaire qui vous permet de tester les
+    <p><code class="program"><a href="../programs/ab.html">ab</a></code> est un utilitaire qui vous permet de tester les
     performances de votre serveur HTTP Apache. Il a été conçu pour vous
     donner une idée du degré de performances de votre installation
     d'Apache. Il vous permet en particulier de déterminer le nombre de
@@ -192,7 +190,7 @@ Apache</h1>
     authentication needed" ou non).</dd>
 
     <dt><code>-q</code></dt>
-    <dd>Lorsque plus de 150 requêtes sont traitées, <code>ab</code>
+    <dd>Lorsque plus de 150 requêtes sont traitées, <code class="program"><a href="../programs/ab.html">ab</a></code>
     affiche la progression du traitement sur <code>stderr</code> tous
     les 10% du nombre total ou toutes les 100 requêtes. Le drapeau
     <code>-q</code> permet de supprimer ces messages.</dd>
@@ -269,7 +267,7 @@ Apache</h1>
 <div class="section">
 <h2><a name="output" id="output">Sortie</a></h2>
     <p>Vous touverez dans ce qui suit la liste des valeurs retournées
-    par <code>ab</code> :
+    par <code class="program"><a href="../programs/ab.html">ab</a></code> :
     </p>
 
     <dl>
@@ -372,7 +370,7 @@ Apache</h1>
     relativement intense de <code>strstr(3)</code> provoque un affichage
     en tête de profil, ce qui peut faire croire à un problème de
     performances ; en d'autres termes, vous mesurez les performances de
-    <code>ab</code> plutôt que celles du serveur.</p>
+    <code class="program"><a href="../programs/ab.html">ab</a></code> plutôt que celles du serveur.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

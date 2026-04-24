@@ -48,8 +48,7 @@ for HTTP Basic authentication.</description>
       <li>Uses extensive caching of LDAP operations via <a
       href="mod_ldap.html">mod_ldap</a>.</li>
 
-      <li>Support for LDAP over SSL (requires the Netscape SDK) or
-      TLS (requires the OpenLDAP 2.x SDK or Novell LDAP SDK).</li>
+      <li>Support for LDAP over SSL/TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
 
     <p>When using <module>mod_auth_basic</module>, this module is invoked

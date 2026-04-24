@@ -276,7 +276,7 @@
       <dd>Where possible, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> directives can now be set
       per directory, instead of per server.</dd>
 
-      <dd>The base URL of cached URLs can be customised, so that a cluster of
+      <dd>The base URL of cached URLs can be customized, so that a cluster of
       caches can share the same endpoint URL prefix.</dd>
 
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is now capable of serving stale cached

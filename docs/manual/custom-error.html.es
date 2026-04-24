@@ -30,6 +30,10 @@
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducci&#243;n podr&#237;a estar
+            obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
+            documentaci&#243;n para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>Apache ofrece la posibilidad de que los webmasters puedan
     configurar las respuestas que muestra el servidor Apache cuando se
