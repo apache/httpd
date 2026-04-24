@@ -40,10 +40,7 @@ for HTTP Basic authentication.</description>
     <ul>
       <li>Known to support the <a
       href="http://www.openldap.org/">OpenLDAP SDK</a> (both 1.x
-      and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
-      Novell LDAP SDK</a> and the <a
-      href="http://www.iplanet.com/downloads/developer/">iPlanet
-      (Netscape)</a> SDK.</li>
+      and 2.x).</li>
 
       <li>Complex authorization policies can be implemented by
       representing the policy with LDAP filters.</li>
