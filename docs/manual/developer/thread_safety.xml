@@ -123,7 +123,6 @@
       libz.so.1 => /usr/lib/libz.so.1 (0x403e2000)<br />
       libpng.so.2 => /usr/lib/libpng.so.2 (0x403f0000)<br />
       libmysqlclient.so.11 => /usr/lib/libmysqlclient.so.11 (0x40411000)<br />
-      libming.so => /usr/lib/libming.so (0x40449000)<br />
       libm.so.6 => /lib/libm.so.6 (0x40487000)<br />
       libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x404a8000)<br />
       libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x404e7000)<br />
@@ -227,10 +226,6 @@
             more information, please read <a
             href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html"
             >http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
-    <tr><td><a href="http://www.opaque.net/ming/">Ming</a></td>
-        <td>0.2a</td>
-        <td>?</td>
-        <td> </td></tr>
     <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
