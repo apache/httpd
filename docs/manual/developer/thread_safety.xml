@@ -267,11 +267,6 @@
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>
-    <tr><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml"
-        >Sablotron</a></td>
-        <td>0.95</td>
-        <td>?</td>
-        <td></td></tr>
     <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
         <td>Yes</td>
