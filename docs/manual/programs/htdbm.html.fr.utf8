@@ -29,10 +29,8 @@ passe</h1>
 <a href="../fr/programs/htdbm.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p><code>htdbm</code> permet de manipuler des fichiers au format DBM
+    <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permet de manipuler des fichiers au format DBM
     ou sont stockés des nom d'utilisateurs et mots de passe à des fins
     d'authentification de base des utilisateurs HTTP via le module
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>. Voir la documentation de
@@ -185,7 +183,7 @@ passe</h1>
     <dt><code>-d</code></dt>
     <dd>Utilise un hashage <code>crypt()</code> pour les mots de
     passe. C'est l'option par défaut sur toutes les plates-formes, sauf
-    Windows et Netware. Bien que <code>htdbm</code> supporte ce
+    Windows et Netware. Bien que <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> supporte ce
     chiffrement sur toutes les plates-formes, il n'est pas supporté par
     le serveur <code class="program"><a href="../programs/httpd.html">httpd</a></code> sous Windows et Netware. Cet
     algorythme est considéré comme <strong>non sûr</strong> selon les
@@ -255,8 +253,8 @@ passe</h1>
     bibliothèques
     utilisent des formats de fichiers différents, et vous devez vous
     assurer que le format de fichier utilisé par <var>nom-fichier</var>
-    correspond au format attendu par <code>htdbm</code>.
-    Actuellement, <code>htdbm</code> n'a aucun moyen de savoir à
+    correspond au format attendu par <code class="program"><a href="../programs/htdbm.html">htdbm</a></code>.
+    Actuellement, <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> n'a aucun moyen de savoir à
     quel type de fichier DBM il a à faire. S'il est utilisé avec un
     format inapproprié, il ne renverra rien, ou pourra créer un fichier
     DBM différent avec un nom différent, ou au pire, va corrompre le
@@ -268,9 +266,9 @@ passe</h1>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exit" id="exit">Valeur renvoyée</a> <a title="Lien permanent" href="#exit" class="permalink">&para;</a></h2>
-    <p><code>htdbm</code> renvoie 0 ("true") si les nom d'utilisateur et
+    <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> renvoie 0 ("true") si les nom d'utilisateur et
     mot de passe ont été créés ou mis à jour avec succès dans le fichier
-    DBM. <code>htdbm</code> renvoie <code>1</code> s'il a rencontré un
+    DBM. <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> renvoie <code>1</code> s'il a rencontré un
     problème d'accès aux fichiers, <code>2</code> si la ligne de
     commande comportait une erreur de syntaxe, <code>3</code> si le mot
     de passe a été fourni interactivement et s'il est invalide pour
@@ -292,7 +290,7 @@ passe</h1>
     Windows, le mot de passe sera hashé en utilisant l'algorithme MD5
     Apache modifié ; dans les autres cas, c'est la routine
     <code>crypt()</code> du système qui sera utilisée. Si le fichier
-    n'existe pas, <code>htdbm</code> s'arrêtera et renverra une
+    n'existe pas, <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> s'arrêtera et renverra une
     erreur.</p>
 
     <div class="example"><p><code>
@@ -303,7 +301,7 @@ passe</h1>
     l'utilisateur <code>jane</code>. Le mot de passe est demandé à
     l'opérateur. Si le fichier existe et ne peut pas être lu, ou ne peut
     pas être écrit, il ne sera pas modifié et
-    <code>htdbm</code> affichera un message et renverra un code
+    <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> affichera un message et renverra un code
     d'erreur.</p>
 
     <div class="example"><p><code>
@@ -316,7 +314,7 @@ passe</h1>
 
     <p>Pour convertir en fichier <code>dbm</code> un fichier de mots de passe
     généré par <code>htpasswd</code>, utilisez <code>awk</code> pour rediriger
-    chaque ligne de ce fichier vers <code>htdbm</code> :</p>
+    chaque ligne de ce fichier vers <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> :</p>
 
     <div class="example"><p><code>
       htdbm -cbp passwords.dbm bogus bogus
@@ -331,7 +329,7 @@ passe</h1>
 <div class="section">
 <h2><a name="security" id="security">Considérations à propos de sécurité</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     <p>Les fichiers de mots de passe Web tels que ceux que gère
-    <code>htdbm</code> ne doivent <em>pas</em> être stockés dans
+    <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> ne doivent <em>pas</em> être stockés dans
     l'espace d'URI du serveur Web -- en d'autres termes, il ne doit pas
     être possible d'y accéder à l'aide d'un navigateur.</p>
 
@@ -358,11 +356,11 @@ passe</h1>
 <div class="section">
 <h2><a name="restrictions" id="restrictions">Restrictions</a> <a title="Lien permanent" href="#restrictions" class="permalink">&para;</a></h2>
     <p>Sur la plate-forme Windows, les mots de passe hashés avec
-    <code>htdbm</code> ont une taille limitée à <code>255</code>
+    <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> ont une taille limitée à <code>255</code>
     caractères. Si le mot de passe fourni est plus long, il sera tronqué
     à 255 caractères.</p>
 
-    <p>L'algorithme MD5 utilisé par <code>htdbm</code> est spécifique à
+    <p>L'algorithme MD5 utilisé par <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> est spécifique à
     Apache ; les mots de passe hashés en utilisant cet algorithme
     seront inutilisables sur d'autres serveurs Web.</p>
 

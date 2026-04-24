@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_unique_id.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_unique_id.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit une variable d'environnement contenant un
 identifiant unique pour chaque requête</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -196,7 +194,7 @@ identifiant unique pour chaque requête</td></tr>
     par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
     sur 32 bits, repère de temps sur 32 bits, compteur 16 bits et index
     de threads sur 32 bits) en
-    utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une manière
+    utilisant l'alphabet <code>[A-Za-z0-9_-]</code> d'une manière
     similaire à celle du codage MIME base64, et sa valeur se présente
     sous la forme d'une chaîne de 24 caractères. L'alphabet MIME base64
     est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caractères

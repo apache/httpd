@@ -29,10 +29,8 @@ RewriteMap</h1>
 <a href="../fr/programs/httxt2dbm.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/httxt2dbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p><code>httxt2dbm</code> permet, à partir d'une entrée au format
+    <p><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code> permet, à partir d'une entrée au format
     texte, de générer des fichiers dbm à utiliser dans les directives
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> avec le type
     de table <code>dbm</code>.
@@ -88,10 +86,9 @@ RewriteMap</h1>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
-    <div class="example"><p><code>
-      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
-      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">httxt2dbm -i rewritemap.txt -o rewritemap.dbm
+httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm</pre>
+</div>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/httxt2dbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

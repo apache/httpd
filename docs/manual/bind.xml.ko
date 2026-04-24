@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ko.xsl"?>
-<!-- English Revision: 105989:1816110 (outdated) -->
+<!-- English Revision: 1816110 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,7 +25,7 @@
   <title>주소와 포트 지정 (Binding)</title>
 
   <summary>
-    <p>아파치가 특정 주소와 포트에서 서비스하도록 설정하기.</p>
+    <p>Apache HTTP Server가 특정 주소와 포트에서 수신하도록 설정합니다.</p>
   </summary>
 
   <seealso><a href="vhosts/">가상호스트</a></seealso>
@@ -46,107 +46,188 @@
     </related>
 
 
-    <p>아파치를 시작하면 아파치는 컴퓨터의 어떤 포트와 주소에
-    연결하여, 들어오는 요청을 기다린다. 기본적으로 아파치는
-    컴퓨터의 모든 주소에서 기다린다. 그러나 아파치가 특정 포트나
-    선택한 주소만을 기다리게 해야할 경우가 있다. 또 이 문제는
-    아파치가 어떻게 다른 IP 주소, 호스트명, 포트에 반응할지를
-    결정하는 가상호스트 기능과도 관련되있다.</p>
+    <p>httpd는 시작할 때 로컬 머신의 특정 포트와 주소에 연결(bind)하고
+    들어오는 요청을 기다립니다. 기본적으로 머신의 모든 주소에서
+    수신합니다. 그러나 특정 포트에서만 수신하거나, 선택한 주소에서만
+    수신하거나, 두 가지를 조합하도록 설정해야 할 수 있습니다. 이 기능은
+    <code>httpd</code>가 서로 다른 IP 주소, 호스트명, 포트에 어떻게
+    응답할지 결정하는 <a href="vhosts/">가상호스트</a> 기능과 함께
+    사용하는 경우가 많습니다.</p>
 
     <p><directive module="mpm_common">Listen</directive> 지시어는
-    서버가 특정 포트나 주소와 포트 조합에서만 요청을 받게
-    한다. <directive module="mpm_common">Listen</directive>
-    지시어에 포트 번호만 지정하면, 서버는 모든 인터페이스에서
-    지정한 포트를 기다린다. 여러 <directive
-    module="mpm_common">Listen</directive> 지시어로 기다릴 여러
-    주소와 포트를 지정할 수도 있다. 서버는 열거한 주소와 포트로
-    요청이 들어오면 응답한다.</p>
+    서버가 지정한 포트 또는 주소와 포트 조합에서만 들어오는 요청을
+    받아들이도록 합니다. <directive module="mpm_common">Listen</directive>
+    지시어에 포트 번호만 지정하면 서버는 모든 인터페이스에서 해당
+    포트를 수신합니다. IP 주소와 포트를 함께 지정하면 서버는 해당
+    포트와 인터페이스에서 수신합니다. 여러 개의
+    <directive module="mpm_common">Listen</directive> 지시어를 사용하여
+    수신할 주소와 포트를 여러 개 지정할 수 있습니다. 서버는 나열된
+    주소와 포트에서 들어오는 모든 요청에 응답합니다.</p>
 
-    <p>예를 들어, 서버가 80번과 8000번 포트 모두에서 연결을
-    받도록 하려면:</p>
+    <p>예를 들어, 모든 인터페이스에서 80번 포트와 8000번 포트 모두에서
+    연결을 받아들이려면 다음과 같이 설정합니다:</p>
 
     <example>
-      Listen 80<br />
-      Listen 8000
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
     </example>
 
-    <p>서버가 지정한 두 인터페이스와 포트에서 연결을 기다리도록
-    하려면,</p>
+    <p>한 인터페이스에서는 80번 포트로, 다른 인터페이스에서는 8000번
+    포트로 연결을 받아들이려면 다음과 같이 설정합니다:</p>
 
     <example>
-      Listen 192.0.2.1:80<br />
-      Listen 192.0.2.5:8000
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
     </example>
 
-    <p>IPv6 주소는 다음과 같이 대괄호로 묶어야 한다:</p>
+    <p>IPv6 주소는 다음 예와 같이 대괄호로 감싸야 합니다:</p>
 
     <example>
+    <highlight language="config">
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
     </example>
+
+    <note type="warning"><p><directive
+    module="mpm_common">Listen</directive> 지시어가 중복되면
+    서버 시작을 막는 치명적인 오류가 발생합니다.</p>
+
+    <example>
+      (48)Address already in use: make_sock: could not bind to address [::]:80
+    </example>
+
+    <p>추가 문제 해결 방법은 <a
+    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">위키의
+    관련 문서</a>를 참고하십시오.</p>
+
+</note>
+
   </section>
 
-  <section id="ipv6">
-    <title>IPv6에서 특별히 고려할 점</title>
+  <section id="reload">
+    <title>재시작시 Listen 설정 변경</title>
 
-    <p>IPv6를 구현한 플래폼이 늘고 있고 APR이 이들 플래폼 대부분에서
-	IPv6를 지원하기때문에, 아파치는 IPv6 소켓을 할당하여 IPv6로
-	받은 요청을 처리할 수 있다.</p>
+    <p>httpd를 재시작할 때 <directive module="mpm_common">Listen</directive>
+    지시어의 변경 사항에 대해 특별히 주의해야 합니다. 재시작 중에 httpd는
+    서버에 대한 새로운 연결 시도에서 "Connection refused" 오류가 발생하지
+    않도록 (원래 설정대로) 포트를 바인딩한 상태로 유지합니다. 사용 중인
+    <directive module="mpm_common">Listen</directive> 지시어가 이전 설정과
+    충돌하도록 변경되면 설정이 실패하고 서버가 종료됩니다.</p>
 
-    <p>아파치 관리자에게 복잡한 부분은 IPv6 소켓이 IPv4 연결과
-	IPv6 연결을 모두 처리할 수 있느냐는 점이다. 대부분의 플래폼에서는
-    IPv4-대응(mapped) IPv6 주소를 사용하여 IPv6 소켓에서 IPv4
-	연결을 받지만, FreeBSD와 NetBSD와 OpenBSD은 시스템전체 정책때문에
-	기본적으로 허용하지 않는다. 그러나 기본적으로 허용하지않는
-	시스템이라도 아파치를 위해 특별한 설정 파라미터로 변경할
-	수 있다.</p>
-
-    <p>반면 리눅스와 Tru64 같은 일부 플래폼에서 IPv4와 IPv6을
-    모두 처리하려면 대응 주소를 <strong>사용해야만</strong>
-    한다. 아파치가 최소한의 소켓을 사용하여 IPv4 연결과 IPv6
-    연결을 모두 받도록하려면, IPv4-대응 IPv6 주소를 사용하고
-	<a href="programs/configure.html">configure</a> 옵션
-    <code>--enable-v4-mapped</code>를 지정한다.</p>
-
-    <p><code>--enable-v4-mapped</code>는 FreeBSD, NetBSD, OpenBSD를
-	제외한 모든 플래폼에서 기본값이고, 아마도 당신의 아파치도
-	마찬가지일 것이다.</p>
-
-    <p>플래폼과 APR의 지원여부와 관계없이 아파치가 IPv4 연결만을
-	받도록하려면, 다음 예제와 같이 모든 <directive
-    module="mpm_common">Listen</directive> 지시어에 IPv4 주소를
-	사용한다:</p>
+    <p>예를 들어, 다음 설정에서:</p>
 
     <example>
-      Listen 0.0.0.0:80<br />
-      Listen 192.0.2.1:80
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
     </example>
 
-    <p>플래폼에서 지원하며 아파치가 서로 다른 소켓으로 IPv4
-    연결과 IPv6 연결을 받도록하려면 (즉 IPv4-대응 주소를 사용하지
-    않으려면), <a href="programs/configure.html">configure</a>
-    옵션 <code>--disable-v4-mapped</code>를
-    지정한다. <code>--disable-v4-mapped</code>는 FreeBSD, NetBSD,
-    OpenBSD에서 기본값이다.</p>
+    <p>다음과 같이 변경하면 실패할 수 있습니다. 모든 주소에서 80번
+    포트에 바인딩하는 것이 127.0.0.1에서만 80번 포트에 바인딩하는
+    것과 충돌하기 때문입니다.</p>
 
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>이러한 설정 변경을 적용하려면 서버를 중지한 후 다시 시작해야
+    합니다.</p>
+
+  </section>
+
+    <section id="ipv6">
+    <title>IPv6 특별 고려사항</title>
+
+    <p>점점 더 많은 플랫폼이 IPv6를 구현하고 있으며,
+    <glossary>APR</glossary>은 이러한 플랫폼 대부분에서 IPv6를
+    지원하므로 httpd가 IPv6 소켓을 할당하고 IPv6를 통해 전송된
+    요청을 처리할 수 있습니다.</p>
+
+    <p>httpd 관리자에게 복잡한 요소 중 하나는 IPv6 소켓이 IPv4
+    연결과 IPv6 연결을 모두 처리할 수 있는지 여부입니다. IPv6
+    소켓으로 IPv4 연결을 처리하려면 IPv4 매핑 IPv6 주소를
+    사용하는데, 대부분의 플랫폼에서는 기본적으로 허용되지만
+    FreeBSD, NetBSD, OpenBSD에서는 해당 플랫폼의 시스템 전체
+    정책에 맞추어 기본적으로 허용되지 않습니다. 기본적으로
+    허용되지 않는 시스템에서는 특별한 <program>configure</program>
+    매개변수로 httpd의 이 동작을 변경할 수 있습니다.</p>
+
+    <p>반면에 Linux와 Tru64 같은 일부 플랫폼에서는 IPv6와 IPv4를
+    모두 처리하는 <strong>유일한</strong> 방법이 매핑 주소를
+    사용하는 것입니다. <code>httpd</code>가 최소한의 소켓으로 IPv4와
+    IPv6 연결을 모두 처리하도록 하려면 IPv4 매핑 IPv6 주소를
+    사용해야 하며, <code>--enable-v4-mapped</code>
+    <program>configure</program> 옵션을 지정하십시오.</p>
+
+    <p><code>--enable-v4-mapped</code>는 FreeBSD, NetBSD, OpenBSD를
+    제외한 모든 플랫폼에서 기본값이므로, 아마도 여러분의 httpd는
+    이렇게 빌드되었을 것입니다.</p>
+
+    <p>플랫폼과 APR의 지원 여부에 관계없이 httpd가 IPv4 연결만
+    처리하도록 하려면 다음 예와 같이 모든
+    <directive module="mpm_common">Listen</directive> 지시어에
+    IPv4 주소를 지정하십시오:</p>
+
+    <example>
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
+    </example>
+
+    <p>플랫폼이 지원하고 httpd가 별도의 소켓에서 IPv4와 IPv6
+    연결을 처리하도록 하려면 (즉, IPv4 매핑 주소를 비활성화하려면)
+    <code>--disable-v4-mapped</code>
+    <program>configure</program> 옵션을 지정하십시오.
+    <code>--disable-v4-mapped</code>는 FreeBSD, NetBSD,
+    OpenBSD에서 기본값입니다.</p>
+  </section>
+
+  <section id="protocol">
+    <title>Listen에서 프로토콜 지정</title>
+    <p><directive module="mpm_common">Listen</directive>의 선택적인
+       두 번째 <var>protocol</var> 인수는 대부분의 설정에서 필요하지
+       않습니다. 지정하지 않으면 443번 포트에는 <code>https</code>가,
+       다른 모든 포트에는 <code>http</code>가 기본값으로 사용됩니다.
+       프로토콜은 어떤 모듈이 요청을 처리할지 결정하고,
+       <directive module="core">AcceptFilter</directive> 지시어로
+       프로토콜별 최적화를 적용하는 데 사용됩니다.</p>
+
+    <p>비표준 포트에서 실행하는 경우에만 프로토콜을 설정하면 됩니다.
+       예를 들어, 8443번 포트에서 <code>https</code> 사이트를 실행하는
+       경우:</p>
+
+    <example>
+    <highlight language="config">
+      Listen 192.170.2.1:8443 https
+    </highlight>
+    </example>
   </section>
 
   <section id="virtualhost">
-    <title>가상호스트와 어떻게 연관되나</title>
+    <title>가상호스트와의 관계</title>
 
-    <p><directive module="mpm_common">Listen</directive>은
-    가상호스트를 만들지 않는다. 이는 단지 주서버가
-    어떤 주소와 포트를 기다릴지만 알려준다. <directive
-    module="core" type="section">VirtualHost</directive> 지시어를
-    사용하지 않으면, 서버는 받은 모든 요청을 똑같이 처리한다.
-    그러나 <directive module="core"
-    type="section">VirtualHost</directive>로 여러 주소와 포트에
-    대해 다른 행동을 지정할 수 있다. 가상호스트를 만들려면
-    먼저 서버에게 사용할 주소와 포트를 알려줘야 한다. 그리고
-    특정 주소와 포트에 대한 가상호스트의 행동을 지정할
+    <p><directive module="mpm_common">Listen</directive> 지시어는
+    가상호스트를 구현하지 않으며, 주 서버가 어떤 주소와 포트에서
+    수신할지만 지정합니다.
     <directive module="core" type="section">VirtualHost</directive>
-    섹션이 필요하다. 주서버가 기다리지않는 주소와 포트를 사용하는
-    <directive module="core" type="section">VirtualHost</directive>는
-    접근할 수 없음을 주의하라.</p>
+    지시어를 사용하지 않으면 서버는 받아들인 모든 요청에 대해
+    동일하게 동작합니다. 그러나
+    <directive module="core" type="section">VirtualHost</directive>를
+    사용하여 하나 이상의 주소나 포트에 대해 다른 동작을 지정할 수
+    있습니다. 가상호스트를 구현하려면 먼저 서버가 사용할 주소와
+    포트를 수신하도록 설정해야 합니다. 그런 다음 지정한 주소와
+    포트에 대해
+    <directive module="core" type="section">VirtualHost</directive>
+    섹션을 만들어 이 가상호스트의 동작을 설정해야 합니다. 서버가
+    수신하지 않는 주소와 포트에 대해
+    <directive module="core" type="section">VirtualHost</directive>를
+    설정하면 접근할 수 없다는 점에 주의하십시오.</p>
   </section>
 </manualpage>
-

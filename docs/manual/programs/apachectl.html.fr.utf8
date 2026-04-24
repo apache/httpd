@@ -30,14 +30,12 @@
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-     <p><code>apachectl</code> est un frontal pour le serveur HTTP
+     <p><code class="program"><a href="../programs/apachectl.html">apachectl</a></code> est un frontal pour le serveur HTTP
      Apache. Il a été conçu pour aider l'administrateur à contrôler le
      fonctionnement du démon Apache <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
-     <p>Le script <code>apachectl</code> possède deux modes de
+     <p>Le script <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> possède deux modes de
      fonctionnement. Il peut fonctionner en tant que simple frontal
      de la commande <code class="program"><a href="../programs/httpd.html">httpd</a></code> et ne fait alors que
      définir toute variable d'environnement nécessaire, puis invoque
@@ -49,13 +47,13 @@
      <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
      <p>Si votre installation d'Apache utilise des chemins non
-     standards, vous devrez éditer le script <code>apachectl</code> afin
+     standards, vous devrez éditer le script <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> afin
      de définir les chemins appropriés pour le binaire
      <code class="program"><a href="../programs/httpd.html">httpd</a></code>. Vous pouvez aussi spécifier tout argument
      de ligne de commande de <code class="program"><a href="../programs/httpd.html">httpd</a></code> nécessaire. Voir
      les commentaires dans le script pour plus de détails.</p>
 
-     <p>Le script <code>apachectl</code> renvoie une valeur égale à 0 en
+     <p>Le script <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> renvoie une valeur égale à 0 en
      cas de succès, et une valeur supérieure à 0 en cas de problème.
      Voir les commentaires dans le script pour plus de détails.</p>
 </div>
@@ -68,12 +66,12 @@ plates-formes</a></li><li><code class="program"><a href="../programs/httpd.html"
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Résumé</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
 
-<p>En mode frontal (pass-through), <code>apachectl</code> peut spécifier
+<p>En mode frontal (pass-through), <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> peut spécifier
 tous les arguments qu'accepte le binaire <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 <p><code><strong>apachectl</strong> [ <var>argument-httpd</var> ]</code></p>
 
-<p>En mode script d'initialisation SysV, <code>apachectl</code>
+<p>En mode script d'initialisation SysV, <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>
 n'accepte qu'un seul des arguments définis ci-dessous.</p>
 
 <p><code><strong>apachectl</strong> <var>commande</var></code></p>

@@ -30,10 +30,8 @@
 <a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/rotatelogs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-     <p><code>rotatelogs</code> est un programme simple à utiliser en
+     <p><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> est un programme simple à utiliser en
      conjonction avec la fonctionnalité d'Apache de redirection dans un
      "pipe" des fichiers journaux. Il supporte une rotation basée sur un
      intervalle de temps ou une taille maximale du journal.</p>
@@ -78,20 +76,20 @@ spécifié. Cette option permet de consulter le journal de manière
 continue malgré les rotations via une commande du style <code>tail -F
 nom-lien</code>.</p>
 <p>Si le nom du lien spécifié n'est pas un chemin absolu, il est relatif au
-répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+répertoire de travail de <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> qui correspond à la valeur de
 la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.  
+<code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> est exécutée par le serveur.  
 </p>
 </dd>
 
 <dt><code>-p</code> <var>programme</var></dt>
-<dd><p>Avec cette option, <code>rotatelogs</code> exécutera le programme
+<dd><p>Avec cette option, <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> exécutera le programme
 <var>programme</var> chaque fois qu'un nouveau fichier journal sera
 ouvert. Le nom du fichier nouvellement ouvert est passé comme premier
 argument au programme. Si l'exécution se produit après une rotation,
 l'ancien nom du fichier journal est passé au programme comme second
 argument.</p>
-<p> <code>rotatelogs</code>
+<p> <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code>
 n'attend pas la fin du <var>programme</var> pour continuer son
 exécution, et cessera tout enregistrement de codes d'erreur lorsqu'il
 aura terminé son processus.</p>
@@ -106,7 +104,7 @@ du fichier journal ne sont pas modifiées par cette rotation.</p>
 
 <dt><code>-f</code></dt>
 <dd>Ouvre le fichier journal immédiatement, dès que
-<code>rotatelogs</code> démarre, au lieu d'attendre la lecture de la
+<code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> démarre, au lieu d'attendre la lecture de la
 première entrée de journal (pour les sites peu chargés, il peut
 s'écouler un temps substantiel entre le démarrage du serveur et le
 traitement de la première requête, temps pendant lequel le fichier
@@ -186,9 +184,9 @@ mégaoctets, et si la limite de 5 mégaoctets a été atteinte deux fois
 dans la même journée, le même nom de fichier va être généré, et la
 rotation va écraser le fichier existant.</p>
 <p>Si le nom du fichier journal n'est pas un chemin absolu, il est relatif au
-répertoire de travail de <code>rotatelogs</code> qui correspond à la valeur de
+répertoire de travail de <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> qui correspond à la valeur de
 la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> lorsque la commande
-<code>rotatelogs</code> est exécutée par le serveur.  
+<code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> est exécutée par le serveur.  
 </p>
 </dd>
 

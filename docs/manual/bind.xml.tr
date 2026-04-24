@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1301743:1816110 (outdated) -->
+<!-- English Revision: 1816110 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -76,8 +76,10 @@
       bağlantıları kabul etmesini sağlamak için,</p>
 
     <example>
-      Listen 80<br />
-      Listen 8000
+    <highlight language="config">
+Listen 80
+Listen 8000
+    </highlight>
     </example>
 
     <p>yapılandırmasını kullanabilirsiniz. Sunucunun 80 portuna gelen
@@ -85,30 +87,73 @@
       arabirimden kabul etmesini sağlamak için ise,</p>
 
     <example>
-      Listen 192.0.2.1:80<br />
-      Listen 192.0.2.5:8000
+    <highlight language="config">
+Listen 192.0.2.1:80
+Listen 192.0.2.5:8000
+    </highlight>
     </example>
 
     <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki örnekteki
       gibi köşeli ayraçlar içine alınarak belirtilmelidir:</p>
 
     <example>
+    <highlight language="config">
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
+    </highlight>
     </example>
 
-    <note type="warning">
-      <p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
-      aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
-      sonuçlanacaktır.</p>
+    <note type="warning"><p>Bir <directive module="mpm_common">Listen</directive> yönergesinin
+    aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
+    sonuçlanacaktır.</p>
 
-      <example>
+    <example>
       (48)Address already in use: make_sock: could not bind to address [::]:80
-      </example>
-    </note>
+    </example>
 
-</section>
+    <p>Sorun giderme ipuçları için <a
+    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
+    sayfasına bakınız</a>.</p>
 
-  <section id="ipv6">
+</note>
+
+  </section>
+
+  <section id="reload">
+    <title>Yeniden başlatmada dinleme yapılandırmasının değiştirilmesi</title>
+
+    <p>httpd yeniden başlatıldığında, <directive
+    module="mpm_common">Listen</directive> yönergelerindeki değişiklikler için
+    özel olarak dikkat edilmelidir. Yeniden başlatma sırasında httpd, portları
+    (özgün yapılandırmadaki gibi) bağlı tutar ve sunucuya yeni bağlantı
+    girişimleri için "Connection refused" hatalarının oluşmasını engeller.
+    Kullanılan <directive module="mpm_common">Listen</directive> yönergeleri
+    kümesinde eski yapılandırmayla çelişen değişiklikler yapılırsa,
+    yapılandırma başarısız olur ve sunucu sonlandırılır.</p>
+
+    <p>Örneğin, yapılandırmanın:</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 127.0.0.1:80
+    </highlight>
+    </example>
+
+    <p>aşağıdaki gibi değiştirilmesi başarısız olabilir, çünkü tüm
+    adreslerde 80 portuna bağlanmak sadece 127.0.0.1 üzerinde 80 portuna
+    bağlanmakla çelişir.</p>
+    
+    <example>
+    <highlight language="config">
+      Listen 80
+    </highlight>
+    </example>
+
+    <p>Bu tür yapılandırma değişikliklerinin etkili olması için sunucunun
+    durdurulması ve sonra başlatılması gerekir.</p>
+    
+  </section>
+
+    <section id="ipv6">
     <title>IPv6 Adreslerin Durumu</title>
 
     <p>IPv6’yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
@@ -142,8 +187,10 @@
       örnekteki gibi IPv4 adresleri belirtiniz:</p>
 
     <example>
-      Listen 0.0.0.0:80<br />
-      Listen 192.0.2.1:80
+    <highlight language="config">
+Listen 0.0.0.0:80
+Listen 192.0.2.1:80
+    </highlight>
     </example>
 
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
@@ -168,7 +215,9 @@
       çalıştırmak isterseniz:</p>
 
     <example>
+    <highlight language="config">
       Listen 192.170.2.1:8443 https
+    </highlight>
     </example>
   </section>
 
@@ -192,4 +241,3 @@
       sunucu tarafından dinlenmiyorsa ona erişemezsiniz.</p>
   </section>
 </manualpage>
-

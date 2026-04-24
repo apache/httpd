@@ -608,7 +608,7 @@ the Internet Engineering Task Force (IETF).</p>
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
 <dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,
-1996. See <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> for various other materials by Bruce
+1996. See <a href="https://www.schneier.com/">https://www.schneier.com/</a> for various other materials by Bruce
 Schneier.</dd>
 
 <dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
@@ -623,7 +623,7 @@ Framework</q>. For references, see <a href="http://en.wikipedia.org/wiki/X.509">
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>,
-RSA Laboratories Technical Notes, See <a href="http://www.rsasecurity.com/rsalabs/pkcs/">http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+RSA Laboratories Technical Notes, See <a href="https://en.wikipedia.org/wiki/PKCS">https://en.wikipedia.org/wiki/PKCS</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
