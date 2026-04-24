@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1657407:1932664 (outdated) -->
+<!-- English Revision: 1932664 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -179,7 +179,7 @@ identifiant unique pour chaque requ&ecirc;te</description>
     par codage du quadruplet de 144 bits (adresse IP sur 32 bits, pid
     sur 32 bits, rep&egrave;re de temps sur 32 bits, compteur 16 bits et index
     de threads sur 32 bits) en
-    utilisant l'alphabet <code>[A-Za-z0-9@-]</code> d'une mani&egrave;re
+    utilisant l'alphabet <code>[A-Za-z0-9_-]</code> d'une mani&egrave;re
     similaire &agrave; celle du codage MIME base64, et sa valeur se pr&eacute;sente
     sous la forme d'une cha&icirc;ne de 24 caract&egrave;res. L'alphabet MIME base64
     est en fait <code>[A-Za-z0-9+/]</code> ; cependant, les caract&egrave;res
