@@ -39,8 +39,7 @@
     protocol, <module>mod_proxy</module> and
     <module>mod_proxy_fcgi</module> have to be present in the server.</p>
 
-    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    and <code>mod_fastcgi</code>,
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <module>mod_proxy_fcgi</module> has no provision for starting the
     application process; <program>fcgistarter</program> is provided
     (on some platforms) for that purpose. Alternatively, external launching
