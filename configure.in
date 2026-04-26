@@ -431,10 +431,10 @@ if test "${apu_found}" = "yes"; then
     # we need to add the APR includes to CPPFLAGS
     apu_ckver_CPPFLAGS="$CPPFLAGS"
     CPPFLAGS="$CPPFLAGS `$apr_config --includes`"
-    APACHE_CHECK_APxVER([apu], 1, 3)
+    APACHE_CHECK_APxVER([apu], 1, 6)
     CPPFLAGS="$apu_ckver_CPPFLAGS"
   else
-    APACHE_CHECK_APxVER([apu], 1, 3)
+    APACHE_CHECK_APxVER([apu], 1, 6)
   fi
 fi
 
