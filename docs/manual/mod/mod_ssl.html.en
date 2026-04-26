@@ -531,7 +531,7 @@ CRL checks are applied to all certificates in the chain, while setting it to
     </p>
     <p>
     The <var>flag</var> <code>no_crl_for_cert_ok</code> allows to restore
-    previous behaviour.
+    previous behavior.
     </p>
 </li>
 </ul>
