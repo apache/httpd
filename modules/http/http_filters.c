@@ -990,6 +990,11 @@ static apr_status_t validate_status_line(request_rec *r)
             r->status_line = apr_pstrcat(r->pool, r->status_line, " ", NULL);
             return APR_EGENERAL;
         }
+        /* Check for newlines and control characters */
+        if (len > 4 && *ap_scan_http_field_content(r->status_line + 4)) {
+            r->status_line = NULL;
+            return APR_EGENERAL;
+        }
         return APR_SUCCESS;
     }
     return APR_EGENERAL;
