@@ -395,7 +395,7 @@ apr_status_t ajp_msg_get_uint32(ajp_msg_t *msg, apr_uint32_t *rvalue)
 {
     apr_uint32_t value;
 
-    if ((msg->pos + 3) > msg->len) {
+    if ((msg->pos + 3) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint32");
     }
 
@@ -420,7 +420,7 @@ apr_status_t ajp_msg_get_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 {
     apr_uint16_t value;
 
-    if ((msg->pos + 1) > msg->len) {
+    if ((msg->pos + 1) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint16");
     }
 
@@ -443,7 +443,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 {
     apr_uint16_t value;
 
-    if ((msg->pos + 1) > msg->len) {
+    if ((msg->pos + 1) >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint16");
     }
 
@@ -464,7 +464,7 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
  */
 apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
-    if (msg->pos > msg->len) {
+    if (msg->pos >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint8");
     }
 
@@ -482,7 +482,7 @@ apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 apr_status_t ajp_msg_get_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
 {
 
-    if (msg->pos > msg->len) {
+    if (msg->pos >= msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint8");
     }
 
