@@ -266,11 +266,10 @@ static const command_rec authn_cache_cmds[] =
 static const char *construct_key(request_rec *r, const char *context,
                                  const char *user, const char *realm)
 {
+    const char *slash = ap_strrchr_c(r->uri, '/');
     /* handle "special" context values */
-    if (!strcmp(context, directory)) {
-        /* FIXME: are we at risk of this blowing up? */
+    if (!strcmp(context, directory) && slash) {
         char *new_context;
-        char *slash = strrchr(r->uri, '/');
         new_context = apr_palloc(r->pool, slash - r->uri +
                                  strlen(r->server->server_hostname) + 1);
         strcpy(new_context, r->server->server_hostname);
