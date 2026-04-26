@@ -73,6 +73,7 @@
 #include "apr_shm.h"
 #include "apr_rmm.h"
 #include "ap_provider.h"
+#include "apr_crypto.h" /* for apr_crypto_equals */
 
 #include "mod_auth.h"
 
@@ -99,10 +100,17 @@ typedef struct digest_config_struct {
 #define DFLT_NONCE_LIFE apr_time_from_sec(300)
 #define NEXTNONCE_DELTA apr_time_from_sec(30)
 
-
+/* The server nonce has fixed length and is the concatenation of:
+ *    base64(apr_time_t timestamp) + hex(SHA1(realm+time[+opaque])) */
 #define NONCE_TIME_LEN  (((sizeof(apr_time_t)+2)/3)*4)
 #define NONCE_HASH_LEN  (2*APR_SHA1_DIGESTSIZE)
 #define NONCE_LEN       (int )(NONCE_TIME_LEN + NONCE_HASH_LEN)
+/* Evaluates to true if nonce string is valid. Since the time part of
+ * the nonce is a base64 encoding of an apr_time_t (8 bytes), it
+ * must end with a '='.  */
+#define VALID_NONCE(n_) ((n_) && strlen((n_)) == NONCE_LEN && (n_)[NONCE_TIME_LEN - 1] == '=')
+
+#define MD5_DIGEST_LEN (2*APR_MD5_DIGESTSIZE) /* ignoring trailing \0 */
 
 #define SECRET_LEN          20
 #define RETAINED_DATA_ID    "mod_auth_digest"
@@ -1013,8 +1021,9 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
             resp->nonce_count = apr_pstrdup(r->pool, value);
     }
 
-    if (!resp->username || !resp->realm || !resp->nonce || !resp->uri
-        || !resp->digest
+    if (!resp->username || !resp->realm || !resp->uri
+        || !VALID_NONCE(resp->nonce)
+        || !resp->digest || strlen(resp->digest) != MD5_DIGEST_LEN
         || (resp->message_qop && (!resp->cnonce || !resp->nonce_count))) {
         resp->auth_hdr_sts = INVALID;
         return !OK;
@@ -1066,14 +1075,9 @@ static int parse_hdr_and_update_nc(request_rec *r)
 }
 
 
-/*
- * Nonce generation code
- */
-
-/* The hash part of the nonce is a SHA-1 hash of the time, realm, server host
- * and port, opaque, and our secret.
- */
-static void gen_nonce_hash(char *hash, const char *timestr, const char *opaque,
+/* Writes the hash part of the server nonce to hash, which must be of
+ * minimum size (NONCE_HASH_LEN+1). */
+static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, const char *opaque,
                            const server_rec *server,
                            const digest_config_rec *conf, 
                            const char *realm)
@@ -1427,19 +1431,6 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     time_rec nonce_time;
     char tmp, hash[NONCE_HASH_LEN+1];
 
-    /* Since the time part of the nonce is a base64 encoding of an
-     * apr_time_t (8 bytes), it should end with a '=', fail early otherwise.
-     */
-    if (strlen(resp->nonce) != NONCE_LEN
-            || resp->nonce[NONCE_TIME_LEN - 1] != '=') {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01775)
-                      "invalid nonce '%s' received - length is not %d "
-                      "or time encoding is incorrect",
-                      resp->nonce, NONCE_LEN);
-        note_digest_auth_failure(r, conf, resp, 1);
-        return HTTP_UNAUTHORIZED;
-    }
-
     tmp = resp->nonce[NONCE_TIME_LEN];
     resp->nonce[NONCE_TIME_LEN] = '\0';
     apr_base64_decode_binary(nonce_time.arr, resp->nonce);
@@ -1447,7 +1438,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
 
-    if (strcmp(hash, resp->nonce+NONCE_TIME_LEN)) {
+    if (!apr_crypto_equals(hash, resp->nonce+NONCE_TIME_LEN, NONCE_HASH_LEN)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01776)
                       "invalid nonce %s received - hash is not %s",
                       resp->nonce, hash);
@@ -1778,7 +1769,7 @@ static int authenticate_digest_user(request_rec *r)
 
     if (resp->message_qop == NULL) {
         /* old (rfc-2069) style digest */
-        if (strcmp(resp->digest, old_digest(r, resp))) {
+        if (!apr_crypto_equals(resp->digest, old_digest(r, resp), MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
@@ -1813,7 +1804,7 @@ static int authenticate_digest_user(request_rec *r)
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        if (strcmp(resp->digest, exp_digest)) {
+        if (!apr_crypto_equals(resp->digest, exp_digest, MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01794)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
