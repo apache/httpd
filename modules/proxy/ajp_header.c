@@ -835,6 +835,11 @@ apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
      * 1                 : The last byte of this message always seems to be
      *                     0x00 and is not part of the chunk.
      */
+    if (msg->len < AJP_HEADER_LEN + AJP_HEADER_SZ_LEN + 1 + 1) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10546)
+               "ajp_parse_data: Message too small");
+        return AJP_EBAD_HEADER;
+    }
     expected_len = msg->len - (AJP_HEADER_LEN + AJP_HEADER_SZ_LEN + 1 + 1);
     if (*len != expected_len) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(00998)
