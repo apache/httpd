@@ -1,6 +1,45 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.67
 
+  *) mod_md: update to version 2.6.10
+     - Fix issue #420 <https://github.com/icing/mod_md/issues/420> by ignoring
+       job.json files that claim to have completely finished a certificate
+       renewal, but have not produced the necessary result files.
+
+  *) mod_http2: update to version 2.0.39
+     Remove streams own memory allocator after reports of memory problems
+     with third party modules.
+     [Stefan Eissing]
+
+  *) mod_http2: update to version 2.0.38
+     Source sync with mod_h2 github repository. No functional change.
+     [Stefan Eissing]
+
+  *) Updated conf/mime.types: added vnd.sqlite3, HEIC, HEIF
+     [Alexandru Mărășteanu <hello alexei.ro>]
+
+  *) mod_md: update to version 2.6.7
+     - Fix a regression in `MDStapleOthers` which broke in v2.6.0 and no longer
+       applied, no matter the configuration.
+
+  *) mod_md: update to version 2.6.9
+     - Pebble 2.9+ reports another error when terms of service agreement is
+       not set. Treating all "userActionRequired" errors as permanent now.
+
+  *) mod_md: update to version 2.6.8
+     - Fix the ARI related `replaces` property in ACME order creation to only
+       be used when the CA supports ARI and it is enabled in the menu config.
+     - Fix compatibility with APR versions before 1.6.0 which do not have
+       `apr_cstr_casecmp` and should use `apr_strnatcasecmp` instead.
+
+  *) mod_http2: update to version 2.0.37
+     Prevent double purge of a stream, resulting in a double free.
+     Fixes PR 69899.
+     [Stefan Eissing]
+
+  *) mod_md: Use correct function name when compiling against APR < 1.6.0.
+     PR 69954 [Tần Quảng <baobaoxich@gmail.com>]
+
 Changes with Apache 2.4.66
 
   *) SECURITY: CVE-2025-66200: Apache HTTP Server: mod_userdir+suexec

@@ -1,3 +1,0 @@
-  *) mod_md: update to version 2.6.9
-     - Pebble 2.9+ reports another error when terms of service agreement is
-       not set. Treating all "userActionRequired" errors as permanent now.
