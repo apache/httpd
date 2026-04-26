@@ -507,7 +507,12 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, const char **rvalue)
     status = ajp_msg_get_uint16(msg, &size);
     start = msg->pos;
 
-    if ((status != APR_SUCCESS) || (size + start > msg->max_size)) {
+    if ((status != APR_SUCCESS) || (size + start >= msg->len)) {
+        return ajp_log_overflow(msg, "ajp_msg_get_string");
+    }
+
+    /* Verify that the expected null terminator is actually present */
+    if (msg->buf[start + size] != '\0') {
         return ajp_log_overflow(msg, "ajp_msg_get_string");
     }
 
