@@ -73,7 +73,6 @@
 #include "apr_shm.h"
 #include "apr_rmm.h"
 #include "ap_provider.h"
-#include "apr_crypto.h" /* for apr_crypto_equals */
 
 #include "mod_auth.h"
 
@@ -1438,7 +1437,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
     resp->nonce[NONCE_TIME_LEN] = tmp;
     resp->nonce_time = nonce_time.time;
 
-    if (!apr_crypto_equals(hash, resp->nonce+NONCE_TIME_LEN, NONCE_HASH_LEN)) {
+    if (!ap_memeq_timingsafe(hash, resp->nonce+NONCE_TIME_LEN, NONCE_HASH_LEN)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01776)
                       "invalid nonce %s received - hash is not %s",
                       resp->nonce, hash);
@@ -1769,7 +1768,7 @@ static int authenticate_digest_user(request_rec *r)
 
     if (resp->message_qop == NULL) {
         /* old (rfc-2069) style digest */
-        if (!apr_crypto_equals(resp->digest, old_digest(r, resp), MD5_DIGEST_LEN)) {
+        if (!ap_memeq_timingsafe(old_digest(r, resp), resp->digest, MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
@@ -1804,7 +1803,7 @@ static int authenticate_digest_user(request_rec *r)
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        if (!apr_crypto_equals(resp->digest, exp_digest, MD5_DIGEST_LEN)) {
+        if (!ap_memeq_timingsafe(exp_digest, resp->digest, MD5_DIGEST_LEN)) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01794)
                           "user %s: password mismatch: %s", r->user,
                           r->uri);
