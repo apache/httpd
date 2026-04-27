@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1933066 (outdated) -->
+<!-- English Revision: 1933066 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,7 +32,7 @@
 <p>Ce document est un complément de la <a
 href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <module>mod_rewrite</module>. Il décrit les changements apportés aux règles
-lorsqu'on utilise mod_rewrite dans les fichiers .htaccess, et comment
+lorsqu'on utilise <module>mod_rewrite</module> dans les fichiers .htaccess, et comment
 travailler avec ces changements.</p>
 
 </summary>
