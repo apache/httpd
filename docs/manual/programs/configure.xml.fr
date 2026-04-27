@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873230:1933119 (outdated) -->
+<!-- English Revision: 1933119 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
   <title>configure - Configure l'arborescence des sources</title>
 
 <summary>
-    <p>Le script <code>configure</code> permet de configurer
+    <p>Le script <program>configure</program> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
     HTTP Apache sur votre plate-forme spécifique. De nombreuses options
     vous permettent de compiler un serveur correspondant à vos propres
@@ -44,7 +44,7 @@
 <seealso><a href="../install.html">Compilation et installation</a></seealso>
 
 <section id="synopsis"><title>Résumé</title>
-    <p>Vous devez appeler le script <code>configure</code> depuis le
+    <p>Vous devez appeler le script <program>configure</program> depuis le
     répertoire racine de la distribution.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
@@ -69,7 +69,7 @@
   <section id="configurationoptions"><title>Options de Configuration</title>
 
     <p>Les options suivantes affectent le comportement du script
-    <code>configure</code>.</p>
+    <program>configure</program>.</p>
 
     <dl>
       <dt><code>-C</code></dt>
@@ -89,7 +89,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>Le script <code>configure</code> s'exécute normalement, mais
+      <dd>Le script <program>configure</program> s'exécute normalement, mais
       ne crée pas les fichiers résultants. Ceci permet de vérifier les
       résultats des tests avant de générer les fichiers makefile pour la
       compilation.</dd>
@@ -102,7 +102,7 @@
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Définit le répertoire <var>DIR</var> comme répertoire des
       fichiers sources. Par défaut, c'est le répertoire où se situe le
-      script <code>configure</code>, ou le répertoire parent.</dd>
+      script <program>configure</program>, ou le répertoire parent.</dd>
 
       <dt><code>--silent</code></dt>
       <dd>Identique à <code>--quiet</code></dd>
@@ -311,7 +311,7 @@
 
       <note><title>Note</title>
         Si vous spécifiez <code>--enable-<var>foo</var></code>, et si
-	<var>foo</var> n'existe pas, <code>configure</code> ne le
+	<var>foo</var> n'existe pas, <program>configure</program> ne le
 	signalera pas ; vous devez donc prendre soin de taper les
 	options correctement.
       </note>
@@ -411,7 +411,7 @@
 	<var>fichier-module</var> sera recherché dans le sous-répertoire
 	<var>type-module</var> de l'arborescence des sources de votre
 	serveur HTTP Apache. S'il ne l'y trouve pas,
-	<code>configure</code> considèrera <var>fichier-module</var>
+	<program>configure</program> considèrera <var>fichier-module</var>
 	comme un chemin de fichier absolu et essaiera de copier le
 	fichier source dans le sous-répertoire <var>type-module</var>.
 	Si ce sous-répertoire n'existe pas, il sera créé et un fichier
@@ -545,7 +545,7 @@
 	distribution des sources de httpd et est compilée
 	automatiquement avec le serveur HTTP. Si vous voulez utiliser
 	une APR déjà installée à la place, vous devez indiquer à
-	<code>configure</code> le chemin du script
+	<program>configure</program> le chemin du script
 	<code>apr-config</code>. Vous pouvez spécifier le chemin absolu
 	et le nom ou le répertoire d'installation de l'APR.
 	<code>apr-config</code> doit se trouver dans ce répertoire ou
@@ -557,7 +557,7 @@
 	distribution des sources de httpd et sont compilés
 	automatiquement avec le serveur HTTP. Si vous voulez utiliser
 	des APU déjà installés à la place, vous devez indiquer à
-	<code>configure</code> le chemin du script
+	<program>configure</program> le chemin du script
 	<code>apu-config</code>. Vous pouvez spécifier le chemin absolu
 	et le nom ou le répertoire d'installation des APU.
 	<code>apu-config</code> doit se trouver dans ce répertoire ou
@@ -565,12 +565,12 @@
 
         <dt><code>--with-ssl=<var>REP</var></code></dt>
         <dd>Si <module>mod_ssl</module> a été activé,
-	<code>configure</code> recherche une installation d'OpenSSL.
+	<program>configure</program> recherche une installation d'OpenSSL.
 	Vous pouvez définir le répertoire de la boîte à outils SSL/TLS à
 	la place.</dd>
 
         <dt><code>--with-z=<var>REP</var></code></dt>
-        <dd><code>configure</code> recherche automatiquement une
+        <dd><program>configure</program> recherche automatiquement une
 	bibliothèque <code>zlib</code> installée si la configuration de
 	vos sources en nécessite une (par exemple lorsque
 	<module>mod_deflate</module> est activé). Vous pouvez définir le
@@ -590,10 +590,10 @@
       <dl>
         <dt><code>--with-gdbm[=<var>chemin</var>]</code></dt>
         <dd>Si aucun <var>chemin</var> n'est spécifié,
-	<code>configure</code> va rechercher les fichiers d'en-têtes et
+	<program>configure</program> va rechercher les fichiers d'en-têtes et
 	les bibliothèques d'une installation DBM GNU dans les chemins
 	standards. Avec un <var>chemin</var> explicite,
-	<code>configure</code> recherchera les fichiers concernés dans
+	<program>configure</program> recherchera les fichiers concernés dans
 	<code><var>chemin</var>/lib</code> et
 	<code><var>chemin</var>/include</code>. En fait,
 	<var>chemin</var> permet de spécifier plusieurs chemins
@@ -677,7 +677,8 @@
     </dl>
 
     <section id="suexec">
-      <title>Options de configuration de <code>suexec</code></title>
+      <title>Options de configuration de <program>suexec</program><program>
+         suexec</program></title>
       <p>Les options suivantes permettent de définir avec précision le
       comportement du programme <program>suexec</program>. Voir <a
         href="suexec.html#install">Configurer et installer suEXEC</a>
@@ -744,7 +745,7 @@
 
 <section id="env"><title>Variables d'environnement</title>
   <p>Certaines variables d'environnement permettent de modifier les
-  choix effectués par <code>configure</code>, ou d'aider ce dernier à
+  choix effectués par <program>configure</program>, ou d'aider ce dernier à
   trouver les bibliothèques et programmes possédant des noms et chemins
   non standards.</p>
 

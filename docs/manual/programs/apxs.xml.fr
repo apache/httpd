@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1494952:1933136 (outdated) -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,7 +28,7 @@
 <title>apxs - Utilitaire pour les extensions d'Apache</title>
 
 <summary>
-    <p><code>apxs</code> est un utilitaire permettant de compiler et
+    <p><program>apxs</program> est un utilitaire permettant de compiler et
     d'installer des modules en tant qu'extensions du serveur HTTP
     Apache. A cet effet, un objet dynamique partagé (DSO) est compilé à
     partir d'un ou plusieurs <var>fichiers</var> sources ou objets et
@@ -40,36 +40,40 @@
     plate-forme doit supporter la fonctionnalité DSO, et votre binaire
     <program>httpd</program> Apache doit être compilé avec le module
     <module>mod_so</module>. Si ce n'est pas le cas, l'utilitaire
-    <code>apxs</code> vous le signalera. Vous pouvez aussi vérifier
+    <program>apxs</program> vous le signalera. Vous pouvez aussi vérifier
     vous-même ces prérequis en exécutant manuellement la commande :</p>
 
     <example>
-      $ httpd -l
+<highlight language="sh">
+$ httpd -l
+</highlight>
     </example>
 
     <p>Le module <module>mod_so</module> doit faire partie de la liste
     des modules affichée. Si ces prérequis sont présents, vous pouvez
     facilement étendre les fonctionnalités de votre serveur Apache en
     installant vos propres modules à l'aide de l'utilitaire
-    <code>apxs</code>, via le mécanisme DSO :</p>
+    <program>apxs</program>, via le mécanisme DSO :</p>
 
     <example>
-      $ apxs -i -a -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/chemin/vers/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      cp mod_foo.so /chemin/vers/apache/modules/mod_foo.so<br />
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/etc/httpd.conf]<br />
-      $ apachectl restart<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd started<br />
-      $ _
+<highlight language="sh">
+$ apxs -i -a -c mod_foo.c
+gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+ld -Bshareable -o mod_foo.so mod_foo.o
+cp mod_foo.so /path/to/apache/modules/mod_foo.so
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/etc/httpd.conf]
+$ apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _
+</highlight>
     </example>
 
     <p>Les arguments <var>fichiers</var> peuvent correspondre à un
     fichier source C (.c), un fichier objet (.o) ou même une archive de
-    bibliothèques (.a). L'utilitaire <code>apxs</code> reconnaît
+    bibliothèques (.a). L'utilitaire <program>apxs</program> reconnaît
     automatiquement ces extensions et utilise automatiquement les
     fichiers source C pour la compilation, et les fichiers objets et
     archives pour l'édition de liens. Cependant, si vous utilisez des
@@ -78,7 +82,7 @@
     un objet partagé chargé dynamiquement. Avec GCC, par exemple, il
     vous suffit de toujours utiliser l'option de compilation
     <code>-fpic</code>. Pour les autres compilateurs C, consultez leur
-    page de manuel, ou vérifiez les drapeaux qu'<code>apxs</code>
+    page de manuel, ou vérifiez les drapeaux qu'<program>apxs</program>
     utilise pour compiler les fichiers objets.</p>
 
     <p>Pour plus de détails à propos du support DSO dans Apache, lire la
@@ -133,7 +137,7 @@
       modèles). Utilisez cette option pour spécifier de manière
       explicite le nom du module. Pour l'option <code>-g</code>, cette
       option est nécessaire ; pour l'option <code>-i</code>,
-      l'utilitaire <code>apxs</code> tente de déterminer le nom du
+      l'utilitaire <program>apxs</program> tente de déterminer le nom du
       module à partir des sources, ou (à défaut) en le déduisant du nom
       de fichier.</dd>
       </dl>
@@ -153,7 +157,9 @@
       utilisées pour compiler le binaire <code>httpd</code> qui chargera
       votre module. Ajoutez par exemple</p>
       <example>
-        INC=-I`apxs -q INCLUDEDIR`
+<highlight language="sh">
+INC=-I`apxs -q INCLUDEDIR`
+</highlight>
       </example>
 
       <p>dans vos propres Makefiles si vous devez accéder manuellement
@@ -284,35 +290,41 @@
     Apache à l'exécution, via la commande suivante :</p>
 
     <example>
-      $ apxs -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      $ _
+<highlight language="sh">
+$ apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+$ _
+</highlight>
     </example>
 
     <p>Vous devez ensuite vérifier la configuration d'Apache en vous
     assurant qu'une directive <directive
     module="mod_so">LoadModule</directive> est bien présente pour
     charger cet objet partagé. Pour simplifier cette étape,
-    <code>apxs</code> propose une méthode automatique d'installation de
+    <program>apxs</program> propose une méthode automatique d'installation de
     l'objet partagé dans son répertoire "modules", et de mise à jour du
     fichier <code>httpd.conf</code> en conséquence. Pour bénéficier de
     cette automatisation, utilisez la commande suivante :</p>
 
     <example>
-      $ apxs -i -a mod_foo.la<br />
-      /chemin/vers/instdso.sh mod_foo.la /chemin/vers/apache/modules<br />
-      /chemin/vers/libtool --mode=install cp mod_foo.la /chemin/vers/apache/modules
-      ...
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/conf/httpd.conf]<br />
-      $ _
+<highlight language="sh">
+$ apxs -i -a mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+$ _
+</highlight>
     </example>
 
     <p>Une ligne contenant</p>
 
     <example>
-      LoadModule foo_module modules/mod_foo.so
+<highlight language="config">
+LoadModule foo_module modules/mod_foo.so
+</highlight>
     </example>
 
     <p>est alors ajoutée au fichier de configuration si ce n'est pas
@@ -320,7 +332,9 @@
     utilisez l'option <code>-A</code> comme suit :</p>
 
     <example>
-      $ apxs -i -A mod_foo.c
+<highlight language="sh">
+$ apxs -i -A mod_foo.c
+</highlight>
     </example>
 
     <p>Pour un test rapide du mécanisme apxs, vous pouvez créer un
@@ -328,35 +342,39 @@
     correspondant via :</p>
 
     <example>
-      $ apxs -g -n foo<br />
-      Creating [DIR]  foo<br />
-      Creating [FILE] foo/Makefile<br />
-      Creating [FILE] foo/modules.mk<br />
-      Creating [FILE] foo/mod_foo.c<br />
-      Creating [FILE] foo/.deps<br />
-      $ _
+<highlight language="sh">
+$ apxs -g -n foo
+Creating [DIR]  foo
+Creating [FILE] foo/Makefile
+Creating [FILE] foo/modules.mk
+Creating [FILE] foo/mod_foo.c
+Creating [FILE] foo/.deps
+$ _
+</highlight>
     </example>
 
     <p>Vous pouvez ensuite compiler immédiatement ce module exemple en
     objet partagé et le charger dans le serveur Apache :</p>
 
     <example>
-      $ cd foo<br />
-      $ make all reload<br />
-      apxs -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      apxs -i -a -n "foo" mod_foo.la<br />
-      /chemin/vers/instdso.sh mod_foo.la /chemin/vers/apache/modules<br />
-      /chemin/vers/libtool --mode=install cp mod_foo.la /chemin/vers/apache/modules
-      ...
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/conf/httpd.conf]<br />
-      apachectl restart<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd started<br />
-      $ _
+<highlight language="sh">
+$ cd foo
+$ make all reload
+apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+apxs -i -a -n "foo" mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _
+</highlight>
     </example>
 
 </section>

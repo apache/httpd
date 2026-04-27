@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1174747:1933136 (outdated) -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,7 +30,7 @@
   fichiers journaux d'Apache</title>
 
 <summary>
-     <p><code>logresolve</code> est un programme agissant après
+     <p><program>logresolve</program> est un programme agissant après
      traitement pour résoudre les adresses IP dans les journaux d'accès
      d'Apache. Pour minimiser la charge de votre serveur de noms,
      logresolve possède son propre cache interne sous forme d'une table
@@ -62,9 +62,9 @@ statistiques.</dd>
 
 <dt><code>-c</code></dt>
 
-<dd>Avec cette option, <code>logresolve</code> effectue certaines
+<dd>Avec cette option, <program>logresolve</program> effectue certaines
 vérifications DNS : après avoir trouvé le nom d'hôte correspondant à une
-adresse IP, <code>logresolve</code> effectue une recherche DNS sur ce
+adresse IP, <program>logresolve</program> effectue une recherche DNS sur ce
 nom d'hôte et vérifie si une des adresses IP trouvées correspond à
 l'adresse originale.</dd>
 
