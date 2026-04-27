@@ -96,12 +96,12 @@ jobs:
               CLEAR_CACHE=1
           # -------------------------------------------------------------------------
           # Oldest supported APR/APR-util branches:
-          - name: APR 1.4.8, APR-util 1.3.12
+          - name: APR 1.4.8, APR-util 1.6.3
             config: --enable-mods-shared=reallyall
             env: |
               TEST_APR_TARBALL=yes
               APR_VERSION=1.4.8
-              APU_VERSION=1.3.12
+              APU_VERSION=1.6.3
               APU_CONFIG="--with-crypto --with-ldap"
           # -------------------------------------------------------------------------
           - name: Pool-debug
