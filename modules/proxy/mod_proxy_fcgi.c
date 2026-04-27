@@ -18,6 +18,7 @@
 #include "util_fcgi.h"
 #include "util_script.h"
 #include "ap_expr.h"
+#include "util_varbuf.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
@@ -593,6 +594,7 @@ static int handle_headers(request_rec *r, int *state,
     return 0;
 }
 
+
 static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
                              request_rec *r, apr_pool_t *setaside_pool,
                              apr_uint16_t request_id, const char **err,
@@ -614,6 +616,9 @@ static apr_status_t dispatch(proxy_conn_rec *conn, proxy_dir_conf *conf,
     char stack_iobuf[AP_IOBUFSIZE];
     apr_size_t iobuf_size = AP_IOBUFSIZE;
     char *iobuf = stack_iobuf;
+        /* Create our dynamic header buffer for large headers */
+    ap_varbuf *header_vb = NULL;
+    ap_varbuf_make(&header_vb, r->pool, 1024);
 
     *err = NULL;
     if (conn->worker->s->io_buffer_size_set) {
@@ -823,61 +828,78 @@ recv_again:
                     APR_BRIGADE_INSERT_TAIL(ob, b);
 
                     if (! seen_end_of_headers) {
-                        int st = handle_headers(r, &header_state,
-                                                iobuf, readbuflen);
-
-                        if (st == 1) {
-                            int status;
+                        /* Try our dynamic header buffer approach first */
+                        ap_varbuf_strncat(header_vb, iobuf, readbuflen);
+                        if (strstr(header_vb->buf, "\r\n\r\n") != NULL) {
+                            while (header_vb->strlen > 0 &&
+                                   isspace((unsigned char)header_vb->buf[0])) {
+                                memmove(header_vb->buf, header_vb->buf + 1, header_vb->strlen - 1);
+                                header_vb->strlen--;
+                                header_vb->buf[header_vb->strlen] = '\0';
+                            }
                             seen_end_of_headers = 1;
-
-                            status = ap_scan_script_header_err_brigade_ex(r, ob,
-                                NULL, APLOG_MODULE_INDEX);
-
-                            /* FCGI has its own body framing mechanism which we don't
-                             * match against any provided Content-Length, so let the
-                             * core determine C-L vs T-E based on what's actually sent.
-                             */
-                            if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
-                                apr_table_unset(r->headers_out, "Content-Length");
-                            apr_table_unset(r->headers_out, "Transfer-Encoding");
-
-                            /* suck in all the rest */
-                            if (status != OK) {
-                                apr_bucket *tmp_b;
-                                apr_brigade_cleanup(ob);
-                                tmp_b = apr_bucket_eos_create(c->bucket_alloc);
-                                APR_BRIGADE_INSERT_TAIL(ob, tmp_b);
-
-                                *has_responded = 1;
-                                r->status = status;
-                                rv = ap_pass_brigade(r->output_filters, ob);
-                                if (rv != APR_SUCCESS) {
-                                    *err = "passing headers brigade to output filters";
-                                    break;
-                                }
-                                else if (status == HTTP_NOT_MODIFIED
-                                         || status == HTTP_PRECONDITION_FAILED) {
-                                    /* Special 'status' cases handled:
-                                     * 1) HTTP 304 response MUST NOT contain
-                                     *    a message-body, ignore it.
-                                     * 2) HTTP 412 response.
-                                     * The break is not added since there might
-                                     * be more bytes to read from the FCGI
-                                     * connection. Even if the message-body is
-                                     * ignored (and the EOS bucket has already
-                                     * been sent) we want to avoid subsequent
-                                     * bogus reads. */
-                                    ignore_body = 1;
-                                }
-                                else {
-                                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
-                                                    "Error parsing script headers");
-                                    rv = APR_EINVAL;
-                                    break;
+                            {
+                                int status_hdr;
+                                apr_bucket_brigade *tmp_bb = apr_brigade_create(r->pool, c->bucket_alloc);
+                                apr_bucket *hdr_bucket = apr_bucket_heap_create(header_vb->buf,
+                                                            header_vb->strlen, NULL, c->bucket_alloc);
+                                APR_BRIGADE_INSERT_TAIL(tmp_bb, hdr_bucket);
+                                hdr_bucket = apr_bucket_eos_create(c->bucket_alloc);
+                                APR_BRIGADE_INSERT_TAIL(tmp_bb, hdr_bucket);
+                                status_hdr = ap_scan_script_header_err_brigade_ex(r, tmp_bb,
+                                                              NULL, APLOG_MODULE_INDEX);
+                                apr_brigade_cleanup(tmp_bb);
+                                if (status_hdr != OK) {
+                                    *has_responded = 1;
+                                    return APR_EGENERAL;
                                 }
                             }
-
-                            if (ap_proxy_should_override(conf, r->status) && ap_is_initial_req(r)) {
+                            {
+                                char *hdr_end = strstr(header_vb->buf, "\r\n\r\n") + 4;
+                                apr_size_t hdr_total = header_vb->strlen;
+                                apr_size_t remaining = hdr_total - (hdr_end - header_vb->buf);
+                                if (remaining > 0) {
+                                    apr_bucket *rem_bucket = apr_bucket_heap_create(hdr_end,
+                                                                                     remaining, NULL, c->bucket_alloc);
+                                    APR_BRIGADE_INSERT_TAIL(ob, rem_bucket);
+                                }
+                            }
+                        }
+                        else {
+                            int st = handle_headers(r, &header_state,
+                                                    iobuf, readbuflen);
+                            if (st == 1) {
+                                int status;
+                                seen_end_of_headers = 1;
+                                status = ap_scan_script_header_err_brigade_ex(r, ob,
+                                    NULL, APLOG_MODULE_INDEX);
+                                if (!apr_table_get(r->subprocess_env, AP_TRUST_CGILIKE_CL_ENVVAR))
+                                    apr_table_unset(r->headers_out, "Content-Length");
+                                apr_table_unset(r->headers_out, "Transfer-Encoding");
+                                if (status != OK) {
+                                    apr_bucket *tmp_b;
+                                    apr_brigade_cleanup(ob);
+                                    tmp_b = apr_bucket_eos_create(c->bucket_alloc);
+                                    APR_BRIGADE_INSERT_TAIL(ob, tmp_b);
+                                    *has_responded = 1;
+                                    r->status = status;
+                                    rv = ap_pass_brigade(r->output_filters, ob);
+                                    if (rv != APR_SUCCESS) {
+                                        *err = "passing headers brigade to output filters";
+                                        break;
+                                    }
+                                    else if (status == HTTP_NOT_MODIFIED
+                                             || status == HTTP_PRECONDITION_FAILED) {
+                                        ignore_body = 1;
+                                    }
+                                    else {
+                                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01070)
+                                                    "Error parsing script headers");
+                                        rv = APR_EINVAL;
+                                        break;
+                                    }
+                                }
+                                if (ap_proxy_should_override(conf, r->status) && ap_is_initial_req(r)) {
                                 /*
                                  * set script_error_status to discard
                                  * everything after the headers
@@ -912,6 +934,7 @@ recv_again:
                              * headers, so this part of the data will need
                              * to persist. */
                             apr_bucket_setaside(b, setaside_pool);
+                            }
                         }
                     } else {
                         /* we've already passed along the headers, so now pass

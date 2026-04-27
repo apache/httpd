@@ -36,6 +36,9 @@
 
 #include "httpd.h"
 
+#include "apr_pools.h"
+#include "apr_errno.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -65,6 +68,8 @@ struct ap_varbuf {
     /** Opaque info for memory allocation. */
     struct ap_varbuf_info *info;
 };
+
+ typedef struct ap_varbuf ap_varbuf;
 
 /**
  * Initialize a resizable buffer. It is safe to re-initialize a previously
@@ -188,6 +193,35 @@ AP_DECLARE(apr_status_t) ap_varbuf_regsub(struct ap_varbuf *vb,
 AP_DECLARE(apr_status_t) ap_varbuf_cfg_getline(struct ap_varbuf *vb,
                                                ap_configfile_t *cfp,
                                                apr_size_t max_len);
+
+/**
+ * @brief Allocate and initialize a new dynamic variable buffer.
+ *
+ * This function creates a new ap_varbuf structure, allocates an initial buffer
+ * of the specified size from the given APR pool, and initializes its members.
+ *
+ * @param vb Pointer to the pointer that will be set to the new ap_varbuf.
+ * @param p The APR memory pool from which to allocate the buffer.
+ * @param initial_size The initial size in bytes for the buffer.
+ * @return APR_SUCCESS on success.
+ */
+AP_DECLARE(apr_status_t) ap_varbuf_make(ap_varbuf **vb, apr_pool_t *p, apr_size_t initial_size);
+
+/**
+ * @brief Append a specified number of characters to a dynamic variable buffer.
+ *
+ * This function appends up to @c len characters from the string @c str to the
+ * dynamic buffer represented by @c vb. If the buffer is not large enough to hold
+ * the additional characters plus a null terminator, the function reallocates the
+ * buffer with a larger size. The buffer is always null-terminated after the operation.
+ *
+ * @param vb The dynamic variable buffer.
+ * @param str The string containing the characters to append.
+ * @param len The number of characters from @c str to append.
+ * @return APR_SUCCESS on success.
+ */
+AP_DECLARE(apr_status_t) ap_varbuf_strncat(ap_varbuf *vb, const char *str, apr_size_t len);
+
 
 #ifdef __cplusplus
 }
