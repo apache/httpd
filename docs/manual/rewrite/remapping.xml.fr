@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932321:1933068 (outdated) -->
+<!-- English Revision: 1933068 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,7 +34,7 @@ href="../mod/mod_rewrite.html">Documentation de référence</a> de
 <module>mod_rewrite</module>. Il montre comment utiliser
 <module>mod_rewrite</module> pour rediriger et remettre en
 correspondance une requête. Il contient de
-nombreux exemples d'utilisation courante de mod_rewrite avec une
+nombreux exemples d'utilisation courante de <module>mod_rewrite</module> avec une
 description détaillée de leur fonctionnement.</p>
 
 <note type="warning">Vous devez vous attacher à comprendre le
@@ -119,7 +119,7 @@ RewriteRule    "^<strong>foo</strong>\.html$"  "<strong>bar</strong>.html"  [<st
 
     <dd>
     <p>Dans l'exemple <a
-    href="#old-to-new-intern">interne</a>, on a utilisé mod_rewrite afin
+    href="#old-to-new-intern">interne</a>, on a utilisé <module>mod_rewrite</module> afin
     de dissimuler la redirection au client. Dans cet exemple, en
     revanche, on aurait pu se contenter d'une directive Redirect :</p>
 
@@ -248,8 +248,8 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
     <dt>Discussion</dt>
     <dd>
     <p>Cet exemple utilise une fonctionnalité souvent méconnue de
-    mod_rewrite, en tirant avantage de l'ordre d'exécution du jeu de
-    règles. En particulier, mod_rewrite évalue la partie gauche des
+    <module>mod_rewrite</module>, en tirant avantage de l'ordre d'exécution du jeu de
+    règles. En particulier, <module>mod_rewrite</module> évalue la partie gauche des
     règles de réécriture avant d'évaluer les directives RewriteCond. En
     conséquence, $1 est déjà défini au moment où les directives
     RewriteCond sont évaluées. Ceci nous permet de tester l'existence du
@@ -286,7 +286,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 
         <dd>
 
-<p>Pour y parvenir, il vaut mieux se passer de mod_rewrite, et utiliser
+<p>Pour y parvenir, il vaut mieux se passer de <module>mod_rewrite</module>, et utiliser
 plutôt la directive <directive module="mod_alias">Redirect</directive> dans
 une section de serveur virtuel pour le/les noms d'hôte non canoniques.</p>
 
@@ -322,7 +322,7 @@ type="section">If</directive> (versions 2.4 et ultérieures) :</p>
 </highlight>
 
 <p>Si, pour une raison particulière, vous voulez tout de même utiliser
-<code>mod_rewrite</code> - dans le cas, par exemple, où vous avez besoin
+<module>mod_rewrite</module> - dans le cas, par exemple, où vous avez besoin
 d'un jeu plus important de règles de réécritures - vous pouvez utiliser
 la recette suivante :</p>
 

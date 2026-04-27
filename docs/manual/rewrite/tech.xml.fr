@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1933069 (outdated) -->
+<!-- English Revision: 1933069 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,7 +29,7 @@
 
 <summary>
 <p>Ce document passe en revue certains d&eacute;tails techniques &agrave; propos du
-module mod_rewrite et de la mise en correspondance des URLs</p>
+module <module>mod_rewrite</module> et de la mise en correspondance des URLs</p>
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
 <seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
@@ -52,7 +52,7 @@ correspondance</a></seealso>
       authentification, autorisation, gestion de contenu ou journalisation (la
       liste n'est pas exhaustive).</p>
 
-    <p>mod_rewrite agit dans deux de ces phases (ou accroches - hooks -
+    <p><module>mod_rewrite</module> agit dans deux de ces phases (ou accroches - hooks -
     comme on les nomme souvent) pour la r&eacute;&eacute;criture des URLs.</p>
 
     <p>Tout d'abord, il utilise le hook traduction URL vers nom de
@@ -78,7 +78,7 @@ correspondance</a></seealso>
     type="section">Directory</directive>) sont appliqu&eacute;es. Ce processus
     s'ex&eacute;cute au cours de la phase Fixup.</p>
 
-    <p>Dans tous ces cas, mod_rewrite r&eacute;&eacute;crit le
+    <p>Dans tous ces cas, <module>mod_rewrite</module> r&eacute;&eacute;crit le
     <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
     nom de fichier.</p>
 
@@ -86,7 +86,7 @@ correspondance</a></seealso>
     fichiers <code>.htaccess</code> et les sections
     <code>Directory</code>), les r&egrave;gles de r&eacute;&eacute;criture s'appliquent apr&egrave;s
     la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
-    URL auquel mod_rewrite compare initialement les directives
+    URL auquel <module>mod_rewrite</module> compare initialement les directives
     <directive  module="mod_rewrite">RewriteRule</directive> est le
     chemin complet vers le nom de fichier traduit amput&eacute; de la partie
     r&eacute;pertoires (y compris le dernier slash).</p>
@@ -140,7 +140,7 @@ correspondance</a></seealso>
 
     </table>
 
-    <p>Pour une &eacute;tude plus approfondie de la mani&egrave;re dont mod_rewrite
+    <p>Pour une &eacute;tude plus approfondie de la mani&egrave;re dont <module>mod_rewrite</module>
     manipule les URLs dans les diff&eacute;rents contextes, vous pouvez
     consulter les <a href="../mod/mod_rewrite.html#logging">entr&eacute;es du
     journal</a> g&eacute;n&eacute;r&eacute;es au cours du processus de r&eacute;&eacute;criture.</p>
@@ -149,7 +149,7 @@ correspondance</a></seealso>
 
 <section id="InternalRuleset"><title>Traitement du jeu de r&egrave;gles</title>
 
-      <p>Maintenant, quand mod_rewrite se lance dans ces deux phases de
+      <p>Maintenant, quand <module>mod_rewrite</module> se lance dans ces deux phases de
       l'API, il lit le jeu de r&egrave;gles configur&eacute;es depuis la structure
       contenant sa configuration (qui a &eacute;t&eacute; elle-m&ecirc;me cr&eacute;&eacute;e soit au
       d&eacute;marrage d'Apache pour le contexte du serveur, soit lors du
@@ -180,15 +180,15 @@ correspondance</a></seealso>
 </p>
       <p>L'URL est tout d'abord compar&eacute;e au
       <em>Mod&egrave;le</em> de chaque r&egrave;gle. Lorsqu'une r&egrave;gle ne s'applique
-      pas, mod_rewrite stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
+      pas, <module>mod_rewrite</module> stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
       et passe &agrave; la r&egrave;gle suivante. Si l'URL correspond au
-      <em>Mod&egrave;le</em>, mod_rewrite recherche la pr&eacute;sence de conditions
+      <em>Mod&egrave;le</em>, <module>mod_rewrite</module> recherche la pr&eacute;sence de conditions
       correspondantes (les directives Rewritecond apparaissant dans la
       configuration juste
-      avant les r&egrave;gles de r&eacute;&eacute;criture). S'il n'y en a pas, mod_rewrite remplace
+      avant les r&egrave;gles de r&eacute;&eacute;criture). S'il n'y en a pas, <module>mod_rewrite</module> remplace
       l'URL par une cha&icirc;ne &eacute;labor&eacute;e &agrave; partir de la cha&icirc;ne de
       <em>Substitution</em>, puis passe &agrave; la r&egrave;gle suivante. Si des
-      conditions sont pr&eacute;sentes, mod_rewrite lance un bouclage
+      conditions sont pr&eacute;sentes, <module>mod_rewrite</module> lance un bouclage
       secondaire afin de les traiter selon l'ordre dans lequel elles
       sont d&eacute;finies. La logique de traitement des conditions est
       diff&eacute;rente : on ne compare pas l'URL &agrave; un mod&egrave;le. Une cha&icirc;ne de
