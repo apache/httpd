@@ -295,19 +295,27 @@
 
   <title>Dynamic content security</title>
 
-  <p>When setting up dynamic content, such as <code>mod_php</code>,
-  <code>mod_perl</code> or <code>mod_python</code>, many security considerations
-  get out of the scope of <code>httpd</code> itself, and you need to consult
-  documentation from those modules. For example, PHP lets you setup <a
-  href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
-  which is most usually disabled by default. Another example is <a
-  href="http://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
-  security. For more information about those, consult each project
-  documentation.</p>
+  <p>When you use dynamic content frameworks — whether through
+  <code>mod_php</code>, <code>mod_perl</code>, <code>mod_python</code>,
+  or any other embedded or external content generator — security
+  responsibilities extend beyond httpd itself. Each framework has its
+  own security model, configuration options, and hardening guides.
+  Consult the documentation for whatever technology you use to generate
+  dynamic content, and keep it up to date.</p>
 
-  <p>At the Apache level, a module named <a href="http://modsecurity.org/">mod_security</a>
-  can be seen as a HTTP firewall and, provided you configure it finely enough,
-  can help you enhance your dynamic content security.</p>
+  <p>General principles apply regardless of framework:</p>
+  <ul>
+  <li>Minimize the privileges available to your scripts and applications.</li>
+  <li>Validate and sanitize all user input.</li>
+  <li>Keep your content framework and its dependencies patched and current.</li>
+  <li>Review the framework's security configuration — defaults are not
+  always secure.</li>
+  </ul>
+
+  <p>At the Apache level, a web application firewall such as
+  <a href="https://modsecurity.org/">ModSecurity</a> can provide an
+  additional layer of defense by inspecting and filtering HTTP traffic
+  before it reaches your application.</p>
 
   </section>
 
