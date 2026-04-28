@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Uso de mod_rewrite para control de acceso - Servidor HTTP Apache Versión 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Uso de mod_rewrite para control de acceso</h1>
+<div class="toplang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/access.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/access.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/access.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/access.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/access.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/access.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+<p>Este documento complementa la <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">documentación de referencia</a>. Describe
+cómo puede usar <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> para controlar el acceso a
+varios recursos, y otras técnicas relacionadas.
+Esto incluye muchos ejemplos de usos comunes de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+incluyendo descripciones detalladas de cómo funciona cada uno.</p>
+
+<div class="warning">Tenga en cuenta que muchos de estos ejemplos no funcionarán sin cambios en su
+configuración particular del servidor, por lo que es importante que los
+entienda, en lugar de simplemente copiar y pegar los ejemplos en su
+configuración.</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Prohibir el "Hotlinking" de imágenes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Bloqueo de Robots</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denegación de Hosts en una Lista de Rechazo</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Deflector basado en Referer</a></li>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentación del módulo</a></li><li><a href="intro.html">Introducción a mod_rewrite</a></li><li><a href="remapping.html">Redirección y remapeo</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="proxy.html">Proxy</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">Técnicas avanzadas</a></li><li><a href="avoid.html">Cuándo no usar mod_rewrite</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocked-inline-images" id="blocked-inline-images">Prohibir el "Hotlinking" de imágenes</a> <a title="Enlace permanente" href="#blocked-inline-images" class="permalink">&para;</a></h2>
+
+      
+
+      <dl>
+        <dt>Descripción:</dt>
+
+        <dd>
+          <p>La siguiente técnica prohíbe la práctica de que otros sitios
+          incluyan sus imágenes en línea en sus páginas. Esta práctica se
+          conoce a menudo como "hotlinking", y resulta en que
+          su ancho de banda se use para servir contenido del sitio de
+          otra persona.</p>
+        </dd>
+
+        <dt>Solución:</dt>
+
+        <dd>
+          <p>Esta técnica se basa en el valor de la
+          variable <code>HTTP_REFERER</code>, que es opcional. Como
+          tal, es posible que algunas personas eviten esta
+          limitación. Sin embargo, la mayoría de los usuarios experimentarán la
+          solicitud fallida, lo que debería, con el tiempo, resultar en que la
+          imagen sea eliminada del otro sitio.</p>
+          <p>Hay varias formas en las que puede manejar esta
+          situación.</p>
+
+    <p>En este primer ejemplo, simplemente denegamos la solicitud, si no se
+    originó desde una página en nuestro sitio. Para el propósito de este ejemplo,
+    asumimos que nuestro sitio es <code>www.example.com</code>.</p>
+
+
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "-"                [F,NC]</pre>
+
+
+    <p>En este segundo ejemplo, en lugar de denegar la solicitud, mostramos
+    una imagen alternativa en su lugar.</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"      [NC]
+RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]</pre>
+
+
+    <p>En el tercer ejemplo, redirigimos la solicitud a una imagen en algún
+    otro sitio.</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"                    [NC]
+RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"  [R,NC]</pre>
+
+
+    <p>De estas técnicas, las dos últimas tienden a ser las más efectivas
+    para lograr que la gente deje de hacer hotlinking de sus imágenes, porque
+    simplemente no verán la imagen que esperaban ver.</p>
+
+        </dd>
+
+        <dt>Discusión:</dt>
+
+        <dd>
+        <p>Si todo lo que desea hacer es denegar el acceso al recurso, en lugar
+        de redirigir esa solicitud a otro lugar, esto se puede
+        lograr sin el uso de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
+
+        <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
+    Require env localreferer
+&lt;/FilesMatch&gt;</pre>
+
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocking-of-robots" id="blocking-of-robots">Bloqueo de Robots</a> <a title="Enlace permanente" href="#blocking-of-robots" class="permalink">&para;</a></h2>
+
+      
+
+      <dl>
+        <dt>Descripción:</dt>
+
+        <dd>
+        <p>
+        En esta receta, discutimos cómo bloquear solicitudes persistentes de
+        un robot o agente de usuario en particular.</p>
+
+        <p>El estándar para exclusión de robots define un archivo,
+        <code>/robots.txt</code> que especifica aquellas partes de su
+        sitio web donde desea excluir robots. Sin embargo, algunos robots
+        no respetan estos archivos.
+        </p>
+
+        <p>Tenga en cuenta que hay métodos para lograr esto que no
+        usan <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Tenga en cuenta también que cualquier técnica que dependa
+        de la cadena <code>USER_AGENT</code> del cliente puede ser evitada
+        muy fácilmente, ya que esa cadena puede cambiarse.</p>
+        </dd>
+
+        <dt>Solución:</dt>
+
+        <dd>
+        <p>Usamos un conjunto de reglas que especifica el directorio a ser
+        protegido, y el <code>USER_AGENT</code> del cliente que
+        identifica al robot malicioso o persistente.</p>
+
+        <p>En este ejemplo, estamos bloqueando un robot llamado
+        <code>NameOfBadRobot</code> de una ubicación
+        <code>/secret/files</code>. También puede especificar un rango de
+        direcciones IP, si está intentando bloquear ese agente de usuario solo desde
+        la fuente particular.</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"      "-"                   [F]</pre>
+
+        </dd>
+
+      <dt>Discusión:</dt>
+
+      <dd>
+      <p>
+        En lugar de usar <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> para esto, puede lograr el
+        mismo resultado usando medios alternativos, como se ilustra aquí:
+      </p>
+      <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location "/secret/files"&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
+&lt;/Location&gt;</pre>
+
+      <p>
+      Como se indicó anteriormente, esta técnica es trivial de evadir, simplemente
+      modificando la cabecera de solicitud <code>USER_AGENT</code>. Si
+      está experimentando un ataque sostenido, debería considerar bloquearlo
+      a un nivel superior, como en su firewall.
+      </p>
+
+      </dd>
+
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="host-deny" id="host-deny">Denegación de Hosts en una Lista de Rechazo</a> <a title="Enlace permanente" href="#host-deny" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Descripción:</dt>
+
+    <dd>
+      <p>Deseamos mantener una lista de hosts, similar a
+      <code>hosts.deny</code>, y hacer que esos hosts sean bloqueados
+      del acceso a nuestro servidor.</p>
+    </dd>
+
+    <dt>Solución:</dt>
+
+    <dd>
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"                                      "-"           [F]</pre>
+
+
+<div class="example"><p><code>
+##<br />
+##  hosts.deny<br />
+##<br />
+##  ¡ATENCIÓN! Esto es un mapa, no una lista, incluso cuando lo tratamos como tal.<br />
+##             mod_rewrite lo analiza buscando pares clave/valor, así que al menos un<br />
+##             valor ficticio "-" debe estar presente para cada entrada.<br />
+##<br />
+<br />
+193.102.180.41 -<br />
+bsdti1.sdm.de  -<br />
+192.76.162.40  -<br />
+</code></p></div>
+    </dd>
+
+    <dt>Discusión:</dt>
+    <dd>
+    <p>
+    La segunda RewriteCond asume que tiene HostNameLookups activado,
+    de modo que las direcciones IP de los clientes sean resueltas. Si ese no es el
+    caso, debería eliminar la segunda RewriteCond, y eliminar la
+    bandera <code>[OR]</code> de la primera RewriteCond.
+    </p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="referer-deflector" id="referer-deflector">Deflector basado en Referer</a> <a title="Enlace permanente" href="#referer-deflector" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Descripción:</dt>
+
+    <dd>
+      <p>Redirigir solicitudes basadas en el Referer del cual provino la solicitud,
+      con diferentes destinos por Referer.</p>
+    </dd>
+
+    <dt>Solución:</dt>
+
+    <dd>
+  <p>El siguiente conjunto de reglas usa un archivo de mapa para asociar cada Referer
+  con un destino de redirección.</p>
+
+<pre class="prettyprint lang-config">RewriteMap  deflector "txt:/path/to/deflector.map"
+
+RewriteCond "%{HTTP_REFERER}"              !=""
+RewriteCond "${deflector:%{HTTP_REFERER}}" =-
+RewriteRule "^"                            "%{HTTP_REFERER}" [R,L]
+
+RewriteCond "%{HTTP_REFERER}"              !=""
+RewriteCond "${deflector:%{HTTP_REFERER}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule "^"                            "${deflector:%{HTTP_REFERER}}" [R,L]</pre>
+
+
+      <p>El archivo de mapa lista los destinos de redirección para cada referer, o, si
+      simplemente deseamos redirigir de vuelta a donde vinieron, se coloca un "-"
+      en el mapa:</p>
+
+<pre class="prettyprint lang-config">##
+##  deflector.map
+##
+
+http://badguys.example.com/bad/index.html    -
+http://badguys.example.com/bad/index2.html   -
+http://badguys.example.com/bad/index3.html   http://somewhere.example.com/</pre>
+
+
+    </dd>
+  </dl>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/access.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/access.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/access.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/access.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/access.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/access.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/access.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

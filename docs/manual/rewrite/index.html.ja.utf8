@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache mod_rewrite - Apache HTTP サーバ バージョン 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は、<a href="intro.html#regex">正規表現</a>
+    ルールに基づいて受信 URL リクエストを動的に変更する方法を提供します。
+    これにより、任意の URL を内部 URL 構造に自由にマッピングできます。</p>
+
+      <p>各ルールに対して無制限の数のルールと無制限の数の
+      付随するルール条件をサポートしており、非常に柔軟で強力な URL 操作
+      メカニズムを提供します。URL 操作はさまざまなテストに依存できます:
+      サーバ変数、環境変数、HTTP ヘッダ、タイムスタンプ、外部データベース
+      検索、およびさまざまな他の外部プログラムやハンドラを使用して、
+      きめ細かい URL マッチングを実現できます。</p>
+
+      <p>書き換えルールは、完全な URL (パス情報とクエリ文字列部分を含む)
+      に対して動作でき、サーバ単位のコンテキスト
+      (<code>httpd.conf</code>)、バーチャルホスト単位のコンテキスト
+      (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> ブロック)、
+      またはディレクトリ単位のコンテキスト (<code>.htaccess</code> ファイルと
+      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ブロック)
+      で使用できます。書き換えの結果は、ルールに付加する
+      <a href="flags.html">フラグ</a>に応じて、さらなるルール処理、
+      内部サブ処理、外部リクエストリダイレクト、またはプロキシ
+      パススルーにつながります。</p>
+
+      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は非常に強力であるため、かなり
+      複雑になり得ます。このドキュメントは
+      <a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を
+      補足し、その複雑さを軽減し、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> で扱う可能性のある
+      一般的なシナリオの詳細な注釈付きの例を提供することを試みます。
+      しかし同時に、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> を使用すべきでない場合や、
+      代わりに他の標準的な Apache 機能を使用して不要な複雑さを避けるべき場合も
+      示そうとしています。</p>
+
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite リファレンスドキュメント</a></li>
+<li><a href="intro.html">正規表現と mod_rewrite の紹介</a></li>
+<li><a href="flags.html">RewriteRule フラグ</a></li>
+<li><a href="rewritemap.html">RewriteMap の使用</a></li>
+<li><a href="avoid.html">mod_rewrite を使う<strong>べきでない</strong>場合</a></li>
+<li><a href="remapping.html">mod_rewrite を使った URL のリダイレクトとリマッピング</a></li>
+<li><a href="access.html">mod_rewrite を使ったアクセス制御</a></li>
+<li><a href="vhosts.html">mod_rewrite を使った動的バーチャルホスト</a></li>
+<li><a href="proxy.html">mod_rewrite を使った動的プロキシ</a></li>
+<li><a href="advanced.html">高度なテクニック</a></li>
+<li><a href="tech.html">技術的詳細</a></li>
+</ul>
+</div>
+<div id="quickview"><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite リファレンスドキュメント</a></li><li><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
+wiki</a></li><li><a href="../glossary.html">用語集</a></li></ul></div>
+</div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

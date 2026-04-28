@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_rewrite を使った動的な大量バーチャルホスト - Apache HTTP サーバ バージョン 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite を使った動的な大量バーチャルホスト</h1>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/vhosts.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/vhosts.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+<p>このドキュメントは <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> を使用して動的に設定されるバーチャルホストを
+作成する方法を説明します。</p>
+
+<div class="warning"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は通常、バーチャルホストを
+設定する最良の方法ではありません。mod_rewrite に頼る前に、まず
+<a href="../vhosts/mass.html">代替手段</a>を検討してください。
+「<a href="avoid.html#vhosts">mod_rewrite を避ける方法</a>」ドキュメントも
+参照してください。</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#per-hostname">任意のホスト名に対するバーチャルホスト</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    を使った動的バーチャルホスト</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">個別のバーチャルホスト設定ファイルの使用</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="per-hostname" id="per-hostname">任意のホスト名に対するバーチャルホスト</a> <a title="Permanent link" href="#per-hostname" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+    <p>ドメイン内で解決されるすべてのホスト名に対して、新しい
+    VirtualHost セクションを作成することなく、自動的にバーチャルホストを
+    作成したいとします。</p>
+
+    <p>このレシピでは、各ユーザに対してホスト名
+    <code><strong>SITE</strong>.example.com</code> を使用し、
+    コンテンツを <code>/home/<strong>SITE</strong>/www</code> から
+    提供すると仮定しています。ただし、<code>www.example.com</code> は
+    このマッピングから除外したいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1</pre>
+</dd>
+
+<dt>議論</dt>
+    <dd>
+
+    <div class="warning">DNS 解決に注意する必要があります - Apache は
+    名前解決を処理しません。各ホスト名の CNAME レコードか、DNS
+    ワイルドカードレコードを作成する必要があります。DNS レコードの
+    作成はこのドキュメントの範囲外です。</div>
+
+<p>内部 <code>tolower</code> RewriteMap ディレクティブは、使用される
+ホスト名がすべて小文字であることを保証し、作成すべきディレクトリ構造に
+曖昧さがないようにします。</p>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> で使用される
+括弧はバックリファレンス <code>%1</code>、<code>%2</code> 等に
+キャプチャされ、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+で使用される括弧はバックリファレンス <code>$1</code>、<code>$2</code>
+等にキャプチャされます。</p>
+
+<p>最初の <code>RewriteCond</code> は、ホスト名が <code>www.</code> で
+始まるかどうかを確認し、始まる場合は書き換えがスキップされます。</p>
+
+<p>
+このドキュメントで説明されている多くのテクニックと同様に、
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> はこのタスクを達成する最良の方法では
+ありません。代わりに <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> の使用を検討して
+ください。静的ファイルの提供以外のこと、例えば動的コンテンツや
+Alias の解決をはるかに優雅に処理できます。
+</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="simple.rewrite" id="simple.rewrite"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    を使った動的バーチャルホスト</a> <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
+
+    <p>この <code>httpd.conf</code> からの抜粋は、
+    <a href="#per-hostname">最初の例</a>と同じことを行います。
+    前半は上記の対応する部分と非常に似ていますが、後方互換性のため、
+    および <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 部分が正しく動作するように
+    いくつかの変更が加えられています。後半は <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    に実際の作業を設定します。</p>
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は他の URI 変換モジュール
+    (例: <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>) よりも前に実行されるため、
+    それらのモジュールで処理されるはずの URL を明示的に無視するように
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> に指示する必要があります。また、これらの
+    ルールは <code>ScriptAlias</code> ディレクティブをバイパスするため、
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> にそれらのマッピングを明示的に実行させる
+    必要があります。</p>
+
+<pre class="prettyprint lang-config"># get the server name from the Host: header
+UseCanonicalName Off
+
+# splittable logs
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog "logs/access_log" vcommon
+
+&lt;Directory "/www/hosts"&gt;
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# a ServerName derived from a Host: header may be any case at all
+RewriteMap  lowercase  "int:tolower"
+
+## deal with normal documents first:
+# allow Alias /icons/ to work - repeat for other aliases
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
+# allow CGIs to work
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
+# do the magic
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
+
+## and now deal with CGIs - we have to force a handler
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="xtra-conf" id="xtra-conf">個別のバーチャルホスト設定ファイルの使用</a> <a title="Permanent link" href="#xtra-conf" class="permalink">&para;</a></h2>
+
+    <p>この構成では、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> のより高度な機能を使用して、
+    個別の設定ファイルからバーチャルホストのドキュメントルートへの
+    変換を行います。これにより柔軟性が高まりますが、より複雑な設定が
+    必要になります。</p>
+
+    <p><code>vhost.map</code> ファイルは次のようになります:</p>
+
+<div class="example"><p><code>
+customer-1.example.com  /www/customers/1<br />
+customer-2.example.com  /www/customers/2<br />
+# ...<br />
+customer-N.example.com  /www/customers/N<br />
+</code></p></div>
+
+    <p><code>httpd.conf</code> には以下を含める必要があります:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+
+RewriteMap   lowercase  "int:tolower"
+
+# define the map file
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
+
+# deal with aliases as above
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+# this does the file-based remap
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
+
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]</pre>
+
+
+</div></div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/vhosts.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/vhosts.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

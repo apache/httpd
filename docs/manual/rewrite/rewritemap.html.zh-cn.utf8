@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>使用 RewriteMap - Apache HTTP 服务器 版本 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
+<p class="apache">Apache HTTP 服务器版本 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="http://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>使用 RewriteMap</h1>
+<div class="toplang">
+<p><span>可用语言: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+    <p>本文档是 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 指令的使用方法，
+并提供了各种 <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+类型的示例。</p>
+
+    <div class="warning">请注意，这些示例中的许多在你的特定服务器配置中
+不会原封不动地工作，因此理解它们非常重要，
+而不是仅仅将示例复制粘贴到你的配置中。</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">介绍</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#int">int：内部函数</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#txt">txt：纯文本映射</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd：随机纯文本</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm：DBM 哈希文件</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#prg">prg：外部重写程序</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd 或 fastdbd：SQL 查询</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#summary">总结</a></li>
+</ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li><li><a href="#comments_section">评论</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">介绍</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+    
+
+   <p>
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 指令定义了一个外部函数，
+   可以在 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 或
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+   指令的上下文中调用，以执行过于复杂或过于专业化而无法仅通过正则表达式完成的重写。
+   此查找的来源可以是下面各节中列出的任何类型，
+   并在 <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+   参考文档中有详细说明。</p>
+
+   <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+   指令的语法如下：</p>
+
+<pre class="prettyprint lang-config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</pre>
+
+
+    <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a>
+    是你分配给映射的任意名称，稍后将在指令中使用。
+    通过以下语法将参数传递给映射：</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br /> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>当出现这样的结构时，将查询映射 <em>MapName</em>
+      并查找键 <em>LookupKey</em>。如果找到该键，
+      映射函数结构将被替换为 <em>SubstValue</em>。
+      如果未找到该键，则替换为 <em>DefaultValue</em>，
+      如果未指定 <em>DefaultValue</em> 则替换为空字符串。</p>
+
+    <p>例如，你可以定义一个
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 如下：</p>
+    <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
+
+    <p>然后你可以在
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 中如下使用此映射：</p>
+      <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
+
+
+<p>在映射中未找到任何内容时，可以指定默认值：</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</pre>
+
+
+<div class="note"><h3>目录级和 .htaccess 上下文</h3>
+<p>
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 指令不能在
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> 配置段或
+<code>.htaccess</code> 文件中使用。你必须在服务器或虚拟主机上下文中声明映射。
+创建映射后，你可以在这些范围内的
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 和
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+指令中<strong>使用</strong>它。只是不能在这些范围内<strong>声明</strong>它。</p>
+</div>
+
+<p>以下各节描述了可以使用的各种 <em>MapType</em>，并给出了每种类型的示例。</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="int" id="int">int：内部函数</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+    
+
+    <p>当 MapType 为 <code>int</code> 时，MapSource 是可用的
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    内部函数之一。模块作者可以通过使用
+    <code>ap_register_rewrite_mapfunc</code> API 注册来提供额外的内部函数。
+    默认提供的函数有：
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>：<br />
+             将键转换为全大写。</li>
+      <li><strong>tolower</strong>：<br />
+             将键转换为全小写。</li>
+      <li><strong>escape</strong>：<br />
+             将键中的特殊字符转换为十六进制编码。</li>
+      <li><strong>unescape</strong>：<br />
+             将键中的十六进制编码转换回特殊字符。</li>
+    </ul>
+
+    <p>
+    要使用这些函数之一，创建一个引用 int 函数的
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>，
+    然后在你的
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 中使用它：
+    </p>
+
+   <p><strong>将 URI 重定向到其全小写版本</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
+
+
+    <div class="note">
+    <p>请注意，此处提供的示例仅用于说明目的，并非建议。
+    如果你想使 URL 不区分大小写，请考虑使用
+    <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> 代替。
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="txt" id="txt">txt：纯文本映射</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+    
+
+    <p>当 MapType 为 <code>txt</code> 时，MapSource 是一个纯文本映射文件的
+    文件系统路径，每行包含一个以空格分隔的键/值对。
+    可选地，一行可以包含以 '#' 字符开头的注释。</p>
+
+    <p>有效的文本重写映射文件将具有以下语法：</p>
+
+    <div class="example"><p><code>
+      # 注释行<br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # 注释<br />
+    </code></p></div>
+
+    <p>当调用 <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 时，
+    在行的第一个参数中查找该参数，如果找到，则返回替换值。</p>
+
+    <p>例如，我们可以使用映射文件将产品名称转换为产品 ID，
+    以获得更易记的 URL，使用以下配方：</p>
+<p><strong>产品到 ID 的配置</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+    <p>我们假设 <code>prods.php</code> 脚本知道在收到
+    <code>id=NOTFOUND</code> 参数时如何处理——当在查找映射中找不到产品时。</p>
+
+    <p>文件 <code>/etc/apache2/productmap.txt</code> 包含以下内容：</p>
+
+    <div class="example"><h3>产品到 ID 的映射</h3><p><code>
+##<br />
+##  productmap.txt - 产品到 ID 的映射文件<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </code></p></div>
+
+    <p>因此，当请求 <code>http://example.com/product/television</code> 时，
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 被应用，
+    请求在内部被映射到 <code>/prods.php?id=993</code>。</p>
+
+    <div class="note"><h3>注意：.htaccess 文件</h3>
+    此处给出的示例是为在服务器或虚拟主机范围内使用而设计的。
+    如果你计划在 <code>.htaccess</code> 文件中使用，
+    则需要从重写模式中删除前导斜杠才能匹配任何内容：
+    <pre class="prettyprint lang-config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+    </div>
+
+    <div class="note"><h3>缓存查找</h3>
+    <p>
+    查找的键会被 httpd 缓存，直到映射文件的 <code>mtime</code>
+    （修改时间）发生变化或 httpd 服务器重启。
+    这确保了被许多请求调用的映射有更好的性能。
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rnd" id="rnd">rnd：随机纯文本</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+    
+
+    <p>当 MapType 为 <code>rnd</code> 时，MapSource 是一个纯文本映射文件的
+    文件系统路径，每行包含一个键和一个或多个由 <code>|</code>
+    分隔的值。如果键匹配，将随机选择其中一个值。</p>
+
+    <p>例如，你可以使用以下映射文件和指令通过反向代理在多个后端服务器之间
+    提供随机负载均衡。图像被发送到 'static' 池中的某个服务器，
+    而其他所有内容被发送到 'dynamic' 池中的某个服务器。</p>
+
+    <div class="example"><h3>重写映射文件</h3><p><code>
+##<br />
+##  map.txt -- 重写映射<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </code></p></div>
+<p><strong>配置指令</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
+
+
+    <p>因此，当请求图像并且第一条规则匹配时，
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    在映射文件中查找字符串 <code>static</code>，
+    随机返回指定主机名之一，然后将其用于
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 目标。</p>
+
+    <p>如果你想让某个服务器更有可能被选中（例如，
+    如果某个服务器比其他服务器有更多内存，因此可以处理更多请求），
+    只需在映射文件中多次列出它即可。</p>
+
+    <div class="example"><p><code>
+static   www1|www1|www2|www3|www4
+    </code></p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbm" id="dbm">dbm：DBM 哈希文件</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+    
+
+    <p>当 MapType 为 <code>dbm</code> 时，MapSource 是一个 DBM
+    数据库文件的文件系统路径，其中包含用于映射的键/值对。
+    其工作方式与 <code>txt</code> 映射完全相同，但速度更快，
+    因为 DBM 是有索引的，而文本文件没有索引。
+    这允许更快地访问所需的键。</p>
+
+    <p>你可以选择指定特定的 dbm 类型：</p>
+
+ <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
+
+
+    <p>类型可以是 <code>sdbm</code>、<code>gdbm</code>、<code>ndbm</code>
+    或 <code>db</code>。但建议你使用 Apache HTTP Server 提供的
+    <a href="../programs/httxt2dbm.html">httxt2dbm</a> 工具，
+    因为它会使用正确的 DBM 库，与构建 httpd 本身时使用的库相匹配。</p>
+
+    <p>要创建 dbm 文件，首先按照 <a href="#txt">txt</a>
+    节中的描述创建文本映射文件。然后运行
+    <code>httxt2dbm</code>：</p>
+
+<div class="example"><p><code>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</code></p></div>
+
+<p>然后你可以在
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+指令中引用生成的文件：</p>
+
+<pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
+
+
+<div class="note">
+<p>请注意，对于某些 dbm 类型，会生成多个文件，它们具有共同的基本名称。
+例如，你可能有两个名为 <code>mapfile.map.dir</code> 和
+<code>mapfile.map.pag</code> 的文件。这是正常的，你只需在
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+指令中使用基本名称 <code>mapfile.map</code> 即可。</p>
+</div>
+
+<div class="note"><h3>缓存查找</h3>
+<p>
+查找的键会被 httpd 缓存，直到映射文件的 <code>mtime</code>
+（修改时间）发生变化或 httpd 服务器重启。
+这确保了被许多请求调用的映射有更好的性能。
+</p>
+</div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prg" id="prg">prg：外部重写程序</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+
+    <p>当 MapType 为 <code>prg</code> 时，MapSource 是一个可执行程序的
+    文件系统路径，该程序将提供映射行为。这可以是编译的二进制文件，
+    也可以是 Python 或 Perl 等解释型语言的程序。</p>
+
+    <p>此程序在 Apache HTTP Server 启动时启动一次，
+    然后通过 <code>STDIN</code> 和 <code>STDOUT</code>
+    与重写引擎通信。对于每次映射函数查找，
+    键被写入程序的 <code>STDIN</code>，后跟换行符。
+    程序应从 <code>STDIN</code> 读取一行（直到并包括换行符），
+    并在 <code>STDOUT</code> 上写入其响应作为单个以换行符终止的行。
+    键永远不会包含换行符；如果遇到包含换行符的键，查找将失败。</p>
+
+    <p>如果没有对应的查找值，映射程序应返回四字符字符串
+    "<code>NULL</code>" 来表示这一点。请注意，此比较不区分大小写，
+    因此 "null"、"Null" 等也被视为查找失败。
+    因此，映射程序不可能返回字面量字符串 "NULL" 作为映射值。</p>
+
+    <p>程序的 <code>STDERR</code> 继承自 httpd 父进程，
+    因此程序写入 <code>STDERR</code> 的任何内容都将与 httpd
+    自身的错误输出出现在相同的位置（通常是
+    <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>）。</p>
+
+    <p>如果外部重写程序定义在未将
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code>
+    设置为 <code>on</code> 的上下文中，则不会启动。</p>
+
+    <p>默认情况下，外部重写程序以启动 httpd 的用户:组身份运行。
+    在 UNIX 系统上，可以通过将用户名和组名作为第三个参数传递给
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>，
+    以 <code>username:groupname</code> 格式进行更改。</p>
+
+    <p>此功能使用 <code>rewrite-map</code> 互斥锁，
+    这是与程序可靠通信所必需的。互斥锁机制和锁文件可以通过
+    <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> 指令进行配置。</p>
+
+    <p>这里展示了一个简单的示例，它将请求 URI 中的所有破折号替换为下划线。</p>
+
+    <p><strong>重写配置</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
+
+
+    <p><strong>dash2under.py</strong></p>
+    <pre class="prettyprint lang-python">#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)</pre>
+
+
+<div class="note"><h3>注意！</h3>
+<ul>
+<li>保持你的重写映射程序尽可能简单。如果程序挂起，
+它将导致 httpd 无限期地等待映射的响应，
+这反过来会导致 httpd 停止响应请求。</li>
+<li>确保在你的程序中关闭缓冲。在上面的 Python 示例中，
+这是通过向 <code>print()</code> 传递 <code>flush=True</code> 来完成的。
+缓冲的 I/O 将导致 httpd 等待输出，从而挂起。</li>
+<li>请记住，程序只有一个副本，在服务器启动时启动。
+所有请求都需要通过这一个瓶颈。如果许多请求必须通过此进程，
+或者脚本本身非常慢，这可能会导致显著的性能下降。</li>
+<li>如果映射程序终止，它不会自动重启。后续查找将失败，
+直到服务器重启。</li>
+<li>无论相关配置指令是否发生更改，映射程序在任何服务器重启
+（优雅重启或其他方式）时都会被终止并重新启动。
+关闭时，程序会收到 <code>SIGTERM</code> 信号；
+如果在 3 秒内未退出，则会收到 <code>SIGKILL</code> 信号。</li>
+</ul>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbd" id="dbd">dbd 或 fastdbd：SQL 查询</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+    
+
+    <p>当 MapType 为 <code>dbd</code> 或 <code>fastdbd</code> 时，
+    MapSource 是一个接受单个参数并返回单个值的 SQL SELECT 语句。</p>
+
+    <p>需要配置 <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
+    指向正确的数据库才能执行此语句。</p>
+
+    <p>此 MapType 有两种形式。使用 <code>dbd</code> 的 MapType
+    会在每次映射请求时执行查询，而使用 <code>fastdbd</code>
+    则在内部缓存数据库查找结果。因此，虽然 <code>fastdbd</code>
+    更高效、更快，但它不会在服务器重启之前获取数据库的更改。</p>
+
+    <p>如果查询返回多行，将从结果集中随机使用一行。</p>
+
+    <div class="example"><h3>示例</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
+</div>
+
+    <div class="note"><h3>注意</h3>
+    <p>查询名称作为 SQL 预处理语句的标签传递给数据库驱动程序，
+    因此需要遵循数据库要求的任何规则（例如大小写敏感性）。</p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="summary" id="summary">总结</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    指令可以出现多次。对于每个映射函数，使用一个
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    指令来声明其重写映射文件。</p>
+
+    <p>虽然你不能在目录级上下文（<code>.htaccess</code> 文件或
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> 块）中
+    <strong>声明</strong>映射，但可以在目录级上下文中<strong>使用</strong>此映射。</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>可用语言: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

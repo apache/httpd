@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_rewrite ile İleri Teknikler - Apache HTTP Sunucusu Sürüm 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite ile İleri Teknikler</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/advanced.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/advanced.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/advanced.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/advanced.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/advanced.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/advanced.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/advanced.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+<p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanarak birkaç ileri teknik sunar.</p>
+
+
+
+<div class="warning">Bu örneklerin birçoğunun sizin sunucu yapılandırmanızda
+değişiklik yapılmadan çalışmayacağını unutmayın; bu nedenle örnekleri
+yapılandırmanıza kopyalayıp yapıştırmak yerine anlamanız
+önemlidir.</div>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#sharding">Birden Fazla Arka Uç Arasında URL Tabanlı Parçalama</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">Anında İçerik Yeniden Oluşturma</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Yük Dengeleme</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Yapılandırılmış Kullanıcı Dizinleri</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Çapaların Yeniden Yönlendirilmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Zamana Bağlı Yeniden Yazma</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">URL Parçalarına Göre Ortam Değişkenleri Atama</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sharding" id="sharding">Birden Fazla Arka Uç Arasında URL Tabanlı Parçalama</a> <a title="Permanent link" href="#sharding" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Sunucu yükünü veya depolama alanını dağıtmak için yaygın bir
+      teknik "parçalama" (sharding) olarak adlandırılır. Bu yöntem
+      kullanıldığında, bir ön uç sunucu kullanıcıları veya nesneleri
+      tutarlı bir şekilde ayrı arka uç sunuculara "parçalamak" için
+      URL'yi kullanır.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Kullanıcılardan hedef sunuculara bir eşleme, harici eşlem
+      dosyalarında tutulur. Şöyle görünürler:</p>
+
+<div class="example"><p><code>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... ve böyle devam eder
+</code></p></div>
+
+  <p>Bunu bir <code>map.users-to-hosts</code> dosyasına koyarız. Amaç
+    şunu eşlemektir;</p>
+
+<div class="example"><p><code>
+/u/user1/anypath
+</code></p></div>
+
+  <p>buna</p>
+
+<div class="example"><p><code>
+http://physical_host_of_user1/u/user/anypath
+</code></p></div>
+
+      <p>böylece her URL yolunun her arka uç fiziksel konakta geçerli
+      olması gerekmez. Aşağıdaki kural kümesi, eşlem dosyalarının
+      yardımıyla bunu bizim için yapar; bir kullanıcının eşlemde
+      girdisi yoksa server0'ın öntanımlı sunucu olarak
+      kullanılacağını varsayar:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+
+    </dd>
+  </dl>
+
+  <p>Bu yönergenin sözdizimi hakkında daha fazla tartışma için
+  <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> belgelerine ve
+  <a href="./rewritemap.html">RewriteMap Nasıl Yapılır</a> belgesine
+  bakın.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="on-the-fly-content" id="on-the-fly-content">Anında İçerik Yeniden Oluşturma</a> <a title="Permanent link" href="#on-the-fly-content" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>İçeriği devingen olarak oluşturmak, ancak oluşturulduktan
+      sonra statik olarak saklamak istiyoruz. Bu kural, statik dosyanın
+      varlığını kontrol eder ve yoksa oluşturur. Statik dosyalar
+      istenirse periyodik olarak (örneğin cron ile) kaldırılabilir ve
+      istek üzerine yeniden oluşturulur.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      Bu, aşağıdaki kural kümesiyle yapılır:
+
+<pre class="prettyprint lang-config"># This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
+
+
+    <p><code>-U</code> işleci, sınama dizgesinin (bu durumda
+    <code>REQUEST_URI</code>) geçerli bir URL olup olmadığını belirler.
+    Bunu bir alt istek aracılığıyla yapar. Bu alt istek başarısız
+    olursa - yani istenen kaynak mevcut değilse - bu kural, istenen
+    kaynağı oluşturan ve belge dizinine kaydeden
+    <code>/regenerate_page.cgi</code> CGI programını çalıştırır; böylece
+    bir sonraki istekte statik bir kopya sunulabilir.</p>
+
+    <p>Bu şekilde, seyrek güncellenen belgeler statik biçimde
+    sunulabilir. Belgelerin yenilenmesi gerekiyorsa belge dizininden
+    silinebilir ve bir sonraki istekte yeniden oluşturulur.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="load-balancing" id="load-balancing">Yük Dengeleme</a> <a title="Permanent link" href="#load-balancing" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanarak yükü birkaç sunucu
+      arasında rastgele dağıtmak istiyoruz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Bunu gerçekleştirmek için <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ve bir sunucu listesi
+      kullanacağız.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]</pre>
+
+
+<p><code>serverlist.txt</code> sunucuların bir listesini içerecektir:</p>
+
+<div class="example"><p><code>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</code></p></div>
+
+<p>Belirli bir sunucunun diğerlerinden daha fazla yük almasını
+istiyorsanız, onu listeye daha fazla kez ekleyin.</p>
+
+   </dd>
+
+   <dt>Tartışma</dt>
+   <dd>
+<p>Apache, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile bir araya getireceğiniz
+herhangi bir şeyden çok daha esnek ve özellik açısından zengin bir yük
+dengeleme modülü olan <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> ile
+birlikte gelir.</p>
+   </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="structuredhomedirs" id="structuredhomedirs">Yapılandırılmış Kullanıcı Dizinleri</a> <a title="Permanent link" href="#structuredhomedirs" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Binlerce kullanıcısı olan bazı siteler yapılandırılmış bir
+      ev dizini düzeni kullanır; <em>yani</em> her ev dizini, kullanıcı
+      adının (örneğin) ilk karakteriyle başlayan bir alt dizindedir.
+      Böylece, <code>/~larry/anypath</code> şu olur:
+      <code>/home/<strong>l</strong>/larry/public_html/anypath</code>;
+      <code>/~waldo/anypath</code> ise şu olur:
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Tilde URL'leri yukarıdaki düzene göre genişletmek için
+      aşağıdaki kural kümesini kullanırız.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirectanchors" id="redirectanchors">Çapaların Yeniden Yönlendirilmesi</a> <a title="Permanent link" href="#redirectanchors" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+    <p>Öntanımlı olarak, bir HTML çapasına yönlendirme çalışmaz;
+    çünkü <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> <code>#</code> karakterini
+    kodlayarak <code>%23</code>'e dönüştürür. Bu da yönlendirmeyi
+    bozar.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p><code>RewriteRule</code> üzerinde <code>[NE]</code> bayrağını
+      kullanın. NE, Kodlama Yapma (No Escape) anlamına gelir.
+      </p>
+    </dd>
+
+    <dt>Tartışma:</dt>
+    <dd>Bu teknik, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün öntanımlı
+    olarak URL-kodladığı diğer özel karakterlerle de çalışacaktır.</dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="time-dependent" id="time-dependent">Zamana Bağlı Yeniden Yazma</a> <a title="Permanent link" href="#time-dependent" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Günün saatine göre farklı içerik sunmak için
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanmak istiyoruz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Yeniden yazma koşulları için <code>TIME_xxx</code> adlı birçok
+      değişken vardır. Özel sözlüksel karşılaştırma kalıpları olan
+      <code>&lt;DİZGE</code>, <code>&gt;DİZGE</code> ve
+      <code>=DİZGE</code> ile birlikte zamana bağlı yönlendirmeler
+      yapabiliriz:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
+
+
+      <p>Bu, <code>foo.html</code> URL'si altında
+      <code>07:01-18:59</code> saatleri arasında
+      <code>foo.day.html</code> içeriğini, geri kalan zamanda ise
+      <code>foo.night.html</code> içeriğini sunar.</p>
+
+      <div class="warning"><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, ara vekiller
+      ve tarayıcıların her biri yanıtları önbelleğe alabilir ve
+      yapılandırılan zaman penceresinin dışında herhangi bir sayfanın
+      gösterilmesine neden olabilir. Bu etkiyi kontrol etmek için
+      <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> kullanılabilir. Elbette, içeriği
+      devingen olarak sunmak ve günün saatine göre özelleştirmek çok
+      daha iyidir.</div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="setenvvars" id="setenvvars">URL Parçalarına Göre Ortam Değişkenleri Atama</a> <a title="Permanent link" href="#setenvvars" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Bazen bir yeniden yazma gerçekleştirdiğimizde bir tür durum
+      bilgisi tutmak isteriz. Örneğin, bu yeniden yazmayı yaptığınıza
+      dair bir not almak isteyebilirsiniz; böylece daha sonra bir
+      isteğin bu yeniden yazma yoluyla gelip gelmediğini kontrol
+      edebilirsiniz. Bunu yapmanın bir yolu bir ortam değişkeni
+      ayarlamaktır.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Bir ortam değişkeni ayarlamak için [E] bayrağını kullanın.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]</pre>
+
+
+    <p>Daha sonra kural kümenizde bu ortam değişkenini bir RewriteCond
+    kullanarak kontrol edebilirsiniz:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}"  =1</pre>
+
+
+    <p>Ortam değişkenlerinin harici bir yönlendirmeden sonra kalıcı
+    olmadığını unutmayın. [CO] bayrağını kullanarak bir çerez
+    ayarlamayı düşünebilirsiniz. Dizin başına ve htaccess yeniden
+    yazmaları için, son değiştirme dahili bir yönlendirme olarak
+    işlendiğinde, önceki yeniden yazma turundan gelen ortam
+    değişkenlerinin başına "REDIRECT_" eklenir.</p>
+
+    </dd>
+  </dl>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/advanced.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/advanced.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/advanced.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/advanced.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/advanced.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/advanced.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/advanced.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

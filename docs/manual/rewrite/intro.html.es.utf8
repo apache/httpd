@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Introducción a Apache mod_rewrite - Servidor HTTP Apache Versión 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Introducción a Apache mod_rewrite</h1>
+<div class="toplang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+<p>Este documento complementa la <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">documentación de referencia</a>. Describe
+los conceptos básicos necesarios para el uso de
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Otros documentos entran en mayor detalle,
+pero este documento debería ayudar al principiante a mojarse los pies.
+</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducción</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regex">Expresiones Regulares</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">Conceptos Básicos de RewriteRule</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flags">Banderas de Reescritura</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Condiciones de Reescritura</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Mapas de reescritura</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Archivos .htaccess</a></li>
+</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentación del módulo</a></li><li><a href="remapping.html">Redirección y remapeo</a></li><li><a href="access.html">Control de acceso</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="proxy.html">Proxy</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">Técnicas avanzadas</a></li><li><a href="avoid.html">Cuándo no usar mod_rewrite</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introducción</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+<p>El módulo de Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> es un módulo muy potente y
+sofisticado que proporciona una forma de hacer manipulaciones de URL. Con
+él, puede hacer casi todos los tipos de reescritura de URL que pueda necesitar. Es,
+sin embargo, algo complejo, y puede ser intimidante para el principiante.
+También hay una tendencia a tratar las reglas de reescritura como encantamientos mágicos,
+usándolas sin realmente entender lo que hacen.</p>
+
+<p>Este documento intenta dar suficiente contexto para que lo que
+sigue sea entendido, en lugar de simplemente copiado a ciegas.
+</p>
+
+<p>Recuerde que muchas tareas comunes de manipulación de URL no requieren la
+potencia y complejidad completas de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Para tareas
+simples, consulte <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> y la documentación
+sobre <a href="../urlmapping.html">mapeo de URLs al
+sistema de archivos</a>.</p>
+
+<p>Finalmente, antes de continuar, asegúrese de configurar
+el nivel de log de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> a uno de los niveles de traza usando
+la directiva <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>. Aunque esto
+puede dar una cantidad abrumadora de información, es indispensable para
+depurar problemas con la configuración de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, ya que
+le dirá exactamente cómo se procesa cada regla.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="regex" id="regex">Expresiones Regulares</a> <a title="Enlace permanente" href="#regex" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> usa el vocabulario de <a href="http://pcre.org/">Expresiones
+Regulares Compatibles con Perl</a>. En este documento, no intentamos
+proporcionar una referencia detallada de expresiones regulares. Para eso,
+recomendamos las <a href="http://pcre.org/pcre.txt">páginas man de PCRE</a>, la
+<a href="http://perldoc.perl.org/perlre.html">página man de expresiones
+regulares de Perl</a>, y <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, de Jeffrey Friedl</a> (la tercera edición es de
+2006, pero la sintaxis de expresiones regulares es esencialmente la misma, y este
+sigue siendo la referencia definitiva sobre el tema).</p>
+
+<p>En este documento, intentamos proporcionar suficiente vocabulario de regex
+para que pueda comenzar, sin ser abrumador, con la esperanza de que
+las <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s sean fórmulas
+científicas, en lugar de encantamientos mágicos.</p>
+
+<h3><a name="regexvocab" id="regexvocab">Vocabulario de Regex</a></h3>
+
+<p>Los siguientes son los bloques de construcción mínimos que necesitará, para
+escribir expresiones regulares y <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s. Ciertamente no
+representan un vocabulario completo de expresiones regulares, pero son un buen
+punto de partida, y deberían ayudarle a leer expresiones regulares básicas, así
+como a escribir las suyas propias.</p>
+
+<table>
+<tr>
+<th>Carácter</th>
+<th>Significado</th>
+<th>Ejemplo</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>Coincide con cualquier carácter individual</td>
+    <td><code>c.t</code> coincidirá con <code>cat</code>, <code>cot</code>,
+      <code>cut</code>, etc</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>Repite la coincidencia anterior una o más veces</td>
+    <td><code>a+</code> coincide con <code>a</code>, <code>aa</code>,
+      <code>aaa</code>, etc</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>Repite la coincidencia anterior cero o más veces</td>
+    <td><code>a*</code> coincide con todo lo mismo que <code>a+</code>,
+      pero también coincidirá con una cadena vacía</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>Hace la coincidencia opcional</td>
+    <td><code>colou?r</code> coincidirá con <code>color</code> y
+    <code>colour</code></td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Escapa el siguiente carácter</td>
+    <td><code>\.</code> coincidirá con <code>.</code> (punto) y no con <em>cualquier
+    carácter individual</em> como se explicó arriba</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>Llamado ancla, coincide con el inicio de la cadena</td>
+    <td><code>^a</code> coincide con una cadena que comienza con <code>a</code></td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>La otra ancla, coincide con el final de la cadena</td>
+    <td><code>a$</code> coincide con una cadena que termina con <code>a</code></td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>Agrupa varios caracteres en una sola unidad, y captura una coincidencia
+      para uso en una referencia inversa</td>
+    <td><code>(ab)+</code> coincide con <code>ababab</code> - es decir, el
+      <code>+</code> se aplica al grupo. Para más sobre referencias inversas vea
+      <a href="#InternalBackRefs">más abajo</a></td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>Una clase de caracteres - coincide con uno de los caracteres</td>
+    <td><code>c[uoa]t</code> coincide con <code>cut</code>, <code>cot</code> o
+      <code>cat</code></td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>Clase de caracteres negativa - coincide con cualquier carácter no especificado</td>
+    <td><code>c[^/]t</code> coincide con <code>cat</code> o <code>c=t</code> pero
+      no con <code>c/t</code></td></tr>
+</table>
+
+<p>En <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> el carácter <code>!</code> puede usarse
+antes de una expresión regular para negarla. Es decir, una cadena se
+considerará que ha coincidido solo si no coincide con el resto de
+la expresión.</p>
+
+
+
+<h3><a name="InternalBackRefs" id="InternalBackRefs">Disponibilidad de Referencias Inversas de Regex</a></h3>
+
+      <p>Una cosa importante que debe recordarse aquí: Siempre que
+      use paréntesis en <em>Pattern</em> o en uno de los
+      <em>CondPattern</em>, se crean referencias inversas internas
+      que pueden usarse con las cadenas <code>$N</code> y
+      <code>%N</code> (ver más abajo). Estas están disponibles para crear
+      el parámetro <em>Substitution</em> de una
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> o
+      el parámetro <em>TestString</em> de una
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>.</p>
+      <p>  Las capturas en los patrones de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> están (contraintuitivamente) disponibles para
+       todas las directivas
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> precedentes,
+      porque la expresión de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      se evalúa antes que las condiciones individuales.</p>
+
+      <p>La Figura 1 muestra a qué
+      ubicaciones se transfieren las referencias inversas para expansión, así
+      como ilustra el flujo de la coincidencia de RewriteRule, RewriteCond.
+      En los próximos capítulos, exploraremos cómo usar
+      estas referencias inversas, así que no se preocupe si le parece un poco extraño
+      al principio.
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png" alt="Flujo de coincidencia de RewriteRule y RewriteCond" /><br />
+      <dfn>Figura 1:</dfn> El flujo de referencias inversas a través de una regla.<br />
+      En este ejemplo, una solicitud para <code>/test/1234</code> sería transformada en <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
+</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewriterule" id="rewriterule">Conceptos Básicos de RewriteRule</a> <a title="Enlace permanente" href="#rewriterule" class="permalink">&para;</a></h2>
+<p>Una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consiste
+en tres argumentos separados por espacios. Los argumentos son</p>
+<ol>
+<li><var>Pattern</var>: qué URLs entrantes deben ser afectadas por la regla;</li>
+<li><var>Substitution</var>: a dónde deben enviarse las solicitudes coincidentes;</li>
+<li><var>[flags]</var>: opciones que afectan a la solicitud reescrita.</li>
+</ol>
+
+<p>El <var>Pattern</var> es una <a href="#regex">expresión regular</a>.
+Se compara inicialmente (para la primera regla de reescritura o hasta que ocurra una sustitución)
+contra la ruta URL de la solicitud entrante (la parte después del
+nombre de host pero antes de cualquier signo de interrogación que indique el inicio de una cadena
+de consulta) o, en contexto per-directorio, contra la ruta de la solicitud relativa
+al directorio para el cual se define la regla. Una vez que ha ocurrido una sustitución,
+las reglas siguientes se comparan contra el valor
+sustituido.
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" alt="Sintaxis de la directiva RewriteRule" /><br />
+      <dfn>Figura 2:</dfn> Sintaxis de la directiva RewriteRule.
+</p>
+
+
+<p>La <var>Substitution</var> puede ser una de tres cosas:</p>
+
+<dl>
+<dt>1. Una ruta completa del sistema de archivos a un recurso</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web/puzzles.html"</pre>
+
+<p>Esto mapea una solicitud a una ubicación arbitraria en su sistema de archivos, de forma
+similar a la directiva <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>.</p>
+</dd>
+
+<dt>2. Una ruta web a un recurso</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games$" "/puzzles.html"</pre>
+
+<p>Si <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> está configurado
+como <code>/usr/local/apache2/htdocs</code>, entonces esta directiva
+mapearía solicitudes para <code>http://example.com/games</code> a la
+ruta <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
+
+</dd>
+
+<dt>3. Una URL absoluta</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
+
+<p>Esto le dice al cliente que haga una nueva solicitud a la URL especificada.</p>
+</dd>
+</dl>
+
+<div class="warning">Tenga en cuenta que <strong>1</strong> y <strong>2</strong> tienen exactamente la misma sintaxis. La diferencia entre ellos es que en el caso de <strong>1</strong>, el nivel superior de la ruta destino (es decir, <code>/usr/</code>) existe en el sistema de archivos, mientras que en el caso de <strong>2</strong>, no existe. (es decir, no hay <code>/bar/</code> como directorio de nivel raíz en el sistema de archivos.)</div>
+
+<p>La <var>Substitution</var> también puede
+contener <em>referencias inversas</em> a partes de la ruta URL entrante
+coincidida por el <var>Pattern</var>. Considere lo siguiente:</p>
+<pre class="prettyprint lang-config">RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"</pre>
+
+<p>La variable <code>$1</code> será reemplazada por cualquier texto
+que haya coincidido con la expresión dentro de los paréntesis en
+el <var>Pattern</var>. Por ejemplo, una solicitud
+para <code>http://example.com/product/r14df/view</code> será mapeada
+a la ruta <code>/var/web/productdb/r14df</code>.</p>
+
+<p>Si hay más de una expresión entre paréntesis, están
+disponibles en orden en las
+variables <code>$1</code>, <code>$2</code>, <code>$3</code>, y así
+sucesivamente.</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flags" id="flags">Banderas de Reescritura</a> <a title="Enlace permanente" href="#flags" class="permalink">&para;</a></h2>
+<p>El comportamiento de una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> puede ser modificado por la
+aplicación de una o más banderas al final de la regla. Por ejemplo, el
+comportamiento de coincidencia de una regla puede hacerse insensible a mayúsculas/minúsculas mediante la
+aplicación de la bandera <code>[NC]</code>:
+</p>
+<pre class="prettyprint lang-config">RewriteRule "^puppy.html" "smalldog.html" [NC]</pre>
+
+
+<p>Para más detalles sobre las banderas disponibles, sus significados, y
+ejemplos, consulte el documento de <a href="flags.html">Banderas de Reescritura</a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritecond" id="rewritecond">Condiciones de Reescritura</a> <a title="Enlace permanente" href="#rewritecond" class="permalink">&para;</a></h2>
+<p>Una o más directivas <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+pueden usarse para restringir los tipos de solicitudes que estarán
+sujetas a la
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> siguiente. El
+primer argumento es una variable que describe una característica de la
+solicitud, el segundo argumento es una <a href="#regex">expresión
+regular</a> que debe coincidir con la variable, y un tercer argumento opcional
+es una lista de banderas que modifican cómo se evalúa la coincidencia.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" alt="Sintaxis de la directiva RewriteCond" /><br />
+      <dfn>Figura 3:</dfn> Sintaxis de la directiva RewriteCond
+</p>
+
+<p>Por ejemplo, para enviar todas las solicitudes desde un rango de IP particular a un
+servidor diferente, podría usar:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
+
+
+<p>Cuando se especifica más de
+una <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>,
+todas deben coincidir para que la
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> se aplique.
+Por ejemplo, para denegar solicitudes que contengan la palabra "hack" en
+su cadena de consulta, a menos que también contengan una cookie que contenga
+la palabra "go", podría usar:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]</pre>
+
+<p>Note que el signo de exclamación especifica una coincidencia negativa, por lo que la regla solo se aplica si la cookie no contiene "go".</p>
+
+<p>Las coincidencias en las expresiones regulares contenidas en
+las <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>s pueden
+usarse como parte de la <var>Substitution</var> en
+la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> usando las
+variables <code>%1</code>, <code>%2</code>, etc. Por ejemplo, esto
+dirigirá la solicitud a un directorio diferente dependiendo del
+nombre de host usado para acceder al sitio:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
+
+<p>Si la solicitud fue para <code>http://example.com/foo/bar</code>,
+entonces <code>%1</code> contendrá <code>example.com</code>
+y <code>$1</code> contendrá <code>foo/bar</code>.</p>
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritemap" id="rewritemap">Mapas de reescritura</a> <a title="Enlace permanente" href="#rewritemap" class="permalink">&para;</a></h2>
+
+<p>La directiva <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+proporciona una forma de llamar a una función externa, por así decirlo, para hacer su
+reescritura por usted. Esto se discute con mayor detalle en la <a href="rewritemap.html">documentación complementaria de RewriteMap</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">Archivos .htaccess</a> <a title="Enlace permanente" href="#htaccess" class="permalink">&para;</a></h2>
+
+<p>La reescritura se configura típicamente en la configuración principal del servidor
+(fuera de cualquier sección <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) o
+dentro de contenedores <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.
+Esta es la forma más fácil de hacer reescritura y es
+recomendada. Sin embargo, es posible hacer reescritura
+dentro de secciones <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+o archivos <a href="../howto/htaccess.html"><code>.htaccess</code></a>
+a costa de algo de complejidad adicional. Esta técnica
+se llama reescrituras per-directorio.</p>
+
+<p>La principal diferencia con las reescrituras per-servidor es que el prefijo de ruta
+del directorio que contiene el archivo <code>.htaccess</code> se
+elimina antes de la coincidencia en
+la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. Además, se debería usar <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> para asegurar que la solicitud se mapee correctamente.</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>

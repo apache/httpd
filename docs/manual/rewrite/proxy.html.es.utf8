@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Uso de mod_rewrite para Proxy - Servidor HTTP Apache Versión 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p>
+<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Uso de mod_rewrite para Proxy</h1>
+<div class="toplang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/proxy.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/proxy.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/proxy.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/proxy.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/proxy.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+
+
+<p>Este documento complementa la <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">documentación de referencia</a>. Describe
+cómo usar la bandera [P] de RewriteRule para hacer proxy de contenido a otro servidor.
+Se proporcionan varias recetas que describen escenarios comunes.</p>
+
+</div>
+<div id="quickview"><h3>Consulte también</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentación del módulo</a></li><li><a href="intro.html">Introducción a mod_rewrite</a></li><li><a href="remapping.html">Redirección y remapeo</a></li><li><a href="access.html">Control de acceso</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">Técnicas avanzadas</a></li><li><a href="avoid.html">Cuándo no usar mod_rewrite</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamic-proxy" id="dynamic-proxy">Hacer proxy de contenido con mod_rewrite</a> <a title="Enlace permanente" href="#dynamic-proxy" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Descripción:</dt>
+
+    <dd>
+    <p>
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> proporciona la bandera [P], que permite pasar URLs,
+    a través de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, a otro servidor. Aquí se dan dos ejemplos. En
+    un ejemplo, una URL se pasa directamente a otro servidor, y se sirve
+    como si fuera una URL local. En el otro ejemplo, hacemos proxy del
+    contenido faltante a un servidor backend.</p>
+    </dd>
+
+    <dt>Solución:</dt>
+
+    <dd>
+      <p>Para simplemente mapear una URL a otro servidor, usamos la bandera [P], de la
+      siguiente manera:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine  on
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"</pre>
+
+
+   <p>En el segundo ejemplo, hacemos proxy de la solicitud solo si no podemos encontrar
+   el recurso localmente. Esto puede ser muy útil cuando está migrando
+   de un servidor a otro, y no está seguro de si todo el contenido
+   ha sido migrado todavía.</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"</pre>
+
+    </dd>
+
+    <dt>Discusión:</dt>
+
+    <dd><p>En cada caso, añadimos una directiva <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> para asegurar
+    que cualquier redirección emitida por el backend se pase correctamente al
+    cliente.</p>
+
+    <p>Considere usar <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> o <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> siempre que sea posible en
+    preferencia a <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+    </dd>
+  </dl>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Idiomas disponibles: </span><a href="../de/rewrite/proxy.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/proxy.html" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/proxy.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/proxy.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/proxy.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+//--><!]]></script>
+</body></html>
