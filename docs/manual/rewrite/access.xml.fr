@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1878549:1933061 (outdated) -->
+<!-- English Revision: 1933061 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,7 +35,7 @@ href="../mod/mod_rewrite.html">documentation de référence</a> de
 <module>mod_rewrite</module>. Il explique comment utiliser
 <module>mod_rewrite</module> pour contrôler l'accès à diverses
 ressources, ainsi que d'autres techniques en rapport. Il contient de
-nombreux exemples d'utilisation courante de mod_rewrite avec une
+nombreux exemples d'utilisation courante de <module>mod_rewrite</module> avec une
 description détaillée de leur fonctionnement.</p>
 
 <note type="warning">Vous devez vous attacher à comprendre le
@@ -124,7 +124,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]
         <dd>
         <p>Si vous ne voulez pas rediriger la requête, mais
 	simplement interdire l'accès à la ressource, vous pouvez y
-	parvenir sans utiliser mod_rewrite :</p>
+	parvenir sans utiliser <module>mod_rewrite</module> :</p>
 
         <highlight language="config">
 SetEnvIf Referer "example\.com" localreferer
@@ -158,7 +158,7 @@ SetEnvIf Referer "example\.com" localreferer
         </p>
 
         <p>Notez qu'il existe des méthodes d'exclusion qui n'utilisent
-	pas mod_rewrite. Notez aussi que toute technique qui repose sur
+	pas <module>mod_rewrite</module>. Notez aussi que toute technique qui repose sur
 	le contenu de la chaîne client <code>USER_AGENT</code> peut être
 	contournée très facilement car cette chaîne peut être modifiée.</p>
         </dd>
@@ -188,7 +188,7 @@ RewriteRule "^/secret/files/"   "-"   [F]
       <dd>
       <p>
         Vous pouvez cependant parvenir au même résultat sans utiliser
-	mod_rewrite via la méthode alternative suivante :
+	<module>mod_rewrite</module> via la méthode alternative suivante :
       </p>
       <highlight language="config">
 SetEnvIfNoCase User-Agent "^NameOfBadRobot" goaway

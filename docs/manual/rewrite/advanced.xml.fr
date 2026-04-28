@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1897426:1933066 (outdated) -->
+<!-- English Revision: 1933066 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -25,7 +25,7 @@
 <manualpage metafile="advanced.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>Advanced Techniques with mod_rewrite</title>
+<title>Techniques avancées avec mod_rewrite</title>
 
 <summary>
 
@@ -33,7 +33,7 @@
     href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du
     module <module>mod_rewrite</module>. Il pr&eacute;sente un certain nombre
     de techniques avanc&eacute;es quant &agrave;
-    l'utilisation de mod_rewrite.</p>
+    l'utilisation de <module>mod_rewrite</module>.</p>
 
 <note type="warning">Notez que la plupart des exemples ne fonctionneront
 pas en l'&eacute;tat dans la configuration particuli&egrave;re de votre serveur ; il
@@ -173,7 +173,7 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
 
     <dd>
       <p>Nous voulons r&eacute;partir la charge de mani&egrave;re al&eacute;atoire entre
-      plusieurs serveurs en utilisant mod_rewrite.</p>
+      plusieurs serveurs en utilisant <module>mod_rewrite</module>.</p>
     </dd>
 
     <dt>Solution :</dt>
@@ -206,7 +206,7 @@ les autres, faites le figurer plusieurs fois dans la liste.</p>
    <dd>
 <p>Apache poss&egrave;de un module de r&eacute;partition de charge -
 <module>mod_proxy_balancer</module> - beaucoup plus souple et pr&eacute;sentant
-plus de fonctionnalit&eacute;s dans ce domaine que mod_rewrite.</p>
+plus de fonctionnalit&eacute;s dans ce domaine que <module>mod_rewrite</module>.</p>
    </dd>
   </dl>
 
@@ -255,7 +255,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dd>
     <p>Par d&eacute;faut, la redirection vers un ancrage HTML ne fonctionne
-	pas, car mod_rewrite &eacute;chappe le caract&egrave;re <code>#</code> en le
+	pas, car <module>mod_rewrite</module> &eacute;chappe le caract&egrave;re <code>#</code> en le
 	transformant en <code>%23</code>, ce qui rend la redirection
 	inop&eacute;rante.</p>
     </dd>
@@ -270,7 +270,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dt>Discussion :</dt>
     <dd>Cette technique fonctionne bien entendu pour tout autre
-    caract&egrave;re sp&eacute;cial que mod_rewrite, par d&eacute;faut, code pour insertion
+    caract&egrave;re sp&eacute;cial que <module>mod_rewrite</module>, par d&eacute;faut, code pour insertion
     dans une URL.</dd>
   </dl>
 
@@ -285,7 +285,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
 
     <dd>
       <p>Nous voulons servir des contenus diff&eacute;rents selon l'heure du
-      jour en utilisant mod_rewrite.</p>
+      jour en utilisant <module>mod_rewrite</module>.</p>
     </dd>
 
     <dt>Solution :</dt>

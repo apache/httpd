@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673563:1933066 (outdated) -->
+<!-- English Revision: 1933066 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -57,8 +57,8 @@ correspondance</a></seealso>
 
     <dd>
     <p>
-    mod_rewrite impl&eacute;mente le drapeau [P] qui permet de passer des URLs,
-    via mod_proxy, &agrave; un autre serveur. Deux exemples sont fournis ici.
+    <module>mod_rewrite</module> impl&eacute;mente le drapeau [P] qui permet de passer des URLs,
+    via <module>mod_proxy</module>, &agrave; un autre serveur. Deux exemples sont fournis ici.
     Dans le premier, une URL est pass&eacute;e directement &agrave; un autre serveur,
     et servie comme si c'&eacute;tait une URL locale. Dans le deuxi&egrave;me, nous
     mandatons un contenu manquant vers un serveur d'arri&egrave;re-plan.</p>
@@ -101,7 +101,7 @@ ProxyPassReverse "/" "http://ancien.exemple.com/"
     <p>Chaque fois que cela est possible, pr&eacute;f&eacute;rez l'utilisation de la
     directive <directive module="mod_proxy">ProxyPass</directive> ou
     <directive module="mod_proxy">ProxyPassMatch</directive> &agrave;
-    mod_rewrite.</p>
+    <module>mod_rewrite</module>.</p>
     </dd>
   </dl>
 
