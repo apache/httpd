@@ -415,6 +415,12 @@ ProxyPass "/apps"     "http://127"
 &lt;/Location&gt;
         </highlight>
 
+      <p>Note that <code>force-proxy-request-1.0</code> also implies
+      <code>proxy-sendcl</code>, because HTTP/1.0 does not support
+      chunked transfer encoding. Chunked request body forwarding
+      (via <code>proxy-sendchunked</code>) will be disabled when
+      this option is set.</p>
+
       <p> In 2.4.26 and later, the "no-proxy" environment variable can be set to disable 
       <module>mod_proxy</module> processing the current request.
       This variable should be set with <directive module="mod_setenvif"
