@@ -16,7 +16,7 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="http://wiki.apache.org/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p>
 <p class="apache">Apache HTTP 服务器版本 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -62,7 +62,7 @@
 <li><a href="tech.html">技术细节</a></li>
 </ul>
 </div>
-<div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li><li><a href="../urlmapping.html">从 URL 映射到文件系统</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+<div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></li><li><a href="../urlmapping.html">从 URL 映射到文件系统</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></li><li><a href="../glossary.html">术语</a></li></ul></div>
 </div>
 <div class="bottomlang">
@@ -72,7 +72,7 @@ wiki</a></li><li><a href="../glossary.html">术语</a></li></ul></div>
 <a href="../zh-cn/rewrite/" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />基于 <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="http://wiki.apache.org/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

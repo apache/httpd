@@ -18,7 +18,7 @@
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p>
 <p class="apache">HTTP сервер Apache Версия 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
@@ -99,12 +99,12 @@
 <li><a href="platform/netware.html">Novell NetWare</a></li>
 </ul>
 </div><div class="category"><h2><a name="other" id="other">Другие темы</a></h2>
-<ul><li><a href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
+<ul><li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Часто задаваемые вопросы</a></li>
 <li><a href="sitemap.html">Карта сайта</a></li>
 <li><a href="developer/">Документация для разработчиков</a></li>
 <li><a href="http://httpd.apache.org/docs-project/">Помощь с документацией</a></li>
 <li><a href="misc/">Прочие примечания</a></li>
-<li><a href="http://wiki.apache.org/httpd/">Вики</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/">Вики</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
@@ -121,7 +121,7 @@
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

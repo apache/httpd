@@ -16,7 +16,7 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
@@ -28,6 +28,8 @@
 <a href="./fr/getting-started.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Si vous ne connaissez rien au serveur HTTP Apache, ou même au
 fonctionnement d'un site web, vous vous demandez probablement par où
@@ -74,7 +76,7 @@ d'état, et éventuellement un corps de réponse. Le code d'état indique si
 la requête a été traitée avec succès, ou dans la négative, quel type
 d'erreur a été rencontré. Le client est alors censé savoir quoi faire de
 la réponse. Vous pouvez vous familiariser avec les différents codes
-d'état en consultant le <a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">Wiki du
+d'état en consultant le <a href="https://cwiki.apache.org/confluence/display/httpd/CommonHTTPStatusCodes">Wiki du
 serveur HTTP Apache</a>.</p>
 
 <p>Les détails de la transaction, ainsi que les erreurs rencontrées,
@@ -126,7 +128,7 @@ et à propos du DNS à <a href="http://en.wikipedia.org/wiki/Domain_Name_System"
 <p>La configuration du serveur HTTP Apache s'effectue via de simples
 fichiers texte. Ces fichiers peuvent se trouver dans de nombreux
 endroits différents en fonction du mode d'installation du serveur. Vous
-trouverez les positions courantes de ces fichiers dans le <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">wiki httpd</a>.
+trouverez les positions courantes de ces fichiers dans le <a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">wiki httpd</a>.
 Si vous installez httpd depuis le code source, le répertoire par défaut
 des fichiers de configuration est <code>/usr/local/apache2/conf</code>.
 Le nom du fichier de configuration par défaut est en général
@@ -244,7 +246,7 @@ nombreuses choses que vous devez savoir.</p>
 <li><a href="install.html">Installation</a></li>
 <li><a href="configuring.html">Configuration</a></li>
 <li><a href="invoking.html">Démarrage du serveur</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Foire aux questions</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Foire aux questions</a></li>
 </ul>
 
 </div></div>
@@ -255,7 +257,7 @@ nombreuses choses que vous devez savoir.</p>
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

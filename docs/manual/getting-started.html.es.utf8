@@ -16,7 +16,7 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
@@ -69,7 +69,7 @@ y, opcionalmente, un cuerpo del mensaje.
 El código de estado indica si una petición tuvo éxito, y si no, qué tipo de condición
 de error se ha dado. Esto le dice al cliente qué debe hacer con la respuesta. Puedes
 leer sobre los códigos de respuesta posibles en
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">La Wiki del Seridor
+<a href="https://cwiki.apache.org/confluence/display/httpd/CommonHTTPStatusCodes">La Wiki del Seridor
 Apache</a>.</p>
 
 <p>Detalles de la transacción, y cualquier condición de error, se escriben en los ficheros
@@ -116,7 +116,7 @@ y más sobre DNS en <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wi
 <p>El Servidor Apache HTTP se configura con ficheros de texto.
 Estos ficheros pueden estar ubicados en distintos sitios, dependiendo de 
 cómo se haya instalado exactamente tu servidor. Las ubicaciones comunes
-para estos ficheros pueden encontrarse en <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">
+para estos ficheros pueden encontrarse en <a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">
 la wiki de httpd</a>. Is instalaste httpd desde el código fuente, la
 ubicación por defecto para estos ficheros se encuentra en
 <code>/usr/local/apache2/conf</code>. El fichero de configuración por
@@ -220,7 +220,7 @@ aprender.</p>
 <li><a href="install.html">Instalar</a></li>
 <li><a href="configuring.html">Configurar</a></li>
 <li><a href="invoking.html">Arrancar</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Preguntas Realizadas a menudo</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Realizadas a menudo</a></li>
 </ul>
 
 </div></div>
@@ -231,7 +231,7 @@ aprender.</p>
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
