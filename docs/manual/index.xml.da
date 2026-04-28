@@ -90,7 +90,7 @@ Dokumentation</title>
     <page href="developer/">Dokumentation for udviklere</page>
     <page href="http://httpd.apache.org/docs-project/">Hjælp med dokumentationen</page>
     <page href="misc/">Andre noter</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

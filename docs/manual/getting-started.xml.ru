@@ -58,7 +58,7 @@ Locator (унифицированный указатель ресурса), ко
 обработан, а если нет, то какая ошибка произошла.
 Это говорит клиенту, что он должен делать с ответом.
 Вы можете прочитать о возможных кодах ответа на 
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">
+<a href="https://cwiki.apache.org/confluence/display/httpd/CommonHTTPStatusCodes">
 Вики HTTP-сервера Apache</a>.</p>
 
 <p>Детали транзакции и условия возникновения ошибки записываются
@@ -108,7 +108,7 @@ Locator (унифицированный указатель ресурса), ко
 <p>HTTP-сервер Apache настроен с помощью простых текстовых файлов.
 Эти файлы могут располагаться в разных местах, в зависимости от того как вы 
 установили сервер. Общие места расположения файлов можно найти в 
-<a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">Вики
+<a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">Вики
 HTTP-сервера Apache</a>. Если вы установили httpd из исходного кода,
 то расположение файлов конфигурации по умолчанию следующее:
 <code>/usr/local/apache2/conf</code>.
@@ -227,7 +227,7 @@ CSS-файлы и другие файлы, которые просто лежа�
 <li><a href="install.html">Установка</a></li>
 <li><a href="configuring.html">Настройка</a></li>
 <li><a href="invoking.html">Старт</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Часто задаваемые вопросы</a></li>
 </ul>
 
 </section>

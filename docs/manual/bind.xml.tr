@@ -111,7 +111,7 @@ Listen 192.0.2.5:8000
     </example>
 
     <p>Sorun giderme ipuçları için <a
-    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki
     sayfasına bakınız</a>.</p>
 
 </note>

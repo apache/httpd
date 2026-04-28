@@ -5496,7 +5496,7 @@ host</context>
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
     fois pour <code>www.example.com</code> -- voir <a
-    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
     foire aux questions sur ce sujet pour plus d'informations</a>).
     Par contre, si <directive>UseCanonicalName</directive> est définie à
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers

@@ -118,7 +118,7 @@
 
     <p>Puede encontrar más información sobre cómo
     solucionar problemas, en la sección de <a
-    href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> de Apache.</p>
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> de Apache.</p>
 </section>
 
 <section id="boot"><title>Iniciar Apache al Iniciar el Sistema</title>

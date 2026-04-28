@@ -1635,7 +1635,7 @@ CacheMaxExpire 21600
 	qu'il affiche les performances d&eacute;sir&eacute;es, nous d&eacute;couvrirons vite
 	qu'<em>1</em> syt&egrave;me &agrave; lui seul peut constituer un goulot
 	d'&eacute;tranglement. A ce sujet, la page du Wiki <a
-	href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
+	href="https://cwiki.apache.org/confluence/display/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
 	d&eacute;crit comment adapter un syst&egrave;me &agrave; mesure qu'il prend de
 	l'ampleur, ou comment personnaliser plusieurs syst&egrave;mes dans leur
 	ensemble.

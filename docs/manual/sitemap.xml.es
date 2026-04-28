@@ -65,7 +65,7 @@ Documentación del Servidor HTTP Apache</a>.</p>
 <page href="socache.html">Soporte de caché compartida de objetos</page>
 <page href="suexec.html">Soporte de suEXEC</page>
 <page href="dns-caveats.html">Problemas respecto de DNS y Apache</page>
-<page href="http://wiki.apache.org/httpd/FAQ">Preguntas Más Frecuentes</page>
+<page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Más Frecuentes</page>
 
 
 </category>

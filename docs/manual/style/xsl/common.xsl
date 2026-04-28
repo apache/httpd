@@ -716,7 +716,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <xsl:text> | </xsl:text>
 
-    <a href="http://wiki.apache.org/httpd/FAQ">
+    <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">
         <xsl:value-of select="$message[@id='faq']" />
     </a>
 

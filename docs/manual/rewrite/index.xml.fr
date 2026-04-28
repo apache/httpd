@@ -97,7 +97,7 @@ contr&ocirc;le d'acc&egrave;s</a></li>
 r&eacute;f&eacute;rence de mod_rewrite</a></seealso>
 <seealso><a href="../urlmapping.html">Mise en correspondance des URLs
 avec le syst&egrave;me de fichiers</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">wiki mod_rewrite
 </a></seealso>
 <seealso><a href="../glossary.html">Glossaire</a></seealso>
 

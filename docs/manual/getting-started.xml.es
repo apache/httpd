@@ -59,7 +59,7 @@ y, opcionalmente, un cuerpo del mensaje.
 El código de estado indica si una petición tuvo éxito, y si no, qué tipo de condición
 de error se ha dado. Esto le dice al cliente qué debe hacer con la respuesta. Puedes
 leer sobre los códigos de respuesta posibles en
-<a href="http://wiki.apache.org/httpd/CommonHTTPStatusCodes">La Wiki del Seridor
+<a href="https://cwiki.apache.org/confluence/display/httpd/CommonHTTPStatusCodes">La Wiki del Seridor
 Apache</a>.</p>
 
 <p>Detalles de la transacción, y cualquier condición de error, se escriben en los ficheros
@@ -109,7 +109,7 @@ href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain
 <p>El Servidor Apache HTTP se configura con ficheros de texto.
 Estos ficheros pueden estar ubicados en distintos sitios, dependiendo de 
 cómo se haya instalado exactamente tu servidor. Las ubicaciones comunes
-para estos ficheros pueden encontrarse en <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout">
+para estos ficheros pueden encontrarse en <a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">
 la wiki de httpd</a>. Is instalaste httpd desde el código fuente, la
 ubicación por defecto para estos ficheros se encuentra en
 <code>/usr/local/apache2/conf</code>. El fichero de configuración por
@@ -223,7 +223,7 @@ aprender.</p>
 <li><a href="install.html">Instalar</a></li>
 <li><a href="configuring.html">Configurar</a></li>
 <li><a href="invoking.html">Arrancar</a></li>
-<li><a href="http://wiki.apache.org/httpd/FAQ">Preguntas Realizadas a menudo</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Realizadas a menudo</a></li>
 </ul>
 
 </section>

@@ -84,11 +84,11 @@ Belgeleri</title>
 </category>
 
 <category id="other"><title>Diğer Konular</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Sıkça Sorulan Sorular</page>
     <page href="sitemap.html">Site Haritası</page>
     <page href="developer/">Geliştiriciler için Belgeler</page>
     <page href="misc/">Diğer Bilgiler</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

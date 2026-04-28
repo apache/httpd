@@ -110,7 +110,7 @@ Listen 192.0.2.5:8000
     </example>
 
     <p>Voir <a
-    href="http://wiki.apache.org/httpd/CouldNotBindToAddress">cette
+    href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">cette
     discussion dans le wiki</a> pour plus de détails à propos de la résolution
     de ce problème.</p>
 

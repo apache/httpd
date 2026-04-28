@@ -491,7 +491,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     situation n'est pas appelée à évoluer de sitôt.</p>
 
     <p>Une  <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
     de ces distributions tierces</a> est maintenue dans le wiki du
     serveur HTTP, et doit en refléter l'état actuel. Vous devrez
     cependant vous familiariser par vous-même avec la gestion du paquet

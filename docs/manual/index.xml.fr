@@ -94,13 +94,13 @@
 </category>
 
 <category id="other"><title>Autres sujets</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Foire Aux Questions</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Foire Aux Questions</page>
     <page href="sitemap.html">Plan du site</page>
     <page href="developer/">Documentation du développeur</page>
     <page href="http://httpd.apache.org/docs-project/">Aide pour la
     documentation</page>
     <page href="misc/">Autres notes</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

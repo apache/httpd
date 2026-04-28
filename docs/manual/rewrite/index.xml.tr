@@ -77,7 +77,7 @@
 
 <seealso><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
 </seealso><seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite wiki</a>
 </seealso><seealso><a href="../glossary.html">Terimler</a></seealso>
 
 </manualpage>

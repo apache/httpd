@@ -465,7 +465,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start
     soon.</p>
 
     <p>A <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
     of these third-party distributions</a> is maintained in the HTTP
     Server wiki, and should reflect the current state of these
     third-party distributions. However, you will need to familiarize

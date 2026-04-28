@@ -64,7 +64,7 @@
 
 <seealso><a href="../mod/mod_rewrite.html">mod_rewrite 参考手册</a></seealso>
 <seealso><a href="../urlmapping.html">从 URL 映射到文件系统</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></seealso>
 <seealso><a href="../glossary.html">术语</a></seealso>
 

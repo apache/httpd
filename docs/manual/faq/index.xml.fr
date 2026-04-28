@@ -29,7 +29,7 @@
 <summary>
 
     <p>La FAQ a &eacute;t&eacute; transf&eacute;r&eacute;e vers le <a
-    href="http://wiki.apache.org/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
 </summary>
 
 </manualpage>
