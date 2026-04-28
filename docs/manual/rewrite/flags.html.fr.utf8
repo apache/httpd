@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
@@ -37,6 +35,8 @@ des explications détaillées et des exemples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (échappement dans les références arrières)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (ne pas échapper
 l'espace en +)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
@@ -95,7 +95,7 @@ d'utilisation.</p>
 <p>Avec le drapeau [B], la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappe les caractères
 non-alphanumériques avant d'appliquer la transformation.</p>
 
-<p><code>mod_rewrite</code> doit supprimer les séquences d'échappement
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> doit supprimer les séquences d'échappement
 des URLs avant leur
 mise en correspondance avec le système de fichiers ; les séquences
 d'échappement sont donc supprimées des références arrières au moment où
@@ -173,7 +173,9 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>Ce drapeau est disponible à partir de la version 2.4.26 du serveur HTTP
 Apache.</p>
 
-<h3><a name="flag_bctls" id="flag_bctls">BCTLS</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a></h2>
 <p>Le drapeau [BCTLS] est similaire à [B], à la différence que seuls les espaces
 et les caractères de contrôle sont échappés. Il s'agit du même jeu de caractères
 rejetés lorsqu'ils sont copiés dans la chaîne de paramètres non codée.
@@ -186,9 +188,9 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 <p>Ce drapeau est disponible à partir de la version 2.4.57 du serveur HTTP
 Apache.</p>
 
-
-
-<h3><a name="flag_bne" id="flag_bne">BNE</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bne" id="flag_bne">BNE</a></h2>
 <p>Les caractères listés dans [BNE=...] sont exclus des listes de caractères
 correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas échappés.
 </p>
@@ -199,8 +201,6 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
  
 <p>Ce drapeau est disponible à partir de la version 2.4.57 du serveur HTTP
 Apache.</p>
-
-
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -286,12 +286,12 @@ partir de la version 2.4.47 du serveur HTTP Apache.</dd>
 <p>Voici un exemple :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine On
-RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
+RewriteRule "^/index\.html" "-" [CO=frontdoor:yes:.example.org:1440:/]</pre>
 
 
 <p>Dans l'exemple ci-dessus, la règle ne réécrit
 pas la requête. La cible de réécriture "-"
-indique à mod_rewrite de transmettre la requête sans
+indique à <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> de transmettre la requête sans
 modification. Par contre, il
 définit un cookie nommé 'frontdoor' avec une valeur 'yes'. Le cookie est
 valide pour tout hôte situé dans le domaine <code>.example.org</code>. Sa
@@ -373,8 +373,8 @@ avec une valeur de '1' si l'URI de la requête correspond à un fichier
 image. Cette variable d'environnement est ensuite utilisée pour exclure
 une telle requête du journal des accès.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
-CustomLog   "logs/access_log"    combined env=!image</pre>
+<pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)" "-" [E=image:1]<br />
+CustomLog "logs/access_log" combined env=!image</pre>
 
 
 <p>Notez que le même effet peut être obtenu à l'aide de la directive
@@ -402,7 +402,7 @@ Forbidden.</p>
 <p>La règle suivante va interdire la téléchargement de fichiers
 <code>.exe</code> depuis votre serveur.</p>
 
-<pre class="prettyprint lang-config">RewriteRule "\.exe"   "-" [F]</pre>
+<pre class="prettyprint lang-config">RewriteRule "\.exe" "-" [F]</pre>
 
 
 <p>Cet exemple utilise la syntaxe "-" pour la cible de réécriture, ce
@@ -423,7 +423,7 @@ disponible auparavant ne l'est plus actuellement.</p>
 <p>Comme dans le cas du drapeau [F], on utilise en général la syntaxe
 "-" pour la cible de réécriture lorsqu'on utilise le drapeau [G] :</p>
 
-<pre class="prettyprint lang-config">RewriteRule "oldproduct"   "-" [G,NC]</pre>
+<pre class="prettyprint lang-config">RewriteRule "oldproduct" "-" [G,NC]</pre>
 
 
 <p>Lorsqu'on utilise [G], [L] est implicite - c'est à dire que la
@@ -437,7 +437,7 @@ spécifié. Par exemple, on peut utiliser ce drapeau pour forcer
 l'interprétation de tous les fichiers sans extension par le gestionnaire
 php :</p>
 
-<pre class="prettyprint lang-config">RewriteRule "!\."  "-" [H=application/x-httpd-php]</pre>
+<pre class="prettyprint lang-config">RewriteRule "!\." "-" [H=application/x-httpd-php]</pre>
 
 
 <p>
@@ -507,7 +507,7 @@ la requête concerne déjà <code>index.php</code>, la directive <code class="di
 
 <pre class="prettyprint lang-config">RewriteBase "/"
 RewriteCond "%{REQUEST_URI}" !=/index.php
-RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
+RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -561,10 +561,24 @@ bien que <code>.JPG</code> seront acceptés.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a></h2>
-<p>Par défaut, les caractères spéciaux, comme <code>&amp;</code> et
-<code>?</code>, sont convertis en leur équivalent hexadécimal pour les règles
-qui génèrent des redirections externes. Le drapeau [NE] permet d'éviter cette
-conversion.</p>
+<p>Par défaut, lorsqu’une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> résulte en une redirection externe,
+tout caractère dans la sortie qui ne fait pas partie de l’ensemble sûr suivant
+est converti en son code hexa (encodage avec caractère pourcentage) :</p>
+
+<ul>
+  <li>Caractères alphanumériques : <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>Caractères spéciaux : <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>Par exemple, <code>#</code> est converti en <code>%23</code> et
+<code>?</code> en <code>%3F</code>. Le caractère <code>%</code>  est aussi
+échappé (vers <code>%25</code>), ce qui signifie que tout caractère codé avec
+pourcentage déjà présent dans la substitution sera doublement encodé.</p>
+
+<p>Utiliser le drapeau [NE] empêche cet échappement, ce qui permet de
+transmettre sans modification vers l’URL de redirection des caractères comme
+<code>#</code> et <code>?</code>.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
 
@@ -815,10 +829,10 @@ correspond pas à un fichier existant.</p>
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
 # Si c'est la cas, on saute les deux règles de réécriture suivantes
-RewriteRule ".?"                  "-" [S=2]
+RewriteRule ".?" "-" [S=2]
 
-RewriteRule "(.*\.gif)"           "images.php?$1"
-RewriteRule "(.*\.html)"          "docs.php?$1"</pre>
+RewriteRule "(.*\.gif)" "images.php?$1"
+RewriteRule "(.*\.html)" "docs.php?$1"</pre>
 
 
 
@@ -837,15 +851,15 @@ RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
 # Créer une structure conditionnelle if-then-else en sautant 3 lignes si nous
 # avions l'intention d'aller au bloc "else".
-RewriteRule ".?"                  "-" [S=3]
+RewriteRule ".?" "-" [S=3]
 
 # Si le fichier existe, alors :
-    RewriteRule "(.*\.gif)"  "images.php?$1"
+RewriteRule "(.*\.gif)" "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
     # Passer le bloc "else".
-    RewriteRule ".?"         "-" [S=1]
+    RewriteRule ".?" "-" [S=1]
 # ELSE...
-    RewriteRule "(.*)"       "404.php?file=$1"
+RewriteRule "(.*)" "404.php?file=$1"
 # END</pre>
 
 
@@ -863,7 +877,7 @@ du code source Perl en tant que plein texte, s'il est requis d'une
 certaine manière :</p>
 
 <pre class="prettyprint lang-config"># Sert les fichier .pl en tant que plein texte
-RewriteRule "\.pl$"  "-" [T=text/plain]</pre>
+RewriteRule "\.pl$" "-" [T=text/plain]</pre>
 
 
 <p>Ou encore, si vous possédez une caméra qui produit des fichiers
@@ -871,7 +885,7 @@ images jpeg sans extension, vous pouvez forcer le renvoi de ces images
 avec le type MIME correct en se basant sur le nom du fichier :</p>
 
 <pre class="prettyprint lang-config"># Les fichiers dont le nom contient 'IMG' sont des images jpg.
-RewriteRule "IMG"  "-" [T=image/jpg]</pre>
+RewriteRule "IMG" "-" [T=image/jpg]</pre>
 
 
 <p>Notez cependant qu'il s'agit d'un exemple trivial, et que le problème
@@ -883,11 +897,11 @@ solution alternative.</p>
 <p>
 Dans un contexte de niveau répertoire, n'utilisez que <code>-</code>
 (tiret) comme substitution, <em>dans toute la séquence de réécriture de
-mod_rewrite</em>, sinon le type MIME défini avec ce drapeau
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></em>, sinon le type MIME défini avec ce drapeau
 sera perdu suite à un retraitement interne (y compris les séquences de
-réécriture suivantes de mod_rewrite). Dans ce contexte, vous pouvez
+réécriture suivantes de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>). Dans ce contexte, vous pouvez
 utiliser le drapeau <code>L</code> pour terminer la séquence
-<em>courante</em> de réécriture de mod_rewrite.</p>
+<em>courante</em> de réécriture de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -906,7 +920,7 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     d’une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
 
-    <p>Disponible à partir de la version 2.4.60 du serveur HTTP Apache.</p>    
+    <p>Disponible à partir de la version 2.4.60 du serveur HTTP Apache.</p>
  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unc" id="flag_unc">UNC</a></h2>

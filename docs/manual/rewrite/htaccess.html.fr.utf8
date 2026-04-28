@@ -26,13 +26,11 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/htaccess.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les changements apportés aux règles
-lorsqu'on utilise mod_rewrite dans les fichiers .htaccess, et comment
+lorsqu'on utilise <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> dans les fichiers .htaccess, et comment
 travailler avec ces changements.</p>
 
 </div>

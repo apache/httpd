@@ -30,16 +30,14 @@ l'authentification à base de condensés</h1>
 <a href="../ko/programs/htdigest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htdigest.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p><code>htdigest</code> permet de créer et maintenir les fichiers
+    <p><code class="program"><a href="../programs/htdigest.html">htdigest</a></code> permet de créer et maintenir les fichiers
     textes dans lesquels sont stockés des noms d'utilisateurs, des
     domaines de protection (realms) et des mots de passe pour
     l'authentification à base de condensés des utilisateurs HTTP.
     L'accès aux ressources du serveur HTTP Apache peut être limité aux
     seuls utilisateurs enregistrés dans les fichiers créés par
-    <code>htdigest</code>.</p>
+    <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
 
     <p>Cette page de manuel ne décrit que les arguments de la ligne de
     commande. Pour plus de détails à propos des directives nécessaires à

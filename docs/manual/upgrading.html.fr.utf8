@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
@@ -515,6 +513,9 @@ Require ip 127.0.0.1</pre>
       un niveau de journalisation approprié pour le module
       <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>. Voir aussi la section <a href="mod/mod_rewrite.html#logging">journalisation de
       mod_rewrite</a>.</li>
+
+      <li>Le symbole <code>&lt;set&gt;</code> de <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>
+      n’effectue plus le décodage d’entité sur la valeur définie.</li>
 
     </ul>
 

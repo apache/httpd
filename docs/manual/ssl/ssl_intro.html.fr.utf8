@@ -27,8 +27,6 @@
 <a href="../fr/ssl/ssl_intro.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce chapitre en guise d'introduction est destiné aux lecteurs pour lesquels
@@ -430,7 +428,7 @@ l'établissement de la session protocolaire.</p>
 	ajout du bourrage de bloc pour le chiffrement de bloc, standardisation
 	de l'ordonnancement des messages et plus de messages d'alerte.</td>
     </tr>
-	<tr><td>TLS v1.1</td>
+    <tr><td>TLS v1.1</td>
         <td>Standard proposé pour l'Internet (de l'IETF) [<a href="#TLS11">TLS11</a>]</td>
         <td>Mise à jour de TLS 1.0 pour la protection contre les
 	attaques de type Cipher block chaining (CBC).</td>
@@ -440,6 +438,13 @@ l'établissement de la session protocolaire.</p>
         <td>Mise à jour de TLS 1.1 rendant les condensés MD5 obsolètes,
 	et introduisant une incompatibilité avec SSL ce qui interdit toute
 	négociation en vue d'une utilisation de SSLv2.</td>
+    </tr>
+    <tr><td>TLS v1.3</td>
+        <td>Standard pour l'Internet (de l'IETF) [<a href="#TLS13">TLS13</a>]</td>
+	<td>Révision majeure de TLS 1.2 supprimant la cryptographie
+	patrimoniale, assurant une confidentialité absolue et remaniant le
+	protocole de négociation pour une sécurité et des performances
+	accrues.</td>
     </tr>
     </table>
 
@@ -658,9 +663,9 @@ l'Internet Engineering Task Force (IETF).</p>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
-<dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,
-1996. Voir <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> pour diverses autres productions de Bruce
-Schneier.</dd>
+<dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley, 1996. Voir
+<a href="https://www.schneier.com/">https://www.schneier.com/</a> pour
+diverses autres productions de Bruce Schneier.</dd>
 
 <dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
 <dd>ITU-T Recommendation X.208, <q>Specification of Abstract Syntax Notation
@@ -674,7 +679,7 @@ Framework</q>. A titre de référence, voir <a href="http://en.wikipedia.org/wik
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>,
-RSA Laboratories Technical Notes, Voir <a href="http://www.rsasecurity.com/rsalabs/pkcs/">http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+RSA Laboratories Technical Notes, Voir <a href="https://en.wikipedia.org/wiki/PKCS">https://en.wikipedia.org/wiki/PKCS</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
@@ -683,7 +688,7 @@ Voir par exemple <a href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. Voir <a href="http://www.netscape.com/eng/ssl3/draft302.txt">http://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
+Version 3.0</q>, 1996. Voir <a href="https://datatracker.ietf.org/doc/html/rfc6101">RFC 6101</a>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
@@ -696,6 +701,10 @@ Version 3.0</q>, 1996. Voir <a href="http://www.netscape.com/eng/ssl3/draft302.t
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>Le protocole TLS Version 1.2</q>,
 2008. Voir <a href="http://tools.ietf.org/html/rfc5246">http://tools.ietf.org/html/rfc5246</a>.</dd>
+
+<dt><a id="TLS13" name="TLS13">[TLS13]</a></dt>
+<dd><q>Le protocole Transport Layer Security (TLS) version 1.3</q>,
+2018. Voir <a href="https://tools.ietf.org/html/rfc8446">https://tools.ietf.org/html/rfc8446</a>.</dd>
 </dl>
 </div></div>
 <div class="bottomlang">
