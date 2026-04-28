@@ -741,7 +741,7 @@ DocumentRoot "/www/htdocs"
       <title>Lingering Close</title>
 
       <p>As discussed in <a
-      href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      href="https://datatracker.ietf.org/doc/html/draft-ietf-http-connection-00">
       draft-ietf-http-connection-00.txt</a> section 8, in order for
       an HTTP server to <strong>reliably</strong> implement the
       protocol, it needs to shut down each direction of the

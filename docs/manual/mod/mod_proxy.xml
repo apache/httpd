@@ -1257,7 +1257,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>Protocol accepted by <module>mod_proxy_http</module> or
         <module>mod_proxy_wstunnel</module> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
-        <a href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 - Upgrade</a>).
+        <a href="https://datatracker.ietf.org/doc/html/rfc9110#name-upgrade">RFC 9110 - Upgrade</a>).
         See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>
@@ -2022,7 +2022,7 @@ header for proxied requests</description>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
     proxy requests along a chain of proxy servers.  See <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1), section
+    href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>

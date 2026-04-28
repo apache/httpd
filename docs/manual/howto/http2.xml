@@ -40,8 +40,8 @@
     of HTTP, the semantics. There are still request and responses and headers and all that. So, if
     you already know HTTP/1, you know 95% about HTTP/2 as well.</p>
     <p>There has been a lot written about HTTP/2 and how it works. The most normative is, of course,
-    its <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> 
-    (<a href="http://httpwg.org/specs/rfc7540.html">also available in more readable formatting, YMMV</a>).
+    its <a href="https://datatracker.ietf.org/doc/html/rfc7540">RFC 7540</a> 
+    (<a href="https://datatracker.ietf.org/doc/html/rfc7540">also available in more readable formatting, YMMV</a>).
     So, there you'll find the nuts and bolts.</p>
     <p>But, as RFC do, it's not really a good thing to read first. It's better to first understand
     <em>what</em> a thing wants to do and then read the RFC about <em>how</em> it is done. A much
@@ -53,8 +53,8 @@
         <li>HTTP/2 is a <strong>binary protocol</strong>, as opposed to HTTP 1.1 that is plain text. The latter is meant to be human readable (for example sniffing network traffic) meanwhile the former is not. More info in the official FAQ <a href="https://http2.github.io/faq/#why-is-http2-binary">question</a>.</li>
         <li><strong>h2</strong> is HTTP/2 over TLS (protocol negotiation via ALPN).</li>
         <li><strong>h2c</strong> is HTTP/2 over TCP.</li>
-        <li>A <strong>frame</strong> is the smallest unit of communication within an HTTP/2 connection, consisting of a header and a variable-length sequence of octets structured according to the frame type. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer"> section</a>.</li>
-        <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer"> section</a>.</li>
+        <li>A <strong>frame</strong> is the smallest unit of communication within an HTTP/2 connection, consisting of a header and a variable-length sequence of octets structured according to the frame type. More info in the official documentation <a href="https://datatracker.ietf.org/doc/html/rfc7540"> section</a>.</li>
+        <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="https://datatracker.ietf.org/doc/html/rfc7540"> section</a>.</li>
         <li>HTTP/2 is able to run <strong>multiple streams</strong> of data over the same TCP connection, avoiding the classic HTTP 1.1 head of blocking slow request and avoiding to re-instantiate TCP connections for each request/response (KeepAlive patched the problem in HTTP 1.1 but did not fully solve it).</li>
     </ul>
   </section>
@@ -129,7 +129,7 @@ Protocols http/1.1
     cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
     that is done while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
     long debugging sessions! If you want to be sure about the cipher suite to choose please avoid
-    the ones listed in the <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">HTTP/2 TLS reject list</a>.</p>
+    the ones listed in the <a href="https://datatracker.ietf.org/doc/html/rfc7540">HTTP/2 TLS reject list</a>.</p>
     </note>
     <p>The order of protocols mentioned is also relevant. By default, the first one is the 
     most preferred protocol. When a client offers multiple choices, the one most to the 
@@ -294,7 +294,7 @@ H2Push Off
     <title>Early Hints</title>
     <p>An alternative to PUSHing resources is to send <code>Link</code> headers to the
     client before the response is even ready. This uses the HTTP feature called "Early Hints" and
-    is described in <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    is described in <a href="https://datatracker.ietf.org/doc/html/rfc8297">RFC 8297</a>.</p>
     <p>In order to use this, you need to explicitly enable it on the server via</p>
     <highlight language="config">
 H2EarlyHints on

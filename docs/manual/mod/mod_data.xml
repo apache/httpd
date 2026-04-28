@@ -31,7 +31,7 @@
 
 <summary>
     <p>This module provides the ability to convert a response into
-    an <a href="http://tools.ietf.org/html/rfc2397">RFC2397 data URL</a>.
+    an <a href="https://datatracker.ietf.org/doc/html/rfc2397">RFC2397 data URL</a>.
     </p>
 
     <p>Data URLs can be embedded inline within web pages using something
