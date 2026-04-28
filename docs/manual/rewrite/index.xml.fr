@@ -60,16 +60,16 @@
       des  <a href="flags.html">drapeaux</a> que vous attachez aux
       r&egrave;gles</p>
 
-	<p>mod_rewrite &eacute;tant tr&egrave;s puissant, il peut par
+	<p><module>mod_rewrite</module> &eacute;tant tr&egrave;s puissant, il peut par
 	cons&eacute;quent &ecirc;tre tr&egrave;s complexe. Ce document
 	compl&egrave;te la <a
       href="../mod/mod_rewrite.html">documentation de
       r&eacute;f&eacute;rence du module mod_rewrite</a>, et est sens&eacute; all&eacute;ger un
       peu cette complexit&eacute;, et pr&eacute;senter des exemples largement
       comment&eacute;s, ainsi que des situations courantes que vous
-      pourrez traiter avec mod_rewrite. Mais nous voulons aussi vous
+      pourrez traiter avec <module>mod_rewrite</module>. Mais nous voulons aussi vous
       montrer des situations o&ugrave; vous ne devrez pas utiliser
-      mod_rewrite, et lui pr&eacute;f&eacute;rer d'autres
+      <module>mod_rewrite</module>, et lui pr&eacute;f&eacute;rer d'autres
       fonctionnalit&eacute;s standard d'Apache, &eacute;vitant ainsi
       d'entrer dans une complexit&eacute; inutile.</p>
 
