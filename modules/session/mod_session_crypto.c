@@ -69,8 +69,6 @@ typedef struct {
 #define AP_SIPHASH_KSIZE    APR_SIPHASH_KSIZE
 #define ap_siphash24_auth   apr_siphash24_auth
 
-#define ap_crypto_equals    apr_crypto_equals
-
 #else
 
 #define AP_SIPHASH_DSIZE    8
@@ -163,21 +161,6 @@ static void ap_siphash24_auth(unsigned char out[AP_SIPHASH_DSIZE],
     apr_uint64_t h;
     h = ap_siphash24(src, len, key);
     U64TO8_LE(out, h);
-}
-
-static int ap_crypto_equals(const void *buf1, const void *buf2,
-                            apr_size_t size)
-{
-    const unsigned char *p1 = buf1;
-    const unsigned char *p2 = buf2;
-    unsigned char diff = 0;
-    apr_size_t i;
-
-    for (i = 0; i < size; ++i) {
-        diff |= p1[i] ^ p2[i];
-    }
-
-    return 1 & ((diff - 1) >> 8);
 }
 
 #endif
@@ -404,7 +387,7 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_t *f,
          * the MAC and comparing it (timing safe) with the one in the payload.
          */
         compute_auth(slider, len, passphrase, passlen, auth);
-        if (!ap_crypto_equals(auth, decoded, AP_SIPHASH_DSIZE)) {
+        if (!ap_memeq_timingsafe(auth, decoded, AP_SIPHASH_DSIZE)) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, APLOGNO(10006)
                     "auth does not match, skipping");
             continue;
