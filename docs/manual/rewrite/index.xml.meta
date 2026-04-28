@@ -7,8 +7,13 @@
   <relpath>..</relpath>
 
   <variants>
+    <variant>de</variant>
     <variant>en</variant>
+    <variant>es</variant>
     <variant outdated="yes">fr</variant>
+    <variant>ja</variant>
+    <variant>ko</variant>
+    <variant>tr</variant>
     <variant outdated="yes">tr</variant>
     <variant outdated="yes">zh-cn</variant>
   </variants>

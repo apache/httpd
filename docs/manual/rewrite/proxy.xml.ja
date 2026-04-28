@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite によるプロキシ</title>
+
+<summary>
+
+<p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+RewriteRule の [P] フラグを使用して他のサーバにコンテンツをプロキシする方法を
+説明します。一般的なシナリオを説明するレシピがいくつか提供されています。</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+<!--<seealso><a href="proxy.html">プロキシ</a></seealso>-->
+<seealso><a href="rewritemap.html">RewriteMap の使用</a></seealso>
+<seealso><a href="advanced.html">高度なテクニック</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>mod_rewrite によるコンテンツのプロキシ</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+    <p>
+    <module>mod_rewrite</module> は [P] フラグを提供しており、URL を
+    <module>mod_proxy</module> 経由で他のサーバに渡すことができます。ここでは
+    2 つの例を示します。1 つ目の例では、URL を直接別のサーバに渡し、
+    ローカル URL であるかのように提供します。もう 1 つの例では、
+    見つからないコンテンツをバックエンドサーバにプロキシします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>単純に URL を別のサーバにマッピングするには、次のように
+      [P] フラグを使用します:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
+</highlight>
+
+   <p>2 つ目の例では、リソースがローカルに見つからない場合にのみ
+   リクエストをプロキシします。これは、あるサーバから別のサーバに
+   移行中で、すべてのコンテンツが移行済みかどうかわからない場合に
+   非常に便利です。</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+    </dd>
+
+    <dt>議論:</dt>
+
+    <dd><p>どちらの場合も、バックエンドから発行されるリダイレクトが
+    正しくクライアントに渡されるように <directive
+    module="mod_proxy">ProxyPassReverse</directive> ディレクティブを
+    追加しています。</p>
+
+    <p>可能な限り <module>mod_rewrite</module> よりも <directive
+    module="mod_proxy">ProxyPass</directive> や <directive
+    module="mod_proxy">ProxyPassMatch</directive> の使用を検討してください。</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1933438 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache mod_rewrite</title>
+
+<summary>
+
+    <p><module>mod_rewrite</module> bietet eine Möglichkeit, eingehende
+    URL-Anfragen dynamisch zu modifizieren, basierend auf Regeln mit
+    <a href="intro.html#regex">regulären Ausdrücken</a>. Dies ermöglicht
+    es Ihnen, beliebige URLs auf Ihre interne URL-Struktur in jeder
+    gewünschten Weise abzubilden.</p>
+
+      <p>Es unterstützt eine unbegrenzte Anzahl von Regeln und eine
+      unbegrenzte Anzahl angehängter Regelbedingungen für jede Regel,
+      um einen wirklich flexiblen und leistungsfähigen Mechanismus zur
+      URL-Manipulation bereitzustellen. Die URL-Manipulationen können
+      von verschiedenen Tests abhängen: Servervariablen, Umgebungsvariablen,
+      HTTP-Header, Zeitstempel, externe Datenbankabfragen und verschiedene
+      andere externe Programme oder Handler können verwendet werden, um
+      eine granulare URL-Zuordnung zu erreichen.</p>
+
+      <p>Umschreibungsregeln können auf vollständige URLs angewendet werden,
+      einschließlich des Pfadinfo- und Query-String-Teils, und können im
+      Server-Kontext (<code>httpd.conf</code>), im VirtualHost-Kontext
+      (<directive type="section" module="core">VirtualHost</directive>-Blöcke)
+      oder im Verzeichniskontext (<code>.htaccess</code>-Dateien und
+      <directive type="section" module="core">Directory</directive>-Blöcke)
+      verwendet werden. Das umgeschriebene Ergebnis kann zu weiteren Regeln,
+      interner Unterverarbeitung, externer Anfrage-Umleitung oder
+      Proxy-Weiterleitung führen, abhängig davon, welche
+      <a href="flags.html">Flags</a> Sie an die Regeln anhängen.</p>
+
+      <p>Da <module>mod_rewrite</module> so leistungsfähig ist, kann es
+      tatsächlich recht komplex sein. Dieses Dokument ergänzt die
+      <a href="../mod/mod_rewrite.html">Referenzdokumentation</a> und
+      versucht, einen Teil dieser Komplexität zu mildern und hochgradig
+      kommentierte Beispiele für gängige Szenarien bereitzustellen, die Sie
+      mit <module>mod_rewrite</module> bewältigen können. Wir versuchen aber
+      auch zu zeigen, wann Sie <module>mod_rewrite</module> nicht verwenden
+      sollten, und stattdessen andere Standard-Apache-Funktionen nutzen
+      sollten, um diese unnötige Komplexität zu vermeiden.</p>
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite-Referenzdokumentation</a></li>
+<li><a href="intro.html">Einführung in reguläre Ausdrücke und mod_rewrite</a></li>
+<li><a href="flags.html">RewriteRule-Flags</a></li>
+<li><a href="rewritemap.html">Verwendung von RewriteMap</a></li>
+<li><a href="avoid.html">Wann man mod_rewrite <strong>NICHT</strong> verwenden sollte</a></li>
+<li><a href="remapping.html">Verwendung von mod_rewrite zur Umleitung und Neuzuordnung von URLs</a></li>
+<li><a href="access.html">Verwendung von mod_rewrite zur Zugriffskontrolle</a></li>
+<li><a href="vhosts.html">Dynamische virtuelle Hosts mit mod_rewrite</a></li>
+<li><a href="proxy.html">Dynamisches Proxying mit mod_rewrite</a></li>
+<li><a href="advanced.html">Fortgeschrittene Techniken</a></li>
+<li><a href="tech.html">Technische Details</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite-Referenzdokumentation</a></seealso>
+<seealso><a href="../urlmapping.html">URLs dem Dateisystem zuordnen</a></seealso>
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite-Wiki</a></seealso>
+<seealso><a href="../glossary.html">Glossar</a></seealso>
+
+</manualpage>

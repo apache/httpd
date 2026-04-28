@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933071 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="vhosts.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>使用 mod_rewrite 实现动态批量虚拟主机</title>
+
+<summary>
+
+<p>本文档是 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了如何使用
+<module>mod_rewrite</module> 来创建动态配置的虚拟主机。</p>
+
+<note type="warning"><module>mod_rewrite</module> 通常不是配置虚拟主机的最佳方式。
+你应该首先考虑<a href="../vhosts/mass.html">其他替代方案</a>，
+然后再求助于 mod_rewrite。另请参阅"<a href="avoid.html#vhosts">如何避免使用
+mod_rewrite</a>"文档。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 简介</a></seealso>
+<seealso><a href="remapping.html">重定向和重映射</a></seealso>
+<seealso><a href="access.html">访问控制</a></seealso>
+<!--<seealso><a href="vhosts.html">虚拟主机</a></seealso>-->
+<seealso><a href="proxy.html">代理</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高级技术</a></seealso>
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="per-hostname">
+
+  <title>任意主机名的虚拟主机</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+    <p>我们希望为域中解析的每个主机名自动创建虚拟主机，
+    而无需创建新的 VirtualHost 配置段。</p>
+
+    <p>在本配置方案中，我们假设对每个用户使用主机名
+    <code><strong>SITE</strong>.example.com</code>，
+    并从 <code>/home/<strong>SITE</strong>/www</code> 提供其内容。
+    但是，我们希望 <code>www.example.com</code> 不包含在此映射中。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1
+</highlight></dd>
+
+<dt>讨论</dt>
+    <dd>
+
+    <note type="warning">你需要注意 DNS 解析 - Apache
+    不处理名称解析。你需要为每个主机名创建 CNAME 记录，
+    或者创建 DNS 通配符记录。创建 DNS 记录超出了本文档的范围。</note>
+
+<p>内部 <code>tolower</code> RewriteMap 指令用于确保所使用的主机名全部为小写，
+以避免目录结构中的歧义。</p>
+
+<p>在 <directive module="mod_rewrite">RewriteCond</directive>
+中使用的括号会被捕获到反向引用 <code>%1</code>、<code>%2</code> 等中，
+而在 <directive module="mod_rewrite">RewriteRule</directive>
+中使用的括号会被捕获到反向引用 <code>$1</code>、<code>$2</code> 等中。</p>
+
+<p>第一个 <code>RewriteCond</code> 检查主机名是否以 <code>www.</code> 开头，
+如果是，则跳过重写。</p>
+
+<p>
+与本文档中讨论的许多技术一样，<module>mod_rewrite</module>
+确实不是完成此任务的最佳方式。你应该考虑使用
+<module>mod_vhost_alias</module>，因为它能更优雅地处理静态文件之外的任何内容，
+包括动态内容和 Alias 解析。
+</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="simple.rewrite"><title>使用
+    <module>mod_rewrite</module> 的动态虚拟主机</title>
+
+    <p>此 <code>httpd.conf</code> 摘录与<a href="#per-hostname">第一个示例</a>
+    实现相同的功能。前半部分与上面对应的部分非常相似，
+    只是为了向后兼容和使 <module>mod_rewrite</module> 部分正常工作而做了一些更改；
+    后半部分配置 <module>mod_rewrite</module> 来完成实际工作。</p>
+
+    <p>因为 <module>mod_rewrite</module> 在其他 URI 转换模块
+    （例如 <module>mod_alias</module>）之前运行，
+    必须告知 <module>mod_rewrite</module> 显式忽略那些本应由这些模块处理的 URL。
+    而且，由于这些规则会绕过任何 <code>ScriptAlias</code> 指令，
+    我们必须让 <module>mod_rewrite</module> 显式执行这些映射。</p>
+
+<highlight language="config">
+# get the server name from the Host: header
+UseCanonicalName Off
+
+# splittable logs
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog "logs/access_log" vcommon
+
+&lt;Directory "/www/hosts"&gt;
+    # ExecCGI is needed here because we can't force
+    # CGI execution in the way that ScriptAlias does
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# a ServerName derived from a Host: header may be any case at all
+RewriteMap  lowercase  "int:tolower"
+
+## deal with normal documents first:
+# allow Alias /icons/ to work - repeat for other aliases
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
+# allow CGIs to work
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
+# do the magic
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
+
+## and now deal with CGIs - we have to force a handler
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]
+</highlight>
+
+</section>
+
+<section id="xtra-conf"><title>使用独立的虚拟主机配置文件</title>
+
+    <p>此方案使用更高级的 <module>mod_rewrite</module> 功能，
+    从独立的配置文件中计算从虚拟主机到文档根目录的转换。
+    这提供了更大的灵活性，但需要更复杂的配置。</p>
+
+    <p><code>vhost.map</code> 文件应类似于：</p>
+
+<example>
+customer-1.example.com  /www/customers/1<br />
+customer-2.example.com  /www/customers/2<br />
+# ...<br />
+customer-N.example.com  /www/customers/N<br />
+</example>
+
+    <p><code>httpd.conf</code> 应包含以下内容：</p>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap   lowercase  "int:tolower"
+
+# define the map file
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
+
+# deal with aliases as above
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+# this does the file-based remap
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
+
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
+</highlight>
+
+</section>
+
+</manualpage>

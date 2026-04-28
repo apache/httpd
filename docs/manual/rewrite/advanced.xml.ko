@@ -1,0 +1,352 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="advanced.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite 고급 기술</title>
+
+<summary>
+
+<p>이 문서는 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">참조 문서</a>를 보충합니다.
+<module>mod_rewrite</module>를 사용한 몇 가지 고급 기술을
+제공합니다.</p>
+
+<note type="warning">이 예제들 중 많은 것이 특정 서버 설정에서
+그대로 작동하지 않을 수 있으므로, 단순히 예제를 복사하여
+설정에 붙여넣기보다는 이해하는 것이 중요합니다.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 소개</a></seealso>
+<seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+<seealso><a href="access.html">접근 제어</a></seealso>
+<seealso><a href="vhosts.html">가상 호스트</a></seealso>
+<seealso><a href="proxy.html">프록시</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap 사용하기</a></seealso>
+<!--<seealso><a href="advanced.html">고급 기술</a></seealso>-->
+<seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+<section id="sharding">
+
+  <title>여러 백엔드에 대한 URL 기반 샤딩</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p>서버 부하나 저장 공간을 분산하는 일반적인 기술을
+      "샤딩"이라고 합니다. 이 방법을 사용할 때 프론트엔드
+      서버는 URL을 사용하여 사용자 또는 객체를 별도의
+      백엔드 서버에 일관되게 "샤딩"합니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p>사용자에서 대상 서버로의 매핑이 외부 맵 파일에
+      유지됩니다. 다음과 같은 형태입니다:</p>
+
+<example>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... 등등
+</example>
+
+  <p>이것을 <code>map.users-to-hosts</code> 파일에 넣습니다.
+    목적은 다음을 매핑하는 것입니다;</p>
+
+<example>
+/u/user1/anypath
+</example>
+
+  <p>위의 것을 다음으로:</p>
+
+<example>
+http://physical_host_of_user1/u/user/anypath
+</example>
+
+      <p>따라서 모든 URL 경로가 모든 백엔드 물리적 호스트에서
+      유효할 필요가 없습니다. 다음 규칙 세트는 맵 파일의
+      도움으로 이를 수행하며, 사용자가 맵에 항목이 없는
+      경우 server0이 기본 서버로 사용됩니다:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+  </dl>
+
+  <p>이 지시어의 구문에 대한 자세한 내용은
+  <directive module="mod_rewrite">RewriteMap</directive>
+  문서와 <a href="./rewritemap.html">RewriteMap 사용법</a>을
+  참조하십시오.</p>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>실시간 콘텐츠 재생성</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p>콘텐츠를 동적으로 생성하되, 한 번 생성되면
+      정적으로 저장하고자 합니다. 이 규칙은 정적 파일의
+      존재를 확인하고, 없으면 생성합니다. 정적 파일은
+      원하는 경우 (예를 들어 cron을 통해) 주기적으로
+      제거할 수 있으며, 필요에 따라 재생성됩니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      이는 다음 규칙 세트로 수행됩니다:
+
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p><code>-U</code> 연산자는 테스트 문자열(이 경우
+    <code>REQUEST_URI</code>)이 유효한 URL인지
+    판단합니다. 이는 서브요청을 통해 수행됩니다.
+    이 서브요청이 실패하면 - 즉, 요청된 자원이 존재하지
+    않으면 - 이 규칙은 CGI 프로그램
+    <code>/regenerate_page.cgi</code>를 호출하여
+    요청된 자원을 생성하고 문서 디렉토리에 저장하므로,
+    다음에 요청될 때 정적 복사본을 제공할 수 있습니다.</p>
+
+    <p>이 방식으로 자주 업데이트되지 않는 문서를 정적
+    형태로 제공할 수 있습니다. 문서를 새로고침해야 하는
+    경우 문서 디렉토리에서 삭제할 수 있으며, 다음에
+    요청될 때 재생성됩니다.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="load-balancing">
+
+  <title>부하 분산</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p><module>mod_rewrite</module>를 사용하여 여러 서버에
+      무작위로 부하를 분산하고자 합니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p><directive module="mod_rewrite">RewriteMap</directive>과
+      서버 목록을 사용하여 이를 수행합니다.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
+</highlight>
+
+<p><code>serverlist.txt</code>에는 서버 목록이 포함됩니다:</p>
+
+<example>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</example>
+
+<p>특정 서버가 다른 서버보다 더 많은 부하를 받도록 하려면
+목록에 해당 서버를 더 많이 추가하십시오.</p>
+
+   </dd>
+
+   <dt>토론</dt>
+   <dd>
+<p>Apache에는 부하 분산 모듈인
+<module>mod_proxy_balancer</module>가 포함되어 있으며,
+이것은 <module>mod_rewrite</module>를 사용하여 조합할 수 있는
+어떤 것보다 훨씬 더 유연하고 기능이 풍부합니다.</p>
+   </dd>
+  </dl>
+
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>구조화된 사용자 디렉토리</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p>수천 명의 사용자가 있는 일부 사이트는 구조화된
+      홈 디렉토리 레이아웃을 사용합니다. <em>즉,</em> 각
+      홈 디렉토리는 사용자 이름의 첫 번째 문자로 시작하는
+      하위 디렉토리에 있습니다. 예를 들어
+      <code>/~larry/anypath</code>는
+      <code>/home/<strong>l</strong>/larry/public_html/anypath</code>이고
+      <code>/~waldo/anypath</code>는
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>입니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p>위의 레이아웃으로 물결표 URL을 확장하기 위해
+      다음 규칙 세트를 사용합니다.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>앵커 리다이렉트</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+    <p>기본적으로 HTML 앵커로의 리다이렉트는 작동하지
+    않습니다. <module>mod_rewrite</module>가 <code>#</code>
+    문자를 이스케이프하여 <code>%23</code>으로 변환하기
+    때문입니다. 이로 인해 리다이렉션이 중단됩니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p><code>RewriteRule</code>에 <code>[NE]</code>
+      플래그를 사용합니다. NE는 No Escape를 의미합니다.</p>
+    </dd>
+
+    <dt>토론:</dt>
+    <dd>이 기술은 <module>mod_rewrite</module>가 기본적으로
+    URL 인코딩하는 다른 특수 문자에도 물론 적용됩니다.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>시간 기반 재작성</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p><module>mod_rewrite</module>를 사용하여 시간대에 따라
+      다른 콘텐츠를 제공하고자 합니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p>재작성 조건에 사용할 수 있는 <code>TIME_xxx</code>라는
+      많은 변수가 있습니다. 특수 사전식 비교 패턴
+      <code>&lt;STRING</code>, <code>&gt;STRING</code>,
+      <code>=STRING</code>과 함께 시간 기반 리다이렉트를
+      수행할 수 있습니다:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>이것은 <code>07:01-18:59</code> 사이에는 URL
+      <code>foo.html</code> 하에 <code>foo.day.html</code>의
+      콘텐츠를 제공하고, 나머지 시간에는
+      <code>foo.night.html</code>의 콘텐츠를 제공합니다.</p>
+
+      <note type="warning"><module>mod_cache</module>, 중간 프록시
+      및 브라우저는 각각 응답을 캐시할 수 있으며, 구성된
+      시간 창 밖에서 어느 쪽 페이지든 표시될 수 있습니다.
+      <module>mod_expires</module>를 사용하여 이 효과를
+      제어할 수 있습니다. 물론 콘텐츠를 동적으로 제공하고
+      시간대에 따라 사용자 정의하는 것이 훨씬 좋습니다.</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="setenvvars">
+
+  <title>URL 부분에 따른 환경 변수 설정</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p>때때로 재작성을 수행할 때 어떤 종류의 상태를
+      유지하고 싶을 수 있습니다. 예를 들어, 해당 재작성을
+      수행했다는 것을 기록하여 나중에 요청이 해당 재작성을
+      통해 왔는지 확인하고 싶을 수 있습니다. 이를 수행하는
+      한 가지 방법은 환경 변수를 설정하는 것입니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+      <p>[E] 플래그를 사용하여 환경 변수를 설정합니다.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]
+</highlight>
+
+    <p>나중에 규칙 세트에서 RewriteCond를 사용하여
+    이 환경 변수를 확인할 수 있습니다:</p>
+
+<highlight language="config">
+RewriteCond "%{ENV:rewritten}"  =1
+</highlight>
+
+    <p>환경 변수는 외부 리다이렉트에서 유지되지 않는다는
+    점에 유의하십시오. 쿠키를 설정하려면 [CO] 플래그를
+    사용하는 것을 고려할 수 있습니다. 디렉토리별 및
+    htaccess 재작성에서 최종 치환이 내부 리다이렉트로
+    처리되는 경우, 이전 라운드의 재작성에서 온 환경 변수는
+    "REDIRECT_" 접두사가 붙습니다.</p>
+
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

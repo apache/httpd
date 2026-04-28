@@ -1,0 +1,306 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933060 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="access.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite를 사용한 접근 제어</title>
+
+<summary>
+
+<p>이 문서는 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">참조 문서</a>를 보충합니다.
+<module>mod_rewrite</module>를 사용하여 다양한 자원에 대한
+접근을 제어하는 방법과 기타 관련 기술을 설명합니다.
+여기에는 <module>mod_rewrite</module>의 일반적인 사용 예제가
+많이 포함되어 있으며, 각각이 어떻게 작동하는지에 대한
+자세한 설명이 있습니다.</p>
+
+<note type="warning">이 예제들 중 많은 것이 특정 서버 설정에서
+그대로 작동하지 않을 수 있으므로, 단순히 예제를 복사하여
+설정에 붙여넣기보다는 이해하는 것이 중요합니다.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 소개</a></seealso>
+<seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+<!-- <seealso><a href="access.html">접근 제어</a></seealso> -->
+<seealso><a href="vhosts.html">가상 호스트</a></seealso>
+<seealso><a href="proxy.html">프록시</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap 사용하기</a></seealso>
+<seealso><a href="advanced.html">고급 기술</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+    <section id="blocked-inline-images">
+
+      <title>이미지 &quot;핫링킹&quot; 금지</title>
+
+      <dl>
+        <dt>설명:</dt>
+
+        <dd>
+          <p>다음 기술은 다른 사이트가 여러분의 이미지를
+          자신의 페이지에 인라인으로 포함하는 것을 금지합니다.
+          이 행위는 흔히 &quot;핫링킹&quot;이라고 하며,
+          여러분의 대역폭이 다른 사이트의 콘텐츠를 제공하는 데
+          사용되는 결과를 초래합니다.</p>
+        </dd>
+
+        <dt>해결책:</dt>
+
+        <dd>
+          <p>이 기술은 <code>HTTP_REFERER</code> 변수의 값에
+          의존하며, 이는 선택적입니다. 따라서 일부 사용자가
+          이 제한을 우회할 수 있습니다. 그러나 대부분의
+          사용자는 실패한 요청을 경험하게 되며, 시간이 지나면
+          해당 이미지가 다른 사이트에서 제거되는 결과를
+          가져올 것입니다.</p>
+          <p>이 상황을 처리하는 몇 가지 방법이 있습니다.</p>
+
+    <p>첫 번째 예제에서는 우리 사이트의 페이지에서 시작되지 않은
+    요청을 단순히 거부합니다. 이 예제에서는 우리 사이트가
+    <code>www.example.com</code>이라고 가정합니다.</p>
+
+<!-- TODO: Add discussion here of why we have !^$ in there. -->
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "-"                [F,NC]
+</highlight>
+
+    <p>두 번째 예제에서는 요청을 실패시키는 대신
+    대체 이미지를 표시합니다.</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"      [NC]
+RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]
+</highlight>
+
+    <p>세 번째 예제에서는 요청을 다른 사이트의 이미지로
+    리다이렉트합니다.</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"                    [NC]
+RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"  [R,NC]
+</highlight>
+
+    <p>이 기술들 중 마지막 두 가지가 이미지 핫링킹을
+    중단시키는 데 가장 효과적입니다. 사용자들이 기대한
+    이미지를 볼 수 없기 때문입니다.</p>
+
+        </dd>
+
+        <dt>토론:</dt>
+
+        <dd>
+        <p>요청을 다른 곳으로 리다이렉트하는 것이 아니라
+        단순히 자원에 대한 접근을 거부하려는 경우,
+        <module>mod_rewrite</module>를 사용하지 않고도
+        이를 수행할 수 있습니다:</p>
+
+        <highlight language="config">
+SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
+    Require env localreferer
+&lt;/FilesMatch&gt;
+        </highlight>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="blocking-of-robots">
+
+      <title>로봇 차단</title>
+
+      <dl>
+        <dt>설명:</dt>
+
+        <dd>
+        <p>이 레시피에서는 특정 로봇 또는 사용자 에이전트의
+        지속적인 요청을 차단하는 방법을 논의합니다.</p>
+
+        <p>로봇 배제 표준은 <code>/robots.txt</code>라는
+        파일을 정의하며, 이 파일은 로봇을 배제하고자 하는
+        웹사이트의 부분을 지정합니다. 그러나 일부 로봇은
+        이 파일을 준수하지 않습니다.</p>
+
+        <p><module>mod_rewrite</module>를 사용하지 않고도
+        이를 수행할 수 있는 방법이 있다는 점에 유의하십시오.
+        또한 클라이언트의 <code>USER_AGENT</code> 문자열에
+        의존하는 기술은 해당 문자열을 쉽게 변경할 수 있으므로
+        매우 쉽게 우회할 수 있다는 점에 유의하십시오.</p>
+        </dd>
+
+        <dt>해결책:</dt>
+
+        <dd>
+        <p>보호할 디렉토리와 악의적이거나 지속적인 로봇을
+        식별하는 클라이언트 <code>USER_AGENT</code>를
+        지정하는 규칙 세트를 사용합니다.</p>
+
+        <p>이 예제에서는 <code>NameOfBadRobot</code>이라는
+        로봇을 <code>/secret/files</code> 위치에서
+        차단합니다. 특정 소스에서만 해당 사용자 에이전트를
+        차단하려는 경우 IP 주소 범위를 지정할 수도 있습니다.</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"      "-"                   [F]
+</highlight>
+        </dd>
+
+      <dt>토론:</dt>
+
+      <dd>
+      <p>
+        <module>mod_rewrite</module>를 사용하는 대신, 여기에 설명된 대로
+        다른 방법을 사용하여 동일한 결과를 달성할 수 있습니다:
+      </p>
+      <highlight language="config">
+SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location "/secret/files"&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
+&lt;/Location&gt;
+      </highlight>
+      <p>
+      위에서 언급한 바와 같이, 이 기술은 <code>USER_AGENT</code>
+      요청 헤더를 수정하는 것만으로도 쉽게 우회할 수 있습니다.
+      지속적인 공격을 받고 있다면, 방화벽과 같은 상위 수준에서
+      차단하는 것을 고려해야 합니다.
+      </p>
+
+      </dd>
+
+      </dl>
+
+    </section>
+
+<section id="host-deny">
+
+  <title>거부 목록의 호스트 차단</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p><code>hosts.deny</code>와 같은 호스트 목록을 관리하여
+      해당 호스트가 서버에 접근하지 못하도록 차단하고자 합니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+<highlight language="config">
+RewriteEngine on
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"                                      "-"           [F]
+</highlight>
+
+<example>
+##<br />
+##  hosts.deny<br />
+##<br />
+##  주의! 이것은 목록이 아니라 맵입니다.<br />
+##             mod_rewrite가 키/값 쌍을 파싱하므로 각 항목에<br />
+##             최소한 더미 값 "-"이 있어야 합니다.<br />
+##<br />
+<br />
+193.102.180.41 -<br />
+bsdti1.sdm.de  -<br />
+192.76.162.40  -<br />
+</example>
+    </dd>
+
+    <dt>토론:</dt>
+    <dd>
+    <p>
+    두 번째 RewriteCond는 HostNameLookups가 켜져 있어
+    클라이언트 IP 주소가 해석된다고 가정합니다. 그렇지
+    않은 경우, 두 번째 RewriteCond를 삭제하고 첫 번째
+    RewriteCond에서 <code>[OR]</code> 플래그를 제거해야
+    합니다.
+    </p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="referer-deflector">
+
+  <title>리퍼러 기반 디플렉터</title>
+
+  <dl>
+    <dt>설명:</dt>
+
+    <dd>
+      <p>요청이 온 리퍼러에 따라 요청을 리다이렉트하며,
+      리퍼러별로 다른 대상을 지정합니다.</p>
+    </dd>
+
+    <dt>해결책:</dt>
+
+    <dd>
+  <p>다음 규칙 세트는 맵 파일을 사용하여 각 리퍼러를
+  리다이렉션 대상과 연결합니다.</p>
+
+<highlight language="config">
+RewriteMap  deflector "txt:/path/to/deflector.map"
+
+RewriteCond "%{HTTP_REFERER}"              !=""
+RewriteCond "${deflector:%{HTTP_REFERER}}" =-
+RewriteRule "^"                            "%{HTTP_REFERER}" [R,L]
+
+RewriteCond "%{HTTP_REFERER}"              !=""
+RewriteCond "${deflector:%{HTTP_REFERER}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule "^"                            "${deflector:%{HTTP_REFERER}}" [R,L]
+</highlight>
+
+      <p>맵 파일은 각 리퍼러에 대한 리다이렉션 대상을
+      나열하거나, 단순히 원래 위치로 리다이렉트하려는
+      경우 맵에 "-"을 넣습니다:</p>
+
+<highlight language="config">
+##
+##  deflector.map
+##
+
+http://badguys.example.com/bad/index.html    -
+http://badguys.example.com/bad/index2.html   -
+http://badguys.example.com/bad/index3.html   http://somewhere.example.com/
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

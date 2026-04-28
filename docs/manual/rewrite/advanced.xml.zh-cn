@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="advanced.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite 高级技术</title>
+
+<summary>
+
+<p>本文档是 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。
+它提供了一些使用 <module>mod_rewrite</module> 的高级技术。</p>
+
+<!--
+I question whether anything remailing in this document qualifies as
+"advanced". It's probably time to take inventory of the examples that we
+have in the various docs, and consider a reorg of the stuff in this
+directory. Again.
+-->
+
+<note type="warning">请注意，这些示例中的许多不会在你的特定服务器配置中直接生效，
+因此理解它们非常重要，而不仅仅是将示例复制粘贴到你的配置中。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 简介</a></seealso>
+<seealso><a href="remapping.html">重定向和重映射</a></seealso>
+<seealso><a href="access.html">访问控制</a></seealso>
+<seealso><a href="vhosts.html">虚拟主机</a></seealso>
+<seealso><a href="proxy.html">代理</a></seealso>
+<seealso><a href="rewritemap.html">使用 RewriteMap</a></seealso>
+<!--<seealso><a href="advanced.html">高级技术</a></seealso>-->
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="sharding">
+
+  <title>基于 URL 的跨多后端分片</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>一种分配服务器负载或存储空间的常见技术称为"分片"。
+      使用此方法时，前端服务器将使用 URL 将用户或对象一致地"分片"到
+      不同的后端服务器。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>在外部映射文件中维护从用户到目标服务器的映射。
+      它们看起来像：</p>
+
+<example>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... and so on
+</example>
+
+  <p>我们将其放入 <code>map.users-to-hosts</code> 文件。
+    目标是映射：</p>
+
+<example>
+/u/user1/anypath
+</example>
+
+  <p>到</p>
+
+<example>
+http://physical_host_of_user1/u/user/anypath
+</example>
+
+      <p>这样每个 URL 路径不需要在每个后端物理主机上都有效。
+      以下规则集借助映射文件为我们完成此操作，
+      假设 server0 是在用户在映射中没有条目时使用的默认服务器：</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+  </dl>
+
+  <p>请参阅 <directive module="mod_rewrite">RewriteMap</directive>
+  文档和 <a href="./rewritemap.html">RewriteMap 指南</a>
+  以了解此指令语法的更多讨论。</p>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>即时内容再生成</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>我们希望动态生成内容，但一旦生成就将其静态存储。
+      此规则将检查静态文件是否存在，如果不存在，则生成它。
+      静态文件可以定期删除（例如通过 cron），
+      并在需要时按需重新生成。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      这通过以下规则集完成：
+
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p><code>-U</code> 操作符确定测试字符串（在本例中为
+    <code>REQUEST_URI</code>）是否是有效的 URL。它通过子请求来完成。
+    如果此子请求失败——即请求的资源不存在——此规则将调用 CGI 程序
+    <code>/regenerate_page.cgi</code>，该程序生成请求的资源并将其保存到
+    文档目录中，这样下次请求时就可以提供静态副本了。</p>
+
+    <p>通过这种方式，不经常更新的文档可以以静态形式提供。
+    如果需要刷新文档，可以从文档目录中删除它们，
+    下次请求时将重新生成。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="load-balancing">
+
+  <title>负载均衡</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>我们希望使用 <module>mod_rewrite</module>
+      在多台服务器之间随机分配负载。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们将使用 <directive
+      module="mod_rewrite">RewriteMap</directive> 和服务器列表来实现。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
+</highlight>
+
+<p><code>serverlist.txt</code> 将包含服务器列表：</p>
+
+<example>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</example>
+
+<p>如果你希望某台特定服务器承担更多负载，可以在列表中多次添加它。</p>
+
+   </dd>
+
+   <dt>讨论</dt>
+   <dd>
+<p>Apache 自带一个负载均衡模块 -
+<module>mod_proxy_balancer</module> - 它比你使用
+<module>mod_rewrite</module> 拼凑出来的任何方案都更加灵活和功能丰富。</p>
+   </dd>
+  </dl>
+
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>结构化用户目录</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>一些拥有数千用户的站点使用结构化的主目录布局，
+      <em>即</em>每个主目录位于一个子目录中，
+      该子目录以用户名的第一个字符开头。因此，
+      <code>/~larry/anypath</code> 是
+      <code>/home/<strong>l</strong>/larry/public_html/anypath</code>，
+      而 <code>/~waldo/anypath</code> 是
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们使用以下规则集将波浪号 URL 展开为上述布局。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>重定向锚点</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+    <p>默认情况下，重定向到 HTML 锚点不起作用，因为
+    <module>mod_rewrite</module> 会转义 <code>#</code> 字符，
+    将其变为 <code>%23</code>。这反过来会破坏重定向。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>在 <code>RewriteRule</code> 上使用 <code>[NE]</code> 标志。
+      NE 代表不转义（No Escape）。
+      </p>
+    </dd>
+
+    <dt>讨论：</dt>
+    <dd>此技术当然也适用于 <module>mod_rewrite</module>
+    默认会进行 URL 编码的其他特殊字符。</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>基于时间的重写</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>我们希望使用 <module>mod_rewrite</module>
+      根据一天中的时间提供不同的内容。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>有许多名为 <code>TIME_xxx</code>
+      的变量可用于重写条件。结合特殊的词法比较模式
+      <code>&lt;STRING</code>、<code>&gt;STRING</code> 和
+      <code>=STRING</code>，我们可以进行基于时间的重定向：</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>这将在 <code>07:01-18:59</code> 时间段内，以 URL
+      <code>foo.html</code> 提供 <code>foo.day.html</code> 的内容，
+      在其余时间提供 <code>foo.night.html</code> 的内容。</p>
+
+      <note type="warning"><module>mod_cache</module>、中间代理和浏览器
+      可能各自缓存响应，导致在配置的时间窗口之外显示某个页面。
+      可以使用 <module>mod_expires</module> 来控制此效果。
+      当然，动态提供内容并根据时间自定义它是更好的方式。</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="setenvvars">
+
+  <title>根据 URL 部分设置环境变量</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>有时，我们希望在执行重写时保持某种状态。例如，
+      你想记录你已完成该重写，以便稍后检查请求是否通过该重写。
+      一种方法是设置环境变量。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>使用 [E] 标志设置环境变量。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]
+</highlight>
+
+    <p>稍后在你的规则集中，你可以使用 RewriteCond 检查此环境变量：</p>
+
+<highlight language="config">
+RewriteCond "%{ENV:rewritten}"  =1
+</highlight>
+
+    <p>请注意，环境变量在外部重定向后不会保留。你可以考虑使用 [CO]
+    标志来设置 cookie。对于目录级和 htaccess 重写，
+    当最终替换作为内部重定向处理时，上一轮重写的环境变量会以
+    "REDIRECT_" 为前缀。</p>
+
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

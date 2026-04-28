@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="advanced.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite の高度なテクニック</title>
+
+<summary>
+
+<p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<module>mod_rewrite</module> を使用したいくつかの高度なテクニックを提供します。</p>
+
+<!--
+I question whether anything remailing in this document qualifies as
+"advanced". It's probably time to take inventory of the examples that we
+have in the various docs, and consider a reorg of the stuff in this
+directory. Again.
+-->
+
+<note type="warning">これらの例の多くは、特定のサーバ設定ではそのまま
+動作しないことに注意してください。そのため、単にコピー＆ペーストするのではなく、
+内容を理解することが重要です。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+<seealso><a href="proxy.html">プロキシ</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap の使用</a></seealso>
+<!--<seealso><a href="advanced.html">高度なテクニック</a></seealso>-->
+<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+<section id="sharding">
+
+  <title>URL ベースの複数バックエンドへのシャーディング</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>サーバ負荷やストレージスペースの負担を分散するための
+      一般的なテクニックは「シャーディング」と呼ばれます。
+      この方法を使用すると、フロントエンドサーバは URL を使用して
+      ユーザやオブジェクトを別々のバックエンドサーバに一貫して
+      「シャード」します。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>ユーザからターゲットサーバへのマッピングが外部マップファイルに
+      保持されています。次のような形式です:</p>
+
+<example>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... 以下同様
+</example>
+
+  <p>これを <code>map.users-to-hosts</code> ファイルに入れます。目的は
+    以下をマッピングすることです:</p>
+
+<example>
+/u/user1/anypath
+</example>
+
+  <p>を以下にマッピング:</p>
+
+<example>
+http://physical_host_of_user1/u/user/anypath
+</example>
+
+      <p>このようにすると、すべての URL パスがすべてのバックエンド物理
+      ホストで有効である必要はありません。以下のルールセットは、
+      マップファイルの助けを借りてこれを実現します。server0 は、
+      ユーザがマップにエントリを持たない場合に使用されるデフォルト
+      サーバとして想定しています:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+  </dl>
+
+  <p>このディレクティブの構文の詳細については、
+  <directive module="mod_rewrite">RewriteMap</directive>
+  ドキュメントと <a href="./rewritemap.html">RewriteMap ハウツー</a>
+  を参照してください。</p>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>オンザフライのコンテンツ再生成</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>コンテンツを動的に生成したいが、一度生成したら静的に
+      保存したいとします。このルールは静的ファイルの存在を確認し、
+      存在しない場合は生成します。静的ファイルは必要に応じて
+      (例えば cron で) 定期的に削除でき、要求に応じて再生成
+      されます。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      これは以下のルールセットで実現されます:
+
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p><code>-U</code> 演算子は、テスト文字列 (この場合は
+    <code>REQUEST_URI</code>) が有効な URL かどうかを判定します。
+    これはサブリクエストを通じて行われます。このサブリクエストが
+    失敗した場合、つまりリクエストされたリソースが存在しない場合、
+    このルールは CGI プログラム <code>/regenerate_page.cgi</code>
+    を呼び出し、リクエストされたリソースを生成してドキュメント
+    ディレクトリに保存します。これにより、次回リクエストされたときに
+    静的コピーを提供できます。</p>
+
+    <p>このようにして、更新頻度の低いドキュメントを静的形式で
+    提供できます。ドキュメントを更新する必要がある場合は、
+    ドキュメントディレクトリから削除すれば、次回リクエストされたときに
+    再生成されます。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="load-balancing">
+
+  <title>ロードバランシング</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p><module>mod_rewrite</module> を使用して、複数のサーバに
+      ランダムに負荷を分散したいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>これを実現するために <directive
+      module="mod_rewrite">RewriteMap</directive> とサーバの
+      リストを使用します。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
+</highlight>
+
+<p><code>serverlist.txt</code> にはサーバのリストが含まれます:</p>
+
+<example>
+## serverlist.txt<br />
+<br />
+servers one.example.com|two.example.com|three.example.com<br />
+</example>
+
+<p>特定のサーバにより多くの負荷を割り当てたい場合は、
+リストにそのサーバを複数回追加してください。</p>
+
+   </dd>
+
+   <dt>議論</dt>
+   <dd>
+<p>Apache にはロードバランシングモジュール -
+<module>mod_proxy_balancer</module> - が付属しており、
+<module>mod_rewrite</module> で構築できるものよりもはるかに柔軟で
+機能豊富です。</p>
+   </dd>
+  </dl>
+
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>構造化ユーザディレクトリ</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>数千人のユーザを持つサイトの中には、構造化されたホームディレクトリ
+      レイアウトを使用するものがあります。<em>つまり</em>、各ホームディレクトリは
+      ユーザ名の最初の文字で始まるサブディレクトリにあります。例えば、
+      <code>/~larry/anypath</code> は
+      <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      であり、<code>/~waldo/anypath</code> は
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>
+      です。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>上記のレイアウトにチルダ URL を展開するために、以下のルールセットを
+      使用します。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>アンカーのリダイレクト</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+    <p>デフォルトでは、HTML アンカーへのリダイレクトは機能しません。
+    <module>mod_rewrite</module> が <code>#</code> 文字をエスケープして
+    <code>%23</code> に変換するためです。これによりリダイレクトが
+    壊れます。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p><code>RewriteRule</code> で <code>[NE]</code> フラグを
+      使用します。NE は No Escape (エスケープしない) の略です。
+      </p>
+    </dd>
+
+    <dt>議論:</dt>
+    <dd>このテクニックは、<module>mod_rewrite</module> がデフォルトで
+    URL エンコードする他の特殊文字にも適用できます。</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>時間に依存する書き換え</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p><module>mod_rewrite</module> を使用して、時間帯に基づいて
+      異なるコンテンツを提供したいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>書き換え条件に使用できる <code>TIME_xxx</code> という名前の
+      変数が多数あります。特殊な辞書順比較パターン
+      <code>&lt;STRING</code>、<code>&gt;STRING</code>、
+      <code>=STRING</code> と組み合わせることで、時間に依存する
+      リダイレクトを行えます:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>これにより、URL <code>foo.html</code> で
+      <code>07:01-18:59</code> の間は <code>foo.day.html</code> の
+      コンテンツを、残りの時間帯は <code>foo.night.html</code> の
+      コンテンツを提供します。</p>
+
+      <note type="warning"><module>mod_cache</module>、中間プロキシ、
+      およびブラウザはそれぞれレスポンスをキャッシュし、設定された
+      時間枠外にいずれかのページが表示される可能性があります。
+      <module>mod_expires</module> を使用してこの影響を制御できます。
+      もちろん、コンテンツを動的に提供し、時間帯に基づいて
+      カスタマイズする方がはるかに良いでしょう。</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="setenvvars">
+
+  <title>URL の部分に基づく環境変数の設定</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>書き換えを実行する際に何らかの状態を維持したい場合が
+      あります。例えば、書き換えを行ったことをメモし、後でリクエストが
+      その書き換えを経由したかどうかを確認したいとします。これを行う
+      1 つの方法は、環境変数を設定することです。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>[E] フラグを使用して環境変数を設定します。</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]
+</highlight>
+
+    <p>後のルールセットで RewriteCond を使用してこの環境変数を
+    確認できます:</p>
+
+<highlight language="config">
+RewriteCond "%{ENV:rewritten}"  =1
+</highlight>
+
+    <p>環境変数は外部リダイレクトでは保持されないことに注意
+    してください。[CO] フラグを使用して cookie を設定することを
+    検討するとよいでしょう。ディレクトリ単位および htaccess の
+    書き換えでは、最終的な置換が内部リダイレクトとして処理されるため、
+    前回の書き換えラウンドの環境変数には "REDIRECT_" がプレフィックスとして
+    付きます。</p>
+
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

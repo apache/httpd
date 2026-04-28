@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933438 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite 기술적 세부 사항</title>
+
+<summary>
+<p>이 문서는 <module>mod_rewrite</module>와 URL 매칭의 기술적
+세부 사항 일부를 논의합니다.</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 소개</a></seealso>
+<seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+<seealso><a href="access.html">접근 제어</a></seealso>
+<seealso><a href="vhosts.html">가상 호스트</a></seealso>
+<seealso><a href="proxy.html">프록시</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap 사용하기</a></seealso>
+<seealso><a href="advanced.html">고급 기술</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+<section id="InternalAPI"><title>API 단계</title>
+
+    <p>Apache HTTP Server는 여러 단계로 요청을 처리합니다.
+    이러한 각 단계에서 요청 수명 주기의 해당 부분을 처리하기
+    위해 하나 이상의 모듈이 호출될 수 있습니다. 단계에는
+    URL에서 파일명으로의 변환, 인증, 인가, 콘텐츠, 로깅
+    등이 포함됩니다. (이것은 전체 목록이 아닙니다.)</p>
+
+    <p><module>mod_rewrite</module>는 URL이 재작성될 수 있는
+    방식에 영향을 미치기 위해 이러한 단계(또는 종종
+    "훅"이라 불리는) 중 두 가지에서 작동합니다.</p>
+
+    <p>첫째, HTTP 요청이 읽혀진 후 인가가 시작되기 전에
+    발생하는 URL에서 파일명으로의 변환 훅을 사용합니다.
+    둘째, 인가 단계 후 그리고 디렉토리별 설정 파일
+    (<code>.htaccess</code> 파일)이 읽힌 후 콘텐츠
+    핸들러가 호출되기 전에 발생하는 Fixup 훅을
+    사용합니다.</p>
+
+    <p>요청이 들어오고 해당 서버 또는 가상 호스트가
+    결정된 후, 재작성 엔진은 서버별 설정에 나타나는
+    모든 <module>mod_rewrite</module> 지시어의 처리를
+    시작합니다. (즉, 주 서버 설정 파일과
+    <directive module="core" type="section">Virtualhost</directive>
+    섹션에서.) 이것은 URL에서 파일명으로의 단계에서
+    발생합니다.</p>
+
+    <p>몇 단계 후, 최종 데이터 디렉토리가 발견되면
+    디렉토리별 설정 지시어(<code>.htaccess</code> 파일과
+    <directive module="core" type="section">Directory</directive>
+    블록)가 적용됩니다. 이것은 Fixup 단계에서
+    발생합니다.</p>
+
+    <p>이러한 각 경우에 <module>mod_rewrite</module>는
+    <code>REQUEST_URI</code>를 새 URL 또는 파일명으로
+    재작성합니다.</p>
+
+    <p>디렉토리별 컨텍스트(즉, <code>.htaccess</code> 파일과
+    <code>Directory</code> 블록 내)에서 이러한 규칙은
+    URL이 이미 파일명으로 변환된 후에 적용됩니다.
+    이 때문에 <module>mod_rewrite</module>가 처음에
+    <directive module="mod_rewrite">RewriteRule</directive>
+    지시어와 비교하는 URL 경로는 현재 디렉토리 경로(뒤에
+    슬래시 포함)가 앞에서 제거된 변환된 파일명의 전체
+    파일 시스템 경로입니다.</p>
+
+    <p>예를 들어: 규칙이 /var/www/foo/.htaccess에 있고
+    /foo/bar/baz에 대한 요청이 처리되고 있다면
+    ^bar/baz$와 같은 표현식이 일치합니다.</p>
+
+    <p>디렉토리별 컨텍스트에서 치환이 이루어지면
+    새 URL로 새로운 내부 서브요청이 발행되어 요청
+    단계의 처리가 다시 시작됩니다. 치환이 상대 경로인
+    경우 <directive module="mod_rewrite">RewriteBase</directive>
+    지시어가 치환 앞에 추가되는 URL 경로 접두사를
+    결정합니다. 디렉토리별 컨텍스트에서는 루핑을 피하기
+    위해 결국(미래의 디렉토리별 재작성 처리 "라운드"에서)
+    치환을 수행하지 않는 규칙을 작성하도록 주의해야
+    합니다. (이 문제에 대한 자세한 논의는
+    <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>을
+    참조하십시오.)</p>
+
+    <p>디렉토리별 컨텍스트에서의 이러한 추가 URL 조작
+    때문에 해당 컨텍스트에서 재작성 규칙을 다르게
+    작성하도록 주의해야 합니다. 특히 앞의 디렉토리 경로가
+    재작성 규칙이 보게 될 URL에서 제거된다는 것을
+    기억하십시오. 더 자세한 설명은 아래 예제를
+    참조하십시오.</p>
+
+    <table border="1">
+
+        <tr>
+            <th>규칙의 위치</th>
+            <th>규칙</th>
+        </tr>
+
+        <tr>
+            <td>VirtualHost 섹션</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>문서 루트의 .htaccess 파일</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>images 디렉토리의 .htaccess 파일</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
+        </tr>
+
+    </table>
+
+    <p><module>mod_rewrite</module>가 다양한 컨텍스트에서
+    URL을 조작하는 방식에 대한 더 많은 통찰력을 얻으려면
+    재작성 중에 생성되는 <a
+    href="../mod/mod_rewrite.html#logging">로그 항목</a>을
+    참조해야 합니다.</p>
+
+</section>
+
+<section id="InternalRuleset"><title>규칙 세트 처리</title>
+
+      <p>이제 <module>mod_rewrite</module>가 이 두 API 단계에서
+      트리거되면 설정 구조에서 구성된 규칙 세트를 읽습니다
+      (이것은 서버별 컨텍스트의 경우 시작 시에 생성되거나
+      디렉토리별 컨텍스트의 경우 Apache 커널의 디렉토리 탐색
+      중에 생성됩니다). 그런 다음 포함된 규칙 세트(하나
+      이상의 규칙과 그 조건)로 URL 재작성 엔진이
+      시작됩니다. URL 재작성 엔진 자체의 동작은 두
+      설정 컨텍스트에서 정확히 동일합니다. 최종 결과
+      처리만 다릅니다.</p>
+
+      <p>규칙 세트에서 규칙의 순서는 재작성 엔진이
+      특별한(그리고 그다지 분명하지 않은) 순서로 처리하므로
+      중요합니다. 규칙은 다음과 같습니다: 재작성 엔진은
+      규칙 세트를 규칙별로(<directive
+      module="mod_rewrite">RewriteRule</directive> 지시어)
+      순회하고 특정 규칙이 일치하면 선택적으로 해당하는
+      기존 조건(<code>RewriteCond</code> 지시어)을
+      순회합니다. 역사적 이유로 조건이 먼저 주어지므로
+      제어 흐름이 약간 장황합니다. 자세한 내용은
+      그림 1을 참조하십시오.</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png"
+          alt="RewriteRule과 RewriteCond 매칭의 흐름" /><br />
+      <dfn>그림 1:</dfn> 재작성 규칙 세트를 통한 제어 흐름
+</p>
+      <p>먼저 URL이 각 규칙의 <em>Pattern</em>과
+      비교됩니다. 실패하면 <module>mod_rewrite</module>는
+      즉시 이 규칙의 처리를 중지하고 다음 규칙으로
+      계속합니다. <em>Pattern</em>이 일치하면
+      <module>mod_rewrite</module>는 해당하는 규칙 조건
+      (설정에서 RewriteRule 바로 위에 나타나는
+      RewriteCond 지시어)을 찾습니다. 조건이 없으면
+      <em>Substitution</em> 문자열에서 구성된 새 값으로
+      URL을 치환하고 규칙 순회를 계속합니다. 그러나
+      조건이 있으면 나열된 순서대로 처리하기 위해 내부
+      루프를 시작합니다. 조건의 경우 로직이 다릅니다:
+      현재 URL에 대해 패턴을 매칭하지 않습니다. 대신
+      먼저 변수, 역참조, 맵 조회 <em>등</em>을 확장하여
+      문자열 <em>TestString</em>을 생성한 다음
+      <em>CondPattern</em>을 이에 대해 매칭하려고
+      합니다. 패턴이 일치하지 않으면 전체 조건 세트와
+      해당 규칙이 실패합니다. 패턴이 일치하면 더 이상
+      조건이 없을 때까지 다음 조건이 처리됩니다. 모든
+      조건이 일치하면 <em>Substitution</em>으로 URL을
+      치환하여 처리가 계속됩니다.</p>
+
+</section>
+
+
+</manualpage>

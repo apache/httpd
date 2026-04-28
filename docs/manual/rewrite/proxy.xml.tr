@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Vekil Kullanımı için mod_rewrite</title>
+
+<summary>
+
+<p>Bu belge, <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+İçeriği başka bir sunucuya vekil olarak iletmek için RewriteRule'un [P]
+bayrağının nasıl kullanılacağını açıklar. Yaygın senaryoları anlatan
+birkaç tarif sunulmuştur.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso>
+<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>
+<!--<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>-->
+<seealso><a href="rewritemap.html">RewriteMap Kullanımı</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>mod_rewrite ile İçerik Vekilleme</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+    <p>
+    <module>mod_rewrite</module>, URL'lerin <module>mod_proxy</module>
+    aracılığıyla başka bir sunucuya iletilmesini sağlayan [P] bayrağını
+    sunar. Burada iki örnek verilmiştir. Birinde, bir URL doğrudan başka
+    bir sunucuya iletilir ve yerel bir URL gibi sunulur. Diğerinde,
+    eksik içeriği bir arka uç sunucusuna vekil olarak iletiriz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Bir URL'yi başka bir sunucuya basitçe eşlemek için [P]
+      bayrağını şu şekilde kullanırız:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
+</highlight>
+
+   <p>İkinci örnekte, isteği yalnızca kaynağı yerel olarak
+   bulamadığımızda vekil olarak iletiriz. Bu, bir sunucudan diğerine
+   geçiş yaparken ve tüm içeriğin taşınıp taşınmadığından emin
+   olmadığınızda çok yararlı olabilir.</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+    </dd>
+
+    <dt>Tartışma:</dt>
+
+    <dd><p>Her iki durumda da, arka uç tarafından verilen
+    yönlendirmelerin istemciye doğru şekilde iletilmesini sağlamak
+    için bir <directive module="mod_proxy">ProxyPassReverse</directive>
+    yönergesi ekliyoruz.</p>
+
+    <p>Mümkün olduğunda <module>mod_rewrite</module> yerine <directive
+    module="mod_proxy">ProxyPass</directive> veya <directive
+    module="mod_proxy">ProxyPassMatch</directive> kullanmayı
+    değerlendirin.</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

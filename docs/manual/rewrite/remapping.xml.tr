@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933068 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="remapping.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite ile Yeniden Yönlendirme ve Yeniden Eşleme</title>
+
+<summary>
+
+<p>Bu belge, <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+İstekleri yeniden yönlendirmek ve yeniden eşlemek için
+<module>mod_rewrite</module> modülünü nasıl kullanabileceğinizi
+açıklar. Her birinin nasıl çalıştığının ayrıntılı açıklamalarını
+içeren birçok <module>mod_rewrite</module> kullanım örneği
+sunar.</p>
+
+<note type="warning">Bu örneklerin birçoğunun sizin sunucu yapılandırmanızda
+değişiklik yapılmadan çalışmayacağını unutmayın; bu nedenle örnekleri
+yapılandırmanıza kopyalayıp yapıştırmak yerine anlamanız
+önemlidir.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso>
+<!--<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>-->
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>
+<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap Kullanımı</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>
+
+<section id="old-to-new">
+
+  <title>Eskiden Yeniye (dahili)</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p><code>foo.html</code> sayfasını yakın zamanda
+      <code>bar.html</code> olarak yeniden adlandırdığımızı ve şimdi
+      geriye dönük uyumluluk için eski URL'yi sağlamak istediğimizi
+      varsayalım. Ancak eski URL kullanıcılarının sayfanın yeniden
+      adlandırıldığını fark etmemesini istiyoruz - yani adresin
+      tarayıcılarında değişmesini istemiyoruz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Eski URL'yi aşağıdaki kuralla dahili olarak yenisine yeniden
+      yazıyoruz:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="old-to-new-extern">
+
+  <title>Eskiden Yeniye Yeniden Yazma (harici)</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Yine <code>foo.html</code> sayfasını yakın zamanda
+      <code>bar.html</code> olarak yeniden adlandırdığımızı ve şimdi
+      geriye dönük uyumluluk için eski URL'yi sağlamak istediğimizi
+      varsayalım. Ancak bu sefer eski URL kullanıcılarının yeni URL
+      hakkında bilgilendirilmesini istiyoruz, yani tarayıcılarının
+      Konum alanı da değişmeli.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Tarayıcının ve dolayısıyla kullanıcının görünümünün
+      değişmesini sağlayan yeni URL'ye bir HTTP yönlendirmesi
+      zorluyoruz:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]
+</highlight>
+</dd>
+
+<dt>Tartışma</dt>
+
+    <dd>
+    <p>Bu örnekte, <a href="#old-to-new-intern">dahili</a> örneğin
+    aksine, basitçe Redirect yönergesini kullanabiliriz. Önceki
+    örnekte <module>mod_rewrite</module>, yönlendirmeyi istemciden
+    gizlemek için kullanılmıştı:</p>
+
+    <highlight language="config">
+Redirect "/foo.html" "/bar.html"
+    </highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="movehomedirs">
+
+  <title>Başka Bir Sunucuya Taşınan Kaynak</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Bir kaynak başka bir sunucuya taşındıysa, insanlar yer
+      imlerini güncellerken URL'lerin eski sunucuda bir süre daha
+      çalışmasını isteyebilirsiniz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Bu URL'leri yeni sunucuya yönlendirmek için
+      <module>mod_rewrite</module> kullanabilirsiniz, ancak Redirect
+      veya RedirectMatch yönergesini kullanmayı da
+      düşünebilirsiniz.</p>
+
+<highlight language="config">
+#mod_rewrite ile
+RewriteEngine on
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
+</highlight>
+
+<highlight language="config">
+#RedirectMatch ile
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
+</highlight>
+
+<highlight language="config">
+#Redirect ile
+Redirect "/docs/" "http://new.example.com/docs/"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="static-to-dynamic">
+
+  <title>Statikten Devingene</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Statik bir sayfa olan <code>foo.html</code>'yi devingen bir
+      varyant olan <code>foo.cgi</code>'ye tarayıcı/kullanıcı fark
+      etmeden sorunsuz bir şekilde nasıl dönüştürebiliriz?</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>URL'yi CGI betiğine yeniden yazar ve işleyiciyi
+      <strong>cgi-script</strong> olarak zorlayarak bir CGI programı
+      olarak yürütülmesini sağlarız. Böylece
+      <code>/~quux/foo.html</code> isteği dahili olarak
+      <code>/~quux/foo.cgi</code>'nin çağrılmasına yol açar.</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="backward-compatibility">
+
+  <title>Dosya Uzantısı Değişikliği için Geriye Dönük Uyumluluk</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p><code>document.YYYY</code>'den <code>document.XXXX</code>'e
+      geçiş yaptıktan sonra, örneğin bir dizi <code>.html</code>
+      dosyasını <code>.php</code>'ye çevirdikten sonra URL'leri nasıl
+      geriye dönük uyumlu (sanal olarak hâlâ mevcut) yapabiliriz?</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>URL, yeni uzantılı hedef dosya mevcutsa ve eski uzantılı
+      orijinal dosya mevcut değilse eski uzantıdan yeni uzantıya
+      yeniden yazılır. Aksi takdirde URL değiştirilmeden bırakılır.</p>
+
+<highlight language="config">
+#   document.html'yi document.php'ye yeniden yazma
+#   için geriye dönük uyumluluk kural kümesi
+#   yalnızca document.php varsa
+&lt;Directory "/var/www/htdocs"&gt;
+    RewriteEngine on
+    RewriteBase   "/var/www/htdocs"
+
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
+&lt;/Directory&gt;
+</highlight>
+    </dd>
+
+    <dt>Tartışma</dt>
+    <dd>
+    <p>Bu örnek, <module>mod_rewrite</module> modülünün genellikle
+    gözden kaçan bir özelliğini kullanır: kural kümesinin yürütme
+    sırasından yararlanır. Özellikle, <module>mod_rewrite</module>
+    RewriteCond yönergelerini değerlendirmeden önce RewriteRule'un
+    sol tarafını değerlendirir. Sonuç olarak, RewriteCond yönergeleri
+    değerlendirildiğinde $1 zaten tanımlanmış olur. Bu, aynı temel
+    dosya adını kullanarak orijinal (<code>document.html</code>) ve
+    hedef (<code>document.php</code>) dosyaların varlığını
+    sınamamıza olanak tanır.</p>
+
+    <p>Bu kural kümesi dizin başına bağlamda (bir &lt;Directory&gt;
+    bloğunda veya bir .htaccess dosyasında) kullanılmak üzere
+    tasarlanmıştır; böylece <code>-f</code> kontrolleri doğru dizin
+    yoluna bakar. Çalıştığınız dizin tabanını belirtmek için bir
+    <directive module="mod_rewrite">RewriteBase</directive> yönergesi
+    ayarlamanız gerekebilir.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalhost">
+
+<title>Kurallı Konak Adları</title>
+
+      <dl>
+        <dt>Açıklama:</dt>
+
+        <dd>Bu kuralın amacı, aynı siteye erişmek için kullanılabilecek
+        diğer konak adları yerine belirli bir konak adının
+        kullanılmasını zorlamaktır. Örneğin,
+        <strong>example.com</strong> yerine
+        <strong>www.example.com</strong> kullanılmasını zorlamak
+        istiyorsanız aşağıdaki tarifin bir varyantını
+        kullanabilirsiniz.</dd>
+
+        <dt>Çözüm:</dt>
+
+        <dd>
+
+<p>Bunu çözmenin en iyi yolu <module>mod_rewrite</module> kullanmak
+değil, kurallı olmayan konak ad(lar)ı için bir sanal konağa yerleştirilmiş
+<directive module="mod_alias">Redirect</directive> yönergesini
+kullanmaktır.</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect "/" "http://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName www.example.com
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>Bunu alternatif olarak <directive module="core"
+type="section">If</directive> yönergesini kullanarak da
+gerçekleştirebilirsiniz: (<strong>2.4 ve sonrası</strong>)</p>
+
+<highlight language="config">
+&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>Veya örneğin, sitenizin bir bölümünü HTTPS'ye yönlendirmek için
+şunları yapabilirsiniz:</p>
+
+<highlight language="config">
+&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+    Redirect "/admin/" "https://www.example.com/admin/"
+&lt;/If&gt;
+</highlight>
+
+<p>Herhangi bir nedenle hâlâ <module>mod_rewrite</module> kullanmak
+istiyorsanız - örneğin buna daha büyük bir RewriteRules kümesiyle
+birlikte ihtiyaç duyuyorsanız - aşağıdaki tariflerden birini
+kullanabilirsiniz.</p>
+
+<p>80 dışında bir bağlantı noktasında çalışan siteler için:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+</highlight>
+
+<p>80 bağlantı noktasında çalışan bir site için</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
+</highlight>
+
+        <p>
+        Bunu tüm alan adları için genel olarak yapmak istiyorsanız -
+        yani tüm olası <strong>example.com</strong> değerleri için
+        <strong>example.com</strong>'u
+        <strong>www.example.com</strong>'a yönlendirmek istiyorsanız -
+        aşağıdaki tarifi kullanabilirsiniz:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+</highlight>
+
+    <p>Bu kural kümeleri, ana sunucu yapılandırma dosyanızda veya
+    sunucunun <directive module="core">DocumentRoot</directive>
+    dizinine yerleştirilen bir <code>.htaccess</code> dosyasında
+    çalışacaktır.</p>
+        </dd>
+      </dl>
+
+</section>
+
+<section id="multipledirs">
+
+  <title>Birden Fazla Dizinde Sayfa Arama</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+      <p>Belirli bir kaynak birkaç yerden birinde olabilir ve
+      istendiğinde bu yerlerde kaynağı aramak istiyoruz. Belki yakın
+      zamanda dizin yapımızı yeniden düzenledik ve içeriği birkaç
+      konuma böldük.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p>Aşağıdaki kural kümesi, kaynağı bulmak için iki dizinde
+      arama yapar ve hiçbirinde bulamazsa istenen konumdan sunmayı
+      dener.</p>
+
+<highlight language="config">
+RewriteEngine on
+
+#   önce dir1/ içinde bulmayı dene
+#   ...ve bulunursa dur ve mutlu ol:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
+
+#   sonra dir2/ içinde bulmayı dene
+#   ...ve bulunursa dur ve mutlu ol:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
+
+#   yoksa diğer Alias veya ScriptAlias yönergeleri vb. için devam et.
+RewriteRule "^"     "-"                                          [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="archive-access-multiplexer">
+
+  <title>Coğrafi Olarak Dağıtılmış Sunuculara Yönlendirme</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+    <p>Web sitemizin çok sayıda yansısı var ve insanları bulundukları
+    ülkedeki yansıya yönlendirmek istiyoruz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+    <p>İstemcinin konak adına bakarak hangi ülkeden geldiklerini
+    belirliyoruz. IP adreslerini çözümleyemezsek öntanımlı bir
+    sunucuya geri dönüyoruz.</p>
+    <p>Kullanmak istediğimiz sunucuların listesini oluşturmak için
+    bir <directive module="mod_rewrite">RewriteMap</directive>
+    yönergesi kullanacağız.</p>
+
+<highlight language="config">
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+</highlight>
+
+<example>
+##  map.mirrors -- Çoğullama Eşlem Dosyası<br />
+<br />
+de        http://www.example.de/<br />
+uk        http://www.example.uk/<br />
+com       http://www.example.com/<br />
+##EOF##
+</example>
+    </dd>
+
+    <dt>Tartışma</dt>
+    <dd>
+    <note type="warning">Bu kural kümesi, <directive
+    module="core">HostNameLookups</directive> yönergesinin
+    <code>on</code> olarak ayarlanmasına dayanır; bu da önemli bir
+    performans etkisi olabilir.</note>
+
+    <p><directive module="mod_rewrite">RewriteCond</directive>
+    yönergesi, istemcinin konak adının son bölümünü - ülke kodunu -
+    yakalar ve ardından gelen RewriteRule bu değeri eşlem dosyasında
+    uygun yansı konağını aramak için kullanır.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalurl">
+
+<title>Kurallı URL'ler</title>
+
+<dl>
+ <dt>Açıklama:</dt>
+
+   <dd>
+     <p>Bazı web sunucularında bir kaynak için birden fazla URL
+     bulunur. Genellikle kurallı URL'ler (gerçekten kullanılan ve
+     dağıtılan) ve kısayollar, dahili URL'ler vb. vardır. Kullanıcı
+     istekle hangi URL'yi sağlamış olursa olsun, sonunda tarayıcı
+     adres çubuğunda kurallı olanı görmelidir.</p>
+   </dd>
+
+   <dt>Çözüm:</dt>
+
+     <dd>
+       <p>Tüm kurallı olmayan URL'leri tarayıcının Konum görünümünde
+       düzeltmek ve sonraki tüm istekler için harici bir HTTP
+       yönlendirmesi yapıyoruz. Aşağıdaki örnek kural kümesinde
+       <code>/puppies</code> ve <code>/canines</code> yollarını
+       kurallı <code>/dogs</code> ile değiştiriyoruz.</p>
+
+<highlight language="config">
+RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
+</highlight>
+        </dd>
+
+     <dt>Tartışma:</dt>
+     <dd>
+     Bu gerçekten Redirect veya RedirectMatch yönergeleriyle
+     gerçekleştirilmelidir:
+
+     <highlight language="config">
+RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
+     </highlight>
+     </dd>
+      </dl>
+
+</section>
+
+<section id="moveddocroot">
+
+  <title>Taşınmış <code>DocumentRoot</code></title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+<p>Genellikle web sunucusunun <directive
+module="core">DocumentRoot</directive> dizini doğrudan
+"<code>/</code>" URL'siyle ilişkilidir. Ancak çoğu zaman bu veriler
+gerçekten en üst düzey önceliğe sahip değildir. Örneğin, siteye ilk
+giren ziyaretçilerin belirli bir <code>/about/</code> alt dizinine
+yönlendirilmesini isteyebilirsiniz. Bu, aşağıdaki kural kümesi
+kullanılarak gerçekleştirilebilir:</p>
+</dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+      <p><code>/</code> URL'sini <code>/about/</code> adresine
+      yönlendiriyoruz:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
+</highlight>
+
+<p>Bunun <directive module="mod_alias">RedirectMatch</directive>
+yönergesi kullanılarak da ele alınabileceğini unutmayın:</p>
+
+<highlight language="config">
+RedirectMatch "^/$" "http://example.com/about/"
+</highlight>
+
+<p>Ayrıca örneğin yalnızca kök URL'yi yeniden yazdığını unutmayın.
+Yani <code>http://example.com/</code> isteğini yeniden yazar ancak
+<code>http://example.com/page.html</code> isteğini yeniden yazmaz.
+Belge kökünüzü gerçekten değiştirdiyseniz - yani tüm içeriğiniz
+aslında o alt dizindeyse - <directive
+module="core">DocumentRoot</directive> yönergesini değiştirmek veya
+tüm içeriği bir dizin yukarı taşımak, URL'leri yeniden yazmaktan
+çok daha tercih edilir.</p>
+</dd>
+</dl>
+
+</section>
+
+<section id="fallback-resource">
+<title>Yedek Kaynak</title>
+
+<dl>
+<dt>Açıklama:</dt>
+<dd>Belirli bir dizine gelen tüm istekleri, bir resim veya css
+dosyası gibi mevcut bir kaynağa gitmesi gerekenler dışında tek bir
+kaynağın (örneğin index.php gibi belirli bir dosyanın) işlemesini
+istiyorsunuz.</dd>
+
+<dt>Çözüm:</dt>
+<dd>
+<p>2.2.16 sürümünden itibaren bunun için <directive
+module="mod_dir">FallbackResource</directive> yönergesini
+kullanmalısınız:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;
+</highlight>
+
+<p>Ancak Apache'nin önceki sürümlerinde veya ihtiyaçlarınız bundan
+daha karmaşıksa, aynı şeyi gerçekleştirmek için aşağıdaki yeniden
+yazma kümesinin bir varyasyonunu kullanabilirsiniz:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
+
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
+&lt;/Directory&gt;
+</highlight>
+
+<p>Diğer taraftan, istenen URI'yi index.php'ye sorgu dizgesi
+argümanı olarak geçirmek isterseniz, o RewriteRule'u şununla
+değiştirebilirsiniz:</p>
+
+<highlight language="config">
+RewriteRule "(.*)" "index.php?$1" [PT,QSA]
+</highlight>
+
+<p>Bu kural kümelerinin bir <code>.htaccess</code> dosyasında ve
+bir &lt;Directory&gt; bloğunda da kullanılabileceğini unutmayın.</p>
+
+</dd>
+
+</dl>
+
+</section>
+
+<section id="rewrite-query">
+<title>Sorgu Dizgesini Yeniden Yazma</title>
+
+<dl>
+<dt>Açıklama:</dt>
+<dd>Bir sorgu dizgesinden belirli bir değeri yakalamak ve onu
+değiştirmek veya URL'nin başka bir bileşenine dahil etmek
+istiyorsunuz.</dd>
+
+<dt>Çözümler:</dt>
+<dd>
+<p>Bu bölümdeki çözümlerin birçoğu aynı koşulu kullanır; bu koşul
+eşleşen değeri %2 geri başvurusunda bırakır. %1 sorgu dizgesinin
+başlangıcıdır (ilgili anahtara kadar) ve %3 geri kalanıdır. Bu
+koşul, esneklik ve değiştirmelerde çift '&amp;&amp;' oluşmasını
+önlemek için biraz karmaşıktır.</p>
+<ul>
+  <li>Bu çözüm eşleşen anahtarı ve değeri kaldırır:
+
+<highlight language="config">
+# mykey=??? öğesini kaldır
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"
+</highlight>
+  </li>
+
+  <li>Bu çözüm, yakalanan değeri URL değiştirmesinde kullanır ve
+  sonuna '?' ekleyerek orijinal sorgu dizgesinin geri kalanını
+  atar:
+
+<highlight language="config">
+# Sorgu dizgesinden PATH_INFO'ya kopyala
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]
+</highlight>
+  </li>
+
+  <li>Bu çözüm, yakalanan değeri sonraki bir koşulda kontrol eder:
+
+<highlight language="config">
+# Sorgu dizgesindeki mykey değerini yakala
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]
+</highlight>
+  </li>
+
+  <li>Bu çözüm, önceki çözümlerin tersini gösterir: yol bileşenlerini
+      (belki PATH_INFO) URL'den sorgu dizgesine kopyalar.
+<highlight language="config">
+# İstenen URL /products/kitchen-sink olabilir ve betik
+# /path?products=kitchen-sink bekler.
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</section>
+
+
+</manualpage>

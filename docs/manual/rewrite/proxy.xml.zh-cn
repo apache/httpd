@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>使用 mod_rewrite 进行代理</title>
+
+<summary>
+
+<p>本文档是 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了如何使用
+RewriteRule 的 [P] 标志将内容代理到另一台服务器。
+提供了若干描述常见场景的配置方案。</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 简介</a></seealso>
+<seealso><a href="remapping.html">重定向和重映射</a></seealso>
+<seealso><a href="access.html">访问控制</a></seealso>
+<seealso><a href="vhosts.html">虚拟主机</a></seealso>
+<!--<seealso><a href="proxy.html">代理</a></seealso>-->
+<seealso><a href="rewritemap.html">使用 RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高级技术</a></seealso>
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>使用 mod_rewrite 代理内容</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+    <p>
+    <module>mod_rewrite</module> 提供了 [P] 标志，允许 URL 通过
+    <module>mod_proxy</module> 传递到另一台服务器。这里给出两个示例。
+    在一个示例中，URL 被直接传递到另一台服务器，并像本地 URL 一样提供服务。
+    在另一个示例中，我们将缺失的内容代理到后端服务器。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>要简单地将 URL 映射到另一台服务器，我们使用 [P] 标志，如下所示：</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
+</highlight>
+
+   <p>在第二个示例中，我们仅在本地找不到资源时才代理请求。
+   当你从一台服务器迁移到另一台服务器，而不确定所有内容是否已迁移完毕时，
+   这非常有用。</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+    </dd>
+
+    <dt>讨论：</dt>
+
+    <dd><p>在每种情况下，我们都添加了一个 <directive
+    module="mod_proxy">ProxyPassReverse</directive> 指令，
+    以确保后端发出的任何重定向都能正确地传递给客户端。</p>
+
+    <p>请尽可能考虑使用 <directive
+    module="mod_proxy">ProxyPass</directive> 或 <directive
+    module="mod_proxy">ProxyPassMatch</directive> 来代替
+    <module>mod_rewrite</module>。</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

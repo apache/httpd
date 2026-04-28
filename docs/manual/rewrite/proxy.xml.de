@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1933067 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Verwendung von mod_rewrite für Proxying</title>
+
+<summary>
+
+<p>Dieses Dokument ergänzt die <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">Referenzdokumentation</a>. Es beschreibt,
+wie man das [P]-Flag der RewriteRule verwendet, um Inhalte an einen anderen
+Server weiterzuleiten. Es werden verschiedene Rezepte bereitgestellt, die
+gängige Szenarien beschreiben.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Moduldokumentation</a></seealso>
+<seealso><a href="intro.html">Einführung in mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Umleitung und Neuzuordnung</a></seealso>
+<seealso><a href="access.html">Zugriffskontrolle</a></seealso>
+<seealso><a href="vhosts.html">Virtuelle Hosts</a></seealso>
+<!--<seealso><a href="proxy.html">Proxying</a></seealso>-->
+<seealso><a href="rewritemap.html">Verwendung von RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Fortgeschrittene Techniken</a></seealso>
+<seealso><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>Proxying von Inhalten mit mod_rewrite</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+    <p>
+    <module>mod_rewrite</module> bietet das [P]-Flag, mit dem URLs über
+    <module>mod_proxy</module> an einen anderen Server weitergeleitet werden
+    können. Hier werden zwei Beispiele gegeben. In einem Beispiel wird eine
+    URL direkt an einen anderen Server weitergeleitet und so ausgeliefert,
+    als wäre sie eine lokale URL. Im anderen Beispiel leiten wir fehlende
+    Inhalte an einen Backend-Server weiter.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Um eine URL einfach einem anderen Server zuzuordnen, verwenden
+      wir das [P]-Flag wie folgt:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/products/"
+RewriteRule    "^widget/(.*)$"  "http://product.example.com/widget/$1"  [P]
+ProxyPassReverse "/products/widget/" "http://product.example.com/widget/"
+</highlight>
+
+   <p>Im zweiten Beispiel leiten wir die Anfrage nur weiter, wenn wir
+   die Ressource nicht lokal finden können. Dies kann sehr nützlich sein,
+   wenn Sie von einem Server zu einem anderen migrieren und sich nicht
+   sicher sind, ob alle Inhalte bereits migriert wurden.</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+    </dd>
+
+    <dt>Diskussion:</dt>
+
+    <dd><p>In jedem Fall fügen wir eine <directive
+    module="mod_proxy">ProxyPassReverse</directive>-Direktive hinzu, um
+    sicherzustellen, dass alle vom Backend ausgegebenen Umleitungen
+    korrekt an den Client weitergeleitet werden.</p>
+
+    <p>Erwägen Sie, wann immer möglich, <directive
+    module="mod_proxy">ProxyPass</directive> oder <directive
+    module="mod_proxy">ProxyPassMatch</directive> anstelle von
+    <module>mod_rewrite</module> zu verwenden.</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage>

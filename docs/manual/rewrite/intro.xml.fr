@@ -1,7 +1,7 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906637:1933423 (outdated) -->
+<!-- English Revision: 1933423 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -89,8 +89,10 @@ expressions rationnelles. A cet effet, nous recommandons les <a
 href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
 href="http://perldoc.perl.org/perlre.html">page de manuel des
 expressions rationnelles Perl</a>, et l'ouvrage <a
-href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, by Jeffrey Friedl</a> (la troisième édition date
+de 2006, mais la syntaxe des expressions rationnelles n'a pas vraiment
+changé, et cet ouvrage reste la référence en la matière).</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
 vocabulaire des expressions rationnelles pour vous mettre le pied à
@@ -129,6 +131,9 @@ précédent zéro ou plusieurs fois</td>
 <tr><td><code>?</code></td><td>Rend la correspondance optionnelle.</td><td>
 <code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
 </tr>
+<tr><td><code>\</code></td><td>Échappe le caractère
+suivant</td><td><code>\.</code> correspondra à <code>.</code> (point) et non pas à
+<em>tout caractère unique</em> comme expliqué ci-dessus</td></tr>
 <tr><td><code>^</code></td><td>Appelé ancrage, correspond au début de la
 chaîne</td>
 <td><code>^a</code> correspond à une chaîne qui commence par
@@ -408,4 +413,3 @@ requête est correctement mise en correspondance.</p>
 </section>
 
 </manualpage>
-

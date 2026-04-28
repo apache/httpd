@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1872293:1933071 (outdated) -->
+<!-- English Revision: 1933071 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -100,7 +100,7 @@ rediriger toutes les URLs de niveaux inférieurs comme
 <code>http://un.example.com/</code>, utilisez cette définition :</p>
 
 <highlight language="config">
-Redirect /one/ http://one.example.com/
+Redirect "/one/" "http://one.example.com/"
 </highlight>
 
 <p>Pour rediriger un nom d'hôte vers un autre nom d'hôte, par exemple
@@ -112,13 +112,13 @@ utilisez cette définition :</p>
 
 <highlight language="config">
 &lt;VirtualHost *:80&gt;
-ServerName www.example.com
-Redirect "/" "https://www.example.com/"
+    ServerName www.example.com
+    Redirect "/" "https://www.example.com/"
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:443&gt;
-ServerName www.example.com
-#  ... insérer ici la configuration SSL
+    ServerName www.example.com
+    # ... insérer ici la configuration SSL
 &lt;/VirtualHost&gt;
 </highlight>
 
@@ -247,7 +247,7 @@ suit :</p>
 
 <highlight language="config">
 &lt;If "req('Host') != 'www.example.com'"&gt;
-    Redirect "/" "http://www.example.com"
+    Redirect "/" "http://www.example.com/"
 &lt;/If&gt;
 </highlight>
 
@@ -265,4 +265,3 @@ ainsi que dans certaines directives.</p>
 </section>
 
 </manualpage>
-

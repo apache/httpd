@@ -1,0 +1,406 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933423 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="intro.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite'a Giriş</title>
+
+<summary>
+<p>Bu belge, <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+<module>mod_rewrite</module> kullanımı için gerekli temel kavramları
+açıklar. Diğer belgeler daha ayrıntılıdır, ancak bu belge
+başlangıç yapmak isteyenlere yardımcı olmalıdır.
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<!-- <seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso> -->
+<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>
+<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap Kullanımı</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>
+
+<section id="introduction"><title>Giriş</title>
+<p>Apache modülü <module>mod_rewrite</module>, URL değiştirmeleri
+yapmanın bir yolunu sunan çok güçlü ve karmaşık bir modüldür. Bununla
+ihtiyaç duyabileceğiniz neredeyse her türlü URL yeniden yazma işlemini
+gerçekleştirebilirsiniz. Ancak biraz karmaşıktır ve yeni başlayanlar
+için korkutucu olabilir. Yeniden yazma kurallarını, gerçekte ne
+yaptıklarını anlamadan sihirli formüller olarak ele alma eğilimi de
+vardır.</p>
+
+<p>Bu belge, takip eden içeriğin körü körüne kopyalanmak yerine
+anlaşılması için yeterli arka plan bilgisi sağlamaya çalışmaktadır.
+</p>
+
+<p>Birçok yaygın URL değiştirme görevinin <module>mod_rewrite</module>
+modülünün tüm gücünü ve karmaşıklığını gerektirmediğini unutmayın.
+Basit görevler için <module>mod_alias</module> modülüne ve <a
+href="../urlmapping.html">URL'lerin dosya sistemine
+eşlenmesi</a> belgelerine bakın.</p>
+
+<p>Son olarak, devam etmeden önce <module>mod_rewrite</module>
+modülünün günlük seviyesini <directive module="core">LogLevel</directive>
+yönergesini kullanarak izleme seviyelerinden birine yapılandırmayı
+unutmayın. Bu, bunaltıcı miktarda bilgi sağlasa da,
+<module>mod_rewrite</module> yapılandırma sorunlarını ayıklamada
+vazgeçilmezdir; çünkü her kuralın nasıl işlendiğini tam olarak
+gösterir.</p>
+
+</section>
+
+<section id="regex"><title>Düzenli İfadeler</title>
+
+<p><module>mod_rewrite</module>, <a href="http://pcre.org/">Perl
+Uyumlu Düzenli İfade</a> sözvarlığını kullanır. Bu belgede, düzenli
+ifadelere ayrıntılı bir başvuru sağlamaya çalışmıyoruz. Bunun için
+<a href="http://pcre.org/pcre.txt">PCRE kılavuz sayfalarını</a>,
+<a href="http://perldoc.perl.org/perlre.html">Perl düzenli ifade
+kılavuz sayfasını</a> ve <a
+href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Jeffrey
+Friedl'ın Mastering Regular Expressions kitabını</a> (üçüncü baskısı
+2006'dandır, ancak düzenli ifade sözdizimi temelde değişmemiştir ve
+bu konu hakkında kesin başvuru kaynağı olmaya devam etmektedir)
+öneririz.</p>
+
+<p>Bu belgede, bunaltıcı olmadan başlamanıza yetecek kadar düzenli
+ifade sözvarlığı sağlamaya çalışıyoruz; böylece <directive
+module="mod_rewrite">RewriteRule</directive> kuralları sihirli
+formüller yerine bilimsel formüller olacaktır.</p>
+
+<section id="regexvocab"><title>Düzenli ifade sözvarlığı</title>
+
+<p>Düzenli ifadeler ve <directive
+module="mod_rewrite">RewriteRule</directive> kuralları yazmak için
+ihtiyaç duyacağınız asgari yapı taşları aşağıdadır. Bunlar kesinlikle
+tam bir düzenli ifade sözvarlığını temsil etmez, ancak başlamak ve
+temel düzenli ifadeleri okumak için iyi bir yerdir.</p>
+
+<table>
+<tr>
+<th>Karakter</th>
+<th>Anlam</th>
+<th>Örnek</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>Herhangi bir tek karakterle eşleşir</td>
+    <td><code>c.t</code>; <code>cat</code>, <code>cot</code>,
+      <code>cut</code> vb. ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>Önceki eşleşmeyi bir veya daha fazla kez tekrarlar</td>
+    <td><code>a+</code>; <code>a</code>, <code>aa</code>,
+      <code>aaa</code> vb. ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>Önceki eşleşmeyi sıfır veya daha fazla kez tekrarlar</td>
+    <td><code>a*</code>; <code>a+</code> ile aynı şeylerle eşleşir
+      ancak ayrıca boş dizgeyle de eşleşir</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>Eşleşmeyi isteğe bağlı yapar</td>
+    <td><code>colou?r</code>; <code>color</code> ve
+    <code>colour</code> ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>Sonraki karakteri kodlar</td>
+    <td><code>\.</code>; yukarıda açıklandığı gibi <em>herhangi bir tek
+    karakter</em> yerine <code>.</code> (nokta) ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>Çapa olarak adlandırılır, dizgenin başlangıcıyla eşleşir</td>
+    <td><code>^a</code>; <code>a</code> ile başlayan bir dizgeyle
+    eşleşir</td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>Diğer çapa, dizgenin sonuyla eşleşir</td>
+    <td><code>a$</code>; <code>a</code> ile biten bir dizgeyle
+    eşleşir</td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>Birkaç karakteri tek bir birime gruplar ve geri başvuruda
+      kullanılmak üzere bir eşleşme yakalar</td>
+    <td><code>(ab)+</code>; <code>ababab</code> ile eşleşir - yani
+      <code>+</code> gruba uygulanır. Geri başvurular hakkında daha
+      fazla bilgi için <a href="#InternalBackRefs">aşağıya</a>
+      bakın</td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>Bir karakter sınıfı - karakterlerden biriyle eşleşir</td>
+    <td><code>c[uoa]t</code>; <code>cut</code>, <code>cot</code> veya
+      <code>cat</code> ile eşleşir</td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>Olumsuz karakter sınıfı - belirtilmeyen herhangi bir
+      karakterle eşleşir</td>
+    <td><code>c[^/]t</code>; <code>cat</code> veya <code>c=t</code>
+      ile eşleşir ancak <code>c/t</code> ile eşleşmez</td></tr>
+</table>
+
+<p><module>mod_rewrite</module> modülünde <code>!</code> karakteri
+düzenli ifadeyi olumsuzlamak için kullanılabilir. Yani, bir dizge
+yalnızca ifadenin geri kalanıyla eşleşmezse eşleşmiş sayılır.</p>
+
+</section>
+
+<section id="InternalBackRefs"><title>Düzenli İfade Geri Başvuru
+Kullanılabilirliği</title>
+
+      <p>Burada hatırlanması gereken önemli bir şey vardır:
+      <em>Kalıp</em>'ta veya <em>CondPattern</em>'lerden birinde
+      parantez kullandığınızda, <code>$N</code> ve <code>%N</code>
+      dizgeleriyle kullanılabilecek dahili geri başvurular oluşturulur
+      (aşağıya bakın). Bunlar, bir
+      <directive module="mod_rewrite">RewriteRule</directive>
+      yönergesinin <em>Değiştirme</em> parametresini veya bir
+      <directive module="mod_rewrite">RewriteCond</directive>
+      yönergesinin <em>SınamaDizgesi</em> parametresini oluşturmak
+      için kullanılabilir.</p>
+      <p><directive module="mod_rewrite">RewriteRule</directive>
+      kalıplarındaki yakalamalar (sezgiye aykırı olarak) kendinden
+      önceki tüm <directive module="mod_rewrite">RewriteCond</directive>
+      yönergelerinde kullanılabilir; çünkü <directive
+      module="mod_rewrite">RewriteRule</directive> ifadesi bireysel
+      koşullardan önce değerlendirilir.</p>
+
+      <p>Şekil 1, geri başvuruların genişletilmek üzere hangi
+      konumlara aktarıldığını ve RewriteRule, RewriteCond eşleştirme
+      akışını gösterir. Sonraki bölümlerde bu geri başvuruların nasıl
+      kullanılacağını inceleyeceğiz; bu nedenle ilk başta biraz yabancı
+      görünürse endişelenmeyin.
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png"
+      alt="RewriteRule ve RewriteCond eşleştirme akışı" /><br />
+      <dfn>Şekil 1:</dfn> Bir kural boyunca geri başvuru akışı.<br />
+      Bu örnekte, <code>/test/1234</code> için bir istek <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code> olarak dönüştürülecektir.
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>RewriteRule Temelleri</title>
+<p>Bir <directive module="mod_rewrite">RewriteRule</directive>,
+boşluklarla ayrılmış üç argümandan oluşur. Argümanlar şunlardır:</p>
+<ol>
+<li><var>Kalıp</var>: hangi gelen URL'lerin kuraldan etkileneceği;</li>
+<li><var>Değiştirme</var>: eşleşen isteklerin nereye gönderileceği;</li>
+<li><var>[bayraklar]</var>: yeniden yazılmış isteği etkileyen
+seçenekler.</li>
+</ol>
+
+<p><var>Kalıp</var> bir <a href="#regex">düzenli ifadedir</a>.
+İlk başta (ilk yeniden yazma kuralı için veya bir değiştirme
+gerçekleşene kadar) gelen isteğin URL yoluyla (konak adından sonra
+ancak sorgu dizgesinin başlangıcını gösteren soru işaretinden önceki
+kısım) veya dizin başına bağlamda kuralın tanımlandığı dizine göre
+isteğin yoluyla eşleştirilir. Bir değiştirme gerçekleştikten sonra
+izleyen kurallar değiştirilen değerle eşleştirilir.
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png"
+      alt="RewriteRule yönergesinin sözdizimi" /><br />
+      <dfn>Şekil 2:</dfn> RewriteRule yönergesinin sözdizimi.
+</p>
+
+
+<p><var>Değiştirme</var> kendisi üç şeyden biri olabilir:</p>
+
+<dl>
+<dt>1. Bir kaynağa tam dosya sistemi yolu</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games" "/usr/local/games/web/puzzles.html"
+</highlight>
+<p>Bu, <directive module="mod_alias">Alias</directive> yönergesine
+benzer şekilde bir isteği dosya sistemindeki keyfi bir konuma
+eşler.</p>
+</dd>
+
+<dt>2. Bir kaynağa web yolu</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/games$" "/puzzles.html"
+</highlight>
+<p><directive module="core">DocumentRoot</directive>
+<code>/usr/local/apache2/htdocs</code> olarak ayarlanmışsa, bu
+yönerge <code>http://example.com/games</code> isteklerini
+<code>/usr/local/apache2/htdocs/puzzles.html</code> yoluna
+eşler.</p>
+
+</dd>
+
+<dt>3. Mutlak bir URL</dt>
+<dd>
+<highlight language="config">
+RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]
+</highlight>
+<p>Bu, istemciye belirtilen URL için yeni bir istek yapmasını
+söyler.</p>
+</dd>
+</dl>
+
+<note type="warning"><strong>1</strong> ve <strong>2</strong>'nin sözdiziminin tamamen aynı olduğunu unutmayın. Aralarındaki fark, <strong>1</strong> durumunda hedef yolun en üst düzeyinin (yani <code>/usr/</code>) dosya sisteminde mevcut olması, <strong>2</strong> durumunda ise mevcut olmamasıdır (yani dosya sisteminde kök düzeyinde bir <code>/bar/</code> dizini yoktur).</note>
+
+<p><var>Değiştirme</var>, <var>Kalıp</var> tarafından eşleşen gelen
+URL yolunun bölümlerine <em>geri başvurular</em> da içerebilir. Şunu
+ele alalım:</p>
+<highlight language="config">
+RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"
+</highlight>
+<p><code>$1</code> değişkeni, <var>Kalıp</var> içindeki parantez
+içindeki ifadeyle eşleşen metinle değiştirilir. Örneğin,
+<code>http://example.com/product/r14df/view</code> isteği
+<code>/var/web/productdb/r14df</code> yoluna eşlenir.</p>
+
+<p>Parantez içinde birden fazla ifade varsa, bunlar sırasıyla
+<code>$1</code>, <code>$2</code>, <code>$3</code> ve sonraki
+değişkenlerde kullanılabilir.</p>
+
+
+</section>
+
+<section id="flags"><title>Yeniden Yazma Bayrakları</title>
+<p>Bir <directive module="mod_rewrite">RewriteRule</directive>
+yönergesinin davranışı, kuralın sonuna bir veya daha fazla bayrak
+uygulanarak değiştirilebilir. Örneğin, bir kuralın eşleştirme
+davranışı <code>[NC]</code> bayrağı uygulanarak büyük/küçük harf
+duyarsız yapılabilir:
+</p>
+<highlight language="config">
+RewriteRule "^puppy.html" "smalldog.html" [NC]
+</highlight>
+
+<p>Kullanılabilir bayraklar, anlamları ve örnekleri hakkında daha
+fazla ayrıntı için <a href="flags.html">Yeniden Yazma Bayrakları</a>
+belgesine bakın.</p>
+
+</section>
+
+
+<section id="rewritecond"><title>Yeniden Yazma Koşulları</title>
+<p>Ardından gelen <directive
+module="mod_rewrite">RewriteRule</directive> yönergesine tabi
+olacak istek türlerini kısıtlamak için bir veya daha fazla <directive
+module="mod_rewrite">RewriteCond</directive> yönergesi
+kullanılabilir. İlk argüman isteğin bir özelliğini tanımlayan bir
+değişken, ikinci argüman değişkenle eşleşmesi gereken bir <a
+href="#regex">düzenli ifade</a> ve üçüncü isteğe bağlı argüman
+eşleşmenin nasıl değerlendirileceğini değiştiren bayrakların bir
+listesidir.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png"
+      alt="RewriteCond yönergesinin sözdizimi" /><br />
+      <dfn>Şekil 3:</dfn> RewriteCond yönergesinin sözdizimi
+</p>
+
+<p>Örneğin, belirli bir IP aralığından gelen tüm istekleri farklı
+bir sunucuya göndermek için şunu kullanabilirsiniz:</p>
+<highlight language="config">
+RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"
+</highlight>
+
+<p>Birden fazla <directive module="mod_rewrite">RewriteCond</directive>
+belirtildiğinde, <directive module="mod_rewrite">RewriteRule</directive>
+yönergesinin uygulanması için hepsinin eşleşmesi gerekir. Örneğin,
+sorgu dizgelerinde "hack" sözcüğünü içeren istekleri reddetmek, ancak
+"go" sözcüğünü içeren bir çerez taşıyanları hariç tutmak için şunu
+kullanabilirsiniz:</p>
+<highlight language="config">
+RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]
+</highlight>
+<p>Ünlem işaretinin olumsuz bir eşleşme belirttiğine dikkat edin;
+kural yalnızca çerez "go" içermiyorsa uygulanır.</p>
+
+<p><directive module="mod_rewrite">RewriteCond</directive>
+yönergelerindeki düzenli ifadelerdeki eşleşmeler, <directive
+module="mod_rewrite">RewriteRule</directive> yönergesindeki
+<var>Değiştirme</var>'nin bir parçası olarak <code>%1</code>,
+<code>%2</code> vb. değişkenler kullanılarak kullanılabilir. Örneğin,
+şu kural siteye erişmek için kullanılan konak adına bağlı olarak
+isteği farklı bir dizine yönlendirecektir:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"
+</highlight>
+<p>İstek <code>http://example.com/foo/bar</code> için ise
+<code>%1</code> değeri <code>example.com</code> ve <code>$1</code>
+değeri <code>foo/bar</code> olacaktır.</p>
+
+
+
+</section>
+
+<section id="rewritemap"><title>Yeniden yazma eşlemleri</title>
+
+<p><directive module="mod_rewrite">RewriteMap</directive> yönergesi,
+tabir yerindeyse yeniden yazma işleminizi yapacak harici bir işlev
+çağırmanın bir yolunu sunar. Bu, <a
+href="rewritemap.html">RewriteMap ek belgelerinde</a> daha ayrıntılı
+olarak tartışılmaktadır.</p>
+</section>
+
+<section id="htaccess"><title>.htaccess dosyaları</title>
+
+<p>Yeniden yazma genellikle ana sunucu yapılandırma ayarında
+(herhangi bir <directive type="section"
+module="core">Directory</directive> bölümünün dışında) veya
+<directive type="section" module="core">VirtualHost</directive>
+kapsayıcıları içinde yapılandırılır. Bu, yeniden yazma yapmanın en
+kolay yoludur ve önerilir. Ancak yeniden yazmayı <directive
+type="section" module="core">Directory</directive> bölümlerinde veya
+<a href="../howto/htaccess.html"><code>.htaccess</code>
+dosyalarında</a> bazı ek karmaşıklık pahasına yapmak mümkündür. Bu
+tekniğe dizin başına yeniden yazma denir.</p>
+
+<p>Sunucu başına yeniden yazmadan temel fark, <code>.htaccess</code>
+dosyasını içeren dizinin yol önekinin,
+<directive module="mod_rewrite">RewriteRule</directive> yönergesinde
+eşleştirmeden önce çıkarılmasıdır. Ayrıca, isteğin düzgün şekilde
+eşlenmesini sağlamak için <directive
+module="mod_rewrite">RewriteBase</directive> kullanılmalıdır.</p>
+
+</section>
+
+</manualpage>

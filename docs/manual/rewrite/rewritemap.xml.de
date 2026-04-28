@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1932819 -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<manualpage metafile="rewritemap.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+  <title>Verwendung von RewriteMap</title>
+  <summary>
+
+    <p>Dieses Dokument ergänzt die <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">Referenzdokumentation</a>. Es beschreibt
+die Verwendung der <directive module="mod_rewrite">RewriteMap</directive>-Direktive
+und bietet Beispiele für jeden der verschiedenen
+<directive module="mod_rewrite">RewriteMap</directive>-Typen.</p>
+
+    <note type="warning">Beachten Sie, dass viele dieser Beispiele nicht unverändert in Ihrer
+speziellen Serverkonfiguration funktionieren werden. Es ist daher wichtig, dass Sie
+sie verstehen, anstatt die Beispiele einfach auszuschneiden und in Ihre
+Konfiguration einzufügen.</note>
+
+  </summary>
+  <seealso><a href="../mod/mod_rewrite.html">Moduldokumentation</a></seealso>
+  <seealso><a href="intro.html">Einführung in mod_rewrite</a></seealso>
+  <seealso><a href="remapping.html">Umleitung und Neuzuordnung</a></seealso>
+  <seealso><a href="access.html">Zugriffskontrolle</a></seealso>
+  <seealso><a href="vhosts.html">Virtuelle Hosts</a></seealso>
+  <seealso><a href="proxy.html">Proxying</a></seealso>
+  <seealso><a href="advanced.html">Fortgeschrittene Techniken</a></seealso>
+  <seealso><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></seealso>
+
+  <section id="introduction">
+    <title>Einführung</title>
+
+   <p>
+   Die <directive module="mod_rewrite">RewriteMap</directive>-Direktive
+   definiert eine externe Funktion, die im Kontext von
+   <directive module="mod_rewrite">RewriteRule</directive>- oder
+   <directive module="mod_rewrite">RewriteCond</directive>-Direktiven
+   aufgerufen werden kann, um Umschreibungen durchzuführen, die zu
+   kompliziert oder zu spezialisiert sind, um allein mit regulären
+   Ausdrücken durchgeführt zu werden. Die Quelle für diese Nachschlagung
+   kann einer der in den folgenden Abschnitten aufgeführten Typen sein,
+   die auch in der
+   <directive module="mod_rewrite">RewriteMap</directive>-Referenzdokumentation
+   aufgezählt sind.</p>
+
+   <p>Die Syntax der <directive module="mod_rewrite">RewriteMap</directive>-Direktive
+   lautet wie folgt:</p>
+
+<highlight language="config">
+RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</highlight>
+
+    <p>Der <a id="mapfunc" name="mapfunc"><em>MapName</em></a> ist ein
+    beliebiger Name, den Sie der Map zuweisen und den Sie später in
+    Direktiven verwenden. Argumente werden der Map über die folgende
+    Syntax übergeben:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br/> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>Wenn ein solches Konstrukt auftritt, wird die Map <em>MapName</em>
+      konsultiert und der Schlüssel <em>LookupKey</em> nachgeschlagen.
+      Wenn der Schlüssel gefunden wird, wird das Map-Funktions-Konstrukt
+      durch <em>SubstValue</em> ersetzt. Wenn der Schlüssel nicht gefunden
+      wird, wird es durch <em>DefaultValue</em> oder durch den leeren
+      String ersetzt, falls kein <em>DefaultValue</em> angegeben wurde.</p>
+
+    <p>Sie können beispielsweise eine
+      <directive module="mod_rewrite">RewriteMap</directive> wie folgt
+      definieren:</p>
+    <highlight language="config">
+RewriteMap examplemap "txt:/path/to/file/map.txt"
+    </highlight>
+    <p>Sie können diese Map dann in einer
+      <directive module="mod_rewrite">RewriteRule</directive> wie folgt
+      verwenden:</p>
+      <highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1}"
+      </highlight>
+
+<p>Ein Standardwert kann für den Fall angegeben werden, dass nichts in
+der Map gefunden wird:</p>
+
+<highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"
+</highlight>
+
+<note><title>Verzeichniskontext und .htaccess-Kontext</title>
+<p>
+Die <directive module="mod_rewrite">RewriteMap</directive>-Direktive darf nicht
+in <directive module="core" type="section">Directory</directive>-Abschnitten oder
+<code>.htaccess</code>-Dateien verwendet werden. Sie müssen die Map im Server-
+oder VirtualHost-Kontext deklarieren. Sie können die Map, einmal erstellt, in
+Ihren <directive module="mod_rewrite">RewriteRule</directive>- und
+<directive module="mod_rewrite">RewriteCond</directive>-Direktiven in diesen
+Geltungsbereichen verwenden. Sie können sie nur nicht in diesen Geltungsbereichen
+<strong>deklarieren</strong>.</p>
+</note>
+
+<p>Die folgenden Abschnitte beschreiben die verschiedenen <em>MapType</em>s,
+die verwendet werden können, und geben Beispiele für jeden.</p>
+  </section>
+
+  <section id="int">
+    <title>int: Interne Funktion</title>
+
+    <p>Wenn ein MapType von <code>int</code> verwendet wird, ist die
+    MapSource eine der verfügbaren internen
+    <directive module="mod_rewrite">RewriteMap</directive>-Funktionen.
+    Modulautoren können zusätzliche interne Funktionen bereitstellen,
+    indem sie diese mit der <code>ap_register_rewrite_mapfunc</code>-API
+    registrieren. Die standardmäßig bereitgestellten Funktionen sind:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br/>
+             Konvertiert den Schlüssel in Großbuchstaben.</li>
+      <li><strong>tolower</strong>:<br/>
+             Konvertiert den Schlüssel in Kleinbuchstaben.</li>
+      <li><strong>escape</strong>:<br/>
+             Übersetzt Sonderzeichen im Schlüssel in
+            Hex-Kodierungen.</li>
+      <li><strong>unescape</strong>:<br/>
+             Übersetzt Hex-Kodierungen im Schlüssel zurück in
+            Sonderzeichen.</li>
+    </ul>
+
+    <p>
+    Um eine dieser Funktionen zu verwenden, erstellen Sie eine
+    <directive module="mod_rewrite">RewriteMap</directive>, die auf die
+    int-Funktion verweist, und verwenden Sie diese dann in Ihrer
+    <directive module="mod_rewrite">RewriteRule</directive>:
+    </p>
+
+   <p><strong>Eine URI auf eine komplett kleingeschriebene Version umleiten</strong></p>
+    <highlight language="config">
+RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]
+    </highlight>
+
+    <note>
+    <p>Bitte beachten Sie, dass das hier angebotene Beispiel nur zur
+    Veranschaulichung dient und keine Empfehlung ist. Wenn Sie URLs
+    unabhängig von der Groß-/Kleinschreibung machen möchten, ziehen Sie
+    stattdessen die Verwendung von <module>mod_speling</module> in
+    Betracht.
+    </p>
+    </note>
+
+  </section>
+
+  <section id="txt">
+    <title>txt: Klartext-Maps</title>
+
+    <p>Wenn ein MapType von <code>txt</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer Klartext-Zuordnungsdatei,
+    die ein durch Leerzeichen getrenntes Schlüssel/Wert-Paar pro Zeile
+    enthält. Optional kann eine Zeile einen Kommentar enthalten, der
+    mit einem '#'-Zeichen beginnt.</p>
+
+    <p>Eine gültige Text-Rewrite-Map-Datei hat die folgende Syntax:</p>
+
+    <example>
+      # Kommentarzeile<br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # Kommentar<br />
+    </example>
+
+    <p>Wenn die <directive module="mod_rewrite">RewriteMap</directive>
+    aufgerufen wird, wird das Argument im ersten Argument einer Zeile
+    gesucht und, falls gefunden, der Ersetzungswert zurückgegeben.</p>
+
+    <p>Beispielsweise können wir eine Map-Datei verwenden, um
+    Produktnamen in Produkt-IDs für leichter zu merkende URLs
+    zu übersetzen, mit dem folgenden Rezept:</p>
+<p><strong>Produkt-zu-ID-Konfiguration</strong></p>
+    <highlight language="config">
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+
+    <p>Wir nehmen hier an, dass das <code>prods.php</code>-Skript weiß,
+    was zu tun ist, wenn es ein Argument von <code>id=NOTFOUND</code>
+    erhält, wenn ein Produkt nicht in der Nachschlagetabelle gefunden
+    wird.</p>
+
+    <p>Die Datei <code>/etc/apache2/productmap.txt</code> enthält dann
+    Folgendes:</p>
+
+    <example><title>Produkt-zu-ID-Map</title>
+##<br />
+##  productmap.txt - Produkt-zu-ID-Map-Datei<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </example>
+
+    <p>Wenn also <code>http://example.com/product/television</code>
+    angefordert wird, wird die <directive module="mod_rewrite">RewriteRule</directive>
+    angewendet und die Anfrage intern auf
+    <code>/prods.php?id=993</code> abgebildet.</p>
+
+    <note><title>Hinweis: .htaccess-Dateien</title>
+    Das gegebene Beispiel ist für die Verwendung im Server- oder
+    VirtualHost-Kontext konzipiert. Wenn Sie dies in einer
+    <code>.htaccess</code>-Datei verwenden möchten, müssen Sie den
+    führenden Schrägstrich aus dem Umschreibungsmuster entfernen, damit
+    es übereinstimmt:
+    <highlight language="config">
+RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+    </note>
+
+    <note><title>Zwischengespeicherte Nachschlagungen</title>
+    <p>
+    Die nachgeschlagenen Schlüssel werden von httpd zwischengespeichert,
+    bis sich die <code>mtime</code> (Änderungszeit) der Map-Datei ändert
+    oder der httpd-Server neu gestartet wird. Dies gewährleistet eine
+    bessere Leistung bei Maps, die von vielen Anfragen aufgerufen werden.
+    </p>
+    </note>
+
+  </section>
+  <section id="rnd">
+    <title>rnd: Zufälliger Klartext</title>
+
+    <p>Wenn ein MapType von <code>rnd</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer Klartext-Zuordnungsdatei,
+    wobei jede Zeile einen Schlüssel und einen oder mehrere durch
+    <code>|</code> getrennte Werte enthält. Einer dieser Werte wird
+    zufällig ausgewählt, wenn der Schlüssel übereinstimmt.</p>
+
+    <p>Sie können beispielsweise die folgende Map-Datei und Direktiven
+    verwenden, um eine zufällige Lastverteilung zwischen mehreren
+    Backend-Servern über einen Reverse-Proxy bereitzustellen. Bilder
+    werden an einen der Server im 'static'-Pool gesendet, während alles
+    andere an einen der Server im 'dynamic'-Pool gesendet wird.</p>
+
+    <example><title>Rewrite-Map-Datei</title>
+##<br />
+##  map.txt -- Umschreibungs-Map<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </example>
+<p><strong>Konfigurationsdirektiven</strong></p>
+    <highlight language="config">
+RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]
+    </highlight>
+
+    <p>Wenn also ein Bild angefordert wird und die erste dieser Regeln
+    übereinstimmt, schlägt <directive module="mod_rewrite">RewriteMap</directive>
+    den String <code>static</code> in der Map-Datei nach, die einen der
+    angegebenen Hostnamen zufällig zurückgibt, der dann im
+    <directive module="mod_rewrite">RewriteRule</directive>-Ziel verwendet wird.</p>
+
+    <p>Wenn Sie möchten, dass einer der Server häufiger ausgewählt wird
+    (zum Beispiel, wenn einer der Server mehr Speicher hat und daher mehr
+    Anfragen verarbeiten kann), listen Sie ihn einfach häufiger in der
+    Map-Datei auf.</p>
+
+    <example>
+static   www1|www1|www2|www3|www4
+    </example>
+
+  </section>
+
+  <section id="dbm">
+    <title>dbm: DBM-Hash-Datei</title>
+
+    <p>Wenn ein MapType von <code>dbm</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einer DBM-Datenbankdatei, die
+    Schlüssel/Wert-Paare für die Zuordnung enthält. Dies funktioniert
+    genau wie die <code>txt</code>-Map, ist aber viel schneller, da eine
+    DBM indiziert ist, während eine Textdatei dies nicht ist. Dies
+    ermöglicht einen schnelleren Zugriff auf den gewünschten Schlüssel.</p>
+
+    <p>Sie können optional einen bestimmten DBM-Typ angeben:</p>
+
+ <highlight language="config">
+RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"
+ </highlight>
+
+    <p>Der Typ kann <code>sdbm</code>, <code>gdbm</code>,
+    <code>ndbm</code> oder <code>db</code> sein. Es wird jedoch
+    empfohlen, einfach das mit dem Apache HTTP Server mitgelieferte
+    Dienstprogramm <a href="../programs/httxt2dbm.html">httxt2dbm</a>
+    zu verwenden, da es die korrekte DBM-Bibliothek verwendet, die mit
+    der beim Bau von httpd selbst verwendeten übereinstimmt.</p>
+
+    <p>Um eine DBM-Datei zu erstellen, erstellen Sie zunächst eine
+    Text-Map-Datei wie im Abschnitt <a href="#txt">txt</a> beschrieben.
+    Führen Sie dann <code>httxt2dbm</code> aus:</p>
+
+<example>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</example>
+
+<p>Sie können dann die resultierende Datei in Ihrer
+<directive module="mod_rewrite">RewriteMap</directive>-Direktive
+referenzieren:</p>
+
+<highlight language="config">
+RewriteMap mapname "dbm:/etc/apache/mapfile.map"
+</highlight>
+
+<note>
+<p>Beachten Sie, dass bei einigen DBM-Typen mehr als eine Datei mit
+einem gemeinsamen Basisnamen erzeugt wird. Beispielsweise können zwei
+Dateien namens <code>mapfile.map.dir</code> und
+<code>mapfile.map.pag</code> vorhanden sein. Dies ist normal, und Sie
+müssen nur den Basisnamen <code>mapfile.map</code> in Ihrer
+<directive module="mod_rewrite">RewriteMap</directive>-Direktive
+verwenden.</p>
+</note>
+
+<note><title>Zwischengespeicherte Nachschlagungen</title>
+<p>
+Die nachgeschlagenen Schlüssel werden von httpd zwischengespeichert, bis
+sich die <code>mtime</code> (Änderungszeit) der Map-Datei ändert oder der
+httpd-Server neu gestartet wird. Dies gewährleistet eine bessere Leistung
+bei Maps, die von vielen Anfragen aufgerufen werden.
+</p>
+</note>
+
+  </section>
+
+  <section id="prg"><title>prg: Externes Umschreibungsprogramm</title>
+
+    <p>Wenn ein MapType von <code>prg</code> verwendet wird, ist die
+    MapSource ein Dateisystempfad zu einem ausführbaren Programm, das
+    das Zuordnungsverhalten bereitstellt. Dies kann eine kompilierte
+    Binärdatei oder ein Programm in einer interpretierten Sprache wie
+    Python oder Perl sein.</p>
+
+    <p>Dieses Programm wird einmal beim Start des Apache HTTP Servers
+    gestartet und kommuniziert dann mit der Umschreibungs-Engine über
+    <code>STDIN</code> und <code>STDOUT</code>. Für jede Map-Funktions-Nachschlagung
+    wird der Schlüssel auf das <code>STDIN</code> des Programms geschrieben,
+    gefolgt von einem Zeilenumbruch. Das Programm sollte eine Zeile von
+    <code>STDIN</code> lesen (bis einschließlich des Zeilenumbruchs) und
+    seine Antwort als einzelne durch einen Zeilenumbruch abgeschlossene
+    Zeile auf <code>STDOUT</code> schreiben. Schlüssel enthalten niemals
+    Zeilenumbrüche; wenn ein Schlüssel mit einem Zeilenumbruch angetroffen
+    wird, schlägt die Nachschlagung fehl.</p>
+
+    <p>Wenn es keinen entsprechenden Nachschlagewert gibt, sollte das
+    Map-Programm den vierstelligen String "<code>NULL</code>" zurückgeben,
+    um dies anzuzeigen. Beachten Sie, dass dieser Vergleich
+    Groß-/Kleinschreibung ignoriert, sodass "null", "Null" usw. ebenfalls
+    als fehlgeschlagene Nachschlagung behandelt werden. Folglich ist es
+    nicht möglich, dass ein Zuordnungsprogramm den literalen String "NULL"
+    als zugeordneten Wert zurückgibt.</p>
+
+    <p>Das <code>STDERR</code> des Programms wird vom httpd-Elternprozess
+    geerbt, sodass alles, was das Programm auf <code>STDERR</code> schreibt,
+    an derselben Stelle wie die eigene Fehlerausgabe von httpd erscheint
+    (typischerweise das <directive module="core">ErrorLog</directive>).</p>
+
+    <p>Externe Umschreibungsprogramme werden nicht gestartet, wenn sie in
+    einem Kontext definiert sind, der <directive
+    module="mod_rewrite">RewriteEngine</directive> nicht auf <code>on</code>
+    gesetzt hat.</p>
+
+    <p>Standardmäßig werden externe Umschreibungsprogramme als der
+    Benutzer:Gruppe ausgeführt, der httpd gestartet hat. Auf
+    UNIX-Systemen kann dies geändert werden, indem Benutzername und
+    Gruppenname als drittes Argument an
+    <directive module="mod_rewrite">RewriteMap</directive> im Format
+    <code>username:groupname</code> übergeben werden.</p>
+
+    <p>Diese Funktion nutzt den <code>rewrite-map</code>-Mutex, der
+    für eine zuverlässige Kommunikation mit dem Programm erforderlich ist.
+    Der Mutex-Mechanismus und die Sperrdatei können mit der
+    <directive module="core">Mutex</directive>-Direktive konfiguriert
+    werden.</p>
+
+    <p>Hier wird ein einfaches Beispiel gezeigt, das alle Bindestriche
+    in einem Anfrage-URI durch Unterstriche ersetzt.</p>
+
+    <p><strong>Umschreibungskonfiguration</strong></p>
+    <highlight language="config">
+RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"
+    </highlight>
+
+    <p><strong>dash2under.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)
+    </highlight>
+
+<note><title>Vorsicht!</title>
+<ul>
+<li>Halten Sie Ihr Rewrite-Map-Programm so einfach wie möglich. Wenn das
+Programm hängt, wartet httpd unbegrenzt auf eine Antwort von der Map,
+was wiederum dazu führt, dass httpd nicht mehr auf Anfragen reagiert.</li>
+<li>Stellen Sie sicher, dass Sie die Pufferung in Ihrem Programm
+deaktivieren. Im obigen Python-Beispiel geschieht dies durch Übergabe von
+<code>flush=True</code> an <code>print()</code>. Gepufferte I/O bewirkt,
+dass httpd auf die Ausgabe wartet und daher hängen bleibt.</li>
+<li>Denken Sie daran, dass nur eine Kopie des Programms existiert, die
+beim Serverstart gestartet wird. Alle Anfragen müssen durch diesen einen
+Engpass gehen. Dies kann bei vielen Anfragen oder bei einem sehr langsamen
+Skript zu erheblichen Verlangsamungen führen.</li>
+<li>Wenn das Zuordnungsprogramm beendet wird, wird es nicht automatisch
+neu gestartet. Nachfolgende Nachschlagungen werden fehlschlagen, bis der
+Server neu gestartet wird.</li>
+<li>Das Zuordnungsprogramm wird bei jedem Server-Neustart (ob
+graceful oder nicht) beendet und neu gestartet, unabhängig davon,
+ob sich die zugehörigen Konfigurationsdirektiven geändert haben. Beim
+Herunterfahren wird dem Programm <code>SIGTERM</code> gesendet; wenn
+es nicht innerhalb von 3 Sekunden beendet wird, wird <code>SIGKILL</code>
+gesendet.</li>
+</ul>
+</note>
+
+</section>
+
+  <section id="dbd">
+    <title>dbd oder fastdbd: SQL-Abfrage</title>
+
+    <p>Wenn ein MapType von <code>dbd</code> oder <code>fastdbd</code>
+    verwendet wird, ist die MapSource eine SQL-SELECT-Anweisung, die
+    ein einzelnes Argument entgegennimmt und einen einzelnen Wert
+    zurückgibt.</p>
+
+    <p><module>mod_dbd</module> muss so konfiguriert werden, dass es auf
+    die richtige Datenbank zeigt, damit diese Anweisung ausgeführt werden
+    kann.</p>
+
+    <p>Es gibt zwei Formen dieses MapType. Bei Verwendung eines MapType
+    von <code>dbd</code> wird die Abfrage bei jeder Map-Anfrage ausgeführt,
+    während bei <code>fastdbd</code> die Datenbank-Nachschlagungen intern
+    zwischengespeichert werden. Obwohl <code>fastdbd</code> effizienter
+    und daher schneller ist, werden Änderungen an der Datenbank erst nach
+    einem Neustart des Servers übernommen.</p>
+
+    <p>Wenn eine Abfrage mehr als eine Zeile zurückgibt, wird eine
+    zufällige Zeile aus der Ergebnismenge verwendet.</p>
+
+    <example><title>Beispiel</title>
+    <highlight language="config">
+RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+    </highlight>
+    </example>
+
+    <note><title>Hinweis</title>
+    <p>Der Abfragename wird als Label für eine vorbereitete
+    SQL-Anweisung an den Datenbanktreiber übergeben und muss daher alle
+    Regeln (wie Groß-/Kleinschreibung) einhalten, die Ihre Datenbank
+    erfordert.</p></note>
+
+  </section>
+  <section id="summary">
+    <title>Zusammenfassung</title>
+
+    <p>Die <directive module="mod_rewrite">RewriteMap</directive>-Direktive
+    kann mehrfach vorkommen. Verwenden Sie für jede Zuordnungsfunktion eine
+    <directive module="mod_rewrite">RewriteMap</directive>-Direktive, um
+    ihre Umschreibungs-Map-Datei zu deklarieren.</p>
+
+    <p>Obwohl Sie eine Map nicht im Verzeichniskontext
+    (<code>.htaccess</code>-Dateien oder
+    <directive module="core" type="section">Directory</directive>-Blöcke)
+    <strong>deklarieren</strong> können, ist es möglich, diese Map im
+    Verzeichniskontext zu <strong>verwenden</strong>.</p>
+
+  </section>
+</manualpage>

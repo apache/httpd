@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933071 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="vhosts.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite ile Devingen Kitlesel Sanal Konaklar</title>
+
+<summary>
+
+<p>Bu belge, <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+Devingen olarak yapılandırılmış sanal konaklar oluşturmak için
+<module>mod_rewrite</module> modülünü nasıl kullanabileceğinizi
+açıklar.</p>
+
+<note type="warning"><module>mod_rewrite</module>, sanal konakları
+yapılandırmanın genellikle en iyi yolu değildir. mod_rewrite'a
+başvurmadan önce <a href="../vhosts/mass.html">alternatifleri</a>
+değerlendirmelisiniz. Ayrıca "<a href="avoid.html#vhosts">mod_rewrite
+kullanmaktan nasıl kaçınılır</a>" belgesine de bakın.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso>
+<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<!--<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>-->
+<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>
+
+<section id="per-hostname">
+
+  <title>Keyfi Konak Adları için Sanal Konaklar</title>
+
+  <dl>
+    <dt>Açıklama:</dt>
+
+    <dd>
+    <p>Alan adımızda çözümlenen her konak adı için, yeni VirtualHost
+    bölümleri oluşturmak zorunda kalmadan otomatik olarak bir sanal
+    konak oluşturmak istiyoruz.</p>
+
+    <p>Bu tarifle, her kullanıcı için
+    <code><strong>SITE</strong>.example.com</code> konak adını
+    kullanacağımızı ve içeriklerini
+    <code>/home/<strong>SITE</strong>/www</code> dizininden
+    sunacağımızı varsayıyoruz. Ancak
+    <code>www.example.com</code>'u bu eşlemeden hariç tutmak
+    istiyoruz.</p>
+    </dd>
+
+    <dt>Çözüm:</dt>
+
+    <dd>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{HTTP_HOST} !^www\.
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1
+</highlight></dd>
+
+<dt>Tartışma</dt>
+    <dd>
+
+    <note type="warning">DNS çözümlemesine dikkat etmeniz
+    gerekecektir - Apache ad çözümlemesini üstlenmez. Her konak adı
+    için CNAME kayıtları veya bir DNS joker kaydı oluşturmanız
+    gerekecektir. DNS kayıtları oluşturmak bu belgenin kapsamı
+    dışındadır.</note>
+
+<p>Kullanılan konak adlarının tümünün küçük harf olmasını sağlamak
+için dahili <code>tolower</code> RewriteMap yönergesi kullanılır;
+böylece oluşturulması gereken dizin yapısında belirsizlik olmaz.</p>
+
+<p>Bir <directive module="mod_rewrite">RewriteCond</directive>
+içinde kullanılan parantezler <code>%1</code>, <code>%2</code> vb.
+geri başvurulara yakalanırken, <directive
+module="mod_rewrite">RewriteRule</directive> içinde kullanılan
+parantezler <code>$1</code>, <code>$2</code> vb. geri başvurulara
+yakalanır.</p>
+
+<p>İlk <code>RewriteCond</code>, konak adının <code>www.</code> ile
+başlayıp başlamadığını kontrol eder ve başlıyorsa yeniden yazma
+atlanır.</p>
+
+<p>
+Bu belgede tartışılan birçok teknikte olduğu gibi, bu görevi
+gerçekleştirmek için <module>mod_rewrite</module> gerçekten en iyi
+yol değildir. Bunun yerine, statik dosyaların sunulmasının ötesinde
+devingen içerik ve Alias çözümlemesi gibi şeyleri çok daha zarif bir
+şekilde ele alacak olan <module>mod_vhost_alias</module> kullanmayı
+düşünmelisiniz.
+</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="simple.rewrite"><title><module>mod_rewrite</module>
+    Kullanılarak Devingen Sanal Konaklar</title>
+
+    <p>Bu <code>httpd.conf</code> alıntısı, <a
+    href="#per-hostname">ilk örnekle</a> aynı şeyi yapar. İlk yarısı
+    yukarıdaki karşılık gelen bölüme çok benzer; ancak geriye dönük
+    uyumluluk ve <module>mod_rewrite</module> bölümünün düzgün
+    çalışması için gereken bazı değişiklikler yapılmıştır; ikinci
+    yarısı ise <module>mod_rewrite</module> modülünü asıl işi yapacak
+    şekilde yapılandırır.</p>
+
+    <p><module>mod_rewrite</module>, diğer URI çeviri modüllerinden
+    (örneğin <module>mod_alias</module>) önce çalıştığından,
+    <module>mod_rewrite</module> modülüne bu modüller tarafından
+    işlenecek URL'leri açıkça yok sayması söylenmelidir. Ve bu
+    kurallar aksi takdirde <code>ScriptAlias</code> yönergelerini
+    atlayacağından, <module>mod_rewrite</module> modülünün bu
+    eşlemeleri açıkça uygulaması gerekir.</p>
+
+<highlight language="config">
+# Konak adını Host: başlığından al
+UseCanonicalName Off
+
+# bölünebilir günlükler
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
+CustomLog "logs/access_log" vcommon
+
+&lt;Directory "/www/hosts"&gt;
+    # ScriptAlias'ın yaptığı gibi CGI yürütmesini
+    # zorlayamadığımız için burada ExecCGI gereklidir
+    Options FollowSymLinks ExecCGI
+&lt;/Directory&gt;
+
+RewriteEngine On
+
+# bir Host: başlığından türetilen ServerName herhangi bir durumda olabilir
+RewriteMap  lowercase  "int:tolower"
+
+## önce normal belgeleri ele al:
+# Alias /icons/ çalışmasına izin ver - diğer takma adlar için tekrarla
+RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
+# CGI'lerin çalışmasına izin ver
+RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
+# sihri yap
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
+
+## şimdi CGI'lerle ilgilen - bir işleyici zorlamalıyız
+RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
+RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]
+</highlight>
+
+</section>
+
+<section id="xtra-conf"><title>Ayrı Bir Sanal Konak Yapılandırma Dosyası Kullanımı</title>
+
+    <p>Bu düzenleme, sanal konaktan belge köküne çeviriyi ayrı bir
+    yapılandırma dosyasından çözmek için daha gelişmiş
+    <module>mod_rewrite</module> özelliklerini kullanır. Bu daha fazla
+    esneklik sağlar ancak daha karmaşık yapılandırma gerektirir.</p>
+
+    <p><code>vhost.map</code> dosyası şöyle görünmelidir:</p>
+
+<example>
+customer-1.example.com  /www/customers/1<br />
+customer-2.example.com  /www/customers/2<br />
+# ...<br />
+customer-N.example.com  /www/customers/N<br />
+</example>
+
+    <p><code>httpd.conf</code> dosyası şunları içermelidir:</p>
+
+<highlight language="config">
+RewriteEngine on
+
+RewriteMap   lowercase  "int:tolower"
+
+# eşlem dosyasını tanımla
+RewriteMap   vhost      "txt:/www/conf/vhost.map"
+
+# takma adlarla yukarıdaki gibi ilgilen
+RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
+RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+# dosya tabanlı yeniden eşlemeyi yap
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/(.*)$"                      "%1/docs/$1"
+
+RewriteCond  "%{REQUEST_URI}"               "^/cgi-bin/"
+RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
+RewriteCond  "${vhost:%1}"                  "^(/.*)$"
+RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-script]
+</highlight>
+
+</section>
+
+</manualpage>
