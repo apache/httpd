@@ -42,8 +42,8 @@
         http://www.rfc-editor.org/errata.php</a> - RFC Errata
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - A pre-compiled list
+        <a href="https://httpwg.org/specs/">
+        https://httpwg.org/specs/</a> - A pre-compiled list
         of HTTP related RFCs
       </li>
     </ul>
@@ -60,7 +60,7 @@
     basic web server complies with the following IETF recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc1945">RFC 1945</a>
       (Informational)</dt>
 
       <dd>The Hypertext Transfer Protocol (HTTP) is an application-level
@@ -68,20 +68,20 @@
       collaborative, hypermedia information systems.  This documents
       HTTP/1.0.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a>
       (Standards Track)</dt>
 
       <dd>The Hypertext Transfer Protocol (HTTP) is an
       application-level protocol for distributed, collaborative,
       hypermedia information systems.  This documents HTTP/1.1.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc2396">RFC 2396</a>
       (Standards Track)</dt>
 
       <dd>A Uniform Resource Identifier (URI) is a compact string of
       characters for identifying an abstract or physical resource.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc4346">RFC 4346</a>
       (Standards Track)</dt>
 
       <dd>The TLS protocol provides communications security over the
@@ -97,7 +97,7 @@
     the following IETF and W3C recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc2854">RFC 2854</a>
       (Informational)</dt>
 
       <dd>This document summarizes the history of HTML development,
@@ -146,7 +146,7 @@
     follows the following IETF recommendations:</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc2617">RFC 2617</a>
       (Standards Track)</dt>
 
       <dd>"HTTP/1.0", includes the specification for a Basic
@@ -177,14 +177,14 @@
 
       <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
       (Best Current Practice),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <a href="https://datatracker.ietf.org/doc/html/rfc3066">RFC 3066</a></dt>
 
       <dd>This document describes a language tag for use in cases where
       it is desired to indicate the language used in an information
       object, how to register values for use in this language tag,
       and a construct for matching such language tags.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><a href="https://datatracker.ietf.org/doc/html/rfc3282">RFC 3282</a>
       (Standards Track)</dt>
 
       <dd>This document defines a "Content-language:" header, for use in

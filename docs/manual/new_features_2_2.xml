@@ -149,7 +149,7 @@
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
       <dd>Added a support for
-         <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, which
+         <a href="https://datatracker.ietf.org/doc/html/rfc2817">RFC 2817</a>, which
          allows connections to upgrade from clear text to TLS encryption.</dd>
 
       <dt><module>mod_imagemap</module></dt>

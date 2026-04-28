@@ -25,6 +25,17 @@ This is the documentation source for the [Apache HTTP Server](https://httpd.apac
   ```
 - `<glossary>` — Use for glossary-defined terms. Use `ref` attribute when link target differs from display text.
 
+## External Link Conventions
+
+### RFC Links
+Always link to the IETF Datatracker for RFC references:
+```
+https://datatracker.ietf.org/doc/html/rfcNNNN
+```
+For section-specific links, use fragment anchors: `#section-N.N`
+
+Do NOT use `tools.ietf.org`, `www.rfc-editor.org`, `www.ietf.org/rfc/`, `www.w3.org/Protocols/`, `www.faqs.org/rfcs/`, or any other RFC mirror. These are legacy patterns — `datatracker.ietf.org` is the canonical standard for this documentation.
+
 ## Directive Syntax Definitions
 
 - Use `<var>` for all user-supplied arguments in `<syntax>` blocks.
