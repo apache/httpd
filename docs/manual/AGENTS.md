@@ -1,4 +1,4 @@
-# AGENTS.md — Apache HTTP Server Documentation
+# AGENTS.md - Apache HTTP Server Documentation
 
 This file provides instructions for AI agents working on the Apache HTTP Server documentation.
 
