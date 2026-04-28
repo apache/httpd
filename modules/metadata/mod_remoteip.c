@@ -813,7 +813,7 @@ static remoteip_parse_status_t remoteip_process_v1_header(conn_rec *c,
     else if (strcmp(word, "TCP6") == 0) {
 #if APR_HAVE_IPV6
         family = APR_INET6;
-        valid_addr_chars = "0123456789abcdefABCDEF:";
+        valid_addr_chars = "0123456789abcdefABCDEF:.";
 #else
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(03498)
                       "RemoteIPProxyProtocol: Unable to parse v6 address - APR is not compiled with IPv6 support");
