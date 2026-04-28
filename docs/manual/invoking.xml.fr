@@ -111,7 +111,7 @@
     </ul>
 
     <p>Pour plus d'instructions de d&eacute;pannage, consultez la
-    <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> Apache.</p>
+    <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> Apache.</p>
 </section>
 
 <section id="boot"><title>Lancement au d&eacute;marrage du syst&egrave;me</title>

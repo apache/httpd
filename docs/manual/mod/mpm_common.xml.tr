@@ -270,7 +270,7 @@ Listen 192.170.2.1:8443 https
 <seealso><a href="../dns-caveats.html">DNS ve Apache ile ilgili Konular</a> </seealso>
 <seealso><a href="../bind.html">Apache HTTP Sunucusunun Kullandığı Adreslerin
     ve Portların Ayarlanması</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress"
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress"
 ><code>Address already in use</code> hata iletisinin ve diğer sebeplerin
 açıklaması</a></seealso>
 </directivesynopsis>

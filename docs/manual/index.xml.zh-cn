@@ -86,12 +86,12 @@
 </category>
 
 <category id="other"><title>其它主题</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">常见问题</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</page>
     <page href="sitemap.html">网站导航</page>
     <page href="developer/">开发文档</page>
     <page href="http://httpd.apache.org/docs-project/">帮助改进文档</page>
     <page href="misc/">其它说明</page>
-    <page href="http://wiki.apache.org/httpd/">维基</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">维基</page>
 </category>
 
 </indexpage>

@@ -62,7 +62,7 @@
 <page href="socache.html">Unterst&#252;tzung f&#252;r gemeinsame Objekt-Zwischenspeicher</page>
 <page href="suexec.html">suEXEC Unterst&#252;tzung</page>
 <page href="dns-caveats.html">Probleme bez&#252;glich DNS und Apache</page>
-<page href="http://wiki.apache.org/httpd/FAQ">Häufig gestellte Fragen
+<page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Häufig gestellte Fragen
     (FAQ)</page>
 </category>
 

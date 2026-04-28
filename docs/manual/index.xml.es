@@ -92,12 +92,12 @@ Documentación</title>
 </category>
 
 <category id="other"><title>Otros Temas</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</page>
     <page href="sitemap.html">Mapa del Sitio</page>
     <page href="developer/">Documentación para Desarrolladores</page>
     <page href="http://httpd.apache.org/docs-project/">Contribuir en la Documentación</page>
     <page href="misc/">Otras Notas</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

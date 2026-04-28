@@ -463,7 +463,7 @@ sudo service apache2 start
       görünmüyor.</p>
 
     <p>Bu <a
-      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+      href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">üçüncü parti
       dağıtımlarla ilgili bir açıklamaya</a> HTTP
       Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
       yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili

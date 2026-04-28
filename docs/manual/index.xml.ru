@@ -90,12 +90,12 @@
 </category>
 
 <category id="other"><title>Другие темы</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">Часто задаваемые вопросы</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Часто задаваемые вопросы</page>
     <page href="sitemap.html">Карта сайта</page>
     <page href="developer/">Документация для разработчиков</page>
     <page href="http://httpd.apache.org/docs-project/">Помощь с документацией</page>
     <page href="misc/">Прочие примечания</page>
-    <page href="http://wiki.apache.org/httpd/">Вики</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Вики</page>
 </category>
 
 </indexpage>

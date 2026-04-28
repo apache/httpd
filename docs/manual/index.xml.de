@@ -87,13 +87,13 @@
 </category>
 
 <category id="other"><title>Weitere Themen</title>
-    <page href="http://wiki.apache.org/httpd/FAQ">H&auml;ufig gestellte
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">H&auml;ufig gestellte
     Fragen (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
     <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
     <page href="http://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</page>
     <page href="misc/">Sonstiges</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

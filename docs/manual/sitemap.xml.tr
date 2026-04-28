@@ -65,7 +65,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page href="socache.html">Paylaşımlı Nesne Arabelleği Desteği</page>
 <page href="suexec.html">CGI için Suexec Desteği</page>
 <page href="dns-caveats.html">DNS ile ilgili Konular ve Apache</page>
-<page href="http://wiki.apache.org/httpd/FAQ">Sıkça Sorulan Sorular</page>
+<page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Sıkça Sorulan Sorular</page>
 </category>
 
 <category id="vhosts">

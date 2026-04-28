@@ -44,7 +44,7 @@
     <em>not</em> provided to answer questions about configuration or
     running Apache.  Before you submit a bug report or request, first
     consult this document, the <a
-    href="http://wiki.apache.org/httpd/FAQ">Frequently Asked
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Frequently Asked
     Questions</a> page and the other relevant documentation topics. If
     you still have a question or problem, post it to the novell.devsup.webserver (formerly at <code>news://developer-forums.novell.com/novell.devsup.webserver</code>) newsgroup, where many Apache users are
     more than willing to answer new and obscure questions about using

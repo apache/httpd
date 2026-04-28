@@ -81,7 +81,7 @@ documentation</a></li>
 <seealso><a href="../mod/mod_rewrite.html">mod_rewrite reference
 documentation</a></seealso>
 <seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></seealso>
 <seealso><a href="../glossary.html">Glossary</a></seealso>
 

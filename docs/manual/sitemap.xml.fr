@@ -66,7 +66,7 @@ Apache</page>
 <page href="socache.html">Support du cache des objets partagés</page>
 <page href="suexec.html">Support de suEXEC</page>
 <page href="dns-caveats.html">Considérations à propos de DNS et Apache</page>
-<page href="http://wiki.apache.org/httpd/FAQ">Foire aux Questions</page>
+<page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Foire aux Questions</page>
 </category>
 
 <category id="vhosts">

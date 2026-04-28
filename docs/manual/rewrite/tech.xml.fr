@@ -105,7 +105,7 @@ correspondance</a></seealso>
     n'effectueront pas de substitution au
     cours d'une passe ult&eacute;rieure du processus de r&eacute;&eacute;criture au niveau
     r&eacute;pertoire afin d'&eacute;viter les bouclages . Voir <a
-    href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
+    href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">Bouclage dans le
     processus de r&eacute;&eacute;criture</a> pour une discussion plus d&eacute;taill&eacute;e &agrave;
     propos de ce probl&egrave;me.</p>
 

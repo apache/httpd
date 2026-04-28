@@ -431,7 +431,7 @@ funciona</title>
     en la documentación. Mientras lamentablemente, esta situación no es probable que cambie a corto plazo.</p>
 
     <p>Una <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">descripción
+    href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">descripción
     de estas distribuciones de terceros </a> está siendo actualizada en el servidor de la WIKI de HTTP
     Server, y debería reflejar el actual estado de éstas distribuciones de terceros. 
     Sin embargo, tendrá que familiarizarse con los procedimientos de gestión

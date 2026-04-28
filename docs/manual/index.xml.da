@@ -86,7 +86,7 @@ Dokumentation</title>
     <page href="sitemap.html">Sitemap</page>
     <page href="developer/">Dokumentation for udviklere</page>
     <page href="misc/">Andre noter</page>
-    <page href="http://wiki.apache.org/httpd/">Wiki</page>
+    <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>
 </category>
 
 </indexpage>

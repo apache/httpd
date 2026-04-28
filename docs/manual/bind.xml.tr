@@ -106,7 +106,7 @@ Listen [2001:db8::a00:20ff:fea7:ccea]:80
       </example>
 
       <p>Sorun giderme ile ilgili ipuçları için
-      <a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">wiki
+      <a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki
       belgesine</a> bakınız.</p>
     </note>
 
