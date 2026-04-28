@@ -290,6 +290,12 @@ ForceLanguagePriority Fallback
     more than one variant is acceptable, or first available document will
     be served if none of the variants matched the client's acceptable list
     of languages.</p>
+
+    <p><code>ForceLanguagePriority None</code> disables both
+    <code>Prefer</code> and <code>Fallback</code> behavior, so the
+    server will return 300 (MULTIPLE CHOICES) or 406 (NOT ACCEPTABLE)
+    as appropriate. <code>None</code> cannot be combined with
+    <code>Prefer</code> or <code>Fallback</code>.</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
