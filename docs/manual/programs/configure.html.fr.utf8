@@ -28,10 +28,8 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p>Le script <code>configure</code> permet de configurer
+    <p>Le script <code class="program"><a href="../programs/configure.html">configure</a></code> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
     HTTP Apache sur votre plate-forme spécifique. De nombreuses options
     vous permettent de compiler un serveur correspondant à vos propres
@@ -49,7 +47,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Résumé</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
-    <p>Vous devez appeler le script <code>configure</code> depuis le
+    <p>Vous devez appeler le script <code class="program"><a href="../programs/configure.html">configure</a></code> depuis le
     répertoire racine de la distribution.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
@@ -73,7 +71,7 @@
   <h3><a name="configurationoptions" id="configurationoptions">Options de Configuration</a></h3>
 
     <p>Les options suivantes affectent le comportement du script
-    <code>configure</code>.</p>
+    <code class="program"><a href="../programs/configure.html">configure</a></code>.</p>
 
     <dl>
       <dt><code>-C</code></dt>
@@ -93,7 +91,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>Le script <code>configure</code> s'exécute normalement, mais
+      <dd>Le script <code class="program"><a href="../programs/configure.html">configure</a></code> s'exécute normalement, mais
       ne crée pas les fichiers résultants. Ceci permet de vérifier les
       résultats des tests avant de générer les fichiers makefile pour la
       compilation.</dd>
@@ -106,7 +104,7 @@
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Définit le répertoire <var>DIR</var> comme répertoire des
       fichiers sources. Par défaut, c'est le répertoire où se situe le
-      script <code>configure</code>, ou le répertoire parent.</dd>
+      script <code class="program"><a href="../programs/configure.html">configure</a></code>, ou le répertoire parent.</dd>
 
       <dt><code>--silent</code></dt>
       <dd>Identique à <code>--quiet</code></dd>
@@ -315,7 +313,7 @@
 
       <div class="note"><h3>Note</h3>
         Si vous spécifiez <code>--enable-<var>foo</var></code>, et si
-	<var>foo</var> n'existe pas, <code>configure</code> ne le
+	<var>foo</var> n'existe pas, <code class="program"><a href="../programs/configure.html">configure</a></code> ne le
 	signalera pas ; vous devez donc prendre soin de taper les
 	options correctement.
       </div>
@@ -413,7 +411,7 @@
 	<var>fichier-module</var> sera recherché dans le sous-répertoire
 	<var>type-module</var> de l'arborescence des sources de votre
 	serveur HTTP Apache. S'il ne l'y trouve pas,
-	<code>configure</code> considèrera <var>fichier-module</var>
+	<code class="program"><a href="../programs/configure.html">configure</a></code> considèrera <var>fichier-module</var>
 	comme un chemin de fichier absolu et essaiera de copier le
 	fichier source dans le sous-répertoire <var>type-module</var>.
 	Si ce sous-répertoire n'existe pas, il sera créé et un fichier
@@ -540,7 +538,7 @@
 	distribution des sources de httpd et est compilée
 	automatiquement avec le serveur HTTP. Si vous voulez utiliser
 	une APR déjà installée à la place, vous devez indiquer à
-	<code>configure</code> le chemin du script
+	<code class="program"><a href="../programs/configure.html">configure</a></code> le chemin du script
 	<code>apr-config</code>. Vous pouvez spécifier le chemin absolu
 	et le nom ou le répertoire d'installation de l'APR.
 	<code>apr-config</code> doit se trouver dans ce répertoire ou
@@ -552,7 +550,7 @@
 	distribution des sources de httpd et sont compilés
 	automatiquement avec le serveur HTTP. Si vous voulez utiliser
 	des APU déjà installés à la place, vous devez indiquer à
-	<code>configure</code> le chemin du script
+	<code class="program"><a href="../programs/configure.html">configure</a></code> le chemin du script
 	<code>apu-config</code>. Vous pouvez spécifier le chemin absolu
 	et le nom ou le répertoire d'installation des APU.
 	<code>apu-config</code> doit se trouver dans ce répertoire ou
@@ -560,12 +558,12 @@
 
         <dt><code>--with-ssl=<var>REP</var></code></dt>
         <dd>Si <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> a été activé,
-	<code>configure</code> recherche une installation d'OpenSSL.
+	<code class="program"><a href="../programs/configure.html">configure</a></code> recherche une installation d'OpenSSL.
 	Vous pouvez définir le répertoire de la boîte à outils SSL/TLS à
 	la place.</dd>
 
         <dt><code>--with-z=<var>REP</var></code></dt>
-        <dd><code>configure</code> recherche automatiquement une
+        <dd><code class="program"><a href="../programs/configure.html">configure</a></code> recherche automatiquement une
 	bibliothèque <code>zlib</code> installée si la configuration de
 	vos sources en nécessite une (par exemple lorsque
 	<code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> est activé). Vous pouvez définir le
@@ -584,10 +582,10 @@
       <dl>
         <dt><code>--with-gdbm[=<var>chemin</var>]</code></dt>
         <dd>Si aucun <var>chemin</var> n'est spécifié,
-	<code>configure</code> va rechercher les fichiers d'en-têtes et
+	<code class="program"><a href="../programs/configure.html">configure</a></code> va rechercher les fichiers d'en-têtes et
 	les bibliothèques d'une installation DBM GNU dans les chemins
 	standards. Avec un <var>chemin</var> explicite,
-	<code>configure</code> recherchera les fichiers concernés dans
+	<code class="program"><a href="../programs/configure.html">configure</a></code> recherchera les fichiers concernés dans
 	<code><var>chemin</var>/lib</code> et
 	<code><var>chemin</var>/include</code>. En fait,
 	<var>chemin</var> permet de spécifier plusieurs chemins
@@ -664,7 +662,7 @@
       <dd>Compile une version liée statiquement du programme <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code>.</dd>
     </dl>
 
-    <h4><a name="suexec" id="suexec">Options de configuration de <code>suexec</code></a></h4>
+    <h4><a name="suexec" id="suexec">Options de configuration de <code class="program"><a href="../programs/suexec.html">suexec</a></code><code class="program"><a href="../programs/suexec.html">suexec</a></code></a></h4>
       
       <p>Les options suivantes permettent de définir avec précision le
       comportement du programme <code class="program"><a href="../programs/suexec.html">suexec</a></code>. Voir <a href="suexec.html#install">Configurer et installer suEXEC</a>
@@ -730,7 +728,7 @@
 <div class="section">
 <h2><a name="env" id="env">Variables d'environnement</a> <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
   <p>Certaines variables d'environnement permettent de modifier les
-  choix effectués par <code>configure</code>, ou d'aider ce dernier à
+  choix effectués par <code class="program"><a href="../programs/configure.html">configure</a></code>, ou d'aider ce dernier à
   trouver les bibliothèques et programmes possédant des noms et chemins
   non standards.</p>
 

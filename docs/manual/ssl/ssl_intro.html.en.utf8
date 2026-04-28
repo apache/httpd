@@ -632,7 +632,7 @@ See for instance <a href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.txt">http://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
+Version 3.0</q>, 1996. See <a href="https://datatracker.ietf.org/doc/html/rfc6101">RFC 6101</a>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,

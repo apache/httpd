@@ -27,7 +27,7 @@
 <a href="../zh-cn/developer/documenting.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-    <p>Apache 2.4 uses <a href="http://www.doxygen.org/">Doxygen</a> to
+    <p>Apache 2.4 uses <a href="https://www.doxygen.nl/">Doxygen</a> to
     document the APIs and global variables in the code. This will explain
     the basics of how to document using Doxygen.</p>
 </div>
@@ -80,7 +80,7 @@
     {Name_of_library_header}.html, so try to be concise with your names.</p>
 
     <p>For a further discussion of the possibilities please refer to
-    <a href="http://www.doxygen.org/">the Doxygen site</a>.</p>
+    <a href="https://www.doxygen.nl/">the Doxygen site</a>.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/documenting.html" title="English">&nbsp;en&nbsp;</a> |

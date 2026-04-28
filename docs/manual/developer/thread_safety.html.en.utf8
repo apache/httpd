@@ -156,11 +156,11 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+<tr class="odd"><td><a href="https://www.oracle.com/database/technologies/related/berkeleydb.html">Berkeley DB</a></td>
         <td>3.x, 4.x</td>
         <td>Yes</td>
         <td>Be careful about sharing a connection across threads.</td></tr>
-<tr><td><a href="http://sources.redhat.com/bzip2/index.html">bzip2</a></td>
+<tr><td><a href="https://sourceware.org/bzip2/">bzip2</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Both low-level and high-level APIs are thread-safe. However,
@@ -169,7 +169,7 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+<tr><td><a href="https://github.com/uw-imap/imap">C-Client</a></td>
         <td> </td>
         <td>Perhaps</td>
         <td>c-client uses <code>strtok()</code> and
@@ -212,7 +212,7 @@
         <td>Yes</td>
         <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="http://www.imagemagick.com/www/changelog.html">Change log</a>).
         </td></tr>
-<tr class="odd"><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en">Imlib2</a></td>
+<tr class="odd"><td><a href="https://www.enlightenment.org/about-efl">Imlib2</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
@@ -224,7 +224,7 @@
         <td> </td>
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
-            more information, please read <a href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html">http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
+            more information, please read <a href="https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html">https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html</a>.</td></tr>
 <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
@@ -257,7 +257,7 @@
         <td>1.2.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html">libpq (PostgreSQL)</a></td>
+<tr class="odd"><td><a href="https://www.postgresql.org/docs/8.4/libpq-threading.html">libpq (PostgreSQL)</a></td>
         <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for

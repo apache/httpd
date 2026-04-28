@@ -30,10 +30,8 @@
 <a href="../ko/programs/logresolve.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/logresolve.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-     <p><code>logresolve</code> est un programme agissant après
+     <p><code class="program"><a href="../programs/logresolve.html">logresolve</a></code> est un programme agissant après
      traitement pour résoudre les adresses IP dans les journaux d'accès
      d'Apache. Pour minimiser la charge de votre serveur de noms,
      logresolve possède son propre cache interne sous forme d'une table
@@ -68,9 +66,9 @@ statistiques.</dd>
 
 <dt><code>-c</code></dt>
 
-<dd>Avec cette option, <code>logresolve</code> effectue certaines
+<dd>Avec cette option, <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> effectue certaines
 vérifications DNS : après avoir trouvé le nom d'hôte correspondant à une
-adresse IP, <code>logresolve</code> effectue une recherche DNS sur ce
+adresse IP, <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> effectue une recherche DNS sur ce
 nom d'hôte et vérifie si une des adresses IP trouvées correspond à
 l'adresse originale.</dd>
 

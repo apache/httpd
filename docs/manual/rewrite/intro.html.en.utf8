@@ -78,8 +78,10 @@ Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
 recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
 <a href="http://perldoc.perl.org/perlre.html">Perl regular
-expression man page</a>, and <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+expression man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
+2006, but regular expression syntax is essentially unchanged, and this
+remains the definitive reference on the subject).</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
 to get you started, without being overwhelming, in the hope that

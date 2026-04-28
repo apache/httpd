@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/vhosts.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
@@ -35,11 +33,11 @@
 virtuels dynamiquement configurés en utilisant
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<div class="warning">L'utilisation de mod_rewrite n'est en général pas la
+<div class="warning">L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est en général pas la
 meilleure méthode pour configurer des serveurs virtuels. Vous devez dans un
 premier temps tenter de résoudre votre problème via ces  <a href="../vhosts/mass.html">d'autres méthodes</a> avant d'avoir recours à
-mod_rewrite. Voir aussi le document <a href="avoid.html#vhosts">Comment éviter
-il'utilisation de mod_rewrite</a>.</div>
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Voir aussi le document <a href="avoid.html#vhosts">Comment éviter
+il'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a>.</div>
 
 
 </div>
@@ -108,7 +106,7 @@ commence par <code>www.</code> et si c'est le cas, la réécriture est annulée.
 
 <p>
 Comme c'est le cas pour de nombreuses techniques discutées dans ce
-document, mod_rewrite n'est vraiment pas la meilleure méthode pour
+document, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est vraiment pas la meilleure méthode pour
 accomplir cette tâche. Vous devez plutôt vous tourner vers
 <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>, car ce dernier sera bien plus à même
 de gérer tout ce qui est au delà du domaine des fichiers statiques,
@@ -127,16 +125,16 @@ virtuels via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite<
     La première moitié est très similaire à la partie correspondante
     ci-dessus, excepté quelques modifications requises à des fins de
     compatibilité ascendante et pour faire en sorte que la partie
-    <code>mod_rewrite</code> fonctionne correctement ; la seconde moitié
-    configure <code>mod_rewrite</code> pour effectuer le travail
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> fonctionne correctement ; la seconde moitié
+    configure <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour effectuer le travail
     proprement dit.</p>
 
-    <p>Comme <code>mod_rewrite</code> s'exécute avant tout autre module
+    <p>Comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> s'exécute avant tout autre module
     de traduction d'URI (comme <code>mod_alias</code>), il faut lui
     ordonner explicitement d'ignorer toute URL susceptible d'être
     traitée par ces autres modules. Et comme ces règles auraient sinon
     court-circuité toute directive <code>ScriptAlias</code>, nous devons
-    faire en sorte que <code>mod_rewrite</code> déclare explicitement
+    faire en sorte que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> déclare explicitement
     ces correspondances.</p>
 
 <pre class="prettyprint lang-config"># extrait le nom de serveur de l'en-tête Host:

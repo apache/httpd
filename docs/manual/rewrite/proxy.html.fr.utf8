@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/proxy.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
@@ -50,8 +48,8 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
 
     <dd>
     <p>
-    mod_rewrite implémente le drapeau [P] qui permet de passer des URLs,
-    via mod_proxy, à un autre serveur. Deux exemples sont fournis ici.
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> implémente le drapeau [P] qui permet de passer des URLs,
+    via <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, à un autre serveur. Deux exemples sont fournis ici.
     Dans le premier, une URL est passée directement à un autre serveur,
     et servie comme si c'était une URL locale. Dans le deuxième, nous
     mandatons un contenu manquant vers un serveur d'arrière-plan.</p>
@@ -91,7 +89,7 @@ ProxyPassReverse "/" "http://ancien.exemple.com/"</pre>
     <p>Chaque fois que cela est possible, préférez l'utilisation de la
     directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou
     <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> à
-    mod_rewrite.</p>
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
     </dd>
   </dl>
 

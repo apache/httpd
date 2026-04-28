@@ -26,15 +26,13 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/access.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> de
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il explique comment utiliser
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour contrôler l'accès à diverses
 ressources, ainsi que d'autres techniques en rapport. Il contient de
-nombreux exemples d'utilisation courante de mod_rewrite avec une
+nombreux exemples d'utilisation courante de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> avec une
 description détaillée de leur fonctionnement.</p>
 
 <div class="warning">Vous devez vous attacher à comprendre le
@@ -117,7 +115,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]</pr
         <dd>
         <p>Si vous ne voulez pas rediriger la requête, mais
 	simplement interdire l'accès à la ressource, vous pouvez y
-	parvenir sans utiliser mod_rewrite :</p>
+	parvenir sans utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
 
         <pre class="prettyprint lang-config">SetEnvIf Referer example\.com localreferer
 &lt;FilesMatch "\.(jpg|png|gif)$"&gt;
@@ -150,7 +148,7 @@ RewriteRule "\.(gif|jpg|png)$" "http://other.example.com/image.gif"   [R,NC]</pr
         </p>
 
         <p>Notez qu'il existe des méthodes d'exclusion qui n'utilisent
-	pas mod_rewrite. Notez aussi que toute technique qui repose sur
+	pas <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Notez aussi que toute technique qui repose sur
 	le contenu de la chaîne client <code>USER_AGENT</code> peut être
 	contournée très facilement car cette chaîne peut être modifiée.</p>
         </dd>
@@ -179,7 +177,7 @@ RewriteRule "^/secret/files/"   "-"   [F]</pre>
       <dd>
       <p>
         Vous pouvez cependant parvenir au même résultat sans utiliser
-	mod_rewrite via la méthode alternative suivante :
+	<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> via la méthode alternative suivante :
       </p>
       <pre class="prettyprint lang-config">SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
 &lt;Location "/secret/files"&gt;
