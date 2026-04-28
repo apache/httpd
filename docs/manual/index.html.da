@@ -18,7 +18,7 @@ Dokumentation - Apache HTTP Server Version 2.4</title>
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="index-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Moduler</a> | <a href="./mod/directives.html">Direktiver</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Ordbog</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Moduler</a> | <a href="./mod/directives.html">Direktiver</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Ordbog</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
@@ -96,7 +96,7 @@ Dokumentation</h1>
 <li><a href="sitemap.html">Sitemap</a></li>
 <li><a href="developer/">Dokumentation for udviklere</a></li>
 <li><a href="misc/">Andre noter</a></li>
-<li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">
@@ -113,7 +113,7 @@ Dokumentation</h1>
 <a href="./zh-cn/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenseret under <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Moduler</a> | <a href="./mod/directives.html">Direktiver</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Ordbog</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Moduler</a> | <a href="./mod/directives.html">Direktiver</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Ordbog</a> | <a href="./sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

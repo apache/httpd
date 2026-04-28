@@ -16,7 +16,7 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -26,6 +26,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
 module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de la mise en correspondance des URLs</p>
@@ -96,7 +98,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
     il faut s'assurer de créer des règles qui
     n'effectueront pas de substitution au
     cours d'une passe ultérieure du processus de réécriture au niveau
-    répertoire afin d'éviter les bouclages . Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
+    répertoire afin d'éviter les bouclages . Voir <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">Bouclage dans le
     processus de réécriture</a> pour une discussion plus détaillée à
     propos de ce problème.</p>
 
@@ -199,7 +201,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
 <a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
