@@ -3125,9 +3125,16 @@ URLs</description>
     <p>For all origin (non-proxy) requests, the URL to be matched is a
     URL-path of the form <code>/path/</code>.  <em>No scheme, hostname,
     port, or query string may be included.</em>  For proxy requests, the
-    URL to be matched is of the form
+    URL to be matched depends on the type of proxy. With a
+    <strong>forward</strong> proxy (<directive
+    module="mod_proxy">ProxyRequests</directive>), the URL to be
+    matched is of the form
     <code>scheme://servername/path</code>, and you must include the
-    prefix.</p>
+    prefix. With a <strong>reverse</strong> proxy (configured via
+    <directive module="mod_proxy">ProxyPass</directive> or
+    <directive module="mod_proxy">RewriteRule ... [P]</directive>),
+    the request arrives as a local URL-path, so use <code>/path/</code>
+    just as you would for origin requests.</p>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
     any single character, and <code>*</code> matches any sequences of
