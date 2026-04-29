@@ -425,6 +425,13 @@ CacheEnable  disk  "http://.example.org/"
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
+<note><p>This directive is only valid in
+<directive module="core" type="section">Location</directive> and
+<directive module="mod_proxy" type="section">Proxy</directive> sections
+among the per-directory contexts. It is not supported in
+<directive module="core" type="section">Directory</directive>,
+<directive module="core" type="section">Files</directive>, or
+<directive module="core" type="section">If</directive> sections.</p></note>
 
 <usage>
     <p>The <directive>CacheDisable</directive> directive instructs
