@@ -373,7 +373,7 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- pass through content                                                 -->
 <!-- ==================================================================== -->
-<xsl:template match="a|module|table|program|glossary|highlight">
+<xsl:template match="a|module|table|program|glossary|highlight|rfc">
 <xsl:apply-templates />
 </xsl:template>
 

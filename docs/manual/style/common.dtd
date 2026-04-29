@@ -42,7 +42,7 @@
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
-program | img | cite | q | dfn | var | transnote | glossary | phonetic | since">
+program | img | cite | q | dfn | var | transnote | glossary | phonetic | since | rfc">
 
 <!ENTITY % blocktags "p | example | note | table | ul | ol | dl | pre | 
 highlight | blockquote">
@@ -200,4 +200,10 @@ highlight | blockquote">
 <!-- The phonetic element should be used only within the glossary. It
      describes a pronunciation -->
 <!ELEMENT phonetic (#PCDATA)>
+
+<!-- The rfc element creates a link to an RFC at www.rfc-editor.org.
+     Content is the RFC number (e.g. 7230). Optional section attribute
+     adds a fragment anchor (e.g. section="14.24"). -->
+<!ELEMENT rfc (#PCDATA)>
+<!ATTLIST rfc section CDATA #IMPLIED>
 
