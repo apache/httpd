@@ -100,7 +100,7 @@
     <dd>Die <dfn>Chiffre</dfn> ist ein Algorithmus oder System zur
       Datenverschlüsselung. Beispiele sind DES, IDEA, RC4 usw. Im
       Englischen spricht man von
-      <dfn>Cipher</dfn> <phonetic>&#x02C8;saif&#x0259;</phonetic><br />
+      <dfn>Cipher</dfn>&nbsp;<phonetic>&#x02C8;saif&#x0259;</phonetic><br />
       Siehe: <a href="ssl/">SSL/TLS-Verschlüsselung</a>
     </dd>
 

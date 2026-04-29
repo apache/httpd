@@ -291,7 +291,7 @@ Infinity</description>
 
 <usage>
     <p>La directive <directive>DavMSext</directive> permet d'activer la prise en
-    charge des extensions de Microsoft. Ses valeurs possibles sont :</p>
+    charge des extensions de Microsoft. Ses valeurs possibles sont&nbsp;:</p>
         <ul>
             <li><code>None</code> Aucune extension de Microsoft n'est prise en
 	    charge.</li>

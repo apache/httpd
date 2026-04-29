@@ -142,13 +142,13 @@ Cette option permet d'écraser des fichiers journaux au démarrage et au cours d
 la rotation. Avec -n 3, la série de fichiers conservés sera "logfile",
 "logfile.1", "logfile.2" avec écrasement de "logfile".
 <br />
-Lorsque ce programme ouvre « logfile », ce dernier sera seulement tronqué si
+Lorsque ce programme ouvre «&nbsp;logfile&nbsp;», ce dernier sera seulement tronqué si
 l'option <code>-t</code> est aussi spécifiée. Toute rotation subséquente sera
 précédée d'une troncature du fichier cible. Dans le cas d'une rotation basée sur
 la taille sans l'option <code>-t</code> et si des fichiers journaux sont déjà en
 place, cette option peut provoquer des résultats inattendus comme l'envoi des
-entrées de journal initiales vers « logfile.1 », les entrées de « logfile.1 »
-n'étant pas conservées, même si des fichiers « logfile.n » n'ont pas encore été
+entrées de journal initiales vers «&nbsp;logfile.1&nbsp;», les entrées de «&nbsp;logfile.1&nbsp;»
+n'étant pas conservées, même si des fichiers «&nbsp;logfile.n&nbsp;» n'ont pas encore été
 utilisés.
 <br/>
 Disponible à partir de la version 2.4.5 du serveur HTTP Apache.</dd>

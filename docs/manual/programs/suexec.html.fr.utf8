@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>suexec - Change d'utilisateur avant l'exécution d'un programme
+<title>suexec - Change d'utilisateur avant l'exÃ©cution d'un programme
 externe - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -22,7 +22,7 @@ externe - Serveur HTTP Apache Version 2.5</title>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>suexec - Change d'utilisateur avant l'exécution d'un programme
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>suexec - Change d'utilisateur avant l'exÃ©cution d'un programme
 externe</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -32,15 +32,15 @@ externe</h1>
 </div>
 
      <p><code class="program"><a href="../programs/suexec.html">suexec</a></code> permet au serveur HTTP Apache de changer
-     d'utilisateur avant d'exécuter un programme CGI. Pour ce faire, il
-     doit être exécuté par <code>root</code>. A cet effet, comme le
-     démon HTTP ne s'exécute en général pas en tant que
-     <code>root</code>, l'exécutable <code class="program"><a href="../programs/suexec.html">suexec</a></code> doit posséder
-     le bit setuid et avoir comme propriétaire <code>root</code>. Seul
-     <code>root</code> doit en posséder les droits en écriture.</p>
+     d'utilisateur avant d'exÃ©cuter un programme CGI. Pour ce faire, il
+     doit Ãªtre exÃ©cutÃ© par <code>root</code>. A cet effet, comme le
+     dÃ©mon HTTP ne s'exÃ©cute en gÃ©nÃ©ral pas en tant que
+     <code>root</code>, l'exÃ©cutable <code class="program"><a href="../programs/suexec.html">suexec</a></code> doit possÃ©der
+     le bit setuid et avoir comme propriÃ©taire <code>root</code>. Seul
+     <code>root</code> doit en possÃ©der les droits en Ã©criture.</p>
 
-     <p>Pour plus d'informations à propos des concepts et du modèle de
-     sécurité du programme suexec, veuillez vous reporter à sa
+     <p>Pour plus d'informations Ã&nbsp; propos des concepts et du modÃ¨le de
+     sÃ©curitÃ© du programme suexec, veuillez vous reporter Ã&nbsp; sa
      documentation : <a href="http://httpd.apache.org/docs/trunk/suexec.html">http://httpd.apache.org/docs/trunk/suexec.html</a>.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
@@ -57,10 +57,10 @@ externe</h1>
 <dl>
 <dt><code>-V</code></dt>
 
-<dd>Si vous êtes <code>root</code>, cette option permet d'afficher les
+<dd>Si vous Ãªtes <code>root</code>, cette option permet d'afficher les
 options de compilation du programme <code class="program"><a href="../programs/suexec.html">suexec</a></code>. Pour des
-raisons de sécurité, toutes les options de configuration ne sont
-modifiables qu'à la compilation.</dd>
+raisons de sÃ©curitÃ©, toutes les options de configuration ne sont
+modifiables qu'Ã&nbsp; la compilation.</dd>
 
 </dl>
 </div></div>

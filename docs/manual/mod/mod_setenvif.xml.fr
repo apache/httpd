@@ -67,7 +67,7 @@ BrowserMatch MSIE !netscape
    contient des espaces non échappées et dans ce cas, les guillemets simples ou
    doubles sont équivalents. À la différence de <module>mod_rewrite</module>,
    <module>mod_setenvif</module> élimine tous les autres anti-slashes lorsqu'il
-   interprète l'expression ; ainsi, <code>\\</code> nécessite <code>\\\</code>
+   interprète l'expression&nbsp;; ainsi, <code>\\</code> nécessite <code>\\\</code>
    et <code>\\\</code> nécessite <code>\\\\\</code>.</p>
 
 </summary>

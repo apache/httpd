@@ -303,15 +303,15 @@ du type MIME</description>
 
     <note type="warning"><title>Problèmes de sécurité et de compatibilité</title>
     <p>Cette fonctionnalité présente plusieurs défauts sérieux et est désactivée
-    par défaut :</p>
+    par défaut&nbsp;:</p>
     <ol>
-    <li><strong>Non-conformité aux RFC :</strong> les documents des normes
+    <li><strong>Non-conformité aux RFC&nbsp;:</strong> les documents des normes
     insistent sur la nécessité de définir l’en-tête Content-Encoding pour les
     fichiers déjà compressés (comme les fichiers .zip ou .gz). Voir la <a
     href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-encoding">RFC
     9110</a>.</li>
 
-    <li><strong>Atteinte à l’intégrité du contenu :</strong> lorsque l’en-tête
+    <li><strong>Atteinte à l’intégrité du contenu&nbsp;:</strong> lorsque l’en-tête
     Content-Encoding est défini, la plupart des clients HTTP décompressent le
     fichier avant de l’écrire sur disque. Cela a pour conséquence que le fichier
     téléchargé possède une taille et une somme de contrôle différentes de celles
@@ -319,18 +319,18 @@ du type MIME</description>
     validation de la somme de contrôle. Les sites de distribution de logiciels
     trouvent cela particulièrement problématique.</li>
 
-    <li><strong>Comportement imprévisible :</strong> cette fonctionnalité ne
+    <li><strong>Comportement imprévisible&nbsp;:</strong> cette fonctionnalité ne
     s’applique qu’aux fichiers dont l’extension ne correspond à aucun type MIME.
     Cela peut provoquer un comportement incohérent quand certains fichiers d’un
     répertoire sont affectés et d’autres non, ce qui rend les problèmes
     difficiles à diagnostiquer.</li>
 
-    <li><strong>Impact sur les performances :</strong> la décompression
+    <li><strong>Impact sur les performances&nbsp;:</strong> la décompression
     nécessite un fourchage (forking) et l’exécution d’un processus
     <code>gzip</code> externe pour chaque fichier compressé, ce qui induit une
     surcharge significative.</li>
 
-    <li><strong>Risque de sécurité :</strong> transmettre un fichier téléchargé
+    <li><strong>Risque de sécurité&nbsp;:</strong> transmettre un fichier téléchargé
     non fiable à un binaire (<code>gzip</code>) externe peut exposer le serveur
     à des bombes de décompression, à un épuisement des ressources ou à des
     vulnérabilités d’exécution de code à distance dans l’outil de décompression.</li>

@@ -181,7 +181,7 @@ Listen 192.0.2.5:8000
     configure</program>.</p>
 
     <p>L'option <code>--enable-v4-mapped</code> est utilisée par défaut sur
-    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD ;
+    toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD&nbsp;;
     votre httpd a donc probablement été construit avec cette option.</p>
 
     <p>Si vous souhaitez que httpd ne gère que des connexions IPv4, sans se

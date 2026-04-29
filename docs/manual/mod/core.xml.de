@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 344972:1933506 (outdated) -->
+<!-- English Revision: 344972:1933518 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -1249,12 +1249,12 @@ ETag verwendet werden</description>
     hebt die ererbte Einstellung sofort und vollständig auf.</p>
 
     <p>Wenn die Konfiguration für ein Verzeichnis
-    <code>FileETag INode MTime Size</code> enthält
-    und die eines Unterverzeichnisses <code>FileETag -INode</code>,
+    <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code> enthält
+    und die eines Unterverzeichnisses <code>FileETag&nbsp;-INode</code>,
     dann ist die Einstellung für das Unterverzeichnis (die an
     jedes Unter-Unterverzeichnis weitervererbt wird, welches dies nicht
     überschreibt) äquivalent mit
-    <code>FileETag MTime Size</code>.</p>
+    <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
 </usage>
 </directivesynopsis>
 

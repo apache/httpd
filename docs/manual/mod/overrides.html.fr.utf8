@@ -633,7 +633,7 @@ particulier</td></tr>
 <tr><td colspan="2" class="descr">Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
 <tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></td><td class="module"><a href="mod_authnz_fcgi.html">mod_authnz_fcgi</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Permet à une application FastCGI de gérer l'accroche
+<tr class="odd"><td colspan="2" class="descr">Permet Ã&nbsp; une application FastCGI de gÃ©rer l'accroche
 d'authentification check_authn.</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></td><td class="module"><a href="mod_setenvif.html">mod_setenvif</a></td></tr>
 <tr><td colspan="2" class="descr">Définit des variables d'environnement en fonction du

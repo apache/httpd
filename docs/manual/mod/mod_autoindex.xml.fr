@@ -573,10 +573,10 @@ de l'index d'un répertoire</description>
     <note><title>Différences avec les motifs à caractères génériques du shell</title>
       <p>La recherche de correspondance avec caractères génériques utilisée ici
       n’est <em>pas</em> la même que la recherche de correspondance de motifs de
-      noms de fichier dans le style du shell (glob). En particulier :</p>
+      noms de fichier dans le style du shell (glob). En particulier&nbsp;:</p>
       <ul>
         <li>Les expressions entre crochets telles que <code>[abc]</code> ou
-	<code>[!.]</code> ne sont pas prises en charge ; elles sont traitées
+	<code>[!.]</code> ne sont pas prises en charge&nbsp;; elles sont traitées
 	comme des caractères littéraux.</li>
         <li>Un point en début de nom de fichier n’est pas traité de manière
 	particulière. Par exemple, <code>*~</code> correspondra avec

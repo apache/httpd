@@ -168,7 +168,7 @@ du serveur HTTP Apache.</compatibility>
 <usage>
     <p>La directive <directive>DavQuota</directive> permet de définir un quota
     en octets pour un répertoire donné selon les spécifications de la RFC 4331.
-    Elle possède deux valeurs particulières :</p>
+    Elle possède deux valeurs particulières&nbsp;:</p>
         <ul>
             <li><code>Off</code> Les quotas sont désactivés.</li>
 	    <li><code>None</code> Aucun quota n'est défini, mais les clients qui

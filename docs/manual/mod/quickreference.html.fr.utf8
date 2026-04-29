@@ -313,10 +313,10 @@ utiliser</td></tr>
 extension d'un fournisseur d'authentification de base et lui attribue
 l'alias spécifié</td></tr>
 <tr><td><a href="mod_authnz_fcgi.html#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
-<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet à une application FastCGI de gérer l'accroche
+<em>option</em> ...</a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Permet Ã&nbsp; une application FastCGI de gÃ©rer l'accroche
 d'authentification check_authn.</td></tr>
 <tr class="odd"><td><a href="mod_authnz_fcgi.html#authnzfcgidefineprovider">AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
-<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Définit une application FastCGI en tant que fournisseur
+<em>backend-address</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">DÃ©finit une application FastCGI en tant que fournisseur
 d'authentification et/ou autorisation</td></tr>
 <tr><td><a href="mod_autht_jwt.html#authtjwtclaim">AuthtJwtVerify <var>[set|unset]</var> <var>name</var> [<var>value</var>]</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Définit une demande avec le nom et l'expression donnés ou annule la
 définition d'une demande avec le nom donné</td></tr>

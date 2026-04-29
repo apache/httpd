@@ -174,8 +174,8 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
 
     <highlight language="config">
 &lt;RequireAny&gt;
-     Require method GET POST OPTIONS
-     Require valid-user
+    &nbsp;Require method GET POST OPTIONS
+    &nbsp;Require valid-user
 &lt;/RequireAny&gt;
     </highlight>
 
