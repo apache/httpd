@@ -71,7 +71,7 @@ EVP_PKEY   *modssl_read_privatekey(const char *filename, pem_password_cb *cb, vo
 
 int         modssl_smart_shutdown(SSL *ssl);
 BOOL        modssl_X509_getBC(X509 *, int *, int *);
-char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
+char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, const X509_NAME_ENTRY *xsne,
                                              int raw);
 char       *modssl_X509_NAME_to_string(apr_pool_t *, const X509_NAME *, int);
 BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr_array_header_t **);

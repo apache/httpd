@@ -732,7 +732,7 @@ static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xs
 {
     const char *ptr;
     const char *result;
-    X509_NAME_ENTRY *xsne;
+    const X509_NAME_ENTRY *xsne;
     int i, j, n, idx = 0, raw = 0;
     apr_size_t varlen;
 
@@ -759,7 +759,7 @@ static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xs
             for (j = 0; j < X509_NAME_entry_count(xsname); j++) {
                 xsne = X509_NAME_get_entry(xsname, j);
 
-                n =OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+                n = OBJ_obj2nid(X509_NAME_ENTRY_get_object(xsne));
 
                 if (n == ssl_var_lookup_ssl_cert_dn_rec[i].nid && idx-- == 0) {
                     result = modssl_X509_NAME_ENTRY_to_string(p, xsne, raw);
@@ -1112,9 +1112,9 @@ static const char *ssl_var_lookup_ssl_version(const char *var)
 /* Add each RDN in 'xn' to the table 't' where the NID is present in
  * 'nids', using key prefix 'pfx'.  */
 static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
-                       X509_NAME *xn, apr_pool_t *p)
+                       const X509_NAME *xn, apr_pool_t *p)
 {
-    X509_NAME_ENTRY *xsne;
+    const X509_NAME_ENTRY *xsne;
     apr_hash_t *count;
     int i, nid;
 
@@ -1129,7 +1129,7 @@ static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx,
 
          /* Retrieve the nid, and check whether this is one of the nids
           * which are to be extracted. */
-         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+         nid = OBJ_obj2nid(X509_NAME_ENTRY_get_object(xsne));
 
          tag = apr_hash_get(nids, &nid, sizeof nid);
          if (tag) {
@@ -1301,7 +1301,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
      */
     array = apr_array_make(p, count, sizeof(char *));
     for (j = 0; j < count; j++) {
-        X509_EXTENSION *ext = X509_get_ext(xs, j);
+        MODSSL_X509_EXT_CONST X509_EXTENSION *ext = X509_get_ext(xs, j);
 
         if (OBJ_cmp(X509_EXTENSION_get_object(ext), oid) == 0) {
             BIO *bio = BIO_new(BIO_s_mem());

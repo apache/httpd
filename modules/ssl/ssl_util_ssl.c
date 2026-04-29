@@ -224,7 +224,7 @@ static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
 #define asn1_string_to_utf8(p, a) asn1_string_convert(p, a, 0)
 
 /* convert a NAME_ENTRY to UTF8 string */
-char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
+char *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, const X509_NAME_ENTRY *xsne,
                                        int raw)
 {
     char *result = asn1_string_convert(p, X509_NAME_ENTRY_get_data(xsne), raw);
