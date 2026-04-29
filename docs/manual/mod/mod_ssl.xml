@@ -2520,9 +2520,12 @@ string. In particular, this may cause the environment variable
 <code>REMOTE_USER</code> to be set.  The <var>varname</var> can be
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
-<p>Note that this directive has no effect if the
-<code>FakeBasicAuth</code> option is used (see <a
-href="#ssloptions">SSLOptions</a>).</p>
+<p>When the <code>FakeBasicAuth</code> option (see
+<a href="#ssloptions">SSLOptions</a>) or the
+<directive module="mod_ssl">AuthBasicFake</directive> directive is in
+effect, this directive controls which part of the client certificate is
+used as the username. Without <directive>SSLUserName</directive>,
+<code>REMOTE_USER</code> may not be set for other modules and CGI scripts.</p>
 
 <example><title>Example</title>
 <highlight language="config">
