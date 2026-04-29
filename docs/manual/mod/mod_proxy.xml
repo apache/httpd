@@ -345,6 +345,14 @@ ProxyPass "/apps"     "http://127"
 &lt;/Proxy&gt;
       </highlight>
 
+      <note><title>HTTPS/CONNECT requests</title>
+      <p>The <code>&lt;Proxy "*"&gt;</code> wildcard above matches all
+      requests, including HTTPS requests tunneled via the CONNECT method.
+      Note that access control for CONNECT tunnels can only match against
+      the host and port — path-based matching (e.g.,
+      <code>&lt;Proxy "https://example.com/path/"&gt;</code>) does not
+      work because CONNECT requests do not contain a path.</p></note>
+
       <p>For more information on access control directives, see
       <module>mod_authz_host</module>.</p>
 
