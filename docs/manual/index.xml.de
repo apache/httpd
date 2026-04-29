@@ -58,14 +58,14 @@
     <page href="dso.html">Dynamic Shared Objects (DSO)</page>
     <page href="env.html">Umgebungsvariablen</page>
     <page href="logs.html">Log-Dateien</page>
-    <page href="compliance.html">HTTP-Protocol-Konformit&auml;t</page>
+    <page href="compliance.html">HTTP-Protocol-Konformität</page>
     <page href="urlmapping.html">URLs auf das Dateisystem abbilden</page>
     <page href="misc/perf-tuning.html">Performance-Hinweise</page>
     <page href="misc/security_tips.html">Tipps zur Sicherheit</page>
     <page href="server-wide.html">Serverweite Konfiguration</page>
-    <page href="ssl/">SSL/TLS-Verschl&uuml;sselung</page>
-    <page href="suexec.html">Suexec f&uuml;r CGI</page>
-    <page href="rewrite/">Einf&uuml;hrung in die
+    <page href="ssl/">SSL/TLS-Verschlüsselung</page>
+    <page href="suexec.html">Suexec für CGI</page>
+    <page href="rewrite/">Einführung in die
     URL-Manipulation</page>
     <page href="vhosts/">Virtual-Hosts</page>
 </category>
@@ -76,7 +76,7 @@
     <page href="howto/cgi.html">CGI: Dynamische Inhalte</page>
     <page href="howto/htaccess.html">.htaccess-Dateien</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">Web-Verzeichnisse f&uuml;r Benutzer
+    <page href="howto/public_html.html">Web-Verzeichnisse für Benutzer
     (public_html)</page>
 </category>
 
@@ -87,10 +87,10 @@
 </category>
 
 <category id="other"><title>Weitere Themen</title>
-    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">H&auml;ufig gestellte
+    <page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Häufig gestellte
     Fragen (FAQ)</page>
     <page href="sitemap.html">Seitenindex</page>
-    <page href="developer/">Dokumentation f&uuml;r Entwickler</page>
+    <page href="developer/">Dokumentation für Entwickler</page>
     <page href="http://httpd.apache.org/docs-project/">Mithilfe bei der Dokumentation</page>
     <page href="misc/">Sonstiges</page>
     <page href="https://cwiki.apache.org/confluence/display/httpd/">Wiki</page>

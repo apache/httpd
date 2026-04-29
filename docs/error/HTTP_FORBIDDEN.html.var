@@ -8,11 +8,11 @@ Body:----------cs--
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
     Nemáte právo pro přístup do požadovaného adresáře. Buď neexistuje žádný
-    dokument s&nbsp;obsahem (tzv. index), nebo je adresář chráněn proti čtení.
+    dokument s obsahem (tzv. index), nebo je adresář chráněn proti čtení.
 
   <!--#else -->
 
-    Nemáte právo pro přístup k&nbsp;požadovanému objektu.
+    Nemáte právo pro přístup k požadovanému objektu.
     Buď je chráněn proti čtení, nebo není serverem čitelný.
 
   <!--#endif -->
@@ -29,15 +29,15 @@ Body:----------de--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-    Der Zugriff auf das angeforderte Verzeichnis ist nicht m&ouml;glich.
+    Der Zugriff auf das angeforderte Verzeichnis ist nicht möglich.
     Entweder ist kein Index-Dokument vorhanden oder das Verzeichnis
-    ist zugriffsgesch&uuml;tzt.
+    ist zugriffsgeschützt.
 
   <!--#else -->
 
-    Der Zugriff auf das angeforderte Objekt ist nicht m&ouml;glich.
+    Der Zugriff auf das angeforderte Objekt ist nicht möglich.
     Entweder kann es vom Server nicht gelesen werden oder es
-    ist zugriffsgesch&uuml;tzt.
+    ist zugriffsgeschützt.
 
   <!--#endif -->
 
@@ -68,19 +68,19 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Acceso prohibido!" -->
+<!--#set var="TITLE" value="¡Acceso prohibido!" -->
 <!--#include virtual="include/top.html" -->
 
    <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
       No tiene permiso para acceder al directorio solicitado.
-      No hay ning&uacute;n documento &iacute;ndice (index) o el directorio est&aacute;
+      No hay ningún documento índice (index) o el directorio está
       protegido contra lectura.
 
   <!--#else -->
 
       No tiene permiso para acceder al objeto solicitado.
-      Est&aacute; protegido contra lectura o
+      Está protegido contra lectura o
       el servidor no puede leerlo.
 
   <!--#endif -->
@@ -92,20 +92,20 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="Acc&egrave;s interdit!"
+--><!--#set var="TITLE" value="Accès interdit!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-    Vous n'avez pas le droit d'acc&eacute;der au r&eacute;pertoire
-    demand&eacute;. Soit il n'y a pas de document index soit le r&eacute;pertoire
-    est prot&eacute;g&eacute;.
+    Vous n'avez pas le droit d'accéder au répertoire
+    demandé. Soit il n'y a pas de document index soit le répertoire
+    est protégé.
 
   <!--#else -->
 
-    Vous n'avez pas le droit d'acc&eacute;der &agrave; l'objet
-    demand&eacute;. Soit celui-ci est prot&eacute;g&eacute;, soit il ne peut
-    &ecirc;tre lu par le serveur.
+    Vous n'avez pas le droit d'accéder à l'objet
+    demandé. Soit celui-ci est protégé, soit il ne peut
+    être lu par le serveur.
 
   <!--#endif -->
 
@@ -120,15 +120,15 @@ Body:----------ga--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-    N&iacute;l cead agat rochtain a dh&eacute;anamh ar an comhadlann faoi
-    iarratais.  Is f&eacute;idir nach bhfuil aon doicim&eacute;ad
-    inn&eacute;acs, n&oacute; go bhfuil cosaint ar l&eacute;mh an comhadlann.
+    Níl cead agat rochtain a dhéanamh ar an comhadlann faoi
+    iarratais.  Is féidir nach bhfuil aon doiciméad
+    innéacs, nó go bhfuil cosaint ar lémh an comhadlann.
 
   <!--#else -->
 
-    N&iacute;l cead agat rochtain a dh&eacute;anamh ar an aidhm faoi iarratais.
-    Is f&eacute;idir go bhfuil cosaint ar l&eacute; air, n&oacute; go bhfuil
-    s&eacute; dol&eacute;ite don freastala&iacute;.
+    Níl cead agat rochtain a dhéanamh ar an aidhm faoi iarratais.
+    Is féidir go bhfuil cosaint ar lé air, nó go bhfuil
+    sé doléite don freastalaí.
     
   <!--#endif -->
 
@@ -280,16 +280,16 @@ Body:-------pt-br--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-   Voc&ecirc; n&atilde;o tem permiss&atilde;o para acessar o 
-   diret&oacute;rio requisitado.
-   Pode n&atilde;o existir o arquivo de &iacute;ndice ou 
-   o diret&oacute;rio pode estar protegido contra leitura.
+   Você n&atilde;o tem permiss&atilde;o para acessar o 
+   diretório requisitado.
+   Pode n&atilde;o existir o arquivo de índice ou 
+   o diretório pode estar protegido contra leitura.
 
   <!--#else -->
 
-   Voc&ecirc; n&atilde;o tem permiss&atilde;o para acessar o 
+   Você n&atilde;o tem permiss&atilde;o para acessar o 
    objeto requisitado. Ele pode estar protegido contra leitura ou 
-   n&atilde;o ser leg&iacute;vel pelo servidor.
+   n&atilde;o ser legível pelo servidor.
 
   <!--#endif -->
 
@@ -304,14 +304,14 @@ Body:----------pt--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-	N&atilde;o tem permiss&atilde;o para aceder ao direct&oacute;rio
-	que deseja. Ou n&atilde;o existe o documento de &iacute;ndice
-	ou o direct&oacute;rio est&aacute; protegido contra leitura.
+	N&atilde;o tem permiss&atilde;o para aceder ao directório
+	que deseja. Ou n&atilde;o existe o documento de índice
+	ou o directório está protegido contra leitura.
 
   <!--#else -->
 
 	N&atilde;o tem permiss&atilde;o para aceder ao objecto
-	que deseja. Este est&aacute; protegido contra leitura ou
+	que deseja. Este está protegido contra leitura ou
 	o servidor n&atilde;o o consegue ler.
 
   <!--#endif -->
@@ -388,20 +388,20 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="&Aring;tkomst f&ouml;rbjuden!"
+--><!--#set var="TITLE" value="&Aring;tkomst förbjuden!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till den &ouml;nskade katalogen. Det existerar inget
-    indexdokument eller s&aring; &auml;r katalogen l&auml;sskyddad.
+    Du har inte tillräckliga rättigheter för att f&aring;
+    tillg&aring;ng till den önskade katalogen. Det existerar inget
+    indexdokument eller s&aring; är katalogen lässkyddad.
 
   <!--#else -->
 
-    Du har inte tillr&auml;ckliga r&auml;ttigheter f&ouml;r att f&aring;
-    tillg&aring;ng till det &ouml;nskade objektet. Objektet &auml;r
-    l&auml;sskyddat eller inte l&auml;sbart f&ouml;r servern.
+    Du har inte tillräckliga rättigheter för att f&aring;
+    tillg&aring;ng till det önskade objektet. Objektet är
+    lässkyddat eller inte läsbart för servern.
 
   <!--#endif -->
 

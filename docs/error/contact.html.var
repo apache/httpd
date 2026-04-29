@@ -8,10 +8,10 @@ Pokud si myslíte, že toto je chyba serveru, kontaktujte, prosím,
 Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
-Sofern Sie dies f&uuml;r eine Fehlfunktion des Servers halten,
+Sofern Sie dies für eine Fehlfunktion des Servers halten,
 informieren Sie bitte den 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">Webmaster</a>
-hier&uuml;ber.
+hierüber.
 ----------de--
 
 Content-language: en
@@ -24,7 +24,7 @@ the <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</
 Content-language: es
 Content-type: text/html
 Body:----------es--
-Si cree que es un error del servidor, por favor, comun&iacute;queselo al
+Si cree que es un error del servidor, por favor, comuníqueselo al
 <a href="mailto:<!--#echo encoding="none" var="SERVER_ADMIN" -->">administrador
 del sitio web</a>.
 ----------es--
@@ -39,10 +39,10 @@ Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-M&aacute; cheapann t&uacute; gur earr&aacute;id fhreastala&iacute; &iacute; seo,
-t&eacute;igh i dteagmh&aacute;il leis an 
+Má cheapann tú gur earráid fhreastalaí í seo,
+téigh i dteagmháil leis an 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">
-sti&uacute;rth&oacute;ir gr&eacute;as&aacute;in</a>, le do thoil.
+stiúrthóir gréasáin</a>, le do thoil.
 ----------ga--
 
 Content-language: it
@@ -91,7 +91,7 @@ Je&#347;li my&#347;lisz, &#380;e jest to b&#322;&#261;d tego serwera, skontaktuj
 Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
-Se voc&ecirc; acredita ter encontrado um problema no servidor,
+Se você acredita ter encontrado um problema no servidor,
 por favor entre em contato com o 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 -------pt-br--
@@ -99,7 +99,7 @@ por favor entre em contato com o
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-Se considera que o servidor est&aacute; errado, por favor contacte o
+Se considera que o servidor está errado, por favor contacte o
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a>.
 ----------pt--
 
@@ -128,7 +128,7 @@ Body:----------sr--
 Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
-Om du tror att detta beror p&aring; ett serverfel, v&auml;nligen kontakta 
+Om du tror att detta beror p&aring; ett serverfel, vänligen kontakta 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webbansvarig</a>.
 ----------sv--
 
