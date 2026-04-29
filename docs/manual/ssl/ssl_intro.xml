@@ -654,9 +654,7 @@ See for instance <a href="https://datatracker.ietf.org/doc/html/rfc2045"
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. See <a
-href="https://datatracker.ietf.org/doc/html/rfc6101"
->RFC 6101</a>.</dd>
+Version 3.0</q>, 1996. See <rfc>6101</rfc>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,

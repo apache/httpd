@@ -123,7 +123,7 @@ ProxyPassReverse "/app" "http://app.example.com"
     <code>Link</code> headers.</p>
     <p>If available, they may do so using the <code>"103 Early Hints"</code> 
     intermediate responses as specified in 
-    <a href="https://datatracker.ietf.org/doc/html/rfc8297">RFC 8297</a>. This will give
+    <rfc>8297</rfc>. This will give
     the best performance. If the client is talking HTTP/2 as well, this may
     then result in a PUSH from Apache to the client or just in forwarding
     the 103 response.</p>

@@ -55,7 +55,7 @@
     </related>
 
     <p>The HTTP protocol follows the <strong>robustness principle</strong>
-    as described in <a href="https://datatracker.ietf.org/doc/html/rfc1122">RFC1122</a>,
+    as described in <rfc>1122</rfc>,
     which states <strong>"Be liberal in what you accept, and conservative in
     what you send"</strong>. As a result of this principle, HTTP clients will
     compensate for and recover from incorrect or misconfigured responses, or

@@ -762,7 +762,7 @@ SetEnvIf User-Agent "MSIE [2-5]" \
 
     <p>To generate custom DH parameters, use the <code>openssl dhparam 1024</code>
     command. Alternatively, you can use the following standard 1024-bit DH
-    parameters from <a href="https://datatracker.ietf.org/doc/html/rfc2409">RFC 2409</a>,
+    parameters from <rfc>2409</rfc>,
     section 6.2:</p>
     <example><pre>-----BEGIN DH PARAMETERS-----
 MIGHAoGBAP//////////yQ/aoiFowjTExmKLgNwc0SkCTgiKZ8x0Agu+pjsTmyJR
