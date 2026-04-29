@@ -2104,7 +2104,7 @@ Si cette directive est à <code>on</code> dans un contexte de serveur
 type="section">VirtualHost</directive>), tous les serveurs virtuels qui ne
 l’outrepassent pas héritent de la configuration. Cela a le même effet que la
 définir à <code>on</code> dans tous les serveurs virtuels par défaut à base de
-nom : les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
+nom&nbsp;: les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
 base de nom.
 </p>
 
@@ -2151,17 +2151,17 @@ testée.</p>
 <p>La politique <code>strict</code> bloque toute requête HTTP associée à un
 serveur virtuel différent de celui identifié par SNI. La politique
 <code>insecure</code> autorise toute requête, quel que soit le serveur virtuel
-associé ; une telle configuration pourra être vulnérable à <a
+associé&nbsp;; une telle configuration pourra être vulnérable à <a
 href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
 </p>
 
 <p>Les politiques <code>secure</code> (politique par défaut) et
 <code>authonly</code> comparent certains aspects spécifiques des deux serveurs
-virtuels, qui sont regroupés en deux catégories :</p>
+virtuels, qui sont regroupés en deux catégories&nbsp;:</p>
 
 <ul>
   <li><strong>certificat/clé de serveur ou restrictions de protocole/algorithme
-  de chiffrement</strong> : directives qui déterminent le certificat ou la clé
+  de chiffrement</strong>&nbsp;: directives qui déterminent le certificat ou la clé
   du serveur (<directive
   module="mod_ssl">SSLCertificateKeyFile</directive>, etc.), restrictions de
   protocole ou d’algorithme
@@ -2170,7 +2170,7 @@ virtuels, qui sont regroupés en deux catégories :</p>
   module="mod_ssl">SSLCipherSuite</directive>)</li>
   
   <li><strong>configuration de la certification et de l’authentification du
-  client</strong> : directives qui affectent l’authentification du client et la
+  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
   vérification de son certificat via TLS, telles que <directive
   module="mod_ssl">SSLVerifyClient</directive>, <directive
   module="mod_ssl">SSLVerifyMode</directive>, <directive
@@ -2181,7 +2181,7 @@ virtuels, qui sont regroupés en deux catégories :</p>
 
 <p>Le tableau suivant indique quand une requête HTTP sera bloquée ou autorisée
 lorsque les configurations des serveurs virtuels diffèrent de la manière
-décrite, et en fonction des différentes politiques utilisées :</p>
+décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
 
 <table border="1" style="zebra">
 <columnspec><column width=".3"/><column width=".2"/><column width=".5"/>

@@ -1327,8 +1327,8 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
             <p>
                 La directive <directive>H2MaxHeaderBlockLen</directive> permet
 		de définir la taille maximale globale des en-têtes d’une
-		réponse. Définir cette directive à 0 implique une taille maximale
-		de 64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
+		réponse. Définir cette directive à&nbsp;0 implique une taille maximale
+		de&nbsp;64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
             </p>
             <p>
                 Les réponses dont la somme des tailles de tous les en-têtes est

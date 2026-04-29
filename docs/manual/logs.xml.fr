@@ -123,7 +123,7 @@
     module="core">ErrorLogFormat</directive> avec laquelle vous pouvez
     choisir les valeurs à journaliser. Un format par défaut sera utilisé si vous
     n’en spécifiez pas un. Un message de journalisation typique se présente
-    comme suit :</p>
+    comme suit&nbsp;:</p>
 
     <example>
       [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]

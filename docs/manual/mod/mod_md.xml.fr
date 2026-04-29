@@ -1581,7 +1581,7 @@ MDMessageCmd /etc/apache/md-message
 		Certains CAs ACME ont besoin de ces valeurs, mais ce n'est pas
 		le cas pour Let's Encrypt. Vérifiez avec votre CA ACME si vous
 		avez besoin de ces valeurs et la manière de les obtenir. Ces
-		dernières se composent de deux chaînes : un identifiant de clé
+		dernières se composent de deux chaînes&nbsp;: un identifiant de clé
 		et une valeur 'hmac' codée en base64.
             </p>
             <p>
@@ -1595,7 +1595,7 @@ MDMessageCmd /etc/apache/md-message
                 Les valeurs peuvent aussi être extraites d'un fichier JSON pour
 		conserver l'ouverture des permissions au niveau de la
 		configuration du serveur et restreindre celles de ce fichier. Le
-		fichier JSON sera du style :
+		fichier JSON sera du style&nbsp;:
             </p>
             <example><title>Exemple de fichier EAB JSON</title>
                 <highlight language="config">
@@ -1776,13 +1776,13 @@ MDMessageCmd /etc/apache/md-message
 	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
 	    n’est cependant pas appliqué avec précision. En effet, le module lui
 	    applique une plage de variation aléatoire de +/- 50%. Avec
-	    l’intervalle par défaut de 12 heures, cela signifie que l’intervalle
-	    réel entre deux vérifications varie entre 6 et 18 heures, la
+	    l’intervalle par défaut de 12&nbsp;heures, cela signifie que l’intervalle
+	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
 	    variation s’appliquant à nouveau à chaque vérification. Cela permet
 	    d’atténuer les pics de trafic sur les serveurs ACME.
             </p><p>
 	    La valeur minimale pouvant être définie pour l’intervalle est de
-	    1 seconde. Il est cependant déconseillé de définir un intervalle
+	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
 	    aussi court sur un serveur en production.
             </p>
         </usage>
@@ -1804,19 +1804,19 @@ MDMessageCmd /etc/apache/md-message
 		Lets Encrypt prend en charge les profiles de certificat dans
 		leurs CA. Cette fonctionnalité, entre autres détails, vous
 		permet de définir la durée de validité des certificats que vous
-		recevez. Le profile par défaut « classic » conserve la valeur de
-		90 jours, le profile « tlsserver » conserve aussi la valeur de
-		90 jours avec au maximum 25 noms alternatifs pour Subject. Le
-		profile « shortlived » délivre des certificats dont la durée de
-		validité est de 6 jours seulement.
+		recevez. Le profile par défaut «&nbsp;classic&nbsp;» conserve la valeur de
+		90&nbsp;jours, le profile «&nbsp;tlsserver&nbsp;» conserve aussi la valeur de
+		90&nbsp;jours avec au maximum 25 noms alternatifs pour Subject. Le
+		profile «&nbsp;shortlived » délivre des certificats dont la durée de
+		validité est de 6&nbsp;jours seulement.
             </p><p>
                 Si vous ne modifiez pas la configuration de votre module mod_md,
 		vous continuerez à recevoir des certificats d’une durée de
-		validité de 90 jours. Si vous pensez qu’une durée de validité
+		validité de 90&nbsp;jours. Si vous pensez qu’une durée de validité
 		plus courte convient mieux à votre situation (et acceptez le
 		risque que le temps de renouvellement soit beaucoup plus court),
 		vous pouvez définir le profile à utiliser à l’aide de
-		« MDProfile shortlived ».
+		«&nbsp;MDProfile shortlived ».
            </p><p>
                 Les noms de profile sont définis par le CA. Si vous tentez de
 		définie un profile non valable, aucun profile ne sera utilisé,
@@ -1916,7 +1916,7 @@ MDMessageCmd /etc/apache/md-message
 		lorsqu’ils utilisent leurs propres serveurs ACME.
             </p>
             <p>
-                Définissez cette directive à « none » pour la désactiver
+                Définissez cette directive à «&nbsp;none&nbsp;» pour la désactiver
 		explicitement.
             </p>
         </usage>

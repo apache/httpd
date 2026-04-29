@@ -335,8 +335,8 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     </p>
       <table border="1">
       	<tr><th>Drapeau</th><th>Sigle</th><th>Description</th></tr>
-      	<tr><td> </td><td><em>Ok</em></td><td>Le serveur est disponible</td></tr>
-      	<tr><td> </td><td><em>Init</em></td><td>Le serveur a été initialisé</td></tr>
+      	<tr><td>&nbsp;</td><td><em>Ok</em></td><td>Le serveur est disponible</td></tr>
+      	<tr><td>&nbsp;</td><td><em>Init</em></td><td>Le serveur a été initialisé</td></tr>
         <tr><td><code>D</code></td><td><em>Dis</em></td><td>Le serveur est
 	désactivé et n'accepte aucune requête ; il sera retesté automatiquement.</td></tr>
         <tr><td><code>S</code></td><td><em>Stop</em></td><td>Le serveur a été

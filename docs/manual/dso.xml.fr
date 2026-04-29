@@ -242,8 +242,8 @@ $ apxs -cia mod_foo.c
     <p>Bien que ce mécanisme DSO paraisse évident, il comporte au moins une
     étape difficile : la résolution des symboles depuis le programme exécutable
     pour le DSO lorsqu'on utilise un DSO pour étendre les fonctionnalités d'un
-    programme (la seconde méthode). Pourquoi ? Parce que la « résolution
-    inverse » des symboles DSO à partir du jeu de symboles du programme
+    programme (la seconde méthode). Pourquoi ? Parce que la «&nbsp;résolution
+    inverse&nbsp;» des symboles DSO à partir du jeu de symboles du programme
     exécutable dépend de la conception de la bibliothèque (la bibliothèque n'a
     aucune information sur le programme qui l'utilise) et n'est ni standardisée
     ni disponible sur toutes les plateformes. En pratique, les symboles globaux

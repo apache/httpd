@@ -379,7 +379,7 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
     nouvelle ligne. Le programme doit lire une ligne sur son entrée standard
     (jusqu’au caractère nouvelle ligne) et écrire sa réponse sous la forme d’une
     seule ligne terminée par un caractère nouvelle ligne sur sa sortie standard.
-    Les clés ne doivent pas contenir de caractère nouvelle ligne ; dans le cas
+    Les clés ne doivent pas contenir de caractère nouvelle ligne&nbsp;; dans le cas
     contraire, la recherche échouera.</p>
 
     <p>S’il n’y a pas de valeur de recherche correspondante, le programme de
@@ -390,7 +390,7 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
     littérale "NULL" comme valeur correspondante.</p>
 
     <p>La sortie d’erreur standard du programme est héritée du processus httpd
-    parent ; tout ce que le programme écrit sur la sortie d’erreur standard
+    parent&nbsp;; tout ce que le programme écrit sur la sortie d’erreur standard
     arrivera donc au même endroit que la sortie d’erreur de httpd (en général le
     journal indiqué par la directive <directive
     module="core">ErrorLog</directive>).</p>

@@ -124,7 +124,7 @@ dynamiquement</a></seealso>
     écrasés par aucune directive <code>ServerAlias</code>.</p>
 
     <p>Pour chaque serveur virtuel, diverses valeurs sont initialisées
-    par défaut. En particulier :</p>
+    par défaut. En particulier&nbsp;:</p>
 
     <ol>
       <li>Dans le cas où un serveur virtuel ne contient pas de directives
@@ -178,7 +178,7 @@ dynamiquement</a></seealso>
 <section id="hostmatching"><title>Choix du serveur virtuel</title>
 
     <p>À la réception d'une requête, le serveur procède comme suit pour
-    déterminer quel serveur virtuel utiliser :</p>
+    déterminer quel serveur virtuel utiliser&nbsp;:</p>
 
     <section id="hashtable"><title>Recherche de l'adresse IP</title>
 
@@ -325,7 +325,7 @@ dynamiquement</a></seealso>
 
     <p>En plus des points évoqués sur la page des
     <a href="../dns-caveats.html#tips">problèmes liés au DNS</a>,
-    voici quelques points intéressants :</p>
+    voici quelques points intéressants&nbsp;:</p>
 
     <ul>
       <li>Toujours positionner les définitions relatives au serveur

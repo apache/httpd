@@ -818,7 +818,7 @@ dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
 avertissements 'Invalid URI in request'.
 </p>
 
-<p>Remarque : httpd ne prend en charge que les codes d’état inclus dans la
+<p>Remarque&nbsp;: httpd ne prend en charge que les codes d’état inclus dans la
 spécification de HTTP. Utiliser un code d’état non reconnu provoquera une erreur
 500 et l’enregistrement d’un message dans le journal des erreurs.</p>
 
@@ -927,7 +927,7 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
 
 <section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
     <p>Il est nécessaire de définir ce drapeau pour permettre à une réécriture
-    de continuer si la requête HTTP en cours d’écriture possède un point d'interrogation encodé, « %3f », et si le résultat réécrit contient un « ? » dans
+    de continuer si la requête HTTP en cours d’écriture possède un point d'interrogation encodé, «&nbsp;%3f&nbsp;», et si le résultat réécrit contient un «&nbsp;?&nbsp;» dans
     la substitution. Cela protège d’une URL malveillante tirant avantage d’une
     capture et d’une resubstitution du point d'interrogation encodé.</p>
 </section>

@@ -154,7 +154,7 @@ AddOutputFilter INCLUDES .shtml
 
       <example>
       &lt;!--#comment Blah Blah Blah --&gt;<br/>
-         or<br/>
+      &nbsp;&nbsp;&nbsp;or<br/>
       &lt;!--#comment text="Blah Blah Blah" --&gt;
       </example>
     </section> <!-- /comment -->
@@ -859,15 +859,15 @@ AddOutputFilter INCLUDES .shtml
     en utilisant des espaces. Ainsi,</p>
 
     <example>
-      <p><code><var>chaîne1</var>    <var
-      >chaîne2</var></code> devient <code><var>chaîne1</var> <var
+      <p><code><var>chaîne1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var
+      >chaîne2</var></code> devient <code><var>chaîne1</var>&nbsp;<var
       >chaîne2</var></code><br />
       <br />
       et<br />
       <br />
-      <code>'<var>chaîne1</var>    <var
+      <code>'<var>chaîne1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var
       >chaîne2</var>'</code> devient <code><var
-      >chaîne1</var>    <var>chaîne2</var></code>.</p>
+      >chaîne1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>chaîne2</var></code>.</p>
     </example>
 
     <note><title>Optimisation des expressions booléennes</title>
