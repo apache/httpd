@@ -177,10 +177,9 @@
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="https://datatracker.ietf.org/doc/html/rfc2616">HTTP/1.1
-    RFC</a>, section 14.11 puts it this way:</p>
+    <p>The HTTP/1.1 RFC (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>), section 14.11 puts it this way:</p>
 
-    <blockquote cite="https://datatracker.ietf.org/doc/html/rfc2616">
+    <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>The Content-Encoding entity-header field is used as a modifier to
       the media-type. When present, its value indicates what additional
       content codings have been applied to the entity-body, and thus what
