@@ -1,0 +1,52 @@
+Content-language: de
+Content-type: text/html; charset=UTF-8
+Body:----------de--
+<!--#set var="CONTENT_LANGUAGE" value="de"
+--><!--#set var="TITLE" value="Gateway-Zeitüberschreitung!"
+--><!--#include virtual="include/top.html"-->
+
+    Der Proxy-Server hat innerhalb der vorgegebenen Zeit
+    keine Antwort von einem übergeordneten Server erhalten.
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------de--
+
+Content-language: en
+Content-type: text/html; charset=UTF-8
+Body:----------en--
+<!--#set var="TITLE" value="Gateway Timeout!"
+--><!--#include virtual="include/top.html" -->
+
+    The proxy server did not receive a timely response
+    from an upstream server.
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------en--
+
+Content-language: fr
+Content-type: text/html; charset=UTF-8
+Body:----------fr--
+<!--#set var="CONTENT_LANGUAGE" value="fr"
+--><!--#set var="TITLE" value="Délai d'attente de la passerelle !"
+--><!--#include virtual="include/top.html" -->
+
+    Le serveur proxy n'a pas reçu de réponse
+    dans les délais de la part d'un serveur supérieur.
+
+  <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------fr--

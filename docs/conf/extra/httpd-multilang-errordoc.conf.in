@@ -48,5 +48,6 @@ ErrorDocument 500 /error/HTTP_INTERNAL_SERVER_ERROR.html.var
 ErrorDocument 501 /error/HTTP_NOT_IMPLEMENTED.html.var
 ErrorDocument 502 /error/HTTP_BAD_GATEWAY.html.var
 ErrorDocument 503 /error/HTTP_SERVICE_UNAVAILABLE.html.var
+ErrorDocument 504 /error/HTTP_GATEWAY_TIME_OUT.html.var
 ErrorDocument 506 /error/HTTP_VARIANT_ALSO_VARIES.html.var
 
