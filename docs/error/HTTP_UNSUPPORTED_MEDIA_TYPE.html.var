@@ -148,11 +148,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Tipo de media n&atilde;o suportado!"
+--><!--#set var="TITLE" value="Tipo de media não suportado!"
 --><!--#include virtual="include/top.html" -->
 
-   O servidor n&atilde;o suporta o tipo de mídia
-   transmitida nesta requisiç&atilde;o.
+   O servidor não suporta o tipo de mídia
+   transmitida nesta requisição.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -160,10 +160,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Media n&atilde;o suportado!"
+<!--#set var="TITLE" value="Media não suportado!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor n&atilde;o suporta o <i>media type</i> transmitido no pedido.
+	O servidor não suporta o <i>media type</i> transmitido no pedido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -210,7 +210,7 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Mediatypen stöds ej!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern stödjer inte den mediatyp som skickats i förfr&aring;gan.
+    Servern stödjer inte den mediatyp som skickats i förfrågan.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

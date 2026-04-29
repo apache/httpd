@@ -25,26 +25,26 @@
 <modulesynopsis metafile="mod_data.xml.meta">
 
 <name>mod_data</name>
-<description>Convertit un corps de r&eacute;ponse en URL de type donn&eacute;es RFC2397</description>
+<description>Convertit un corps de réponse en URL de type données RFC2397</description>
 <status>Extension</status>
 <sourcefile>mod_data.c</sourcefile>
 <identifier>data_module</identifier>
 <compatibility>Disponible depuis la version 2.3 du serveur HTTP Apache</compatibility>
 
 <summary>
-    <p>Ce module permet de convertir une r&eacute;ponse en <a
-    href="http://tools.ietf.org/html/rfc2397">URL de type donn&eacute;es
+    <p>Ce module permet de convertir une réponse en <a
+    href="http://tools.ietf.org/html/rfc2397">URL de type données
     RFC2397</a>.
     </p>
 
-    <p>Les URLs de type donn&eacute;es peuvent &ecirc;tre incluses en ligne dans les
+    <p>Les URLs de type données peuvent être incluses en ligne dans les
     pages web via le module <module>mod_include</module> par exemple,
-    afin d'&eacute;viter aux clients d'avoir &agrave; effectuer des connexions
-    s&eacute;par&eacute;es pour &eacute;ventuellement extraire un grand nombre de petites
-    images. Les URLs de type donn&eacute;es peuvent aussi &ecirc;tre incluses dans
-    des pages g&eacute;n&eacute;r&eacute;es par langages de scripting tels que PHP.</p>
+    afin d'éviter aux clients d'avoir à effectuer des connexions
+    séparées pour éventuellement extraire un grand nombre de petites
+    images. Les URLs de type données peuvent aussi être incluses dans
+    des pages générées par langages de scripting tels que PHP.</p>
 
-    <example><title>Un exemple d'URL de type donn&eacute;es</title>
+    <example><title>Un exemple d'URL de type données</title>
         data:image/gif;base64,R0lGODdhMAAwAPAAAAAAAP///ywAAAAAMAAw<br />
         AAAC8IyPqcvt3wCcDkiLc7C0qwyGHhSWpjQu5yqmCYsapyuvUUlvONmOZtfzgFz<br />
         ByTB10QgxOR0TqBQejhRNzOfkVJ+5YiUqrXF5Y5lKh/DeuNcP5yLWGsEbtLiOSp<br />
@@ -54,10 +54,10 @@
         hhx4dbgYKAAA7<br />
     </example>
 
-    <p>Le filtre n'accepte aucun param&egrave;tre, et peut &ecirc;tre ajout&eacute; &agrave; la
+    <p>Le filtre n'accepte aucun paramètre, et peut être ajouté à la
     pile des filtres via la directive <directive
     module="core">SetOutputFilter</directive>, ou toute autre directive
-    support&eacute;e par le module <module>mod_filter</module>.</p>
+    supportée par le module <module>mod_filter</module>.</p>
 
     <example><title>Configuration du filtre</title>
         <highlight language="config">

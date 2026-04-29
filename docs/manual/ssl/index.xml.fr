@@ -29,27 +29,27 @@
 
 <summary>
 <p>Le module <module>mod_ssl</module> du serveur HTTP Apache fournit une
-interface avec la biblioth&egrave;que <a
+interface avec la bibliothèque <a
 href="http://www.openssl.org/">OpenSSL</a>, qui permet d'effectuer un
-chiffrement fort en s'appuyant sur les protocoles "Couche Points d'acc&egrave;s
-S&eacute;curis&eacute;s" (Secure Sockets Layer - SSL) et "S&eacute;curit&eacute; de la Couche Transport"
+chiffrement fort en s'appuyant sur les protocoles "Couche Points d'accès
+Sécurisés" (Secure Sockets Layer - SSL) et "Sécurité de la Couche Transport"
 (Transport Layer Security - TLS).</p>
 </summary>
 
 <section id="documentation"><title>Documentation</title>
 <ul>
 <li><a href="ssl_howto.html">Comment configurer SSL ?</a></li>
-<li><a href="ssl_intro.html">Introduction &agrave; SSL</a></li>
-<li><a href="ssl_compat.html">Compatibilit&eacute;</a></li>
+<li><a href="ssl_intro.html">Introduction à SSL</a></li>
+<li><a href="ssl_compat.html">Compatibilité</a></li>
 <li><a href="ssl_faq.html">Foire aux questions</a></li>
 <li><a href="../glossary.html">Glossaire</a></li>
 </ul>
 </section>
 
 <section id="mod-ssl"><title>mod_ssl</title>
-<p>La documentation compl&egrave;te sur les directives et les variables
+<p>La documentation complète sur les directives et les variables
 d'environnement fournies par ce module se trouve dans la
-<a href="../mod/mod_ssl.html">documentation de r&eacute;f&eacute;rence de mod_ssl</a>.
+<a href="../mod/mod_ssl.html">documentation de référence de mod_ssl</a>.
 </p>
 </section>
 

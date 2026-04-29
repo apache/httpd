@@ -323,10 +323,10 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Objeto n&atilde;o encontrado!"
+--><!--#set var="TITLE" value="Objeto não encontrado!"
 --><!--#include virtual="include/top.html" -->
 
-    A URL requisitada n&atilde;o foi encontrada neste servidor.
+    A URL requisitada não foi encontrada neste servidor.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
@@ -349,10 +349,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Método n&atilde;o permitido!"
+<!--#set var="TITLE" value="Método não permitido!"
 --><!--#include virtual="include/top.html" -->
 
-	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
+	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> não
 	é permitido para o URL pedido.
 
 <!--#include virtual="include/bottom.html" -->
@@ -445,11 +445,11 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Objektet hittas ej!"
 --><!--#include virtual="include/top.html" -->
 
-    Den efterfr&aring;gade adressen hittades inte p&aring; denna server.
+    Den efterfrågade adressen hittades inte på denna server.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    Länken p&aring; den
+    Länken på den
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tidigare sidan</a> 
     verkar vara felaktig eller inaktuell. Vänligen informera författaren av
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">sidan</a>
@@ -457,7 +457,7 @@ Body:----------sv--
 
   <!--#else -->
 
-    Om du skrev in adressen manuellt s&aring; kontrollera din stavning och
+    Om du skrev in adressen manuellt så kontrollera din stavning och
     försök igen.
 
   <!--#endif -->

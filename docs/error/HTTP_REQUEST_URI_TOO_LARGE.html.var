@@ -85,7 +85,7 @@ Body:----------it--
 
     La lunghezza dell'indirizzo (URL) trasmesso supera il
     limite massimo imposto da questo server.
-    La richiesta non pu&ograve; essere soddisfatta.
+    La richiesta non può essere soddisfatta.
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
@@ -163,7 +163,7 @@ Body:-------pt-br--
 --><!--#include virtual="include/top.html" -->
 
    O tamanho do endereço (URL) excede a capacidade limite
-   desse servidor. A requisiç&atilde;o n&atilde;o pode ser
+   desse servidor. A requisição não pode ser
    processada.
 
 <!--#include virtual="include/bottom.html" -->
@@ -176,7 +176,7 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	O tamanho do URL pedido excede o limite da capacidade deste
-	servidor. O pedido n&atilde;o pode ser processado.
+	servidor. O pedido não pode ser processado.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -223,11 +223,11 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Efterfr&aring;gad URI för stor!"
+--><!--#set var="TITLE" value="Efterfrågad URI för stor!"
 --><!--#include virtual="include/top.html" -->
 
-    Längden p&aring; adressen som efterfr&aring;gas överskrider
-    kapacitetsgränsen för denna server. Förfr&aring;gan kan
+    Längden på adressen som efterfrågas överskrider
+    kapacitetsgränsen för denna server. Förfrågan kan
     inte verkställas.
 
 <!--#include virtual="include/bottom.html" -->

@@ -341,8 +341,8 @@ Body:-------pt-br--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     
-    O servidor encontrou um erro interno e n&atilde;o pode
-    completar sua requisiç&atilde;o.   
+    O servidor encontrou um erro interno e não pode
+    completar sua requisição.   
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -351,8 +351,8 @@ Body:-------pt-br--
 
   <!--#else -->
 
-    O servidor encontrou um erro interno e n&atilde;o
-    foi possível completar sua requisiç&atilde;o.
+    O servidor encontrou um erro interno e não
+    foi possível completar sua requisição.
     O servidor está sobrecarregado ou existe um 
     erro em um script CGI.
 
@@ -369,7 +369,7 @@ Body:----------pt--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-	O servidor encontrou um erro interno e n&atilde;o pode completar
+	O servidor encontrou um erro interno e não pode completar
 	o seu pedido.
 
     <!--#include virtual="include/spacer.html" -->
@@ -379,7 +379,7 @@ Body:----------pt--
 
   <!--#else -->
 
-	O servidor encontrou um erro interno e n&atilde;o pode completar
+	O servidor encontrou um erro interno e não pode completar
 	o seu pedido. Ou o servidor está sobrecarregado, ou ocorreu
 	um erro num <i>script</i> CGI.
 
@@ -480,7 +480,7 @@ Body:----------sv--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    Servern r&aring;kade ut för ett internt fel och det var inte möjligt
+    Servern råkade ut för ett internt fel och det var inte möjligt
     att slutföra din begäran.
 
     <!--#include virtual="include/spacer.html" -->
@@ -490,9 +490,9 @@ Body:----------sv--
 
   <!--#else -->
 
-    Servern r&aring;kade ut för ett internt fel och det var inte möjligt
+    Servern råkade ut för ett internt fel och det var inte möjligt
     att slutföra din begäran. Servern är antingen överbelastad
-    eller s&aring; inneh&aring;ller CGI-skriptet fel.
+    eller så innehåller CGI-skriptet fel.
 
   <!--#endif -->
 

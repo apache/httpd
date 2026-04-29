@@ -44,7 +44,7 @@
     adresse IP, et vous souhaitez des réponses différentes si on demande
     <code>www.example.com</code> ou <code>www.example.org</code>.</p>
 
-    <note><title>Note&nbsp;:</title><p>La configuration de serveurs virtuels 
+    <note><title>Note :</title><p>La configuration de serveurs virtuels 
     sous Apache ne provoque pas leur apparition magique dans la 
     configuration du DNS. Il <em>faut</em> que leurs noms soient 
     définis dans le DNS, et qu'ils y soient résolus sur l'adresse IP 
@@ -78,7 +78,7 @@ Listen 80
     serveur virtuel
     <code>ServerName www.example.com</code> se trouve en premier dans le fichier 
     de configuration, il a la plus grande priorité et peut être vu 
-    comme serveur <cite>par défaut</cite> ou <cite>primaire</cite>&nbsp;; 
+    comme serveur <cite>par défaut</cite> ou <cite>primaire</cite> ; 
     ce qui signifie que toute requête reçue ne correspondant à aucune 
     des directives <directive module="core">ServerName</directive> sera servie par ce premier 
     <directive type="section" module="core">VirtualHost</directive>.</p>
@@ -89,7 +89,7 @@ Listen 80
     contenu différent en fonction de l'adresse IP ou du port.</p>
 
     <note>
-            <title>Note&nbsp;:</title>
+            <title>Note :</title>
 
             <p>Vous pouvez remplacer <code>*</code> 
             par une adresse IP du système. Le serveur virtuel concerné
@@ -112,7 +112,7 @@ Listen 80
     d'une seule adresse IP.</title>
 
   	<note>
-          <title>Note&nbsp;:</title><p>Toutes les techniques présentées ici 
+          <title>Note :</title><p>Toutes les techniques présentées ici 
           peuvent être étendues à un plus grand nombre d'adresses IP.</p>
     </note>
 
@@ -181,7 +181,7 @@ DocumentRoot "/www/mainserver"
     module="core">VirtualHost</directive>.</p>
 
     <note>
-          <title>Note&nbsp;:</title><p>Sur le réseau interne, il est possible 
+          <title>Note :</title><p>Sur le réseau interne, il est possible 
           d'utiliser le nom raccourci <code>server</code> au lieu du nom 
           complet <code>server.example.com</code>.</p>
 
@@ -531,7 +531,7 @@ DocumentRoot "/www/example1"
     servie par le serveur sub1-vhost que si le client envoie un en-tête 
     <code>Host:</code> correct. Si aucun en-tête <code>Host:</code> 
     n'est transmis, le serveur primaire sera utilisé.</p>
-    <p>Notez qu'il y a une singularité&nbsp;: une requête sur 
+    <p>Notez qu'il y a une singularité : une requête sur 
     <code>http://www.sub2.domain.tld/sub1/</code> est également servie 
     par le serveur sub1-vhost si le client n'envoie pas d'en-tête 
     <code>Host:</code>.</p>

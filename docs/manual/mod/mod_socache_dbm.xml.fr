@@ -25,23 +25,23 @@
 <modulesynopsis metafile="mod_socache_dbm.xml.meta">
 
 <name>mod_socache_dbm</name>
-<description>Fournisseur de cache d'objets partag&eacute;s bas&eacute; sur DBM.</description>
+<description>Fournisseur de cache d'objets partagés basé sur DBM.</description>
 <status>Extension</status>
 <sourcefile>mod_socache_dbm.c</sourcefile>
 <identifier>socache_dbm_module</identifier>
 
 <summary>
     <p>Le module <code>mod_socache_dbm</code> est un fournisseur de cache
-    d'objets partag&eacute;s qui permet la cr&eacute;ation et l'acc&egrave;s &agrave; un cache
-    maintenu par une base de donn&eacute;es DBM.
+    d'objets partagés qui permet la création et l'accès à un cache
+    maintenu par une base de données DBM.
     </p>
 
     <example>
     dbm:/chemin/vers/datafile
     </example>
 
-    <p>Vous trouverez des d&eacute;tails &agrave; propos des autres fournisseurs de
-    cache d'objets partag&eacute;s <a href="../socache.html">ici</a>.
+    <p>Vous trouverez des détails à propos des autres fournisseurs de
+    cache d'objets partagés <a href="../socache.html">ici</a>.
     </p>
 
 </summary>

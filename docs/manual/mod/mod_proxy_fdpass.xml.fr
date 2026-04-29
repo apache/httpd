@@ -26,7 +26,7 @@
 
 <name>mod_proxy_fdpass</name>
 <description>Module fournissant le support des processus externes fdpass
-&agrave; <module>mod_proxy</module></description>
+à <module>mod_proxy</module></description>
 <status>Extension</status>
 <sourcefile>mod_proxy_fdpass.c</sourcefile>
 <identifier>proxy_fdpass_module</identifier>
@@ -34,35 +34,35 @@
 d'Apache</compatibility>
 
 <summary>
-    <p>Pour fonctionner, ce module <em>n&eacute;cessite</em> le chargement de
+    <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
     <module>mod_proxy</module>. Il permet le passage de la socket du client
     vers un autre processus.</p>
 
-    <p><code>mod_proxy_fdpass</code> utilise la capacit&eacute; des sockets de
-    domaine AF_UNIX &agrave; <a
+    <p><code>mod_proxy_fdpass</code> utilise la capacité des sockets de
+    domaine AF_UNIX à <a
     href="http://www.freebsd.org/cgi/man.cgi?query=recv">transmettre un
-    descripteur de fichier ouvert</a> afin de permettre &agrave; un autre
-    processus de terminer le traitement de la requ&ecirc;te.
+    descripteur de fichier ouvert</a> afin de permettre à un autre
+    processus de terminer le traitement de la requête.
     </p>
 
-    <p>Le module poss&egrave;de une interface de fournisseur
-    <code>proxy_fdpass_flusher</code> qui permet &eacute;ventuellement &agrave; un
-    autre module d'envoyer les en-t&ecirc;tes de la r&eacute;ponse, ou m&ecirc;me le d&eacute;but
-    du corps de la r&eacute;ponse. Le fournisseur par d&eacute;faut <code>flush</code> d&eacute;sactive la
-    persistence, et envoie les en-t&ecirc;tes de la r&eacute;ponse, laissant le soin
-    au processus externe d'envoyer le corps de la r&eacute;ponse.</p>
+    <p>Le module possède une interface de fournisseur
+    <code>proxy_fdpass_flusher</code> qui permet éventuellement à un
+    autre module d'envoyer les en-têtes de la réponse, ou même le début
+    du corps de la réponse. Le fournisseur par défaut <code>flush</code> désactive la
+    persistence, et envoie les en-têtes de la réponse, laissant le soin
+    au processus externe d'envoyer le corps de la réponse.</p>
 
-    <p>Pour utiliser un autre fournisseur, vous devez sp&eacute;cifier le param&egrave;tre
+    <p>Pour utiliser un autre fournisseur, vous devez spécifier le paramètre
     <code>flusher</code> de la directive <directive
     module="mod_proxy">ProxyPass</directive>.
     </p>
 
-    <p>&Agrave; l'heure actuelle, la seule donn&eacute;e transmise au processus
+    <p>À l'heure actuelle, la seule donnée transmise au processus
     externe est la socket du client. Pour recevoir une socket client,
     appelez recvfrom avec une structure <a
     href="http://www.kernel.org/doc/man-pages/online/pages/man3/
-    cmsg.3.html"><code>struct cmsghdr</code></a> allou&eacute;e. Les versions
-    futures de ce module pourront transmettre d'autres donn&eacute;es que le
+    cmsg.3.html"><code>struct cmsghdr</code></a> allouée. Les versions
+    futures de ce module pourront transmettre d'autres données que le
     socket client.
     </p>
 </summary>

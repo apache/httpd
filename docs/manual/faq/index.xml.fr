@@ -28,7 +28,7 @@
 
 <summary>
 
-    <p>La FAQ a &eacute;t&eacute; transf&eacute;r&eacute;e vers le <a
+    <p>La FAQ a été transférée vers le <a
     href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Wiki du serveur HTTP</a>.</p>
 </summary>
 

@@ -190,7 +190,7 @@ candidate lbstatus -= total factor</code></pre>
     <tr><th>lbfactor</th>
         <td>70</td>
         <td>30</td></tr>
-    <tr><td colspan="2">&nbsp;</td></tr>
+    <tr><td colspan="2"> </td></tr>
     <tr><th>lbstatus</th>
         <td><em>-30</em></td>
         <td>30</td></tr>

@@ -171,7 +171,7 @@ Body:-------pt-br--
 --><!--#include virtual="include/top.html" -->
 
     O método <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    n&atilde;o permite a transmiss&atilde;o dos dados,
+    não permite a transmissão dos dados,
     ou o volume de dados excede a capacidade limite.
   
 <!--#include virtual="include/bottom.html" -->
@@ -184,7 +184,7 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	O método <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-	n&atilde;o permite todos os dados que foram transmitidos,
+	não permite todos os dados que foram transmitidos,
 	ou o volume de dados excede o limite da capacidade.
 
 <!--#include virtual="include/bottom.html" -->
@@ -234,12 +234,12 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="För stor enhet vid förfr&aring;gan!"
+--><!--#set var="TITLE" value="För stor enhet vid förfrågan!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden till&aring;ter
-    inte den skickade datan eller s&aring; överskrider datavolymen
-    kapacitetsniv&aring;n.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metoden tillåter
+    inte den skickade datan eller så överskrider datavolymen
+    kapacitetsnivån.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

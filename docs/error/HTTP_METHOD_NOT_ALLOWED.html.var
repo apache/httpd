@@ -156,11 +156,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Método n&atilde;o permitido!"
+--><!--#set var="TITLE" value="Método não permitido!"
 --><!--#include virtual="include/top.html" -->
 
     O método <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    n&atilde;o é permitido para a URL requisitada.
+    não é permitido para a URL requisitada.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -168,10 +168,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Método n&atilde;o permitido!"
+<!--#set var="TITLE" value="Método não permitido!"
 --><!--#include virtual="include/top.html" -->
 
-	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
+	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> não
 	é permitido para o URL pedido.
 
 <!--#include virtual="include/bottom.html" -->
@@ -219,11 +219,11 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Metoden inte till&aring;ten!"
+--><!--#set var="TITLE" value="Metoden inte tillåten!"
 --><!--#include virtual="include/top.html" -->
 
     <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    metoden är inte till&aring;ten för den förfr&aring;gade
+    metoden är inte tillåten för den förfrågade
     adressen.
 
 <!--#include virtual="include/bottom.html" -->

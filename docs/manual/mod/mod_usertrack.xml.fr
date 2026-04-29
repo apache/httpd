@@ -33,7 +33,7 @@ utilisateur sur un site
 <identifier>usertrack_module</identifier>
 
 <summary>
-    <p>Ce module permet de suivre le parcours d'un utilisateur &agrave; travers
+    <p>Ce module permet de suivre le parcours d'un utilisateur à travers
     votre site web en faisant appel aux cookies de navigateur.</p>
 </summary>
 
@@ -41,8 +41,8 @@ utilisateur sur un site
 <section id="logging">
 <title>Journalisation</title>
 
-    <p><module>mod_usertrack</module> d&eacute;finit un cookie qui peut &ecirc;tre
-    journalis&eacute; via les formats configurables du module
+    <p><module>mod_usertrack</module> définit un cookie qui peut être
+    journalisé via les formats configurables du module
     <module>mod_log_config</module> :</p>
 
     <highlight language="config">
@@ -68,26 +68,26 @@ s'applique</description>
 
 <usage>
 
-    <p>Cette directive permet de d&eacute;finir le domaine auquel le cookie
-    traceur s'applique. Si elle n'est pas pr&eacute;sente, aucun domaine n'est
-    inclus dans le champ d'en-t&ecirc;te cookie.</p>
+    <p>Cette directive permet de définir le domaine auquel le cookie
+    traceur s'applique. Si elle n'est pas présente, aucun domaine n'est
+    inclus dans le champ d'en-tête cookie.</p>
 
-    <p>La cha&icirc;ne dommaine <strong>doit</strong> commencer par un point,
-    et <strong>doit</strong> comporter au moins un point entour&eacute;
-    d'autres caract&egrave;res. Par exemple, <code>.example.com</code> est
-    une cha&icirc;ne valide, mais <code>www.example.com</code> et
+    <p>La chaîne dommaine <strong>doit</strong> commencer par un point,
+    et <strong>doit</strong> comporter au moins un point entouré
+    d'autres caractères. Par exemple, <code>.example.com</code> est
+    une chaîne valide, mais <code>www.example.com</code> et
     <code>.com</code> ne le sont pas.</p>
 
-    <note>La plupart des navigateurs utilis&eacute;s actuellement n'autorisent
-    pas la d&eacute;finition de cookies pour un domaine racine de deux niveaux,
+    <note>La plupart des navigateurs utilisés actuellement n'autorisent
+    pas la définition de cookies pour un domaine racine de deux niveaux,
     tel que <code>.co.uk</code>, bien qu'un tel domaine remplisse les
-    conditions de validit&eacute; d&eacute;crites ci-dessus.<br />
+    conditions de validité décrites ci-dessus.<br />
 
-    Ces domaines sont &eacute;quivalents &agrave; des domaines racines comme
+    Ces domaines sont équivalents à des domaines racines comme
     <code>.com</code>, et autoriser de tels cookies peut constituer un
-    risque en mati&egrave;re de s&eacute;curit&eacute;. Ainsi, si vous vous situez sous un
+    risque en matière de sécurité. Ainsi, si vous vous situez sous un
     domaine racine de deux niveaux, vous devez encore utiliser votre
-    domaine v&eacute;ritable, comme vous le feriez avec tout autre domaine
+    domaine véritable, comme vous le feriez avec tout autre domaine
     racine (par exemple <code>.example.co.uk</code>).
     </note>
 
@@ -100,8 +100,8 @@ s'applique</description>
 
 <directivesynopsis>
 <name>CookieExpires</name>
-<description>Dur&eacute;e avant expiration du cookie traceur</description>
-<syntax>CookieExpires <em>dur&eacute;e</em></syntax>
+<description>Durée avant expiration du cookie traceur</description>
+<syntax>CookieExpires <em>durée</em></syntax>
 <contextlist>
 <context>server config</context>
 <context>virtual host</context>
@@ -111,17 +111,17 @@ s'applique</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Lorsqu'elle est utilis&eacute;e, cette directive d&eacute;finit une dur&eacute;e avant
-    l'expiration du cookie g&eacute;n&eacute;r&eacute; par le module usertrack. La
-    <em>dur&eacute;e</em> peut &ecirc;tre sp&eacute;cifi&eacute;e sous la forme d'un nombre de
+    <p>Lorsqu'elle est utilisée, cette directive définit une durée avant
+    l'expiration du cookie généré par le module usertrack. La
+    <em>durée</em> peut être spécifiée sous la forme d'un nombre de
     secondes, ou sous une forme du
     style "2 weeks 3 days 7 hours". les termes valides sont : years,
-    months, weeks, days, hours, minutes et seconds. Si la dur&eacute;e est
-    sp&eacute;cifi&eacute;e dans un format autre qu'un nombre de secondes, elle doit
-    &ecirc;tre entour&eacute;e de guillemets.</p>
+    months, weeks, days, hours, minutes et seconds. Si la durée est
+    spécifiée dans un format autre qu'un nombre de secondes, elle doit
+    être entourée de guillemets.</p>
 
-    <p>Si cette directive est absente, la dur&eacute;e de vie des cookies est
-    limit&eacute;e &agrave; la session actuelle du navigateur.</p>
+    <p>Si cette directive est absente, la durée de vie des cookies est
+    limitée à la session actuelle du navigateur.</p>
 
     <highlight language="config">
     CookieExpires "3 weeks"
@@ -144,12 +144,12 @@ s'applique</description>
 
 <usage>
     <p>Cette directive vous permet de modifier le nom du cookie que ce
-    module utilise pour sa journalisation. Le nom par d&eacute;faut du cookie
+    module utilise pour sa journalisation. Le nom par défaut du cookie
     est "<code>Apache</code>".</p>
 
-    <p>Vous devez sp&eacute;cifier un nom de cookie valide ; les r&eacute;sultats sont
-    impr&eacute;visibles si vous utilisez un nom contenant des caract&egrave;res
-    inhabituels. Les caract&egrave;res valides font partie des intervales A-Z,
+    <p>Vous devez spécifier un nom de cookie valide ; les résultats sont
+    imprévisibles si vous utilisez un nom contenant des caractères
+    inhabituels. Les caractères valides font partie des intervales A-Z,
     a-z, 0-9, "_", et "-".</p>
 
     <highlight language="config">
@@ -161,7 +161,7 @@ s'applique</description>
 
 <directivesynopsis>
 <name>CookieStyle</name>
-<description>Format du champ d'en-t&ecirc;te cookie</description>
+<description>Format du champ d'en-tête cookie</description>
 <syntax>CookieStyle
     Netscape|Cookie|Cookie2|RFC2109|RFC2965</syntax>
 <default>CookieStyle Netscape</default>
@@ -174,13 +174,13 @@ s'applique</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Cette directive permet de contr&ocirc;ler le format du champ d'en-t&ecirc;te
-    cookie. Les trois formats autoris&eacute;s sont :</p>
+    <p>Cette directive permet de contrôler le format du champ d'en-tête
+    cookie. Les trois formats autorisés sont :</p>
 
     <ul>
       <li><strong>Netscape</strong> : il s'agit du format original, mais
-      est d&eacute;sormais obsol&egrave;te. C'est le format par d&eacute;faut et il
-      correspond &agrave; la syntaxe historique utilis&eacute;e par Apache.</li>
+      est désormais obsolète. C'est le format par défaut et il
+      correspond à la syntaxe historique utilisée par Apache.</li>
 
       <li><strong>Cookie</strong> ou <strong>RFC2109</strong> : c'est la
       syntaxe qui remplace la syntaxe Netscape.</li>
@@ -190,10 +190,10 @@ s'applique</description>
     </ul>
 
     <p>Tous les clients ne supportent pas l'ensemble de ces formats,
-    mais il est conseill&eacute; d'utiliser le plus r&eacute;cent qui sera en g&eacute;n&eacute;ral
-    support&eacute; par le navigateur utilis&eacute; par vos utilisateurs. A l'heure o&ugrave; ce
-    document est &eacute;crit, la plupart des navigateurs supportent ces trois
-    formats, <code>Cookie2</code> &eacute;tant le format recommand&eacute;.</p>
+    mais il est conseillé d'utiliser le plus récent qui sera en général
+    supporté par le navigateur utilisé par vos utilisateurs. A l'heure où ce
+    document est écrit, la plupart des navigateurs supportent ces trois
+    formats, <code>Cookie2</code> étant le format recommandé.</p>
 
     <highlight language="config">
     CookieStyle Cookie2
@@ -217,11 +217,11 @@ s'applique</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Lorsque le module <module>mod_usertrack</module> est charg&eacute;, et
-    si <code>CookieTracking on</code> est d&eacute;finie, Apache enverra un
-    cookie traceur pour toute nouvelle requ&ecirc;te. Cette directive peut
-    &ecirc;tre utilis&eacute;e pour activer ou d&eacute;sactiver ce comportement pour un
-    serveur virtuel ou un r&eacute;pertoire. Par d&eacute;faut, l'activation de
+    <p>Lorsque le module <module>mod_usertrack</module> est chargé, et
+    si <code>CookieTracking on</code> est définie, Apache enverra un
+    cookie traceur pour toute nouvelle requête. Cette directive peut
+    être utilisée pour activer ou désactiver ce comportement pour un
+    serveur virtuel ou un répertoire. Par défaut, l'activation de
     <module>mod_usertrack</module> ne suffit <strong>pas</strong> pour
     activer les cookies.</p>
 

@@ -25,8 +25,8 @@
 <modulesynopsis metafile="mod_request.xml.meta">
 
 <name>mod_request</name>
-<description>Filtres permettant de traiter et de mettre &agrave; disposition
-les corps de requ&ecirc;tes HTTP</description>
+<description>Filtres permettant de traiter et de mettre à disposition
+les corps de requêtes HTTP</description>
 <status>Base</status>
 <sourcefile>mod_request.c</sourcefile>
 <identifier>request_module</identifier>
@@ -34,8 +34,8 @@ les corps de requ&ecirc;tes HTTP</description>
 
 <directivesynopsis>
 <name>KeptBodySize</name>
-<description>Conserve le corps de la requ&ecirc;te &agrave; concurrence de la taille
-maximale sp&eacute;cifi&eacute;e, pour une utilisation &eacute;ventuelle par des filtres
+<description>Conserve le corps de la requête à concurrence de la taille
+maximale spécifiée, pour une utilisation éventuelle par des filtres
 comme mod_include.</description>
 <syntax>KeptBodySize <var>taille maximale en octets</var></syntax>
 <default>KeptBodySize 0</default>
@@ -43,46 +43,46 @@ comme mod_include.</description>
 </contextlist>
 
 <usage>
-    <p>Dans une situation normale, les gestionnaires de requ&ecirc;te tels que
-    le gestionnaire par d&eacute;faut des fichiers statiques suppriment le
-    corps de la requ&ecirc;te s'il n'est pas n&eacute;cessaire au gestionnaire de
-    requ&ecirc;te. Il en r&eacute;sulte que les filtres comme mod_include sont
-    limit&eacute;s &agrave; des requ&ecirc;tes <code>GET</code> lors de l'inclusion d'autres
-    URLs en tant que sous-requ&ecirc;tes, et ceci m&ecirc;me si la requ&ecirc;te originale
-    &eacute;tait une requ&ecirc;te <code>POST</code>, car le corps de la requ&ecirc;te a
-    &eacute;t&eacute; supprim&eacute; et n'est donc plus disponible une fois le traitement du
+    <p>Dans une situation normale, les gestionnaires de requête tels que
+    le gestionnaire par défaut des fichiers statiques suppriment le
+    corps de la requête s'il n'est pas nécessaire au gestionnaire de
+    requête. Il en résulte que les filtres comme mod_include sont
+    limités à des requêtes <code>GET</code> lors de l'inclusion d'autres
+    URLs en tant que sous-requêtes, et ceci même si la requête originale
+    était une requête <code>POST</code>, car le corps de la requête a
+    été supprimé et n'est donc plus disponible une fois le traitement du
     filtre mis en oeuvre.</p>
 
-    <p>Lorsque l'argument de cette directive a une valeur sup&eacute;rieure &agrave;
-    z&eacute;ro, les gestionnaires de requ&ecirc;te qui suppriment habituellement les
-    corps de requ&ecirc;te vont alors conserver ces corps de requ&ecirc;te, &agrave;
-    concurrence de la taille maximale sp&eacute;cifi&eacute;e, pour &ecirc;tre
-    &eacute;ventuellement utilis&eacute;s par des filtres. Dans le cas du filtre
-    mod_include, une tentative de requ&ecirc;te <code>POST</code> pour un
-    fichier shtml statique se traduira par des sous-requ&ecirc;tes
-    <code>POST</code>, et non par des sous-requ&ecirc;tes <code>GET</code>
+    <p>Lorsque l'argument de cette directive a une valeur supérieure à
+    zéro, les gestionnaires de requête qui suppriment habituellement les
+    corps de requête vont alors conserver ces corps de requête, à
+    concurrence de la taille maximale spécifiée, pour être
+    éventuellement utilisés par des filtres. Dans le cas du filtre
+    mod_include, une tentative de requête <code>POST</code> pour un
+    fichier shtml statique se traduira par des sous-requêtes
+    <code>POST</code>, et non par des sous-requêtes <code>GET</code>
     comme avant.</p>
 
-    <p>Cette fonctionnalit&eacute; permet de d&eacute;couper des pages web complexes
-    et des applications web en petits &eacute;l&eacute;ments individuels, et de
-    combiner ces &eacute;l&eacute;ments avec la structure de la page web sous-jacente
-    en utilisant <module>mod_include</module>. Les &eacute;l&eacute;ments peuvent se
-    pr&eacute;senter sous la forme de programmes CGI, de langages de scripts,
+    <p>Cette fonctionnalité permet de découper des pages web complexes
+    et des applications web en petits éléments individuels, et de
+    combiner ces éléments avec la structure de la page web sous-jacente
+    en utilisant <module>mod_include</module>. Les éléments peuvent se
+    présenter sous la forme de programmes CGI, de langages de scripts,
     ou d'URLs issues d'un mandataire inverse dans l'espace d'URL d'un
     autre serveur en utilisant <module>mod_proxy</module>.</p>
 
-    <p><strong>Note :</strong> Chaque requ&ecirc;te dont le corps est ainsi
-    conserv&eacute; doit &ecirc;tre enregistr&eacute;e temporairement en m&eacute;moire vive
-    jusqu'&agrave; la fin du traitement de la requ&ecirc;te. Il faut donc s'assurer
-    que la m&eacute;moire RAM du serveur est suffisante pour pouvoir supporter
-    la charge induite. L'utilisation de cette directive doit &ecirc;tre
-    limit&eacute;e &agrave; certaines portions de votre espace d'URL bien pr&eacute;cises qui
-    le n&eacute;cessitent, et en sp&eacute;cifiant comme taille maximale une valeur la
-    plus petite possible, mais tout de m&ecirc;me suffisante pour un corps de
-    requ&ecirc;te.</p>
+    <p><strong>Note :</strong> Chaque requête dont le corps est ainsi
+    conservé doit être enregistrée temporairement en mémoire vive
+    jusqu'à la fin du traitement de la requête. Il faut donc s'assurer
+    que la mémoire RAM du serveur est suffisante pour pouvoir supporter
+    la charge induite. L'utilisation de cette directive doit être
+    limitée à certaines portions de votre espace d'URL bien précises qui
+    le nécessitent, et en spécifiant comme taille maximale une valeur la
+    plus petite possible, mais tout de même suffisante pour un corps de
+    requête.</p>
 
-    <p>Si la taille de la requ&ecirc;te envoy&eacute;e par le client d&eacute;passe la taille
-    maximale autoris&eacute;e par cette directive, le serveur renverra l'erreur
+    <p>Si la taille de la requête envoyée par le client dépasse la taille
+    maximale autorisée par cette directive, le serveur renverra l'erreur
     <code>413 Request Entity Too Large</code>.</p>
 
 </usage>

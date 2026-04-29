@@ -73,7 +73,7 @@ d'Apache</a></seealso>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
-    <tr><th>Chaîne&nbsp;de&nbsp;format</th>
+    <tr><th>Chaîne de format</th>
         <th>Description</th></tr>
 
     <tr><td><code>%%</code></td>

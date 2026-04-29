@@ -29,9 +29,9 @@
 
 <summary>
 
-    <p>Cette page contenait la documentation de programmes qui poss&egrave;dent
+    <p>Cette page contenait la documentation de programmes qui possèdent
     maintenant leurs propres pages de documentation. Merci de bien
-    vouloir mettre &agrave; jour vos liens.</p>
+    vouloir mettre à jour vos liens.</p>
 
     <p><program>log_server_status</program></p>
     <p><program>split-logfile</program></p>

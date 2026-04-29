@@ -172,7 +172,7 @@ Body:-------pt-br--
 --><!--#include virtual="include/top.html" -->
 
     O servidor está temporariamente fora de serviço
-    para manutanç&atilde;o ou devido a problemas de capacidade.
+    para manutanção ou devido a problemas de capacidade.
     Por favor tente acessar mais tarde.
 
 <!--#include virtual="include/bottom.html" -->
@@ -185,8 +185,8 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	O servidor está temporáriamente incapaz de servir
-	o seu pedido devido a uma interrupç&atilde;o para
-	manutenç&atilde;o ou problemas de capacidade. Por favor
+	o seu pedido devido a uma interrupção para
+	manutenção ou problemas de capacidade. Por favor
 	tente de novo mais tarde.
 
 <!--#include virtual="include/bottom.html" -->
@@ -240,7 +240,7 @@ Body:----------sv--
 --><!--#include virtual="include/top.html" -->
 
     Servern är för tillfället oförmögen att
-    utföra din förfr&aring;gan p&aring; grund av underh&aring;ll
+    utföra din förfrågan på grund av underhåll
     eller kapacitetsbegränsningar. Vänligen försök
     igen senare.
 

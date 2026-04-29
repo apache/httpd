@@ -150,11 +150,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Falha de precondiç&atilde;o!"
+--><!--#set var="TITLE" value="Falha de precondição!"
 --><!--#include virtual="include/top.html" -->
 
-    A condiç&atilde;o necessária para a
-    requisiç&atilde;o da URL foi avaliada como falsa.
+    A condição necessária para a
+    requisição da URL foi avaliada como falsa.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -162,10 +162,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Pré-condiç&atilde;o falhou!"
+<!--#set var="TITLE" value="Pré-condição falhou!"
 --><!--#include virtual="include/top.html" -->
 
-	A condiç&atilde;o necessária ao pedido do URL
+	A condição necessária ao pedido do URL
 	foi avaliada com resultado negativo.
 
 <!--#include virtual="include/bottom.html" -->
@@ -214,7 +214,7 @@ Body:----------sv--
 --><!--#include virtual="include/top.html" -->
 
     Den nödvändiga förutsättningen för
-    adressförfr&aring;gan passerade inte utvärderingen
+    adressförfrågan passerade inte utvärderingen
     med acceptabelt resultat.
 
 <!--#include virtual="include/bottom.html" -->

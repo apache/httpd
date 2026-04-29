@@ -312,11 +312,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Recurso n&atilde;o disponível!"
+--><!--#set var="TITLE" value="Recurso não disponível!"
 --><!--#include virtual="include/top.html" -->
 
-   A URL solicitada n&atilde;o está disponível neste servidor
-   e n&atilde;o existe um endereço alternativo.
+   A URL solicitada não está disponível neste servidor
+   e não existe um endereço alternativo.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
@@ -338,22 +338,22 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Recurso n&atilde;o disponível!"
+<!--#set var="TITLE" value="Recurso não disponível!"
 --><!--#include virtual="include/top.html" -->
 
-	O URL desejado já n&atilde;o está disponível
-	neste servidor e n&atilde;o existe endereço alternativo.
+	O URL desejado já não está disponível
+	neste servidor e não existe endereço alternativo.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
 	Por favor informe o autor da
 	<a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">página
-	originária</a> que a hiperligaç&atilde;o está
+	originária</a> que a hiperligação está
 	desactualizada.
 
   <!--#else -->
 
-	Se chegou aqui a partir de uma hiperligaç&atilde;o externa,
+	Se chegou aqui a partir de uma hiperligação externa,
 	por favor contacte o autor dessa página.
 
   <!--#endif -->
@@ -445,7 +445,7 @@ Body:----------sv--
 --><!--#include virtual="include/top.html" -->
 
     Den önskade adressen är inte längre tillgänglig hos
-    denna server och det finns inte n&aring;gon adress för vidarebefodran.
+    denna server och det finns inte någon adress för vidarebefodran.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
@@ -455,7 +455,7 @@ Body:----------sv--
  
   <!--#else -->
 
-    Om du följde en länk fr&aring;n en extern sida, vänligen
+    Om du följde en länk från en extern sida, vänligen
     kontakta författaren av den sidan.
 
   <!--#endif -->

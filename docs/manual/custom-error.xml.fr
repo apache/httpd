@@ -163,14 +163,14 @@ printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
       </highlight>
 
       <p>Si un script est dédié à la gestion d'une condition d'erreur
-      spécifique, telle que <code>404&nbsp;Not&nbsp;Found</code>, il
+      spécifique, telle que <code>404 Not Found</code>, il
       peut utiliser le code et le texte de l'erreur spécifiques à la
       place.</p>
 
       <p>Notez que si la réponse contient un en-tête
       <code>Location:</code> (afin d'initier une redirection côté
       client), le script <em>doit</em> émettre un en-tête approprié
-      (comme <code>302&nbsp;Found</code>). Dans le cas contraire,
+      (comme <code>302 Found</code>). Dans le cas contraire,
       l'en-tête <code>Location:</code> ne produira aucun effet.</p>
   </section>
 

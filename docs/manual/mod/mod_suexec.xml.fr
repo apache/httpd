@@ -25,8 +25,8 @@
 <modulesynopsis metafile="mod_suexec.xml.meta">
 
 <name>mod_suexec</name>
-<description>Permet l'ex&eacute;cution des scripts CGI sous l'utilisateur et
-le groupe sp&eacute;cifi&eacute;s</description>
+<description>Permet l'exécution des scripts CGI sous l'utilisateur et
+le groupe spécifiés</description>
 <status>Extension</status>
 <sourcefile>mod_suexec.c</sourcefile>
 <identifier>suexec_module</identifier>
@@ -34,8 +34,8 @@ le groupe sp&eacute;cifi&eacute;s</description>
 
 <summary>
     <p>Ce module, en combinaison avec son programme support
-    <program>suexec</program>, permet l'ex&eacute;cution des scripts CGI sous
-    l'utilisateur et le groupe sp&eacute;cifi&eacute;s.</p>
+    <program>suexec</program>, permet l'exécution des scripts CGI sous
+    l'utilisateur et le groupe spécifiés.</p>
 </summary>
 
 <seealso><a href="../suexec.html">Support de SuEXEC</a></seealso>
@@ -44,16 +44,16 @@ le groupe sp&eacute;cifi&eacute;s</description>
 
 <name>SuexecUserGroup</name>
 <description>L'utilisateur et le groupe sous lesquels les programmes CGI
-doivent s'ex&eacute;cuter</description>
+doivent s'exécuter</description>
 <syntax>SuexecUserGroup <em>Utilisateur Groupe</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
 <usage>
     <p>La directive <directive>SuexecUserGroup</directive> permet de
-    sp&eacute;cifier l'utilisateur et le groupe sous lesquels les programmes
-    CGI doivent s'ex&eacute;cuter. Les requ&ecirc;tes non CGI seront toujours
-    trait&eacute;es avec l'utilisateur sp&eacute;cifi&eacute; par la directive <directive
+    spécifier l'utilisateur et le groupe sous lesquels les programmes
+    CGI doivent s'exécuter. Les requêtes non CGI seront toujours
+    traitées avec l'utilisateur spécifié par la directive <directive
     module="mod_unixd">User</directive>.</p>
 
     <example>
@@ -63,9 +63,9 @@ doivent s'ex&eacute;cuter</description>
     </highlight>
     </example>
 
-    <p>Le d&eacute;marrage &eacute;chouera si cette
-    directive est sp&eacute;cifi&eacute;e et si la fonctionnalit&eacute; suEXEC est
-    d&eacute;sactiv&eacute;e.</p>
+    <p>Le démarrage échouera si cette
+    directive est spécifiée et si la fonctionnalité suEXEC est
+    désactivée.</p>
 
 </usage>
 
