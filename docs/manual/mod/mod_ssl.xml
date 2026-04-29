@@ -1589,17 +1589,18 @@ The available <var>option</var>s are:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <directive module="mod_ssl">SSLRequireSSL</directive> or
-    <directive module="mod_ssl">SSLRequire</directive> successfully decided that access should be
-    forbidden. Usually the default is that in the case where a ``<code>Satisfy
-    any</code>'' directive is used, and other access restrictions are passed,
-    denial of access due to <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> is overridden (because that's how the Apache
-    <code>Satisfy</code> mechanism should work.) But for strict access restriction
-    you can use <code>SSLRequireSSL</code> and/or <code>SSLRequire</code> in
-    combination with an ``<code>SSLOptions +StrictRequire</code>''. Then an
-    additional ``<code>Satisfy Any</code>'' has no chance once mod_ssl has
-    decided to deny access.</p>
+    This <em>forces</em> forbidden access when
+    <directive module="mod_ssl">SSLRequireSSL</directive> or
+    <directive module="mod_ssl">SSLRequire</directive> has decided
+    that access should be denied. Without
+    <code>StrictRequire</code>, it is possible for other
+    authorization directives (such as <directive module="mod_authz_core"
+    type="section">RequireAny</directive>) to override the SSL
+    access denial and grant access anyway. With
+    <code>SSLOptions +StrictRequire</code>, the denial by
+    <code>SSLRequireSSL</code> or <code>SSLRequire</code> is
+    enforced unconditionally, regardless of other authorization
+    settings.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
