@@ -2595,11 +2595,11 @@ for PKCS#11 URIs (<rfc>7512</rfc>).
 <directivesynopsis>
 <name>SSLOCSPEnable</name>
 <description>Enable OCSP validation of the client certificate chain</description>
-<syntax>SSLOCSPEnable on|leaf|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off [<var>flags</var>]</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Mode <em>leaf</em> available in httpd 2.4.34 and later</compatibility>
+<compatibility>Mode <em>leaf</em> available in httpd 2.4.34 and later. Flag <em>no_ocsp_for_cert_ok</em> available in 2.4.29 and later.</compatibility>
 
 <usage>
 <p>This option enables OCSP validation of the client certificate
@@ -2613,6 +2613,17 @@ itself, or derived by configuration; see the
 <directive module="mod_ssl">SSLOCSPDefaultResponder</directive> and
 <directive module="mod_ssl">SSLOCSPOverrideResponder</directive>
 directives.</p>
+
+<p>The following optional flags are available:</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>When OCSP validation is enabled, a certificate that does not
+    contain an OCSP responder URL will normally cause validation to fail.
+    Adding this flag allows such certificates to pass validation. This
+    is useful in environments where some certificates in the chain do
+    not include OCSP responder information.</p>
+</li>
+</ul>
 
 <example><title>Example</title>
 <highlight language="config">
