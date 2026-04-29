@@ -135,7 +135,7 @@ Body:----------it--
 --><!--#set var="TITLE" value="Autorizzazione necessaria!"
 --><!--#include virtual="include/top.html" -->
 
-    Questo server non pu&ograve; verificare l'autorizzazione
+    Questo server non può verificare l'autorizzazione
     all'accesso a "<!--#echo encoding="url" var="REDIRECT_URL" -->".
     Questo errore potrebbe essere causato da credenziali errate
     (nome utente o password errata) oppure da un browser che non
@@ -254,17 +254,17 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Autenticaç&atilde;o Requerida!"
+--><!--#set var="TITLE" value="Autenticação Requerida!"
 --><!--#include virtual="include/top.html" -->
 
-    Este servidor n&atilde;o pode autorizar o seu acesso à URL
+    Este servidor não pode autorizar o seu acesso à URL
     "<!--#echo encoding="url" var="REDIRECT_URL" -->".
     Você deve ter fornecido dados incorretos (ex. senha errada), ou o seu
-    "browser" n&atilde;o fornece as credenciais necessárias.
+    "browser" não fornece as credenciais necessárias.
 
   <!--#include virtual="include/spacer.html" -->
 
-    No caso de você realmente possuir permiss&atilde;o para este documento,
+    No caso de você realmente possuir permissão para este documento,
     por favor checar seu login e sua senha e tentar novamente.
 
 <!--#include virtual="include/bottom.html" -->
@@ -273,13 +273,13 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="Autenticaç&atilde;o exigida!"
+<!--#set var="TITLE" value="Autenticação exigida!"
 --><!--#include virtual="include/top.html" -->
 
-	Este servidor n&atilde;o conseguiu validar a sua autoridade para aceder
+	Este servidor não conseguiu validar a sua autoridade para aceder
 	ao URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
 	Ou forneceu as credenciais erradas (e.g.: senha incorrecta)
-	ou o seu <i>browser</i> n&atilde;o sabe como fornecer as credenciais
+	ou o seu <i>browser</i> não sabe como fornecer as credenciais
 	necessárias.
 
   <!--#include virtual="include/spacer.html" -->
@@ -356,14 +356,14 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Autentisering krävs!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern kunde inte verifiera att du har till&aring;telse att besöka 
+    Servern kunde inte verifiera att du har tillåtelse att besöka 
     adressen "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Antingen angav du felaktiga uppgifter (ex. fel lösenord) eller s&aring;
+    Antingen angav du felaktiga uppgifter (ex. fel lösenord) eller så
     stödjer inte din webbläsare detta autentiseringssätt.
 
   <!--#include virtual="include/spacer.html" -->
 
-    Om du har till&aring;telse att besöka sidan, vänligen kontrollera ditt 
+    Om du har tillåtelse att besöka sidan, vänligen kontrollera ditt 
     användarnamn samt lösenord och försök igen.
 
 <!--#include virtual="include/bottom.html" -->

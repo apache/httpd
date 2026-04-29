@@ -168,7 +168,7 @@ Body:-------pt-br--
 --><!--#set var="TITLE" value="Content-Length Inválido!"
 --><!--#include virtual="include/top.html" -->
 
-    Uma requisiç&atilde;o 
+    Uma requisição 
     do método <!--#echo var="REDIRECT_REQUEST_METHOD"-->
     requer um cabeçalho <code>Content-Length</code> válido.
 
@@ -233,7 +233,7 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Felaktig Content-Length!"
 --><!--#include virtual="include/top.html" -->
 
-    En förfr&aring;gan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    En förfrågan med <!--#echo var="REDIRECT_REQUEST_METHOD" -->
     metoden kräver ett korrekt <code>Content-Length</code> huvud.
 
 <!--#include virtual="include/bottom.html" -->

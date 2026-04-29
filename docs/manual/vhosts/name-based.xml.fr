@@ -176,7 +176,7 @@ virtuel basé sur le nom approprié</title>
     <code>www.example.com</code> et que vous souhaitez ajouter le
     serveur virtuel <code>other.example.com</code> qui pointe sur
     la même adresse IP. Il vous suffit d'ajouter la configuration
-    suivante à <code>httpd.conf</code>&nbsp;:</p>
+    suivante à <code>httpd.conf</code> :</p>
 
     <highlight language="config">
 &lt;VirtualHost *:80&gt;
@@ -209,7 +209,7 @@ virtuel basé sur le nom approprié</title>
     <directive type="section" module="core">VirtualHost</directive>
     ci-dessus, la directive <directive module="core">ServerAlias</directive>
     indique aux utilisateurs les autres noms permis pour accéder au
-    même site Web&nbsp;:</p>
+    même site Web :</p>
 
     <highlight language="config">
         ServerAlias example.com *.example.com

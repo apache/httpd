@@ -156,11 +156,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Requisiç&atilde;o Inválida!"
+--><!--#set var="TITLE" value="Requisição Inválida!"
 --><!--#include virtual="include/top.html" -->
 
     Seu "browser" (ou o servidor proxy) enviou uma
-    requisiç&atilde;o inválida ao servidor.
+    requisição inválida ao servidor.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -172,7 +172,7 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	O seu <i>browser</i> ou <i>proxy</i> enviou
-	um pedido que este servidor n&atilde;o compreendeu.
+	um pedido que este servidor não compreendeu.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -219,11 +219,11 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Felaktig förfr&aring;gan!"
+--><!--#set var="TITLE" value="Felaktig förfrågan!"
 --><!--#include virtual="include/top.html" -->
 
-    Din webbläsare eller proxy skickade en förfr&aring;gan
-    som denna server inte kunde först&aring;.
+    Din webbläsare eller proxy skickade en förfrågan
+    som denna server inte kunde förstå.
 
 <!--#include virtual="include/bottom.html" -->  
 ----------sv--

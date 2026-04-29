@@ -124,7 +124,7 @@ Body:----------nl--
 --><!--#include virtual="include/top.html" -->
 
    De server heeft de netwerkverbinding gesloten omdat de browser
-   de vraag niet heeft be&euml;indigd binnen een gestelde tijd.
+   de vraag niet heeft beëindigd binnen een gestelde tijd.
 
 <!--#include virtual="include/bottom.html" -->
 ----------nl--
@@ -162,8 +162,8 @@ Body:-------pt-br--
 --><!--#set var="TITLE" value="Tempo excedido!"
 --><!--#include virtual="include/top.html" -->
 
-   O servidor encerrou a conex&atilde;o porque o "browser"
-   n&atilde;o finalizou a requisiç&atilde;o dentro
+   O servidor encerrou a conexão porque o "browser"
+   não finalizou a requisição dentro
    do tempo limite.
 
 <!--#include virtual="include/bottom.html" -->
@@ -175,8 +175,8 @@ Body:----------pt--
 <!--#set var="TITLE" value="Tempo excedido!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor interrompeu a ligaç&atilde;o de rede porque o
-	<i>browser</i> n&atilde;o terminou o pedido dentro do tempo limite.
+	O servidor interrompeu a ligação de rede porque o
+	<i>browser</i> não terminou o pedido dentro do tempo limite.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -227,7 +227,7 @@ Body:----------sv--
 --><!--#include virtual="include/top.html" -->
 
     Servern stängde förbindelsen därför att
-    webbläsaren inte avslutade förfr&aring;gan inom
+    webbläsaren inte avslutade förfrågan inom
     förbestämd tid.
 
 <!--#include virtual="include/bottom.html" -->

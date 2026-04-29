@@ -166,9 +166,9 @@ Body:-------pt-br--
 --><!--#set var="TITLE" value="Variante auto-negociável!"
 --><!--#include virtual="include/top.html" -->
 
-    Uma variante da entidade de requisiç&atilde;o
+    Uma variante da entidade de requisição
 	é por si mesma um recurso negociável.
-    Acesso n&atilde;o é possível.
+    Acesso não é possível.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -180,7 +180,7 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	A variante relativa à entidade pedida é ela mesma
-	um recurso negociável. N&atilde;o é possível
+	um recurso negociável. Não é possível
 	ter acesso.
 
 <!--#include virtual="include/bottom.html" -->
@@ -233,7 +233,7 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Variant also varies!"
 --><!--#include virtual="include/top.html" -->
 
-    En variant av den förfr&aring;gade enheten är i
+    En variant av den förfrågade enheten är i
     sig själv en giltig resurs. &Aring;tkomst är inte
     möjlig.
 

@@ -26,35 +26,35 @@
 <modulesynopsis metafile="mod_dav_lock.xml.meta">
 
 <name>mod_dav_lock</name>
-<description>Module de verrouillage g&eacute;n&eacute;rique pour
+<description>Module de verrouillage générique pour
 <module>mod_dav</module></description>
 <status>Extension</status>
 <sourcefile>mod_dav_lock.c</sourcefile>
 <identifier>dav_lock_module</identifier>
 
 <summary>
-    <p>ce module impl&eacute;mente une API de verrouillage g&eacute;n&eacute;rique que tout
+    <p>ce module implémente une API de verrouillage générique que tout
     fournisseur support de <module>mod_dav</module> peut utiliser. Son
-    activation n&eacute;cessite l'utilisation de <module>mod_dav</module>. Mais
+    activation nécessite l'utilisation de <module>mod_dav</module>. Mais
     sans fournisseur support pour l'utiliser, il n'est d'aucun service
-    et ne doit pas &ecirc;tre charg&eacute; dans le serveur. <a
+    et ne doit pas être chargé dans le serveur. <a
     href="http://subversion.apache.org/">mod_dav_svn</a>, le module qui
-    impl&eacute;mente le fournisseur subversion, est un exemple
+    implémente le fournisseur subversion, est un exemple
     de module de support qui utilise effectivement
     <module>mod_dav_lock</module>.</p>
 
     <p>Notez que <module>mod_dav_fs</module> n'a <em>pas</em> besoin de
-    ce module de verrouillage g&eacute;n&eacute;rique, car il utilise sa propre
-    version plus sp&eacute;cifique.</p>
+    ce module de verrouillage générique, car il utilise sa propre
+    version plus spécifique.</p>
 
     <p>Pour que <module>mod_dav_lock</module> puisse fonctionner, il
-    vous suffit de sp&eacute;cifier le chemin de la base de donn&eacute;es des verrous
-    &agrave; l'aide de la directive <directive
-    module="mod_dav_lock">DavGenericLockDB</directive> d&eacute;crite
+    vous suffit de spécifier le chemin de la base de données des verrous
+    à l'aide de la directive <directive
+    module="mod_dav_lock">DavGenericLockDB</directive> décrite
     ci-dessous.</p>
 
-    <note><title>Note du d&eacute;veloppeur</title>
-      <p>Pour d&eacute;terminer le pointeur de la fonction du fournisseur de
+    <note><title>Note du développeur</title>
+      <p>Pour déterminer le pointeur de la fonction du fournisseur de
       verrouillage, vous devez utiliser l'API
       <code>ap_lookup_provider</code> avec les arguments
       <code>dav-lock</code>, <code>generic</code> et <code>0</code>.</p>
@@ -64,7 +64,7 @@
 
 <directivesynopsis>
 <name>DavGenericLockDB</name>
-<description>Chemin de la base de donn&eacute;es des verrous DAV</description>
+<description>Chemin de la base de données des verrous DAV</description>
 <syntax>DavGenericLockDB <var>chemin fichier</var></syntax>
 <contextlist><context>server config</context><context>virtual
 host</context>
@@ -72,12 +72,12 @@ host</context>
 </contextlist>
 
 <usage>
-    <p>La directive <directive>DavLockDB</directive> sp&eacute;cifie
-    le chemin complet de la base de donn&eacute;es des verrous, sans extension.
-    Si le chemin n'est pas absolu, il sera consid&eacute;r&eacute; comme relatif au
-    r&eacute;pertoire d&eacute;fini par la directive <directive
-    module="core">ServerRoot</directive>. L'impl&eacute;mentation de
-    <module>mod_dav_lock</module> utilise une base de donn&eacute;es SDBM pour
+    <p>La directive <directive>DavLockDB</directive> spécifie
+    le chemin complet de la base de données des verrous, sans extension.
+    Si le chemin n'est pas absolu, il sera considéré comme relatif au
+    répertoire défini par la directive <directive
+    module="core">ServerRoot</directive>. L'implémentation de
+    <module>mod_dav_lock</module> utilise une base de données SDBM pour
     surveiller les verrous utilisateurs.</p>
 
     <example><title>Exemple</title>
@@ -86,16 +86,16 @@ host</context>
       </highlight>
     </example>
 
-    <p>Les utilisateur et groupe sous lesquels Apache s'ex&eacute;cute et qui
-    sont respectivement d&eacute;finis par les directives <directive
+    <p>Les utilisateur et groupe sous lesquels Apache s'exécute et qui
+    sont respectivement définis par les directives <directive
     module="mod_unixd">User</directive> et <directive
-    module="mod_unixd">Group</directive> doivent pouvoir &eacute;crire dans le
-    r&eacute;pertoire qui contient le fichier de la base de donn&eacute;es des
-    verrous. Pour des raisons de s&eacute;curit&eacute;, il est recommand&eacute; de cr&eacute;er un
-    r&eacute;pertoire d&eacute;di&eacute; &agrave; la base de donn&eacute;es des verrous, plut&ocirc;t que de
-    modifier les permissions d'un r&eacute;pertoire existant. Dans l'exemple
-    ci-dessus, Apache va cr&eacute;er des fichiers dans le r&eacute;pertoire
-    <code>var/</code>, lui-m&ecirc;me sous-r&eacute;pertoire du r&eacute;pertoire d&eacute;fini par
+    module="mod_unixd">Group</directive> doivent pouvoir écrire dans le
+    répertoire qui contient le fichier de la base de données des
+    verrous. Pour des raisons de sécurité, il est recommandé de créer un
+    répertoire dédié à la base de données des verrous, plutôt que de
+    modifier les permissions d'un répertoire existant. Dans l'exemple
+    ci-dessus, Apache va créer des fichiers dans le répertoire
+    <code>var/</code>, lui-même sous-répertoire du répertoire défini par
     la directive <directive
     module="core">ServerRoot</directive>, avec le nom de base
     <code>DavLock</code> suivi d'une extension choisie par le

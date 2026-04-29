@@ -75,7 +75,7 @@ Content-language: it
 Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
---><!--#set var="TITLE" value="La richiesta non pu&ograve; essere soddisfatta!"
+--><!--#set var="TITLE" value="La richiesta non può essere soddisfatta!"
 --><!--#include virtual="include/top.html" -->
 
     Il server non supporta il tipo di azione richiesta dal browser.
@@ -148,10 +148,10 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="A requisiç&atilde;o n&atilde;o pode ser processada!"
+--><!--#set var="TITLE" value="A requisição não pode ser processada!"
 --><!--#include virtual="include/top.html" -->
 
-   O servidor n&atilde;o suporta a aç&atilde;o requisitada pelo
+   O servidor não suporta a ação requisitada pelo
    seu "browser".
 
 <!--#include virtual="include/bottom.html" -->
@@ -160,10 +160,10 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="N&atilde;o posso processar o pedido!"
+<!--#set var="TITLE" value="Não posso processar o pedido!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor n&atilde;o suporta a acç&atilde;o pedida pelo
+	O servidor não suporta a acção pedida pelo
 	<i>browser</i>.
 
 <!--#include virtual="include/bottom.html" -->

@@ -24,19 +24,19 @@
 
 <modulesynopsis metafile="mod_version.xml.meta">
 <name>mod_version</name>
-<description>Configuration d&eacute;pendant de la version</description>
+<description>Configuration dépendant de la version</description>
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
 
 <summary>
-    <p>Ce module a &eacute;t&eacute; con&ccedil;u pour &ecirc;tre utilis&eacute; dans les suites de tests
-    et les grands r&eacute;seaux qui doivent prendre en compte diff&eacute;rentes
-    versions de httpd et diff&eacute;rentes configurations. Il fournit un
+    <p>Ce module a été conçu pour être utilisé dans les suites de tests
+    et les grands réseaux qui doivent prendre en compte différentes
+    versions de httpd et différentes configurations. Il fournit un
     nouveau conteneur -- <directive type="section"
     module="mod_version">IfVersion</directive>, qui apporte une grande
-    souplesse dans la v&eacute;rification de version en permettant une
-    comparaison num&eacute;rique et l'utilisation d'expressions
+    souplesse dans la vérification de version en permettant une
+    comparaison numérique et l'utilisation d'expressions
     rationnelles.</p>
 
     <example><title>Exemples</title>
@@ -46,7 +46,7 @@
 &lt;/IfVersion&gt;
 
 &lt;IfVersion >= 2.5&gt;
-    # utilise vraiment les nouvelles fonctionnalit&eacute;s :-)
+    # utilise vraiment les nouvelles fonctionnalités :-)
 &lt;/IfVersion&gt;
       </highlight>
     </example>
@@ -56,9 +56,9 @@
 
 <directivesynopsis type="section">
 <name>IfVersion</name>
-<description>Contient des portions de configuration d&eacute;pendantes de la
+<description>Contient des portions de configuration dépendantes de la
 version</description>
-<syntax>&lt;IfVersion [[!]<var>op&eacute;rateur</var>] <var>version</var>&gt; ...
+<syntax>&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host
 </context>
@@ -67,52 +67,52 @@ version</description>
 
 <usage>
     <p>La section <directive type="section">IfVersion</directive>
-    rassemble des directives de configuration qui ne sont ex&eacute;cut&eacute;es que
-    si la version de httpd satisfait aux crit&egrave;res sp&eacute;cifi&eacute;s. Pour une
-    comparaison normale (num&eacute;rique), l'argument <var>version</var> doit
-    &ecirc;tre sp&eacute;cifi&eacute; sous le format
+    rassemble des directives de configuration qui ne sont exécutées que
+    si la version de httpd satisfait aux critères spécifiés. Pour une
+    comparaison normale (numérique), l'argument <var>version</var> doit
+    être spécifié sous le format
     <code><var>majeur</var>[.<var>mineur</var>[.<var>patch</var>]]</code>,
     comme par exemple <code>2.1.0</code> ou <code>2.2</code>.
     <var>mineur</var> et <var>patch</var> sont optionnels. Si ces
-    num&eacute;ros sont absents, il se voient affect&eacute;e implicitement la valeur
-    0. Les <var>op&eacute;rateur</var>s num&eacute;riques suivants sont autoris&eacute;s
+    numéros sont absents, il se voient affectée implicitement la valeur
+    0. Les <var>opérateur</var>s numériques suivants sont autorisés
     :</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>op&eacute;rateur</var></th><th>description</th></tr>
+    <tr><th><var>opérateur</var></th><th>description</th></tr>
     <tr><td><code>=</code> ou <code>==</code></td>
-        <td>La version de httpd est &eacute;gale &agrave; la valeur
-	sp&eacute;cifi&eacute;e</td></tr>
+        <td>La version de httpd est égale à la valeur
+	spécifiée</td></tr>
     <tr><td><code>&gt;</code></td>
-        <td>La version de httpd est sup&eacute;rieure &agrave; la valeur
-	sp&eacute;cifi&eacute;e</td></tr>
+        <td>La version de httpd est supérieure à la valeur
+	spécifiée</td></tr>
     <tr><td><code>&gt;=</code></td>
-        <td>La version de httpd est sup&eacute;rieure ou &eacute;gale &agrave; la valeur
-	sp&eacute;cifi&eacute;e</td></tr>
+        <td>La version de httpd est supérieure ou égale à la valeur
+	spécifiée</td></tr>
     <tr><td><code>&lt;</code></td>
-        <td>La version de httpd est inf&eacute;rieure &agrave; la valeur
-	sp&eacute;cifi&eacute;e</td></tr>
+        <td>La version de httpd est inférieure à la valeur
+	spécifiée</td></tr>
     <tr><td><code>&lt;=</code></td>
-        <td>La version de httpd est inf&eacute;rieure ou &eacute;gale &agrave; la valeur
-	sp&eacute;cifi&eacute;e</td></tr>
+        <td>La version de httpd est inférieure ou égale à la valeur
+	spécifiée</td></tr>
     </table>
 
     <example><title>Exemple</title>
       <highlight language="config">
 &lt;IfVersion >= 2.3&gt;
     # la condition n'est satisfaite que pour les versions de httpd
-	# sup&eacute;rieures ou &eacute;gales &agrave; 2.3
+	# supérieures ou égales à 2.3
 &lt;/IfVersion&gt;
       </highlight>
     </example>
 
-    <p>En plus d'une comparaison num&eacute;rique, il est possible de comparer
+    <p>En plus d'une comparaison numérique, il est possible de comparer
     la version de httpd avec une <glossary ref="regex">expression
-    rationnelle</glossary>. Il existe deux m&eacute;thodes pour sp&eacute;cifier cette
-    derni&egrave;re :</p>
+    rationnelle</glossary>. Il existe deux méthodes pour spécifier cette
+    dernière :</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>op&eacute;rateur</var></th><th>description</th></tr>
+    <tr><th><var>opérateur</var></th><th>description</th></tr>
     <tr><td><code>=</code> ou <code>==</code></td>
         <td><var>version</var> est de la forme
             <code>/<var>regex</var>/</code></td></tr>
@@ -124,13 +124,13 @@ version</description>
     <example><title>Exemple</title>
       <highlight language="config">
 &lt;IfVersion = /^2.4.[01234]$/&gt;
-    # exemple de contournement pour les versions bogu&eacute;es
+    # exemple de contournement pour les versions boguées
 &lt;/IfVersion&gt;
       </highlight>
     </example>
 
-    <p>Pour inverser la condition, tous les op&eacute;rateurs peuvent &ecirc;tre
-    pr&eacute;fix&eacute;s par un point d'exclamation (<code>!</code>) :</p>
+    <p>Pour inverser la condition, tous les opérateurs peuvent être
+    préfixés par un point d'exclamation (<code>!</code>) :</p>
 
     <example>
      <highlight language="config">
@@ -140,7 +140,7 @@ version</description>
     </highlight>
     </example>
 
-    <p>Si <var>op&eacute;rateur</var> est absent, sa valeur implicite est
+    <p>Si <var>opérateur</var> est absent, sa valeur implicite est
     <code>=</code>.</p>
 </usage>
 </directivesynopsis>

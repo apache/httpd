@@ -40,7 +40,7 @@ débogage</description>
 
         <highlight language="config">
 &lt;Location "/foo/"&gt;
-&nbsp;&nbsp;LogMessage "/foo/ has been requested"
+  LogMessage "/foo/ has been requested"
 &lt;/Location&gt;
         </highlight>
       </li>
@@ -50,7 +50,7 @@ débogage</description>
 	dans une sous-requête :
         <highlight language="config">
 &lt;Location "/foo/"&gt;
-&nbsp;&nbsp;LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
+  LogMessage "subrequest to /foo/" hook=type_checker "expr=-T %{IS_SUBREQ}"
 &lt;/Location&gt;
         </highlight>
 
@@ -75,7 +75,7 @@ débogage</description>
 	"X-Foo" à chaque étape du traitement :
         <highlight language="config">
 &lt;Location "/"&gt;
-&nbsp;&nbsp;LogMessage "%{reqenv:X-Foo}" hook=all
+  LogMessage "%{reqenv:X-Foo}" hook=all
 &lt;/Location&gt;
         </highlight>
         En association avec les repères de temps en microsecondes du journal des erreurs,

@@ -128,7 +128,7 @@ Body:----------sr--
 Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
-Om du tror att detta beror p&aring; ett serverfel, vänligen kontakta 
+Om du tror att detta beror på ett serverfel, vänligen kontakta 
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webbansvarig</a>.
 ----------sv--
 

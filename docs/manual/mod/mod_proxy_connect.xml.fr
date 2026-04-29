@@ -57,7 +57,7 @@ des requêtes <code>CONNECT</code></description>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
-<section id="notes"><title>Informations sur les requ&ecirc;tes</title>
+<section id="notes"><title>Informations sur les requêtes</title>
     <p><module>mod_proxy_connect</module> enregistre les informations
     suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
     dans les directives <directive
@@ -66,8 +66,8 @@ des requêtes <code>CONNECT</code></description>
     </p>
     <dl>
         <dt>proxy-source-port</dt>
-        <dd>Le port local utilis&eacute; pour la connexion vers le serveur
-	d'arri&egrave;re-plan.</dd>
+        <dd>Le port local utilisé pour la connexion vers le serveur
+	d'arrière-plan.</dd>
     </dl>
 
     <p>Les requêtes avec méthode CONNECT sont traitées dans les sections

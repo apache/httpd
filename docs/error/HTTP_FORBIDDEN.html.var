@@ -150,7 +150,7 @@ Body:----------it--
   <!--#else -->
 
    Non disponi dei permessi necessari per accedere all'oggetto
-   richiesto, oppure l'oggetto non pu&ograve; essere letto dal server.
+   richiesto, oppure l'oggetto non può essere letto dal server.
 
   <!--#endif -->
 
@@ -280,16 +280,16 @@ Body:-------pt-br--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-   Você n&atilde;o tem permiss&atilde;o para acessar o 
+   Você não tem permissão para acessar o 
    diretório requisitado.
-   Pode n&atilde;o existir o arquivo de índice ou 
+   Pode não existir o arquivo de índice ou 
    o diretório pode estar protegido contra leitura.
 
   <!--#else -->
 
-   Você n&atilde;o tem permiss&atilde;o para acessar o 
+   Você não tem permissão para acessar o 
    objeto requisitado. Ele pode estar protegido contra leitura ou 
-   n&atilde;o ser legível pelo servidor.
+   não ser legível pelo servidor.
 
   <!--#endif -->
 
@@ -304,15 +304,15 @@ Body:----------pt--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-	N&atilde;o tem permiss&atilde;o para aceder ao directório
-	que deseja. Ou n&atilde;o existe o documento de índice
+	Não tem permissão para aceder ao directório
+	que deseja. Ou não existe o documento de índice
 	ou o directório está protegido contra leitura.
 
   <!--#else -->
 
-	N&atilde;o tem permiss&atilde;o para aceder ao objecto
+	Não tem permissão para aceder ao objecto
 	que deseja. Este está protegido contra leitura ou
-	o servidor n&atilde;o o consegue ler.
+	o servidor não o consegue ler.
 
   <!--#endif -->
 
@@ -393,14 +393,14 @@ Body:----------sv--
 
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
-    Du har inte tillräckliga rättigheter för att f&aring;
-    tillg&aring;ng till den önskade katalogen. Det existerar inget
-    indexdokument eller s&aring; är katalogen lässkyddad.
+    Du har inte tillräckliga rättigheter för att få
+    tillgång till den önskade katalogen. Det existerar inget
+    indexdokument eller så är katalogen lässkyddad.
 
   <!--#else -->
 
-    Du har inte tillräckliga rättigheter för att f&aring;
-    tillg&aring;ng till det önskade objektet. Objektet är
+    Du har inte tillräckliga rättigheter för att få
+    tillgång till det önskade objektet. Objektet är
     lässkyddat eller inte läsbart för servern.
 
   <!--#endif -->

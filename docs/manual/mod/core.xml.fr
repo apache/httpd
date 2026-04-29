@@ -1783,11 +1783,11 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     divisée en champs ne contenant pas d'espace séparés par des espaces.
     Si un item de la chaîne de format ne génère aucune sortie,
     l'ensemble du champ est omis. Par exemple, si l'adresse distante
-    <code>%a</code> du format <code>[%t] [%l] [%a] %M&nbsp;</code> n'est
+    <code>%a</code> du format <code>[%t] [%l] [%a] %M </code> n'est
     pas disponible, les crochets qui l'entourent ne seront eux-mêmes pas
     enregistrés. Il est possible d'échapper les espaces par un anti-slash
     afin qu'ils ne soient pas considérés comme séparateurs de champs.
-    La combinaison '%&nbsp;' (pourcentage espace) est un délimiteur de
+    La combinaison '% ' (pourcentage espace) est un délimiteur de
     champ de taille nulle qui ne génère aucune sortie.</p>
 
     <p>Ce comportement peut être changé en ajoutant des modificateurs à
@@ -1841,7 +1841,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
 
-    <tr><th>Chaîne&nbsp;de&nbsp;format</th> <th>Description</th></tr>
+    <tr><th>Chaîne de format</th> <th>Description</th></tr>
 
     <tr><td><code>%%</code></td>
         <td>Le signe pourcentage</td></tr>
@@ -1938,10 +1938,10 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 	avec la définition de la directive <directive module="core"
 	>UseCanonicalName</directive>.</td></tr>
 
-    <tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
+    <tr><td><code>\ </code> (anti-slash espace)</td>
         <td>Espace non délimiteur</td></tr>
 
-    <tr><td><code>%&nbsp;</code> (pourcentage espace)</td>
+    <tr><td><code>% </code> (pourcentage espace)</td>
         <td>Délimiteur de champ (aucune sortie)</td></tr>
     </table>
 
@@ -1958,7 +1958,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 
     <highlight language="config">
 # Exemple (format par défaut pour les MPMs threadés)
-ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"
     </highlight>
 
     <p>Cet exemple renverrait un message d'erreur du style :</p>
@@ -1972,7 +1972,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
 
     <highlight language="config">
 # Exemple (similaire au format 2.2.x)
-ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M%&nbsp;,\&nbsp;referer\&nbsp;%{Referer}i"
+ErrorLogFormat "[%t] [%l] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"
     </highlight>
 
     <highlight language="config">
@@ -2038,7 +2038,7 @@ host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>La valeur par défaut était "INode&nbsp;MTime&nbsp;Size"
+<compatibility>La valeur par défaut était "INode MTime Size"
 dans les versions 2.3.14 et antérieures.</compatibility>
 
 <usage>
@@ -2084,11 +2084,11 @@ dans les versions 2.3.14 et antérieures.</compatibility>
     héritées.</p>
 
     <p>Si la configuration d'un répertoire contient
-    <code>FileETag&nbsp;INode&nbsp;MTime&nbsp;Size</code>, et si un de
-    ses sous-répertoires contient <code>FileETag&nbsp;-INode</code>, la
+    <code>FileETag INode MTime Size</code>, et si un de
+    ses sous-répertoires contient <code>FileETag -INode</code>, la
     configuration de ce sous-répertoire (qui sera propagée vers tout
     sous-répertoire qui ne la supplante pas), sera équivalente à
-    <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
+    <code>FileETag MTime Size</code>.</p>
     <note><title>Inclusions côté serveur</title> Aucun champ ETag n'est généré
     pour les réponses interprétées par <module>mod_include</module>, car
     l'entité de la réponse peut changer sans modification de l'INode, du MTime,
@@ -4847,7 +4847,7 @@ elle-même possède plus de 63 caractères.</description>
     requête est de 64 caractères ou plus.</p>
 
     <p>Si Apache httpd traite la requête
-    <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
+    <code>GET /disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg HTTP/1.1</code>
     , l'affichage de la requête par <module>mod_status</module> se présentera
     comme suit :
     </p>
@@ -4855,11 +4855,11 @@ elle-même possède plus de 63 caractères.</description>
     <table border="1">
       <tr>
         <th>Off (défaut)</th>
-        <td>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
+        <td>GET /disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
       </tr>
       <tr>
         <th>On</th>
-        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</td>
+        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg HTTP/1.1</td>
       </tr>
     </table>
 

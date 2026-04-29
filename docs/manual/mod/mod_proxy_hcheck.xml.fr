@@ -109,14 +109,14 @@
 	toutes les 30 secondes). Utilise la syntaxe <a
 	href="directive-dict.html#Syntax">time-interval</a>.</td></tr>
     <tr><td>hcuri</td>
-        <td>&nbsp;</td>
+        <td> </td>
         <td>URI supplémentaire à ajouter à l'URL de l'équipier pour le check up.</td></tr>
     <tr><td>hctemplate</td>
-        <td>&nbsp;</td>
+        <td> </td>
         <td>Nom du modèle créé via <directive module="mod_proxy_hcheck">ProxyHCTemplate</directive> à
 	utiliser pour définir les paramètres de check up de cet équipier</td></tr>
     <tr><td>hcexpr</td>
-        <td>&nbsp;</td>
+        <td> </td>
         <td>Nom de l'expression créée via <directive module="mod_proxy_hcheck">ProxyHCExpr</directive>
 	utilisée pour analyser les en-têtes de la réponse du check up.<br/>
             <em>Si ce paramètre est absent, un état HTTP de 2xx à 3xx est

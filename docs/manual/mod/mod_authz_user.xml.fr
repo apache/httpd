@@ -25,19 +25,19 @@
 <modulesynopsis metafile="mod_authz_user.xml.meta">
 
 <name>mod_authz_user</name>
-<description>Autorisation bas&eacute;e sur l'utilisateur</description>
+<description>Autorisation basée sur l'utilisateur</description>
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>
 <identifier>authz_user_module</identifier>
 
 <summary>
-    <p>Ce module permet d'accorder ou de refuser l'acc&egrave;s &agrave; certaines
-    zones du site web aux utilisateurs authentifi&eacute;s.
-    <module>mod_authz_user</module> accorde l'acc&egrave;s si l'utilisateur
-    authentifi&eacute; fait partie de la liste sp&eacute;cifi&eacute;e par une directive
+    <p>Ce module permet d'accorder ou de refuser l'accès à certaines
+    zones du site web aux utilisateurs authentifiés.
+    <module>mod_authz_user</module> accorde l'accès si l'utilisateur
+    authentifié fait partie de la liste spécifiée par une directive
     <code>Require user</code>. On peut aussi utiliser la directive
-    <code>Require valid-user</code> pour accorder l'acc&egrave;s &agrave; tous les
-    utilisateurs qui ont &eacute;t&eacute; authentifi&eacute;s avec succ&egrave;s.</p>
+    <code>Require valid-user</code> pour accorder l'accès à tous les
+    utilisateurs qui ont été authentifiés avec succès.</p>
 </summary>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 
@@ -46,7 +46,7 @@
     <p>Les directives <directive
     module="mod_authz_core">Require</directive> d'Apache permettent,
     au cours de la phase d'autorisation, de s'assurer qu'un utilisateur
-    est bien autoris&eacute; &agrave; acc&eacute;der &agrave; une
+    est bien autorisé à accéder à une
     ressource.  mod_authz_user ajoute
     les types d'autorisation <code>user</code> et <code>valid-user</code>.
     </p>
@@ -56,8 +56,8 @@
 
 <section id="requser"><title>Require user</title>
 
-    <p>Cette directive permet de sp&eacute;cifier une liste d'utilisateurs
-    autoris&eacute;s &agrave; acc&eacute;der &agrave; la ressource.</p>
+    <p>Cette directive permet de spécifier une liste d'utilisateurs
+    autorisés à accéder à la ressource.</p>
 
     <highlight language="config">
       Require user john paul george ringo
@@ -67,8 +67,8 @@
 
 <section id="reqvaliduser"><title>Require valid-user</title>
 
-    <p>Lorsque cette directive est d&eacute;finie, tout utilisateur qui s'est
-    authentifi&eacute; avec succ&egrave;s aura l'autorisation d'acc&egrave;s &agrave; la ressource.</p>
+    <p>Lorsque cette directive est définie, tout utilisateur qui s'est
+    authentifié avec succès aura l'autorisation d'accès à la ressource.</p>
 
     <highlight language="config">
       Require valid-user
