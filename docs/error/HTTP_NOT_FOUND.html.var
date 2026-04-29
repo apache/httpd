@@ -13,7 +13,7 @@ Body:----------cs--
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
     stránce</a> je chybný nebo zastaralý. Informujte, prosím, autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">této stránky</a>
-    o chybě.
+    o&nbsp;chybě.
 
   <!--#else -->
 

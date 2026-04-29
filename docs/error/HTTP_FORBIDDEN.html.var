@@ -8,11 +8,11 @@ Body:----------cs--
   <!--#if expr="v('REDIRECT_URL') =~ m:/$:" -->
 
     Nemáte právo pro přístup do požadovaného adresáře. Buď neexistuje žádný
-    dokument s obsahem (tzv. index), nebo je adresář chráněn proti čtení.
+    dokument s&nbsp;obsahem (tzv. index), nebo je adresář chráněn proti čtení.
 
   <!--#else -->
 
-    Nemáte právo pro přístup k požadovanému objektu.
+    Nemáte právo pro přístup k&nbsp;požadovanému objektu.
     Buď je chráněn proti čtení, nebo není serverem čitelný.
 
   <!--#endif -->
