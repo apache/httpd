@@ -1544,7 +1544,25 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
 
     <note><strong>Note: </strong>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
-    
+
+    <note type="warning"><title>Worker matching with backreferences</title>
+    <p>When <directive>ProxyPassMatch</directive> contains
+    backreferences (e.g., <code>$1</code>) in the target URL, each
+    request produces a different resolved URL. Because <a
+    href="#workers">workers</a> are matched by URL, these requests
+    will not match the worker created by this directive and will
+    instead use the default reverse proxy worker, which does not
+    reuse connections or cache DNS lookups. To enable connection
+    pooling, define an explicit worker for the backend separately:</p>
+    <highlight language="config">
+ProxyPass        "/notused" "http://backend.example.com/" connectiontimeout=5 timeout=30
+ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"
+    </highlight>
+    <p>The explicit <directive>ProxyPass</directive> worker definition
+    ensures that the backend connection pool is available for use by
+    <directive>ProxyPassMatch</directive> requests.</p>
+    </note>
+
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
 
