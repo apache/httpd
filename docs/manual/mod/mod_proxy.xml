@@ -768,6 +768,7 @@ expressions</description>
     Balancers available for a virtualhost in addition to the
     number pre-configured. It only takes effect if there is at
     least one pre-configured Balancer.</p>
+    <p>The value must be between 0 and 1000.</p>
 </usage>
 </directivesynopsis>
 
