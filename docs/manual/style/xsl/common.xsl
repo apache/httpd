@@ -1222,6 +1222,26 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- /glossary -->
 
 <!-- ==================================================================== -->
+<!-- link to an RFC at www.rfc-editor.org                                 -->
+<!-- ==================================================================== -->
+<xsl:template match="rfc">
+  <xsl:variable name="rfcnum">
+    <xsl:value-of select="normalize-space(.)"/>
+  </xsl:variable>
+
+  <xsl:variable name="rfcurl">
+    <xsl:text>https://www.rfc-editor.org/rfc/rfc</xsl:text>
+    <xsl:value-of select="$rfcnum"/>
+    <xsl:if test="@section">
+      <xsl:text>#section-</xsl:text>
+      <xsl:value-of select="@section"/>
+    </xsl:if>
+  </xsl:variable>
+
+  <a href="{$rfcurl}">RFC <xsl:value-of select="$rfcnum"/></a>
+</xsl:template>
+<!-- /rfc -->
+
 <!-- Filter &#160; in text() nodes.                                       -->
 <!-- In some environments this character won't be transformed correctly,  -->
 <!-- so we just write it explicitly as "&nbsp;" into the output.         -->
