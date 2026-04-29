@@ -823,7 +823,7 @@ named file-system directory, sub-directories, and their contents.</description>
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. You may also use <code>[]</code> character ranges. None
     of the wildcards match a `/' character, so <code>&lt;Directory
     "/*/public_html"&gt;</code> will not match
@@ -1927,7 +1927,7 @@ filenames</description>
 
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
-    and <code>*</code> matches any sequences of characters.</p>
+    and <code>*</code> matches any sequence of characters.</p>
     <highlight language="config">
 &lt;Files "cat.html"&gt;
     # Insert stuff that applies to cat.html here
@@ -3132,7 +3132,7 @@ URLs</description>
     just as you would for origin requests.</p>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><glossary ref="regex">Regular expressions</glossary>
