@@ -45,7 +45,7 @@
     this one was chosen because there is already a large number of
     CERN users who can exploit this module.</p>
 
-    <p>More information on the <a href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir">CERN metafile semantics</a> is available.</p>
+    <p>More information on the <a href="https://www.w3.org/Daemon/User/Config/General.html#MetaDir">CERN metafile semantics</a> is available.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
 <ul id="toc">

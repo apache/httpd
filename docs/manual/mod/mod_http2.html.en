@@ -36,7 +36,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.17 and later</td></tr></table>
 <h3>Summary</h3>
 
-        <p>This module provides HTTP/2 (<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) 
+        <p>This module provides HTTP/2 (<a href="https://datatracker.ietf.org/doc/html/rfc7540">RFC 7540</a>) 
         support for the Apache HTTP Server.</p>
         
         <p>This module relies on <a href="http://nghttp2.org/">libnghttp2</a>

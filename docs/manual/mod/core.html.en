@@ -2084,8 +2084,8 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
 </table>
     <p>This directive changes the rules applied to the HTTP Request Line
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
+    (<a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
+    (<a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
     custom user-agents which must be deprecated the <code>Unsafe</code>
     option has been added to revert to the legacy behaviors.</p>
@@ -2104,10 +2104,10 @@ media type in the HTTP Content-Type header field</td></tr>
       <p>Prior to the introduction of this directive, the Apache HTTP Server
       request message parsers were tolerant of a number of forms of input
       which did not conform to the protocol.
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4 Request Splitting</a> and
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response Smuggling</a> call out only two of the potential
+      <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-9.4">RFC 7230 §9.4 Request Splitting</a> and
+      <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-9.5">§9.5 Response Smuggling</a> call out only two of the potential
       risks of accepting non-conformant request messages, while
-      <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" identify the
+      <a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" identify the
       risks of accepting obscure whitespace and request message formatting. 
       As of the introduction of this directive, all grammar rules of the
       specification are enforced in the default <code>Strict</code> operating
@@ -2140,7 +2140,7 @@ media type in the HTTP Content-Type header field</td></tr>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
-      <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231 §4.1</a> "Request Methods" "Overview" requires that
+      <p><a href="https://datatracker.ietf.org/doc/html/rfc7231#section-4.1">RFC 7231 §4.1</a> "Request Methods" "Overview" requires that
       origin servers shall respond with a HTTP 501 status code when an
       unsupported method is encountered in the request line.
       This already happens when the <code>LenientMethods</code> option is used,
@@ -2166,11 +2166,11 @@ media type in the HTTP Content-Type header field</td></tr>
       </dd>
       <dt>Allow0.9|Require1.0</dt>
       <dd>
-      <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
+      <p><a href="https://datatracker.ietf.org/doc/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
       encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
       supersedes this with "The expectation to support HTTP/0.9 requests has
       been removed" and offers additional comments in 
-      <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
+      <a href="https://datatracker.ietf.org/doc/html/rfc7230#appendix-A">RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
       the user to remove support of the default <code>Allow0.9</code> option's
       behavior.</p>
 
@@ -3084,9 +3084,15 @@ URLs</td></tr>
     <p>For all origin (non-proxy) requests, the URL to be matched is a
     URL-path of the form <code>/path/</code>.  <em>No scheme, hostname,
     port, or query string may be included.</em>  For proxy requests, the
-    URL to be matched is of the form
+    URL to be matched depends on the type of proxy. With a
+    <strong>forward</strong> proxy (<code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code>), the URL to be
+    matched is of the form
     <code>scheme://servername/path</code>, and you must include the
-    prefix.</p>
+    prefix. With a <strong>reverse</strong> proxy (configured via
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
+    <code class="directive"><a href="../mod/mod_proxy.html#rewriterule ... [p]">RewriteRule ... [P]</a></code>),
+    the request arrives as a local URL-path, so use <code>/path/</code>
+    just as you would for origin requests.</p>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
     any single character, and <code>*</code> matches any sequences of

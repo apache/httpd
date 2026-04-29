@@ -361,7 +361,7 @@ print "Hello, World.";</pre>
 
       <p>When you miss HTTP headers from the environment, make
       sure they are formatted according to
-      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>,
+      <a href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a>,
       section 4.2: Header names must start with a letter,
       followed only by letters, numbers or hyphen. Any header
       violating this rule will be dropped silently.</p>
@@ -462,7 +462,7 @@ print "Hello, World.";</pre>
       <p>These variables are available to the CGI programmer, and
       are half of the story of the client-server communication. The
       complete list of required variables is at
-      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+      <a href="https://datatracker.ietf.org/doc/html/rfc3875">Common Gateway
       Interface RFC</a>.</p>
 
       <p>This simple Perl CGI program will display all of the
@@ -553,7 +553,7 @@ foreach my $key (keys %ENV) {
     
 
     <p>The current CGI specification is available in the
-    <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+    <a href="https://datatracker.ietf.org/doc/html/rfc3875">Common Gateway
     Interface RFC</a>.</p>
 
     <p>When you post a question about a CGI problem that you're
