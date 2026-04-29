@@ -750,9 +750,11 @@ indexing</description>
                | *]</a></dt>
 
       <dd>The <code>NameWidth</code> keyword allows you to specify the width
-      of the filename column in bytes.</dd>
+      of the filename column in bytes. The value must be greater than
+      5, or <code>*</code> for automatic width. If unset or prefixed
+      with <code>-</code>, the default of 20 bytes is used.</dd>
 
-      <dd><code>-NameWidth</code> (or unset) allows <module
+      <dd>When unset, <module
       >mod_autoindex</module> to calculate the best width, but only up
       to 20 bytes wide.</dd>
 
@@ -1020,6 +1022,11 @@ IndexOptions +SuppressSize
      <p>To unconditionally set the <directive>IndexOptions</directive> for
      a particular directory, clearing the inherited settings, specify
      keywords without any <code>+</code> or <code>-</code> prefixes.</p>
+
+     <p>Note that the <code>+</code> and <code>-</code> prefixes cannot
+     be used with options that take a value, such as
+     <code>IconWidth</code>, <code>IconHeight</code>,
+     <code>NameWidth</code>, or <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 </usage>
