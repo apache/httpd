@@ -122,8 +122,7 @@
         Gateway Interface</a> <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>A standard definition for an interface between a web server and an
       external program that allows the external program to service requests.
-      There is an <a href="https://datatracker.ietf.org/doc/html/rfc3875">Informational
-      RFC</a> which covers the specifics.<br />
+      There is an Informational RFC (<rfc>3875</rfc>) which covers the specifics.<br />
       See: <a href="howto/cgi.html">Dynamic Content with CGI</a>
     </dd>
 
