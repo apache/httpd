@@ -563,7 +563,7 @@ Require group GroupName</pre>
 
     <h3><a name="filesystem" id="filesystem">Access Control backwards compatibility</a></h3>
         <p>One of the side effects of adopting a provider based mechanism for
-        authentication is that the previous access control directives
+        authorization is that the previous access control directives
         <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
         <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
         <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and

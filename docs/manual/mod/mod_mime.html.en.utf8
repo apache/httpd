@@ -177,7 +177,7 @@
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="https://www.rfc-editor.org/rfc/rfc2616">HTTP/1.1
+    <p>The <a href="https://datatracker.ietf.org/doc/html/rfc2616">HTTP/1.1
     RFC</a>, section 14.11 puts it this way:</p>
 
     <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">

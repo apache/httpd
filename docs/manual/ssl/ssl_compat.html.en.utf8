@@ -28,6 +28,15 @@
 <a href="../fr/ssl/ssl_compat.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
+<div class="warning"><h3>Historical Document</h3>
+<p>This page describes compatibility with SSL products that have been
+discontinued for many years (Apache-SSL, Stronghold, Raven SSL, Red Hat
+Secure Web Server). It is retained for historical reference only. If you
+are configuring mod_ssl on a current Apache httpd installation, see
+<a href="ssl_howto.html">SSL/TLS How-To</a> instead. This page is a
+candidate for removal in a future release.</p>
+</div>
+
 <p>
 This page covers backwards compatibility between mod_ssl and other
 SSL solutions.  mod_ssl is not the only SSL solution for Apache; four
@@ -36,7 +45,8 @@ available <a href="http://www.apache-ssl.org/">Apache-SSL</a> (from
 where mod_ssl were originally derived in 1998), Red Hat's commercial
 Secure Web Server (which was based on mod_ssl), Covalent's commercial
 Raven SSL Module (also based on
-mod_ssl) and finally C2Net's (now Red Hat's) commercial product <a href="http://www.redhat.com/explore/stronghold/">Stronghold</a> (based
+mod_ssl) and finally C2Net's (now Red Hat's) commercial product
+Stronghold (based
 on a different evolution branch, named Sioux up to Stronghold 2.x, and
 based on mod_ssl since Stronghold 3.x).</p>
 

@@ -300,7 +300,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 Most are documented in the 
                 <a href="../expr.html#vars">Expressions doc</a>, in the
                 <a href="../env.html">Environment Variables doc</a>,
-                or the <a href="http://www.ietf.org/rfc/rfc3875">CGI
+                or the <a href="https://datatracker.ietf.org/doc/html/rfc3875">CGI
                 specification</a>.</p>
 
                 <p>SERVER_NAME and SERVER_PORT depend on the values of

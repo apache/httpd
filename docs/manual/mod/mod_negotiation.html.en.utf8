@@ -95,7 +95,7 @@ Negotiation</a></li>
 
       <dt><code>Content-Language:</code></dt>
       <dd>The language(s) of the variant, as an Internet standard
-      language tag (<a href="https://www.rfc-editor.org/rfc/rfc1766">RFC 1766</a>). An example is <code>en</code>,
+      language tag (<a href="https://datatracker.ietf.org/doc/html/rfc1766">RFC 1766</a>). An example is <code>en</code>,
       meaning English. If the variant contains more than one
       language, they are separated by a comma.</dd>
 
@@ -299,6 +299,12 @@ ForceLanguagePriority Fallback</pre>
     more than one variant is acceptable, or first available document will
     be served if none of the variants matched the client's acceptable list
     of languages.</p>
+
+    <p><code>ForceLanguagePriority None</code> disables both
+    <code>Prefer</code> and <code>Fallback</code> behavior, so the
+    server will return 300 (MULTIPLE CHOICES) or 406 (NOT ACCEPTABLE)
+    as appropriate. <code>None</code> cannot be combined with
+    <code>Prefer</code> or <code>Fallback</code>.</p>
 
 <h3>See also</h3>
 <ul>

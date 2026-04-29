@@ -39,7 +39,7 @@
 
 <p>This module provides an implementation of Certificate Transparency, in
 conjunction with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and command-line tools from the
-<a href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>
+<a href="https://certificate.transparency.dev/">certificate-transparency</a>
 open source project.  The goal of Certificate Transparency is to expose the
 use of server certificates which are trusted by browsers but were mistakenly
 or maliciously issued.  More information about Certificate Transparency is
@@ -338,7 +338,7 @@ testing.</p>
   <p><em>executable</em> is the full path to the log client tool, which is
   normally file <code>cpp/client/ct</code> (or <code>ct.exe</code>) within the
   source tree of the
-  <a href="https://code.google.com/p/certificate-transparency/">
+  <a href="https://certificate.transparency.dev/">
   certificate-transparency</a> open source project.</p>
 
   <p>An alternative implementation could be used to retrieve SCTs for a

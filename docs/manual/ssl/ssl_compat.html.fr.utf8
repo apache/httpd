@@ -27,6 +27,8 @@
 <a href="../es/ssl/ssl_compat.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/ssl/ssl_compat.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
 <p>Ce document couvre la compatibilité ascendante entre mod_ssl et

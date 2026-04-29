@@ -107,7 +107,7 @@ only?</a></h3>
 
     <pre class="prettyprint lang-config"># "Modern" configuration, defined by the Mozilla Foundation's SSL Configuration
 # Generator as of August 2016. This tool is available at
-# https://mozilla.github.io/server-side-tls/ssl-config-generator/
+# https://ssl-config.mozilla.org/
 SSLProtocol         all -SSLv3 -TLSv1 -TLSv1.1
 # Many ciphers defined here require a modern version (1.0.1+) of OpenSSL. Some
 # require OpenSSL 1.1.0, which as of this writing was in pre-release.
