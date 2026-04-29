@@ -59,8 +59,7 @@
             in the cache, and mod_cache aims to honor all of the various HTTP
             headers and options that control the cacheability of content
             as described in
-            <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-13">Section
-            13 of RFC2616</a>.
+            <a href="https://www.rfc-editor.org/rfc/rfc2616#section-13">RFC 2616</a>.
             <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
             is aimed at both simple and complex caching configurations, where
             you are dealing with proxied content, dynamic local content or
@@ -104,8 +103,7 @@
 
     <p>The HTTP protocol contains built in support for an in-line caching
     mechanism 
-    <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-13">
-    described by section 13 of RFC2616</a>, and the
+    <a href="https://www.rfc-editor.org/rfc/rfc2616#section-13">RFC 2616</a>, and the
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> module can be used to take advantage of
     this.</p>
 
@@ -157,8 +155,7 @@
     </dl>
 
     <p>Full details of how HTTP caching works can be found in
-    <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-13">
-    Section 13 of RFC2616</a>.</p>
+    <a href="https://www.rfc-editor.org/rfc/rfc2616#section-13">RFC 2616</a>.</p>
 
     <h3>Interaction with the Server</h3>
       
@@ -320,8 +317,7 @@
 
       <p>The full definition of which responses can be cached by an HTTP
       cache is defined in
-      <a href="https://datatracker.ietf.org/doc/html/rfc2616#section-13.4">
-      RFC2616 Section 13.4 Response Cacheability</a>, and can be summed up as
+      <a href="https://www.rfc-editor.org/rfc/rfc2616#section-13.4">RFC 2616</a> (Response Cacheability), and can be summed up as
       follows:</p>
 
       <ol>

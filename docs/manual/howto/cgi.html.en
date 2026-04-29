@@ -462,8 +462,7 @@ print "Hello, World.";</pre>
       <p>These variables are available to the CGI programmer, and
       are half of the story of the client-server communication. The
       complete list of required variables is at
-      <a href="https://datatracker.ietf.org/doc/html/rfc3875">Common Gateway
-      Interface RFC</a>.</p>
+      Common Gateway Interface RFC (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>).</p>
 
       <p>This simple Perl CGI program will display all of the
       environment variables that are being passed around. Two
@@ -553,8 +552,7 @@ foreach my $key (keys %ENV) {
     
 
     <p>The current CGI specification is available in the
-    <a href="https://datatracker.ietf.org/doc/html/rfc3875">Common Gateway
-    Interface RFC</a>.</p>
+    Common Gateway Interface RFC (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>).</p>
 
     <p>When you post a question about a CGI problem that you're
     having, whether to a mailing list, or to a newsgroup, make sure

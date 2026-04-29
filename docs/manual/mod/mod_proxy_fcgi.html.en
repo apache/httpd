@@ -315,8 +315,7 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m|(/.*prefix)(\d+)(.*)|" PATH_TR
 
 
   The CGI/1.1 specification
-  <a href="https://datatracker.ietf.org/doc/html/rfc3875#section-4.1">does not
-  distinguish</a> between a variable with an empty value and a variable that
+  does not distinguish (<a href="https://www.rfc-editor.org/rfc/rfc3875#section-4.1">RFC 3875</a>) between a variable with an empty value and a variable that
   does not exist. However, many CGI and FastCGI implementations distinguish (or
   allow scripts to distinguish) between the two. The choice of which to use is
   dependent upon your implementation and your reason for modifying the variable.

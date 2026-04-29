@@ -1394,7 +1394,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
         <td><p>Protocol accepted by <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> or
         <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
-        <a href="https://datatracker.ietf.org/doc/html/rfc9110#name-upgrade">RFC 9110 - Upgrade</a>).
+        <a href="https://www.rfc-editor.org/rfc/rfc9110#name-upgrade">RFC 9110 - Upgrade</a>).
         See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>

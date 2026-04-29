@@ -210,8 +210,7 @@ Digest Authentication was in force instead of Basic Authentication.
     Authentication case, the value associated with each stored username
     must be an encrypted string composed from the username, realm name,
     and password.  (See
-    <a href="https://datatracker.ietf.org/doc/html/rfc2617#section-3.2.2.2">
-    RFC 2617, Section 3.2.2.2</a> for more details on the format used
+    <a href="https://www.rfc-editor.org/rfc/rfc2617#section-3.2.2.2">RFC 2617</a> for more details on the format used
     for this encrypted string.)</p>
 
     <p>As a consequence of the difference in the stored values between

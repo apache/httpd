@@ -702,7 +702,7 @@ key is encrypted, the pass phrase dialog is forced at startup time.
 
 <p>As an alternative to storing certificates and private keys in
 files, a certificate identifier can be used to identify a certificate
-stored in a token.  Currently, only <a href="https://datatracker.ietf.org/doc/html/rfc7512">PKCS#11 URIs</a> are
+stored in a token.  Currently, only PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>) are
 recognized as certificate identifiers, and can be used in conjunction
 with the OpenSSL <code>pkcs11</code> engine or provider.  If <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> is omitted, the
 certificate and private key can be loaded through the single
@@ -796,7 +796,7 @@ key file.</p>
 
 <p>As an alternative to storing private keys in files, a key
 identifier can be used to identify a private key stored in a
-token.  Currently, only <a href="https://datatracker.ietf.org/doc/html/rfc7512">PKCS#11 URIs</a> are recognized as private key
+token.  Currently, only PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>) are recognized as private key
 identifiers, and can be used in conjunction with the OpenSSL
 <code>pkcs11</code> engine or provider.</p>
 
@@ -1040,11 +1040,11 @@ SSLCryptoDevice ubsec</pre>
 
 <p>
 With OpenSSL 3.0 or later, if no engine is specified but the key or certificate
-is specified using a <a href="https://datatracker.ietf.org/doc/html/rfc7512">PKCS#11 URIs</a>
+is specified using a PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>)
 then it is tried to load the key and certificate from an OpenSSL provider.
 The OpenSSL provider to use must be defined and configured in the OpenSSL config file,
 and it must support the <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">STORE method</a>
-for <a href="https://datatracker.ietf.org/doc/html/rfc7512">PKCS#11 URIs</a>.
+for PKCS#11 URIs (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>).
 </p>
 
 </div>
