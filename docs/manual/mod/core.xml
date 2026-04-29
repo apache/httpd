@@ -4599,9 +4599,10 @@ itself</description>
     href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
     <p>Additionally, this is used when
-    creating self-referential redirection URLs when 
-    <directive module="core">UseCanonicalName</directive> is set to a non-default
-    value.</p>
+    creating self-referential redirection URLs when
+    <directive module="core">UseCanonicalName</directive> is set to
+    <code>On</code>. When <code>UseCanonicalName</code> is set to
+    <code>DNS</code>, a reverse DNS lookup is used instead.</p>
 
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
