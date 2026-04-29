@@ -4933,11 +4933,14 @@ handler</td></tr>
     <div class="note"><h3>Note</h3>
     <p>Because <code class="directive">SetHandler</code> overrides default handlers,
     normal behavior such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</p></div>
+    directories or index files is suppressed. It also overrides
+    <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code>, since the
+    request already has an explicit handler assigned.</p></div>
 
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
