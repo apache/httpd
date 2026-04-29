@@ -238,7 +238,7 @@ a directory</description>
 </directivesynopsis>
 <directivesynopsis>
 <name>FallbackResource</name>
-<description>Define a default URL for requests that don't map to a file</description>
+<description>Define a default URL for requests that don't map to a file or handler</description>
 <syntax>FallbackResource disabled | <var>local-url</var></syntax>
 <default>disabled - httpd will return 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -285,7 +285,23 @@ later</compatibility>
     can access the original requested URL via the server variable
     <code>REQUEST_URI</code>. For example, to access this variable in PHP,
     use <code>$_SERVER['REQUEST_URI']</code>.</p>
+    <note><title>Interaction with other handlers</title>
+    <p><directive>FallbackResource</directive> only takes effect when no
+    other handler has been assigned to the request. If a directive such as
+    <directive module="core">SetHandler</directive> or
+    <directive module="mod_mime">AddHandler</directive> has already
+    assigned a handler to a URL or file extension,
+    <directive>FallbackResource</directive> will not override it. For
+    example, if you use
+    <code>SetHandler application/x-httpd-php</code> in a
+    <directive type="section" module="core">Directory</directive> section,
+    that handler applies to all requests in that directory — even requests
+    for non-existent files — so <directive>FallbackResource</directive>
+    will never be invoked.</p></note>
 </usage>
+<seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><directive module="mod_dir">DirectoryCheckHandler</directive></seealso>
 </directivesynopsis>
 <directivesynopsis>
 <name>DirectoryCheckHandler</name>
