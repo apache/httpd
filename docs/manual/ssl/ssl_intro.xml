@@ -649,8 +649,7 @@ href="https://en.wikipedia.org/wiki/PKCS"
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-See for instance <a href="https://datatracker.ietf.org/doc/html/rfc2045"
->http://tools.ietf.org/html/rfc2045</a>.</dd>
+See for instance <rfc>2045</rfc>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
@@ -658,23 +657,19 @@ Version 3.0</q>, 1996. See <rfc>6101</rfc>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
-1999. See <a href="https://datatracker.ietf.org/doc/html/rfc2246"
->http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+1999. See <rfc>2246</rfc>.</dd>
 
 <dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
 <dd><q>The TLS Protocol Version 1.1</q>,
-2006. See <a href="https://datatracker.ietf.org/doc/html/rfc4346"
->http://tools.ietf.org/html/rfc4346</a>.</dd>
+2006. See <rfc>4346</rfc>.</dd>
 
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>The TLS Protocol Version 1.2</q>,
-2008. See <a href="https://datatracker.ietf.org/doc/html/rfc5246"
->http://tools.ietf.org/html/rfc5246</a>.</dd>
+2008. See <rfc>5246</rfc>.</dd>
 
 <dt><a id="TLS13" name="TLS13">[TLS13]</a></dt>
 <dd><q>The Transport Layer Security (TLS) Protocol Version 1.3</q>,
-2018. See <a href="https://datatracker.ietf.org/doc/html/rfc8446"
->https://tools.ietf.org/html/rfc8446</a>.</dd>
+2018. See <rfc>8446</rfc>.</dd>
 </dl>
 </section>
 <!-- /references -->

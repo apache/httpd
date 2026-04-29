@@ -162,8 +162,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="https://datatracker.ietf.org/doc/html/rfc2616">HTTP/1.1
-    RFC</a>, section 14.11 puts it this way:</p>
+    <p>The HTTP/1.1 RFC (<rfc>2616</rfc>), section 14.11 puts it this way:</p>
 
     <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
       <p>The Content-Encoding entity-header field is used as a modifier to

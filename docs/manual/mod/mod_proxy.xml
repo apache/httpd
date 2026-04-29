@@ -1263,7 +1263,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>Protocol accepted by <module>mod_proxy_http</module> or
         <module>mod_proxy_wstunnel</module> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
-        <a href="https://datatracker.ietf.org/doc/html/rfc9110#name-upgrade">RFC 9110 - Upgrade</a>).
+        <a href="https://www.rfc-editor.org/rfc/rfc9110#name-upgrade">RFC 9110 - Upgrade</a>).
         See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>
