@@ -2577,6 +2577,7 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available in Apache 2.1 and later</compatibility>
 
 <usage>
 <p>When choosing a cipher during an SSLv3 or TLSv1 handshake, normally
