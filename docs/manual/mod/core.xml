@@ -5019,6 +5019,11 @@ certain events before failing a request</description>
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64Kb.</p>
 
+    <p>The <code>TRACE</code> method cannot be restricted using
+    <directive type="section" module="core">Limit</directive> or
+    <directive type="section" module="core">LimitExcept</directive>.
+    Use <directive>TraceEnable</directive> instead.</p>
+
     <note><title>Note</title>
 
     <p>Despite claims to the contrary, enabling the <code>TRACE</code>
