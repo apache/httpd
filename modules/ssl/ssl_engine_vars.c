@@ -1244,17 +1244,17 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
  * success and writes the string to the given bio. */
 static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 {
-    const unsigned char *pp = str->data;
+    const unsigned char *pp = ASN1_STRING_get0_data(str);
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
 
-    if(!ret) {
-      return rv;
+    if (!ret) {
+        return rv;
     }
 
     /* This allows UTF8String, IA5String, VisibleString, or BMPString;
      * conversion to UTF-8 is forced. */
-    if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
+    if (d2i_DISPLAYTEXT(&ret, &pp, ASN1_STRING_length(str))) {
         ASN1_STRING_print_ex(bio, ret, ASN1_STRFLGS_UTF8_CONVERT);
         rv = 1;
     }

@@ -282,6 +282,8 @@
 #define DH_bits(x)                 (BN_num_bits(x->p))
 #define X509_up_ref(x)             (CRYPTO_add(&(x)->references, +1, CRYPTO_LOCK_X509))
 #define EVP_PKEY_up_ref(pk)        (CRYPTO_add(&(pk)->references, +1, CRYPTO_LOCK_EVP_PKEY))
+#define ASN1_STRING_get0_data(x)   ((x)->data)
+#define ASN1_STRING_length(x)      ((int)(x)->length)
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
