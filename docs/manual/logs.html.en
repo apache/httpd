@@ -626,8 +626,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     later split the log into individual files. For example,
     consider the following directives.</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog logs/access_log comonvhost</pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog logs/access_log commonvhost</pre>
 
 
     <p>The <code>%v</code> is used to log the name of the virtual

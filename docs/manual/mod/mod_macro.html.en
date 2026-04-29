@@ -128,10 +128,13 @@ cause confusion at expression evaluation time. In the event of such
 confusion, the longest possible parameter name is used.</p>
 
 <p>If you want to use a value within another string, it is useful to
-surround the parameter in braces, to avoid confusion:</p>
+surround the parameter in parentheses, to avoid confusion. The
+<code>$(...)</code> syntax should be used rather than
+<code>${...}</code>, as the latter conflicts with the
+<code class="directive"><a href="../mod/core.html#define">Define</a></code> variable syntax:</p>
 
-<pre class="prettyprint lang-config">&lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot "/var/www/${docroot}/htdocs"
+<pre class="prettyprint lang-config">&lt;Macro DocRoot $(docroot)&gt;
+    DocumentRoot "/var/www/$(docroot)/htdocs"
 &lt;/Macro&gt;</pre>
 
 

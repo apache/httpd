@@ -361,7 +361,7 @@ print "Hello, World.";</pre>
 
       <p>When you miss HTTP headers from the environment, make
       sure they are formatted according to
-      <a href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a>,
+      <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>,
       section 4.2: Header names must start with a letter,
       followed only by letters, numbers or hyphen. Any header
       violating this rule will be dropped silently.</p>

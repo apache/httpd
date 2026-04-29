@@ -38,7 +38,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module queries an <a href="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</a> compatible daemon on a remote host to look up the owner of
+    <p>This module queries an <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> compatible daemon on a remote host to look up the owner of
     a connection.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3 class="directives">Directives</h3>
@@ -63,7 +63,7 @@ user</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved out of core in Apache 2.1</td></tr>
 </table>
-    <p>This directive enables <a href="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</a>-compliant logging of the remote user name for each
+    <p>This directive enables <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>-compliant logging of the remote user name for each
     connection, where the client machine runs identd or something similar.
     This information is logged in the access log using the <code>%...l</code>
     <a href="mod_log_config.html#formats">format string</a>.</p>
@@ -93,7 +93,7 @@ user</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ident</td></tr>
 </table>
     <p>This directive specifies the timeout duration of an ident
-    request. The default value of 30 seconds is recommended by <a href="https://datatracker.ietf.org/doc/html/rfc1413">RFC 1413</a>, mainly because
+    request. The default value of 30 seconds is recommended by <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>, mainly because
     of possible network latency. However, you may want to adjust the
     timeout value according to your local network speed.</p>
 
