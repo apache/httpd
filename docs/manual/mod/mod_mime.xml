@@ -377,6 +377,7 @@ AddHandler type-map .var
     them.</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_dir">FallbackResource</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

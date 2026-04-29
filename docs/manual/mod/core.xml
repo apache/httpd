@@ -4793,10 +4793,13 @@ SetHandler imap-file
     <note><title>Note</title>
     <p>Because <directive>SetHandler</directive> overrides default handlers,
     normal behavior such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</p></note>
+    directories or index files is suppressed. It also overrides
+    <directive module="mod_dir">FallbackResource</directive>, since the
+    request already has an explicit handler assigned.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><directive module="mod_dir">FallbackResource</directive></seealso>
 
 </directivesynopsis>
 
