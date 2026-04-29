@@ -18,7 +18,7 @@ Body:----------de--
 --><!--#set var="TITLE" value="Fehlerhafte Anfrage!"
 --><!--#include virtual="include/top.html" -->
 
-    Ihr Browser (oder Proxy) hat eine ung&uuml;ltige Anfrage
+    Ihr Browser (oder Proxy) hat eine ungültige Anfrage
     gesendet, die vom Server nicht beantwortet werden kann.
 
 <!--#include virtual="include/bottom.html" -->
@@ -39,10 +39,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Petici&oacute;n err&oacute;nea!" -->
+<!--#set var="TITLE" value="¡Petición errónea!" -->
 <!--#include virtual="include/top.html" -->
 
-    Su navegador (o 'proxy') ha enviado una petici&oacute;n
+    Su navegador (o 'proxy') ha enviado una petición
     que el servidor no ha podido entender.
 
 <!--#include virtual="include/bottom.html" -->
@@ -55,7 +55,7 @@ Body:----------fr--
 --><!--#set var="TITLE" value="Demande incorrecte!"
 --><!--#include virtual="include/top.html" -->
 
-    Votre navigateur (ou votre proxy) a envoy&eacute;
+    Votre navigateur (ou votre proxy) a envoyé
     une demande que ce serveur n'a pas comprise.
 
 <!--#include virtual="include/bottom.html" -->  
@@ -64,12 +64,12 @@ Body:----------fr--
 Content-language: ga 
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Iarratas m&iacute;cheart!"
+<!--#set var="TITLE" value="Iarratas mícheart!"
 --><!--#include virtual="include/top.html" -->
 
-    Seol do chuid brabhs&aacute;la&iacute; (n&oacute;
-    seachfhreastala&iacute;) freagairt n&aacute;rbh fh&eacute;idir leis an
-    fhreastala&iacute; seo a thuisceant.
+    Seol do chuid brabhsálaí (nó
+    seachfhreastalaí) freagairt nárbh fhéidir leis an
+    fhreastalaí seo a thuisceant.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
@@ -156,11 +156,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="Requisi&ccedil;&atilde;o Inv&aacute;lida!"
+--><!--#set var="TITLE" value="Requisiç&atilde;o Inválida!"
 --><!--#include virtual="include/top.html" -->
 
     Seu "browser" (ou o servidor proxy) enviou uma
-    requisi&ccedil;&atilde;o inv&aacute;lida ao servidor.
+    requisiç&atilde;o inválida ao servidor.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -219,11 +219,11 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Felaktig f&ouml;rfr&aring;gan!"
+--><!--#set var="TITLE" value="Felaktig förfr&aring;gan!"
 --><!--#include virtual="include/top.html" -->
 
-    Din webbl&auml;sare eller proxy skickade en f&ouml;rfr&aring;gan
-    som denna server inte kunde f&ouml;rst&aring;.
+    Din webbläsare eller proxy skickade en förfr&aring;gan
+    som denna server inte kunde först&aring;.
 
 <!--#include virtual="include/bottom.html" -->  
 ----------sv--

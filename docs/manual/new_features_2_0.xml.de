@@ -195,7 +195,7 @@
 
       <dd>Neues Modul in Apache httpd 2.0. Dieses Modul beinhaltet die
       Funktionalit&#228;t von <code>mod_mmap_static</code> aus Version
-      1.3 des Apache HTTP Server zuz&uuml;glich einiger weiterer
+      1.3 des Apache HTTP Server zuzüglich einiger weiterer
       Caching-Funktionen.</dd>
 
       <dt><module>mod_headers</module></dt>

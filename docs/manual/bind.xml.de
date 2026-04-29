@@ -34,7 +34,7 @@
     Apache</a></seealso>
 
   <section id="overview">
-    <title>&Uuml;berblick</title>
+    <title>Überblick</title>
 
     <related>
       <modulelist>
@@ -49,10 +49,10 @@
 
     <p>Beim Start bindet sich der httpd an bestimmte Adressen und Ports
     der lokalen Maschine und wartet auf eingehende Anfragen.
-    Standardm&auml;&szlig;ig lauscht er an allen Adressen des Systems.
+    Standardmäßig lauscht er an allen Adressen des Systems.
     Es kann jeodch notwendig sein, ihm mit zuteilen, nur an bestimmten
-    Ports zu lauschen oder nur an ausgew&auml;hlten Adressen, bzw. einer
-    Kombination aus beidem. Dies wird oft mit der Funktionalit&auml;t <a
+    Ports zu lauschen oder nur an ausgewählten Adressen, bzw. einer
+    Kombination aus beidem. Dies wird oft mit der Funktionalität <a
     href="vhosts/">virtueller Hosts</a> kombiniert, die bestimmt, wie
     der <code>httpd</code> auf verschiedene IP-Adressen, Hostnamen und
     Ports reagiert.</p>
@@ -64,11 +64,11 @@
     Portnummer angegeben wird, dann lauscht der Server auf allen
     Netzwerkinterfaces an dem angegebenen Port. Ist auch eine IP-Adresse
     angegeben, dann lauscht der Server an der angegebenen Schnittstelle
-    auf dem angegebenen Port.  Es k&ouml;nnen mehrere <directive
+    auf dem angegebenen Port.  Es können mehrere <directive
     module="mpm_common">Listen</directive>-Anweisungen verwendet werden,
     um eine Reihe von Adressen und Ports anzugeben, an denen gelauscht
     werden soll. Der Server wird dann auf Anfragen an jeder der
-    abgeh&ouml;rten Adressen und Ports antworten.</p>
+    abgehörten Adressen und Ports antworten.</p>
 
     <p>Um beispielsweise den Server zu veranlassen, auf allen
     Netzwerkinterfaces sowohl an Port 80, als auch an Port 8000
@@ -92,7 +92,7 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <p>IPv6-Adressen m&uuml;ssen wie im folgenden Beispiel in eckigen
+    <p>IPv6-Adressen müssen wie im folgenden Beispiel in eckigen
       Klammern angegeben werden:</p>
 
     <example>
@@ -101,9 +101,9 @@ Listen 192.0.2.5:8000
     </highlight>
     </example>
 
-    <note type="warning"><p>Sich &uuml;berlappende <directive
+    <note type="warning"><p>Sich überlappende <directive
     module="mpm_common">Listen</directive>-Direktiven generieren einen
-    fatalen Fehler, der verhindert, dass der Server hochf&auml;hrt.</p>
+    fatalen Fehler, der verhindert, dass der Server hochfährt.</p>
 
     <example>
       (48)Address already in use: make_sock: could not bind to address [::]:80
@@ -156,41 +156,41 @@ Listen 192.0.2.5:8000
     <title>Betrachtung von IPv6-Besonderheiten</title>
 
     <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
-    <glossary>APR</glossary> unterst&uuml;tzt IPv6 auf den meisten
-    dieser Plattformen und erm&ouml;glicht dem httpd, IPv6-Sockets zu
-    verwenden und &uuml;ber IPv6 gesendete Anfragen zu behandeln.</p>
+    <glossary>APR</glossary> unterstützt IPv6 auf den meisten
+    dieser Plattformen und ermöglicht dem httpd, IPv6-Sockets zu
+    verwenden und über IPv6 gesendete Anfragen zu behandeln.</p>
 
-    <p>F&uuml;r httpd-Administratoren kommt erschwerend die Frage hinzu,
+    <p>Für httpd-Administratoren kommt erschwerend die Frage hinzu,
     ob IPv6-Sockets sowohl IPv4- als auch IPv6-Verbindungen handhaben
-    k&ouml;nnen. Zum Betrieb von IPv4-Verbindungen an IPv6-Sockets
+    können. Zum Betrieb von IPv4-Verbindungen an IPv6-Sockets
     werden auf IPv6 abgebildete IPv4-Adressen <transnote>so genannete
     IPv4-gemappte IPv6-Adressen</transnote> verwendet, welche
-    standardm&auml;&szlig;ig auf den meisten Plattformen erlaubt sind.
+    standardmäßig auf den meisten Plattformen erlaubt sind.
     Unter FreeBSD, NetBSD und OpenBSD jedoch sind sie
-    standardm&auml;&szlig;ig deaktiviert, um den Systemgrunds&auml;tzen
+    standardmäßig deaktiviert, um den Systemgrundsätzen
     dieser Plattformen zu entsprechen. Auf Systemen, wo dies
-    standardm&auml;&szlig;ig dekativiert ist, kann dieses Verhalten mit
-    einem speziellen <program>configure</program>-Parameter f&uuml;r den
-    httpd ge&auml;ndert werden.</p>
+    standardmäßig dekativiert ist, kann dieses Verhalten mit
+    einem speziellen <program>configure</program>-Parameter für den
+    httpd geändert werden.</p>
 
     <p>Auf der anderen Seite ist die Verwendung von gemappten Adressen
     bei einigen Plattformen wie Linux und True64 der
     <strong>einzige</strong> Weg, sowohl IPv4 wie auch IPv6 zu
-    verwenden. Wenn Sie m&ouml;chten, dass der <code>httpd</code> IPv4-
+    verwenden. Wenn Sie möchten, dass der <code>httpd</code> IPv4-
     und IPv6-Verbindungen mit einem Minimum an Sockets behandelt, was
     die Verwendung von IPv4-gemappten IPv6-Adressen erfordert, dann
-    m&uuml;ssen Sie die <program> configure</program>-Option
+    müssen Sie die <program> configure</program>-Option
     <code>--enable-v4-mapped</code> angeben.</p>
 
     <p><code>--enable-v4-mapped</code> ist die Voreinstellung auf allen
-    Plattformen au&szlig;er FreeBSD, NetBSD und OpenBSD, so dass Ihr
-    httpd wahrscheinlich so &uuml;bersetzt wurde.</p>
+    Plattformen außer FreeBSD, NetBSD und OpenBSD, so dass Ihr
+    httpd wahrscheinlich so übersetzt wurde.</p>
 
     <p>Geben Sie wie in dem folgenden Beispiel bei allen <directive
     module="mpm_common">Listen</directive>-Anweisungen eine IPv4-Adresse
-    an, wenn Sie m&ouml;chten, dass Ihr httpd lediglich IPv4-Adressen
-    behandelt, unabh&auml;ngig davon, was Ihre Plattform und die APR
-    unterst&uuml;tzen:</p>
+    an, wenn Sie möchten, dass Ihr httpd lediglich IPv4-Adressen
+    behandelt, unabhängig davon, was Ihre Plattform und die APR
+    unterstützen:</p>
 
     <example>
     <highlight language="config">
@@ -199,10 +199,10 @@ Listen 192.0.2.1:80
     </highlight>
     </example>
 
-    <p>Wenn Sie m&ouml;chten, dass der httpd IPv4- und IPv6-Verbindungen
+    <p>Wenn Sie möchten, dass der httpd IPv4- und IPv6-Verbindungen
     an separaten Sockets behandelt (d.h. IPv4-gemappte Adressen
-    deaktiviert werden sollen) und Ihre Plattform es unterst&uuml;tzt,
-    dann m&uuml;ssen Sie die <program>configure</program>-Option
+    deaktiviert werden sollen) und Ihre Plattform es unterstützt,
+    dann müssen Sie die <program>configure</program>-Option
     <code>--disable-v4-mapped</code> angeben.  Unter FreeBSD, NetBSD und
     OpenBSD ist <code>--disable-v4-mapped</code> voreingestellt.</p>
   </section>
@@ -210,17 +210,17 @@ Listen 192.0.2.1:80
   <section id="protocol">
     <title>Angabe des Protokolls bei Listen</title>
     <p>Das optionale zweite <var>Protokoll</var>-Argument von <directive
-    module="mpm_common">Listen</directive> ist f&uuml;r die meisten
+    module="mpm_common">Listen</directive> ist für die meisten
     Konfigurationen gar nicht erforderlich. Wenn nicht angegeben, sind
-    <code>https</code> f&uuml;r Port 443 und <code>http</code> f&uuml;r
+    <code>https</code> für Port 443 und <code>http</code> für
     alle anderen Ports die Voreinstellungen. Die Protokollangabe wird
     sowohl dazu verwendet, herauszufinden, welches Modul Anfragen
     verarbeiten soll, als auch, um protokollspezifische Optimierungen
     bei der <directive module="core">AcceptFilter</directive>-Direktive
     zu aktivieren.</p>
 
-    <p>Sie m&uuml;ssen das Protokoll nur angeben, wenn Sie
-    ungew&ouml;hnliche Ports benutzen, beispielsweise <code>https</code>
+    <p>Sie müssen das Protokoll nur angeben, wenn Sie
+    ungewöhnliche Ports benutzen, beispielsweise <code>https</code>
     auf Port 8443:</p>
 
     <example>
@@ -238,20 +238,20 @@ Listen 192.0.2.1:80
     lediglich mit, an welchen Adressen und Ports er zu lauschen hat.
     Werden keine <directive module="core"
     type="section">VirtualHost</directive>-Container verwendet, dann
-    verh&auml;lt sich der Server bei allen angenommenen Anfragen gleich.
+    verhält sich der Server bei allen angenommenen Anfragen gleich.
     <directive module="core"
-    type="section">VirtualHost</directive>-Abschnitte k&ouml;nnen jedoch
-    dazu verwendet werden, ein unterschiedliches Verhalten f&uuml;r eine
+    type="section">VirtualHost</directive>-Abschnitte können jedoch
+    dazu verwendet werden, ein unterschiedliches Verhalten für eine
     oder mehrere Adressen und Ports festzulegen. Um einen virtuellen
-    Host einzurichten, muss dem Server zun&auml;chst mitgeteilt werden,
+    Host einzurichten, muss dem Server zunächst mitgeteilt werden,
     an den betreffenden Adressen oder Ports zu lauschen. Dann sollte ein
     <directive module="core"
-    type="section">VirtualHost</directive>-Abschnitt f&uuml;r die
+    type="section">VirtualHost</directive>-Abschnitt für die
     angebene Adresse und den angegebenen Port erstellt werden, um das
     Verhalten dieses virtuellen Hosts festzulegen. Beachten Sie bitte,
     dass auf einen <directive module="core"
     type="section">VirtualHost</directive> nicht zugegriffen werden
-    kann, wenn er f&uuml;r eine Adresse und einen Port eingerichtet
+    kann, wenn er für eine Adresse und einen Port eingerichtet
     wurde, an dem der Server nicht lauscht.</p>
   </section>
 </manualpage>

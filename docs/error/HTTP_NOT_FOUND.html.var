@@ -13,7 +13,7 @@ Body:----------cs--
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
     stránce</a> je chybný nebo zastaralý. Informujte, prosím, autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">této stránky</a>
-    o&nbsp;chybě.
+    o chybě.
 
   <!--#else -->
 
@@ -41,12 +41,12 @@ Body:----------de--
     Seite</a> scheint falsch oder nicht mehr aktuell zu sein.
     Bitte informieren Sie den Autor
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">dieser Seite</a>
-    &uuml;ber den Fehler.
+    über den Fehler.
 
   <!--#else -->
 
     Sofern Sie den URL manuell eingegeben haben,
-    &uuml;berpr&uuml;fen Sie bitte die Schreibweise und versuchen Sie es erneut.
+    überprüfen Sie bitte die Schreibweise und versuchen Sie es erneut.
 
   <!--#endif -->
 
@@ -82,7 +82,7 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Objeto no localizado!" -->
+<!--#set var="TITLE" value="¡Objeto no localizado!" -->
 <!--#include virtual="include/top.html" -->
 
     No se ha localizado la URL solicitada en este servidor.
@@ -90,15 +90,15 @@ Body:----------es--
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
     La URL de la <a href="<!--#echo encoding="url" 
-    var="HTTP_REFERER"-->">p&aacute;gina que le ha remitido</a> 
-    parece ser err&oacute;nea o estar obsoleta. Por favor, informe del error 
+    var="HTTP_REFERER"-->">página que le ha remitido</a> 
+    parece ser errónea o estar obsoleta. Por favor, informe del error 
     al autor de <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">esa
-    p&aacute;gina</a>.
+    página</a>.
 
   <!--#else -->
 
     Si usted ha introducido la URL manualmente, por favor revise su
-    ortograf&iacute;a e int&eacute;ntelo de nuevo.
+    ortografía e inténtelo de nuevo.
 
   <!--#endif -->
 
@@ -109,25 +109,25 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="Objet non trouv&eacute;!"
+--><!--#set var="TITLE" value="Objet non trouvé!"
 --><!--#include virtual="include/top.html" -->
 
-    L'URL demand&eacute;e n'a pas pu &ecirc;tre trouv&eacute;e sur ce serveur.
+    L'URL demandée n'a pas pu être trouvée sur ce serveur.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    La r&eacute;f&eacute;rence sur
+    La référence sur
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">la page
-    cit&eacute;e</a>
-    semble &ecirc;tre erron&eacute;e ou perim&eacute;e. Nous vous prions
+    citée</a>
+    semble être erronée ou perimée. Nous vous prions
     d'informer l'auteur de
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">cette page</a>
     de cette erreur.
 
   <!--#else -->
 
-    Si vous avez tap&eacute; l'URL &agrave; la main, veuillez v&eacute;rifier
-    l'orthographe et r&eacute;essayer.
+    Si vous avez tapé l'URL à la main, veuillez vérifier
+    l'orthographe et réessayer.
 
   <!--#endif -->
 
@@ -140,21 +140,21 @@ Body:----------ga--
 <!--#set var="TITLE" value="Aidhm ar iarraidh!"
 --><!--#include virtual="include/top.html" -->
 
-    N&iacute;or aimsigh an URL iarraithe ar an fhreastala&iacute; seo.
+    Níor aimsigh an URL iarraithe ar an fhreastalaí seo.
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    Is cos&uacute;il go bhfuil an nasc ar an
+    Is cosúil go bhfuil an nasc ar an
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">leathanach
-    thagarthach</a> m&iacute;cheart n&oacute; as d&aacute;ta. 
-    Cur in i&uacute;l d'&uacute;adar 
+    thagarthach</a> mícheart nó as dáta. 
+    Cur in iúl d'úadar 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->"
-    >an leathanach sin</a> go bhfuil earr&aacute;id ann, le do thoil.
+    >an leathanach sin</a> go bhfuil earráid ann, le do thoil.
 
   <!--#else -->
 
-    M&aacute; chuir t&uacute; isteach an URL t&uacute; f&eacute;in, deimhnigh
-    go bhfuil s&eacute; litrithe i gceart agat, agus d&eacute;an iarracht eile
+    Má chuir tú isteach an URL tú féin, deimhnigh
+    go bhfuil sé litrithe i gceart agat, agus déan iarracht eile
     le do thoil.
 
   <!--#endif -->
@@ -175,7 +175,7 @@ Body:----------it--
 
     Il link della
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina da cui
-    sei arrivato</a> potrebbe essere errato o non essere pi&ugrave; valido.
+    sei arrivato</a> potrebbe essere errato o non essere più valido.
     Per favore, informa dell'errore l'autore della
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">pagina</a>.
 
@@ -331,15 +331,15 @@ Body:-------pt-br--
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
     O link na
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">p&aacute;gina
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">página
     referida</a> parece estar com algum erro ou desatualizado. Por favor informe o
     autor <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">desta 
-    p&aacute;gina</a> sobre o erro.
+    página</a> sobre o erro.
 
    <!--#else -->
 
-    Se voc&ecirc; digitou o endere&ccedil;o (URL) manualmente,
-    por favor verifique novamente a sintaxe do endere&ccedil;o.
+    Se você digitou o endereço (URL) manualmente,
+    por favor verifique novamente a sintaxe do endereço.
 
   <!--#endif -->
 
@@ -349,11 +349,11 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="M&eacute;todo n&atilde;o permitido!"
+<!--#set var="TITLE" value="Método n&atilde;o permitido!"
 --><!--#include virtual="include/top.html" -->
 
-	O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
-	&eacute; permitido para o URL pedido.
+	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
+	é permitido para o URL pedido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -449,16 +449,16 @@ Body:----------sv--
 
   <!--#if expr="-n v('HTTP_REFERER')" -->
 
-    L&auml;nken p&aring; den
+    Länken p&aring; den
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tidigare sidan</a> 
-    verkar vara felaktig eller inaktuell. V&auml;nligen informera f&ouml;rfattaren av
+    verkar vara felaktig eller inaktuell. Vänligen informera författaren av
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">sidan</a>
     om felet.
 
   <!--#else -->
 
     Om du skrev in adressen manuellt s&aring; kontrollera din stavning och
-    f&ouml;rs&ouml;k igen.
+    försök igen.
 
   <!--#endif -->
 

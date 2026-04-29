@@ -24,17 +24,17 @@
   <title>Verzeichnis der Direktiven</title>
   <summary>
     <p>
-      Hier sind alle Apache-Direktiven aufgef&uuml;hrt, die in der
-      Standard-Apache-Distribution verf&uuml;gbar sind. Sie sind in
+      Hier sind alle Apache-Direktiven aufgeführt, die in der
+      Standard-Apache-Distribution verfügbar sind. Sie sind in
       einem einheitlichen Format beschrieben. Ein <a
       href="directive-dict.html" rel="Glossary">Glossar</a>
-      erl&auml;utert die in der Beschreibung verwendeten Begriffe.
+      erläutert die in der Beschreibung verwendeten Begriffe.
     </p>
 
     <p>
-      Au&szlig;erdem existiert eine <a
+      Außerdem existiert eine <a
       href="quickreference.html">Kurzreferenz der Direktiven</a>, welche
-      zu jeder Direktive eine Zusammenfassung der Details enth&auml;lt.
+      zu jeder Direktive eine Zusammenfassung der Details enthält.
     </p>
   </summary>
 </directiveindex>

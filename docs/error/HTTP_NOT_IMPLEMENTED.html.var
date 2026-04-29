@@ -14,11 +14,11 @@ Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="Anfrage nicht ausf&uuml;hrbar!"
+--><!--#set var="TITLE" value="Anfrage nicht ausführbar!"
 --><!--#include virtual="include/top.html" -->
 
     Die vom Browser angeforderte Aktion wird vom Server
-    nicht unterst&uuml;tzt.
+    nicht unterstützt.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -37,10 +37,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;No se puede procesar la petici&oacute;n!" -->
+<!--#set var="TITLE" value="¡No se puede procesar la petición!" -->
 <!--#include virtual="include/top.html" -->
 
-    El servidor no soporta la acci&oacute;n
+    El servidor no soporta la acción
     solicitada por el navegador.
 
 <!--#include virtual="include/bottom.html" -->
@@ -50,11 +50,11 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="La requ&ecirc;te ne peut &ecirc;tre effectu&eacute;e!"
+--><!--#set var="TITLE" value="La requête ne peut être effectuée!"
 --><!--#include virtual="include/top.html" -->
 
     Le serveur n'est pas en mesure d'effectuer l'action
-    demand&eacute;e par le navigateur. 
+    demandée par le navigateur. 
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
@@ -62,11 +62,11 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Iarratais dophr&oacute;ise&aacute;ilte!"
+<!--#set var="TITLE" value="Iarratais dophróiseáilte!"
 --><!--#include virtual="include/top.html" -->
 
-    N&iacute;l taca&iacute;ocht ag an fhreastala&iacute; don gn&iacute;omh
-    at&aacute; &aacute; iarraidh ag an mbrabhs&aacute;la&iacute;.
+    Níl tacaíocht ag an fhreastalaí don gníomh
+    atá á iarraidh ag an mbrabhsálaí.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
@@ -148,10 +148,10 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="A requisi&ccedil;&atilde;o n&atilde;o pode ser processada!"
+--><!--#set var="TITLE" value="A requisiç&atilde;o n&atilde;o pode ser processada!"
 --><!--#include virtual="include/top.html" -->
 
-   O servidor n&atilde;o suporta a a&ccedil;&atilde;o requisitada pelo
+   O servidor n&atilde;o suporta a aç&atilde;o requisitada pelo
    seu "browser".
 
 <!--#include virtual="include/bottom.html" -->
@@ -163,7 +163,7 @@ Body:----------pt--
 <!--#set var="TITLE" value="N&atilde;o posso processar o pedido!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor n&atilde;o suporta a ac&ccedil;&atilde;o pedida pelo
+	O servidor n&atilde;o suporta a acç&atilde;o pedida pelo
 	<i>browser</i>.
 
 <!--#include virtual="include/bottom.html" -->
@@ -211,8 +211,8 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Kan ikke utf!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern st&ouml;djer inte den handling som &ouml;nskades
-    av webbl&auml;saren.
+    Servern stödjer inte den handling som önskades
+    av webbläsaren.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

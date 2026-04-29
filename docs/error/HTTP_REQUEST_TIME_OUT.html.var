@@ -15,10 +15,10 @@ Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="Zeitlimit &uuml;berschritten!"
+--><!--#set var="TITLE" value="Zeitlimit überschritten!"
 --><!--#include virtual="include/top.html" -->
 
-    Der Server konnte nicht mehr l&auml;nger auf die Beendigung
+    Der Server konnte nicht mehr länger auf die Beendigung
     der Browseranfrage warten; die Netzwerkverbindung wurde
     vom Server geschlossen.
 
@@ -40,10 +40,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Tiempo de espera excedido!" -->
+<!--#set var="TITLE" value="¡Tiempo de espera excedido!" -->
 <!--#include virtual="include/top.html" -->
 
-    El servidor ha cerrado la conexi&oacute;n de red
+    El servidor ha cerrado la conexión de red
     debido a que el navegador no ha finalizado la solicitud
     dentro del tiempo permitido.
 
@@ -54,11 +54,11 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="Requ&ecirc;te trop longue !"
+--><!--#set var="TITLE" value="Requête trop longue !"
 --><!--#include virtual="include/top.html" -->
 
-    Le serveur a ferm&eacute; la connection car le navigateur n'a pas 
-    fini la requ&ecirc;te dans le temps sp&eacute;cifi&eacute;.
+    Le serveur a fermé la connection car le navigateur n'a pas 
+    fini la requête dans le temps spécifié.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
@@ -69,8 +69,8 @@ Body:----------ga--
 <!--#set var="TITLE" value="Am don iarratais istigh!"
 --><!--#include virtual="include/top.html" -->
 
-    D&uacute;n an freastala&iacute; an nasc l&iacute;onra, 
-    mar n&iacute;or chr&iacute;ochnaidh an brabhs&aacute;la&iacute;
+    Dún an freastalaí an nasc líonra, 
+    mar níor chríochnaidh an brabhsálaí
     leis an iarratais, taobh istigh den am sonraithe.
 
 <!--#include virtual="include/bottom.html" -->
@@ -83,7 +83,7 @@ Body:----------it--
 --><!--#set var="TITLE" value="Time-out della richiesta!"
 --><!--#include virtual="include/top.html" -->
 
-    Il server ha chiuso la connessione in quanto &egrave; stato
+    Il server ha chiuso la connessione in quanto è stato
     superato il limite di tempo entro il quale il browser avrebbe
     dovuto eseguire la richiesta.
 
@@ -163,7 +163,7 @@ Body:-------pt-br--
 --><!--#include virtual="include/top.html" -->
 
    O servidor encerrou a conex&atilde;o porque o "browser"
-   n&atilde;o finalizou a requisi&ccedil;&atilde;o dentro
+   n&atilde;o finalizou a requisiç&atilde;o dentro
    do tempo limite.
 
 <!--#include virtual="include/bottom.html" -->
@@ -175,7 +175,7 @@ Body:----------pt--
 <!--#set var="TITLE" value="Tempo excedido!"
 --><!--#include virtual="include/top.html" -->
 
-	O servidor interrompeu a liga&ccedil;&atilde;o de rede porque o
+	O servidor interrompeu a ligaç&atilde;o de rede porque o
 	<i>browser</i> n&atilde;o terminou o pedido dentro do tempo limite.
 
 <!--#include virtual="include/bottom.html" -->
@@ -226,9 +226,9 @@ Body:----------sv--
 --><!--#set var="TITLE" value="Request time-out!"
 --><!--#include virtual="include/top.html" -->
 
-    Servern st&auml;ngde f&ouml;rbindelsen d&auml;rf&ouml;r att
-    webbl&auml;saren inte avslutade f&ouml;rfr&aring;gan inom
-    f&ouml;rbest&auml;md tid.
+    Servern stängde förbindelsen därför att
+    webbläsaren inte avslutade förfr&aring;gan inom
+    förbestämd tid.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

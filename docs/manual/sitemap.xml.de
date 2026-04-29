@@ -72,19 +72,19 @@
 <page href="vhosts/name-based.html">Namensbasierte virtuelle Hosts</page>
 <page href="vhosts/ip-based.html">IP-basierte virtuelle Hosts</page>
 <page href="vhosts/mass.html">Dynamisch konfiguriertes Massen-Virtual-Hosting</page>
-<page href="vhosts/examples.html">Beispiele f&uuml;r virtuelle Hosts in
+<page href="vhosts/examples.html">Beispiele für virtuelle Hosts in
   typischen Installationen</page>
-<page href="vhosts/details.html">Tiefergehende Er&ouml;rterung der Zuweisung
+<page href="vhosts/details.html">Tiefergehende Erörterung der Zuweisung
   virtueller Hosts</page>
 <page href="vhosts/fd-limits.html">Datei-Deskriptor-Begrenzungen</page>
 </category>
 
 <category id="rewrite">
-<title>Einf&uuml;hrung in die URL-Manipulation</title>
-<page separate="yes" href="rewrite/">&Uuml;bersicht</page>
+<title>Einführung in die URL-Manipulation</title>
+<page separate="yes" href="rewrite/">Übersicht</page>
 <page href="mod/mod_rewrite.html">Referenz-Dokumentation von
 mod_rewrite</page>
-<page href="rewrite/intro.html">Einf&uuml;hrung in regul&#228;re Ausdr&#252;cke und mod_rewrite</page>
+<page href="rewrite/intro.html">Einführung in regul&#228;re Ausdr&#252;cke und mod_rewrite</page>
 <page href="rewrite/remapping.html">Verwendung von mod_rewrite, um URLs umzuleiten oder umzuschreiben</page>
 <page href="rewrite/access.html">Zugriffskontrolle mit mod_rewrite</page>
 <page href="rewrite/vhosts.html">Dynamische virtuelle Hosts mit mod_rewrite</page>
@@ -172,7 +172,7 @@ HPUX betreiben</page>
 <title>Dokumentation f&#252;r Entwickler</title>
 <page separate="yes" href="developer/">&#220;bersicht</page>
 <page href="developer/API.html">Anmerkungen zur Apache-API</page>
-<page href="developer/new_api_2_4.html">API-&Auml;nderungen im Apache HTTPD
+<page href="developer/new_api_2_4.html">API-Änderungen im Apache HTTPD
 2.4</page>
 <page href="developer/modguide.html">Module f&#252;r Apache HTTPD 2.4 entwickeln</page>
 <page href="developer/documenting.html">Apache HTTPD dokumentieren</page>
