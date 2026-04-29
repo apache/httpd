@@ -27,7 +27,7 @@ This is the documentation source for the [Apache HTTP Server](https://httpd.apac
 
 ## External Link Conventions
 
-### RFC Links
+
 Always link to the IETF Datatracker for RFC references:
 ```
 https://datatracker.ietf.org/doc/html/rfcNNNN

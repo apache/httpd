@@ -95,7 +95,7 @@ Negotiation</a></li>
 
       <dt><code>Content-Language:</code></dt>
       <dd>The language(s) of the variant, as an Internet standard
-      language tag (<a href="https://datatracker.ietf.org/doc/html/rfc1766">RFC 1766</a>). An example is <code>en</code>,
+      language tag (<a href="https://www.rfc-editor.org/rfc/rfc1766">RFC 1766</a>). An example is <code>en</code>,
       meaning English. If the variant contains more than one
       language, they are separated by a comma.</dd>
 

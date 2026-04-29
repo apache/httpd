@@ -44,7 +44,7 @@
     wish to limit access by client host name, address or environment
     variable.</div>
 
-    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="https://datatracker.ietf.org/doc/html/rfc2616">RFC 2616</a> compliant
+    <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> compliant
     <strong>HTTP content caching filter</strong>, with support for the caching
     of content negotiated responses containing the Vary header.</p>
 

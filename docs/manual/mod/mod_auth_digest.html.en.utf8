@@ -38,7 +38,7 @@
 <h3>Summary</h3>
 
     <p>This module implements HTTP Digest Authentication
-    (<a href="https://datatracker.ietf.org/doc/html/rfc2617">RFC2617</a>), and
+    (<a href="https://www.rfc-editor.org/rfc/rfc2617">RFC 2617</a>), and
     provides an alternative to <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> where the
     password is not transmitted as cleartext. However, this does
     <strong>not</strong> lead to a significant security advantage over
