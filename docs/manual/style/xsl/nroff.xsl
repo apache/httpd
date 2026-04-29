@@ -139,6 +139,15 @@
 <xsl:apply-templates select="section[@id='synopsis']" />&lf;
 <xsl:apply-templates select="summary" />&lf;
 <xsl:apply-templates select="section[@id!='synopsis']" />&lf;
+
+<!-- SEE ALSO section from seealso elements -->
+<xsl:if test="seealso">
+<xsl:text>.SH "SEE ALSO"</xsl:text>&lf;
+<xsl:for-each select="seealso">
+<xsl:apply-templates select="." mode="seealso" />
+<xsl:if test="position() != last()">, </xsl:if>
+</xsl:for-each>&lf;
+</xsl:if>
 </xsl:template>
 <!-- /manualpage -->
 
@@ -381,7 +390,19 @@ FATAL: only tables with two (2) columns are supported.
 <!-- ==================================================================== -->
 <!-- remove some stuff from the output                                    -->
 <!-- ==================================================================== -->
-<xsl:template match="parentdocument|seealso|dd|td|example/br|dd/br" />
+<xsl:template match="parentdocument|dd|td|example/br|dd/br" />
+
+<!-- suppress seealso in normal flow (rendered separately in SEE ALSO) -->
+<xsl:template match="seealso" />
+
+<!-- ==================================================================== -->
+<!-- seealso mode: extract plain text for SEE ALSO section                -->
+<!-- ==================================================================== -->
+<xsl:template match="seealso" mode="seealso">
+<xsl:variable name="text" select="normalize-space(.)" />
+<xsl:text>
+</xsl:text><xsl:value-of select="$text" />
+</xsl:template>
 
 
 <!-- ==================================================================== -->
