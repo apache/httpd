@@ -371,7 +371,9 @@ CustomLog "logs/deflate_log" deflate</pre>
     <p>The <code class="directive">DeflateInflateLimitRequestBody</code> directive
         specifies the maximum size of an inflated request body. If it is unset,
         <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> is applied to the
-        inflated body.</p>
+        inflated body. A value of <code>0</code> means no limit is applied
+        to the inflated body size (but other limits such as
+        <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code> may still apply).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
