@@ -155,8 +155,7 @@ SetEnvIfNoCase User-Agent Robot is_a_robot
     things:</p>
 
 <ol>
-<li>An HTTP request header field (see <a
-    href="https://datatracker.ietf.org/doc/html/rfc2616">RFC2616</a>
+<li>An HTTP request header field (see <rfc>2616</rfc>
     for more information about these); for example: <code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, and
     <code>Accept-Language</code>.  A regular expression may be
