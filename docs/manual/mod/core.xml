@@ -1621,8 +1621,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     omitted.</p>
 
     <p>A number as modifier can be used to assign a log severity level to a
-    format item. The item will only be logged if the severity of the log
-    message is not higher than the specified log severity level. The number can
+    format item. The item will only be logged if the log message has a
+    severity level of the specified number or more severe (i.e., the
+    message's level number is less than or equal to the modifier). The number can
     range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
 
     <p>For example, here's what would happen if you added modifiers to
@@ -1647,7 +1648,8 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     <tr>
     <td><code>%4{Referer}i</code></td>
     <td>Logs the <code>Referer</code> only if the log message severity
-    is higher than 4.</td>
+    is 4 (warn) or more severe (i.e., levels 1 through 4:
+    alert, crit, error, warn).</td>
     </tr>
 
     </table>
