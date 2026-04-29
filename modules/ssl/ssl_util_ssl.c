@@ -206,7 +206,7 @@ char *modssl_bio_free_read(apr_pool_t *p, BIO *bio)
 /* Convert ASN.1 string to a pool-allocated char * string, escaping
  * control characters.  If raw is zero, convert to UTF-8, otherwise
  * unchanged from the character set. */
-static char *asn1_string_convert(apr_pool_t *p, ASN1_STRING *asn1str, int raw)
+static char *asn1_string_convert(apr_pool_t *p, const ASN1_STRING *asn1str, int raw)
 {
     BIO *bio;
     int flags = ASN1_STRFLGS_ESC_CTRL;
