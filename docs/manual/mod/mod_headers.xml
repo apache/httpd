@@ -406,7 +406,11 @@ Header always set X-Foo "baz"
     <dd>The response header is appended to any existing header of
     the same name. When a new value is merged onto an existing
     header it is separated from the existing header with a comma.
-    This is the HTTP standard way of giving a header multiple values.</dd>
+    This is the HTTP standard way of giving a header multiple values.
+    Note that the <code>Set-Cookie</code> header is an exception:
+    <rfc>6265</rfc> requires multiple <code>Set-Cookie</code> headers
+    rather than combining values with commas. Use <code>add</code>
+    instead of <code>append</code> for <code>Set-Cookie</code>.
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
