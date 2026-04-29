@@ -78,6 +78,12 @@ BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr
 BOOL        modssl_X509_match_name(apr_pool_t *, X509 *, const char *, BOOL, server_rec *);
 char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
 
+/* Convert ASN.1 string to a pool-allocated char * string, escaping
+ * control characters.  If raw is zero, convert to UTF-8, otherwise
+ * unchanged from the character set. */
+char *modssl_ASN1_STRING_convert(apr_pool_t *p, const ASN1_STRING *asn1str,
+                                 int raw);
+
 /* Reads the remaining data in BIO, if not empty, and copies it into a
  * pool-allocated string.  If empty, returns NULL.  BIO_free(bio) is
  * called for both cases. */
