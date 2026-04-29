@@ -43,8 +43,8 @@ static const char *ssl_var_lookup_ssl(apr_pool_t *p, const SSLConnRec *sslconn, 
 static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *xs, const char *var);
 static const char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, const X509_NAME *xsname, const char *var);
 static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const char *var);
-static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm);
-static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, const ASN1_TIME *tm);
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, const ASN1_TIME *tm);
 static const char *ssl_var_lookup_ssl_cert_serial(apr_pool_t *p, X509 *xs);
 static const char *ssl_var_lookup_ssl_cert_chain(apr_pool_t *p, STACK_OF(X509) *sk, const char *var, int pem);
 static const char *ssl_var_lookup_ssl_cert_rfc4523_cea(apr_pool_t *p, SSL *ssl);
@@ -641,13 +641,13 @@ static const char *ssl_var_lookup_ssl_cert(apr_pool_t *p, request_rec *r, X509 *
         result = ssl_var_lookup_ssl_cert_serial(p, xs);
     }
     else if (strcEQ(var, "V_START")) {
-        result = ssl_var_lookup_ssl_cert_valid(p, X509_get_notBefore(xs));
+        result = ssl_var_lookup_ssl_cert_valid(p, X509_get0_notBefore(xs));
     }
     else if (strcEQ(var, "V_END")) {
-        result = ssl_var_lookup_ssl_cert_valid(p, X509_get_notAfter(xs));
+        result = ssl_var_lookup_ssl_cert_valid(p, X509_get0_notAfter(xs));
     }
     else if (strcEQ(var, "V_REMAIN")) {
-        result = ssl_var_lookup_ssl_cert_remain(p, X509_get_notAfter(xs));
+        result = ssl_var_lookup_ssl_cert_remain(p, X509_get0_notAfter(xs));
     }
     else if (*var && strcEQ(var+1, "_DN")) {
         if (*var == 'S')
@@ -816,7 +816,7 @@ static const char *ssl_var_lookup_ssl_cert_san(apr_pool_t *p, X509 *xs, const ch
         return NULL;
 }
 
-static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, const ASN1_TIME *tm)
 {
     BIO* bio;
 
@@ -837,12 +837,12 @@ static const char *ssl_var_lookup_ssl_cert_valid(apr_pool_t *p, ASN1_TIME *tm)
 
 /* Return a string giving the number of days remaining until 'tm', or
  * "0" if this can't be determined. */
-static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_TIME *tm)
+static const char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, const ASN1_TIME *tm)
 {
 #if OPENSSL_VERSION_NUMBER >= 0x10101000L && !defined(LIBRESSL_VERSION_NUMBER)
     int diff;
 
-    if (INVALID_ASN1_TIME(tm) || ASN1_TIME_diff(&diff, NULL, NULL, tm) != 1) {
+    if (ASN1_TIME_check(tm) != 1 || ASN1_TIME_diff(&diff, NULL, NULL, tm) != 1) {
         return "0";
     }
 #else
@@ -1242,7 +1242,7 @@ void modssl_var_extract_san_entries(apr_table_t *t, SSL *ssl, apr_pool_t *p)
  * parse the extension type as a primitive string.  This will fail for
  * any structured extension type per the docs.  Returns non-zero on
  * success and writes the string to the given bio. */
-static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
+static int dump_extn_value(BIO *bio, const ASN1_OCTET_STRING *str)
 {
     const unsigned char *pp = ASN1_STRING_get0_data(str);
     ASN1_STRING *ret = ASN1_STRING_new();
