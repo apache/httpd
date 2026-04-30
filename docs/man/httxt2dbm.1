@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTXT2DBM" 1 "2026-04-29" "Apache HTTP Server" "httxt2dbm"
+.TH "HTTXT2DBM" 1 "2026-04-30" "Apache HTTP Server" "httxt2dbm"
 
 .SH NAME
 httxt2dbm \- Generate dbm files for use with RewriteMap
@@ -33,7 +33,7 @@ httxt2dbm \- Generate dbm files for use with RewriteMap
 .SH "SUMMARY"
  
 .PP
-httxt2dbm is used to generate dbm files from text input, for use in RewriteMap with the \fBdbm\fR map type\&.
+\fBhttxt2dbm\fR is used to generate dbm files from text input, for use in RewriteMap with the \fBdbm\fR map type\&.
  
 .PP
 If the output file already exists, it will not be truncated\&. New keys will be added and existing keys will be updated\&.
@@ -64,7 +64,3 @@ httxt2dbm -f SDBM -i rewritemap\&.txt -o rewritemap\&.dbm
  
 .fi
  
-.SH "SEE ALSO"
-
-httpd, 
-mod_rewrite

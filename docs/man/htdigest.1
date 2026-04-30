@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDIGEST" 1 "2026-04-29" "Apache HTTP Server" "htdigest"
+.TH "HTDIGEST" 1 "2026-04-30" "Apache HTTP Server" "htdigest"
 
 .SH NAME
 htdigest \- manage user files for digest authentication
@@ -33,10 +33,10 @@ htdigest \- manage user files for digest authentication
 .SH "SUMMARY"
  
 .PP
-htdigest is used to create and update the flat-files used to store usernames, realm and password for digest authentication of HTTP users\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by htdigest\&.
+\fBhtdigest\fR is used to create and update the flat-files used to store usernames, realm and password for digest authentication of HTTP users\&. Resources available from the Apache HTTP server can be restricted to just the users listed in the files created by \fBhtdigest\fR\&.
  
 .PP
-This manual page only lists the command line arguments\&. For details of the directives necessary to configure digest authentication in httpd see the Apache manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
+This manual page only lists the command line arguments\&. For details of the directives necessary to configure digest authentication in \fBhttpd\fR see the Apache manual, which is part of the Apache distribution or can be found at http://httpd\&.apache\&.org/\&.
  
 
 .SH "OPTIONS"
@@ -60,7 +60,3 @@ The user name to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does 
 .PP
 This program is not safe as a setuid executable\&. Do \fInot\fR make it setuid\&.
  
-.SH "SEE ALSO"
-
-httpd, 
-mod_auth_digest
