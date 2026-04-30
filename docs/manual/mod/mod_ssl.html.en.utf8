@@ -17,7 +17,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -1292,12 +1292,12 @@ the certificate being verified.</p>
 <div class="directive-section"><h2><a name="SSLOCSPEnable" id="SSLOCSPEnable">SSLOCSPEnable</a> <a name="sslocspenable" id="sslocspenable">Directive</a> <a title="Permanent link" href="#sslocspenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable OCSP validation of the client certificate chain</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|leaf|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLOCSPEnable on|leaf|off [<var>flags</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Mode <em>leaf</em> available in httpd 2.4.34 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Mode <em>leaf</em> available in httpd 2.4.34 and later. Flag <em>no_ocsp_for_cert_ok</em> available in 2.4.29 and later.</td></tr>
 </table>
 <p>This option enables OCSP validation of the client certificate
 chain.  If this option is enabled, certificates in the client's
@@ -1310,6 +1310,17 @@ itself, or derived by configuration; see the
 <code class="directive"><a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></code> and
 <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code>
 directives.</p>
+
+<p>The following optional flags are available:</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>When OCSP validation is enabled, a certificate that does not
+    contain an OCSP responder URL will normally cause validation to fail.
+    Adding this flag allows such certificates to pass validation. This
+    is useful in environments where some certificates in the chain do
+    not include OCSP responder information.</p>
+</li>
+</ul>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLVerifyClient on
 SSLOCSPEnable on
@@ -1566,17 +1577,17 @@ The available <var>option</var>s are:</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    This <em>forces</em> forbidden access when <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> or
-    <code class="directive"><a href="#sslrequire">SSLRequire</a></code> successfully decided that access should be
-    forbidden. Usually the default is that in the case where a ``<code>Satisfy
-    any</code>'' directive is used, and other access restrictions are passed,
-    denial of access due to <code>SSLRequireSSL</code> or
-    <code>SSLRequire</code> is overridden (because that's how the Apache
-    <code>Satisfy</code> mechanism should work.) But for strict access restriction
-    you can use <code>SSLRequireSSL</code> and/or <code>SSLRequire</code> in
-    combination with an ``<code>SSLOptions +StrictRequire</code>''. Then an
-    additional ``<code>Satisfy Any</code>'' has no chance once mod_ssl has
-    decided to deny access.</p>
+    This <em>forces</em> forbidden access when
+    <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> or
+    <code class="directive"><a href="#sslrequire">SSLRequire</a></code> has decided
+    that access should be denied. Without
+    <code>StrictRequire</code>, it is possible for other
+    authorization directives (such as <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>) to override the SSL
+    access denial and grant access anyway. With
+    <code>SSLOptions +StrictRequire</code>, the denial by
+    <code>SSLRequireSSL</code> or <code>SSLRequire</code> is
+    enforced unconditionally, regardless of other authorization
+    settings.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2985,9 +2996,12 @@ string. In particular, this may cause the environment variable
 <code>REMOTE_USER</code> to be set.  The <var>varname</var> can be
 any of the <a href="#envvars">SSL environment variables</a>.</p>
 
-<p>When the <code>FakeBasicAuth</code> option is enabled, this directive
-instead controls the value of the username embedded within the basic
-authentication header (see <a href="#ssloptions">SSLOptions</a>).</p>
+<p>When the <code>FakeBasicAuth</code> option (see
+<a href="#ssloptions">SSLOptions</a>) or the
+<code class="directive"><a href="#authbasicfake">AuthBasicFake</a></code> directive is in
+effect, this directive controls which part of the client certificate is
+used as the username. Without <code class="directive">SSLUserName</code>,
+<code>REMOTE_USER</code> may not be set for other modules and CGI scripts.</p>
 
 <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">SSLUserName SSL_CLIENT_S_DN_CN</pre>
 </div>
@@ -3182,7 +3196,7 @@ under each different policy setting:</p>
 <a href="../fr/mod/mod_ssl.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

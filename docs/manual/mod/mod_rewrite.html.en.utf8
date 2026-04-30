@@ -17,7 +17,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -1106,14 +1106,14 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <li><p>In per-directory context (<code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and .htaccess),
       the <em>Pattern</em> is matched against only a partial path, for example a request
       of "/app1/index.html" may result in comparison against "app1/index.html" 
-      or "index.html" depending on where the <code class="directive">RewriteRule</code> is 
-      defined.</p>
+      or "index.html" depending on the directory-path for which the
+      <code class="directive">RewriteRule</code> applies.</p>
 
-      <p>The directory-path for which the rule is defined is stripped from the currently mapped
+      <p>The directory-path to which the rule applies is stripped from the currently mapped
       filesystem path before comparison (up to and including a trailing slash). 
       The net result of this per-directory prefix stripping is that rules in
       this context only match against the portion of the currently mapped filesystem path 
-      "below" where the rule is defined.</p>
+      "below" the directory-path to which the rule applies.</p>
 
       <p>Directives such as <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> and <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, or even the 
       result of previous <code class="directive">RewriteRule</code> substitutions, determine
@@ -1144,8 +1144,8 @@ restriction is required for security reasons.</li>
 directive for more information regarding what prefix will be added back to
 relative substitutions.</li>
 
-<li> If you wish to match against the full URL-path in a per-directory
-(htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
+<li> If you wish to match against the full URL-path in a per-directory context
+RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
 a <code class="directive"><a href="#rewritecond">RewriteCond</a></code>.</li>
 
 <li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
@@ -1361,7 +1361,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>END</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Also prevents further execution of rewrite rules
-        in per-directory and .htaccess context. (Available in 2.3.9 and later)
+        in per-directory context. (Available in 2.3.9 and later)
         <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
 <tr>
@@ -1631,7 +1631,7 @@ redirection</td>
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
