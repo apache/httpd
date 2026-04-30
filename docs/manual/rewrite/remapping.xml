@@ -227,11 +227,11 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
 #   when and only when document.php exists
 &lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
-    RewriteBase "/var/www/htdocs"
+    RewriteBase   "/var/www/htdocs"
 
-    RewriteCond "$1.php" -f
-    RewriteCond "$1.html" !-f
-    RewriteRule "^(.*).html$" "$1.php"
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
 &lt;/Directory&gt;
 </highlight>
     </dd>
@@ -296,7 +296,7 @@ hostname(s).</p>
 
 <p>You can alternatively accomplish this using the
 <directive module="core" type="section">If</directive>
-directive:</p>
+directive: (<strong>2.4 and later</strong>)</p>
 
 <highlight language="config">
 &lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
@@ -327,7 +327,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 
 <p>And for a site running on port 80</p>
 <highlight language="config">
-RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
 </highlight>
@@ -340,7 +340,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
         recipe:</p>
 
 <highlight language="config">
-RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
 RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
 </highlight>
@@ -389,7 +389,7 @@ RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   "^"  "-"  [PT]
+RewriteRule "^"     "-"                                          [PT]
 </highlight>
     </dd>
   </dl>
@@ -422,8 +422,8 @@ RewriteRule   "^"  "-"  [PT]
 HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         "txt:/path/to/map.mirrors"
-RewriteCond   "%{REMOTE_HOST}"  "([a-z]+)$" [NC]
-RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
 </highlight>
 
 <example>
@@ -448,46 +448,6 @@ com       http://www.example.com/<br />
     requesting client - the country code - and the following RewriteRule
     uses that value to look up the appropriate mirror host in the map
     file.</p>
-    </dd>
-  </dl>
-
-</section>
-
-<section id="browser-dependent-content">
-
-  <title>Browser Dependent Content</title>
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>We wish to provide different content based on the browser, or
-      user-agent, which is requesting the content.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>We have to decide, based on the HTTP header "User-Agent",
-      which content to serve. The following config
-      does the following: If the HTTP header "User-Agent"
-      contains "Mozilla/3", the page <code>foo.html</code>
-      is rewritten to <code>foo.NS.html</code> and the
-      rewriting stops. If the browser is "Lynx" or "Mozilla" of
-      version 1 or 2, the URL becomes <code>foo.20.html</code>.
-      All other browsers receive page <code>foo.32.html</code>.
-      This is done with the following ruleset:</p>
-
-<highlight language="config">
-RewriteCond "%{HTTP_USER_AGENT}"  "^<strong>Mozilla/3</strong>.*"
-RewriteRule "^foo\.html$"         "foo.<strong>NS</strong>.html"          [<strong>L</strong>]
-
-RewriteCond "%{HTTP_USER_AGENT}"  "^Lynx/" [OR]
-RewriteCond "%{HTTP_USER_AGENT}"  "^Mozilla/[12]"
-RewriteRule "^foo\.html$"         "foo.<strong>20</strong>.html"          [<strong>L</strong>]
-
-RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<strong>L</strong>]
-</highlight>
     </dd>
   </dl>
 
@@ -530,7 +490,7 @@ RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
 
      <highlight language="config">
 RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
-</highlight>
+     </highlight>
      </dd>
       </dl>
 
@@ -600,7 +560,7 @@ module="mod_dir">FallbackResource</directive> directive for this:</p>
 
 <highlight language="config">
 &lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource "index.php"
+  FallbackResource index.php
 &lt;/Directory&gt;
 </highlight>
 
@@ -614,7 +574,7 @@ set to accomplish the same thing:</p>
 
   RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
   RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^" "index.php" [PT]
+  RewriteRule "^"                                    "index.php" [PT]
 &lt;/Directory&gt;
 </highlight>
 
@@ -656,7 +616,7 @@ substitutions.</p>
 <highlight language="config">
 # Remove mykey=???
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteRule "(.*)" "$1?%1%3"
+RewriteRule "(.*)"            "$1?%1%3"
 </highlight>
   </li>
 
@@ -666,7 +626,7 @@ RewriteRule "(.*)" "$1?%1%3"
 <highlight language="config">
 # Copy from query string to PATH_INFO
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteRule "(.*)" "$1/products/%2/?" [PT]
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]
 </highlight>
   </li>
 
@@ -675,8 +635,8 @@ RewriteRule "(.*)" "$1/products/%2/?" [PT]
 <highlight language="config">
 # Capture the value of mykey in the query string
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteCond "%2" !=not-so-secret-value 
-RewriteRule "(.*)" - [F]
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]
 </highlight>
   </li>
 
@@ -693,6 +653,156 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 </dd>
 
 </dl>
+</section>
+
+<section id="structuredhomedirs">
+
+  <title>Structured Userdirs</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>Redirecting Anchors</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because <module>mod_rewrite</module> escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with other
+    special characters that <module>mod_rewrite</module>, by default, URL-encodes.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>Time-Dependent Rewriting</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use <module>mod_rewrite</module> to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <note type="warning"><module>mod_cache</module>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <module>mod_expires</module> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>On-the-fly Content-Regeneration</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to dynamically generate content, but store it
+      statically once it is generated. This rule will check for the
+      existence of the static file, and if it's not there, generate
+      it. The static files can be removed periodically, if desired (say,
+      via cron) and will be regenerated on demand.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      This is done via the following ruleset:
+
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
+    </dd>
+  </dl>
+
 </section>
 
 

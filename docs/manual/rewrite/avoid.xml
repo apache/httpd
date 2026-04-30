@@ -243,5 +243,60 @@ and in certain other directives.</p>
 
 </section>
 
+<section id="load-balancing">
+
+  <title>Load Balancing</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to distribute load across several back-end
+      servers.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use <module>mod_proxy_balancer</module>, which provides a
+      flexible and featureful load-balancing solution. It supports
+      several balancing algorithms, session stickiness, health checks,
+      and dynamic configuration via the Balancer Manager — none of which
+      are possible with a <module>mod_rewrite</module> approach.</p>
+
+<highlight language="config">
+&lt;Proxy "balancer://mycluster"&gt;
+    BalancerMember "http://one.example.com"
+    BalancerMember "http://two.example.com"
+    BalancerMember "http://three.example.com"
+&lt;/Proxy&gt;
+ProxyPass        "/"  "balancer://mycluster/"
+ProxyPassReverse "/"  "balancer://mycluster/"
+</highlight>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>
+
+<p>It is possible to accomplish rudimentary random load balancing using
+<module>mod_rewrite</module> with a <code>rnd</code>
+<directive module="mod_rewrite">RewriteMap</directive>:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap  lb       "rnd:/path/to/serverlist.txt"
+RewriteRule "^/(.*)" "http://${lb:servers}/$1"     [P,L]
+</highlight>
+
+<p>However, <module>mod_proxy_balancer</module> is far more flexible and
+featureful than anything you can cobble together using
+<module>mod_rewrite</module>, and is the recommended approach.</p>
+
+    </dd>
+  </dl>
+
+</section>
+
 </manualpage>
 
