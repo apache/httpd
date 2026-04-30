@@ -67,8 +67,7 @@
 <name>DavGenericLockDB</name>
 <description>Chemin de la base de données des verrous DAV</description>
 <syntax>DavGenericLockDB <var>chemin fichier</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 

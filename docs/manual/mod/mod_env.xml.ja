@@ -42,8 +42,7 @@
 <description>シェルからの環境変数を渡す</description>
 <syntax>PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
-<contextlist>
-<context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
@@ -81,8 +80,7 @@
 <description>環境から変数を取り除く</description>
 <syntax>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
-<contextlist>
-<context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 

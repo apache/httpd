@@ -165,8 +165,7 @@
 キャッシュできるようにする</description>
 <syntax>CacheNegotiatedDocs On|Off</syntax>
 <default>CacheNegotiatedDocs Off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>バージョン 2.0で構文が変わりました</compatibility>
 

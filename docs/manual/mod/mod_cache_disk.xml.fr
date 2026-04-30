@@ -170,8 +170,10 @@ sous-répertoires</description>
 être stocké dans le cache</description>
 <syntax>CacheMinFileSize <var>octets</var></syntax>
 <default>CacheMinFileSize 1</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -191,8 +193,10 @@ sous-répertoires</description>
 être stocké dans le cache</description>
 <syntax>CacheMaxFileSize <var>octets</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

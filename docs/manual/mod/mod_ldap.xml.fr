@@ -696,8 +696,7 @@ Tous les SDK LDAP ne supportent pas les certificats clients par
 connexion.</description>
 <syntax>LDAPTrustedClientCert <var>type</var>
 <var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>Cette directive permet de spécifier le chemin et le nom de fichier ou
@@ -730,8 +729,7 @@ host</context><context>directory</context><context>.htaccess</context></contextl
 <description>Spécifie le mode (SSL ou TLS) à utiliser lors de la
 connexion à un serveur LDAP.</description>
 <syntax>LDAPTrustedMode <var>type</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>Les modes suivants sont supportés :</p>

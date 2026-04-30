@@ -3276,7 +3276,8 @@ uygulanır.</description>
 </syntax>
 <default>LogLevel warn</default>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+<context>directory</context>
+</contextlist>
 <compatibility>Modül ve dizin bağlamındaki yapılandırmalar Apache HTTP
     Sunucusunun 2.3.6 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
@@ -3524,8 +3525,8 @@ MaxKeepAliveRequests 500
   <code>aralık-sayısı</code></syntax>
 <default>MaxRangeOverlaps 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
-    <context>directory</context>
-</contextlist>
+        <context>directory</context>
+    </contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.3.15 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
 
@@ -3562,8 +3563,8 @@ MaxKeepAliveRequests 500
     <code>aralık-sayısı</code></syntax>
 <default>MaxRangeReversals 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
-    <context>directory</context>
-</contextlist>
+        <context>directory</context>
+    </contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.3.15 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
 
@@ -3982,8 +3983,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept
 <name>Protocol</name>
 <description>Dinlenen bir soket için protokol</description>
 <syntax>Protocol <code>protokol</code></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Apache httpd 2.1.5 ve sonrasında kullanılabilmektedir.
     Windows'ta ise Apache httpd 2.3.3 ve sonrasında
     kullanılabilmektedir.
@@ -4795,8 +4795,7 @@ belirler.</description>
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <syntax>TimeOut <code>saniye</code></syntax>
 <default>TimeOut 60</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>TimeOut</directive> yönergesi Apache httpd’nin aşağıdaki
@@ -4833,8 +4832,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 </description>
 <syntax>TraceEnable <code>[on|off|extended]</code></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>Bu yönerge çekirdek ve vekil (<module>mod_proxy</module>) sunucuların

@@ -525,8 +525,10 @@ Apache</a></seealso>
 document</description>
 <syntax>CacheMaxExpire <var>secondes</var></syntax>
 <default>CacheMaxExpire 86400 (une journée)</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -551,8 +553,10 @@ document</description>
 document</description>
 <syntax>CacheMinExpire <var>secondes</var></syntax>
 <default>CacheMinExpire 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -575,8 +579,10 @@ document</description>
 lorsqu'aucune date d'expiration n'a été spécifiée.</description>
 <syntax>CacheDefaultExpire <var>secondes</var></syntax>
 <default>CacheDefaultExpire 3600 (une heure)</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -600,8 +606,10 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</description>
 Modified.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -702,8 +710,10 @@ cache</description>
 fonction de la date de dernière modification.</description>
 <syntax>CacheLastModifiedFactor <var>flottant</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -847,8 +857,10 @@ l'URL lors de la mise en cache
 considère comme arrivées à expiration</description>
 <syntax>CacheStoreExpired On|Off</syntax>
 <default>CacheStoreExpired Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -874,8 +886,10 @@ considère comme arrivées à expiration</description>
 marquées comme privées</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -911,8 +925,10 @@ marquées comme privées</description>
 l'entête Cache-Control: a pour valeur no-store.</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

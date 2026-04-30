@@ -49,7 +49,11 @@
 <directivesynopsis>
 <name>CacheReadSize</name>
 <description>The minimum size (in bytes) of the document to read and be cached before sending the data downstream</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -57,7 +61,11 @@
 <name>CacheReadTime</name>
 <description>The minimum time (in milliseconds) that should elapse while reading
   before data is sent downstream</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -140,7 +148,10 @@
 <description>캐쉬에 저장할 문서의 최소크기 (바이트 단위)</description>
 <syntax>CacheMinFileSize <var>bytes</var></syntax>
 <default>CacheMinFileSize 1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -158,7 +169,10 @@
 <description>캐쉬에 저장할 문서의 최대크기 (바이트 단위)</description>
 <syntax>CacheMaxFileSize <var>bytes</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

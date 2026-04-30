@@ -48,14 +48,22 @@
 <directivesynopsis>
 <name>CacheReadSize</name>
 <description>The minimum size (in bytes) of the document to read and be cached before sending the data downstream</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheReadTime</name>
 <description>The minimum time (in milliseconds) that should elapse while reading before data is sent downstream</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -143,7 +151,10 @@
 <description>キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</description>
 <syntax>CacheMinFileSize <var>bytes</var></syntax>
 <default>CacheMinFileSize 1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -161,7 +172,10 @@
 <description>キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</description>
 <syntax>CacheMaxFileSize <var>bytes</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

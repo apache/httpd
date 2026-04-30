@@ -897,7 +897,7 @@ charge</description>
 <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
   >clé=valeur [clé=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
-</contextlist>
+    </contextlist>
 <compatibility>Disponible depuis la version 2.2 du serveur HTTP Apache.</compatibility>
 <usage>
     <p>Cette directive permet d'ajouter un membre à un groupe de
@@ -2414,7 +2414,8 @@ mandatés</description>
 les configurations de mandataires inverses</description>
 <syntax>ProxyPassInterpolateEnv On|Off</syntax>
 <default>ProxyPassInterpolateEnv Off</default>
-<contextlist><context>server config</context> <context>virtual host</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <compatibility>Disponible depuis la version 2.2.9 d'Apache</compatibility>

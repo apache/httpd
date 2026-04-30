@@ -213,8 +213,7 @@ nom de chemin en fin de requête.</description>
 <syntax>AccessFileName <var>nom-du-fichier</var>
 [<var>nom-du-fichier</var>] ...</syntax>
 <default>AccessFileName .htaccess</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -301,8 +300,7 @@ type de contenu d'une réponse est <code>text/plain</code> ou
 autorisés à transiter dans les URLs tels quels</description>
 <syntax>AllowEncodedSlashes On|Off|NoDecode</syntax>
 <default>AllowEncodedSlashes Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>L'option NoDecode est disponible depuis la version
 2.3.12.</compatibility>
@@ -705,8 +703,7 @@ Apache</compatibility>
 dans la réponse HTTP</description>
 <syntax>ContentDigest On|Off</syntax>
 <default>ContentDigest Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Options</override>
@@ -792,8 +789,7 @@ autre type de média n'avait été trouvé.
 </description>
 <syntax>DefaultType <var>type média|none</var></syntax>
 <default>DefaultType none</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -877,8 +873,7 @@ qu'au répertoire concerné du système de fichiers, à ses
 sous-répertoires, et à leur contenu.</description>
 <syntax>&lt;Directory <var>chemin répertoire</var>&gt;
 ... &lt;/Directory&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -1025,8 +1020,7 @@ combinent entre elles à la réception d'une requête</seealso>
 du système de fichiers correspondant à une expression rationnelle</description>
 <syntax>&lt;DirectoryMatch <var>regex</var>&gt;
 ... &lt;/DirectoryMatch&gt;</syntax>
-<contextlist><context>server config
-</context><context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -1097,8 +1091,7 @@ combinent entre elles à la réception d'une requête</seealso>
 depuis Internet</description>
 <syntax>DocumentRoot <var>chemin répertoire</var></syntax>
 <default>DocumentRoot "/usr/local/apache/htdocs"</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -1232,8 +1225,7 @@ Apache</a>, pour une référence complète et d'autres exemples.</seealso>
 lire les fichiers pendant qu'ils sont servis</description>
 <syntax>EnableMMAP On|Off</syntax>
 <default>EnableMMAP On</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1286,8 +1278,7 @@ host</context>
 fichiers aux clients</description>
 <syntax>EnableSendfile On|Off</syntax>
 <default>EnableSendfile Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1542,8 +1533,7 @@ d'erreur personnalisé</description>
 <description>Document que le serveur renvoie au client en cas
 d'erreur</description>
 <syntax>ErrorDocument <var>code erreur</var> <var>document</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1656,8 +1646,7 @@ personnalisation des réponses</a></seealso>
 <description>Définition du chemin du journal des erreurs</description>
 <syntax> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</syntax>
 <default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -2000,8 +1989,7 @@ requête</description>
 de l'en-tête de réponse HTTP ETag pour les fichiers statiques</description>
 <syntax>FileETag <var>composant</var> ...</syntax>
 <default>FileETag MTime Size</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -2072,8 +2060,7 @@ dans les versions 2.3.14 et antérieures.</compatibility>
 <description>Contient des directives qui s'appliquent aux fichiers
 précisés</description>
 <syntax>&lt;Files <var>nom fichier</var>&gt; ... &lt;/Files&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -2149,8 +2136,7 @@ entre elles à la réception d'une requête</seealso>
 spécifiés sous la forme d'expressions rationnelles</description>
 <syntax>&lt;FilesMatch <var>expression rationnelle</var>&gt; ...
 &lt;/FilesMatch&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -2347,8 +2333,7 @@ gmon.out.</description>
 clients</description>
 <syntax>HostnameLookups On|Off|Double</syntax>
 <default>HostnameLookups Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
 <usage>
@@ -2401,8 +2386,7 @@ host</context>
 condition est satisfaite au cours du traitement d'une
 requête</description>
 <syntax>&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -2476,8 +2460,7 @@ type="section">Else</directive> s'appliquent en dernier.</seealso>
 test retourne "vrai" au démarrage du serveur</description>
 <syntax>&lt;IfDefine [!]<var>paramètre</var>&gt; ...
     &lt;/IfDefine&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -2588,8 +2571,7 @@ existe au démarrage</description>
 de la présence ou de l'absence d'un module spécifique</description>
 <syntax>&lt;IfModule [!]<var>fichier module</var>|<var>identificateur
 module</var>&gt; ... &lt;/IfModule&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -2752,8 +2734,7 @@ présence ou l'absence d'une section particulière</description>
 <description>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</description>
 <syntax>Include <var>chemin-fichier</var>|<var>chemin-répertoire</var>|<var>wildcard</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <compatibility>Utilisation des caractères génériques dans la partie chemin depuis la
@@ -2854,8 +2835,7 @@ ne comportant pas de caractères génériques ne génèrent plus d'erreurs de sy
 <description>Active les connexions HTTP persistantes</description>
 <syntax>KeepAlive On|Off</syntax>
 <default>KeepAlive On</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -2896,8 +2876,7 @@ host</context>
 avant de fermer une connexion persistante</description>
 <syntax>KeepAliveTimeout <var>nombre</var>[ms]</syntax>
 <default>KeepAliveTimeout 5</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -3046,8 +3025,7 @@ sauf celles qui sont spécifiées</description>
 sous-requêtes imbriquées</description>
 <syntax>LimitInternalRecursion <var>nombre</var> [<var>nombre</var>]</syntax>
 <default>LimitInternalRecursion 10</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -3082,8 +3060,7 @@ host</context>
 envoyée par le client</description>
 <syntax>LimitRequestBody <var>octets</var></syntax>
 <default>LimitRequestBody 1073741824</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -3267,8 +3244,7 @@ HTTP</description>
 XML</description>
 <syntax>LimitXMLRequestBody <var>octets</var></syntax>
 <default>LimitXMLRequestBody 1000000</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
@@ -3298,8 +3274,7 @@ LimitXMLRequestBody 1048576
 spécifiées</description>
 <syntax>&lt;Location
     <var>chemin URL</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -3463,8 +3438,7 @@ entre elles à la réception d'une requête.</seealso>
 correspondant à une expression rationnelle</description>
 <syntax>&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -3547,8 +3521,8 @@ entre elles à la réception d'une requête.</seealso>
     [<var>module</var>:<var>niveau</var>] ...
 </syntax>
 <default>LogLevel warn</default>
-<contextlist><context>server config</context><context>virtual
-host</context><context>directory</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 <compatibility>La configuration du niveau de journalisation par module
 et par répertoire est disponible depuis la version 2.3.6 du serveur HTTP
@@ -3760,8 +3734,7 @@ LogLevel info
 persistante</description>
 <syntax>MaxKeepAliveRequests <var>nombre</var></syntax>
 <default>MaxKeepAliveRequests 100</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -4168,8 +4141,7 @@ particulier</description>
 <syntax>Options
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
 <default>Options FollowSymlinks</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Options</override>
@@ -4545,8 +4517,7 @@ processus enfants d'Apache httpd</description>
 <syntax>RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</syntax>
 <default>Non défini ; utilise les valeurs par défaut du système
 d'exploitation</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
@@ -4582,8 +4553,7 @@ processus enfants d'Apache httpd</description>
 <syntax>RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</syntax>
 <default>Non défini ; utilise les valeurs par défaut du système
 d'exploitation</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
@@ -4618,8 +4588,7 @@ host</context>
 les processus initiés par les processus enfants d'Apache httpd</description>
 <syntax>RLimitNPROC <var>nombre</var>|max [<var>nombre</var>|max]</syntax>
 <default>Unset; uses operating system defaults</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
@@ -4663,8 +4632,7 @@ host</context>
 CGI</description>
 <syntax>ScriptInterpreterSource Registry|Registry-Strict|Script</syntax>
 <default>ScriptInterpreterSource Script</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <compatibility>Win32 seulement.</compatibility>
@@ -4767,8 +4735,7 @@ d'Apache httpd.</compatibility>
 <description>L'adresse électronique que le serveur inclut dans les
 messages d'erreur envoyés au client</description>
 <syntax>ServerAdmin <var>adresse électronique</var>|<var>URL</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -4843,8 +4810,7 @@ du serveur HTTP Apache</a></seealso>
 s'authentifier lui-même</description>
 <syntax>ServerName
 [<var>protocole</var>://]<var>nom-de-domaine</var>|<var>adresse-ip</var>[:<var>port</var>]</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -4996,8 +4962,7 @@ correctement les permissions sur le répertoire indiqué par la directive
 serveur</description>
 <syntax>ServerSignature On|Off|EMail</syntax>
 <default>ServerSignature Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
@@ -5105,8 +5070,7 @@ HTTP</description>
 <description>Force le traitement des fichiers spécifiés par un
 gestionnaire particulier</description>
 <syntax>SetHandler <var>handler-name</var>|none|<var>expression</var></syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -5179,8 +5143,7 @@ host</context>
 <description>Définit les filtres par lesquels vont passer les requêtes
 client et les données POST</description>
 <syntax>SetInputFilter <var>filtre</var>[;<var>filtre</var>...]</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -5206,8 +5169,7 @@ href="../filter.html">Filtres</a></seealso>
 <description>Définit les filtres par lesquels vont passer les réponses
 du serveur</description>
 <syntax>SetOutputFilter <var>filtre</var>[;<var>filtre</var>...]</syntax>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -5243,8 +5205,7 @@ host</context>
 évènements avant de considérer qu'une requête a échoué</description>
 <syntax>TimeOut <var>secondes</var></syntax>
 <default>TimeOut 60</default>
-<contextlist><context>server config</context><context>virtual
-host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>La directive <directive>TimeOut</directive> permet de définir le
@@ -5353,8 +5314,7 @@ host</context></contextlist>
 et son port</description>
 <syntax>UseCanonicalName On|Off|DNS</syntax>
 <default>UseCanonicalName Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
 <usage>
@@ -5423,8 +5383,7 @@ host</context>
 détermine son propre port</description>
 <syntax>UseCanonicalPhysicalPort On|Off</syntax>
 <default>UseCanonicalPhysicalPort Off</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
 <usage>

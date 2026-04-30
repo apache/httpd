@@ -110,7 +110,12 @@
 <directivesynopsis>
 <name>CheckCaseOnly</name>
 <description>Limits the action of the speling module to case corrections</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 

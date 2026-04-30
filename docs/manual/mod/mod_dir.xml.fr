@@ -190,8 +190,7 @@ répertoires.
 fin"</description>
 <syntax>DirectorySlash On|Off</syntax>
 <default>DirectorySlash On</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 
