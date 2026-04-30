@@ -1039,8 +1039,15 @@ ProxyPass "/mirror/foo/i" "!"
     <note type="warning"><title>Ordering ProxyPass Directives in Locations</title>
       <p>Only one <directive module="mod_proxy">ProxyPass</directive> directive
       can be placed in a <directive module="core">Location</directive> block,
-      and the most specific location will take precedence.</p>
+      and the last matching
+      <directive module="core">Location</directive> block takes precedence,
+      following the standard
+      <a href="../sections.html#merging">section merging</a> rules.
+      Place more-specific <directive module="core">Location</directive>
+      blocks <em>after</em> less-specific ones to ensure the intended
+      <directive module="mod_proxy">ProxyPass</directive> applies.</p>
     </note>
+
     <note type="warning"><title>Exclusions and the no-proxy environment variable</title>
       <p>Exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directives. In 2.4.26 and later, the "no-proxy"
