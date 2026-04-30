@@ -415,7 +415,7 @@ simultaneously</description>
     <p>For threaded and hybrid servers (<em>e.g.</em> <module>event</module>
     or <module>worker</module>), <directive>MaxRequestWorkers</directive> restricts
     the total number of threads that will be available to serve clients.
-    For hybrid MPMs, the default value is <code>16</code> (<directive
+    For threaded and hybrid MPMs, the default value is <code>16</code> (<directive
     module="mpm_common">ServerLimit</directive>) multiplied by the value of
     <code>25</code> (<directive module="mpm_common"
     >ThreadsPerChild</directive>). Therefore, to increase <directive
