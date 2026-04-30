@@ -19,7 +19,7 @@ Body:----------cs--
 
     Nastala vnitřní chyba a server nebyl schopen
     dokončit Váš požadavek. Buď je server
-    přetížen, nebo došlo k chybě v CGI skriptu.
+    přetížen, nebo došlo k&nbsp;chybě v&nbsp;CGI skriptu.
 
   <!--#endif -->
 

@@ -5,7 +5,7 @@ Body:----------cs--
 --><!--#set var="TITLE" value="Vstupní podmínka selhala!"
 --><!--#include virtual="include/top.html" -->
 
-    Vstupní podmínka pro požadavek o zadané URL nesplnila pozitivní
+    Vstupní podmínka pro požadavek o&nbsp;zadané URL nesplnila pozitivní
     vyhodnocení.
   
 <!--#include virtual="include/bottom.html" -->

@@ -5,14 +5,14 @@ Body:----------cs--
 --><!--#set var="TITLE" value="Požadována autentizace!"
 --><!--#include virtual="include/top.html" -->
 
-    Server nemohl ověřit, že jste autorizován(a) k přístupu
-    k URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Server nemohl ověřit, že jste autorizován(a) k&nbsp;přístupu
+    k&nbsp;URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
     Buď jste dodal(a) neplatné pověření (např. chybné heslo) nebo Váš
     prohlížeč neumí dodat požadované ověření.
 
   <!--#include virtual="include/spacer.html" -->
 
-    V případě, že smíte požadovat tento dokument, zkontrolujte, prosím,
+    V&nbsp;případě, že smíte požadovat tento dokument, zkontrolujte, prosím,
     Vaši uživatelskou identifikaci a heslo a zkuste to znovu.
 
 <!--#include virtual="include/bottom.html" -->
