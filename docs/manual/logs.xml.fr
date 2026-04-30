@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1932317:1933506 (outdated) -->
+<!-- English Revision: 1933506 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -381,8 +381,8 @@ CustomLog "logs/access_log" common
 	redirection (codes commençant par 3), une erreur due au client (codes
 	commençant par 4), ou une erreur due au serveur (codes commençant
 	par 5). Vous trouverez la liste complète des codes de statut possibles
-	dans la <a href="http://www.w3.org/Protocols/rfc2616/
-	rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
+	dans la spécification
+	HTTP (<rfc>2616</rfc>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
@@ -702,8 +702,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     individuels. Considérons par exemple les directives suivantes :</p>
 
     <highlight language="config">
-LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost
+LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog "logs/access_log" commonvhost
     </highlight>
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
