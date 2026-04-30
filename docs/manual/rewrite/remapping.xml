@@ -655,5 +655,155 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 </dl>
 </section>
 
+<section id="structuredhomedirs">
+
+  <title>Structured Userdirs</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>Redirecting Anchors</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because <module>mod_rewrite</module> escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with other
+    special characters that <module>mod_rewrite</module>, by default, URL-encodes.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>Time-Dependent Rewriting</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use <module>mod_rewrite</module> to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"
+</highlight>
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <note type="warning"><module>mod_cache</module>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <module>mod_expires</module> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="on-the-fly-content">
+
+  <title>On-the-fly Content-Regeneration</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to dynamically generate content, but store it
+      statically once it is generated. This rule will check for the
+      existence of the static file, and if it's not there, generate
+      it. The static files can be removed periodically, if desired (say,
+      via cron) and will be regenerated on demand.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      This is done via the following ruleset:
+
+<highlight language="config">
+# This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
+</highlight>
+
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
+    </dd>
+  </dl>
+
+</section>
+
 
 </manualpage>

@@ -347,6 +347,33 @@ CustomLog   "logs/access_log"    combined env=!image
 <p>Note that this same effect can be obtained using <directive
 module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
 an example, not as a recommendation.</p>
+
+<p><strong>Setting environment variables for tracking rewrites</strong></p>
+
+<p>At times, we want to maintain some kind of status when we
+perform a rewrite. For example, you want to make a note that
+you've done that rewrite, so that you can check later to see if a
+request came via that rewrite. One way to do this is by setting an
+environment variable.</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]
+</highlight>
+
+<p>Later in your ruleset you might check for this environment
+variable using a RewriteCond:</p>
+
+<highlight language="config">
+RewriteCond "%{ENV:rewritten}"  =1
+</highlight>
+
+<p>Note that environment variables do not survive an external
+redirect. You might consider using the [CO] flag to set a
+cookie. For per-directory and htaccess rewrites, where the final
+substitution is processed as an internal redirect, environment
+variables from the previous round of rewriting are prefixed with
+"REDIRECT_". </p>
 </section>
 
 <section id="flag_end"><title>END</title>
