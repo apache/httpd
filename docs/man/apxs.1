@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 1 "2026-04-21" "Apache HTTP Server" "apxs"
+.TH "APXS" 1 "2026-04-30" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -45,10 +45,10 @@ apxs \- APache eXtenSion tool
 .SH "SUMMARY"
  
 .PP
-apxs is a tool for building and installing extension modules for the Apache HyperText Transfer Protocol (HTTP) server\&. This is achieved by building a dynamic shared object (DSO) from one or more source or object \fIfiles\fR which then can be loaded into the Apache server under runtime via the LoadModule directive from mod_so\&.
+\fBapxs\fR is a tool for building and installing extension modules for the Apache HyperText Transfer Protocol (HTTP) server\&. This is achieved by building a dynamic shared object (DSO) from one or more source or object \fIfiles\fR which then can be loaded into the Apache server under runtime via the LoadModule directive from mod_so\&.
  
 .PP
-So to use this extension mechanism your platform has to support the DSO feature and your Apache httpd binary has to be built with the mod_so module\&. The apxs tool automatically complains if this is not the case\&. You can check this yourself by manually running the command
+So to use this extension mechanism your platform has to support the DSO feature and your Apache \fBhttpd\fR binary has to be built with the mod_so module\&. The \fBapxs\fR tool automatically complains if this is not the case\&. You can check this yourself by manually running the command
  
 .nf
  
@@ -57,7 +57,7 @@ $ httpd -l
 .fi
  
 .PP
-The module mod_so should be part of the displayed list\&. If these requirements are fulfilled you can easily extend your Apache server's functionality by installing your own modules with the DSO mechanism by the help of this apxs tool:
+The module mod_so should be part of the displayed list\&. If these requirements are fulfilled you can easily extend your Apache server's functionality by installing your own modules with the DSO mechanism by the help of this \fBapxs\fR tool:
  
 .nf
  
@@ -76,7 +76,7 @@ $ _
 .fi
  
 .PP
-The arguments \fIfiles\fR can be any C source file (\&.c), a object file (\&.o) or even a library archive (\&.a)\&. The apxs tool automatically recognizes these extensions and automatically used the C source files for compilation while just using the object and archive files for the linking phase\&. But when using such pre-compiled objects make sure they are compiled for position independent code (PIC) to be able to use them for a dynamically loaded shared object\&. For instance with GCC you always just have to use \fB-fpic\fR\&. For other C compilers consult its manual page or at watch for the flags apxs uses to compile the object files\&.
+The arguments \fIfiles\fR can be any C source file (\&.c), a object file (\&.o) or even a library archive (\&.a)\&. The \fBapxs\fR tool automatically recognizes these extensions and automatically used the C source files for compilation while just using the object and archive files for the linking phase\&. But when using such pre-compiled objects make sure they are compiled for position independent code (PIC) to be able to use them for a dynamically loaded shared object\&. For instance with GCC you always just have to use \fB-fpic\fR\&. For other C compilers consult its manual page or at watch for the flags \fBapxs\fR uses to compile the object files\&.
  
 .PP
 For more details about DSO support in Apache read the documentation of mod_so or perhaps even read the \fBsrc/modules/standard/mod_so\&.c\fR source file\&.
@@ -89,7 +89,7 @@ For more details about DSO support in Apache read the documentation of mod_so or
  
 .TP
 \fB-n \fImodname\fR\fR
-This explicitly sets the module name for the \fB-i\fR (install) and \fB-g\fR (template generation) option\&. Use this to explicitly specify the module name\&. For option \fB-g\fR this is required, for option \fB-i\fR the apxs tool tries to determine the name from the source or (as a fallback) at least by guessing it from the filename\&.  
+This explicitly sets the module name for the \fB-i\fR (install) and \fB-g\fR (template generation) option\&. Use this to explicitly specify the module name\&. For option \fB-g\fR this is required, for option \fB-i\fR the \fBapxs\fR tool tries to determine the name from the source or (as a fallback) at least by guessing it from the filename\&.  
   
 .SS "Query Options"
  
@@ -174,7 +174,7 @@ $ _
 .fi
  
 .PP
-Then you have to update the Apache configuration by making sure a LoadModule directive is present to load this shared object\&. To simplify this step apxs provides an automatic way to install the shared object in its "modules" directory and updating the \fBhttpd\&.conf\fR file accordingly\&. This can be achieved by running:
+Then you have to update the Apache configuration by making sure a LoadModule directive is present to load this shared object\&. To simplify this step \fBapxs\fR provides an automatic way to install the shared object in its "modules" directory and updating the \fBhttpd\&.conf\fR file accordingly\&. This can be achieved by running:
  
 .nf
  
