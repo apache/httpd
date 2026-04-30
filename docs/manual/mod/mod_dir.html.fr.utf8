@@ -17,7 +17,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -94,18 +94,23 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
     <p>La directive <code class="directive">DirectoryCheckHandler</code> permet
     de faire en sorte que <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> recherche un index
     de répertoire ou ajoute des slashes de fin lorsqu'un autre
-    gestionnaire à été défini pour l'URL considérée. Les gestionnaires
-    peuvent être définis à via des directives telles que
+    gestionnaire a été défini pour l'URL considérée. Les gestionnaires
+    peuvent être définis via des directives telles que
     <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou par d'autres
     modules tels que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> au cours des
     substitutions de niveau répertoire.</p>
 
-    <p>Dans les versions antérieures à 2.4, ce module ne modifiait pas son
-    comportement si un autre gestionnaire avait été défini pour l'URL
-    considérée. Ceci permettait de servir des index de répertoires même si une
-    directive <code class="directive">SetHandler</code> avait été définie pour un
-    répertoire entier, mais pouvait aussi être à l'origine de conflits avec
-    d'autres modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p> 
+    <p>Lorsqu'elle est définie à <code>On</code>,
+    <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> ne prend aucune mesure si un autre
+    gestionnaire a déjà été défini pour l'URL.</p>
+
+    <p>Lorsqu'elle est définie à <code>Off</code> (la valeur par
+    défaut), <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> traite la requête quel que soit
+    le gestionnaire éventuellement défini. Ceci permet de servir des
+    index de répertoires même si une directive
+    <code class="directive">SetHandler</code> a été définie pour un répertoire
+    entier, mais peut aussi être à l'origine de conflits avec d'autres
+    modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -359,7 +364,7 @@ de la version 2.4.4 du serveur HTTP Apache.</td></tr>
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

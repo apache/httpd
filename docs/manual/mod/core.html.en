@@ -17,7 +17,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -533,8 +533,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       Allow use of the directives controlling specific directory
       features (<code class="directive"><a href="#options">Options</a></code> and
       <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).
-      An equal sign may be given followed by a comma-separated list, without
-      spaces, of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.
+      To restrict which options may be overridden, specify an equal sign
+      followed by a comma-separated list, without spaces, of options that
+      may be set using the <code class="directive"><a href="#options">Options</a></code> directive.
 
       <div class="note"><h3>Implicit disabling of Options</h3>
       <p>Even though the list of options that may be used in .htaccess files
@@ -4542,9 +4543,10 @@ itself</td></tr>
     identify a virtual host, when using <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
     <p>Additionally, this is used when
-    creating self-referential redirection URLs when 
-    <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> is set to a non-default
-    value.</p>
+    creating self-referential redirection URLs when
+    <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> is set to
+    <code>On</code>. When <code>UseCanonicalName</code> is set to
+    <code>DNS</code>, a reverse DNS lookup is used instead.</p>
 
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
@@ -5003,6 +5005,11 @@ certain events before failing a request</td></tr>
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64Kb.</p>
 
+    <p>The <code>TRACE</code> method cannot be restricted using
+    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> or
+    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>.
+    Use <code class="directive">TraceEnable</code> instead.</p>
+
     <div class="note"><h3>Note</h3>
 
     <p>Despite claims to the contrary, enabling the <code>TRACE</code>
@@ -5318,7 +5325,7 @@ hostname or IP address</td></tr>
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
