@@ -456,9 +456,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       Allow use of the directives controlling specific directory
       features (<directive module="core">Options</directive> and
       <directive module="mod_include">XBitHack</directive>).
-      An equal sign may be given followed by a comma-separated list, without
-      spaces, of options that may be set using the <directive
-      module="core">Options</directive> command.
+      To restrict which options may be overridden, specify an equal sign
+      followed by a comma-separated list, without spaces, of options that
+      may be set using the <directive module="core">Options</directive> directive.
 
       <note><title>Implicit disabling of Options</title>
       <p>Even though the list of options that may be used in .htaccess files
