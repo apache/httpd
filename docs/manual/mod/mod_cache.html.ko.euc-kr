@@ -144,7 +144,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheDefaultExpire 3600 (one hour)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>
@@ -173,7 +173,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>특정 URL을 캐쉬하지 않는다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>
@@ -191,7 +191,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>
@@ -309,7 +309,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>
@@ -364,7 +364,7 @@
 계수.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>
@@ -425,7 +425,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>문서를 캐쉬하는 초단위 최대시간</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheMaxExpire 86400 (하루)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache</td></tr>
 </table>

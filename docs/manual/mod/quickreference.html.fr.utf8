@@ -128,7 +128,7 @@ particulier</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
 <tr><td><a href="mod_alias.html#alias">Alias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du système
+<var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du système
 de fichiers</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin répertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec le système de fichiers
@@ -541,7 +541,7 @@ les versions précédentes, DefaultType permettait de spécifier un type de
 média à assigner par défaut au contenu d'une réponse pour lequel aucun
 autre type de média n'avait été trouvé.
 </td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de définir une variable</td></tr>
+<tr class="odd"><td><a href="core.html#define">Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Permet de définir une variable</td></tr>
 <tr><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Comment l'en-tête sortant ETag doit être modifié au cours
 de la compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Taille du fragment que zlib devra comprimer en une seule
@@ -829,7 +829,7 @@ partagée</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptimeout">LDAPTimeout <var>secondes</var></a></td><td> 60 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le délai d'attente pour les opérations de
 recherche et d'identification LDAP en secondes</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var>
-<var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nom de fichier contenant un certificat client ou
+<var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Définit le nom de fichier contenant un certificat client ou
 un alias renvoyant vers un certificat client spécifique à une connexion.
 Tous les SDK LDAP ne supportent pas les certificats clients par
 connexion.</td></tr>
@@ -927,7 +927,7 @@ parentes sont fusionnées dans les enfants</td></tr>
 sortie</td></tr>
 <tr><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /chemin/vers/include/?.soa</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute un répertoire au package.cpath de lua</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /chemin/vers/include/?.lua</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ajoute un répertoire au package.path de lua</td></tr>
-<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
+<tr><td><a href="mod_lua.html#luaquickhandler">LuaQuickHandler /path/to/script.lua hook_function_name</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
 <tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot /chemin/vers/un/répertoire</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></td></tr>

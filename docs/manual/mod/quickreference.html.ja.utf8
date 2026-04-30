@@ -115,7 +115,7 @@ MIME タイプによって選択</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">正規表現を使って URL をファイルシステムの位置にマップする</td></tr>
 <tr><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Map the full path after the alias in a location.</td></tr>
@@ -298,33 +298,33 @@ authentication succeeds but authorization fails
 環境変数を設定する</td></tr>
 <tr><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">ディスクに書き出す前にメモリにログエントリをバッファする</td></tr>
 <tr class="odd"><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
-<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (1時間) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</td></tr>
+<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (1時間) </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
 <tr><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">サブディレクトリ名の文字数</td></tr>
 <tr class="odd"><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュのサブディレクトリの深さの数</td></tr>
-<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">特定の URL をキャッシュしない</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">指定したストレージ管理方式を使ってのキャッシュを有効にする</td></tr>
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">特定の URL をキャッシュしない</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">指定したストレージ管理方式を使ってのキャッシュを有効にする</td></tr>
 <tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheheader">CacheHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
 <tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">キャッシュされているコンテンツを返さないようにクライアントから
 リクエストされても無視する</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">指定された HTTP ヘッダをキャッシュに保存しない。
 </td></tr>
-<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">応答に Last Modified が無くても気にしないようにする</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">応答に Last Modified が無くても気にしないようにする</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュ時にクエリーストリングを無視する</td></tr>
 <tr><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
 </td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachekeybaseurl">CacheKeyBaseURL <var>URL</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
-<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">LastModified の日付に基づいて有効期限 (expiry) 
+<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">LastModified の日付に基づいて有効期限 (expiry) 
 を計算するための重みを指定する
 </td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelock">CacheLock <var>on|off</var></a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
 <tr><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> mod_cache-lock </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the lock path directory.</td></tr>
-<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (一日) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">ドキュメントをキャッシュする最大時間を秒数で表したもの</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</td></tr>
-<tr><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">ドキュメントをキャッシュする最小秒数</td></tr>
-<tr class="odd"><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</td></tr>
+<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (一日) </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">ドキュメントをキャッシュする最大時間を秒数で表したもの</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</td></tr>
+<tr><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">ドキュメントをキャッシュする最小秒数</td></tr>
+<tr class="odd"><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</td></tr>
 <tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
@@ -344,8 +344,8 @@ cache</td></tr>
   before data is sent downstream</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachestaleonerror">CacheStaleOnError <var>on|off</var></a></td><td> on </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Serve stale content in place of 5xx responses.</td></tr>
 <tr><td><a href="mod_cache.html#cachestoreexpired">CacheStoreExpired On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server reports as expired</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">no-store と指定されているレスポンスのキャッシュを試みる。</td></tr>
-<tr><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">private と指定されているレスポンスのキャッシュを試みる。</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">no-store と指定されているレスポンスのキャッシュを試みる。</td></tr>
+<tr><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">private と指定されているレスポンスのキャッシュを試みる。</td></tr>
 <tr class="odd"><td><a href="mod_cgid.html#cgidscripttimeout">CGIDScriptTimeout <var>time</var>[s|ms]</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The length of time to wait for more output from the
 CGI program</td></tr>
 <tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">CGI スクリプトのインタープリタの位置を調べるための手法</td></tr>
@@ -424,7 +424,7 @@ ServerHello</td></tr>
 <tr class="odd"><td><a href="core.html#defaultstatedir">DefaultStateDir <var>directory-path</var></a></td><td> DEFAULT_REL_STATEDI +</td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the persistent state files</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type|none</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">変数の存在を宣言する</td></tr>
+<tr class="odd"><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">変数の存在を宣言する</td></tr>
 <tr><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib が一度に圧縮する塊の大きさ</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">出力に対して行なう圧縮の程度</td></tr>
@@ -650,19 +650,19 @@ Certificate Authority or global client certificates</td></tr>
 <tr><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert On|Off</a></td><td> On </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force server certificate verification</td></tr>
 <tr><td><a href="core.html#limit">&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">囲いの中にあるアクセス制御の適用を特定の HTTP メソッドのみに
+    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">囲いの中にあるアクセス制御の適用を特定の HTTP メソッドのみに
 制限する</td></tr>
 <tr class="odd"><td><a href="core.html#limitexcept">&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">指定されたもの以外の HTTP メソッドにアクセス制御を
+    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">指定されたもの以外の HTTP メソッドにアクセス制御を
 制限する</td></tr>
 <tr><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>number</var> [<var>number</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">内部リダイレクトと入れ子になったサブリクエストの最大数を決定する</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bytes</var></a></td><td> 1073741824 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントから送られる HTTP リクエストのボディの
 総量を制限する</td></tr>
-<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダフィールドの数を
+<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダフィールドの数を
 制限する</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダの
+<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bytes</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</td></tr>
-<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエスト行のサイズを制限する</td></tr>
+<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエスト行のサイズを制限する</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">XML 形式のリクエストのボディのサイズを制限する</td></tr>
 <tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">サーバが listen するIP アドレスとポート番号</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">保留状態のコネクションのキューの最大長</td></tr>
@@ -683,7 +683,7 @@ listeners' buckets</td></tr>
 </td></tr>
 <tr><td><a href="mod_logio.html#logiotrackttfu">LogIOTrackTTFU ON|OFF</a></td><td> OFF </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable tracking of time to last request byte (TTFU = time to finish
 upload)</td></tr>
-<tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">ErrorLog の冗長性を制御する</td></tr>
+<tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">ErrorLog の冗長性を制御する</td></tr>
 <tr><td><a href="core.html#logleveloverride">LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
     [<var>module</var>:]<var>level</var> [<var>module</var>:<var>level</var>] ...
 </a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Override the verbosity of the ErrorLog for certain clients</td></tr>
@@ -855,7 +855,7 @@ malicious privileges-aware code.</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
 [<var>word</var>|<var>host</var>|<var>domain</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシ接続を禁止する語句、ホスト名、ドメインを指定する</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされたリクエストのデフォルトのドメイン名</td></tr>
-<tr><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたコンテンツのエラーページを上書きする</td></tr>
+<tr><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたコンテンツのエラーページを上書きする</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressdbmfile">ProxyExpressDBMFile <var>pathname</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pathname to DBM file.</td></tr>
 <tr><td><a href="mod_proxy_express.html#proxyexpressdbmtype">ProxyExpressDBMType <var>type</var></a></td><td> default </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">DBM type of file.</td></tr>
 <tr class="odd"><td><a href="mod_proxy_express.html#proxyexpressenable">ProxyExpressEnable on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the module functionality.</td></tr>
@@ -901,7 +901,7 @@ URL を調整する</td></tr>
 調整する</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Reverse プロキシサーバからの Set-Cookie ヘッダの Path 文字列を
 調整する</td></tr>
-<tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシリクエストに、受け付けた Host HTTP ヘッダを使う</td></tr>
+<tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシリクエストに、受け付けた Host HTTP ヘッダを使う</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">プロキシされる HTTP と FTP 接続のためのネットワークバッファサイズ</td></tr>
 <tr><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>match</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">特定のリクエストを扱う時に使われるリモートプロキシを指定する</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <var>regex</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">正規表現でのマッチによるリクエストを扱うリモートプロキシの指定</td></tr>
@@ -910,7 +910,7 @@ URL を調整する</td></tr>
 backend</td></tr>
 <tr><td><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile On|Off|<var>Headername</var></a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable evaluation of <var>X-Sendfile</var> pseudo response
 header</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyset" /></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set various Proxy balancer or member parameters</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyset" /></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set various Proxy balancer or member parameters</td></tr>
 <tr><td><a href="mod_proxy.html#proxysourceaddress">ProxySourceAddress <var>address</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set local IP address for outgoing proxy connections</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxystatus" /></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Show Proxy LoadBalancer status in mod_status</td></tr>
 <tr><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">プロキシされたリクエストのネットワークタイムアウト</td></tr>
@@ -1009,7 +1009,7 @@ must succeed for the enclosing directive to not fail.</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">特定のリクエストメソッドに対して CGI スクリプトを
 実行するように設定</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL をファイルシステムの位置へマップし、マップ先を
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL をファイルシステムの位置へマップし、マップ先を
 CGI スクリプトに指定</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
@@ -1199,7 +1199,7 @@ Certificate verification</td></tr>
 スタックのバイト数</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 60 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
+<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
 </td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ログファイルの位置を指定</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td /></tr><tr class="odd"><td class="descr" colspan="4"><code>mime.types</code> ファイルの位置</td></tr>

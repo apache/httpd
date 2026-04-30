@@ -113,7 +113,7 @@ Alias /foo /gaq
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>URL을 특정 파일시스템 장소로 대응한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_alias</td></tr>
 </table>
@@ -341,7 +341,7 @@ Alias /foo /gaq
 스크립트라고 알린다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_alias</td></tr>
 </table>

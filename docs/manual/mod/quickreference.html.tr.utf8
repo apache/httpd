@@ -121,7 +121,7 @@ responses from the server</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr><td><a href="mod_alias.html#alias">Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
-<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
@@ -446,7 +446,7 @@ assigned a language-tag by some other means.</td></tr>
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
+<tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişken tanımlar</td></tr>
 <tr><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How the outgoing ETag header should be modified during compression</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
@@ -697,9 +697,9 @@ sınırlar.</td></tr>
 <tr><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ratio between the number of CPU cores (online) and the number of
 listeners' buckets</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listentcpdeferaccept">ListenTCPDeferAccept <var>integer</var></a></td><td> 30 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Value set for the socket option TCP_DEFER_ACCEPT if it is set</td></tr>
-<tr><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+<tr><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
+<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
 <tr><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
 &lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
@@ -1062,7 +1062,7 @@ user authentication</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
@@ -1274,7 +1274,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
 <tr><td><a href="core.html#unclist" id="U" name="U">UNCList <var>hostname</var> [<var>hostname</var>...]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Controls what UNC host names can be accessed by the server
 </td></tr>
-<tr class="odd"><td><a href="core.html#undefine">UnDefine <var>değişken-ismi</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişkeni tanımsız yapar</td></tr>
+<tr class="odd"><td><a href="core.html#undefine">UnDefine <var>değişken-ismi</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişkeni tanımsız yapar</td></tr>
 <tr><td><a href="mod_macro.html#undefmacro">UndefMacro <var>name</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Undefine a macro</td></tr>
 <tr class="odd"><td><a href="mod_env.html#unsetenv">UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>

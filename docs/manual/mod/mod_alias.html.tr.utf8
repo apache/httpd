@@ -120,7 +120,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
 <var>dizin-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
 </table>
@@ -442,7 +442,7 @@ URL’ye yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAlias <var>URL-yolu</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
 </table>

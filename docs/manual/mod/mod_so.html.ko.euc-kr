@@ -135,7 +135,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>지정한 목적파일이나 라이브러리를 읽어들인다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadFile <em>filename</em> [<em>filename</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
 </table>
@@ -157,7 +157,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>목적파일이나 라이브러리를 읽어들이고, 사용가능한
 모듈 목록에 추가한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>LoadModule <em>module filename</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_so</td></tr>
 </table>

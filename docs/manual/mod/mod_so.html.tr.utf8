@@ -150,7 +150,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
 </table>
@@ -175,7 +175,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadModule <em>modül dosya-ismi</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
 </table>

@@ -52,6 +52,7 @@ configuration.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm: DBM Hash File</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#prg">prg: External Rewriting Program</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd or fastdbd: SQL Query</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sharding">URL-based sharding across multiple backends</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#summary">Summary</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -461,6 +462,63 @@ is sent <code>SIGKILL</code>.</li>
     <p>The query name is passed to the database driver as a label for
     an SQL prepared statement, and will therefore need to follow any rules
     (such as case-sensitivity) required for your database.</p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="sharding" id="sharding">URL-based sharding across multiple backends</a> <a title="Permanent link" href="#sharding" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>A common technique for distributing the burden of
+      server load or storage space is called "sharding".
+      When using this method, a front-end server will use the
+      url to consistently "shard" users or objects to separate
+      backend servers.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>A mapping is maintained, from users to target servers, in
+      external map files. They look like:</p>
+
+<div class="example"><p><code>
+user1  physical_host_of_user1<br />
+user2  physical_host_of_user2<br />
+# ... and so on
+</code></p></div>
+
+  <p>We put this into a <code>map.users-to-hosts</code> file. The
+    aim is to map;</p>
+
+<div class="example"><p><code>
+/u/user1/anypath
+</code></p></div>
+
+  <p>to</p>
+
+<div class="example"><p><code>
+http://physical_host_of_user1/u/user/anypath
+</code></p></div>
+
+      <p>thus every URL path need not be valid on every backend physical
+      host. The following ruleset does this for us with the help of the map
+      files assuming that server0 is a default server which will be used if
+      a user has no entry in the map:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+
+    </dd>
+  </dl>
+
+  <p>See the <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+  documentation for more discussion of the syntax of this directive.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

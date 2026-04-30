@@ -32,6 +32,10 @@
 <a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
 
 <p>このドキュメントでは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 ディレクティブで使用可能なフラグについて、詳細な説明と例を提供します。</p>

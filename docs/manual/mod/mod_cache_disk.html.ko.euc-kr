@@ -123,7 +123,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
@@ -141,7 +141,7 @@
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cache_disk</td></tr>
 </table>
