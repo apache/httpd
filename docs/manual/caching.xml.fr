@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1836061:1933507 (outdated) -->
+<!-- English Revision: 1933507 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -48,14 +48,12 @@
         <dt>Mise en cache HTTP à trois états RFC2616</dt>
         <dd><module>mod_cache</module> et son module de fournisseur
 	<module>mod_cache_disk</module> proposent une mise en cache
-	intelligente de niveau HTTP. Le contenu proprement dit est
-	stocké dans le cache, et mod_cache vise à respecter tous les
-	en-têtes HTTP, ainsi que les options qui contrôlent la mise en
-	cache du contenu comme décrit dans la <a
-	href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
-	13 de la RFC2616</a>. <module>mod_cache</module> peut gérer des
-	configurations de mise en cache simples, mais aussi complexes
-	comme dans les cas où vous avez à faire à des contenus mandatés,
+	intelligente de niveau HTTP. Le contenu proprement dit est stocké dans
+	le cache, et mod_cache vise à respecter tous les en-têtes HTTP, ainsi
+	que les options qui contrôlent la mise en cache du contenu comme décrit
+	dans la <rfc section="13">2616</rfc>. <module>mod_cache</module> peut gérer des
+	configurations de mise en cache simples, mais aussi complexes comme dans
+	les cas où vous avez à faire à des contenus mandatés,
 	à des contenus locaux dynamiques, ou lorsque vous avez besoin
 	d'accélérer l'accès aux fichiers locaux situés sur disque
 	supposé lent.
@@ -113,10 +111,8 @@
     </related>
 
     <p>Le module <module>mod_cache</module> permet de tirer avantage du
-    mécanisme de mise en cache en ligne faisant partie
-    intégrante du protocole HTTP, et décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">section
-    13 de la RFC2616</a>.</p>
+    mécanisme de mise en cache en ligne faisant partie intégrante du protocole
+    HTTP, et décrit dans la <rfc section="13">2616</rfc>.</p>
 
     <p>A la différence d'un cache simple clé/valeur à deux états où le
     contenu est supprimé lorsqu'il est périmé, un cache HTTP comporte un
@@ -171,9 +167,7 @@
     </dd>
     </dl>
 
-    <p>Le fonctionnement détaillé d'un cache HTTP est décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
-    13 de la RFC2616</a>.</p>
+    <p>Le fonctionnement détaillé d'un cache HTTP est décrit dans la <rfc section="13">2616</rfc>.</p>
 
     <section>
       <title>Interaction avec le serveur</title>
@@ -184,7 +178,7 @@
       </p>
 
       <dl>
-        <dt>Phase de gestion rapide</dt>
+        <dt>Phase du gestionnaire rapide</dt>
         <dd>
           <p>Cette phase se déroule très tôt au cours du traitement de
 	  la requête, juste après l'interprétation de cette dernière. Si
@@ -202,13 +196,13 @@
 	      au niveau du serveur, et il doit donc être utilisé avec
 	      prudence lorsque que ces phases sont importantes.</p>
 
-	      <p>Les requêtes comportant un en-tête "Authorization"
-	      (comme par exemple l'authentification HTTP basique) ne
-	      peuvent être ni mises en cache, ni servies depuis ce
-	      dernier lorsque <module>mod_cache</module> s'exécute dans
-	      cette phase.</p>
+	      <p>Les requêtes contenant un en-tête "Authorization"
+	      header (par exemple dans le cas de l'authentification HTTP
+	      basique) ne peuvent ni être mises en cache, ni servies
+	      depuis le cache lorsque <module>mod_cache</module>
+	      s'exécute dans cette phase.</p>
           </dd>
-          <dt>Phase de gestion normale</dt>
+          <dt>Phase du gestionnaire normal</dt>
           <dd>
               <p>Cette phase se déroule très tard au cours du traitement
 	      de la requête, en fait après toutes les phases de ce
@@ -353,11 +347,9 @@
     <section>
       <title>Que peut-on mettre en cache ?</title>
 
-      <p>La liste complète des conditions nécessaires pour qu'une
-      réponse puisse être enregistrée dans un cache HTTP est fournie
-      dans la <a
-      href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">section
-      13.4 Response Cacheability de la RFC2616</a>, et peut se résumer
+      <p>La liste complète des conditions nécessaires pour qu'une réponse puisse
+      être enregistrée dans un cache HTTP est fournie dans la <rfc
+      section="13.4">2616</rfc> (Response Cacheability), et peut se résumer
       ainsi&nbsp;:</p>
 
       <ol>
@@ -471,7 +463,7 @@ Vary: negotiate,accept-language,accept-charset
           
     </section>
 
-    </section>
+  </section>
 
   <section id="examples">
 
@@ -953,7 +945,7 @@ sys     0m0.000s</pre>
       <directive module="mod_cache">CacheDisable</directive>, ou le module
       <module>mod_expires</module>. Livré à lui-même,
       <module>mod_cache</module> - pratiquement comme un mandataire inverse -
-      mettrait en cache le contenu lors de sa mise à dispisotion, et le servirait ensuite
+      mettrait en cache le contenu lors de sa mise à disposition, et le servirait ensuite
       à tout client, vers n'importe quelle adresse IP.</p>
 
       <p>Lorsque la directive <directive

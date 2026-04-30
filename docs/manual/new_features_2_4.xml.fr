@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1883046:1933180 (outdated) -->
+<!-- English Revision: 1933180 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -112,11 +112,11 @@ serveur HTTP Apache</title>
     <dl>      
 
       <dt><module>mod_proxy_fcgi</module></dt>
-      <dd>Mise à disposition du protocole FastCGI pour
+      <dd>Support des serveur FastCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_scgi</module></dt>
-      <dd>Mise à disposition du protocole SCGI pour
+      <dd>Support des serveurs SCGI d'arrière-plan pour
       <module>mod_proxy</module>.</dd>
 
       <dt><module>mod_proxy_express</module></dt>
@@ -206,7 +206,8 @@ serveur HTTP Apache</title>
       <dd>Permet aux applications d'autorisation FastCGI d'authentifier
       et/ou autoriser les clients.</dd>
 
-      <dt><module>mod_http2</module> (disponible à partir de la version 2.4.17)</dt>
+      <dt><module>mod_http2</module> (disponible à partir de la
+      version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
       <dt><module>mod_proxy_http2</module> (disponible à partir de la version 2.4.19)</dt>

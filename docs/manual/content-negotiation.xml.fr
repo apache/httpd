@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1932310:1933190 (outdated) -->
+<!-- English Revision: 1933190 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,8 +72,10 @@
     média, mais autorisant tout autre type de média en dernier ressort :</p>
 
 <example>
-  Accept-Language: fr; q=1.0, en; q=0.5<br />
-  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+<highlight language="config">
+Accept-Language: fr; q=1.0, en; q=0.5
+Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
+</highlight>
 </example>
 
     <p>httpd prend en charge la négociation de contenu «&nbsp;server driven&nbsp;» (telle qu'elle
@@ -158,15 +160,17 @@
     de correspondances.</p>
 
 <example>
-  URI: foo<br />
-<br />
-  URI: foo.en.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.de.html<br />
-  Content-type: text/html;charset=iso-8859-2<br />
-  Content-language: fr, de<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.en.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.de.html
+Content-type: text/html;charset=iso-8859-2
+Content-language: fr, de
+</highlight>
 </example>
 
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
@@ -193,15 +197,17 @@
     correspondances de types sans avoir à le renommer&nbsp;:</p>
 
    <example>
-  URI: foo<br />
-<br />
-  URI: foo.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.html<br />
-  Content-type: text/html<br />
-  Content-language: fr<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.html
+Content-type: text/html
+Content-language: fr
+</highlight>
 </example> 
 
     <p>Si les variantes possèdent des qualités de source différentes, elles
@@ -209,16 +215,18 @@
     comme pour cette image (disponible en JPEG, GIF ou ASCII-art)&nbsp;:</p>
 
 <example>
-  URI: foo<br />
-<br />
-  URI: foo.jpeg<br />
-  Content-type: image/jpeg; qs=0.8<br />
-<br />
-  URI: foo.gif<br />
-  Content-type: image/gif; qs=0.5<br />
-<br />
-  URI: foo.txt<br />
-  Content-type: text/plain; qs=0.01<br />
+<highlight language="config">
+URI: foo
+
+URI: foo.jpeg
+Content-type: image/jpeg; qs=0.8
+
+URI: foo.gif
+Content-type: image/gif; qs=0.5
+
+URI: foo.txt
+Content-type: text/plain; qs=0.01
+</highlight>
 </example>
 
     <p>Les valeurs de qs peuvent varier de 0.000 à 1.000. Notez que toute

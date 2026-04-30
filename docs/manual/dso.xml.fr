@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1199481:1933190 (outdated) -->
+<!-- English Revision: 1933190 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -103,8 +103,10 @@
 	en tant que module DSO <code>mod_foo.so</code> :</p>
 
 <example>
-$ ./configure --prefix=/chemin/vers/installation --enable-foo<br />
+<highlight language="sh">
+$ ./configure --prefix=/path/to/install --enable-foo
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -117,8 +119,10 @@ $ make install
       fichier <code>httpd.conf</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=all<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=all
 $ make install
+</highlight>
 </example>
 
         <p>L'argument <code>most</code> de l'option
@@ -138,8 +142,10 @@ $ make install
       <code>--enable-load-all-modules</code>.</p>
 
 <example>
-$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
+<highlight language="sh">
+$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules
 $ make install
+</highlight>
 </example>
       </li>
 
@@ -150,8 +156,10 @@ $ make install
 	d'Apache httpd à l'aide du programme <program>apxs</program> :
 
 <example>
-$ cd /chemin/vers/module_tiers<br />
+<highlight language="sh">
+$ cd /path/to/3rdparty
 $ apxs -cia mod_foo.c
+</highlight>
 </example>
       </li>
     </ol>
