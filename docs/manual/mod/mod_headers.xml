@@ -410,7 +410,7 @@ Header always set X-Foo "baz"
     Note that the <code>Set-Cookie</code> header is an exception:
     <rfc>6265</rfc> requires multiple <code>Set-Cookie</code> headers
     rather than combining values with commas. Use <code>add</code>
-    instead of <code>append</code> for <code>Set-Cookie</code>.
+    instead of <code>append</code> for <code>Set-Cookie</code>.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
