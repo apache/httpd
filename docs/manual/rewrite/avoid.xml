@@ -189,6 +189,25 @@ other <code>RewriteRule</code>s in effect in the same scope, as a
 <code>ProxyPass</code>, and so may preempt what you're trying to
 accomplish.</p>
 
+<p>One case where <directive module="mod_rewrite">RewriteRule</directive>
+is genuinely useful for proxying is when you want to proxy requests only
+for content that doesn't exist locally — for example, during a migration
+from one server to another:</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}"       !-f
+RewriteCond "%{REQUEST_FILENAME}"       !-d
+RewriteRule "^/(.*)"                    "http://old.example.com/$1" [P]
+ProxyPassReverse "/" "http://old.example.com/"
+</highlight>
+
+<p>In this example, requests for resources that haven't been migrated
+yet are transparently proxied to the old server. As content is migrated,
+the local files take precedence. Remember to always include a
+<directive module="mod_proxy">ProxyPassReverse</directive> directive to
+ensure that any redirects issued by the backend are correctly passed on
+to the client.</p>
+
 </section>
 
 <section id="setenv"><title>Environment Variable Testing</title>
