@@ -94,8 +94,8 @@ module="mod_alias">Alias</directive> より先にマッチしますので、後�
 <description>URL をファイルシステムの位置にマップする</description>
 <syntax>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -157,8 +157,7 @@ module="mod_alias">Alias</directive> より先にマッチしますので、後�
 <description>正規表現を使って URL をファイルシステムの位置にマップする</description>
 <syntax>AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -182,8 +181,7 @@ module="mod_alias">Alias</directive> より先にマッチしますので、後�
 送る</description>
 <syntax>Redirect [<var>status</var>] <var>URL-path</var>
 <var>URL</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
@@ -262,8 +260,7 @@ type="section" module="core">Directory</directive>
 外部へのリダイレクトを送る</description>
 <syntax>RedirectMatch [<var>status</var>] <var>regex</var>
 <var>URL</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
@@ -288,8 +285,7 @@ type="section" module="core">Directory</directive>
 <description>クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</description>
 <syntax>RedirectTemp <var>URL-path</var> <var>URL</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
@@ -305,8 +301,7 @@ type="section" module="core">Directory</directive>
 <description>クライアントが違う URL を取得するように外部への永久的な
 リダイレクトを送る</description>
 <syntax>RedirectPermanent <var>URL-path</var> <var>URL</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
@@ -323,8 +318,8 @@ type="section" module="core">Directory</directive>
 CGI スクリプトに指定</description>
 <syntax>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -354,8 +349,7 @@ CGI スクリプトに指定</description>
 CGI スクリプトに指定</description>
 <syntax>ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>

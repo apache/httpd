@@ -135,6 +135,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
 <syntax>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -161,6 +162,7 @@ ve etkin modül listesine ekler.</description>
 <syntax>LoadModule <em>modül dosya-ismi</em></syntax>
 <contextlist>
 <context>server config</context>
+<context>virtual host</context>
 </contextlist>
 
 <usage>

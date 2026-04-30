@@ -127,6 +127,7 @@ de fichiers</description>
 <syntax>Alias [<var>chemin URL</var>]
 <var>chemin fichier</var>|<var>chemin répertoire</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>

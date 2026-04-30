@@ -587,8 +587,7 @@ CGI-Skripte</description>
 HTTP-Response-Headern</description>
 <syntax>ContentDigest On|Off</syntax>
 <default>ContentDigest Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Options</override>
 <status>Experimental</status>
@@ -668,7 +667,8 @@ nicht auf andere Weise ermitteln kann.</description>
 <name>Define</name>
 <description>Define the existence of a variable</description>
 <syntax>Define <var>Parametername</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>Equivalent zum übergeben von <var>Parametername</var> mittels des
@@ -1684,8 +1684,7 @@ auf nachfolgende Anfragen wartet</description>
 bestimmte HTTP-Methoden</description>
 <syntax>&lt;Limit <var>Methode</var> [<var>Methode</var>] ... &gt; ...
     &lt;/Limit&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
 
@@ -1741,8 +1740,7 @@ bestimmte HTTP-Methoden</description>
 außer den genannten</description>
 <syntax>&lt;LimitExcept <var>Methode</var> [<var>Methode</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
 
@@ -1862,7 +1860,7 @@ HTTP-Request-Body</description>
 entgegengenommen werden</description>
 <syntax>LimitRequestFields <var>Anzahl</var></syntax>
 <default>LimitRequestFields 100</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><var>Anzahl</var> ist ein Integer-Wert (eine positive Ganzzahl)
@@ -1904,7 +1902,7 @@ entgegengenommen werden</description>
 HTTP-Request-Headers</description>
 <syntax>LimitRequestFieldsize <var>Bytes</var></syntax>
 <default>LimitRequestFieldsize 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
   <p>Die Direktive gibt die Anzahl der <var>Bytes</var> an, die in einem
@@ -1943,7 +1941,7 @@ HTTP-Request-Headers</description>
 HTTP-Anfragezeile</description>
 <syntax>LimitRequestLine <var>Bytes</var></syntax>
 <default>LimitRequestLine 8190</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
   <p>Die Direktive legt die Anzahl der <var>Bytes</var> fest, die in der
@@ -2158,6 +2156,7 @@ reguläre Ausdrücke passen</description>
 <syntax>LogLevel <var>Level</var></syntax>
 <default>LogLevel warn</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -3196,7 +3195,7 @@ verarbeiten</description>
 bevor er die Anfrage abbricht</description>
 <syntax>TimeOut <var>Sekunden</var></syntax>
 <default>TimeOut 60</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
 		<p>Die Direktive <directive>TimeOut</directive> definiert derzeit die
@@ -3228,7 +3227,7 @@ bevor er die Anfrage abbricht</description>
 <description>Legt das Verhalten von <code>TRACE</code>-Anfragen fest</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Verfügbar ab Apache 1.3.34 und 2.0.55</compatibility>
 
 <usage>

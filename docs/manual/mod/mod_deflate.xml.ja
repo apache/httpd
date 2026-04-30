@@ -233,8 +233,8 @@
 <name>DeflateFilterNote</name>
 <description>ロギング用に圧縮比をメモに追加</description>
 <syntax>DeflateFilterNote [<var>type</var>] <var>notename</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <compatibility><var>type</var> is available since Apache 2.0.45</compatibility>
 
 <usage>
@@ -286,8 +286,8 @@
 <description>zlib が一度に圧縮する塊の大きさ</description>
 <syntax>DeflateBufferSize <var>value</var></syntax>
 <default>DeflateBufferSize 8096</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p><directive>DeflateBufferSize</directive> ディレクティブは
@@ -300,8 +300,8 @@
 <description>Zlib の圧縮用ウィンドウの大きさ</description>
 <syntax>DeflateWindowSize <var>value</var></syntax>
 <default>DeflateWindowSize 15</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p><directive>DeflateWindowSize</directive> ディレクティブは
@@ -318,8 +318,8 @@
 <description>zlib が圧縮に使うメモリのレベルを指定</description>
 <syntax>DeflateMemLevel <var>value</var></syntax>
 <default>DeflateMemLevel 9</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p><directive>DeflateMemLevel</directive> ディレクティブは

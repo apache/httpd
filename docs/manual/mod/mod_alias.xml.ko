@@ -89,6 +89,7 @@ Alias /foo /gaq
 <syntax>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -295,6 +296,7 @@ module="core">Directory</directive> 섹션에서 사용하더라도
 <syntax>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>

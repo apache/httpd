@@ -45,8 +45,8 @@
 <name>UserDir</name>
 <description>ユーザ専用ディレクトリの位置</description>
 <syntax>UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...</syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context> <context>virtual
+host</context></contextlist>
 
 <usage>
 

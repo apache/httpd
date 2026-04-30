@@ -922,7 +922,7 @@ charge</description>
 <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
   >clé=valeur [clé=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
-</contextlist>
+    </contextlist>
 <usage>
     <p>Cette directive permet d'ajouter un membre à un groupe de
     répartition de charge. Elle peut se trouver dans un conteneur
@@ -2471,7 +2471,8 @@ mandatés</description>
 les configurations de mandataires inverses</description>
 <syntax>ProxyPassInterpolateEnv On|Off</syntax>
 <default>ProxyPassInterpolateEnv Off</default>
-<contextlist><context>server config</context> <context>virtual host</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 <context>directory</context>
 </contextlist>
 

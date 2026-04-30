@@ -291,7 +291,7 @@ Protocols h2 h2c http/1.1
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
-	    <context>directory</context>
+            <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
 	<compatibility>Disponible à partir de la version 2.4.18 du serveur HTTP
@@ -563,7 +563,7 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut
         <contextlist>
             <context>server config</context>
             <context>virtual host</context>
-	    <context>directory</context>
+            <context>directory</context>
             <context>.htaccess</context>
         </contextlist>
 

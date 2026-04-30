@@ -105,6 +105,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
 <syntax>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
 <var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
   <usage>
@@ -412,6 +413,7 @@ URL’ye yönlendirir.</description>
 <syntax>ScriptAlias <var>URL-yolu</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
   <usage>

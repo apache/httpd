@@ -193,8 +193,7 @@ répertoires.
 fin"</description>
 <syntax>DirectorySlash On|Off|NotFound</syntax>
 <default>DirectorySlash On</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 <compatibility>L'argument NotFound est disponible à partir de la version 2.5.1

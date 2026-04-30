@@ -60,8 +60,7 @@
 version</description>
 <syntax>&lt;IfVersion [[!]<var>opérateur</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host
-</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>All</override>
 
