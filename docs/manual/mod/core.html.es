@@ -695,7 +695,7 @@ which no other media type configuration could be found.
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Define the existence of a variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Define <var>parameter-name</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
 </table>
@@ -4296,7 +4296,7 @@ certain events before failing a request</td></tr>
 <tr><th><a href="directive-dict.html#Description">Descripci&#243;n:</a></th><td>Determines the behaviour on <code>TRACE</code> requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>TraceEnable <var>[on|off|extended]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Valor por defecto:</a></th><td><code>TraceEnable on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexto:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Estado:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">M&#243;dulo:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilidad:</a></th><td>Available in Apache HTTP Server 1.3.34, 2.0.55 and later</td></tr>

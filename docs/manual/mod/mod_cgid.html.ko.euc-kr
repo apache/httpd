@@ -95,7 +95,7 @@ unset or set to 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>cgi 데몬과 통신을 위해 사용할 소켓의 이름</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ScriptSock <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">기본값:</a></th><td><code>ScriptSock logs/cgisock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정, 가상호스트</td></tr>
+<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>주서버설정</td></tr>
 <tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_cgid</td></tr>
 </table>

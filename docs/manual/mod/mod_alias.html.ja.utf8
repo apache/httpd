@@ -121,7 +121,7 @@ Alias /foo /gaq
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>URL をファイルシステムの位置にマップする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
 </table>
@@ -365,7 +365,7 @@ Redirect 系のディレクティブは Alias
 CGI スクリプトに指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
 </table>

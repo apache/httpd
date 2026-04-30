@@ -156,7 +156,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDefaultExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDefaultExpire 3600 (1時間)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -188,7 +188,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定の URL をキャッシュしない</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -206,7 +206,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>指定したストレージ管理方式を使ってのキャッシュを有効にする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheEnable <var>cache_type</var> <var>url-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -358,7 +358,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>応答に Last Modified が無くても気にしないようにする</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -435,7 +435,7 @@
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheLastModifiedFactor <var>float</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -506,7 +506,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最大時間を秒数で表したもの</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxExpire 86400 (一日)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -527,7 +527,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最小秒数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMinExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMinExpire 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -585,7 +585,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>no-store と指定されているレスポンスのキャッシュを試みる。</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>
@@ -620,7 +620,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>private と指定されているレスポンスのキャッシュを試みる。</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
 </table>

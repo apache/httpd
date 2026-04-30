@@ -48,11 +48,14 @@ configuration.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Redirecting to Geographically Distributed Servers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#browser-dependent-content">Browser Dependent Content</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallback-resource">Fallback Resource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite-query">Rewrite query string</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Userdirs</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -225,11 +228,11 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 #   when and only when document.php exists
 &lt;Directory "/var/www/htdocs"&gt;
     RewriteEngine on
-    RewriteBase "/var/www/htdocs"
+    RewriteBase   "/var/www/htdocs"
 
-    RewriteCond "$1.php" -f
-    RewriteCond "$1.html" !-f
-    RewriteRule "^(.*).html$" "$1.php"
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
 &lt;/Directory&gt;</pre>
 
     </dd>
@@ -292,7 +295,7 @@ hostname(s).</p>
 
 <p>You can alternatively accomplish this using the
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>
-directive:</p>
+directive: (<strong>2.4 and later</strong>)</p>
 
 <pre class="prettyprint lang-config">&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
     Redirect "/" "http://www.example.com/"
@@ -319,7 +322,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
 
 
 <p>And for a site running on port 80</p>
-<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
 RewriteCond "%{HTTP_HOST}"   "!^$"
 RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
 
@@ -331,7 +334,7 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
-<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
 RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
@@ -378,7 +381,7 @@ RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   "^"  "-"  [PT]</pre>
+RewriteRule "^"     "-"                                          [PT]</pre>
 
     </dd>
   </dl>
@@ -410,8 +413,8 @@ RewriteRule   "^"  "-"  [PT]</pre>
 <pre class="prettyprint lang-config">HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         "txt:/path/to/map.mirrors"
-RewriteCond   "%{REMOTE_HOST}"  "([a-z]+)$" [NC]
-RewriteRule   "^/(.*)$"  "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]</pre>
 
 
 <div class="example"><p><code>
@@ -436,45 +439,6 @@ com       http://www.example.com/<br />
     requesting client - the country code - and the following RewriteRule
     uses that value to look up the appropriate mirror host in the map
     file.</p>
-    </dd>
-  </dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="browser-dependent-content" id="browser-dependent-content">Browser Dependent Content</a></h2>
-
-  
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>We wish to provide different content based on the browser, or
-      user-agent, which is requesting the content.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>We have to decide, based on the HTTP header "User-Agent",
-      which content to serve. The following config
-      does the following: If the HTTP header "User-Agent"
-      contains "Mozilla/3", the page <code>foo.html</code>
-      is rewritten to <code>foo.NS.html</code> and the
-      rewriting stops. If the browser is "Lynx" or "Mozilla" of
-      version 1 or 2, the URL becomes <code>foo.20.html</code>.
-      All other browsers receive page <code>foo.32.html</code>.
-      This is done with the following ruleset:</p>
-
-<pre class="prettyprint lang-config">RewriteCond "%{HTTP_USER_AGENT}"  "^<strong>Mozilla/3</strong>.*"
-RewriteRule "^foo\.html$"         "foo.<strong>NS</strong>.html"          [<strong>L</strong>]
-
-RewriteCond "%{HTTP_USER_AGENT}"  "^Lynx/" [OR]
-RewriteCond "%{HTTP_USER_AGENT}"  "^Mozilla/[12]"
-RewriteRule "^foo\.html$"         "foo.<strong>20</strong>.html"          [<strong>L</strong>]
-
-RewriteRule "^foo\.html$"         "foo.<strong>32</strong>.html"          [<strong>L</strong>]</pre>
-
     </dd>
   </dl>
 
@@ -580,7 +544,7 @@ that should go to an existing resource such as an image, or a css file.</dd>
 <p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
 
 <pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource "index.php"
+  FallbackResource index.php
 &lt;/Directory&gt;</pre>
 
 
@@ -593,7 +557,7 @@ set to accomplish the same thing:</p>
 
   RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
   RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^" "index.php" [PT]
+  RewriteRule "^"                                    "index.php" [PT]
 &lt;/Directory&gt;</pre>
 
 
@@ -633,7 +597,7 @@ substitutions.</p>
 
 <pre class="prettyprint lang-config"># Remove mykey=???
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteRule "(.*)" "$1?%1%3"</pre>
+RewriteRule "(.*)"            "$1?%1%3"</pre>
 
   </li>
 
@@ -642,7 +606,7 @@ RewriteRule "(.*)" "$1?%1%3"</pre>
 
 <pre class="prettyprint lang-config"># Copy from query string to PATH_INFO
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteRule "(.*)" "$1/products/%2/?" [PT]</pre>
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]</pre>
 
   </li>
 
@@ -650,8 +614,8 @@ RewriteRule "(.*)" "$1/products/%2/?" [PT]</pre>
 
 <pre class="prettyprint lang-config"># Capture the value of mykey in the query string
 RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
-RewriteCond "%2" !=not-so-secret-value 
-RewriteRule "(.*)" - [F]</pre>
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]</pre>
 
   </li>
 
@@ -667,6 +631,153 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 </dd>
 
 </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="structuredhomedirs" id="structuredhomedirs">Structured Userdirs</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"</pre>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirectanchors" id="redirectanchors">Redirecting Anchors</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with other
+    special characters that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, by default, URL-encodes.</dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="time-dependent" id="time-dependent">Time-Dependent Rewriting</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &gt;0700
+RewriteCond   "%{TIME_HOUR}%{TIME_MIN}" &lt;1900
+RewriteRule   "^foo\.html$"             "foo.day.html" [L]
+RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
+
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <div class="warning"><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to dynamically generate content, but store it
+      statically once it is generated. This rule will check for the
+      existence of the static file, and if it's not there, generate
+      it. The static files can be removed periodically, if desired (say,
+      via cron) and will be regenerated on demand.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      This is done via the following ruleset:
+
+<pre class="prettyprint lang-config"># This example is valid in per-directory context only
+RewriteCond "%{REQUEST_URI}"   !-U
+RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
+
+
+    <p>The <code>-U</code> operator determines whether the test string
+    (in this case, <code>REQUEST_URI</code>) is a valid URL. It does
+    this via a subrequest. In the event that this subrequest fails -
+    that is, the requested resource doesn't exist - this rule invokes
+    the CGI program <code>/regenerate_page.cgi</code>, which generates
+    the requested resource and saves it into the document directory, so
+    that the next time it is requested, a static copy can be served.</p>
+
+    <p>In this way, documents that are infrequently updated can be served in
+    static form. if documents need to be refreshed, they can be deleted
+    from the document directory, and they will then be regenerated the
+    next time they are requested.</p>
+    </dd>
+  </dl>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |

@@ -111,7 +111,7 @@ responses from the server</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL을 특정 파일시스템 장소로 대응한다</td></tr>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL을 특정 파일시스템 장소로 대응한다</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">정규표현식을 사용하여 URL을 파일시스템 장소로
 대응한다</td></tr>
@@ -269,31 +269,31 @@ authentication succeeds but authorization fails
 설정한다</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#bufferedlogs" /></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
 <tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</td></tr>
 <tr><td><a href="mod_cache.html#cachedetailheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
 <tr class="odd"><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">하위디렉토리명의 문자개수</td></tr>
 <tr><td><a href="mod_cache_disk.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬의 하위디렉토리 깊이.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
-<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">특정 URL을 캐쉬하지 않는다</td></tr>
+<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</td></tr>
 <tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">시작시 여러 파일 핸들을 캐쉬한다</td></tr>
 <tr><td><a href="mod_cache.html#cacheheader" /></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Add an X-Cache header to the response.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">클라이언트가 캐쉬하지않는 내용을 요청함을 무시한다.</td></tr>
 <tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 지정한 HTTP 헤더(들)를 저장하지 않는다
 </td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">응답에 Last Modified 헤더가 없다는 사실을 무시한다.</td></tr>
 <tr><td><a href="mod_cache.html#cacheignorequerystring" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Ignore query string when caching</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
 </td></tr>
 <tr><td><a href="mod_cache.html#cachekeybaseurl" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Override the base URL of reverse proxied cache keys.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">LastModified 시간으로 만기시간을 계산하는데 사용하는
+<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">LastModified 시간으로 만기시간을 계산하는데 사용하는
 계수.</td></tr>
 <tr><td><a href="mod_cache.html#cachelock" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelockmaxage" /></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
 <tr><td><a href="mod_cache.html#cachelockpath" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (하루) </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">문서를 캐쉬하는 초단위 최대시간</td></tr>
-<tr><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (하루) </td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">문서를 캐쉬하는 초단위 최대시간</td></tr>
+<tr><td><a href="mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최대크기 (바이트 단위)</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cacheminexpire" /></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
+<tr><td><a href="mod_cache_disk.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">캐쉬에 저장할 문서의 최소크기 (바이트 단위)</td></tr>
 <tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
 <tr><td><a href="mod_cache.html#cachequickhandler" /></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
@@ -612,8 +612,8 @@ listens to</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio <var>ratio</var></a></td><td> 0 (disabled) </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ratio between the number of CPU cores (online) and the number of
 listeners' buckets</td></tr>
 <tr><td><a href="mpm_common.html#listentcpdeferaccept">ListenTCPDeferAccept <var>integer</var></a></td><td> 30 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Value set for the socket option TCP_DEFER_ACCEPT if it is set</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">지정한 목적파일이나 라이브러리를 읽어들인다</td></tr>
-<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">목적파일이나 라이브러리를 읽어들이고, 사용가능한
+<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">지정한 목적파일이나 라이브러리를 읽어들인다</td></tr>
+<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">목적파일이나 라이브러리를 읽어들이고, 사용가능한
 모듈 목록에 추가한다</td></tr>
 <tr class="odd"><td><a href="core.html#location">&lt;Location
     <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to matching
@@ -939,7 +939,7 @@ the child processes</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">특정 요청메서드에 대해 CGI 스크립트를
 사용한다.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL을 특정 파일시스템 장소로 대응하고 대상이 CGI
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">URL을 특정 파일시스템 장소로 대응하고 대상이 CGI
 스크립트라고 알린다</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">정규표현식을 사용하여 URL을 특정 파일시스템 장소로
@@ -949,7 +949,7 @@ scripts</td></tr>
 <tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">CGI 스크립트 오류로그파일의 위치</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">스크립트 로그에 기록할 PUT 혹은 POST 요청의 최대량</td></tr>
 <tr><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">CGI 스크립트 로그파일의 크기 제한</td></tr>
-<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">cgi 데몬과 통신을 위해 사용할 소켓의 이름</td></tr>
+<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">cgi 데몬과 통신을 위해 사용할 소켓의 이름</td></tr>
 <tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
 <var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
 <tr class="odd"><td><a href="core.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters

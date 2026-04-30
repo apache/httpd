@@ -431,7 +431,7 @@ simultaneously</td></tr>
     <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
     or <code class="module"><a href="../mod/worker.html">worker</a></code>), <code class="directive">MaxRequestWorkers</code> restricts
     the total number of threads that will be available to serve clients.
-    For hybrid MPMs, the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
+    For threaded and hybrid MPMs, the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
     <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxRequestWorkers</code> to a value that requires more than 16 processes,
     you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
