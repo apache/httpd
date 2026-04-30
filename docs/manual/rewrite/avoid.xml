@@ -154,28 +154,6 @@ you have <code>Options FollowSymLinks</code> enabled on your
 server.</p>
 </section>
 
-<section id="vhosts"><title>Virtual Hosting</title>
-<p>Although it is possible to handle <a href="vhosts.html">virtual hosts
-with mod_rewrite</a>, it is seldom the right way. Creating individual
-<directive module="core" type="section">VirtualHost</directive> blocks is
-almost always the right way to go. In the
-event that you have an enormous number of virtual hosts, consider using
-<module>mod_vhost_alias</module> to create these hosts automatically.</p>
-
-<p>Modules such as <module>mod_macro</module> are
-also useful for creating a large number of virtual hosts dynamically.</p>
-
-<p>Using <module>mod_rewrite</module> for vitualhost creation may be
-appropriate if you are using a hosting service that does not provide
-you access to the server configuration files, and you are therefore
-restricted to configuration using <code>.htaccess</code> files.</p>
-
-<p>See the <a href="vhosts.html">virtual hosts with mod_rewrite</a>
-document for more details on how you might accomplish this if it still
-seems like the right approach.</p>
-
-</section>
-
 <section id="proxy"><title>Simple Proxying</title>
 
 <p><directive module="mod_rewrite">RewriteRule</directive> provides the <a
@@ -243,6 +221,203 @@ and in certain other directives.</p>
 
 </section>
 
+<section id="blocked-inline-images">
+
+  <title>Forbidding Image Hotlinking</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>"Hotlinking" is the practice of other sites including your
+      images inline in their pages, using your bandwidth to serve
+      content for someone else's site. You can prevent this without
+      <module>mod_rewrite</module>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use <directive module="mod_setenvif">SetEnvIf</directive>
+      with <directive module="mod_authz_core">Require</directive>:</p>
+
+      <highlight language="config">
+SetEnvIf Referer example\.com localreferer
+&lt;FilesMatch "\.(jpg|png|gif)$"&gt;
+    Require env localreferer
+&lt;/FilesMatch&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you need more complex logic — such as serving an
+      alternate image to hotlinkers instead of denying the request — you
+      may need <module>mod_rewrite</module>. The following examples
+      rely on the <code>HTTP_REFERER</code> header, which is optional
+      and can be spoofed. The <code>!^$</code> condition allows
+      requests with no Referer header at all, so that users who type
+      the URL directly, or whose browsers suppress the Referer, are
+      not blocked.</p>
+
+      <p>Deny the request outright:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com" [NC]
+RewriteRule "\.(gif|jpg|png)$" "-"                [F,NC]
+</highlight>
+
+      <p>Serve an alternate image:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_REFERER}"  "!^$"
+RewriteCond "%{HTTP_REFERER}"  "!www.example.com"      [NC]
+RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="blocking-of-robots">
+
+  <title>Blocking of Robots</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You wish to block persistent requests from a particular robot
+      or user agent that ignores your <code>/robots.txt</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use <directive module="mod_setenvif">SetEnvIfNoCase</directive>
+      with <directive module="mod_authz_core">Require</directive>:</p>
+
+      <highlight language="config">
+SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway
+&lt;Location "/secret/files"&gt;
+    &lt;RequireAll&gt;
+        Require all granted
+        Require not env goaway
+    &lt;/RequireAll&gt;
+&lt;/Location&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Any technique that relies on the <code>USER_AGENT</code>
+      string can be trivially circumvented, since that string can be
+      changed by the client. If you are experiencing a sustained attack,
+      you should consider blocking it at a higher level, such as at your
+      firewall.</p>
+
+      <p>If you need to combine user-agent and IP address matching,
+      <module>mod_rewrite</module> can be used as a fallback:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_USER_AGENT}"   "^NameOfBadRobot"
+RewriteCond "%{REMOTE_ADDR}"       "=123\.45\.67\.[8-9]"
+RewriteRule "^/secret/files/"      "-"                   [F]
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="host-deny">
+
+  <title>Denying Hosts in a Reject List</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to maintain a list of hosts and have those hosts
+      blocked from accessing our server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>For simple IP-based blocking, use
+      <directive module="mod_authz_host">Require</directive> directly:</p>
+
+      <highlight language="config">
+&lt;Location "/"&gt;
+    Require all granted
+    Require not ip 193.102.180.41
+    Require not ip 192.76.162.40
+&lt;/Location&gt;
+      </highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you need a dynamic, file-based deny list (rather than
+      enumerating addresses in the configuration), <module>mod_rewrite</module>
+      with a <directive module="mod_rewrite">RewriteMap</directive>
+      can be used:</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    hosts-deny  "txt:/path/to/hosts.deny"
+RewriteCond   "${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}" "!=NOT-FOUND" [OR]
+RewriteCond   "${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}" "!=NOT-FOUND"
+RewriteRule   "^"                                      "-"           [F]
+</highlight>
+
+      <p>The map file contains one entry per line, with IP addresses or
+      hostnames as keys and a dummy value (since
+      <directive module="mod_rewrite">RewriteMap</directive> requires
+      key/value pairs):</p>
+
+<example>
+##  hosts.deny<br />
+193.102.180.41 -<br />
+192.76.162.40  -<br />
+</example>
+
+      <p>The second <directive module="mod_rewrite">RewriteCond</directive>
+      assumes <code>HostnameLookups</code> is enabled. If not, drop it
+      and remove the <code>[OR]</code> flag from the first condition.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="vhosts"><title>Virtual Hosting</title>
+<p>Although it is possible to handle <a href="vhosts.html">virtual hosts
+with mod_rewrite</a>, it is seldom the right way. Creating individual
+<directive module="core" type="section">VirtualHost</directive> blocks is
+almost always the right way to go. In the
+event that you have an enormous number of virtual hosts, consider using
+<module>mod_vhost_alias</module> to create these hosts automatically.</p>
+
+<p>Modules such as <module>mod_macro</module> are
+also useful for creating a large number of virtual hosts dynamically.</p>
+
+<p>Using <module>mod_rewrite</module> for vitualhost creation may be
+appropriate if you are using a hosting service that does not provide
+you access to the server configuration files, and you are therefore
+restricted to configuration using <code>.htaccess</code> files.</p>
+
+<p>See the <a href="vhosts.html">virtual hosts with mod_rewrite</a>
+document for more details on how you might accomplish this if it still
+seems like the right approach.</p>
+
+</section>
+
 <section id="load-balancing">
 
   <title>Load Balancing</title>
@@ -297,6 +472,5 @@ featureful than anything you can cobble together using
   </dl>
 
 </section>
-
 </manualpage>
 
