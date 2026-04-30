@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932811:1933518 (outdated) -->
+<!-- English Revision: 1932811:1933547 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -502,11 +502,11 @@ All pour les versions antérieures</default>
       Permet l'utilisation des directives contrôlant les fonctionnalités
       spécifiques d'un répertoire (<directive
       module="core">Options</directive> et <directive
-      module="mod_include">XBitHack</directive>). "Options" doit être
-      suivi d'un signe "égal", puis d'une liste d'options séparées par des
-      virgules (pas d'espaces) ; ces options doivent être définies à
-      l'aide de la commande <directive
-      module="core">Options</directive>.
+      module="mod_include">XBitHack</directive>).
+      Pour restreindre les options pouvant être outrepassées, ajoutez un
+      signe "égal" suivi d'une liste d'options, séparées par des virgules
+      (sans espaces), pouvant être définies à l'aide de la directive
+      <directive module="core">Options</directive>.
 
       <note><title>Désactivation implicite des options</title>
       <p>Bien que la liste des options disponibles dans les fichiers
