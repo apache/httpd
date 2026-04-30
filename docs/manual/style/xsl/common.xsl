@@ -726,6 +726,12 @@ if (typeof(prettyPrint) !== 'undefined') {
     <a href="{$path}/sitemap.html">
         <xsl:value-of select="$message[@id='sitemap']" />
     </a>
+
+    <xsl:text> | </xsl:text>
+
+    <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">
+        <xsl:value-of select="$message[@id='httpdreportabug']" />
+    </a>
 </p>
 </xsl:template>
 <!-- /super-menu -->
