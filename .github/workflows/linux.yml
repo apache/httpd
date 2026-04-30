@@ -353,14 +353,14 @@ jobs:
                     liblua5.3-dev libbrotli-dev libcurl4-openssl-dev     
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc libsasl2-dev ${{ matrix.pkgs }} check
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Cache installed libraries
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/root
         key: cache-libs-${{ env.JOBID }}
     - name: Cache CPAN modules
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/perl5
         key: cache-cpan-${{ env.JOBID }}
