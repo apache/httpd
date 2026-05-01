@@ -1603,7 +1603,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
     produced, the default behavior is to delete everything from the preceding
-    space character to the next space character.  This means the log line is
+    space character to the next space character.  This means the format string is
     implicitly divided into fields on non-whitespace to whitespace transitions.
     If a format string item does not produce output, the whole field is
     omitted.  For example, if the remote address <code>%a</code> in the log
