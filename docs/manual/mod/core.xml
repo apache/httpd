@@ -3988,13 +3988,14 @@ directory</description>
       The server will follow symbolic links in this directory. This is
       the default setting.
       <note>
+      <p>When the server follows the symlink it does <em>not</em>
+      change the pathname used to match against <directive type="section"
+      module="core">Directory</directive> sections.</p>
+
       <p>Disabling this option also prevents
       <module>mod_rewrite</module> from operating in per-directory
       context (<code>.htaccess</code> files and <directive type="section"
       module="core">Directory</directive> sections).</p>
-      <p>Even though the server follows the symlink it does <em>not</em>
-      change the pathname used to match against <directive type="section"
-      module="core">Directory</directive> sections.</p>
 
       <p>The <code>FollowSymLinks</code> and
       <code>SymLinksIfOwnerMatch</code> <directive
