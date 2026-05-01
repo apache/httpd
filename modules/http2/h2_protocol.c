@@ -58,7 +58,7 @@ const char *H2_MAGIC_TOKEN = "PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n";
 /*******************************************************************************
  * HTTP/2 error stuff
  */
-static const char *h2_err_descr[] = {
+static const char *const h2_err_descr[] = {
     "no error",                    /* 0x0 */
     "protocol error",
     "internal error",
@@ -91,7 +91,7 @@ const char *h2_protocol_err_description(unsigned int h2_error)
  * Black Listed Ciphers from RFC 7549 Appendix A
  *
  */
-static const char *RFC7540_names[] = {
+static const char *const RFC7540_names[] = {
     /* ciphers with NULL encrpytion */
     "NULL-MD5",                         /* TLS_NULL_WITH_NULL_NULL */
     /* same */                          /* TLS_RSA_WITH_NULL_MD5 */

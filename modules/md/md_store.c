@@ -47,7 +47,7 @@
 #define GNAME_STAGING      
 #define GNAME_ARCHIVE      
 
-static const char *GROUP_NAME[] = {
+static const char *const GROUP_NAME[] = {
     "none",
     "accounts",
     "challenges",

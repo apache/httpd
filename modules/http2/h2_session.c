@@ -1416,7 +1416,7 @@ static void on_stream_output(void *ctx, h2_stream *stream)
 }
 
 
-static const char *StateNames[] = {
+static const char *const StateNames[] = {
     "INIT",      /* H2_SESSION_ST_INIT */
     "DONE",      /* H2_SESSION_ST_DONE */
     "IDLE",      /* H2_SESSION_ST_IDLE */

@@ -1188,7 +1188,7 @@ static apr_status_t session_shutdown(h2_proxy_session *session, int reason,
 }
 
 
-static const char *StateNames[] = {
+static const char *const StateNames[] = {
     "INIT",      /* H2_PROXYS_ST_INIT */
     "DONE",      /* H2_PROXYS_ST_DONE */
     "IDLE",      /* H2_PROXYS_ST_IDLE */
