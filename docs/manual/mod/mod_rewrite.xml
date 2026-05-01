@@ -1239,8 +1239,8 @@ cannot use <code>$N</code> in the substitution string!
         you specify a <em>Substitution</em> string of
         <code>/www/file.html</code>, then this will be treated as a
         URL-path <em>unless</em> a directory named <code>www</code>
-        exists at the root or your file-system (or, in the case of
-        using rewrites in a <code>.htaccess</code> file, relative to
+        exists at the root of your file-system (or, in the case of
+        per-directory rewrites, relative to
         your document root), in which case it will
         be treated as a file-system path. If you wish other
         URL-mapping directives (such as <directive
@@ -1409,8 +1409,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
-        more rules. Especially note caveats for per-directory and
-        .htaccess context (see also the END flag). <em><a
+        more rules. Especially note caveats for per-directory context (see also the END flag). <em><a
         href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
     <tr>
