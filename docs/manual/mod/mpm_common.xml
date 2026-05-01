@@ -462,6 +462,26 @@ simultaneously</description>
     you must also raise <directive module="mpm_common"
     >ServerLimit</directive>.</p>
 
+    <p>For threaded and hybrid MPMs, <directive>MaxRequestWorkers</directive>
+    must be at least as large as
+    <directive module="mpm_common">ThreadsPerChild</directive>, and
+    should be an integer multiple of
+    <directive module="mpm_common">ThreadsPerChild</directive>. If it
+    is not a multiple, the server will round it down to the nearest
+    multiple at startup and log a warning.</p>
+
+    <example><title>Warning: MaxRequestWorkers too small</title>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </example>
+
+    <example><title>Warning: MaxRequestWorkers not a multiple of ThreadsPerChild</title>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </example>
+
     <p><directive>MaxRequestWorkers</directive> was called
     <directive>MaxClients</directive> before version 2.3.13. The old name is still
     supported.</p>
@@ -916,6 +936,11 @@ per child process</description>
     <p>The value of <directive>ThreadsPerChild</directive> must be at
     least 1. Values less than 1 will be automatically increased to 1
     and a warning will be logged.</p>
+
+    <p>The value of <directive module="mpm_common">MaxRequestWorkers</directive>
+    must be an integer multiple of <directive>ThreadsPerChild</directive>.
+    See <directive module="mpm_common">MaxRequestWorkers</directive> for
+    details.</p>
 </usage>
 </directivesynopsis>
 
