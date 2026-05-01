@@ -32,6 +32,10 @@
 <a href="../tr/rewrite/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
 
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は、<a href="intro.html#regex">正規表現</a>

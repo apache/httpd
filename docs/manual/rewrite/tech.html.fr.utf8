@@ -32,6 +32,8 @@
 <a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
 module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de la mise en correspondance des URLs</p>

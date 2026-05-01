@@ -74,7 +74,7 @@ and URL matching.</p>
     <p>In each of these cases, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rewrites the
     <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
-    <p>In per-directory context (i.e., within <code>.htaccess</code> files
+    <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a> (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
     this, the URL-path that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> initially compares <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives against

@@ -85,7 +85,7 @@ long form, so that you remember what each flag is supposed to do.
 Some flags take one or more arguments. Flags are not case sensitive.</p>
 
 <p>Flags that alter metadata associated with the request (T=, H=, E=)
-have no affect in per-directory and htaccess context, when a substitution
+have no effect in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>, when a substitution
 (other than '-') is performed during the same round of rewrite processing.
 </p>
 
@@ -380,7 +380,7 @@ variable using a RewriteCond:</p>
 
 <p>Note that environment variables do not survive an external
 redirect. You might consider using the [CO] flag to set a
-cookie. For per-directory and htaccess rewrites, where the final
+cookie. For per-directory rewrites, where the final
 substitution is processed as an internal redirect, environment
 variables from the previous round of rewriting are prefixed with
 "REDIRECT_". </p>

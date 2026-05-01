@@ -32,6 +32,8 @@
 <a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">ÀÌ ¹®¼­´Â ÃÖ½ÅÆÇ ¹ø¿ªÀÌ ¾Æ´Õ´Ï´Ù.
+            ÃÖ±Ù¿¡ º¯°æµÈ ³»¿ëÀº ¿µ¾î ¹®¼­¸¦ Âü°íÇÏ¼¼¿ä.</div>
 
 <p>&#65533;&#65533; ë¬¸ì&#65533;&#65533;&#65533;&#65533; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; URL ë§¤ì¹­&#65533;&#65533; ê¸°ì&#65533;&#65533;&#65533;&#65533;
 &#65533;¸ë&#65533; &#65533;¬í&#65533;&#65533; &#65533;¼ë&#65533;ë¥&#65533; &#65533;¼ì&#65533;&#65533;&#65533;©ë&#65533;&#65533;&#65533;&#65533;.</p>
