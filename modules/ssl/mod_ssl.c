@@ -149,9 +149,10 @@ static const command_rec ssl_config_cmds[] = {
                 "('/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(CARevocationCheck, RAW_ARGS,
                 "SSL CA Certificate Revocation List (CRL) checking mode")
-    SSL_CMD_ALL(VerifyClient, TAKE1,
+    SSL_CMD_ALL(VerifyClient, TAKE12,
                 "SSL Client verify type "
-                "('none', 'optional', 'require', 'optional_no_ca')")
+                "('none', 'optional', 'require', 'optional_no_ca' "
+                "[accepted-errors])")
     SSL_CMD_ALL(VerifyDepth, TAKE1,
                 "SSL Client verify depth "
                 "('N' - number of intermediate certificates)")

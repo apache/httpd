@@ -490,6 +490,27 @@ typedef enum {
     || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE) \
     || (errnum == X509_V_ERR_CERT_HAS_EXPIRED))
 
+#define ACCEPT_X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT          (1U<<0)
+#define ACCEPT_X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN            (1U<<1)
+#define ACCEPT_X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY    (1U<<2)
+#define ACCEPT_X509_V_ERR_CERT_UNTRUSTED                       (1U<<3)
+#define ACCEPT_X509_V_ERR_CERT_SIGNATURE_FAILURE               (1U<<4)
+#define ACCEPT_X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE      (1U<<5)
+#define ACCEPT_X509_V_ERR_INVALID_PURPOSE                      (1U<<6)
+#define ACCEPT_X509_V_ERR_CERT_HAS_EXPIRED                     (1U<<7)
+#define ACCEPT_X509_V_ERR_CERT_NOT_YET_VALID                   (1U<<8)
+
+#define ssl_verify_error_is_accepted(errnum, accepted_errors) \
+   ((errnum == X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT          && ((accepted_errors) & ACCEPT_X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT)) \
+    || (errnum == X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN         && ((accepted_errors) & ACCEPT_X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN)) \
+    || (errnum == X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY && ((accepted_errors) & ACCEPT_X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY)) \
+    || (errnum == X509_V_ERR_CERT_UNTRUSTED                    && ((accepted_errors) & ACCEPT_X509_V_ERR_CERT_UNTRUSTED)) \
+    || (errnum == X509_V_ERR_CERT_SIGNATURE_FAILURE            && ((accepted_errors) & ACCEPT_X509_V_ERR_CERT_SIGNATURE_FAILURE)) \
+    || (errnum == X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE   && ((accepted_errors) & ACCEPT_X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE)) \
+    || (errnum == X509_V_ERR_INVALID_PURPOSE                   && ((accepted_errors) & ACCEPT_X509_V_ERR_INVALID_PURPOSE)) \
+    || (errnum == X509_V_ERR_CERT_HAS_EXPIRED                  && ((accepted_errors) & ACCEPT_X509_V_ERR_CERT_HAS_EXPIRED)) \
+    || (errnum == X509_V_ERR_CERT_NOT_YET_VALID                && ((accepted_errors) & ACCEPT_X509_V_ERR_CERT_NOT_YET_VALID)))
+
 /**
   * CRL checking mask (mode | flags)
   */
@@ -791,6 +812,8 @@ typedef struct {
     /** for client or downstream server authentication */
     int          verify_depth;
     ssl_verify_t verify_mode;
+    unsigned int verify_error_mask;
+    BOOL         verify_error_mask_set;
 
     /** TLSv1.3 has its separate cipher list, separate from the
      settings for older TLS protocol versions. Since which one takes
@@ -926,6 +949,8 @@ struct SSLDirConfigRec {
     ssl_opt_t     nOptionsDel;
     const char   *szCipherSuite;
     ssl_verify_t  nVerifyClient;
+    unsigned int  nVerifyClientErrorMask;
+    BOOL          nVerifyClientErrorMaskSet;
     int           nVerifyDepth;
     const char   *szUserName;
     apr_size_t    nRenegBufferSize;
@@ -976,7 +1001,7 @@ const char  *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLClientHelloVars(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLSessionTickets(cmd_parms *, void *, int flag);
-const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *, void *, const char *);

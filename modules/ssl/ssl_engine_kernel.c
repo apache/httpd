@@ -1630,6 +1630,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     int errdepth = X509_STORE_CTX_get_error_depth(ctx);
     int depth = UNSET;
     int verify = SSL_CVERIFY_UNSET;
+    unsigned int verify_error_mask = 0;
 
     /*
      * Log verification information
@@ -1653,8 +1654,19 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
             verify = dc->nVerifyClient;
         }
     }
-    if (!dc || (verify == SSL_CVERIFY_UNSET)) {
-        verify = mctx->auth.verify_mode;
+    if (conn->outgoing) {
+      if (!dc || (verify == SSL_CVERIFY_UNSET)) {
+          verify = mctx->auth.verify_mode;
+      }
+    }
+    else {
+      if (!dc || (verify == SSL_CVERIFY_UNSET)) {
+          verify = mctx->auth.verify_mode;
+          verify_error_mask = mctx->auth.verify_error_mask;
+      }
+      else {
+          verify_error_mask = dc->nVerifyClientErrorMask;
+      }
     }
 
     if (verify == SSL_CVERIFY_NONE) {
@@ -1666,8 +1678,18 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         return TRUE;
     }
 
-    if (ssl_verify_error_is_optional(errnum) &&
+    if (conn->outgoing && ssl_verify_error_is_optional(errnum) &&
         (verify == SSL_CVERIFY_OPTIONAL_NO_CA))
+    {
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, conn, APLOGNO(02037)
+                      "Certificate Verification: Verifiable Issuer is "
+                      "configured as optional, therefore we're accepting "
+                      "the certificate");
+
+        sslconn->verify_info = "GENEROUS";
+        ok = TRUE;
+    }
+    else if (!conn->outgoing && ssl_verify_error_is_accepted(errnum, verify_error_mask))
     {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, conn, APLOGNO(02037)
                       "Certificate Verification: Verifiable Issuer is "
@@ -1714,13 +1736,24 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
         /* If there was an optional verification error, it's not
          * possible to perform OCSP validation since the issuer may be
          * missing/untrusted.  Fail in that case. */
-        if (ssl_verify_error_is_optional(errnum)) {
+        if (conn->outgoing
+            && ssl_verify_error_is_optional(errnum)) {
             X509_STORE_CTX_set_error(ctx, X509_V_ERR_APPLICATION_VERIFICATION);
             errnum = X509_V_ERR_APPLICATION_VERIFICATION;
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn, APLOGNO(02038)
                           "cannot perform OCSP validation for cert "
                           "if issuer has not been verified "
                           "(optional_no_ca configured)");
+            ok = FALSE;
+        }
+        else if (!conn->outgoing
+            && ssl_verify_error_is_accepted(errnum, verify_error_mask)) {
+            X509_STORE_CTX_set_error(ctx, X509_V_ERR_APPLICATION_VERIFICATION);
+            errnum = X509_V_ERR_APPLICATION_VERIFICATION;
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn, APLOGNO(02038)
+                          "cannot perform OCSP validation for cert "
+                          "if issuer has not been verified "
+                          "(accepted-errors configured)");
             ok = FALSE;
         } else {
             ok = modssl_verify_ocsp(ctx, sc, s, conn, conn->pool);

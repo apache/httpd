@@ -138,6 +138,8 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->auth.cipher_suite   = NULL;
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
+    mctx->auth.verify_error_mask = 0;
+    mctx->auth.verify_error_mask_set = FALSE;
     mctx->auth.tls13_ciphers = NULL;
 
     mctx->ocsp_mask           = UNSET;
@@ -284,6 +286,14 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeString(auth.cipher_suite);
     cfgMergeInt(auth.verify_depth);
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
+    if (add->auth.verify_error_mask_set) {
+        mrg->auth.verify_error_mask = add->auth.verify_error_mask;
+        mrg->auth.verify_error_mask_set = TRUE;
+    }
+    else {
+        mrg->auth.verify_error_mask = base->auth.verify_error_mask;
+        mrg->auth.verify_error_mask_set = base->auth.verify_error_mask_set;
+    }
     cfgMergeString(auth.tls13_ciphers);
 
     cfgMergeInt(ocsp_mask);
@@ -405,6 +415,8 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
 
     dc->szCipherSuite          = NULL;
     dc->nVerifyClient          = SSL_CVERIFY_UNSET;
+    dc->nVerifyClientErrorMask = 0;
+    dc->nVerifyClientErrorMaskSet = FALSE;
     dc->nVerifyDepth           = UNSET;
 
     dc->szUserName             = NULL;
@@ -461,6 +473,14 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMergeString(szCipherSuite);
     cfgMerge(nVerifyClient, SSL_CVERIFY_UNSET);
+    if (add->nVerifyClientErrorMaskSet) {
+        mrg->nVerifyClientErrorMask = add->nVerifyClientErrorMask;
+        mrg->nVerifyClientErrorMaskSet = TRUE;
+    }
+    else {
+        mrg->nVerifyClientErrorMask = base->nVerifyClientErrorMask;
+        mrg->nVerifyClientErrorMaskSet = base->nVerifyClientErrorMaskSet;
+    }
     cfgMergeInt(nVerifyDepth);
 
     cfgMergeString(szUserName);
@@ -1298,24 +1318,136 @@ static const char *ssl_cmd_verify_parse(cmd_parms *parms,
     return NULL;
 }
 
+#define SSL_VERIFY_CLIENT_OPTIONAL_NO_CA_ERRORS \
+    (ACCEPT_X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT       \
+     | ACCEPT_X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN       \
+     | ACCEPT_X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY \
+     | ACCEPT_X509_V_ERR_CERT_UNTRUSTED                  \
+     | ACCEPT_X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE \
+     | ACCEPT_X509_V_ERR_CERT_HAS_EXPIRED)
+
+static const char *ssl_cmd_verify_error_mask_add(cmd_parms *parms,
+                                                 const char *token,
+                                                 unsigned int *mask)
+{
+    if (strcEQ(token, "self-signed")) {
+        *mask |= ACCEPT_X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT
+               | ACCEPT_X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN;
+    }
+    else if (strcEQ(token, "untrusted-cert")) {
+        *mask |= ACCEPT_X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY
+               | ACCEPT_X509_V_ERR_CERT_UNTRUSTED;
+    }
+    else if (strcEQ(token, "invalid-signature")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_SIGNATURE_FAILURE
+               | ACCEPT_X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE;
+    }
+    else if (strcEQ(token, "expired-cert")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_HAS_EXPIRED;
+    }
+    else if (strcEQ(token, "purpose-mismatch") || strcEQ(token, "X509_V_ERR_INVALID_PURPOSE")) {
+        *mask |= ACCEPT_X509_V_ERR_INVALID_PURPOSE;
+    }
+    else if (strcEQ(token, "X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT")) {
+        *mask |= ACCEPT_X509_V_ERR_DEPTH_ZERO_SELF_SIGNED_CERT;
+    }
+    else if (strcEQ(token, "X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN")) {
+        *mask |= ACCEPT_X509_V_ERR_SELF_SIGNED_CERT_IN_CHAIN;
+    }
+    else if (strcEQ(token, "X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY")) {
+        *mask |= ACCEPT_X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY;
+    }
+    else if (strcEQ(token, "X509_V_ERR_CERT_UNTRUSTED")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_UNTRUSTED;
+    }
+    else if (strcEQ(token, "X509_V_ERR_CERT_SIGNATURE_FAILURE")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_SIGNATURE_FAILURE;
+    }
+    else if (strcEQ(token, "X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE")) {
+        *mask |= ACCEPT_X509_V_ERR_UNABLE_TO_VERIFY_LEAF_SIGNATURE;
+    }
+    else if (strcEQ(token, "X509_V_ERR_CERT_HAS_EXPIRED")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_HAS_EXPIRED;
+    }
+    else if (strcEQ(token, "X509_V_ERR_CERT_NOT_YET_VALID")) {
+        *mask |= ACCEPT_X509_V_ERR_CERT_NOT_YET_VALID;
+    }
+    else {
+        return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                           ": Invalid accepted-errors value '", token, "'",
+                           NULL);
+    }
+
+    return NULL;
+}
+
+static const char *ssl_cmd_verify_error_mask_parse(cmd_parms *parms,
+                                                   const char *arg,
+                                                   unsigned int *mask)
+{
+    const char *token;
+    char *list;
+    const char *list_cursor;
+    const char *err;
+
+    *mask = 0;
+    list = apr_pstrdup(parms->temp_pool, arg);
+    list_cursor = list;
+
+    while (*list_cursor) {
+        token = ap_getword(parms->temp_pool, &list_cursor, ',');
+        if (!*token) {
+            return apr_pstrcat(parms->temp_pool, parms->cmd->name,
+                               ": Invalid accepted-errors list",
+                               NULL);
+        }
+        if ((err = ssl_cmd_verify_error_mask_add(parms, token, mask))) {
+            return err;
+        }
+    }
+
+    return NULL;
+}
+
 const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
                                     void *dcfg,
-                                    const char *arg)
+                                    const char *arg1,
+                                    const char *arg2)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
     ssl_verify_t mode = SSL_CVERIFY_NONE;
+    unsigned int error_mask = 0;
     const char *err;
 
-    if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
+    if ((err = ssl_cmd_verify_parse(cmd, arg1, &mode))) {
         return err;
+    }
+
+    if (arg2 != NULL) {
+        if (mode == SSL_CVERIFY_NONE) {
+            return apr_pstrcat(cmd->temp_pool, cmd->cmd->name,
+                               ": accepted-errors is not allowed when level is 'none'",
+                               NULL);
+        }
+
+        if ((err = ssl_cmd_verify_error_mask_parse(cmd, arg2, &error_mask))) {
+            return err;
+        }
+    }
+    else if (mode == SSL_CVERIFY_OPTIONAL_NO_CA) {
+        error_mask = SSL_VERIFY_CLIENT_OPTIONAL_NO_CA_ERRORS;
     }
 
     if (cmd->path) {
         dc->nVerifyClient = mode;
+        dc->nVerifyClientErrorMask = error_mask;
+        dc->nVerifyClientErrorMaskSet = TRUE;
     }
     else {
         sc->server->auth.verify_mode = mode;
+        sc->server->auth.verify_error_mask = error_mask;
+        sc->server->auth.verify_error_mask_set = TRUE;
     }
 
     return NULL;
