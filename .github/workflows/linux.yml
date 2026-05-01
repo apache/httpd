@@ -22,7 +22,7 @@ env:
   MARGS: "-j2"
   CFLAGS: "-g"
   # This will need updating as the ubuntu-latest image changes:
-  PHP_FPM: "/usr/sbin/php-fpm8.1"
+  PHP_FPM: "/usr/sbin/php-fpm8.3"
 
 jobs:
   build:
