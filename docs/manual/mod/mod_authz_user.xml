@@ -38,6 +38,7 @@
     grant access to all successfully authenticated users.</p>
 </summary>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="mod_authz_core.html#authzresults">Authorization Result States</a></seealso>
 
 <section id="requiredirectives"><title>The Require Directives</title>
 

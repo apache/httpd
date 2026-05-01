@@ -85,6 +85,56 @@
     </highlight>
 </section>
 
+<section id="authzresults"><title>Authorization Result States</title>
+
+    <p>Each authorization provider returns one of three possible results
+    when evaluating a <directive module="mod_authz_core">Require</directive>
+    directive:</p>
+
+    <dl>
+      <dt><strong>Granted</strong></dt>
+      <dd>The provider has verified that the request meets
+      its requirements.</dd>
+
+      <dt><strong>Denied</strong></dt>
+      <dd>The provider has determined that the request does not
+      meet its requirements.</dd>
+
+      <dt><strong>Neutral</strong></dt>
+      <dd>The provider has no opinion about the request. This
+      can occur when a provider is not relevant to the request
+      (e.g., a group-membership check when the request does not
+      involve group-based authorization).</dd>
+    </dl>
+
+    <p>The authorization container directives interpret these three
+    results as follows:</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".25"/><column width=".25"/><column width=".25"/></columnspec>
+    <tr><th>Container</th><th>Granted if...</th><th>Denied if...</th><th>Neutral treated as...</th></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAny</directive></td>
+        <td>at least one provider grants</td>
+        <td>all providers deny</td>
+        <td>deny (does not satisfy the requirement)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAll</directive></td>
+        <td>no provider denies (and at least one grants)</td>
+        <td>any provider denies</td>
+        <td>grant (does not block the requirement)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireNone</directive></td>
+        <td>no provider grants</td>
+        <td>any provider grants</td>
+        <td>grant (does not block)</td></tr>
+    </table>
+
+    <p>When a <directive>Require</directive> directive is negated with
+    <code>not</code> (e.g., <code>Require not group temps</code>), a
+    granted result is inverted to denied and vice versa, but a neutral
+    result remains neutral. A negated directive can therefore never
+    independently authorize a request.</p>
+
+</section>
+
 <section id="requiredirectives"><title>The Require Directives</title>
 
   <p><module>mod_authz_core</module> provides some generic authorization
@@ -402,6 +452,7 @@ Require group admin
 
 <seealso><a href="../howto/access.html">Access Control howto</a></seealso>
 <seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="#authzresults">Authorization Result States</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
@@ -433,6 +484,7 @@ succeed.</description>
 </usage>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="#authzresults">Authorization Result States</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso>
 
@@ -471,6 +523,7 @@ must succeed for the enclosing directive to succeed.</description>
 </usage>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="#authzresults">Authorization Result States</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso>
 
@@ -512,6 +565,7 @@ must succeed for the enclosing directive to not fail.</description>
 </usage>
 
 <seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="#authzresults">Authorization Result States</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso>
 
