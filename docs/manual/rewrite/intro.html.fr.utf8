@@ -90,7 +90,7 @@ exactement comment chaque règle est traitée.</p>
 Ce document n'a pas pour prétention d'être une référence détaillée des
 expressions rationnelles. A cet effet, nous recommandons les <a href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="http://perldoc.perl.org/perlre.html">page de manuel des
 expressions rationnelles Perl</a>, et l'ouvrage <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
-Regular Expressions, by Jeffrey Friedl</a> (la troisième édition date
+Regular Expressions, par Jeffrey Friedl</a> (la troisième édition date
 de 2006, mais la syntaxe des expressions rationnelles n'a pas vraiment
 changé, et cet ouvrage reste la référence en la matière).</p>
 

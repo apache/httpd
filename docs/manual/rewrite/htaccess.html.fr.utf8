@@ -32,6 +32,8 @@
 <a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/htaccess.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 
 <p>Ce document est un complément de la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
