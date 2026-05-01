@@ -929,7 +929,10 @@ expressions</description>
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>. The same will occur inside a
+    >Location</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>path</var> argument is required. The same will occur inside a
     <directive type="section" module="core">LocationMatch</directive> section;
     however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
@@ -1587,7 +1590,10 @@ ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
     <p>When used inside a <directive type="section" module="core"
     >LocationMatch</directive> section, the first argument is omitted and the
     regexp is obtained from the <directive type="section" module="core"
-    >LocationMatch</directive>.</p>
+    >LocationMatch</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>regex</var> argument is required.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
@@ -1693,7 +1699,10 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>. The same occurs inside a <directive type="section"
+    >Location</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>path</var> argument is required. The same occurs inside a <directive type="section"
     module="core">LocationMatch</directive> section, but will probably not work as
     intended, as ProxyPassReverse will interpret the regexp literally as a
     path; if needed in this situation, specify the ProxyPassReverse outside
