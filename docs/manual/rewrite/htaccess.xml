@@ -47,6 +47,7 @@ processes rules in per-directory context, see the
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 <seealso><a href="flags.html">RewriteRule Flags</a></seealso>
 <seealso><a href="tech.html">Technical details</a></seealso>
+<seealso><a href="../mod/mod_rewrite.html#what_is_matched">Substitution string combinations</a></seealso>
 
 <section id="prerequisites"><title>Prerequisites: AllowOverride</title>
 
