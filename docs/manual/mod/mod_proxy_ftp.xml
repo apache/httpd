@@ -122,6 +122,14 @@ ForceType application/octet-stream
         ftp://<var>username</var>@<var>host</var>/myfile
       </example>
 
+      <note><title>HttpProtocolOptions</title>
+        <p>By default, <directive module="core"
+        >HttpProtocolOptions</directive> is set to <code>Strict</code>,
+        which rejects URLs containing userinfo (username or password)
+        per RFC 7230.  To use credentials in FTP URLs, you must set
+        <code>HttpProtocolOptions Unsafe</code>.</p>
+      </note>
+
       <p>If the FTP server asks for a password when given this username (which
       it should), then Apache will reply with a <code>401</code> (Authorization
       required) response, which causes the Browser to pop up the
