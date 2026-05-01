@@ -1292,7 +1292,13 @@ cannot use <code>$N</code> in the substitution string!
       (<strong>N</strong>=0..9). <code>$0</code> refers to the
       entire string matched by the <em>Pattern</em>, while
       <code>$1</code>..<code>$9</code> refer to the corresponding
-      captured groups from the matched <em>Pattern</em>. The server-variables are the same
+      captured groups from the matched <em>Pattern</em>.
+      Similarly, back-references
+      <code>%0</code>..<code>%9</code> refer to the most recently
+      matched
+      <directive module="mod_rewrite">RewriteCond</directive>
+      <em>CondPattern</em>: <code>%0</code> is the entire match and
+      <code>%1</code>..<code>%9</code> are the captured groups. The server-variables are the same
       as for the <em>TestString</em> of a
       <directive module="mod_rewrite">RewriteCond</directive>
       directive. The mapping-functions come from the
