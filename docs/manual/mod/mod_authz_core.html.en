@@ -254,12 +254,10 @@
 
 Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
-    Require all granted
-
-    AuthBasicProvider file
-
     AuthType Basic
-    AuthName LDAP_Protected_Place
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
 
     #implied OR operation
     Require ldap-group-alias1

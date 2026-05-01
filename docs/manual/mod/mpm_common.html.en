@@ -435,6 +435,26 @@ simultaneously</td></tr>
     <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxRequestWorkers</code> to a value that requires more than 16 processes,
     you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
+    <p>For threaded and hybrid MPMs, <code class="directive">MaxRequestWorkers</code>
+    must be at least as large as
+    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>, and
+    should be an integer multiple of
+    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>. If it
+    is not a multiple, the server will round it down to the nearest
+    multiple at startup and log a warning.</p>
+
+    <div class="example"><h3>Warning: MaxRequestWorkers too small</h3><p><code>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </code></p></div>
+
+    <div class="example"><h3>Warning: MaxRequestWorkers not a multiple of ThreadsPerChild</h3><p><code>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </code></p></div>
+
     <p><code class="directive">MaxRequestWorkers</code> was called
     <code class="directive">MaxClients</code> before version 2.3.13. The old name is still
     supported.</p>
@@ -843,6 +863,11 @@ per child process</td></tr>
     <p>The value of <code class="directive">ThreadsPerChild</code> must be at
     least 1. Values less than 1 will be automatically increased to 1
     and a warning will be logged.</p>
+
+    <p>The value of <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>
+    must be an integer multiple of <code class="directive">ThreadsPerChild</code>.
+    See <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for
+    details.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

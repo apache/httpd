@@ -165,20 +165,38 @@
 <div class="section">
 <h2><a name="hostmatching" id="hostmatching">Virtual Host Matching</a></h2>
 
-    <p>The server determines which vhost to use for a request as
-    follows:</p>
+    <p>The server determines which vhost to use for a request in two
+    phases: an IP-based match when the connection is established,
+    then an optional name-based match when the request is received.</p>
 
-    <h3><a name="hashtable" id="hashtable">IP address lookup</a></h3>
+    <h3><a name="hashtable" id="hashtable">Phase 1: IP address and port matching</a></h3>
 
-    <p>When the connection is first received on some address and port,
-    the server looks for all the <code>VirtualHost</code> definitions
-    that have the same IP address and port.</p>
+    <p>When a connection is first received, the server looks up the
+    destination IP address and port in its list of
+    <code>VirtualHost</code> addresses. This lookup follows a strict
+    priority order:</p>
 
-    <p>If there are no exact matches for the address and port, then
-    wildcard (<code>*</code>) matches are considered.</p>
+    <table class="bordered"><tr class="header"><th>Priority</th><th>Match type</th><th>Example</th></tr>
+<tr><td>1</td><td>Exact IP address, exact port</td>
+        <td><code>&lt;VirtualHost 10.0.0.1:80&gt;</code></td></tr>
+<tr class="odd"><td>2</td><td>Exact IP address, wildcard port</td>
+        <td><code>&lt;VirtualHost 10.0.0.1:*&gt;</code></td></tr>
+<tr><td>3</td><td>Wildcard address (<code>*</code>), exact port</td>
+        <td><code>&lt;VirtualHost *:80&gt;</code></td></tr>
+<tr class="odd"><td>4</td><td>Wildcard address, wildcard port</td>
+        <td><code>&lt;VirtualHost *:*&gt;</code></td></tr>
+<tr><td>5</td><td>Main server</td>
+        <td>(no matching <code>VirtualHost</code>)</td></tr>
+</table>
 
-    <p>If no matches are found, the request is served by the
-    main server.</p>
+    <div class="note"><h3>Important</h3>
+    <p>The server uses the <em>first match found</em> following this
+    priority order. Once a match is found at a given priority level,
+    no lower-priority levels are considered — even if a
+    lower-priority vhost has a <code>ServerName</code> that matches the
+    request's <code>Host</code> header. Name-based matching (Phase 2)
+    only occurs among vhosts that tied at the same priority level.</p>
+    </div>
 
     <p>If there are <code>VirtualHost</code> definitions for
     the IP address, the next step is to decide if we have to
@@ -188,19 +206,19 @@
 
     <h3><a name="ipbased" id="ipbased">IP-based vhost</a></h3>
 
-    <p>If there is exactly one <code>VirtualHost</code> directive
-    listing the IP address and port combination that was determined
-    to be the best match, no further actions are performed and
-    the request is served from the matching vhost.</p>
+    <p>If Phase 1 produces exactly one matching
+    <code>VirtualHost</code>, the request is served directly from that
+    vhost with no further matching.</p>
 
     
 
-    <h3><a name="namebased" id="namebased">Name-based vhost</a></h3>
+    <h3><a name="namebased" id="namebased">Phase 2: Name-based matching</a></h3>
 
-    <p>If there are multiple <code>VirtualHost</code> directives listing
-    the IP address and port combination that was determined to be the
-    best match, the "list" in the remaining steps refers to the list of vhosts
-    that matched, in the order they were in the configuration file.</p>
+    <p>If Phase 1 produces multiple <code>VirtualHost</code>
+    definitions at the same priority level, the server performs
+    name-based matching among those vhosts using the
+    <code>Host:</code> header from the request (or the SNI hostname
+    for SSL connections).</p>
 
     <p>If the connection is using SSL, the server supports <a class="glossarylink" href="../glossary.html#servernameindication" title="see glossary">Server Name Indication</a>, and
     the SSL client handshake includes the TLS extension with the
@@ -211,30 +229,44 @@
     vhost determines which certificate the server will use for the
     connection.</p>
 
-    <p>If the request contains a <code>Host:</code> header field, the
-    list is searched for the first vhost with a matching
-    <code>ServerName</code> or <code>ServerAlias</code>, and the
-    request is served from that vhost. A <code>Host:</code> header
-    field can contain a port number, but Apache always ignores it and
-    matches against the real port to which the client sent the
-    request.</p>
+    <p>The matching vhosts are searched in the order they appear in
+    the configuration file:</p>
 
-    <p>The first vhost in the config
-    file with the specified IP address has the highest priority
-    and catches any request to an unknown server name, or a request
-    without a <code>Host:</code> header field (such as a HTTP/1.0
-    request).</p>
+    <ol>
+    <li>The <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and
+    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> of each vhost
+    are compared against the hostname from the request.  The first
+    match wins.</li>
+
+    <li>If no <code>ServerName</code> or <code>ServerAlias</code>
+    matches, the <em>first vhost in the list</em> is used.  This is
+    the <em>default name-based vhost</em> for that address and port
+    combination.</li>
+    </ol>
+
+    <p>A <code>Host:</code> header field can contain a port number,
+    but Apache always ignores it and matches against the real port to
+    which the client sent the request.</p>
+
+    <p>If the request has no <code>Host:</code> header (such as a
+    HTTP/1.0 request), the first matching vhost is used. If a
+    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> is configured for
+    any of the matching vhosts and the request URL matches that path,
+    the request is served from that vhost instead.  This is a legacy
+    mechanism for HTTP/1.0 clients; see the
+    <a href="examples.html#serverpath">ServerPath example</a> for
+    details.</p>
 
     
 
     <h3><a name="persistent" id="persistent">Persistent connections</a></h3>
 
-    <p>The <em>IP lookup</em> described above is only done <em>once</em> for a
-    particular TCP/IP session while the <em>name lookup</em> is done on
-    <em>every</em> request during a KeepAlive/persistent
-    connection. In other words, a client may request pages from
-    different name-based vhosts during a single persistent
-    connection.</p>
+    <p>The IP-based lookup (Phase 1) is performed only <em>once</em>
+    for a particular TCP/IP session, while the name-based lookup
+    (Phase 2) is performed on <em>every</em> request during a
+    KeepAlive/persistent connection. In other words, a client may
+    request pages from different name-based vhosts during a single
+    persistent connection.</p>
 
     
 
@@ -248,25 +280,25 @@
     relative URI is served by the corresponding main server or
     virtual host. If it does not match, then the URI remains
     untouched and the request is taken to be a proxy request.</p>
-
+    
 
 <h3><a name="observations" id="observations">Observations</a></h3>
 
     <ul>
-      <li>Name-based virtual hosting is a process applied after
-      the server has selected the best matching IP-based virtual
-      host.</li>
+      <li>Name-based virtual hosting is a process applied <em>after</em>
+      the server has narrowed the candidate list via IP-based matching.</li>
 
       <li>If you don't care what IP address the client has connected to, use a
-      "*" as the address of every virtual host, and name-based virtual hosting
+      "<code>*</code>" as the address of every virtual host, and name-based virtual hosting
       is applied across all configured virtual hosts.</li>
 
       <li><code>ServerName</code> and <code>ServerAlias</code>
-      checks are never performed for an IP-based vhost.</li>
+      checks are never performed for an IP-based vhost (one where
+      there is only a single vhost for that IP:port).</li>
 
       <li>Only the ordering of
       name-based vhosts for a specific address set is significant.
-      The one name-based vhosts that comes first in the
+      The one name-based vhost that comes first in the
       configuration file has the highest priority for its
       corresponding address set.</li>
 

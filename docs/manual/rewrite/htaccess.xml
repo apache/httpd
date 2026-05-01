@@ -28,7 +28,7 @@
 <summary>
 
 <p>Using <module>mod_rewrite</module> in <code>.htaccess</code> files
-is one of the most common — and most confusing —
+is one of the most common - and most confusing -
 <glossary ref="perdirectory">per-directory</glossary> configurations.
 This document explains the key differences between using rewrite
 rules in server configuration versus <code>.htaccess</code> files,
@@ -70,8 +70,8 @@ thing to check.</p>
 <code>Options SymLinksIfOwnerMatch</code> must be enabled for the
 directory in question. Because a
 <directive module="mod_rewrite">RewriteRule</directive> can map a URL
-to an arbitrary filesystem path — functionally equivalent to a symbolic
-link — <module>mod_rewrite</module> refuses to operate in per-directory
+to an arbitrary filesystem path - functionally equivalent to a symbolic
+link - <module>mod_rewrite</module> refuses to operate in per-directory
 context unless one of these options is set. Without it, you will see
 the following error:</p>
 
@@ -97,7 +97,7 @@ In <code>.htaccess</code> context, the directory prefix is
 <p>For example, if your <code>.htaccess</code> is in
 <code>/var/www/htdocs/app/</code> and a request comes in for
 <code>/app/products/widget</code>, the RewriteRule sees only
-<code>products/widget</code> — no leading slash, no
+<code>products/widget</code> - no leading slash, no
 <code>/app/</code> prefix.</p>
 
 <p>This means you must write your patterns differently depending on
@@ -159,8 +159,8 @@ RewriteCond "%{REQUEST_FILENAME}" !-d
 RewriteRule "^(.*)$" "index.php" [L]
 </highlight>
 
-<note>For this particular use case — routing all unmatched
-requests to a front controller — the
+<note>For this particular use case - routing all unmatched
+requests to a front controller - the
 <a href="remapping.html#fallback-resource">FallbackResource</a> directive
 is a simpler and more efficient alternative to mod_rewrite.</note>
 
@@ -171,7 +171,7 @@ would prepend the filesystem path rather than the URL path.</p>
 <p>If you're using absolute URLs (starting with <code>/</code> or
 <code>http://</code>) in your substitutions,
 <directive module="mod_rewrite">RewriteBase</directive> has no effect
-— it only applies to relative substitutions.</p>
+- it only applies to relative substitutions.</p>
 
 </section>
 
@@ -181,13 +181,13 @@ would prepend the filesystem path rather than the URL path.</p>
 the ruleset." In <code>.htaccess</code> context, it means something
 subtly different: "stop processing the ruleset <em>for this pass</em>."
 After the substitution is made, Apache re-processes the request from
-the top — including re-applying the <code>.htaccess</code> rules.
+the top - including re-applying the <code>.htaccess</code> rules.
 This can lead to infinite loops.</p>
 
 <p>Consider this rule:</p>
 
 <highlight language="config">
-# In .htaccess — this may loop!
+# In .htaccess - this may loop!
 RewriteRule "^(.*)$" "/index.php?q=$1" [L]
 </highlight>
 
@@ -246,7 +246,7 @@ matching rewritten URLs.</p>
 declared in .htaccess</title>
 
 <p>The <directive module="mod_rewrite">RewriteMap</directive> directive
-can only be declared in server or virtualhost context — not in
+can only be declared in server or virtualhost context - not in
 <code>.htaccess</code> files or
 <directive module="core" type="section">Directory</directive> blocks.
 However, once a map is declared in the server configuration, you
@@ -258,7 +258,7 @@ RewriteMap product2id "txt:/etc/apache2/productmap.txt"
 </highlight>
 
 <highlight language="config">
-# In .htaccess — using the map declared above
+# In .htaccess - using the map declared above
 RewriteEngine On
 RewriteRule "^product/(.+)$" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
 </highlight>
@@ -328,7 +328,7 @@ LogLevel alert rewrite:trace3
 </highlight>
 
 <p>This produces detailed output in the error log showing exactly
-how each rule is processed — what pattern was matched against,
+how each rule is processed - what pattern was matched against,
 whether conditions succeeded or failed, and what substitution was
 made. The per-directory context and path stripping behavior will be
 visible in these log entries.</p>

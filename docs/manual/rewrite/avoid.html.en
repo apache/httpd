@@ -179,7 +179,7 @@ accomplish.</p>
 
 <p>One case where <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 is genuinely useful for proxying is when you want to proxy requests only
-for content that doesn't exist locally — for example, during a migration
+for content that doesn't exist locally - for example, during a migration
 from one server to another:</p>
 
 <pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}"       !-f
@@ -255,8 +255,8 @@ and in certain other directives.</p>
     <dt>Discussion:</dt>
 
     <dd>
-      <p>If you need more complex logic — such as serving an
-      alternate image to hotlinkers instead of denying the request — you
+      <p>If you need more complex logic - such as serving an
+      alternate image to hotlinkers instead of denying the request - you
       may need <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. The following examples
       rely on the <code>HTTP_REFERER</code> header, which is optional
       and can be spoofed. The <code>!^$</code> condition allows
@@ -433,7 +433,7 @@ seems like the right approach.</p>
       <p>Use <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>, which provides a
       flexible and featureful load-balancing solution. It supports
       several balancing algorithms, session stickiness, health checks,
-      and dynamic configuration via the Balancer Manager — none of which
+      and dynamic configuration via the Balancer Manager - none of which
       are possible with a <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> approach.</p>
 
 <pre class="prettyprint lang-config">&lt;Proxy "balancer://mycluster"&gt;

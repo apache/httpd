@@ -1535,14 +1535,14 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
     without causing any log message, the additional information is not logged
     either.</p>
 
-    <p>It can happen that some format string items do not produce output.  For
+    <p>It can happen that some format specifiers do not produce output.  For
     example, the Referer header is only present if the log message is
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
     produced, the default behavior is to delete everything from the preceding
-    space character to the next space character.  This means the log line is
+    space character to the next space character.  This means the format string is
     implicitly divided into fields on non-whitespace to whitespace transitions.
-    If a format string item does not produce output, the whole field is
+    If a format specifier does not produce output, the whole field is
     omitted.  For example, if the remote address <code>%a</code> in the log
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
@@ -1584,7 +1584,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
     </tr>
 </table>
 
-    <p>Some format string items accept additional parameters in braces.</p>
+    <p>Some format specifiers accept additional parameters in braces.</p>
 
     <table class="bordered"><tr class="header"><th>Format&nbsp;String</th> <th>Description</th></tr>
 <tr><td><code>%%</code></td>
@@ -3896,6 +3896,9 @@ directory</td></tr>
       The server will follow symbolic links in this directory. This is
       the default setting.
       <div class="note">
+      <p>Disabling this option also prevents
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> from operating in per-directory
+      context (<code>.htaccess</code> files and <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections).</p>
       <p>Even though the server follows the symlink it does <em>not</em>
       change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
 
@@ -4630,10 +4633,19 @@ is accessed by an incompatible browser</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code class="directive">ServerPath</code> directive sets the legacy
-    URL pathname for a host, for use with <a href="../vhosts/">name-based virtual hosts</a>.</p>
+    URL pathname for a host, for use with <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+
+    <div class="note"><p>This is a legacy feature for providing compatibility with
+    HTTP/1.0 clients that do not send a <code>Host:</code> header. When
+    such a client requests a URL matching a vhost's
+    <code class="directive">ServerPath</code>, the request is served from that
+    vhost. In practice, all modern HTTP clients send the
+    <code>Host:</code> header, making this directive unnecessary.</p></div>
 
 <h3>See also</h3>
 <ul>
+<li><a href="../vhosts/name-based.html">Name-based Virtual Host Support</a></li>
+<li><a href="../vhosts/examples.html#serverpath">ServerPath example</a></li>
 <li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
 </ul>
 </div>

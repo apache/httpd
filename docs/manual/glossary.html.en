@@ -323,6 +323,15 @@
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
+    <dt><a name="perdirectory" id="perdirectory">Per-directory Context</a></dt>
+    <dd>A <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directive</a> is in
+      per-directory context when it appears in a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, or <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> section in the main
+      configuration files, or in a <code>.htaccess</code> file.
+      In per-directory context, directives apply only to the
+      directory (or set of files) they are associated with.<br />
+      See: <a href="sections.html">Configuration Sections</a>
+    </dd>
+
     <dt><a name="plaintext" id="plaintext">Plaintext</a></dt>
     <dd>The unencrypted text.</dd>
 

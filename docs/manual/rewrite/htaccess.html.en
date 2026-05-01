@@ -28,14 +28,310 @@
 </div>
 
 
-<p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-the way that the rules change when you use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> in .htaccess files,
-and how to deal with these changes.</p>
+<p>Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> in <code>.htaccess</code> files
+is one of the most common - and most confusing -
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configurations.
+This document explains the key differences between using rewrite
+rules in server configuration versus <code>.htaccess</code> files,
+and provides practical guidance for avoiding the most common pitfalls.</p>
+
+<p>For the low-level technical details of how <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+processes rules in per-directory context, see the
+<a href="tech.html#InternalAPI">Technical Details</a> document.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
-</div>
+<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#prerequisites">Prerequisites: AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#path-stripping">What URL does the rule see?</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">When you need RewriteBase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#loops">The [L] flag and looping</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap-restriction">RewriteMap cannot be
+declared in .htaccess</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#inheritance">Rule inheritance with RewriteOptions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#debugging">Debugging .htaccess rewrite rules</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="tech.html">Technical details</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prerequisites" id="prerequisites">Prerequisites: AllowOverride</a></h2>
+
+<p>Before <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives in a
+<code>.htaccess</code> file will be processed at all, the server
+configuration must permit them. This requires:</p>
+
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/htdocs"&gt;
+    AllowOverride FileInfo
+&lt;/Directory&gt;</pre>
+
+
+<p>Without at least <code>AllowOverride FileInfo</code> (or
+<code>AllowOverride All</code>), any <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+directives in <code>.htaccess</code> files are silently ignored.
+If your rules don't appear to be doing anything, this is the first
+thing to check.</p>
+
+<p>Additionally, either <code>Options FollowSymLinks</code> or
+<code>Options SymLinksIfOwnerMatch</code> must be enabled for the
+directory in question. Because a
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can map a URL
+to an arbitrary filesystem path - functionally equivalent to a symbolic
+link - <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> refuses to operate in per-directory
+context unless one of these options is set. Without it, you will see
+the following error:</p>
+
+<div class="example"><p><code>
+AH00670: Options FollowSymLinks and SymLinksIfOwnerMatch are both off,
+so the RewriteRule directive is also forbidden due to its similar
+ability to circumvent directory restrictions
+</code></p></div>
+
+<p>This restriction applies to both <code>.htaccess</code> files and
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="path-stripping" id="path-stripping">What URL does the rule see?</a></h2>
+
+<p>In server or virtualhost context, the
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern is
+matched against the full URL-path, starting with a leading slash.
+In <code>.htaccess</code> context, the directory prefix is
+<strong>stripped</strong>.</p>
+
+<p>For example, if your <code>.htaccess</code> is in
+<code>/var/www/htdocs/app/</code> and a request comes in for
+<code>/app/products/widget</code>, the RewriteRule sees only
+<code>products/widget</code> - no leading slash, no
+<code>/app/</code> prefix.</p>
+
+<p>This means you must write your patterns differently depending on
+where the rule lives:</p>
+
+    <table class="bordered">
+        <tr>
+            <th>Location of rule</th>
+            <th>Rule</th>
+        </tr>
+        <tr>
+            <td>VirtualHost section</td>
+            <td><code>RewriteRule "^/app/products/(.+)$" "/app/shop.php?item=$1"</code></td>
+        </tr>
+        <tr>
+            <td>.htaccess in /var/www/htdocs/app/</td>
+            <td><code>RewriteRule "^products/(.+)$" "shop.php?item=$1"</code></td>
+        </tr>
+    </table>
+
+<p>Note that the <code>.htaccess</code> version has no leading slash
+in either the pattern or the substitution. This is the single most
+common source of confusion with per-directory rewriting.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritebase" id="rewritebase">When you need RewriteBase</a></h2>
+
+<p>When <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> makes a substitution in
+<code>.htaccess</code> context, it needs to turn the relative result
+back into a full URL-path. The
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> directive tells
+it what prefix to prepend.</p>
+
+<p>By default, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>
+is set to the physical directory path of the <code>.htaccess</code>
+file. In most cases, this does the right thing, and you don't need
+to set it explicitly. But there are situations where you do:</p>
+
+<ul>
+<li><strong>Alias or symlink:</strong> If the directory is reached via
+an <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> or a symlink, the
+URL path and the filesystem path differ, and
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> must be set
+to the URL path.</li>
+
+<li><strong>Subdirectory applications:</strong> A common pattern for
+PHP frameworks is to place a <code>.htaccess</code> in a subdirectory
+(say, <code>/var/www/htdocs/myapp/</code>) and route all requests to
+a front controller:</li>
+</ul>
+
+<pre class="prettyprint lang-config"># In /var/www/htdocs/myapp/.htaccess
+RewriteEngine On
+RewriteBase "/myapp/"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "index.php" [L]</pre>
+
+
+<div class="note">For this particular use case - routing all unmatched
+requests to a front controller - the
+<a href="remapping.html#fallback-resource">FallbackResource</a> directive
+is a simpler and more efficient alternative to mod_rewrite.</div>
+
+<p>Without the <code>RewriteBase "/myapp/"</code> line, the rewritten
+URL might resolve incorrectly, because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+would prepend the filesystem path rather than the URL path.</p>
+
+<p>If you're using absolute URLs (starting with <code>/</code> or
+<code>http://</code>) in your substitutions,
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> has no effect
+- it only applies to relative substitutions.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="loops" id="loops">The [L] flag and looping</a></h2>
+
+<p>In server context, the <code>[L]</code> flag means "stop processing
+the ruleset." In <code>.htaccess</code> context, it means something
+subtly different: "stop processing the ruleset <em>for this pass</em>."
+After the substitution is made, Apache re-processes the request from
+the top - including re-applying the <code>.htaccess</code> rules.
+This can lead to infinite loops.</p>
+
+<p>Consider this rule:</p>
+
+<pre class="prettyprint lang-config"># In .htaccess - this may loop!
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>On the first pass, a request for <code>/hello</code> is rewritten to
+<code>/index.php?q=hello</code>. Then the request is re-processed, and
+now <code>index.php</code> matches <code>^(.*)$</code> again, rewriting
+to <code>/index.php?q=index.php</code>. This continues until Apache
+hits its internal redirect limit and returns a 500 error. You will see
+the following in the error log:</p>
+
+<div class="example"><p><code>
+AH00124: Request exceeded the limit of 10 internal redirects due to
+probable configuration error. Use 'LimitInternalRecursion' to increase
+the limit if necessary. Use 'LogLevel debug' to get a backtrace.
+</code></p></div>
+
+<p>There are several ways to break the loop:</p>
+
+<p><strong>Option 1: Use the [END] flag</strong> (recommended)</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^(.*)$" "/index.php?q=$1" [END]</pre>
+
+
+<p>The <code>[END]</code> flag (available since Apache 2.3.9) stops
+<em>all</em> further rewrite processing, including subsequent passes.
+It is the cleanest way to prevent loops.</p>
+
+<p><strong>Option 2: Add a condition to skip already-rewritten URLs</strong></p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>Since <code>index.php</code> exists as a file, the
+<code>!-f</code> condition causes the rule to be skipped on the second
+pass.</p>
+
+<p><strong>Option 3: Check THE_REQUEST</strong></p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{THE_REQUEST}" "!index\.php"
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>The <code>%{THE_REQUEST}</code> variable contains the original
+request line as sent by the client, which is not modified by
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Checking it prevents the rule from
+matching rewritten URLs.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritemap-restriction" id="rewritemap-restriction">RewriteMap cannot be
+declared in .htaccess</a></h2>
+
+<p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
+can only be declared in server or virtualhost context - not in
+<code>.htaccess</code> files or
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks.
+However, once a map is declared in the server configuration, you
+<em>can</em> use it from a <code>.htaccess</code> file:</p>
+
+<pre class="prettyprint lang-config"># In httpd.conf or a VirtualHost
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"</pre>
+
+
+<pre class="prettyprint lang-config"># In .htaccess - using the map declared above
+RewriteEngine On
+RewriteRule "^product/(.+)$" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+<p>This restriction exists because <code>.htaccess</code> files are
+parsed on every request, and map initialization (especially for
+<code>dbm:</code>, <code>dbd:</code>, and <code>prg:</code> map types)
+would be prohibitively expensive to repeat each time.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="inheritance" id="inheritance">Rule inheritance with RewriteOptions</a></h2>
+
+<p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules are <strong>not
+inherited</strong> by subdirectories. If you define rules in
+<code>/var/www/htdocs/.htaccess</code>, they apply to that directory
+only. A <code>.htaccess</code> file in a subdirectory starts with
+an empty ruleset, unless you explicitly enable inheritance.</p>
+
+<p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>
+directive controls this behavior:</p>
+
+<dl>
+<dt><code>RewriteOptions Inherit</code></dt>
+<dd>Rules from the parent context are appended to the current ruleset.
+The child's rules are processed first, then the parent's. Use this
+when a subdirectory needs to add its own rules while keeping the
+parent's rules active.</dd>
+
+<dt><code>RewriteOptions InheritBefore</code></dt>
+<dd>Like <code>Inherit</code>, but the parent's rules are processed
+<em>before</em> the child's. This is useful when the parent defines
+a front-controller pattern and the child needs to add exceptions.
+Available since Apache 2.4.8.</dd>
+
+<dt><code>RewriteOptions InheritDown</code></dt>
+<dd>Set this in the parent context to force all child contexts to
+inherit the parent's rules, without requiring each child to specify
+<code>Inherit</code>. Available since Apache 2.4.8.</dd>
+
+<dt><code>RewriteOptions InheritDownBefore</code></dt>
+<dd>Like <code>InheritDown</code>, but forces the parent's rules to
+run before the child's. Available since Apache 2.4.8.</dd>
+
+<dt><code>RewriteOptions IgnoreInherit</code></dt>
+<dd>Set this in a child context to opt out of inheritance that was
+forced by a parent's <code>InheritDown</code>.
+Available since Apache 2.4.8.</dd>
+
+<dt><code>RewriteOptions MergeBase</code></dt>
+<dd>When inheritance is enabled, the <code>RewriteBase</code> from
+each context is used for rules defined in that context, rather than
+applying the child's <code>RewriteBase</code> to all inherited rules.
+Available since Apache 2.4.26.</dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="debugging" id="debugging">Debugging .htaccess rewrite rules</a></h2>
+
+<p>When <code>.htaccess</code> rules are not doing what you expect,
+the rewrite log is your most important tool. Enable it at the
+appropriate trace level:</p>
+
+<pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
+
+
+<p>This produces detailed output in the error log showing exactly
+how each rule is processed - what pattern was matched against,
+whether conditions succeeded or failed, and what substitution was
+made. The per-directory context and path stripping behavior will be
+visible in these log entries.</p>
+
+<div class="warning">Do not leave trace-level logging enabled in
+production. It generates a large volume of output and will affect
+performance.</div>
+
+</div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
