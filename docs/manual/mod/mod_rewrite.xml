@@ -1296,9 +1296,10 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Back-references are identifiers of the form
       <code>$</code><strong>N</strong>
-      (<strong>N</strong>=0..9), which will be replaced
-      by the contents of the <strong>N</strong>th group of the
-      matched <em>Pattern</em>. The server-variables are the same
+      (<strong>N</strong>=0..9). <code>$0</code> refers to the
+      entire string matched by the <em>Pattern</em>, while
+      <code>$1</code>..<code>$9</code> refer to the corresponding
+      captured groups from the matched <em>Pattern</em>. The server-variables are the same
       as for the <em>TestString</em> of a
       <directive module="mod_rewrite">RewriteCond</directive>
       directive. The mapping-functions come from the
