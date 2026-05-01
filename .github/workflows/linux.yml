@@ -306,7 +306,7 @@ jobs:
             notest-cflags: -Werror -O2
             env: |
               TEST_OPENSSL3=4.0.0
-              OPENSSL_CONFIG=no-engine
+              OPENSSL_CONFIG=
               APR_VERSION=1.7.6
               APU_VERSION=1.6.3
               APU_CONFIG="--without-crypto"
