@@ -1,0 +1,2 @@
+  *) mod_proxy_balancer: Include nonce in XML output.  PR 63074.
+     Federico Mennite <federico.mennite lifeware.ch>
