@@ -499,13 +499,20 @@ are interpreted, it is important to understand how this works.</p>
         but in the order they appear in the configuration files.</li>
         <li><directive type="section" module="core">Directory</directive>
         (group 1 above) is processed in the order shortest directory
-        component to longest. For example,
+        component to longest (regardless of the order in which they
+        appear in the configuration file). For example,
         <code>&lt;Directory "/var/web/dir"&gt;</code> will be processed before
         <code>&lt;Directory "/var/web/dir/subdir"&gt;</code>.</li>
         <li>If multiple <directive
         type="section" module="core">Directory</directive> sections apply
         to the same directory they are processed in the configuration file
-        order.</li>
+        order. The same applies when multiple
+        <directive type="section" module="core">DirectoryMatch</directive>,
+        <directive type="section" module="core">Files</directive>,
+        <directive type="section" module="core">FilesMatch</directive>,
+        <directive type="section" module="core">Location</directive>, or
+        <directive type="section" module="core">LocationMatch</directive>
+        sections match the same resource.</li>
         <li>Configurations included via the <directive
         module="core">Include</directive> directive will be treated as if
         they were inside the including file at the location of the
@@ -514,7 +521,13 @@ are interpreted, it is important to understand how this works.</p>
         module="core">VirtualHost</directive> sections
         are applied <em>after</em> the corresponding sections outside
         the virtual host definition. This allows virtual hosts to
-        override the main server configuration.</li>
+        override the main server configuration.  Note that unlike the
+        other section types, only one
+        <directive type="section" module="core">VirtualHost</directive>
+        is selected per request — directives from multiple matching
+        vhosts are never merged.  See
+        <a href="vhosts/details.html">virtual host matching</a>
+        for details on how a vhost is selected.</li>
         <li>When the request is served by <module>mod_proxy</module>, the
         <directive module="mod_proxy" type="section">Proxy</directive>
         container takes the place of the <directive module="core"
