@@ -1143,10 +1143,12 @@ complexity.</li>
 
 <li>To enable the rewrite engine in this context, you need to set
 "<code>RewriteEngine On</code>" <strong>and</strong>
-"<code>Options FollowSymLinks</code>" must be enabled. If your
-administrator has disabled override of <code>FollowSymLinks</code> for
-a user's directory, then you cannot use the rewrite engine. This
-restriction is required for security reasons.</li>
+the <code>FollowSymLinks</code> or <code>SymLinksIfOwnerMatch</code>
+<directive module="core">Options</directive> must be enabled. If your
+administrator has disabled override of these options for a user's
+directory via <directive module="core">AllowOverride</directive>, the
+rewrite engine cannot be used in <code>.htaccess</code> files in that
+directory.</li>
 
 <li>See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
