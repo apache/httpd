@@ -1534,11 +1534,11 @@ directive.</p>
 </note>
 
 
-     <p>Here are all possible substitution combinations and their
+     <p>Here are the possible combinations of substitution string
+      form, context, and the [R] and [P] flags, and their
       meanings:</p>
 
-      <p><strong>Inside per-server configuration
-      (<code>httpd.conf</code>)<br />
+      <p><strong>Outside <glossary ref="perdirectory">per-directory</glossary> configuration<br />
        for request ``<code>GET
       /somepath/pathinfo</code>'':</strong><br />
       </p>
@@ -1610,9 +1610,9 @@ directive.</p>
 </tr>
 </table>
 
-      <p><strong>Inside per-directory configuration for
+      <p><strong>Inside <glossary ref="perdirectory">per-directory</glossary> configuration for
       <code>/somepath</code><br />
-       (<code>/physical/path/to/somepath/.htaccess</code>, with
+       (e.g., <code>.htaccess</code> or <code>&lt;Directory&gt;</code>, with
       <code>RewriteBase "/somepath"</code>)<br />
        for request ``<code>GET
       /somepath/localpath/pathinfo</code>'':</strong><br />
