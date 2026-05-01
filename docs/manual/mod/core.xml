@@ -1598,14 +1598,14 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     without causing any log message, the additional information is not logged
     either.</p>
 
-    <p>It can happen that some format string items do not produce output.  For
+    <p>It can happen that some format specifiers do not produce output.  For
     example, the Referer header is only present if the log message is
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
     produced, the default behavior is to delete everything from the preceding
     space character to the next space character.  This means the format string is
     implicitly divided into fields on non-whitespace to whitespace transitions.
-    If a format string item does not produce output, the whole field is
+    If a format specifier does not produce output, the whole field is
     omitted.  For example, if the remote address <code>%a</code> in the log
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
@@ -1654,7 +1654,7 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
 
     </table>
 
-    <p>Some format string items accept additional parameters in braces.</p>
+    <p>Some format specifiers accept additional parameters in braces.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
@@ -4601,9 +4601,9 @@ is accessed by an incompatible browser</description>
     <directive>ServerPath</directive>, the request is served from that
     vhost. In practice, all modern HTTP clients send the
     <code>Host:</code> header, making this directive unnecessary.</p></note>
+</usage>
 <seealso><a href="../vhosts/name-based.html">Name-based Virtual Host Support</a></seealso>
 <seealso><a href="../vhosts/examples.html#serverpath">ServerPath example</a></seealso>
-</usage>
 <seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
 </directivesynopsis>
 
