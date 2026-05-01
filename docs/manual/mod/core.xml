@@ -4593,7 +4593,16 @@ is accessed by an incompatible browser</description>
 <usage>
     <p>The <directive>ServerPath</directive> directive sets the legacy
     URL pathname for a host, for use with <a
-    href="../vhosts/">name-based virtual hosts</a>.</p>
+    href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+
+    <note><p>This is a legacy feature for providing compatibility with
+    HTTP/1.0 clients that do not send a <code>Host:</code> header. When
+    such a client requests a URL matching a vhost's
+    <directive>ServerPath</directive>, the request is served from that
+    vhost. In practice, all modern HTTP clients send the
+    <code>Host:</code> header, making this directive unnecessary.</p></note>
+<seealso><a href="../vhosts/name-based.html">Name-based Virtual Host Support</a></seealso>
+<seealso><a href="../vhosts/examples.html#serverpath">ServerPath example</a></seealso>
 </usage>
 <seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
 </directivesynopsis>

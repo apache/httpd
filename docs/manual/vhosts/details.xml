@@ -222,7 +222,13 @@
     file with the specified IP address has the highest priority
     and catches any request to an unknown server name, or a request
     without a <code>Host:</code> header field (such as a HTTP/1.0
-    request).</p>
+    request). If a <directive module="core">ServerPath</directive>
+    is configured for any of the matching vhosts, and the request URL
+    matches that path, the request is served from that vhost instead.
+    This is a legacy mechanism for HTTP/1.0 clients that do not send
+    a <code>Host:</code> header; see the
+    <a href="examples.html#serverpath">ServerPath example</a> for
+    details.</p>
 
     </section>
 
