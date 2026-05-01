@@ -250,15 +250,18 @@ directive.</p>
 
 <section id="authzproviders"><title>Authorization providers for use with Require</title>
 
-  <p><module>mod_ssl</module> provides a few authentication providers for use
-  with <module>mod_authz_core</module>'s
+  <p><module>mod_ssl</module> provides the following authorization providers
+  for use with <module>mod_authz_core</module>'s
   <directive module="mod_authz_core">Require</directive> directive.</p>
 
   <section id="reqssl"><title>Require ssl</title>
 
     <p>The <code>ssl</code> provider denies access if a connection is not
-       encrypted with SSL. This is similar to the
-       <directive>SSLRequireSSL</directive> directive.</p>
+       encrypted with SSL. Unlike the
+       <directive>SSLRequireSSL</directive> directive, this can be
+       combined with other <directive>Require</directive> directives in
+       <directive module="mod_authz_core">RequireAny</directive> or
+       <directive module="mod_authz_core">RequireAll</directive> blocks.</p>
 
     <highlight language="config">
       Require ssl
@@ -268,8 +271,8 @@ directive.</p>
 
   <section id="reqverifyclient"><title>Require ssl-verify-client</title>
 
-    <p>The <code>ssl</code> provider allows access if the user is
-       authenticated with a valid client certificate. This is only
+    <p>The <code>ssl-verify-client</code> provider allows access if the
+       user is authenticated with a valid client certificate. This is only
        useful if <code>SSLVerifyClient optional</code> is in effect.</p>
 
     <p>The following example grants access if the user is authenticated
