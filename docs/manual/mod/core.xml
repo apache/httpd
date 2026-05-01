@@ -315,7 +315,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
 <code>.htaccess</code> files</description>
 <syntax>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</syntax>
-<default>AllowOverride None (2.3.9 and later), AllowOverride All (2.3.8 and earlier)</default>
+<default>AllowOverride None</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
@@ -510,7 +510,7 @@ AllowOverride AuthConfig Indexes
 <description>Individual directives that are allowed in
 <code>.htaccess</code> files</description>
 <syntax>AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</syntax>
+[<var>directive</var>] ...</syntax>
 <default>AllowOverrideList None</default>
 <contextlist><context>directory</context></contextlist>
 
@@ -562,7 +562,15 @@ AllowOverrideList CookieTracking CookieName
     grants permission to the <code>AuthConfig</code>
     directive grouping and <directive>AllowOverrideList</directive> grants
     permission to only two directives from the <code>FileInfo</code> directive
-    grouping. All others will cause an Internal Server Error.</p>
+    grouping. The effective set of permitted directives is the union of
+    both. All others will cause an Internal Server Error.</p>
+
+    <p>In addition, certain directives are always permitted in
+    <code>.htaccess</code> files whenever the override mechanism is
+    enabled (i.e., <directive module="core">AllowOverride</directive>
+    is not <code>None</code>). These are listed in the
+    <a href="overrides.html#override-all">All</a> section of the
+    <a href="overrides.html">override class index</a>.</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
