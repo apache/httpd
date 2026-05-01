@@ -962,10 +962,15 @@ the contents of file-system directories matching a regular expression.</descript
 <usage>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory (and the files within),
-    the same as <directive module="core" type="section">Directory</directive>.
-    However, it takes as an argument a
-    <glossary ref="regex">regular expression</glossary>.  For example:</p>
+    of directives which will apply to directories (and the files
+    within) whose filesystem path matches the given
+    <glossary ref="regex">regular expression</glossary>.
+    Unlike <directive module="core" type="section">Directory</directive>,
+    it does not automatically apply to subdirectories unless the
+    pattern also matches them.  It takes as an argument a
+    regular expression that is matched as a substring — it is not
+    anchored at the start or end unless you explicitly include
+    <code>^</code> or <code>$</code> in the pattern.  For example:</p>
 
     <highlight language="config">
 &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
@@ -986,8 +991,9 @@ the contents of file-system directories matching a regular expression.</descript
 
     <note><title>Trailing Slash</title>
       This directive applies to requests for directories that may or may
-      not end in a trailing slash, so expressions that are anchored to the
-      end of line ($) must be written with care.
+      not end in a trailing slash. If you anchor your pattern with
+      <code>$</code>, you may need to match both forms, e.g.,
+      <code>&lt;DirectoryMatch "^/var/www/?$"&gt;</code>.
     </note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
