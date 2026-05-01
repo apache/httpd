@@ -154,8 +154,12 @@ if test -v TEST_OPENSSL3; then
 
         mkdir -p build/openssl
         pushd build/openssl
-           curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
-              tar -xzf -
+           if test -v TEST_OPENSSL3_BRANCH; then
+               git clone -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
+           else
+               curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
+                   tar -xzf -
+           fi
            cd openssl-${TEST_OPENSSL3}
            # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH
            ./Configure --prefix=$HOME/root/openssl3 \
