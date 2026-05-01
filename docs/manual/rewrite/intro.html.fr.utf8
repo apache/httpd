@@ -80,11 +80,13 @@ exactement comment chaque règle est traitée.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Expressions rationnelles</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+<p>mod_rewrite utilise le vocabulaire des <a href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
 Ce document n'a pas pour prétention d'être une référence détaillée des
 expressions rationnelles. A cet effet, nous recommandons les <a href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a href="http://perldoc.perl.org/perlre.html">page de manuel des
-expressions rationnelles Perl</a>, et l'ouvrage <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+expressions rationnelles Perl</a>, et l'ouvrage <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, par Jeffrey Friedl</a> (la troisième édition date
+de 2006, mais la syntaxe des expressions rationnelles n'a pas vraiment
+changé, et cet ouvrage reste la référence en la matière).</p>
 
 <p>Dans ce document, nous avons pour but de vous fournir suffisamment de
 vocabulaire des expressions rationnelles pour vous mettre le pied à
@@ -107,73 +109,46 @@ expressions.</p>
 <th>Exemple</th>
 </tr>
 
-<tr>
-	<td><code>.</code></td>
-	<td>Correspond à tout caractère unique</td>
-	<td><code>c.t</code> correspondra à <code>cat</code>,
-	<code>cot</code>, <code>cut</code>, etc.</td>
+<tr><td><code>.</code></td><td>Correspond à tout caractère unique
+</td><td><code>c.t</code> correspondra à <code>cat</code>,
+<code>cot</code>, <code>cut</code>, etc.</td></tr>
+<tr><td><code>+</code></td><td>Répète le caractère de correspondance
+précédent une ou plusieurs fois</td>
+<td><code>a+</code> correspond à <code>a</code>, <code>aa</code>,
+<code>aaa</code>, etc.</td></tr>
+<tr><td><code>*</code></td><td>Répète le caractère de correspondance
+précédent zéro ou plusieurs fois</td>
+<td><code>a*</code> correspond à tout ce à quoi correspond
+<code>a+</code>, mais correspond aussi à la chaîne vide.</td></tr>
+<tr><td><code>?</code></td><td>Rend la correspondance optionnelle.</td><td>
+<code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
 </tr>
-<tr>
-	<td><code>+</code></td>
-	<td>Répète le caractère de correspondance précédent une ou plusieurs fois</td>
-	<td><code>a+</code> correspond à <code>a</code>, <code>aa</code>,
-	<code>aaa</code>, etc.</td>
-</tr>
-	<tr><td><code>*</code></td>
-	<td>Répète le caractère de correspondance
-	précédent zéro ou plusieurs fois</td>
-	<td><code>a*</code> correspond à tout ce à quoi correspond
-	<code>a+</code>, mais correspond aussi à la chaîne vide.</td>
-</tr>
-<tr>
-	<td><code>?</code></td>
-	<td>Rend la correspondance optionnelle.</td>
-	<td><code>colou?r</code> correspondra à <code>color</code> et <code>colour</code>.</td>
-</tr>
-<tr>
-    <td><code>\</code></td>
-    <td>Echappe le caractère suivant</td>
-    <td><code>\.</code> correspondra à <code>.</code> (le point) et non <em>à
-    tout caractère unique</em> comme expliqué plus haut</td>
-</tr>
-<tr>
-	<td><code>^</code></td>
-	<td>Appelé ancrage, correspond au début de la
-	chaîne</td>
-	<td><code>^a</code> correspond à une chaîne qui commence par
-	<code>a</code></td>
-</tr>
-<tr>
-	<td><code>$</code></td>
-	<td>L'autre ancrage, correspond à la fin de
-	la chaîne.</td>
-	<td><code>a$</code> correspond à une chaîne qui se termine par
-	<code>a</code>.</td>
-</tr>
-<tr>
-	<td><code>( )</code></td>
-	<td>Regroupe plusieurs caractères en une
-	seule entité, et conserve une correspondance à des fins d'utilisation
-	dans une référence arrière.</td>
-	<td><code>(ab)+</code>
-	correspond à <code>ababab</code> - à savoir, le <code>+</code>
-	s'applique au groupe.
-	Pour plus de détails sur les références arrières, voir <a href="#InternalBackRefs">ci-dessous</a>.</td>
-</tr>
-<tr>
-	<td><code>[ ]</code></td>
-	<td>Une classe de caractères - correspond à
-	un des caractères de la classe</td>
-	<td><code>c[uoa]t</code> correspond à <code>cut</code>,
-	<code>cot</code> ou <code>cat</code>.</td>
-</tr>
-<tr>
-	<td><code>[^ ]</code></td>
-	<td>Négation de la classe de caractères -
-	correspond à tout caractère ne faisant pas partie de la classe</td>
-	<td><code>c[^/]t</code> correspond à <code>cat</code> ou
-	<code>c=t</code> mais pas à <code>c/t</code></td>
-</tr>
+<tr><td><code>\</code></td><td>Échappe le caractère
+suivant</td><td><code>\.</code> correspondra à <code>.</code> (point) et non pas à
+<em>tout caractère unique</em> comme expliqué ci-dessus</td></tr>
+<tr><td><code>^</code></td><td>Appelé ancrage, correspond au début de la
+chaîne</td>
+<td><code>^a</code> correspond à une chaîne qui commence par
+<code>a</code></td></tr>
+<tr><td><code>$</code></td><td>L'autre ancrage, correspond à la fin de
+la chaîne.</td>
+<td><code>a$</code> correspond à une chaîne qui se termine par
+<code>a</code>.</td></tr>
+<tr><td><code>( )</code></td><td>Regroupe plusieurs caractères en une
+seule entité, et conserve une correspondance à des fins d'utilisation
+dans une référence arrière.</td>
+<td><code>(ab)+</code>
+correspond à <code>ababab</code> - à savoir, le <code>+</code>
+s'applique au groupe.
+Pour plus de détails sur les références arrières, voir <a href="#InternalBackRefs">ci-dessous</a>.</td></tr>
+<tr><td><code>[ ]</code></td><td>Une classe de caractères - correspond à
+un des caractères de la classe</td>
+<td><code>c[uoa]t</code> correspond à <code>cut</code>,
+<code>cot</code> ou <code>cat</code>.</td></tr>
+<tr><td><code>[^ ]</code></td><td>Négation de la classe de caractères -
+correspond à tout caractère ne faisant pas partie de la classe</td>
+<td><code>c[^/]t</code> correspond à <code>cat</code> ou
+<code>c=t</code> mais pas à <code>c/t</code></td></tr>
 </table>
 
 <p>Avec <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, le caractère <code>!</code> peut
@@ -272,7 +247,7 @@ chemin <code>/usr/local/apache2/htdocs/puzzles.html</code>.</p>
 
 <dt>3. Une URL absolue</dt>
 <dd>
-<pre class="prettyprint lang-config">RewriteRule "^/produits/vues$" "http://site2.example.com/voirproduits.html" [R]</pre>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
 
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requête vers
 l'URL spécifiée.</p>
@@ -338,7 +313,7 @@ correspondance est évaluée.</p>
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
-RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
+RewriteRule "(.*)" "http://intranet.example.com$1"</pre>
 
 
 <p>Si vous spécifiez plus d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, ces directives
@@ -347,8 +322,8 @@ pour interdire les requêtes qui contiennent le mot "hack" dans la chaîne
 de requête, sauf si elles contiennent aussi un cookie contenant le mot
 "go", vous pouvez utiliser :</p>
 <pre class="prettyprint lang-config">RewriteCond "%{QUERY_STRING}" "hack"
-RewriteCond "%{HTTP_COOKIE}"  !go
-RewriteRule "."               "-"   [F]</pre>
+RewriteCond "%{HTTP_COOKIE}" "!go"
+RewriteRule "." "-" [F]</pre>
 
 <p>Notez que le point d'exclamation indique une correspondance négative
 ; ainsi, la règle n'est appliquée que si le cookie ne contient pas "go"</p>
@@ -361,7 +336,7 @@ les variables <code>%1</code>, <code>%2</code>, etc... Par
 exemple, ce qui suit va diriger la requête vers un répertoire différent
 en fonction du nom d'hôte utilisé pour accéder au site :</p>
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
-RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
+RewriteRule "^/(.*)" "/sites/%1/$1"</pre>
 
 <p>Si la requête concernait <code>http://example.com/foo/bar</code>,
 alors <code>%1</code> contiendrait <code>example.com</code> et
