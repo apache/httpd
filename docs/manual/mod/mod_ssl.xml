@@ -1461,48 +1461,6 @@ SSLVerifyClient require
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLVerifyClientEKU</name>
-<description>Whether to enforce Extended Key Usage checks for Client Certificates</description>
-<syntax>SSLVerifyClientEKU on|off</syntax>
-<default>SSLVerifyClientEKU on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-<context>directory</context>
-<context>.htaccess</context></contextlist>
-<override>AuthConfig</override>
-
-<usage>
-<p>
-This directive controls whether mod_ssl enforces X.509 Extended Key Usage
-(EKU) <code>invalid purpose</code> checks during client certificate
-verification. The default value <code>on</code> preserves the standard
-behavior and rejects client certificates whose EKU does not allow client
-authentication.
-</p>
-<p>
-Setting this directive explicitly to <code>on</code> is identical to omitting
-the directive.
-</p>
-<p>
-When set to <code>off</code>, mod_ssl will ignore only the
-<code>invalid purpose</code> verification error for client certificates while
-leaving other verification checks (e.g. chain validation, signature, validity
-period, revocation checks) unchanged.
-</p>
-<p>
-This setting only affects client certificate verification performed by
-<directive module="mod_ssl">SSLVerifyClient</directive>.
-</p>
-<example><title>Example</title>
-<highlight language="config">
-SSLVerifyClient require
-SSLVerifyClientEKU off
-</highlight>
-</example>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>SSLVerifyDepth</name>
 <description>Maximum depth of CA Certificates in Client
 Certificate verification</description>

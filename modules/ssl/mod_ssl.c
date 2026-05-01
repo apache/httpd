@@ -152,9 +152,6 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_ALL(VerifyClient, TAKE1,
                 "SSL Client verify type "
                 "('none', 'optional', 'require', 'optional_no_ca')")
-    SSL_CMD_ALL(VerifyClientEKU, TAKE1,
-                "Whether to enforce client certificate Extended Key Usage "
-                "during SSL client verification ('on' or 'off')")
     SSL_CMD_ALL(VerifyDepth, TAKE1,
                 "SSL Client verify depth "
                 "('N' - number of intermediate certificates)")

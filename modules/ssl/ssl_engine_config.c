@@ -138,7 +138,6 @@ static void modssl_ctx_init(modssl_ctx_t *mctx, apr_pool_t *p)
     mctx->auth.cipher_suite   = NULL;
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
-    mctx->auth.verify_client_eku = SSL_VERIFY_EKU_UNSET;
     mctx->auth.tls13_ciphers = NULL;
 
     mctx->ocsp_mask           = UNSET;
@@ -285,7 +284,6 @@ static void modssl_ctx_cfg_merge(apr_pool_t *p,
     cfgMergeString(auth.cipher_suite);
     cfgMergeInt(auth.verify_depth);
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
-    cfgMerge(auth.verify_client_eku, SSL_VERIFY_EKU_UNSET);
     cfgMergeString(auth.tls13_ciphers);
 
     cfgMergeInt(ocsp_mask);
@@ -407,7 +405,6 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
 
     dc->szCipherSuite          = NULL;
     dc->nVerifyClient          = SSL_CVERIFY_UNSET;
-    dc->nVerifyClientEKU       = SSL_VERIFY_EKU_UNSET;
     dc->nVerifyDepth           = UNSET;
 
     dc->szUserName             = NULL;
@@ -464,7 +461,6 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMergeString(szCipherSuite);
     cfgMerge(nVerifyClient, SSL_CVERIFY_UNSET);
-    cfgMerge(nVerifyClientEKU, SSL_VERIFY_EKU_UNSET);
     cfgMergeInt(nVerifyDepth);
 
     cfgMergeString(szUserName);
@@ -1320,36 +1316,6 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
     }
     else {
         sc->server->auth.verify_mode = mode;
-    }
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLVerifyClientEKU(cmd_parms *cmd,
-                                       void *dcfg,
-                                       const char *arg)
-{
-    SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-    ssl_verify_eku_t mode;
-
-    if (strcEQ(arg, "on")) {
-        mode = SSL_VERIFY_EKU_UNSET;
-    }
-    else if (strcEQ(arg, "off")) {
-        mode = SSL_VERIFY_EKU_OFF;
-    }
-    else {
-        return apr_pstrcat(cmd->temp_pool, cmd->cmd->name,
-                           ": Invalid argument '", arg,
-                           "' (expected 'on' or 'off')", NULL);
-    }
-
-    if (cmd->path) {
-        dc->nVerifyClientEKU = mode;
-    }
-    else {
-        sc->server->auth.verify_client_eku = mode;
     }
 
     return NULL;
@@ -2656,9 +2622,6 @@ static void modssl_auth_ctx_dump(modssl_auth_ctx_t *auth, apr_pool_t *p, int pro
     }
 #endif
     DMP_VERIFY(proxy? "SSLProxyVerify" : "SSLVerifyClient", auth->verify_mode);
-    if (!proxy) {
-        DMP_ON_OFF("SSLVerifyClientEKU", auth->verify_client_eku);
-    }
     DMP_LONG(  proxy? "SSLProxyVerify" : "SSLVerifyDepth", auth->verify_depth);
     DMP_STRING(proxy? "SSLProxyCACertificateFile" : "SSLCACertificateFile", auth->ca_cert_file);
     DMP_STRING(proxy? "SSLProxyCACertificatePath" : "SSLCACertificatePath", auth->ca_cert_path);

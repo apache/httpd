@@ -479,11 +479,6 @@ typedef enum {
     SSL_CVERIFY_OPTIONAL_NO_CA  = 3
 } ssl_verify_t;
 
-typedef enum {
-    SSL_VERIFY_EKU_UNSET = UNSET,
-    SSL_VERIFY_EKU_OFF   = 0
-} ssl_verify_eku_t;
-
 #define SSL_VERIFY_PEER_STRICT \
      (SSL_VERIFY_PEER|SSL_VERIFY_FAIL_IF_NO_PEER_CERT)
 
@@ -796,7 +791,6 @@ typedef struct {
     /** for client or downstream server authentication */
     int          verify_depth;
     ssl_verify_t verify_mode;
-    ssl_verify_eku_t verify_client_eku;
 
     /** TLSv1.3 has its separate cipher list, separate from the
      settings for older TLS protocol versions. Since which one takes
@@ -932,7 +926,6 @@ struct SSLDirConfigRec {
     ssl_opt_t     nOptionsDel;
     const char   *szCipherSuite;
     ssl_verify_t  nVerifyClient;
-    ssl_verify_eku_t nVerifyClientEKU;
     int           nVerifyDepth;
     const char   *szUserName;
     apr_size_t    nRenegBufferSize;
@@ -984,7 +977,6 @@ const char  *ssl_cmd_SSLClientHelloVars(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLCompression(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLSessionTickets(cmd_parms *, void *, int flag);
 const char  *ssl_cmd_SSLVerifyClient(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLVerifyClientEKU(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLVerifyDepth(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCache(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *, void *, const char *);
