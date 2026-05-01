@@ -73,7 +73,7 @@ and URL matching.</p>
     <p>In each of these cases, <module>mod_rewrite</module> rewrites the
     <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
-    <p>In per-directory context (i.e., within <code>.htaccess</code> files
+    <p>In <glossary ref="perdirectory">per-directory context</glossary> (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
     this, the URL-path that <module>mod_rewrite</module> initially compares <directive 

@@ -333,6 +333,19 @@
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
+    <dt><a name="perdirectory" id="perdirectory">Per-directory Context</a></dt>
+    <dd>A <glossary ref="directive">directive</glossary> is in
+      per-directory context when it appears in a <directive type="section"
+      module="core">Directory</directive>, <directive type="section"
+      module="core">DirectoryMatch</directive>, <directive type="section"
+      module="core">Files</directive>, or <directive type="section"
+      module="core">FilesMatch</directive> section in the main
+      configuration files, or in a <code>.htaccess</code> file.
+      In per-directory context, directives apply only to the
+      directory (or set of files) they are associated with.<br />
+      See: <a href="sections.html">Configuration Sections</a>
+    </dd>
+
     <dt><a name="plaintext" id="plaintext">Plaintext</a></dt>
     <dd>The unencrypted text.</dd>
 

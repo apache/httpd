@@ -45,7 +45,8 @@
       and query string portions, and may be used in per-server context
       (<code>httpd.conf</code>), per-virtualhost context (<directive
       type="section" module="core">VirtualHost</directive> blocks), or
-      per-directory context (<code>.htaccess</code> files and <directive
+      <glossary ref="perdirectory">per-directory context</glossary>
+      (<code>.htaccess</code> files and <directive
       type="section" module="core">Directory</directive> blocks). The
       rewritten result can lead to further rules, internal
       sub-processing, external request redirection, or proxy
