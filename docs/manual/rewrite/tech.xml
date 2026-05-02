@@ -32,11 +32,9 @@ and URL matching.</p>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
-<seealso><a href="access.html">Controlling access</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-<seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Advanced techniques</a></seealso>
+<seealso><a href="htaccess.html">Per-directory rewrites (.htaccess)</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 <section id="InternalAPI"><title>API Phases</title>
@@ -57,7 +55,7 @@ and URL matching.</p>
     (<code>.htaccess</code> files) have been read, but before the
     content handler is called.</p>
 
-    <p>So, after a request comes in and a corresponding server or
+    <p>After a request comes in and a corresponding server or
     virtual host has been determined, the rewriting engine starts
     processing any <module>mod_rewrite</module> directives appearing in the
     per-server configuration. (i.e., in the main server configuration file
@@ -76,7 +74,7 @@ and URL matching.</p>
     <p>In <glossary ref="perdirectory">per-directory context</glossary> (i.e., within <code>.htaccess</code> files
     and <code>Directory</code> blocks), these rules are being applied
     after a URL has already been translated to a filename. Because of
-    this, the URL-path that <module>mod_rewrite</module> initially compares <directive 
+    this, the URL-path that <module>mod_rewrite</module> initially compares <directive
     module="mod_rewrite">RewriteRule</directive> directives against
     is the full filesystem path to the translated filename with the current
     directories path (including a trailing slash) removed from the front.</p>
@@ -85,12 +83,12 @@ and URL matching.</p>
     for /foo/bar/baz is being processed, an expression like ^bar/baz$ would
     match.</p>
 
-    <p> If a substitution is made in per-directory context, a new internal 
-    subrequest is issued with the new URL, which restarts processing of the 
-    request phases. If the substitution is a relative path, the <directive 
-    module="mod_rewrite">RewriteBase</directive> directive 
+    <p> If a substitution is made in per-directory context, a new internal
+    subrequest is issued with the new URL, which restarts processing of the
+    request phases. If the substitution is a relative path, the <directive
+    module="mod_rewrite">RewriteBase</directive> directive
     determines the URL-path prefix prepended to the substitution.
-    In per-directory context, care must be taken to 
+    In per-directory context, care must be taken to
     create rules which will eventually (in some future "round" of per-directory
     rewrite processing) not perform a substitution to avoid looping.
     (See <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
@@ -129,7 +127,7 @@ and URL matching.</p>
 
     <p>For even more insight into how <module>mod_rewrite</module> manipulates URLs in
     different contexts, you should consult the <a
-    href="../mod/mod_rewrite.html#logging">log entries</a> made during 
+    href="../mod/mod_rewrite.html#logging">log entries</a> made during
     rewriting.</p>
 
 </section>
@@ -188,4 +186,3 @@ and URL matching.</p>
 
 
 </manualpage>
-
