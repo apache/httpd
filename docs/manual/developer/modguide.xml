@@ -102,7 +102,8 @@ AP_DECLARE_MODULE(example) =
     create_svr_conf, /* Per-server configuration handler */
     merge_svr_conf,  /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -197,7 +198,8 @@ AP_DECLARE_MODULE(example) =
     NULL,
     NULL,
     NULL,
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -804,7 +806,8 @@ AP_DECLARE_MODULE(example) =
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     NULL,            /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -843,7 +846,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -863,7 +867,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -1012,7 +1016,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 /*
  ==============================================================================
@@ -1054,7 +1058,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -1219,7 +1224,8 @@ AP_DECLARE_MODULE(example) =
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };
 </highlight>
 <!-- END EXAMPLE CODE -->
@@ -1400,7 +1406,7 @@ static const command_rec    directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, ACCESS_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, ACCESS_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, ACCESS_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 
 /*$1
@@ -1417,7 +1423,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     directives,         /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 
 /*
