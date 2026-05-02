@@ -49,6 +49,7 @@
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#logic">Authorization Containers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzresults">Authorization Result States</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
 </ul><h3 class="directives">Directives</h3>
@@ -106,6 +107,54 @@
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authzresults" id="authzresults">Authorization Result States</a> <a title="Permanent link" href="#authzresults" class="permalink">&para;</a></h2>
+
+    <p>Each authorization provider returns one of three possible results
+    when evaluating a <code class="directive"><a href="#require">Require</a></code>
+    directive:</p>
+
+    <dl>
+      <dt><strong>Granted</strong></dt>
+      <dd>The provider has verified that the request meets
+      its requirements.</dd>
+
+      <dt><strong>Denied</strong></dt>
+      <dd>The provider has determined that the request does not
+      meet its requirements.</dd>
+
+      <dt><strong>Neutral</strong></dt>
+      <dd>The provider has no opinion about the request. This
+      can occur when a provider is not relevant to the request
+      (e.g., a group-membership check when the request does not
+      involve group-based authorization).</dd>
+    </dl>
+
+    <p>The authorization container directives interpret these three
+    results as follows:</p>
+
+    <table class="bordered"><tr class="header"><th>Container</th><th>Granted if...</th><th>Denied if...</th><th>Neutral treated as...</th></tr>
+<tr><td><code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code></td>
+        <td>at least one provider grants</td>
+        <td>all providers deny</td>
+        <td>deny (does not satisfy the requirement)</td></tr>
+<tr class="odd"><td><code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code></td>
+        <td>no provider denies (and at least one grants)</td>
+        <td>any provider denies</td>
+        <td>grant (does not block the requirement)</td></tr>
+<tr><td><code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code></td>
+        <td>no provider grants</td>
+        <td>any provider grants</td>
+        <td>grant (does not block)</td></tr>
+</table>
+
+    <p>When a <code class="directive">Require</code> directive is negated with
+    <code>not</code> (e.g., <code>Require not group temps</code>), a
+    granted result is inverted to denied and vice versa, but a neutral
+    result remains neutral. A negated directive can therefore never
+    independently authorize a request.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -539,6 +588,7 @@ Require group admin</pre>
 <ul>
 <li><a href="../howto/access.html">Access Control howto</a></li>
 <li><a href="#logic">Authorization Containers</a></li>
+<li><a href="#authzresults">Authorization Result States</a></li>
 <li><code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
@@ -572,6 +622,7 @@ succeed.</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="#logic">Authorization Containers</a></li>
+<li><a href="#authzresults">Authorization Result States</a></li>
 <li><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></li>
 </ul>
@@ -611,6 +662,7 @@ must succeed for the enclosing directive to succeed.</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="#logic">Authorization Containers</a></li>
+<li><a href="#authzresults">Authorization Result States</a></li>
 <li><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></li>
 </ul>
@@ -653,6 +705,7 @@ must succeed for the enclosing directive to not fail.</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="#logic">Authorization Containers</a></li>
+<li><a href="#authzresults">Authorization Result States</a></li>
 <li><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></li>
 </ul>

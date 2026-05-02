@@ -29,8 +29,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -366,7 +364,8 @@ CustomLog "logs/access_log" common</pre>
 	redirection (codes commençant par 3), une erreur due au client (codes
 	commençant par 4), ou une erreur due au serveur (codes commençant
 	par 5). Vous trouverez la liste complète des codes de statut possibles
-	dans la <a href="http://www.w3.org/Protocols/rfc2616/  rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
+	dans la spécification
+	HTTP (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
@@ -673,8 +672,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     journal, puis de séparer ultérieurement le journal en plusieurs journaux
     individuels. Considérons par exemple les directives suivantes :</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost</pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog "logs/access_log" commonvhost</pre>
 
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui

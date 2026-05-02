@@ -30,8 +30,6 @@
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>La conception modulaire du serveur HTTP Apache permet à l'administrateur
     de choisir les fonctionnalités à inclure dans le serveur en sélectionnant
@@ -105,10 +103,9 @@
 	distribution</em>, par exemple <code>mod_foo.c</code>,
 	en tant que module DSO <code>mod_foo.so</code> :</p>
 
-<div class="example"><p><code>
-$ ./configure --prefix=/chemin/vers/installation --enable-foo<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --prefix=/path/to/install --enable-foo
+$ make install</pre>
+</div>
       </li>
 
       <li>
@@ -118,10 +115,9 @@ $ make install
 	chargés au démarrage en activant ou désactivant les directives <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> correspondantes dans le
       fichier <code>httpd.conf</code>.</p>
 
-<div class="example"><p><code>
-$ ./configure --enable-mods-shared=all<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --enable-mods-shared=all
+$ make install</pre>
+</div>
 
         <p>L'argument <code>most</code> de l'option
 	<code>--enable-modules</code> indique que tous les modules
@@ -138,10 +134,9 @@ $ make install
       les modules compilés via l'option du script configure
       <code>--enable-load-all-modules</code>.</p>
 
-<div class="example"><p><code>
-$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules<br />
-$ make install
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ ./configure --enable-mods-shared=reallyall --enable-load-all-modules
+$ make install</pre>
+</div>
       </li>
 
       <li>
@@ -150,10 +145,9 @@ $ make install
         <code>mod_foo.so</code> <em>en dehors</em> de l'arborescence des sources
 	d'Apache httpd à l'aide du programme <code class="program"><a href="./programs/apxs.html">apxs</a></code> :
 
-<div class="example"><p><code>
-$ cd /chemin/vers/module_tiers<br />
-$ apxs -cia mod_foo.c
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ cd /path/to/3rdparty
+$ apxs -cia mod_foo.c</pre>
+</div>
       </li>
     </ol>
 

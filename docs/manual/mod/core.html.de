@@ -512,7 +512,7 @@ erlaubt sind.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</code></td></tr>
+[<var>directive</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AllowOverrideList None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Verzeichnis</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>

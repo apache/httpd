@@ -135,10 +135,10 @@ be passed through</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset | [+|-]<var>HTTP-method</var>
 [ [+|-]<var>HTTP-method</var> ] ...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict access to the listed HTTP methods</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
-[<var>directive-type</var>] ...</a></td><td> None (2.3.9 and lat +</td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types of directives that are allowed in
+[<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types of directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Individual directives that are allowed in
+[<var>directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that are allowed access without
 password verification</td></tr>
