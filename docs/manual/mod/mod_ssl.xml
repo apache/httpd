@@ -1907,7 +1907,7 @@ on such a connection identifies any other non-default virtual host,
 the compatibility policy is tested.</p>
 
 <p>The <code>strict</code> policy blocks all HTTP requests which are
-identified with a different virtual host to that identifed by SNI.
+identified with a different virtual host to that identified by SNI.
 The <code>insecure</code> policy allows all HTTP requests regardless
 of virtual host identified; such a configuration may be vulnerable to
 <a
@@ -1927,7 +1927,7 @@ virtual hosts, which are grouped into two categories:</p>
   module="mod_ssl">SSLCipherSuite</directive> and <directive
   module="mod_ssl">SSLProtocol</directive>)</li>
 
-  <li><strong>client vertification and authentication
+  <li><strong>client verification and authentication
   settings</strong>: directives which affect TLS client certificate
   verification or authentication, such as <directive
   module="mod_ssl">SSLVerifyClient</directive>, <directive

@@ -226,7 +226,7 @@ cached by proxy servers</description>
 <usage>
     <p>If set, this directive allows content-negotiated documents
     to be cached by proxy servers. This could mean that clients
-    behind those proxys could retrieve versions of the documents
+    behind those proxies could retrieve versions of the documents
     that are not the best match for their abilities, but it will
     make caching more efficient.</p>
 

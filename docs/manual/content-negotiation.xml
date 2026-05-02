@@ -513,7 +513,7 @@ Content-type: text/plain; qs=0.01
     <directive
     module="mod_negotiation">ForceLanguagePriority</directive>
     directive can be used to override one or both of these error
-    messages and substitute the servers judgement in the form of the
+    messages and substitute the servers judgment in the form of the
     <directive module="mod_negotiation">LanguagePriority</directive>
     directive.</p>
 

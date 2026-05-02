@@ -734,7 +734,7 @@ connection client certificates.</description>
 
     <p>Since 2.4.10, new measures are in place to avoid the reference time
     from being inflated by cache hits or slow requests.  First, the reference
-    time is not updated if no backend LDAP conncetions were needed. Second,
+    time is not updated if no backend LDAP connections were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
 
