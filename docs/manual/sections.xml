@@ -541,6 +541,21 @@ are interpreted, it is important to understand how this works.</p>
         used in <code>.htaccess</code>, the enclosed directives in a parent 
         directory will be merged <em>after</em> non-enclosed directives in a 
         subdirectory.</li>
+        <li><note type="warning"><title>Caution: &lt;Limit&gt; inside
+        &lt;Location&gt; can silently grant access</title>
+        <p>Using <directive type="section" module="core">Limit</directive>
+        inside a <directive type="section" module="core">Location</directive>
+        section to restrict authorization to specific HTTP methods can have
+        unexpected results.  For methods not listed in the
+        <directive type="section" module="core">Limit</directive>, the
+        enclosing <directive type="section" module="core">Location</directive>
+        section is treated as having no authorization requirements — which
+        effectively grants access and overrides any
+        <directive type="section" module="core">Directory</directive>
+        restrictions that would otherwise apply.  Use
+        <directive type="section" module="core">LimitExcept</directive>
+        instead, or apply authorization without method restrictions.</p>
+        </note></li>
     </ul>
 
     <note><title>Technical Note</title>
