@@ -692,7 +692,7 @@ authentication succeeds but authorization fails
 <usage>
     <p>If authentication succeeds but authorization fails, Apache HTTPD will
     respond with an HTTP response code of '401 UNAUTHORIZED' by default. This
-    usually causes browsers to display the password dialogue to the user
+    usually causes browsers to display the password dialog to the user
     again, which is not wanted in all situations.
     <directive>AuthzSendForbiddenOnFailure</directive> allows to change the
     response code to '403 FORBIDDEN'.</p>

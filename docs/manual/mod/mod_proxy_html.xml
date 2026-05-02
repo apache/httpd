@@ -55,7 +55,7 @@ making it accessible from outside.</p>
 <module>mod_xml2enc</module> (see <a href="#i18n">Internationalisation</a>)
 and is a standard module in HTTPD 2.4 and development versions.</p>
 </section>
-<section id="custom"><title>Customised HTML Parsing</title>
+<section id="custom"><title>Customized HTML Parsing</title>
 <p>Internally, mod_proxy_html uses the HTMLParser module from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 Unlike other libxml2 parsers, HTMLParser deals with HTML without

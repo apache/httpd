@@ -84,7 +84,7 @@ any error code returned on termination.</p>
 same stdin, stdout, and stderr as rotatelogs itself, and also inherits
 the environment.</p>
 <p>When two parameters are provided, under some conditions the parameters 
-will have the same value.  For example, if rotation is triggerd but the 
+will have the same value.  For example, if rotation is triggered but the 
 portions of the time and date incorporated into the log filename do not change
 across the rotation.</p>
 </dd>
@@ -235,7 +235,7 @@ an offset.</dd>
      <p>This creates the files /var/log/logfile.yyyy.mm where
      yyyy is the year and mm is the month.   Every day at midnight, rotation
      will occur, including running programs specified with <code>-p</code>. 
-     Despite rotation ocurring, the filename will only change on the first 
+     Despite rotation occurring, the filename will only change on the first 
      rotation of the month. Rotation on other days will continue to output file
      and append to it.
      </p>

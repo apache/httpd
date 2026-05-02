@@ -183,7 +183,7 @@ authentication</description>
 
     <p>The authentication type <code>None</code> disables authentication.
     When authentication is enabled, it is normally inherited by each
-    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    subsequent <a href="../sections.html#merging">configuration section</a>,
     unless a different authentication type is specified.  If no
     authentication is desired for a subsection of an authenticated
     section, the authentication type <code>None</code> may be used;

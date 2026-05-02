@@ -1440,7 +1440,7 @@ EnableSendfile On
 
     <note type="warning"><title>Note</title>
         <p> This directive is evaluated at configuration processing time, 
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
     </note>
@@ -4264,7 +4264,7 @@ Protocols h2 http/1.1
     <p>This directive allows to configure the size (in bytes) of the memory
     buffer used to read data from the network or files.</p>
 
-    <p>A larger buffer can increase peformances with larger data, but consumes
+    <p>A larger buffer can increase performances with larger data, but consumes
     more memory per connection. The minimum configurable size is
     <var>1024</var>.</p>
 </usage>
@@ -5012,7 +5012,7 @@ certain events before failing a request</description>
       </li>
 
       <li>When writing data to the client, the length of time to wait
-      for an acknowledgement of a packet if the send buffer is
+      for an acknowledgment of a packet if the send buffer is
       full.</li>
 
       <li>In <module>mod_cgi</module> and <module>mod_cgid</module>,
@@ -5370,7 +5370,7 @@ recognized methods to modules.</p>
 
     <note type="warning"><title>Note</title>
         <p> This directive is evaluated at configuration processing time,
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
     </note>
@@ -5403,7 +5403,7 @@ recognized methods to modules.</p>
         may be inadvertently derived from untrusted inputs. </p>
         <p> Windows systems should be isolated at the network layer from
         making outbound SMB/NTLM calls to unexpected destinations as a
-        more comprehensive and pre-emptive measure.</p>
+        more comprehensive and preemptive measure.</p>
     </note>
 
     <note type="warning"><title>Directive Ordering</title>

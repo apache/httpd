@@ -400,7 +400,7 @@ SSLVerifyDepth 1
 
     <p>The <module>mod_auth_basic</module> method is generally required when
     the certificates are completely arbitrary, or when their DNs have
-    no common fields (usually the organisation, etc.). In this case,
+    no common fields (usually the organization, etc.). In this case,
     you should establish a password database containing <em>all</em>
     clients allowed, as follows:</p>
 
