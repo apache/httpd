@@ -88,7 +88,9 @@ Negotiation</a></seealso>
 
       <dd>
         The <glossary ref="mime-type">MIME media type</glossary> of
-        the document, with optional parameters. Parameters are
+        the document, with optional parameters. Each variant should
+        include a <code>Content-Type</code> header; negotiation will
+        not work correctly for variants that lack one. Parameters are
         separated from the media type and from one another by a
         semi-colon, with a syntax of <code>name=value</code>. Common
         parameters include:
