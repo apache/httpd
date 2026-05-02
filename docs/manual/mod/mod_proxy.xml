@@ -1084,6 +1084,15 @@ ProxyPass "/mirror/foo/i" "!"
     by configuration or MPM design.</p>
     </note>
 
+    <note><title>Connection pooling with prefork MPM</title>
+    <p>With the prefork MPM, connections to backends are not pooled
+    (each child process handles one connection at a time). The
+    <code>acquire</code> and <code>ttl</code> parameters, which
+    control connection pool behavior, have no effect when using
+    prefork. The <code>min</code>, <code>smax</code>, and
+    <code>hmax</code> pool sizing parameters are also ignored.</p>
+    </note>
+
     <p>Use the <code>ttl</code> parameter to set an optional
     time to live; connections which have been unused for at least
     <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
