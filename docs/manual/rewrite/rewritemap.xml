@@ -515,6 +515,16 @@ RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
 RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
 </highlight>
     </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>For distributing requests across backend servers,
+      <module>mod_proxy_balancer</module> provides a more robust and
+      configurable approach, with support for health checking, load
+      weighting, and session stickiness. The <code>txt:</code> map
+      approach shown here is simpler but lacks these features.</p>
+    </dd>
   </dl>
 
   <p>See the <directive module="mod_rewrite">RewriteMap</directive>

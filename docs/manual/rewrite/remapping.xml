@@ -68,7 +68,7 @@ RewriteEngine  on
 RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
 </highlight>
     </dd>
-  </dl>
+</dl>
 
 </section>
 
@@ -377,6 +377,15 @@ RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
 Redirect "/docs/" "http://new.example.com/docs/"
 </highlight>
     </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>For simple redirections to another server, the
+      <directive module="mod_alias">Redirect</directive> or
+      <directive module="mod_alias">RedirectMatch</directive> directives
+      are preferred, as they are simpler and more efficient.</p>
+    </dd>
   </dl>
 
 </section>
@@ -530,6 +539,18 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <directive
     module="core">DocumentRoot</directive> of the server.</p>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you have access to the server configuration, a
+      <directive module="mod_alias">Redirect</directive> in a dedicated
+      <directive module="core" type="section">VirtualHost</directive>
+      is the cleanest approach. Use the
+      <directive module="core" type="section">If</directive> directive
+      as a middle ground, and <module>mod_rewrite</module> only if you
+      are limited to <code>.htaccess</code>.</p>
+    </dd>
         </dd>
       </dl>
 
@@ -573,6 +594,15 @@ RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 #   etc.
 RewriteRule "^"     "-"                                          [PT]
 </highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>This is useful during migrations when content is being moved
+      between directories. For permanent setups, consider using
+      <directive module="mod_alias">Alias</directive> or symbolic links
+      instead.</p>
     </dd>
   </dl>
 
@@ -715,6 +745,15 @@ file, as well as in a &lt;Directory&gt; block.</p>
 
 </dd>
 
+<dt>Discussion:</dt>
+
+<dd>
+<p>The <directive module="mod_dir">FallbackResource</directive> directive
+is almost always the better choice for this use case. See the
+<a href="avoid.html#fallback-resource">When not to use mod_rewrite</a>
+document for a simpler one-line alternative.</p>
+</dd>
+
 </dl>
 
 </section>
@@ -777,6 +816,15 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 
 </dd>
 
+<dt>Discussion:</dt>
+
+<dd>
+<p>See also the <a href="flags.html#flag_qsa">[QSA]</a> and
+<a href="flags.html#flag_qsd">[QSD]</a> flags, which control whether
+the original query string is appended to or discarded from the
+substitution.</p>
+</dd>
+
 </dl>
 </section>
 
@@ -807,6 +855,15 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
 RewriteEngine on
 RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"
 </highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>This technique is primarily useful for large hosting
+      environments with thousands of users. For most sites,
+      <module>mod_userdir</module> handles tilde-based user URLs
+      without requiring <module>mod_rewrite</module>.</p>
     </dd>
   </dl>
 
@@ -883,6 +940,15 @@ RewriteRule   "^foo\.html$"             "foo.night.html"
       content dynamically, and customizing it based on the time of day.</note>
 
     </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Serving dynamic content through your application is almost
+      always a better approach. Caching by browsers, proxies, and
+      <module>mod_cache</module> makes time-based rewriting unreliable
+      in practice.</p>
+    </dd>
   </dl>
 
 </section>
@@ -925,6 +991,16 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]
     static form. if documents need to be refreshed, they can be deleted
     from the document directory, and they will then be regenerated the
     next time they are requested.</p>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Modern approaches such as <module>mod_cache</module>, CDN
+      caching layers, or application-level caching provide more robust
+      and controllable solutions for serving pre-generated static
+      content. The <code>-U</code> subrequest test used here also
+      carries a performance cost on every request.</p>
     </dd>
   </dl>
 
