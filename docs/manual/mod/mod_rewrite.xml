@@ -1231,26 +1231,23 @@ cannot use <code>$N</code> in the substitution string!
         <dt>file-system path</dt>
 
         <dd>Designates the location on the file-system of the resource
-        to be delivered to the client.  Substitutions are only
-        treated as a file-system path when the rule is configured in
-        server (virtualhost) context and the first component of the
-        path in the substitution exists in the file-system</dd>
+        to be delivered to the client. A substitution beginning with
+        <code>/</code> is treated as a file-system path only in
+        server or virtual host context, and only when the first
+        component of the path exists in the file-system. In
+        <glossary ref="perdirectory">per-directory context</glossary>,
+        this guessing does not occur.</dd>
 
         <dt>URL-path</dt>
 
         <dd>A <directive
         module="core">DocumentRoot</directive>-relative path to the
-        resource to be served. Note that <module>mod_rewrite</module>
-        tries to guess whether you have specified a file-system path
-        or a URL-path by checking to see if the first segment of the
-        path exists at the root of the file-system. For example, if
-        you specify a <em>Substitution</em> string of
-        <code>/www/file.html</code>, then this will be treated as a
-        URL-path <em>unless</em> a directory named <code>www</code>
-        exists at the root of your file-system (or, in the case of
-        per-directory rewrites, relative to
-        your document root), in which case it will
-        be treated as a file-system path. If you wish other
+        resource to be served. In server or virtual host context,
+        if the first segment of the path exists at the root of the
+        file-system, the substitution is treated as a file-system
+        path instead.  For example, <code>/www/file.html</code> is
+        a URL-path unless a directory named <code>www</code> exists
+        at the root of the file-system. If you wish other
         URL-mapping directives (such as <directive
         module="mod_alias">Alias</directive>) to be applied to the
         resulting URL-path, use the <code>[PT]</code> flag as
