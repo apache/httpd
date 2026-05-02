@@ -388,4 +388,83 @@ the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <d
 
 </section>
 
+<section id="security"><title>Security Considerations</title>
+
+<p><module>mod_rewrite</module> is a powerful URL manipulation tool, and
+with that power comes the potential for security mistakes. This section
+highlights the most common security pitfalls to watch for when writing
+rewrite rules.</p>
+
+<section id="security-redirect"><title>Open Redirects</title>
+
+<p>If a <directive module="mod_rewrite">RewriteRule</directive>
+constructs a redirect URL using unvalidated user input, an attacker
+can craft a link that redirects visitors to a malicious site while
+appearing to originate from your domain. This is known as an
+<em>open redirect</em> vulnerability.</p>
+
+<p>For example, this rule is dangerous:</p>
+
+<highlight language="config">
+# DANGEROUS - allows open redirect
+RewriteRule "^/redirect" "%{QUERY_STRING}" [R,L]
+</highlight>
+
+<p>An attacker could use
+<code>https://yoursite.com/redirect?https://evil.com</code> to redirect
+users to a malicious site. Always validate or constrain redirect
+targets. If the destination must be on your own site, ensure the
+substitution begins with <code>/</code> (a relative path) rather than
+allowing a full URL from user input.</p>
+
+</section>
+
+<section id="security-ssrf"><title>Server-Side Request Forgery (SSRF)</title>
+
+<p>When using the <a href="flags.html#flag_p">[P] (proxy) flag</a>,
+<module>mod_rewrite</module> causes the server to make an HTTP request
+to the substitution URL on behalf of the client. If any part of that
+URL is derived from user input - backreferences, query strings, or
+headers - an attacker may be able to cause your server to make requests
+to arbitrary internal services or external hosts.</p>
+
+<p>For example:</p>
+
+<highlight language="config">
+# DANGEROUS - user controls the proxy target
+RewriteCond "%{QUERY_STRING}" "target=(.+)"
+RewriteRule "^/fetch" "http://%1" [P]
+</highlight>
+
+<p>An attacker could use this to probe internal network services that
+are not otherwise accessible from the internet. Always use a fixed
+hostname in proxy targets, and limit backreferences to the path
+component only.</p>
+
+</section>
+
+<section id="security-path"><title>Path Traversal</title>
+
+<p>Rewrite rules that map user-supplied path components directly to
+the filesystem can allow path traversal attacks if the input is not
+properly constrained. For example:</p>
+
+<highlight language="config">
+# DANGEROUS - allows path traversal
+RewriteRule "^/files/(.+)" "/var/data/$1" [L]
+</highlight>
+
+<p>A request for <code>/files/../../etc/passwd</code> could potentially
+access files outside the intended directory. Use restrictive patterns
+in your <directive module="mod_rewrite">RewriteRule</directive> (for
+example, <code>[a-zA-Z0-9_-]+</code> instead of <code>.+</code>), and
+rely on Apache's built-in protections
+(<directive module="core">Options</directive> and
+<directive module="core" type="section">Directory</directive>
+restrictions) as defense in depth.</p>
+
+</section>
+
+</section>
+
 </manualpage>
