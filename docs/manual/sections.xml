@@ -222,15 +222,31 @@ as any other requests starting with the <code>/private</code> string.</p>
 <p>The <directive type="section" module="core">Location</directive>
 directive need not have anything to do with the filesystem.
 For example, the following example shows how to map a particular
-URL to an internal Apache HTTP Server handler provided by <module>mod_status</module>.
-No file called <code>server-status</code> needs to exist in the
+URL to an internal handler provided by <module>mod_status</module>.
+No file called <code>server-status</code> needs to exist on the
 filesystem.</p>
 
 <highlight language="config">
+# Map a URL to a built-in handler:
 &lt;Location "/server-status"&gt;
     SetHandler server-status
 &lt;/Location&gt;
+
+# Map a URL path to a reverse proxy backend:
+&lt;Location "/app"&gt;
+    ProxyPass "http://backend.example.com/"
+    ProxyPassReverse "http://backend.example.com/"
+&lt;/Location&gt;
+
+# Deny access to a URL path regardless of what serves it:
+&lt;Location "/private"&gt;
+    Require all denied
+&lt;/Location&gt;
 </highlight>
+
+<p>Because <directive type="section" module="core">Location</directive>
+operates on URLs rather than filesystem paths, it is the appropriate
+container for proxy configuration and module-provided endpoints.</p>
 </section>
 
 <section id="overlapping-webspace"><title>Overlapping Webspace</title>
