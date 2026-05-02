@@ -1023,7 +1023,7 @@ MDRequireHttps permanent
         <usage>
             <p>
                 This command gets called when one of the following events happen for
-                a Managed Domain: "renewed", "installed", "expiring", "errored". The command may
+                a Managed Domain: "renewed", "installed", "expiring", "errored", "renewing", "challenge-setup:type:domain", "ocsp-renewed", "ocsp-errored". The command may
                 be invoked for more than these in the future and ignore events
                 it is not prepared to handle.
             </p><p>
@@ -1073,10 +1073,14 @@ MDMessageCmd /etc/apache/md-message
                 DNS name in a MDomain. Cluster setups may use this event to distribute
                 challenge files to all nodes in a cluster.
             </p><p>
-                ocsp-errored happens when <directive module="mod_md">MDStapling</directive>
+                'ocsp-errored' happens when <directive module="mod_md">MDStapling</directive>
                 is enabled for a domain, this indicates
                 that an error was encountered retrieving the OCSP response from the
                 Certificate Authority. mod_md will continue trying.
+            </p><p>
+                'ocsp-renewed' is triggered when a new OCSP response has been
+                successfully obtained for a domain's certificate. This event fires
+                at most once per day.
             </p>
         </usage>
     </directivesynopsis>
