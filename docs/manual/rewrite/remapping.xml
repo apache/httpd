@@ -80,6 +80,230 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
 
 </section>
 
+<section id="https-redirect">
+
+  <title>Forcing HTTPS</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want all HTTP requests to be redirected to HTTPS. This
+      is one of the most common uses of <module>mod_rewrite</module>,
+      but in most cases it is better accomplished without it.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+
+      <p>The preferred approach uses a
+      <directive module="mod_alias">Redirect</directive> directive in a
+      dedicated HTTP virtual host:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect permanent "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL configuration goes here
+&lt;/VirtualHost&gt;
+</highlight>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you do not have access to the main server configuration and
+      must use a <code>.htaccess</code> file, <module>mod_rewrite</module>
+      is the appropriate tool:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+
+      <p>The <code>%{HTTPS}</code> variable is set to <code>on</code>
+      when the connection is using SSL/TLS, and is empty or
+      <code>off</code> otherwise. Using <code>R=301</code> issues a
+      permanent redirect, which tells search engines to update their
+      index.</p>
+
+      <p>See also the <a href="avoid.html#redirect">When not to use
+      mod_rewrite</a> document for more discussion of the
+      <code>Redirect</code> approach.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="trailing-slash">
+
+  <title>Trailing Slash Normalization</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want to ensure that URLs for directories always end with
+      a trailing slash, or conversely, that they never do. This is a
+      common requirement for SEO and for consistent URL handling by
+      web applications.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>To add a trailing slash to URLs that map to directories:</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}" -d
+RewriteCond "%{REQUEST_URI}" "!/$"
+RewriteRule "^(.*)$" "$1/" [R=301,L]
+</highlight>
+
+      <p>To remove a trailing slash (except for actual directories):</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteCond "%{REQUEST_URI}" "(.+)/$"
+RewriteRule "^" "%1" [R=301,L]
+</highlight>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Apache's <module>mod_dir</module> already handles trailing
+      slash redirects for real directories when
+      <directive module="mod_dir">DirectorySlash</directive> is enabled
+      (the default). You only need a <module>mod_rewrite</module> rule
+      if you want to enforce trailing slash behavior for URLs that do
+      not correspond to actual directories on disk, or if you want to
+      remove trailing slashes.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="www-resolve">
+
+  <title>Canonical www/non-www Hostname</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want to force all requests to use either
+      <code>www.example.com</code> or <code>example.com</code>,
+      not both. This ensures search engines treat them as one site
+      and prevents cookie scope issues.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>The best approach does not use <module>mod_rewrite</module> at
+      all. Place a <directive module="mod_alias">Redirect</directive>
+      in the virtual host for the non-canonical hostname:</p>
+
+<highlight language="config">
+# Redirect example.com -> www.example.com
+&lt;VirtualHost *:80 *:443&gt;
+    ServerName example.com
+    Redirect permanent "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+</highlight>
+
+      <p>If you only have <code>.htaccess</code> access:</p>
+
+<highlight language="config">
+# Add www
+RewriteEngine On
+RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]
+</highlight>
+
+<highlight language="config">
+# Remove www
+RewriteEngine On
+RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
+RewriteRule "^(.*)" "https://%1$1" [R=301,L]
+</highlight>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
+      recipe above, which covers the general case. This recipe focuses
+      specifically on the www/non-www choice, which is the most common
+      hostname canonicalization need.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="front-controller">
+
+  <title>Front Controller / Application Routing</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Most modern web frameworks (PHP, Python, Ruby, etc.) use a
+      single entry point - often called a "front controller" - that
+      handles all requests. URLs like <code>/products/widget</code>
+      are routed to <code>index.php</code> (or equivalent), which
+      parses the URL internally.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+
+    <note>For this use case, the
+    <directive module="mod_dir">FallbackResource</directive> directive is
+    almost always the better choice. See the
+    <a href="#fallback-resource">Fallback Resource</a> recipe above.</note>
+
+      <p>If you need <module>mod_rewrite</module> (for example, to add
+      additional conditions), the standard pattern is:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [L]
+</highlight>
+
+      <p>The <code>!-f</code> and <code>!-d</code> conditions skip the
+      rule for requests that map to an existing file or directory, so
+      static assets (images, CSS, JavaScript) are still served
+      directly.</p>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>In <code>.htaccess</code> context, consider using
+      <code>[END]</code> instead of <code>[L]</code> to avoid
+      reprocessing loops. See the
+      <a href="htaccess.html#loops">.htaccess looping</a> discussion
+      for details.</p>
+    </dd>
+  </dl>
+
+</section>
+
 <section id="old-to-new-extern">
 
   <title>Rewriting From Old to New (external)</title>
