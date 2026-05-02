@@ -2786,7 +2786,14 @@ methods</description>
     used in preference to a <directive type="section">Limit</directive>
     section when restricting access, since a <directive type="section"
     module="core">LimitExcept</directive> section provides protection
-    against arbitrary methods.</note>
+    against arbitrary methods.  See also the
+    <a href="../sections.html#merging">configuration sections
+    merging documentation</a> for a warning about how
+    <directive type="section">Limit</directive> inside
+    <directive type="section" module="core">Location</directive>
+    can silently override
+    <directive type="section" module="core">Directory</directive>
+    restrictions.</note>
 
     <p>The <directive type="section">Limit</directive> and
     <directive type="section" module="core">LimitExcept</directive>
