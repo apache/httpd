@@ -208,6 +208,23 @@ ExpiresByType text/html M604800
     <p>You can also specify the expiration time calculation using
     an <a href="#AltSyn">alternate syntax</a>, described earlier in
     this document.</p>
+
+    <p>The MIME type can use a wildcard for the sub-type, for
+    example <code>image/*</code>. This will match any type under
+    that major type. When a request's content type does not match
+    a specific <directive>ExpiresByType</directive> entry, a
+    wildcard entry for the major type is checked before falling
+    back to the <directive module="mod_expires">ExpiresDefault</directive>.</p>
+
+    <example><title>Example with wildcard:</title>
+    <highlight language="config">
+ExpiresActive On
+# All images expire after 1 month
+ExpiresByType image/* "access plus 1 month"
+# Override specifically for GIF
+ExpiresByType image/gif "access plus 1 week"
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
