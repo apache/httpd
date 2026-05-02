@@ -302,6 +302,40 @@ and <directive module="mod_ssl">SSLCertificateFile</directive> for instructions
 for configuring the certificate chain.</p>
 </section>
 
+<section>
+<title>Tuning OCSP Stapling for production</title>
+<p>The default OCSP stapling settings are conservative and may
+result in excessive queries to OCSP responders, timeouts, or
+error responses being cached for too long.  The following settings
+are recommended for production use:</p>
+
+    <highlight language="config">
+# Do not pass OCSP responder errors to clients:
+SSLStaplingReturnResponderErrors off
+
+# Reduce the OCSP responder timeout from the default 10s:
+SSLStaplingResponderTimeout 4
+
+# Cache valid OCSP responses for 48 hours (default: 1 hour).
+# This reduces load on OCSP responders and avoids transient
+# errors caused by frequent queries:
+SSLStaplingStandardCacheTimeout 172800
+
+# Retry failed OCSP queries after 60 seconds instead of the
+# default 600s:
+SSLStaplingErrorCacheTimeout 60
+    </highlight>
+
+<p>These settings address common issues where default OCSP stapling
+produces errors under load — particularly when OCSP responders are
+slow or unreliable.  See the individual directive documentation for
+<directive module="mod_ssl">SSLStaplingReturnResponderErrors</directive>,
+<directive module="mod_ssl">SSLStaplingResponderTimeout</directive>,
+<directive module="mod_ssl">SSLStaplingStandardCacheTimeout</directive>, and
+<directive module="mod_ssl">SSLStaplingErrorCacheTimeout</directive>
+for details.</p>
+</section>
+
 </section>
 <!-- /ocspstapling -->
 
