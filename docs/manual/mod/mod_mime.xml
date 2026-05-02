@@ -151,6 +151,30 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     </highlight>
     </example>
 
+    <note><title>Files with no extension</title>
+    <p>Files with no extension (such as <code>Makefile</code>) cannot
+    be matched by <module>mod_mime</module>'s extension-based directives.
+    To set the content type or charset for such files, use a
+    <directive type="section" module="core">Files</directive> or
+    <directive type="section" module="core">FilesMatch</directive>
+    section instead:</p>
+
+    <highlight language="config">
+# For a specific file:
+&lt;Files "Makefile"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+&lt;/Files&gt;
+
+# For all files with no extension:
+&lt;FilesMatch "^[^.]+$"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+    AddDefaultCharset UTF-8
+&lt;/FilesMatch&gt;
+    </highlight>
+    </note>
+
 </section>
 
 <section id="contentencoding"><title>Content encoding</title>
