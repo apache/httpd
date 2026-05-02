@@ -240,6 +240,82 @@ and in certain other directives.</p>
 
 </section>
 
+<section id="fallback-resource"><title>Front Controller / Resource Routing</title>
+
+<p>A very common use of <module>mod_rewrite</module> is to route all
+requests for non-existent resources to a single front controller script
+(e.g. <code>index.php</code>). This is the basis of most modern web
+framework routing.</p>
+
+<p>The typical <module>mod_rewrite</module> approach is:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [L]
+</highlight>
+
+<p>This can be accomplished far more simply with the
+<directive module="mod_dir">FallbackResource</directive> directive:</p>
+
+<highlight language="config">
+FallbackResource /index.php
+</highlight>
+
+<p><directive module="mod_dir">FallbackResource</directive> does the
+same thing - requests for existing files and directories are served
+normally, while everything else is routed to the specified resource -
+but without the overhead and complexity of the rewrite engine. It works
+in both server configuration and <code>.htaccess</code> context.</p>
+
+<p>To disable a <code>FallbackResource</code> set in a parent
+directory:</p>
+
+<highlight language="config">
+FallbackResource disabled
+</highlight>
+
+</section>
+
+<section id="ifexpr"><title>Conditional Configuration with Expressions</title>
+
+<p>Many uses of <directive module="mod_rewrite">RewriteCond</directive>
+can be replaced by the
+<directive module="core" type="section">If</directive> directive, which
+supports a rich <a href="../expr.html">expression syntax</a> and
+integrates cleanly with other Apache directives.</p>
+
+<p>Redirect based on a query string parameter:</p>
+
+<highlight language="config">
+&lt;If "%{QUERY_STRING} =~ /lang=fr/"&gt;
+    Redirect "/welcome" "/bienvenue"
+&lt;/If&gt;
+</highlight>
+
+<p>Restrict access by request method:</p>
+
+<highlight language="config">
+&lt;If "%{REQUEST_METHOD} IN {'DELETE', 'PUT', 'PATCH'}"&gt;
+    Require ip 10.0.0.0/8
+&lt;/If&gt;
+</highlight>
+
+<p>Block requests missing a Host header (HTTP/1.0 clients):</p>
+
+<highlight language="config">
+&lt;If "-z req('Host')"&gt;
+    Require all denied
+&lt;/If&gt;
+</highlight>
+
+<p>See the <a href="../expr.html">expression evaluation
+documentation</a> for the full syntax available in
+<directive module="core" type="section">If</directive> blocks.</p>
+
+</section>
+
 <section id="blocked-inline-images">
 
   <title>Forbidding Image Hotlinking</title>
