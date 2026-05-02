@@ -153,7 +153,7 @@ characters rejected when they are copied into the query string unencoded.
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"
 </highlight>
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 
 </section>
 
@@ -168,7 +168,7 @@ escaped.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"
 </highlight>
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -268,7 +268,6 @@ minutes (24 hours) and is returned for all URIs.</p>
 <section id="flag_dpi"><title>DPI|discardpath</title>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
-<p>This flag is available in version 2.2.12 and later.</p>
 <p>In per-directory context, the URI each <directive>RewriteRule</directive>
 compares against is the concatenation of the current values of the URI
 and PATH_INFO.</p>
@@ -379,10 +378,31 @@ variables from the previous round of rewriting are prefixed with
 <section id="flag_end"><title>END</title>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
-processing from occurring in per-directory (htaccess) context.</p>
+processing from occurring in
+<glossary ref="perdirectory">per-directory</glossary> context. This
+makes it the preferred flag for most per-directory rules.</p>
+
+<p>In server or virtualhost context, [END] and [L] behave identically.
+The difference matters in per-directory context, where [L] stops the
+current pass but the ruleset is re-applied on the rewritten URL. This
+can cause infinite loops. [END] prevents all further rewrite processing,
+breaking the cycle.</p>
+
+<highlight language="config">
+# In .htaccess: route all requests to a front controller
+# [L] would cause a loop here; [END] does not
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [END]
+</highlight>
 
 <p>This does not apply to new requests resulting from external
 redirects.</p>
+
+<p>See the <a href="htaccess.html#loops">.htaccess looping</a>
+discussion for a detailed explanation of why [L] behaves differently
+in per-directory context, and when [END] is the right choice.</p>
+
 </section>
 
 <section id="flag_f"><title>F|forbidden</title>
@@ -660,6 +680,16 @@ will be used automatically.</p>
 <p>Note: <module>mod_proxy</module> must be enabled in order
 to use this flag.</p>
 
+<note type="warning"><title>Security warning</title>
+<p>Take care when constructing the target URL of the rule, considering
+the security impact of allowing the client influence over the set of
+URLs to which your server will act as a proxy. If any part of the
+target URL is derived from user input (backreferences, query strings,
+etc.), an attacker may be able to cause your server to make requests
+to arbitrary internal or external hosts. This is known as a
+Server-Side Request Forgery (SSRF) vulnerability.</p>
+</note>
+
 </section>
 
 <section id="flag_pt"><title>PT|passthrough</title>
@@ -765,6 +795,21 @@ the two components using the last (right-most) question mark.  </p>
 This is useful when mapping to files that have literal question marks in 
 their filename.  If no query string is used in the substitution, 
 a question mark can be appended to it in combination with this flag.  </p>
+
+<p>For example, if a legacy application expects a query string that
+itself contains a question mark:</p>
+
+<highlight language="config">
+# Map /lookup/foo?bar to /app?type=foo?bar
+# Without [QSL], the first ? in the substitution would split the
+# path, producing /app with query string type=foo?bar incorrectly.
+# With [QSL], the LAST ? is used as the delimiter.
+RewriteRule "^/lookup/(.*)" "/app?type=$1" [QSL,PT]
+</highlight>
+
+<p>Without [QSL], the substitution <code>/app?type=foo?bar</code>
+would be split at the first <code>?</code>, losing the literal question
+mark in the value.</p>
 
 <p> This flag is available in version 2.4.19 and later.</p>
 
