@@ -29,8 +29,6 @@
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Apache HTTPD prend en charge la négociation de
@@ -87,10 +85,9 @@ conventions de nommage</a></li>
     avec une préférence pour GIF ou JPEG par rapport à tout autre type de
     média, mais autorisant tout autre type de média en dernier ressort :</p>
 
-<div class="example"><p><code>
-  Accept-Language: fr; q=1.0, en; q=0.5<br />
-  Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">Accept-Language: fr; q=1.0, en; q=0.5
+Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1</pre>
+</div>
 
     <p>httpd prend en charge la négociation de contenu «&nbsp;server driven&nbsp;» (telle qu'elle
     est définie dans la spécification HTTP/1.1), où c'est le serveur qui
@@ -174,17 +171,16 @@ conventions de nommage</a></li>
     relatifs pour tout fichier situé sur le même serveur que le fichier
     de correspondances.</p>
 
-<div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.en.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.de.html<br />
-  Content-type: text/html;charset=iso-8859-2<br />
-  Content-language: fr, de<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.en.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.de.html
+Content-type: text/html;charset=iso-8859-2
+Content-language: fr, de</pre>
+</div>
 
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
     les extensions de noms de fichier, même si les Multivues sont activées. Si
@@ -209,34 +205,32 @@ conventions de nommage</a></li>
     original dans le fichier de
     correspondances de types sans avoir à le renommer&nbsp;:</p>
 
-   <div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.html<br />
-  Content-type: text/html<br />
-  Content-language: fr<br />
-</code></p></div> 
+   <div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.html
+Content-type: text/html
+Content-language: en
+
+URI: foo.fr.html
+Content-type: text/html
+Content-language: fr</pre>
+</div> 
 
     <p>Si les variantes possèdent des qualités de source différentes, elles
     peuvent être indiquées par l’ajout du paramètre «&nbsp;qs&nbsp;» au type de média,
     comme pour cette image (disponible en JPEG, GIF ou ASCII-art)&nbsp;:</p>
 
-<div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.jpeg<br />
-  Content-type: image/jpeg; qs=0.8<br />
-<br />
-  URI: foo.gif<br />
-  Content-type: image/gif; qs=0.5<br />
-<br />
-  URI: foo.txt<br />
-  Content-type: text/plain; qs=0.01<br />
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-config">URI: foo
+
+URI: foo.jpeg
+Content-type: image/jpeg; qs=0.8
+
+URI: foo.gif
+Content-type: image/gif; qs=0.5
+
+URI: foo.txt
+Content-type: text/plain; qs=0.01</pre>
+</div>
 
     <p>Les valeurs de qs peuvent varier de 0.000 à 1.000. Notez que toute
     variante possédant une valeur de qs de 0.000 ne sera jamais choisie.

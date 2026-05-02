@@ -408,8 +408,13 @@ Require ldap-user "Joe Manager"</pre>
 
     <p>This directive specifies an LDAP group whose members are
     allowed access. It takes the distinguished name of the LDAP
-    group. Note: Do not surround the group name with quotes.
-    For example, assume that the following entry existed in
+    group.</p>
+
+    <div class="warning">Do not surround the group name with quotes.
+    Unlike <code>Require ldap-user</code>, the <code>ldap-group</code>
+    provider does not support quoted values.</div>
+
+    <p>For example, assume that the following entry existed in
     the LDAP directory:</p>
 <div class="example"><pre>dn: cn=Administrators, o=Example
 objectClass: groupOfUniqueNames
@@ -471,8 +476,11 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     that must match for access to be granted. If the distinguished
     name that was retrieved from the directory server matches the
     distinguished name in the <code>Require ldap-dn</code>, then
-    authorization is granted. Note: do not surround the distinguished
-    name with quotes.</p>
+    authorization is granted.</p>
+
+    <div class="warning">Do not surround the distinguished name with
+    quotes.  Unlike <code>Require ldap-user</code>, the
+    <code>ldap-dn</code> provider does not support quoted values.</div>
 
     <p>The following directive would grant access to a specific
     DN:</p>

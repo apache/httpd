@@ -65,6 +65,7 @@ address)</td></tr>
 <li><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><a href="mod_authz_core.html#authzresults">Authorization Result States</a></li>
 <li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

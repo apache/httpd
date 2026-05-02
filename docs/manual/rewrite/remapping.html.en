@@ -34,13 +34,12 @@ how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewri
 request. This includes many examples of common uses of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
 including detailed descriptions of how each works.</p>
 
-<div class="warning">Note that many of these examples won't work unchanged in your
-particular server configuration, so it's important that you understand
-them, rather than merely cutting and pasting the examples into your
-configuration.</div>
-
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#https-redirect">Forcing HTTPS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#www-resolve">Canonical www/non-www Hostname</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#front-controller">Front Controller / Application Routing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
@@ -54,7 +53,7 @@ configuration.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a></h2>
@@ -82,6 +81,222 @@ configuration.</div>
 <pre class="prettyprint lang-config">RewriteEngine  on
 RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]</pre>
 
+    </dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="https-redirect" id="https-redirect">Forcing HTTPS</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want all HTTP requests to be redirected to HTTPS. This
+      is one of the most common uses of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
+      but in most cases it is better accomplished without it.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+
+      <p>The preferred approach uses a
+      <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> directive in a
+      dedicated HTTP virtual host:</p>
+
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect permanent "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL configuration goes here
+&lt;/VirtualHost&gt;</pre>
+
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you do not have access to the main server configuration and
+      must use a <code>.htaccess</code> file, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      is the appropriate tool:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
+
+
+      <p>The <code>%{HTTPS}</code> variable is set to <code>on</code>
+      when the connection is using SSL/TLS, and is empty or
+      <code>off</code> otherwise. Using <code>R=301</code> issues a
+      permanent redirect, which tells search engines to update their
+      index.</p>
+
+      <p>See also the <a href="avoid.html#redirect">When not to use
+      mod_rewrite</a> document for more discussion of the
+      <code>Redirect</code> approach.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="trailing-slash" id="trailing-slash">Trailing Slash Normalization</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want to ensure that URLs for directories always end with
+      a trailing slash, or conversely, that they never do. This is a
+      common requirement for SEO and for consistent URL handling by
+      web applications.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>To add a trailing slash to URLs that map to directories:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}" -d
+RewriteCond "%{REQUEST_URI}" "!/$"
+RewriteRule "^(.*)$" "$1/" [R=301,L]</pre>
+
+
+      <p>To remove a trailing slash (except for actual directories):</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteCond "%{REQUEST_URI}" "(.+)/$"
+RewriteRule "^" "%1" [R=301,L]</pre>
+
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Apache's <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> already handles trailing
+      slash redirects for real directories when
+      <code class="directive"><a href="../mod/mod_dir.html#directoryslash">DirectorySlash</a></code> is enabled
+      (the default). You only need a <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rule
+      if you want to enforce trailing slash behavior for URLs that do
+      not correspond to actual directories on disk, or if you want to
+      remove trailing slashes.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="www-resolve" id="www-resolve">Canonical www/non-www Hostname</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You want to force all requests to use either
+      <code>www.example.com</code> or <code>example.com</code>,
+      not both. This ensures search engines treat them as one site
+      and prevents cookie scope issues.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>The best approach does not use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> at
+      all. Place a <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>
+      in the virtual host for the non-canonical hostname:</p>
+
+<pre class="prettyprint lang-config"># Redirect example.com -&gt; www.example.com
+&lt;VirtualHost *:80 *:443&gt;
+    ServerName example.com
+    Redirect permanent "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;</pre>
+
+
+      <p>If you only have <code>.htaccess</code> access:</p>
+
+<pre class="prettyprint lang-config"># Add www
+RewriteEngine On
+RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
+RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]</pre>
+
+
+<pre class="prettyprint lang-config"># Remove www
+RewriteEngine On
+RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
+RewriteRule "^(.*)" "https://%1$1" [R=301,L]</pre>
+
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
+      recipe above, which covers the general case. This recipe focuses
+      specifically on the www/non-www choice, which is the most common
+      hostname canonicalization need.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="front-controller" id="front-controller">Front Controller / Application Routing</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Most modern web frameworks (PHP, Python, Ruby, etc.) use a
+      single entry point - often called a "front controller" - that
+      handles all requests. URLs like <code>/products/widget</code>
+      are routed to <code>index.php</code> (or equivalent), which
+      parses the URL internally.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+
+    <div class="note">For this use case, the
+    <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive is
+    almost always the better choice. See the
+    <a href="#fallback-resource">Fallback Resource</a> recipe above.</div>
+
+      <p>If you need <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> (for example, to add
+      additional conditions), the standard pattern is:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [L]</pre>
+
+
+      <p>The <code>!-f</code> and <code>!-d</code> conditions skip the
+      rule for requests that map to an existing file or directory, so
+      static assets (images, CSS, JavaScript) are still served
+      directly.</p>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>In <code>.htaccess</code> context, consider using
+      <code>[END]</code> instead of <code>[L]</code> to avoid
+      reprocessing loops. See the
+      <a href="htaccess.html#loops">.htaccess looping</a> discussion
+      for details.</p>
     </dd>
   </dl>
 
@@ -161,6 +376,15 @@ RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"</pre>
 <pre class="prettyprint lang-config">#With Redirect
 Redirect "/docs/" "http://new.example.com/docs/"</pre>
 
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>For simple redirections to another server, the
+      <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> or
+      <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directives
+      are preferred, as they are simpler and more efficient.</p>
     </dd>
   </dl>
 
@@ -306,6 +530,18 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>If you have access to the server configuration, a
+      <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> in a dedicated
+      <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+      is the cleanest approach. Use the
+      <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive
+      as a middle ground, and <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> only if you
+      are limited to <code>.htaccess</code>.</p>
+    </dd>
         </dd>
       </dl>
 
@@ -348,6 +584,15 @@ RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
 #   etc.
 RewriteRule "^"     "-"                                          [PT]</pre>
 
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>This is useful during migrations when content is being moved
+      between directories. For permanent setups, consider using
+      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> or symbolic links
+      instead.</p>
     </dd>
   </dl>
 
@@ -481,6 +726,15 @@ file, as well as in a &lt;Directory&gt; block.</p>
 
 </dd>
 
+<dt>Discussion:</dt>
+
+<dd>
+<p>The <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive
+is almost always the better choice for this use case. See the
+<a href="avoid.html#fallback-resource">When not to use mod_rewrite</a>
+document for a simpler one-line alternative.</p>
+</dd>
+
 </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -539,6 +793,15 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 
 </dd>
 
+<dt>Discussion:</dt>
+
+<dd>
+<p>See also the <a href="flags.html#flag_qsa">[QSA]</a> and
+<a href="flags.html#flag_qsd">[QSD]</a> flags, which control whether
+the original query string is appended to or discarded from the
+substitution.</p>
+</dd>
+
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -568,6 +831,15 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 <pre class="prettyprint lang-config">RewriteEngine on
 RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</strong>/$1/public_html$3"</pre>
 
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>This technique is primarily useful for large hosting
+      environments with thousands of users. For most sites,
+      <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> handles tilde-based user URLs
+      without requiring <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
     </dd>
   </dl>
 
@@ -643,6 +915,15 @@ RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
       content dynamically, and customizing it based on the time of day.</div>
 
     </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Serving dynamic content through your application is almost
+      always a better approach. Caching by browsers, proxies, and
+      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> makes time-based rewriting unreliable
+      in practice.</p>
+    </dd>
   </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -684,6 +965,16 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
     static form. if documents need to be refreshed, they can be deleted
     from the document directory, and they will then be regenerated the
     next time they are requested.</p>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>Modern approaches such as <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, CDN
+      caching layers, or application-level caching provide more robust
+      and controllable solutions for serving pre-generated static
+      content. The <code>-U</code> subrequest test used here also
+      carries a performance cost on every request.</p>
     </dd>
   </dl>
 

@@ -196,14 +196,30 @@ as any other requests starting with the <code>/private</code> string.</p>
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 directive need not have anything to do with the filesystem.
 For example, the following example shows how to map a particular
-URL to an internal Apache HTTP Server handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
-No file called <code>server-status</code> needs to exist in the
+URL to an internal handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
+No file called <code>server-status</code> needs to exist on the
 filesystem.</p>
 
-<pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
+<pre class="prettyprint lang-config"># Map a URL to a built-in handler:
+&lt;Location "/server-status"&gt;
     SetHandler server-status
+&lt;/Location&gt;
+
+# Map a URL path to a reverse proxy backend:
+&lt;Location "/app"&gt;
+    ProxyPass "http://backend.example.com/"
+    ProxyPassReverse "http://backend.example.com/"
+&lt;/Location&gt;
+
+# Deny access to a URL path regardless of what serves it:
+&lt;Location "/private"&gt;
+    Require all denied
 &lt;/Location&gt;</pre>
 
+
+<p>Because <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+operates on URLs rather than filesystem paths, it is the appropriate
+container for proxy configuration and module-provided endpoints.</p>
 
 
 <h3><a name="overlapping-webspace" id="overlapping-webspace">Overlapping Webspace</a></h3>
@@ -444,19 +460,32 @@ are interpreted, it is important to understand how this works.</p>
         but in the order they appear in the configuration files.</li>
         <li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
         (group 1 above) is processed in the order shortest directory
-        component to longest. For example,
+        component to longest (regardless of the order in which they
+        appear in the configuration file). For example,
         <code>&lt;Directory "/var/web/dir"&gt;</code> will be processed before
         <code>&lt;Directory "/var/web/dir/subdir"&gt;</code>.</li>
         <li>If multiple <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> sections apply
         to the same directory they are processed in the configuration file
-        order.</li>
+        order. The same applies when multiple
+        <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>,
+        <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, or
+        <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+        sections match the same resource.</li>
         <li>Configurations included via the <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive will be treated as if
         they were inside the including file at the location of the
         <code class="directive"><a href="./mod/core.html#include">Include</a></code> directive.</li>
         <li>Sections inside <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> sections
         are applied <em>after</em> the corresponding sections outside
         the virtual host definition. This allows virtual hosts to
-        override the main server configuration.</li>
+        override the main server configuration.  Note that unlike the
+        other section types, only one
+        <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+        is selected per request — directives from multiple matching
+        vhosts are never merged.  See
+        <a href="vhosts/details.html">virtual host matching</a>
+        for details on how a vhost is selected.</li>
         <li>When the request is served by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, the
         <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
         container takes the place of the <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> container in the processing
@@ -469,6 +498,21 @@ are interpreted, it is important to understand how this works.</p>
         used in <code>.htaccess</code>, the enclosed directives in a parent 
         directory will be merged <em>after</em> non-enclosed directives in a 
         subdirectory.</li>
+        <li><div class="warning"><h3>Caution: &lt;Limit&gt; inside
+        &lt;Location&gt; can silently grant access</h3>
+        <p>Using <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code>
+        inside a <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+        section to restrict authorization to specific HTTP methods can have
+        unexpected results.  For methods not listed in the
+        <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code>, the
+        enclosing <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
+        section is treated as having no authorization requirements — which
+        effectively grants access and overrides any
+        <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
+        restrictions that would otherwise apply.  Use
+        <code class="directive"><a href="./mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code>
+        instead, or apply authorization without method restrictions.</p>
+        </div></li>
     </ul>
 
     <div class="note"><h3>Technical Note</h3>

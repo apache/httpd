@@ -473,7 +473,10 @@ Require group GroupName</pre>
         access is granted.  See
         <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
         for an example of how they may be used to express complex
-        authorization logic.</p>
+        authorization logic.  Each authorization provider returns one
+        of three possible results; see
+        <a href="../mod/mod_authz_core.html#authzresults">Authorization Result States</a>
+        for details on how containers interpret these results.</p>
 
         <p>By default all
         <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>

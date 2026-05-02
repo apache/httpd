@@ -29,8 +29,6 @@ serveur HTTP Apache</h1>
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit les modifications majeures apportées par
   la version 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
@@ -117,11 +115,11 @@ serveur HTTP Apache</h1>
     <dl>      
 
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
-      <dd>Mise à disposition du protocole FastCGI pour
+      <dd>Support des serveur FastCGI d'arrière-plan pour
       <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code></dt>
-      <dd>Mise à disposition du protocole SCGI pour
+      <dd>Support des serveurs SCGI d'arrière-plan pour
       <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_express.html">mod_proxy_express</a></code></dt>
@@ -211,7 +209,8 @@ serveur HTTP Apache</h1>
       <dd>Permet aux applications d'autorisation FastCGI d'authentifier
       et/ou autoriser les clients.</dd>
 
-      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible à partir de la version 2.4.17)</dt>
+      <dt><code class="module"><a href="./mod/mod_http2.html">mod_http2</a></code> (disponible à partir de la
+      version 2.4.17)</dt>
       <dd>Support de la couche transport HTTP/2.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy_http2.html">mod_proxy_http2</a></code> (disponible à partir de la version 2.4.19)</dt>

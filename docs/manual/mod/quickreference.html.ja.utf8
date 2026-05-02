@@ -129,7 +129,7 @@ proxy</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var> 
 [<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4"><code>.htaccess</code> で許可されるディレクティブの種類</td></tr>
 <tr class="odd"><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Individual directives that are allowed in
+[<var>directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">パスワードの検査無しでアクセスを許可する userID を指定する
 </td></tr>
