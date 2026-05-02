@@ -288,6 +288,26 @@ being moved to <module>mod_filter</module> in version 2.3.7</compatibility>
 &lt;/Location&gt;
     </highlight>
 
+    <p>Note that <directive>AddOutputFilterByType</directive> directives
+    within the same context are additive, but a definition in a more
+    specific context (such as a
+    <directive type="section" module="core">VirtualHost</directive>,
+    <directive type="section" module="core">Directory</directive>, or
+    <directive type="section" module="core">Location</directive> section)
+    will replace — not add to — any definitions inherited from a
+    broader context. This is the same behavior as
+    <directive module="mod_mime">AddOutputFilter</directive>.</p>
+
+    <highlight language="config">
+# Server context: compress text/html and text/plain
+AddOutputFilterByType DEFLATE text/html text/plain
+&lt;VirtualHost *:80&gt;
+    # Replaces the server-level definition for this vhost;
+    # only text/css will be compressed here:
+    AddOutputFilterByType DEFLATE text/css
+&lt;/VirtualHost&gt;
+    </highlight>
+
 </usage>
 
 <seealso><directive module="mod_mime">AddOutputFilter</directive></seealso>
