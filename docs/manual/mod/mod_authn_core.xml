@@ -139,8 +139,12 @@ authentication</description>
      AuthName "Top Secret"
    </highlight>
 
-    <p>The string provided for the <code>AuthName</code> is what will
-    appear in the password dialog provided by most browsers.</p>
+    <p>The string provided for the <code>AuthName</code> was
+    historically displayed in the password dialog provided by
+    browsers. Most modern browsers no longer show the realm
+    string, as it could be abused for phishing. The directive
+    is still required for HTTP authentication to function, and
+    the realm value is still used to scope credentials.</p>
 
     <p>From 2.4.55, <a href="../expr.html">expression syntax</a> can be
     used inside the directive to produce the name dynamically.</p>
