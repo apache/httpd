@@ -37,11 +37,8 @@ but this doc should help the beginner get their feet wet.
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <!-- <seealso><a href="intro.html">mod_rewrite introduction</a></seealso> -->
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
-<seealso><a href="access.html">Controlling access</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-<seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Advanced techniques</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
@@ -73,11 +70,11 @@ it will tell you exactly how each rule is processed.</p>
 
 <section id="regex"><title>Regular Expressions</title>
 
-<p><module>mod_rewrite</module> uses the <a href="http://pcre.org/">Perl Compatible
+<p><module>mod_rewrite</module> uses the <a href="https://www.pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
+recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre">Perl regular
 expression man page</a>, and <a
 href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
 Regular Expressions, by Jeffrey Friedl</a> (the third edition is from

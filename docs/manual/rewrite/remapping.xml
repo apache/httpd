@@ -33,20 +33,12 @@ how you can use <module>mod_rewrite</module> to redirect and remap
 request. This includes many examples of common uses of <module>mod_rewrite</module>,
 including detailed descriptions of how each works.</p>
 
-<note type="warning">Note that many of these examples won't work unchanged in your
-particular server configuration, so it's important that you understand
-them, rather than merely cutting and pasting the examples into your
-configuration.</note>
-
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 <!--<seealso><a href="remapping.html">Redirection and remapping</a></seealso>-->
-<seealso><a href="access.html">Controlling access</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-<seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Advanced techniques</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 <section id="old-to-new">
