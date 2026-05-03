@@ -551,7 +551,6 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
       as a middle ground, and <module>mod_rewrite</module> only if you
       are limited to <code>.htaccess</code>.</p>
     </dd>
-        </dd>
       </dl>
 
 </section>
