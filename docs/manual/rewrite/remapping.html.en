@@ -531,6 +531,8 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
 
+    </dd>
+    
     <dt>Discussion:</dt>
 
     <dd>
@@ -542,8 +544,9 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
       as a middle ground, and <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> only if you
       are limited to <code>.htaccess</code>.</p>
     </dd>
-        </dd>
-      </dl>
+
+    </dl>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

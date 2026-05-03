@@ -540,6 +540,8 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
     file, or in a <code>.htaccess</code> file placed in the <directive
     module="core">DocumentRoot</directive> of the server.</p>
 
+    </dd>
+    
     <dt>Discussion:</dt>
 
     <dd>
@@ -551,8 +553,9 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
       as a middle ground, and <module>mod_rewrite</module> only if you
       are limited to <code>.htaccess</code>.</p>
     </dd>
-        </dd>
-      </dl>
+
+    </dl>
+
 
 </section>
 
