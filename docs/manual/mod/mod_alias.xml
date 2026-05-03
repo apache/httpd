@@ -212,6 +212,18 @@ Alias "/image" "/ftp/pub/image"
 &lt;/Location&gt;
     </highlight>
 
+    <note><title>Context restrictions</title>
+    <p>The two-argument form of <directive>Alias</directive> can only
+    be used in server config or <directive module="core"
+    type="section">VirtualHost</directive>. The one-argument form,
+    where the URL path is taken from the enclosing section, can be
+    used in <directive module="core" type="section">Location</directive>,
+    <directive module="mod_proxy" type="section">Proxy</directive>,
+    and <directive module="core" type="section">If</directive>, but
+    not in <directive module="core" type="section">Directory</directive>
+    or <directive module="core" type="section">Files</directive>.</p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
