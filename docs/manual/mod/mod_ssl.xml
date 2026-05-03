@@ -2961,7 +2961,10 @@ stapling related OCSP queries (such as responses with an overall status
 other than "successful", responses with a certificate status other than
 "good", expired responses etc.) on to the client.
 If set to <code>off</code>, only responses indicating a certificate status
-of "good" will be included in the TLS handshake.</p>
+of "good" or "revoked" will be included in the TLS handshake.
+Responses with a "revoked" status are always included regardless of
+this setting, because suppressing a known revocation would be a
+security risk.</p>
 </usage>
 </directivesynopsis>
 
