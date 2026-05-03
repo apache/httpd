@@ -222,6 +222,20 @@ ExpiresByType text/html M604800</pre>
     an <a href="#AltSyn">alternate syntax</a>, described earlier in
     this document.</p>
 
+    <p>The MIME type can use a wildcard for the sub-type, for
+    example <code>image/*</code>. This will match any type under
+    that major type. When a request's content type does not match
+    a specific <code class="directive">ExpiresByType</code> entry, a
+    wildcard entry for the major type is checked before falling
+    back to the <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>
+
+    <div class="example"><h3>Example with wildcard:</h3><pre class="prettyprint lang-config">ExpiresActive On
+# All images expire after 1 month
+ExpiresByType image/* "access plus 1 month"
+# Override specifically for GIF
+ExpiresByType image/gif "access plus 1 week"</pre>
+</div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ExpiresDefault" id="ExpiresDefault">ExpiresDefault</a> <a name="expiresdefault" id="expiresdefault">Directive</a> <a title="Permanent link" href="#expiresdefault" class="permalink">&para;</a></h2>

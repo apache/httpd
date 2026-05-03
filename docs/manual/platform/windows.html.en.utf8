@@ -496,7 +496,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     or <code>-n</code>, httpd will use the file name compiled into the
     server, such as <code>conf\httpd.conf</code>. This built-in path
     is relative to the installation directory. You can verify the compiled
-    file name from a value labelled as <code>SERVER_CONFIG_FILE</code> when
+    file name from a value labeled as <code>SERVER_CONFIG_FILE</code> when
     invoking httpd with the <code>-V</code> switch, like this:</p>
 
     <div class="example"><p><code>
@@ -518,7 +518,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
 
       <li>The server root compiled into the server. This is <code>
       /apache</code> by default, you can verify it by using <code>
-      httpd.exe -V</code> and looking for a value labelled as
+      httpd.exe -V</code> and looking for a value labeled as
       <code>HTTPD_ROOT</code>.</li>
     </ol>
 

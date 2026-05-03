@@ -205,7 +205,10 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 <tr class="odd"><td><code>REQUEST_SCHEME</code></td>
         <td>The scheme part of the request's URI</td></tr>
 <tr><td><code>REQUEST_URI</code></td>
-        <td>The path part of the request's URI</td></tr>
+        <td>The path part of the request's URI, excluding the query
+            string.  Note that this differs from the CGI environment
+            variable of the same name, which includes the query string.
+            </td></tr>
 <tr class="odd"><td><code>DOCUMENT_URI</code></td>
         <td>Same as <code>REQUEST_URI</code></td></tr>
 <tr><td><code>REQUEST_FILENAME</code></td>

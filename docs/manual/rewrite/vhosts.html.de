@@ -32,6 +32,9 @@
 <a href="../tr/rewrite/vhosts.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/vhosts.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
+            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
+            die neuesten &#196;nderungen.</div>
 
 
 <p>Dieses Dokument erg&#228;nzt die <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>

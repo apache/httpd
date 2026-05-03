@@ -373,6 +373,12 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   <code>REQUEST_URI</code> 
                   has already been %-decoded, to re-encode it pass it through
                   the "escape" <a href="#mapfunc">mapping-function</a>.
+                  Note that this server variable differs from the CGI
+                  environment variable of the same name: in a CGI context,
+                  <code>REQUEST_URI</code> contains the full original URI
+                  from the request line, including the query string. See
+                  the <code class="directive"><a href="../mod/core.html#cgivar">CGIVar</a></code>
+                  directive for details.
                   </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
@@ -1216,25 +1222,22 @@ cannot use <code>$N</code> in the substitution string!
         <dt>file-system path</dt>
 
         <dd>Designates the location on the file-system of the resource
-        to be delivered to the client.  Substitutions are only
-        treated as a file-system path when the rule is configured in
-        server (virtualhost) context and the first component of the
-        path in the substitution exists in the file-system</dd>
+        to be delivered to the client. A substitution beginning with
+        <code>/</code> is treated as a file-system path only in
+        server or virtual host context, and only when the first
+        component of the path exists in the file-system. In
+        <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+        this guessing does not occur.</dd>
 
         <dt>URL-path</dt>
 
         <dd>A <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-relative path to the
-        resource to be served. Note that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-        tries to guess whether you have specified a file-system path
-        or a URL-path by checking to see if the first segment of the
-        path exists at the root of the file-system. For example, if
-        you specify a <em>Substitution</em> string of
-        <code>/www/file.html</code>, then this will be treated as a
-        URL-path <em>unless</em> a directory named <code>www</code>
-        exists at the root of your file-system (or, in the case of
-        per-directory rewrites, relative to
-        your document root), in which case it will
-        be treated as a file-system path. If you wish other
+        resource to be served. In server or virtual host context,
+        if the first segment of the path exists at the root of the
+        file-system, the substitution is treated as a file-system
+        path instead.  For example, <code>/www/file.html</code> is
+        a URL-path unless a directory named <code>www</code> exists
+        at the root of the file-system. If you wish other
         URL-mapping directives (such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>) to be applied to the
         resulting URL-path, use the <code>[PT]</code> flag as
         described below.</dd>
@@ -1282,7 +1285,13 @@ cannot use <code>$N</code> in the substitution string!
       (<strong>N</strong>=0..9). <code>$0</code> refers to the
       entire string matched by the <em>Pattern</em>, while
       <code>$1</code>..<code>$9</code> refer to the corresponding
-      captured groups from the matched <em>Pattern</em>. The server-variables are the same
+      captured groups from the matched <em>Pattern</em>.
+      Similarly, back-references
+      <code>%0</code>..<code>%9</code> refer to the most recently
+      matched
+      <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
+      <em>CondPattern</em>: <code>%0</code> is the entire match and
+      <code>%1</code>..<code>%9</code> are the captured groups. The server-variables are the same
       as for the <em>TestString</em> of a
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
       directive. The mapping-functions come from the
@@ -1500,11 +1509,11 @@ directive.</p>
 </div>
 
 
-     <p>Here are all possible substitution combinations and their
+     <p>Here are the possible combinations of substitution string
+      form, context, and the [R] and [P] flags, and their
       meanings:</p>
 
-      <p><strong>Inside per-server configuration
-      (<code>httpd.conf</code>)<br />
+      <p><strong>Outside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration<br />
        for request ``<code>GET
       /somepath/pathinfo</code>'':</strong><br />
       </p>
@@ -1563,9 +1572,9 @@ directive.</p>
 </tr>
 </table>
 
-      <p><strong>Inside per-directory configuration for
+      <p><strong>Inside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration for
       <code>/somepath</code><br />
-       (<code>/physical/path/to/somepath/.htaccess</code>, with
+       (e.g., <code>.htaccess</code> or <code>&lt;Directory&gt;</code>, with
       <code>RewriteBase "/somepath"</code>)<br />
        for request ``<code>GET
       /somepath/localpath/pathinfo</code>'':</strong><br />

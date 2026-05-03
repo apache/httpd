@@ -152,7 +152,7 @@ JWT token</td></tr>
     <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
     <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
     as the third parameter. The contents of the bearer token is still visible, and so
-    the channel must still be protected from evesdropping through TLS.</p>
+    the channel must still be protected from eavesdropping through TLS.</p>
 
     <div class="example"><h3>Verification Example</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
   AuthtJwtClaim set sub %{REMOTE_USER}
@@ -195,7 +195,7 @@ JWT token</td></tr>
     <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
     <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
     as the third parameter. The contents of the bearer token is still visible, and so
-    the channel must still be protected from evesdropping through TLS.</p>
+    the channel must still be protected from eavesdropping through TLS.</p>
 
     <p>If the signature is verified, and if present, the <var>sub</var> claim is
     assigned to REMOTE_USER.</p>

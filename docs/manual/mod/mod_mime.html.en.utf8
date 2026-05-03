@@ -166,6 +166,29 @@
 &lt;/FilesMatch&gt;</pre>
 </div>
 
+    <div class="note"><h3>Files with no extension</h3>
+    <p>Files with no extension (such as <code>Makefile</code>) cannot
+    be matched by <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>'s extension-based directives.
+    To set the content type or charset for such files, use a
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> or
+    <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
+    section instead:</p>
+
+    <pre class="prettyprint lang-config"># For a specific file:
+&lt;Files "Makefile"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+&lt;/Files&gt;
+
+# For all files with no extension:
+&lt;FilesMatch "^[^.]+$"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+    AddDefaultCharset UTF-8
+&lt;/FilesMatch&gt;</pre>
+
+    </div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contentencoding" id="contentencoding">Content encoding</a> <a title="Permanent link" href="#contentencoding" class="permalink">&para;</a></h2>

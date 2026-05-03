@@ -64,7 +64,7 @@ headers</td></tr>
     limited in scope by enclosing them in <a href="../sections.html">configuration sections</a>.</p>
 
     <p>Order of processing is important and is affected both by the
-    order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
+    order in the configuration file and by placement in <a href="../sections.html#merging">configuration sections</a>. These
     two directives have a different effect if reversed:</p>
 
     <pre class="prettyprint lang-config">RequestHeader append MirrorID "mirror 12"

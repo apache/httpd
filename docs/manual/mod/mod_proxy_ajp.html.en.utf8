@@ -507,7 +507,7 @@ attribute_value := (string)</pre></div>
     <code>ssl_key_size</code> refer to the
     corresponding pieces of HTTP and HTTPS.</p>
     <p>The <code>jvm_route</code>, is used to support sticky
-    sessions -- associating a user's sesson with a particular Tomcat instance
+    sessions -- associating a user's session with a particular Tomcat instance
     in the presence of multiple, load-balancing servers.</p>
     <p>The <code>secret</code> is sent when the <code>secret=secret_keyword</code>
     parameter is used in

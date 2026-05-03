@@ -970,7 +970,12 @@ indexing</td></tr>
      settings (which may have been inherited from an upper-level
      directory). However, whenever an unprefixed keyword is processed, it
      clears all inherited options and any incremental settings encountered
-     so far. Consider the following example:</p>
+     so far, except for options that take a value
+     (<code>Charset</code>, <code>Type</code>,
+     <code>DescriptionWidth</code>, <code>NameWidth</code>,
+     <code>IconWidth</code>, <code>IconHeight</code>),
+     which are inherited independently.
+     Consider the following example:</p>
 
      <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize</pre>

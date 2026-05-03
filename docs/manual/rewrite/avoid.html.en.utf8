@@ -63,12 +63,14 @@ files to work with, you may need to resort to
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">URL Aliasing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Simple Proxying</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenv">Environment Variable Testing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallback-resource">Front Controller / Resource Routing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ifexpr">Conditional Configuration with Expressions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image Hotlinking</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denying Hosts in a Reject List</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Virtual Hosting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Load Balancing</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirect" id="redirect">Simple Redirection</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
@@ -228,6 +230,76 @@ header, response header, or environment variable, replacing
 documentation</a> for a overview of what types of expressions you can
 use in <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> sections,
 and in certain other directives.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="fallback-resource" id="fallback-resource">Front Controller / Resource Routing</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
+
+<p>A very common use of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is to route all
+requests for non-existent resources to a single front controller script
+(e.g. <code>index.php</code>). This is the basis of most modern web
+framework routing.</p>
+
+<p>The typical <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> approach is:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [L]</pre>
+
+
+<p>This can be accomplished far more simply with the
+<code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive:</p>
+
+<pre class="prettyprint lang-config">FallbackResource /index.php</pre>
+
+
+<p><code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> does the
+same thing - requests for existing files and directories are served
+normally, while everything else is routed to the specified resource -
+but without the overhead and complexity of the rewrite engine. It works
+in both server configuration and <code>.htaccess</code> context.</p>
+
+<p>To disable a <code>FallbackResource</code> set in a parent
+directory:</p>
+
+<pre class="prettyprint lang-config">FallbackResource disabled</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ifexpr" id="ifexpr">Conditional Configuration with Expressions</a> <a title="Permanent link" href="#ifexpr" class="permalink">&para;</a></h2>
+
+<p>Many uses of <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+can be replaced by the
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive, which
+supports a rich <a href="../expr.html">expression syntax</a> and
+integrates cleanly with other Apache directives.</p>
+
+<p>Redirect based on a query string parameter:</p>
+
+<pre class="prettyprint lang-config">&lt;If "%{QUERY_STRING} =~ /lang=fr/"&gt;
+    Redirect "/welcome" "/bienvenue"
+&lt;/If&gt;</pre>
+
+
+<p>Restrict access by request method:</p>
+
+<pre class="prettyprint lang-config">&lt;If "%{REQUEST_METHOD} IN {'DELETE', 'PUT', 'PATCH'}"&gt;
+    Require ip 10.0.0.0/8
+&lt;/If&gt;</pre>
+
+
+<p>Block requests missing a Host header (HTTP/1.0 clients):</p>
+
+<pre class="prettyprint lang-config">&lt;If "-z req('Host')"&gt;
+    Require all denied
+&lt;/If&gt;</pre>
+
+
+<p>See the <a href="../expr.html">expression evaluation
+documentation</a> for the full syntax available in
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> blocks.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

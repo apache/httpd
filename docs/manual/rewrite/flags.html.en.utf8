@@ -66,7 +66,7 @@ providing detailed explanations and examples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -171,7 +171,7 @@ characters rejected when they are copied into the query string unencoded.
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -185,7 +185,7 @@ escaped.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
@@ -283,7 +283,6 @@ minutes (24 hours) and is returned for all URIs.</p>
 <h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
-<p>This flag is available in version 2.2.12 and later.</p>
 <p>In per-directory context, the URI each <code class="directive">RewriteRule</code>
 compares against is the concatenation of the current values of the URI
 and PATH_INFO.</p>
@@ -389,10 +388,30 @@ variables from the previous round of rewriting are prefixed with
 <h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
-processing from occurring in per-directory (htaccess) context.</p>
+processing from occurring in
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. This
+makes it the preferred flag for most per-directory rules.</p>
+
+<p>In server or virtualhost context, [END] and [L] behave identically.
+The difference matters in per-directory context, where [L] stops the
+current pass but the ruleset is re-applied on the rewritten URL. This
+can cause infinite loops. [END] prevents all further rewrite processing,
+breaking the cycle.</p>
+
+<pre class="prettyprint lang-config"># In .htaccess: route all requests to a front controller
+# [L] would cause a loop here; [END] does not
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [END]</pre>
+
 
 <p>This does not apply to new requests resulting from external
 redirects.</p>
+
+<p>See the <a href="htaccess.html#loops">.htaccess looping</a>
+discussion for a detailed explanation of why [L] behaves differently
+in per-directory context, and when [END] is the right choice.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
@@ -654,6 +673,16 @@ will be used automatically.</p>
 <p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order
 to use this flag.</p>
 
+<div class="warning"><h3>Security warning</h3>
+<p>Take care when constructing the target URL of the rule, considering
+the security impact of allowing the client influence over the set of
+URLs to which your server will act as a proxy. If any part of the
+target URL is derived from user input (backreferences, query strings,
+etc.), an attacker may be able to cause your server to make requests
+to arbitrary internal or external hosts. This is known as a
+Server-Side Request Forgery (SSRF) vulnerability.</p>
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
@@ -751,6 +780,20 @@ the two components using the last (right-most) question mark.  </p>
 This is useful when mapping to files that have literal question marks in 
 their filename.  If no query string is used in the substitution, 
 a question mark can be appended to it in combination with this flag.  </p>
+
+<p>For example, if a legacy application expects a query string that
+itself contains a question mark:</p>
+
+<pre class="prettyprint lang-config"># Map /lookup/foo?bar to /app?type=foo?bar
+# Without [QSL], the first ? in the substitution would split the
+# path, producing /app with query string type=foo?bar incorrectly.
+# With [QSL], the LAST ? is used as the delimiter.
+RewriteRule "^/lookup/(.*)" "/app?type=$1" [QSL,PT]</pre>
+
+
+<p>Without [QSL], the substitution <code>/app?type=foo?bar</code>
+would be split at the first <code>?</code>, losing the literal question
+mark in the value.</p>
 
 <p> This flag is available in version 2.4.19 and later.</p>
 
@@ -879,7 +922,7 @@ The <code>L</code> flag can be useful in this context to end the
 <h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p> Setting this flag is required to allow a rewrite to continue If the
     HTTP request being written has an encoded question mark, '%3f', and the
-    rewritten result has a '?' in the substiution.  This protects from a malicious
+    rewritten result has a '?' in the substitution.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

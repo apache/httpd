@@ -47,7 +47,8 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite Conditions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -79,11 +80,11 @@ it will tell you exactly how each rule is processed.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="http://pcre.org/">Perl Compatible
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
+recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre">Perl regular
 expression man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
 Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
 2006, but regular expression syntax is essentially unchanged, and this
@@ -376,6 +377,82 @@ is called <a class="glossarylink" href="../glossary.html#perdirectory" title="se
 prefix of the directory containing the <code>.htaccess</code> file is
 stripped before matching in
 the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. In addition, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> should be used to assure the request is properly mapped.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a powerful URL manipulation tool, and
+with that power comes the potential for security mistakes. This section
+highlights the most common security pitfalls to watch for when writing
+rewrite rules.</p>
+
+<h3><a name="security-redirect" id="security-redirect">Open Redirects</a></h3>
+
+<p>If a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+constructs a redirect URL using unvalidated user input, an attacker
+can craft a link that redirects visitors to a malicious site while
+appearing to originate from your domain. This is known as an
+<em>open redirect</em> vulnerability.</p>
+
+<p>For example, this rule is dangerous:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - allows open redirect
+RewriteRule "^/redirect" "%{QUERY_STRING}" [R,L]</pre>
+
+
+<p>An attacker could use
+<code>https://yoursite.com/redirect?https://evil.com</code> to redirect
+users to a malicious site. Always validate or constrain redirect
+targets. If the destination must be on your own site, ensure the
+substitution begins with <code>/</code> (a relative path) rather than
+allowing a full URL from user input.</p>
+
+
+
+<h3><a name="security-ssrf" id="security-ssrf">Server-Side Request Forgery (SSRF)</a></h3>
+
+<p>When using the <a href="flags.html#flag_p">[P] (proxy) flag</a>,
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> causes the server to make an HTTP request
+to the substitution URL on behalf of the client. If any part of that
+URL is derived from user input - backreferences, query strings, or
+headers - an attacker may be able to cause your server to make requests
+to arbitrary internal services or external hosts.</p>
+
+<p>For example:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - user controls the proxy target
+RewriteCond "%{QUERY_STRING}" "target=(.+)"
+RewriteRule "^/fetch" "http://%1" [P]</pre>
+
+
+<p>An attacker could use this to probe internal network services that
+are not otherwise accessible from the internet. Always use a fixed
+hostname in proxy targets, and limit backreferences to the path
+component only.</p>
+
+
+
+<h3><a name="security-path" id="security-path">Path Traversal</a></h3>
+
+<p>Rewrite rules that map user-supplied path components directly to
+the filesystem can allow path traversal attacks if the input is not
+properly constrained. For example:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - allows path traversal
+RewriteRule "^/files/(.+)" "/var/data/$1" [L]</pre>
+
+
+<p>A request for <code>/files/../../etc/passwd</code> could potentially
+access files outside the intended directory. Use restrictive patterns
+in your <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> (for
+example, <code>[a-zA-Z0-9_-]+</code> instead of <code>.+</code>), and
+rely on Apache's built-in protections
+(<code class="directive"><a href="../mod/core.html#options">Options</a></code> and
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+restrictions) as defense in depth.</p>
+
+
 
 </div></div>
 <div class="bottomlang">

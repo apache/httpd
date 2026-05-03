@@ -1235,6 +1235,15 @@ ProxyPass "/mirror/foo"   "http://backend.example.com"</pre>
     by configuration or MPM design.</p>
     </div>
 
+    <div class="note"><h3>Connection pooling with prefork MPM</h3>
+    <p>With the prefork MPM, connections to backends are not pooled
+    (each child process handles one connection at a time). The
+    <code>acquire</code> and <code>ttl</code> parameters, which
+    control connection pool behavior, have no effect when using
+    prefork. The <code>min</code>, <code>smax</code>, and
+    <code>hmax</code> pool sizing parameters are also ignored.</p>
+    </div>
+
     <p>Use the <code>ttl</code> parameter to set an optional
     time to live; connections which have been unused for at least
     <code>ttl</code> seconds will be closed.  <code>ttl</code> can be used
@@ -1844,7 +1853,7 @@ ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"</pre>
       behavior regarding reuse/keepalive of backend connections (which were
       never reused before for these URLs), the parameter <var>enablereuse</var>
       (or <var>disablereuse</var>) default to <code>off</code> (resp. <code>on</code>)
-      in this case. Setting <code>enablereuse=on</code> explicitely allows to
+      in this case. Setting <code>enablereuse=on</code> explicitly allows to
       reuse connections <strong>unless</strong> some backreference(s) belong in
       the <code>authority</code> part (hostname and/or port) of the <var>url</var>
       (this condition is enforced since Apache HTTP Server 2.4.55, and produces

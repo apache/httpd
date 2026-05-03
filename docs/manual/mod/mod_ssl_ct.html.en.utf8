@@ -56,7 +56,7 @@ this documentation:</p>
   not been tampered with.</dd>
 
   <dt>Signed Certificate Timestamp (SCT)</dt>
-  <dd>This is an acknowledgement from a log that it has accepted a valid
+  <dd>This is an acknowledgment from a log that it has accepted a valid
   certificate.  It is signed with the log's public key.  One or more SCTs
   is passed to clients during the handshake, either in the ServerHello
   (TLS extension), certificate extension, or in a stapled OCSP response.</dd>

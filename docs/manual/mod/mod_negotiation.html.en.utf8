@@ -107,7 +107,9 @@ Negotiation</a></li>
 
       <dd>
         The <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME media type</a> of
-        the document, with optional parameters. Parameters are
+        the document, with optional parameters. Each variant should
+        include a <code>Content-Type</code> header; negotiation will
+        not work correctly for variants that lack one. Parameters are
         separated from the media type and from one another by a
         semi-colon, with a syntax of <code>name=value</code>. Common
         parameters include:
@@ -241,7 +243,7 @@ cached by proxy servers</td></tr>
 </table>
     <p>If set, this directive allows content-negotiated documents
     to be cached by proxy servers. This could mean that clients
-    behind those proxys could retrieve versions of the documents
+    behind those proxies could retrieve versions of the documents
     that are not the best match for their abilities, but it will
     make caching more efficient.</p>
 

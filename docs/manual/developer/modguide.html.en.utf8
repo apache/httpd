@@ -105,7 +105,8 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
     create_svr_conf, /* Per-server configuration handler */
     merge_svr_conf,  /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -198,7 +199,8 @@ definition will look like this:</p>
     NULL,
     NULL,
     NULL,
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -795,7 +797,8 @@ AP_DECLARE_MODULE(example) =
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     NULL,            /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -832,7 +835,8 @@ reference to the configuration directives we want to register with the server:
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -851,7 +855,7 @@ will add a structure with three directives and a NULL at the end:
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };</pre>
 
 
@@ -998,7 +1002,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 /*
  ==============================================================================
@@ -1040,7 +1044,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -1198,7 +1203,8 @@ per-directory creator and merger function reference in our tag:</p>
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -1374,7 +1380,7 @@ static const command_rec    directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, ACCESS_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, ACCESS_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, ACCESS_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 
 /*$1
@@ -1391,7 +1397,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     directives,         /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 
 /*
