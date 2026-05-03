@@ -678,6 +678,13 @@ variables</description>
     which may be different than the original request from the client
     due to internal redirects or subrequests.</dd>
   </dl>
+
+  <note><title>Note</title>
+  <p>The CGI environment variable <code>REQUEST_URI</code> contains the
+      full original URI from the request line, including the query string.
+      This differs from the server variable <code>%{REQUEST_URI}</code>
+      used in <module>mod_rewrite</module> and <a href="../expr.html">
+      ap_expr</a>, which contains only the path component.</p></note>
 </usage>
 </directivesynopsis>
 
