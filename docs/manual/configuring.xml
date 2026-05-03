@@ -82,7 +82,48 @@ Server.</p>
     <p> White space occurring before a directive is ignored, so
     you may indent directives for clarity. Blank lines are also ignored.
     Arguments to directives are separated by whitespace. If an
-    argument contains spaces, you must enclose that argument in quotes.</p>
+    argument contains spaces, you must enclose that argument in
+    quotes.</p>
+
+    <section id="quotes"><title>Quoting and Escaping</title>
+
+    <p>Either double quotes (<code>"</code>) or single quotes
+    (<code>'</code>) can be used to enclose an argument that contains
+    spaces.  The quotes themselves are not part of the argument.</p>
+
+    <p>Inside a quoted string, only two escape sequences are
+    recognized: <code>\\</code> produces a literal backslash, and
+    <code>\"</code> (or <code>\'</code> if the string is
+    single-quoted) produces a literal quote character without ending
+    the string.  All other backslash sequences are passed through
+    unchanged — for example, <code>\n</code> is the literal two
+    characters <code>\n</code>, not a newline.</p>
+
+    <p>Outside of quotes, backslashes have no special meaning and
+    are treated as literal characters.  The only exception is the
+    line-continuation backslash at the very end of a line, as
+    described above.</p>
+
+    <p>Note that adjacent quoted strings with no whitespace between
+    them are <strong>not</strong> concatenated — they are parsed as
+    separate arguments.  For example:</p>
+
+    <example>
+    # This is TWO arguments, not one:<br />
+    Header set X-Foo "bar""baz"
+    </example>
+
+    <p>Some directives accept arguments that contain sub-expressions
+    with their own syntax, such as
+    <directive module="mod_rewrite">RewriteRule</directive> flags or
+    <a href="expr.html">ap_expr</a> expressions.  In those cases, the
+    config file parser first removes the enclosing quotes and processes
+    backslash escapes as described above, then the directive's own
+    parser processes the result.  When in doubt, using single quotes
+    around an argument that contains backslashes can avoid unexpected
+    double-processing of escape sequences.</p>
+
+    </section>
 
     <p>Directives in the configuration files are case-insensitive,
     but arguments to directives are often case sensitive. </p>
