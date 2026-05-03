@@ -4706,6 +4706,13 @@ ServerName www.example.com
     </example>
     </note>
 
+    <note type="warning">
+    <p>IPv6 addresses in <directive>ServerName</directive> are not
+        currently supported and will produce a startup error, even when
+        enclosed in square brackets. This is a
+        <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=52178"
+        >known issue</a>.</p></note>
+
 </usage>
 
 <seealso><a href="../dns-caveats.html">Issues Regarding DNS and
