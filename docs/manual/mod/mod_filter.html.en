@@ -323,6 +323,19 @@ AddOutputFilterByType DEFLATE text/html text/plain
 &lt;/VirtualHost&gt;</pre>
 
 
+    <div class="warning"><h3>Limitation with user-defined filters</h3>
+    <p><code class="directive">AddOutputFilterByType</code> works with standard
+        compiled-in filters such as <code>DEFLATE</code> and
+        <code>INCLUDES</code>, but does not work with filters that look
+        up their configuration by filter name, such as those defined by
+        <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> or <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>'s
+        <code>LuaOutputFilter</code>. This is because internally the
+        filter name is modified with a <code>BYTYPE:</code> prefix.
+        For user-defined filters, use
+        <code class="directive">FilterDeclare</code> and
+        <code class="directive">FilterProvider</code> with an expression
+        matching on <code>%{CONTENT_TYPE}</code> instead.</p></div>
+
 
 <h3>See also</h3>
 <ul>

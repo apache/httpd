@@ -243,12 +243,7 @@ LDAPOpCacheTTL 600
 
 LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -263,12 +258,7 @@ LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 
 LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -315,12 +305,7 @@ LDAPTrustedGlobalCert CA_CERT7_DB "/certs/cert7.db"
 LDAPTrustedGlobalCert CERT_KEY3_DB "/certs/key3.db"
 # Specify the secmod file if required
 LDAPTrustedGlobalCert CA_SECMOD "/certs/secmod"
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -355,20 +340,15 @@ LDAPTrustedGlobalCert CA_SECMOD "/certs/secmod"
         <pre class="prettyprint lang-config"># Specify two CA certificate files
 LDAPTrustedGlobalCert CA_DER "/certs/cacert1.der"
 LDAPTrustedGlobalCert CA_BASE64 "/certs/cacert2.pem"
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
+&lt;Location "/protected"&gt;
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
     LDAPTrustedClientCert CERT_BASE64 "/certs/cert1.pem"
     LDAPTrustedClientCert KEY_BASE64 "/certs/key1.pem"
     # CA certs respecified due to per-directory client certs
     LDAPTrustedClientCert CA_DER "/certs/cacert1.der"
     LDAPTrustedClientCert CA_BASE64 "/certs/cacert2.pem"
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
     AuthLDAPURL "ldaps://127.0.0.1/dc=example,dc=com?uid?one"
     Require valid-user
 &lt;/Location&gt;</pre>
@@ -455,7 +435,7 @@ LDAPTrustedGlobalCert CA_BASE64 "/certs/cacert2.pem"
 
     <p>Since 2.4.10, new measures are in place to avoid the reference time
     from being inflated by cache hits or slow requests.  First, the reference
-    time is not updated if no backend LDAP conncetions were needed. Second,
+    time is not updated if no backend LDAP connections were needed. Second,
     the reference time uses the time the HTTP request was received instead
     of the time the request is completed.</p>
 

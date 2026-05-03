@@ -87,7 +87,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size in bytes to buffer by the buffer filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BufferSize integer</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>BufferSize 131072</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
 </table>

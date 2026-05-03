@@ -2973,7 +2973,7 @@ on such a connection identifies any other non-default virtual host,
 the compatibility policy is tested.</p>
 
 <p>The <code>strict</code> policy blocks all HTTP requests which are
-identified with a different virtual host to that identifed by SNI.
+identified with a different virtual host to that identified by SNI.
 The <code>insecure</code> policy allows all HTTP requests regardless
 of virtual host identified; such a configuration may be vulnerable to
 <a href="https://httpd.apache.org/security/vulnerabilities_24.html">CVE-2025-23048</a>.
@@ -2989,7 +2989,7 @@ virtual hosts, which are grouped into two categories:</p>
   certificate or key (<code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> etc), cipher or
   protocol restrictions (<code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code> and <code class="directive"><a href="#sslprotocol">SSLProtocol</a></code>)</li>
 
-  <li><strong>client vertification and authentication
+  <li><strong>client verification and authentication
   settings</strong>: directives which affect TLS client certificate
   verification or authentication, such as <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code>, <code class="directive"><a href="#sslverifymode">SSLVerifyMode</a></code>, <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code>, <code class="directive"><a href="#sslsrpverifierfile">SSLSRPVerifierFile</a></code>; any use of <code class="directive"><a href="#sslopensslconfcmd">SSLOpenSSLConfCmd</a></code></li>
 </ul>

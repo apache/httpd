@@ -281,7 +281,7 @@ authentication succeeds but authorization fails
 duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Günlük girdilerini diske yazmadan önce bellekte tamponlar
 </td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
+<tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
 <tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Add an X-Cache-Detail header to the response.</td></tr>
 <tr class="odd"><td><a href="mod_cache_disk.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>

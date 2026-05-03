@@ -189,7 +189,7 @@
     <p>During the build process, adding the keyword "install" to the makefile command line
     will automatically produce a complete distribution package under the subdirectory
     <code>DIST</code>. Install Apache by simply copying the distribution that was produced
-    by the makfiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache for
+    by the makefiles to the root of a NetWare volume (see: <a href="#comp">Compiling Apache for
     NetWare</a> below).</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

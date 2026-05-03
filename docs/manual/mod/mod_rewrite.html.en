@@ -373,6 +373,12 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   <code>REQUEST_URI</code> 
                   has already been %-decoded, to re-encode it pass it through
                   the "escape" <a href="#mapfunc">mapping-function</a>.
+                  Note that this server variable differs from the CGI
+                  environment variable of the same name: in a CGI context,
+                  <code>REQUEST_URI</code> contains the full original URI
+                  from the request line, including the query string. See
+                  the <code class="directive"><a href="../mod/core.html#cgivar">CGIVar</a></code>
+                  directive for details.
                   </dd>
 
                   <dt><code>THE_REQUEST</code></dt>

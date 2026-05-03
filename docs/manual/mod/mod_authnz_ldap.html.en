@@ -1424,7 +1424,7 @@ You can of course use search parameters on each of these.</p>
 
 <dl>
     <dt>NONE</dt>
-        <dd>Establish an unsecure connection on the default LDAP port. This
+        <dd>Establish an insecure connection on the default LDAP port. This
         is the same as <code>ldap://</code> on port 389.</dd>
     <dt>SSL</dt>
         <dd>Establish a secure connection on the default secure LDAP port.

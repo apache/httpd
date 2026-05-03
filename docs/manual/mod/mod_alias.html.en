@@ -94,7 +94,7 @@
 <h2><a name="order" id="order">Order of Processing</a></h2>
 
     <p>Aliases and Redirects occurring in different contexts are processed
-    like other directives according to standard <a href="../sections.html#mergin">merging rules</a>.  But when multiple
+    like other directives according to standard <a href="../sections.html#merging">merging rules</a>.  But when multiple
     Aliases or Redirects occur in the same context (for example, in the
     same <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     section) they are processed in a particular order.</p>
@@ -222,6 +222,17 @@ Alias "/foo" "/gaq"</pre>
     Alias "/var/www/errors.html"
 &lt;/Location&gt;</pre>
 
+
+    <div class="note"><h3>Context restrictions</h3>
+    <p>The two-argument form of <code class="directive">Alias</code> can only
+    be used in server config or <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. The one-argument form,
+    where the URL path is taken from the enclosing section, can be
+    used in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>,
+    <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>,
+    and <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, but
+    not in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
+    </div>
 
 
 </div>

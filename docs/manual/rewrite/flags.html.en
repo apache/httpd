@@ -916,7 +916,7 @@ The <code>L</code> flag can be useful in this context to end the
 <h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a></h2>
     <p> Setting this flag is required to allow a rewrite to continue If the
     HTTP request being written has an encoded question mark, '%3f', and the
-    rewritten result has a '?' in the substiution.  This protects from a malicious
+    rewritten result has a '?' in the substitution.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

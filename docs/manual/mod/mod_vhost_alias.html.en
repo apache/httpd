@@ -86,6 +86,12 @@ VirtualScriptAlias "/never/found/%0/cgi-bin/"</pre>
     format. The interpolation is controlled by specifiers inspired
     by <code>printf</code> which have a number of formats:</p>
 
+    <div class="note"><h3>Note</h3>
+    <p>The interpolated directory must be an absolute path. The
+    special value <code>none</code> can be used to disable the
+    directive.</p>
+    </div>
+
 <table>
 
 <tr><td><code>%%</code></td>
