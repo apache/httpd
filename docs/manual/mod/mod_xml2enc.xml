@@ -140,7 +140,7 @@ xml2EncDefault iso-8859-1
 
 <directivesynopsis>
 <name>xml2EncAlias</name>
-<description>Recognise Aliases for encoding values</description>
+<description>Recognize Aliases for encoding values</description>
 <syntax>xml2EncAlias <var>charset alias [alias ...]</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
