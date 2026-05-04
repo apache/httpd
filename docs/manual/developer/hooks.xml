@@ -174,7 +174,7 @@ static int my_something_doer(request_rec *r, int n)
     </section>
 
     <section id="hooking-add"><title>Add a hook registering function</title>
-      <p>During initialisation, the server will call each modules hook
+      <p>During initialization, the server will call each modules hook
       registering function, which is included in the module
       structure:</p>
 

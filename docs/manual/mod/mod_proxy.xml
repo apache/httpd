@@ -1876,7 +1876,7 @@ through</description>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Default behaviour changed in 2.2.7</compatibility>
+<compatibility>Default behavior changed in 2.2.7</compatibility>
 
 <usage>
     <p>The <directive>ProxyMaxForwards</directive> directive specifies the
