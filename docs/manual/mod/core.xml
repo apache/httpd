@@ -946,11 +946,12 @@ named file-system directory, sub-directories, and their contents.</description>
     the corresponding <directive type="section">Directory</directive> will
     be applied.</p>
 
-   <p><strong>Note that the default access for
+    <note type="warning">
+    <p>The default access for
     <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
-    as</strong></p>
+    as</p>
 
     <highlight language="config">
 &lt;Directory "/"&gt;
@@ -958,10 +959,11 @@ named file-system directory, sub-directories, and their contents.</description>
 &lt;/Directory&gt;
     </highlight>
 
-    <p><strong>and then override this for directories you
+    <p>Then override this for directories you
     <em>want</em> accessible. See the <a
     href="../misc/security_tips.html">Security Tips</a> page for more
-    details.</strong></p>
+    details.</p>
+    </note>
 
     <p>The directory sections occur in the <code>httpd.conf</code> file.
     <directive type="section">Directory</directive> directives
