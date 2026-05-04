@@ -1,5 +1,98 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.68
+
 Changes with Apache 2.4.67
+
+  *) SECURITY: CVE-2026-34059: Apache HTTP Server: mod_proxy_ajp:
+     Heap Over-Read and memory disclosure in  ajp_parse_data()
+     (cve.mitre.org)
+     Buffer Over-read vulnerability in Apache HTTP Server.
+     This issue affects Apache HTTP Server: through 2.4.66.
+     Credits: Elhanan Haenel
+
+  *) SECURITY: CVE-2026-34032: Apache HTTP Server: mod_proxy_ajp:
+     Heap Buffer Over-Read Due to Missing Null-Termination Check
+     (ajp_msg_get_string) (cve.mitre.org)
+     Improper Null Termination, Out-of-bounds Read vulnerability in
+     Apache HTTP Server.
+     This issue affects Apache HTTP Server: through 2.4.66.
+     Credits: Tianshuo Han (<hantianshuo233@gmail.com>)
+
+  *) SECURITY: CVE-2026-33857: Apache HTTP Server: Off-by-one OOB
+     reads in AJP getter functions (cve.mitre.org)
+     Out-of-bounds Read vulnerability in mod_proxy_ajp of
+     Apache HTTP Server.
+     This issue affects Apache HTTP Server: through 2.4.66.
+     Credits: Elhanan Haenel
+
+  *) SECURITY: CVE-2026-33523: Apache HTTP Server: multiple modules:
+     HTTP response splitting forwarding malicious status line
+     (cve.mitre.org)
+     HTTP response splitting vulnerability in multiple Apache HTTP
+     Server modules with untrusted or compromised backend servers.
+     This issue affects Apache HTTP Server: from through 2.4.66.
+     Credits: Haruki Oyama (Waseda University)
+
+  *) SECURITY: CVE-2026-33007: Apache HTTP Server: mod_authn_socache
+     crash (cve.mitre.org)
+     A NULL pointer dereference in the mod_authn_socache in Apache
+     HTTP Server 2.4.66 and earlier allows an unauthenticated remote
+     user to crash a child process in a caching forward proxy
+     configuration.
+     Credits: Pavel Kohout, Aisle Research, Aisle.com
+
+  *) SECURITY: CVE-2026-33006: Apache HTTP Server: mod_auth_digest
+     timing attack (cve.mitre.org)
+     A timing attack against mod_auth_digest in Apache HTTP Server
+     2.4.66 allows a bypass of Digest authentication by a remote
+     attacker.
+     Credits: Nitescu Lucian
+
+  *) SECURITY: CVE-2026-29169: Apache HTTP Server: mod_dav_lock
+     indirect lock crash (cve.mitre.org)
+     A NULL pointer dereference in mod_dav_lock in Apache HTTP Server
+     2.4.66 and earlier may allow an attacker to crash the server
+     with a malicious request.mod_dav_lock is not used internally by
+     mod_dav or mod_dav_fs.
+     The only known use-case for mod_dav_lock was mod_dav_svn from
+     Apache Subversion earlier than version 1.2.0.
+     Users are recommended to upgrade to version 2.4.67, which fixes
+     this issue, or remove mod_dav_lock.
+     Credits: Pavel Kohout, Aisle Research, Aisle.com
+
+  *) SECURITY: CVE-2026-29168: Apache HTTP Server: mod_md
+     unrestricted OCSP response (cve.mitre.org)
+     Allocation of Resources Without Limits or Throttling
+     vulnerability in Apache HTTP Server's  mod_md via OCSP response
+     data.
+     This issue affects Apache HTTP Server: from 2.4.30 through
+     2.4.66.
+     Credits: Pavel Kohout, Aisle Research, Aisle.com
+
+  *) SECURITY: CVE-2026-28780: Apache HTTP Server: buffer overflow in
+     mod_proxy_ajp via  ajp_msg_check_header() (cve.mitre.org)
+     Heap-based Buffer Overflow vulnerability in mod_proxy_ajp of
+     Apache HTTP Server.
+     If mod_proxy_ajp connects to a malicious AJP server this AJP
+     server can send a malicious AJP message back to mod_proxy_ajp
+     and cause it to write 4 attacker controlled bytes after the end
+     of a heap based buffer.
+     This issue affects Apache HTTP Server: through 2.4.66.
+     Credits: Andrew Lacambra
+
+  *) SECURITY: CVE-2026-24072: Apache HTTP Server: mod_rewrite
+     elevation of privileges via ap_expr (cve.mitre.org)
+     An escalation of privilege bug in various modules in Apache HTTP
+     2.4.66 and earlier allows local .htaccess authors to read files
+     with the privileges of the httpd user.
+     Credits: y7syeu
+
+  *) SECURITY: CVE-2026-23918: Apache HTTP Server: http2: double free
+     and possible RCE on early reset (cve.mitre.org)
+     Double Free and possible RCE vulnerability in Apache HTTP Server
+     with the HTTP/2 protocol.
+     This issue affects Apache HTTP Server: 2.4.66.
+     Credits: Bartlomiej Dmitruk, striga.ai
 
   *) mod_md: update to version 2.6.10
      - Fix issue #420 <https://github.com/icing/mod_md/issues/420> by ignoring
