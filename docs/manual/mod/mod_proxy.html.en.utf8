@@ -1104,10 +1104,10 @@ through</td></tr>
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
 
-    <div class="note"><strong>Note:</strong> The path associated with the <code>unix:</code>
+    <div class="note">The path associated with the <code>unix:</code>
     URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
 
-    <div class="note"><strong>Note:</strong> <code class="directive">RewriteRule</code> requires
+    <div class="note"><code class="directive">RewriteRule</code> requires
     the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
     from being escaped.</div>
 
@@ -1799,7 +1799,7 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a
+    <div class="note">This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
 
     <div class="warning"><h3>Worker matching with backreferences</h3>

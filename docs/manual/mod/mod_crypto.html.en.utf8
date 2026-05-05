@@ -224,14 +224,14 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CryptoIV" id="CryptoIV">CryptoIV</a> <a name="cryptoiv" id="cryptoiv">Directive</a> <a title="Permanent link" href="#cryptoiv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>IV (Initialisation Vector) to be used by the crypto filter</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>IV (Initialization Vector) to be used by the crypto filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoIV value</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CryptoIV none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>The <code class="directive">CryptoIV</code> directive allows the IV (initialisation
+    <p>The <code class="directive">CryptoIV</code> directive allows the IV (initialization
     vector) to be specified for the particular URL space. The IV can be read from
     a file, or can be set based on the <a href="../expr.html">expression parser</a>,
     allowing for flexible scenarios for the setting of keys.</p>

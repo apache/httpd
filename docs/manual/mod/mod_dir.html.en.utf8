@@ -150,10 +150,10 @@ a directory</td></tr>
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
-    <p><strong>Note:</strong> Multiple <code class="directive">DirectoryIndex</code>
+    <div class="note">Multiple <code class="directive">DirectoryIndex</code>
     directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
-    </p>
+    </div>
     <pre class="prettyprint lang-config"># Example A: Set index.html as an index page, then add index.php to that list as well.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html

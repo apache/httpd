@@ -47,7 +47,7 @@
       yet checks and acts upon the error.</p>
     
 
-    <h3><a name="init" id="init">Initialisation Routines</a></h3>
+    <h3><a name="init" id="init">Initialization Routines</a></h3>
       <p>These should now be renamed to better signify where they sit
       in the overall process. So the name gets a small change from
       <code>mmap_init</code> to <code>mmap_post_config</code>. The arguments

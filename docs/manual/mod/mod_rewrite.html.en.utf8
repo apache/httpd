@@ -1264,6 +1264,27 @@ cannot use <code>$N</code> in the substitution string!
 
       </dl>
 
+      <div class="note"><h3>How path substitutions are interpreted</h3>
+      <p>Whether a path substitution is treated as a file-system path
+      or a URL-path depends on the context and whether it begins with
+      a slash:</p>
+      <ul>
+        <li><strong>Starts with <code>/</code>, server/vhost context:</strong>
+        Treated as a file-system path if the first path component exists
+        on disk; otherwise treated as a URL-path.</li>
+        <li><strong>Starts with <code>/</code>, per-directory context:</strong>
+        Always treated as a URL-path. No file-system guessing occurs.</li>
+        <li><strong>Does not start with <code>/</code> (relative),
+        server/vhost context:</strong> Treated as a URL-path relative
+        to the current request URI.</li>
+        <li><strong>Does not start with <code>/</code> (relative),
+        per-directory context:</strong> Treated as a URL-path relative
+        to the directory-path for which the <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> or <code>.htaccess</code>
+        applies. See <code class="directive">RewriteBase</code> for controlling
+        the prefix added to relative substitutions.</li>
+      </ul>
+      </div>
+
       <p>In addition to plain text, the <em>Substitution</em> string can include</p>
 
       <ol>

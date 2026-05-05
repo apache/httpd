@@ -171,7 +171,7 @@ ret=ap_run_do_something(r, n);</pre>
     
 
     <h3><a name="hooking-add" id="hooking-add">Add a hook registering function</a></h3>
-      <p>During initialisation, the server will call each modules hook
+      <p>During initialization, the server will call each modules hook
       registering function, which is included in the module
       structure:</p>
 

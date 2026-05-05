@@ -30,6 +30,8 @@
 <a href="../fr/mod/mod_request.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtres permettant de traiter et de mettre à disposition
 les corps de requêtes HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>

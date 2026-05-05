@@ -218,7 +218,8 @@
           <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>, <code class="program"><a href="../programs/suexec.html">suexec</a></code>, etc. which
           are necessary to run the Apache HTTP Server. By default
           <code>sbindir</code> is set to
-          <code><var>EPREFIX</var>/sbin</code>.</dd>
+          <code><var>EPREFIX</var>/bin</code> (the same as
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Install modifiable architecture-independent data in <var>DIR</var>.

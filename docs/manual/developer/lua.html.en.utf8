@@ -101,11 +101,10 @@ pool, and if it has high usage, use the <code>thread</code> setting. As your ser
 load increases, so will the number of states being actively used, and having your scope
 set to <code>once/request/conn</code> will stop being beneficial to your memory footprint.
 </p>
-<p>
-<strong>Note:</strong> The <code>min</code> and <code>max</code> settings for the
+<div class="note">The <code>min</code> and <code>max</code> settings for the
 <code>server</code> scope denotes the minimum and maximum states to keep in a pool per
 server <em>process</em>, so keep this below your <code>ThreadsPerChild</code> limit.
-</p>
+</div>
 
 
 <h3>Using code caching</h3>
