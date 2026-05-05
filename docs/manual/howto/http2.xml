@@ -268,7 +268,7 @@ H2Push Off
     already has, so PUSHes for those things can be avoided, but this is all
     highly experimental right now.</p>
     <p>Another experimental draft that has been implemented in <module>mod_http2</module>
-    is the <a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
+    is the <a href="https://datatracker.ietf.org/doc/html/draft-ruellan-http-accept-push-policy-00">
     Accept-Push-Policy Header Field</a> where a client can, for each request, define
     what kind of PUSHes it accepts.</p>
     <p>
