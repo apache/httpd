@@ -943,10 +943,10 @@ expressions</description>
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
 
-    <note><strong>Note:</strong> The path associated with the <code>unix:</code>
+    <note>The path associated with the <code>unix:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
 
-    <note><strong>Note:</strong> <directive>RewriteRule</directive> requires
+    <note><directive>RewriteRule</directive> requires
     the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
     from being escaped.</note>
 
@@ -1594,7 +1594,7 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <note><strong>Note: </strong>This directive cannot be used within a
+    <note>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
 
     <note type="warning"><title>Worker matching with backreferences</title>

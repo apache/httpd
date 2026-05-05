@@ -102,10 +102,10 @@ a directory</description>
     literally if it has any arguments before or after it, even if they are "disabled"
     as well.</p>
 
-    <p><strong>Note:</strong> Multiple <directive>DirectoryIndex</directive>
+    <note>Multiple <directive>DirectoryIndex</directive>
     directives within the <a href="../sections.html"><em>same context</em></a> will add
     to the list of resources to look for rather than replace:
-    </p>
+    </note>
     <highlight language="config">
 # Example A: Set index.html as an index page, then add index.php to that list as well.
 &lt;Directory "/foo"&gt;
