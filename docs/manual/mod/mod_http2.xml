@@ -265,8 +265,8 @@ H2Direct on
             </p>
             <p>
                 Server pushes are detected by inspecting the <code>Link</code> headers of
-                responses (see https://tools.ietf.org/html/rfc5988 for the 
-                specification). When a link thus specified has the <code>rel=preload</code>
+                responses (see <rfc>8288</rfc> for the
+                specification of Web Linking). When a link thus specified has the <code>rel=preload</code>
                 attribute, it is treated as a resource to be pushed.
             </p>
             <p> 
