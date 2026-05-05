@@ -923,7 +923,7 @@ expressions</description>
     HTTP and target the UDS at /home/www.socket, you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
-    <note><strong>Note:</strong> The path associated with the <code>unix:</code>
+    <note>The path associated with the <code>unix:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
 
     <p>When used inside a <directive type="section" module="core"
@@ -1561,7 +1561,7 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <note><strong>Note: </strong>This directive cannot be used within a
+    <note>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
 
     <note type="warning"><title>Worker matching with backreferences</title>
