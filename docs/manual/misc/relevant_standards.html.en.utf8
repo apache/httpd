@@ -40,8 +40,8 @@
         https://www.skrb.org/ietf/http_errata.html</a> - HTTP/1.1 Specification Errata
       </li>
       <li>
-        <a href="http://www.rfc-editor.org/errata.php">
-        http://www.rfc-editor.org/errata.php</a> - RFC Errata
+        <a href="https://www.rfc-editor.org/errata.php">
+        https://www.rfc-editor.org/errata.php</a> - RFC Errata
       </li>
       <li>
         <a href="https://httpwg.org/specs/">
@@ -183,7 +183,7 @@
       in English) in alphabetical order as given in ISO 3166-1 and the
       corresponding ISO 3166-1-alpha-2 code elements.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
       (Best Current Practice),
       <a href="https://www.rfc-editor.org/rfc/rfc3066">RFC 3066</a></dt>
 
