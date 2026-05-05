@@ -1389,9 +1389,8 @@ EnableSendfile On
       <p><rfc section="19.6">2616</rfc> "Compatibility With Previous Versions" had
       encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
       supersedes this with "The expectation to support HTTP/0.9 requests has
-      been removed" and offers additional comments in 
-      <a href="https://www.rfc-editor.org/rfc/rfc7230#appendix-A"
-        >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
+      been removed" and offers additional comments in
+      <rfc anchor="appendix-A">7230</rfc> Appendix A. The <code>Require1.0</code> option allows
       the user to remove support of the default <code>Allow0.9</code> option's
       behavior.</p>
 

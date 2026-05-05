@@ -203,7 +203,9 @@ highlight | blockquote">
 
 <!-- The rfc element creates a link to an RFC at www.rfc-editor.org.
      Content is the RFC number (e.g. 7230). Optional section attribute
-     adds a fragment anchor (e.g. section="14.24"). -->
+     adds a fragment anchor (e.g. section="14.24"). Optional anchor attribute
+     adds a raw fragment (e.g. anchor="appendix-B", anchor="name-upgrade"). -->
 <!ELEMENT rfc (#PCDATA)>
-<!ATTLIST rfc section CDATA #IMPLIED>
+<!ATTLIST rfc section CDATA #IMPLIED
+              anchor  CDATA #IMPLIED>
 

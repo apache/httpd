@@ -294,7 +294,7 @@ using the specified magic file</description>
     <li><strong>Not RFC-compliant:</strong> Standards documents consistently
     recommend against setting Content-Encoding for files that are already
     compressed (such as .zip or .gz files). See
-    <a href="https://www.rfc-editor.org/rfc/rfc9110#name-content-encoding">RFC 9110</a>.</li>
+    <rfc anchor="name-content-encoding">9110</rfc>.</li>
 
     <li><strong>Breaks content integrity:</strong> When Content-Encoding is set,
     most HTTP clients will decompress the file before writing it to disk. This

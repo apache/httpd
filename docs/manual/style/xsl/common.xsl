@@ -1242,6 +1242,10 @@ if (typeof(prettyPrint) !== 'undefined') {
       <xsl:text>#section-</xsl:text>
       <xsl:value-of select="@section"/>
     </xsl:if>
+    <xsl:if test="@anchor">
+      <xsl:text>#</xsl:text>
+      <xsl:value-of select="@anchor"/>
+    </xsl:if>
   </xsl:variable>
 
   <a href="{$rfcurl}">RFC <xsl:value-of select="$rfcnum"/></a>
