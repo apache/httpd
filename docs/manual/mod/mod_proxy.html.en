@@ -1008,7 +1008,7 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default behaviour changed in 2.2.7</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Default behavior changed in 2.2.7</td></tr>
 </table>
     <p>The <code class="directive">ProxyMaxForwards</code> directive specifies the
     maximum number of proxies through which a request may pass if there's no
@@ -1065,7 +1065,7 @@ through</td></tr>
     HTTP and target the UDS at /home/www.socket, you would use
     <code>unix:/home/www.socket|http://localhost/whatever/</code>.</p>
 
-    <div class="note"><strong>Note:</strong> The path associated with the <code>unix:</code>
+    <div class="note">The path associated with the <code>unix:</code>
     URL is <code class="directive">DefaultRuntimeDir</code> aware.</div>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
@@ -1748,7 +1748,7 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <div class="note"><strong>Note: </strong>This directive cannot be used within a
+    <div class="note">This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</div>
 
     <div class="warning"><h3>Worker matching with backreferences</h3>

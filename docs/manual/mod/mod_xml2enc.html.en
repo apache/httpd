@@ -141,7 +141,7 @@ them to a supported encoding using <code class="directive">xml2EncAlias</code>.<
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognise Aliases for encoding values</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognize Aliases for encoding values</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncAlias <var>charset alias [alias ...]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>

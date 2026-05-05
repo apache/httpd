@@ -81,13 +81,13 @@ mod_include.</td></tr>
     into the URL space from another server using
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-    <p><strong>Note:</strong> Each request set aside has to be set
+    <div class="note">Each request set aside has to be set
     aside in temporary RAM until the request is complete. As a result,
     care should be taken to ensure sufficient RAM is available on the
     server to support the intended load. Use of this directive
     should be limited to where needed on targeted parts of your
     URL space, and with the lowest possible value that is still big
-    enough to hold a request body.</p>
+    enough to hold a request body.</div>
 
     <p>If the request size sent by the client exceeds the maximum
     size allocated by this directive, the server will return
