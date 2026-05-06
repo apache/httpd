@@ -774,7 +774,7 @@
       <code>NO_LINGCLOSE</code>, but this is not recommended at all.
       In particular, as HTTP/1.1 pipelined persistent connections
       come into use, <code>lingering_close</code> is an absolute
-      necessity (and <a href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      necessity (and <a href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       pipelined connections are faster</a>, so you want to support
       them).</p>
 

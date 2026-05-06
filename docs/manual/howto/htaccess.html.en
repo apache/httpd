@@ -32,7 +32,8 @@
 </div>
 
 <p><code>.htaccess</code> files provide a way to make configuration
-changes on a per-directory basis.</p>
+changes on a per-directory basis, without modifying the main server 
+configuration files directly.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">What they are/How to use them</a></li>
@@ -47,11 +48,8 @@ changes on a per-directory basis.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">.htaccess files</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
-    <div class="note">You should avoid using <code>.htaccess</code> files completely if you have access to
-    httpd main server config file. Using <code>.htaccess</code> files slows down your Apache http server.
-    Any directive that you can include in a <code>.htaccess</code> file is better set in a <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> block, as it will have the same effect with better performance.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="what" id="what">What they are/How to use them</a></h2>
@@ -73,14 +71,16 @@ changes on a per-directory basis.</p>
 
     </div>
 
-    <p>In general, <code>.htaccess</code> files use the same syntax as
-    the <a href="../configuring.html#syntax">main configuration
-    files</a>. What you can put in these files is determined by the
-    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive. This
-    directive specifies, in categories, what directives will be
-    honored if they are found in a <code>.htaccess</code> file. If a
-    directive is permitted in a <code>.htaccess</code> file, the
-    documentation for that directive will contain an Override section,
+    <p>Directives in <code>.htaccess</code> files use the same syntax as
+    in the <a href="../configuring.html#syntax">main configuration
+    files</a>. What you are permitted to put in these files is determined by the
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> and
+    <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code> directives.
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> specifies, in
+    categories, what directives will be honored if they are found in a
+    <code>.htaccess</code> file, while <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code> names individual
+    directives to permit (see <a href="#when">below</a>). If a directive
+    is permitted, the documentation for that directive will contain an Override section,
     specifying what value must be in <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> in order for that
     directive to be permitted.</p>
 
@@ -90,57 +90,34 @@ changes on a per-directory basis.</p>
     <code>FileInfo</code>. Thus, you must have at least
     <code>AllowOverride FileInfo</code> in order for this directive to be
     honored in <code>.htaccess</code> files.</p>
-
-    <div class="example"><h3>Example:</h3><table>
-        <tr>
-          <td><a href="../mod/directive-dict.html#Context">Context:</a></td>
-          <td>server config, virtual host, directory, .htaccess</td>
-        </tr>
-
-        <tr>
-          <td><a href="../mod/directive-dict.html#Override">Override:</a></td>
-          <td>FileInfo</td>
-        </tr>
-      </table></div>
-
-    <p>If you are unsure whether a particular directive is permitted in a
-    <code>.htaccess</code> file, look at the documentation for that
-    directive, and check the Context line for ".htaccess".</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
 
-    <p>In general, you should only use <code>.htaccess</code> files when
-    you don't have access to the main server configuration file. There is,
-    for example, a common misconception that user authentication should
-    always be done in <code>.htaccess</code> files, and, in more recent years,
-    another misconception that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives
-    must go in <code>.htaccess</code> files. This is simply not the
-    case. You can put user authentication configurations in the main server
-    configuration, and this is, in fact, the preferred way to do
-    things. Likewise, <code>mod_rewrite</code> directives work better,
-    in many respects, in the main server configuration.</p>
+    <p>If you have access to the main server configuration file, you
+    should put all of your configuration there instead of in
+    <code>.htaccess</code> files. This includes user authentication,
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules, and anything else you might be
+    tempted to put in <code>.htaccess</code>. Directives in the main
+    configuration are loaded once at server start, rather than on every
+    request, and <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> in particular works better
+    in server configuration context.</p>
 
     <p><code>.htaccess</code> files should be used in a case where the
     content providers need to make configuration changes to the server on a
     per-directory basis, but do not have root access on the server system.
-    In the event that the server administrator is not willing to make
-    frequent configuration changes, it might be desirable to permit
+    This is common with managed hosting environments, control-panel-based
+    hosting (such as cPanel or Plesk), and content management systems where
+    the application ships a <code>.htaccess</code> file as part of its
+    distribution. In the event that the server administrator is not willing
+    to make frequent configuration changes, it might be desirable to permit
     individual users to make these changes in <code>.htaccess</code> files
-    for themselves. This is particularly true, for example, in cases where
-    ISPs are hosting multiple user sites on a single machine, and want
-    their users to be able to alter their configuration.</p>
+    for themselves.</p>
 
-    <p>However, in general, use of <code>.htaccess</code> files should be
-    avoided when possible. Any configuration that you would consider
-    putting in a <code>.htaccess</code> file, can just as effectively be
-    made in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section in your main server
-    configuration file.</p>
+    <p>There are two reasons to prefer the main configuration file
+    over <code>.htaccess</code>: performance and security.</p>
 
-    <p>There are two main reasons to avoid the use of
-    <code>.htaccess</code> files.</p>
-
-    <p>The first of these is performance. When <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
+    <p><strong>Performance:</strong> When <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     is set to allow the use of <code>.htaccess</code> files, httpd will
     look in every directory for <code>.htaccess</code> files. Thus,
     permitting <code>.htaccess</code> files causes a performance hit,
@@ -155,12 +132,11 @@ changes on a per-directory basis.</p>
     directory <code>/www/htdocs/example</code>, httpd must look for the
     following files:</p>
 
-    <div class="example"><p><code>
-      /.htaccess<br />
-      /www/.htaccess<br />
-      /www/htdocs/.htaccess<br />
-      /www/htdocs/example/.htaccess
-    </code></p></div>
+    <pre class="prettyprint lang-config">/.htaccess
+/www/.htaccess
+/www/htdocs/.htaccess
+/www/htdocs/example/.htaccess</pre>
+
 
     <p>And so, for each file access out of that directory, there are 4
     additional file-system accesses, even if none of those files are
@@ -168,16 +144,7 @@ changes on a per-directory basis.</p>
     <code>.htaccess</code> files were enabled for <code>/</code>, which
     is not usually the case.)</p>
 
-    <p>In the case of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives, in
-    <code>.htaccess</code> context these regular expressions must be
-    re-compiled with every request to the directory, whereas in main
-    server configuration context they are compiled once and cached.
-    Additionally, the rules themselves are more complicated, as one must
-    work around the restrictions that come with per-directory context
-    and <code>mod_rewrite</code>. Consult the <a href="../rewrite/intro.html#htaccess">Rewrite Guide</a> for more
-    detail on this subject.</p>
-
-    <p>The second consideration is one of security. You are permitting
+    <p><strong>Security:</strong> You are permitting
     users to modify server configuration, which may result in changes over
     which you have no control. Carefully consider whether you want to give
     your users this privilege. Note also that giving users less
@@ -187,6 +154,22 @@ changes on a per-directory basis.</p>
     <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> to, and pointing them
     to the relevant documentation, will save yourself a lot of confusion
     later.</p>
+
+    <p>If you need to grant <code>.htaccess</code> access but want to
+    limit it to specific directives rather than entire categories, use the
+    <code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code> directive. This
+    lets you name individual directives that are permitted, providing
+    finer-grained control than <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> alone:</p>
+
+    <pre class="prettyprint lang-config"># Allow only specific directives, not entire categories
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</pre>
+
+
+    <p>With this configuration, any directive not explicitly listed will
+    cause a server error if encountered in a <code>.htaccess</code> file.
+    This is a useful middle ground between full override access and no
+    override access.</p>
 
     <p>Note that it is completely equivalent to put a <code>.htaccess</code>
     file in a directory <code>/www/htdocs/example</code> containing a
@@ -205,11 +188,6 @@ changes on a per-directory basis.</p>
     AddType text/example ".exm"
 &lt;/Directory&gt;</pre>
 </div>
-
-    <p>However, putting this configuration in your server configuration
-    file will result in less of a performance hit, as the configuration is
-    loaded once when httpd starts, rather than every time a file is
-    requested.</p>
 
     <p>The use of <code>.htaccess</code> files can be disabled completely
     by setting the <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
@@ -284,20 +262,11 @@ changes on a per-directory basis.</p>
 <div class="section">
 <h2><a name="auth" id="auth">Authentication example</a></h2>
 
-    <p>If you jumped directly to this part of the document to find out how
-    to do authentication, it is important to note one thing. There is a
-    common misconception that you are required to use
-    <code>.htaccess</code> files in order to implement password
-    authentication. This is not the case. Putting authentication directives
-    in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-    section, in your main server configuration file, is the preferred way
-    to implement this, and <code>.htaccess</code> files should be used only
-    if you don't have access to the main server configuration file. See <a href="#when">above</a> for a discussion of when you should and should
-    not use <code>.htaccess</code> files.</p>
-
-    <p>Having said that, if you still think you need to use a
-    <code>.htaccess</code> file, you may find that a configuration such as
-    what follows may work for you.</p>
+    <p>As with any <code>.htaccess</code> use, placing these directives in
+    a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> block is
+    preferred when you have access to the main configuration (see
+    <a href="#when">above</a>). The following example shows the
+    <code>.htaccess</code> approach:</p>
 
     <p><code>.htaccess</code> file contents:</p>
 
@@ -317,13 +286,13 @@ Require group admins</pre>
 <div class="section">
 <h2><a name="ssi" id="ssi">Server Side Includes example</a></h2>
 
-    <p>Another common use of <code>.htaccess</code> files is to enable
-    Server Side Includes for a particular directory. This may be done with
-    the following configuration directives, placed in a
-    <code>.htaccess</code> file in the desired directory:</p>
+    <p>Another use of <code>.htaccess</code> files is to enable Server Side
+    Includes for a particular directory. This may be done with the following
+    configuration directives, placed in a <code>.htaccess</code> file in
+    the desired directory:</p>
 
     <pre class="prettyprint lang-config">Options +Includes
-AddType text/html shtml
+AddType text/html "shtml"
 AddHandler server-parsed shtml</pre>
 
 
@@ -358,19 +327,29 @@ slash is removed from the value supplied to <code class="directive"><a href="../
 it. Thus, your regular expression needs to omit that portion as
 well.</p>
 
+<p>Also note that in <code>.htaccess</code> context, regular expressions are
+recompiled on every request, whereas in the main server configuration they
+are compiled once and cached.</p>
+
 <p>Consult the <a href="../rewrite/">mod_rewrite documentation</a> for
-further details on using <code>mod_rewrite</code>.</p>
+further details on using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cgi" id="cgi">CGI example</a></h2>
 
-    <p>Finally, you may wish to use a <code>.htaccess</code> file to permit
-    the execution of CGI programs in a particular directory. This may be
+    <div class="note">CGI scripts are a legacy mechanism for dynamic content. For new
+    deployments, consider using <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> with a
+    FastCGI application server, or a framework-specific handler. The
+    information below remains useful for environments that still rely on
+    traditional CGI.</div>
+
+    <p>You may wish to use a <code>.htaccess</code> file to permit the
+    execution of CGI programs in a particular directory. This may be
     implemented with the following configuration:</p>
 
     <pre class="prettyprint lang-config">Options +ExecCGI
-AddHandler cgi-script cgi pl</pre>
+AddHandler cgi-script "cgi" "py"</pre>
 
 
     <p>Alternately, if you wish to have all files in the given directory be
@@ -399,8 +378,14 @@ SetHandler cgi-script</pre>
     <p>Most commonly, the problem is that <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> is not
     set such that your configuration directives are being honored. Make
     sure that you don't have a <code>AllowOverride None</code> in effect
-    for the file scope in question. A good test for this is to put garbage
-    in your <code>.htaccess</code> file and reload the page. If a server error is
+    for the file scope in question. A good test for this is to put a
+    nonsense word in your <code>.htaccess</code> file and reload the
+    page:</p>
+
+    <pre class="prettyprint lang-config">TestMe</pre>
+
+
+    <p>If a server error (HTTP 500) is
     not generated, then you almost certainly have <code>AllowOverride
     None</code> in effect.</p>
 
@@ -409,9 +394,8 @@ SetHandler cgi-script</pre>
     that the directive used in your <code>.htaccess</code> file is not
     permitted.</p>
 
-    <div class="example"><p><code>
-    [Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
-    </code></p></div>
+    <pre class="prettyprint lang-config">[Tue May 06 09:12:31.528374 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here</pre>
+
 
     <p>This will indicate either that you've used a directive that is
     never permitted in <code>.htaccess</code> files, or that you simply
@@ -423,9 +407,8 @@ SetHandler cgi-script</pre>
     <p>Alternately, it may tell you that you had a syntax error in your
     usage of the directive itself.</p>
 
-    <div class="example"><p><code>
-    [Sat Aug 09 16:22:34 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
-    </code></p></div>
+    <pre class="prettyprint lang-config">[Tue May 06 09:14:02.946218 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters</pre>
+
 
     <p>In this case, the error message should be specific to the
     particular syntax error that you have committed.</p>
