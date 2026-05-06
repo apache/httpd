@@ -411,7 +411,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       <directive module="mod_rewrite">RewriteRule</directive> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in per-directory (htaccess) context unless any 
+      in a substitution in <glossary ref="perdirectory">per-directory</glossary> context unless any 
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
@@ -428,21 +428,6 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
                 <directive module="mod_alias">Alias</directive>
                 or <module>mod_userdir</module>.</li>
       </ul>
-
-<p> In the example below, <directive>RewriteBase</directive> is necessary
-    to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
-    since the resource was not relative to the document root.  This
-    misconfiguration would normally cause the server to look for an "opt"
-    directory under the document root.</p>
-<highlight language="config">
-DocumentRoot "/var/www/example.com"
-AliasMatch "^/myapp" "/opt/myapp-1.2.3"
-&lt;Directory "/opt/myapp-1.2.3"&gt;
-    RewriteEngine On
-    RewriteBase "/myapp/"
-    RewriteRule "^index\.html$"  "welcome.html"
-&lt;/Directory&gt;
-</highlight>
 
 </usage>
 
@@ -763,7 +748,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         <em>after</em> the URL translation phase (during which
         <module>mod_rewrite</module> operates).</p>
         <p>On the other hand, because <module>mod_rewrite</module> implements
-        its per-directory context (<code>.htaccess</code> file) via
+        its <glossary ref="perdirectory">per-directory</glossary> context via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
         <code>%{REMOTE_USER}</code> in that context.</p></li>
@@ -1116,7 +1101,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 
       <p>The directory-path to which the rule applies is stripped from the currently mapped
       filesystem path before comparison (up to and including a trailing slash). 
-      The net result of this per-directory prefix stripping is that rules in
+      The net result of this <glossary ref="perdirectory">per-directory</glossary> prefix stripping is that rules in
       this context only match against the portion of the currently mapped filesystem path 
       "below" the directory-path to which the rule applies.</p>
 
@@ -1154,13 +1139,14 @@ directory.</li>
 directive for more information regarding what prefix will be added back to
 relative substitutions.</li>
 
-<li> If you wish to match against the full URL-path in a per-directory context
+<li> If you wish to match against the full URL-path in a 
+<glossary ref="perdirectory">per-directory</glossary> context
 RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
 a <directive module="mod_rewrite">RewriteCond</directive>.</li>
 
 <li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
 <em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
-matches in per-directory context.</li>
+matches in <glossary ref="perdirectory">per-directory</glossary> context.</li>
 
 <li>Although rewrite rules are syntactically permitted in <directive
 type="section" module="core">Location</directive> and <directive
@@ -1282,13 +1268,13 @@ cannot use <code>$N</code> in the substitution string!
         <li><strong>Starts with <code>/</code>, server/vhost context:</strong>
         Treated as a file-system path if the first path component exists
         on disk; otherwise treated as a URL-path.</li>
-        <li><strong>Starts with <code>/</code>, per-directory context:</strong>
+        <li><strong>Starts with <code>/</code>, <glossary ref="perdirectory">per-directory</glossary> context:</strong>
         Always treated as a URL-path. No file-system guessing occurs.</li>
         <li><strong>Does not start with <code>/</code> (relative),
         server/vhost context:</strong> Treated as a URL-path relative
         to the current request URI.</li>
         <li><strong>Does not start with <code>/</code> (relative),
-        per-directory context:</strong> Treated as a URL-path relative
+        <glossary ref="perdirectory">per-directory</glossary> context:</strong> Treated as a URL-path relative
         to the directory-path for which the <directive
         module="core">Directory</directive> or <code>.htaccess</code>
         applies. See <directive>RewriteBase</directive> for controlling
@@ -1413,7 +1399,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>END</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Also prevents further execution of rewrite rules
-        in per-directory context. (Available in 2.3.9 and later)
+        in <glossary ref="perdirectory">per-directory</glossary> context. (Available in 2.3.9 and later)
         <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
     <tr>
@@ -1442,7 +1428,7 @@ cannot use <code>$N</code> in the substitution string!
     <tr>
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
-        more rules. Especially note caveats for per-directory context (see also the END flag). <em><a
+        more rules. Especially note caveats for <glossary ref="perdirectory">per-directory</glossary> context (see also the END flag). <em><a
         href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
     <tr>
