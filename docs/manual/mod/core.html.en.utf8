@@ -1453,6 +1453,21 @@ ErrorDocument 403 Forbidden!
 ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
+    <p>When the argument is a text string (i.e., not a path or URL),
+    it is sent to the client with a content type of
+    <code>text/html</code>, so you may include HTML markup. You can
+    use the backslash line-continuation character to spread the
+    document across multiple lines:</p>
+
+    <pre class="prettyprint lang-config">ErrorDocument 403 "\
+&lt;html&gt;&lt;head&gt;\
+&lt;title&gt;403 Forbidden&lt;/title&gt;\
+&lt;/head&gt;&lt;body&gt;\
+&lt;h1&gt;Forbidden&lt;/h1&gt;\
+&lt;p&gt;You do not have permission to access this resource.&lt;/p&gt;\
+&lt;/body&gt;&lt;/html&gt;"</pre>
+
+
     <p>Additionally, the special value <code>default</code> can be used
     to specify Apache httpd's simple hardcoded message.  While not required
     under normal circumstances, <code>default</code> will restore
