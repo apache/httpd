@@ -407,21 +407,22 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
 
 <usage>
       <p>The <directive>RewriteBase</directive> directive specifies the
-      URL prefix to be used for per-directory (htaccess)
+      URL prefix to be used for
+      <glossary ref="perdirectory">per-directory</glossary>
       <directive module="mod_rewrite">RewriteRule</directive> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in <glossary ref="perdirectory">per-directory</glossary> context unless any 
+      in a substitution in <glossary ref="perdirectory">per-directory</glossary> context unless any
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
                <directive module="core">DocumentRoot</directive>
                (as opposed to reachable by other means, such as
                <directive module="mod_alias">Alias</directive>).</li>
-          <li> The <em>filesystem</em> path to the directory containing the
-               <directive module="mod_rewrite">RewriteRule</directive>,
-               suffixed by the relative
-               substitution is also valid as a URL path on the server
+          <li> The <em>filesystem</em> path to the directory containing
+               the <glossary ref="perdirectory">per-directory</glossary>
+               configuration, suffixed by the relative
+               substitution is also valid as a URL-path on the server
                (this is rare).</li>
           <li> In Apache HTTP Server 2.4.16 and later, this directive may be
                 omitted when the request is mapped via
