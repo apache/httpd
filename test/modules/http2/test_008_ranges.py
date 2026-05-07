@@ -11,7 +11,7 @@ from .env import H2Conf, H2TestEnv
 log = logging.getLogger(__name__)
 
 
-@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 class TestRanges:
 
     LOGFILE = ""

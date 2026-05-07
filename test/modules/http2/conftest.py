@@ -9,7 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from .env import H2TestEnv
 
 
-def pytest_report_header(config, startdir):
+def pytest_report_header(config, start_path):
     env = H2TestEnv()
     return f"mod_h2 [apache: {env.get_httpd_version()}, mpm: {env.mpm_module}, {env.prefix}]"
 

@@ -84,7 +84,7 @@ def ws_run(env: H2TestEnv, path, authority=None, do_input=None, inbytes=None,
                       stdout=b'', stderr=b'', duration=end - start), infos, frames
 
 
-@pytest.mark.skipif(condition=H2TestEnv.is_unsupported, reason="mod_http2 not supported here")
+@pytest.mark.skipif(condition=H2TestEnv.is_unsupported(), reason="mod_http2 not supported here")
 @pytest.mark.skipif(condition=not H2TestEnv().httpd_is_at_least("2.4.60"),
                     reason=f'need at least httpd 2.4.60 for this')
 @pytest.mark.skipif(condition=ws_version < ws_version_min,
