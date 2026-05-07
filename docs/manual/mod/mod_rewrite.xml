@@ -1135,13 +1135,14 @@ module="core">Directory</directive> sections, with some additional
 complexity.</li>
 
 <li>To enable the rewrite engine in this context, you need to set
-"<code>RewriteEngine On</code>" <strong>and</strong>
-the <code>FollowSymLinks</code> or <code>SymLinksIfOwnerMatch</code>
-<directive module="core">Options</directive> must be enabled. If your
-administrator has disabled override of these options for a user's
-directory via <directive module="core">AllowOverride</directive>, the
-rewrite engine cannot be used in <code>.htaccess</code> files in that
-directory.</li>
+<code>RewriteEngine On</code> <strong>and</strong>
+at least one of the <code>FollowSymLinks</code> or
+<code>SymLinksIfOwnerMatch</code>
+<directive module="core">Options</directive> must be enabled. Note
+that these options cannot be set in a distributed configuration file
+(<code>.htaccess</code>) unless
+<directive module="core">AllowOverride</directive> permits it
+in the server configuration.</li>
 
 <li>See the <directive module="mod_rewrite">RewriteBase</directive>
 directive for more information regarding what prefix will be added back to
