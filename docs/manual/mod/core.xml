@@ -433,12 +433,15 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
-      Allow use of the directives controlling host access (<directive
+      Allow use of the legacy host access control directives (<directive
       module="mod_access_compat">Allow</directive>, <directive
       module="mod_access_compat">Deny</directive> and <directive
-      module="mod_access_compat">Order</directive>).</dd>
-
-<!-- TODO - Update this for 2.4 syntax -->
+      module="mod_access_compat">Order</directive>). For the modern
+      equivalent, see the <directive module="mod_authz_core">Require</directive>
+      directive, which is controlled by <code>AuthConfig</code>.
+      Also includes <directive module="mod_include">SSIETag</directive>,
+      <directive module="mod_include">SSILastModified</directive>, and
+      <directive module="mod_include">SSILegacyExprParser</directive>.</dd>
 
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
