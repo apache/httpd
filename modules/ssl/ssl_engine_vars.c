@@ -720,6 +720,7 @@ static const struct {
     { "G",     NID_givenName,              1 },
     { "S",     NID_surname,                1 },
     { "D",     NID_description,            1 },
+    { "SerialNumber", NID_serialNumber,    1 },
 #ifdef NID_userId
     { "UID",   NID_userId,                 1 },
 #endif
