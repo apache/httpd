@@ -965,11 +965,30 @@ algorithm type.
 Finally the end-entity certificate's private key can also be
 added to the certificate file instead of using a separate
 <directive module="mod_ssl">SSLCertificateKeyFile</directive>
-directive. This practice is highly discouraged. If it is used,
-the certificate files using such an embedded key must be configured
-after the certificates using a separate key file. If the private
-key is encrypted, the pass phrase dialog is forced at startup time.
-</p>
+directive.</p>
+
+<note type="warning"><title>Do not combine key and certificate in one file</title>
+<p>This practice is highly discouraged for the following reasons:</p>
+<ul>
+<li><strong>Security</strong>: Keeping the private key in a separate file
+allows stricter file permissions. The certificate file can be
+world-readable (it is public data), while the key file should be
+readable only by root. Combining them in one file means any
+misconfiguration or vulnerability that exposes the certificate file
+also exposes the private key.</li>
+<li><strong>Ordering constraint</strong>: If a combined file is used,
+all <directive>SSLCertificateFile</directive> directives referencing
+such combined files must appear <em>after</em> any
+<directive>SSLCertificateFile</directive> directives that use a
+separate key file. Violating this ordering will cause errors at
+startup.</li>
+<li><strong>Maintenance</strong>: Separate files make it immediately
+clear which file contains what, simplifying certificate rotation
+and audits.</li>
+</ul>
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+</note>
 
 <p>As an alternative to storing certificates and private keys in
 files, a certificate identifier can be used to identify a certificate
@@ -1063,12 +1082,13 @@ to support multiple algorithms for server authentication. For each
 directive, there must be a matching <directive>SSLCertificateFile</directive>
 directive.</p>
 
-<p>
-The private key may also be combined with the certificate in the file given by
-<directive module="mod_ssl">SSLCertificateFile</directive>, but this practice
-is highly discouraged. If it is used, the certificate files using such
-an embedded key must be configured after the certificates using a separate
-key file.</p>
+<note type="warning"><title>Do not combine key and certificate in one file</title>
+<p>The private key may also be combined with the certificate in the
+file given by <directive module="mod_ssl">SSLCertificateFile</directive>,
+but this practice is highly discouraged. See the warning in the
+<directive>SSLCertificateFile</directive> documentation for a full
+explanation of the risks and constraints.</p>
+</note>
 
 <p>As an alternative to storing private keys in files, a key
 identifier can be used to identify a private key stored in a
