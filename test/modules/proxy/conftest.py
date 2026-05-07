@@ -8,7 +8,7 @@ from .env import ProxyTestEnv
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 
-def pytest_report_header(config, startdir):
+def pytest_report_header(config, start_path):
     env = ProxyTestEnv()
     return "mod_proxy: [apache: {aversion}({prefix})]".format(
         prefix=env.prefix,
