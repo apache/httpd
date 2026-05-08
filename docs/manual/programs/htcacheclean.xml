@@ -209,4 +209,17 @@
     occurred during URL removal, <code>1</code> is returned.</p>
 </section>
 
+<section id="files"><title>Files</title>
+
+<note>The cache root directory is specified as an argument on the command line
+and should match the <code>CacheRoot</code> directive in the server
+configuration.</note>
+
+<dl>
+<dt><var>path</var></dt>
+<dd>The root directory of the disk cache to be cleaned.</dd>
+</dl>
+
+</section>
+
 </manualpage>

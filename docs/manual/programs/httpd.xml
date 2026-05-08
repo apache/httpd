@@ -175,6 +175,31 @@ then exit.</dd>
 server will not detach from the console.</dd>
 
 </dl>
+</section>
+
+<section id="files"><title>Files</title>
+
+<note>The default paths listed below may be changed at compile time or with
+various command-line and configuration directives. Consult your local
+installation for the actual locations.</note>
+
+<dl>
+<dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>
+<dd>Main server configuration file.</dd>
+
+<dt><code>/usr/local/apache2/conf/mime.types</code></dt>
+<dd>Default MIME type mappings.</dd>
+
+<dt><code>/usr/local/apache2/logs/error_log</code></dt>
+<dd>Error log file.</dd>
+
+<dt><code>/usr/local/apache2/logs/access_log</code></dt>
+<dd>Access log file.</dd>
+
+<dt><code>/usr/local/apache2/logs/httpd.pid</code></dt>
+<dd>File containing the process ID of the running daemon.</dd>
+</dl>
+
 
 <p>The following arguments are available only on the <a
 href="../platform/windows.html">Windows platform</a>:</p>

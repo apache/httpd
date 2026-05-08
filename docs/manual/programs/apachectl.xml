@@ -155,4 +155,19 @@ use the normal <code>apachectl start</code>.</dd>
 
 </section>
 
+<section id="files"><title>Files</title>
+
+<note>The default paths listed below may be changed at compile time.
+Consult your local installation for the actual locations.</note>
+
+<dl>
+<dt><code>/usr/local/apache2/bin/envvars</code></dt>
+<dd>Environment variable settings sourced at startup.</dd>
+
+<dt><code>/usr/local/apache2/bin/httpd</code></dt>
+<dd>The httpd binary invoked by apachectl.</dd>
+</dl>
+
+</section>
+
 </manualpage>
