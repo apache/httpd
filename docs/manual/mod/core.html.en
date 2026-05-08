@@ -308,24 +308,36 @@ AcceptFilter https connect</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>While processing a request, the server looks for
-    the first existing configuration file from this list of names in
-    every directory of the path to the document, if distributed
+    <p>The AccessFileName directive allows you to change the name of the file
+    that will be considered for per-directory configuration overrides, in the
+    event that <code class="directive"><a href="#allowoverride">AllowOverride</a></code> is enabled
+    for that directory.</p>
+
+    <div class="warning">We do not recommend that you change this value, and
+    especially that you do not list multiple possible file names, as it makes
+    troubleshooting more difficult for anyone not familiar with your local
+    settings.</div>
+
+    <p>While processing a request, the server looks for files with the name
+    (or names) defined in <code>AccessFileName</code>
+    in every directory of the path to the document, if distributed
     configuration files are <a href="#allowoverride">enabled for that
-    directory</a>. For example:</p>
-
-    <pre class="prettyprint lang-config">AccessFileName .acl</pre>
-
-
-    <p>Before returning the document
+    directory</a>. For example Before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
-    <code>/.acl</code>, <code>/usr/.acl</code>,
-    <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives unless they have been disabled with:</p>
+    <code>/.htaccess</code>, <code>/usr/.htaccess</code>,
+    <code>/usr/local/.htaccess</code> and <code>/usr/local/web/.htaccess</code>
+    for directives.</p>
+
+    <p>For this reason, the default configuration file contains the following stanza:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
+
+
+    <p>This configuration block helps prevent unnecessary file accesses in directories
+    outside of your <code class="directive"><a href="#documentroot">DocumentRoot</a></code>. See also the note
+    about this in the <code>AllowOverride</code> directive documentation.</p>
 
 
 <h3>See also</h3>
@@ -433,9 +445,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>When the server finds an <code>.htaccess</code> file (as
-    specified by <code class="directive"><a href="#accessfilename">AccessFileName</a></code>),
-    it needs to know which directives declared in that file can override
+    <p>When the server finds a distributed configuration file (Usually called
+    <code>.htaccess</code> - configurable by the <code class="directive"><a href="#accessfilename">AccessFileName</a></code>), it needs to know which directives
+    declared in that file can override
     earlier configuration directives.</p>
 
     <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
@@ -501,7 +513,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
-      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
+      Allow use of the legacy host access control directives (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>). For the modern
+      equivalent, see the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+      directive, which is controlled by <code>AuthConfig</code>.</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 

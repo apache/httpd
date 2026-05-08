@@ -697,11 +697,30 @@ algorithm type.
 Finally the end-entity certificate's private key can also be
 added to the certificate file instead of using a separate
 <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code>
-directive. This practice is highly discouraged. If it is used,
-the certificate files using such an embedded key must be configured
-after the certificates using a separate key file. If the private
-key is encrypted, the pass phrase dialog is forced at startup time.
-</p>
+directive.</p>
+
+<div class="warning"><h3>Do not combine key and certificate in one file</h3>
+<p>This practice is highly discouraged for the following reasons:</p>
+<ul>
+<li><strong>Security</strong>: Keeping the private key in a separate file
+allows stricter file permissions. The certificate file can be
+world-readable (it is public data), while the key file should be
+readable only by root. Combining them in one file means any
+misconfiguration or vulnerability that exposes the certificate file
+also exposes the private key.</li>
+<li><strong>Ordering constraint</strong>: If a combined file is used,
+all <code class="directive">SSLCertificateFile</code> directives referencing
+such combined files must appear <em>after</em> any
+<code class="directive">SSLCertificateFile</code> directives that use a
+separate key file. Violating this ordering will cause errors at
+startup.</li>
+<li><strong>Maintenance</strong>: Separate files make it immediately
+clear which file contains what, simplifying certificate rotation
+and audits.</li>
+</ul>
+<p>If the private key is encrypted, the pass phrase dialog is forced
+at startup time.</p>
+</div>
 
 <p>As an alternative to storing certificates and private keys in
 files, a certificate identifier can be used to identify a certificate
@@ -790,12 +809,13 @@ to support multiple algorithms for server authentication. For each
 directive, there must be a matching <code class="directive">SSLCertificateFile</code>
 directive.</p>
 
-<p>
-The private key may also be combined with the certificate in the file given by
-<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, but this practice
-is highly discouraged. If it is used, the certificate files using such
-an embedded key must be configured after the certificates using a separate
-key file.</p>
+<div class="warning"><h3>Do not combine key and certificate in one file</h3>
+<p>The private key may also be combined with the certificate in the
+file given by <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>,
+but this practice is highly discouraged. See the warning in the
+<code class="directive">SSLCertificateFile</code> documentation for a full
+explanation of the risks and constraints.</p>
+</div>
 
 <p>As an alternative to storing private keys in files, a key
 identifier can be used to identify a private key stored in a
