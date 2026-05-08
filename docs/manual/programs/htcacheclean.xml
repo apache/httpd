@@ -211,9 +211,9 @@
 
 <section id="files"><title>Files</title>
 
-<note>The cache root directory is specified as an argument on the command line
+<p>The cache root directory is specified as an argument on the command line
 and should match the <code>CacheRoot</code> directive in the server
-configuration.</note>
+configuration.</p>
 
 <dl>
 <dt><var>path</var></dt>

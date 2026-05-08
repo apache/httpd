@@ -179,9 +179,9 @@ server will not detach from the console.</dd>
 
 <section id="files"><title>Files</title>
 
-<note>The default paths listed below may be changed at compile time or with
+<p>The default paths listed below may be changed at compile time or with
 various command-line and configuration directives. Consult your local
-installation for the actual locations.</note>
+installation for the actual locations.</p>
 
 <dl>
 <dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>

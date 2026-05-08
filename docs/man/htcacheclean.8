@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2026-04-30" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2026-05-08" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -143,4 +143,14 @@ If 1, the entry contains a cached HEAD request with no body, 0 otherwise\&.
  
 .PP
 \fBhtcacheclean\fR returns a zero status ("true") if all operations were successful, \fB1\fR otherwise\&. If an URL is specified, and the URL was cached and successfully removed, \fB0\fR is returned, \fB2\fR otherwise\&. If an error occurred during URL removal, \fB1\fR is returned\&.
+ 
+.SH "FILES"
+ 
+.PP
+The cache root directory is specified as an argument on the command line and should match the \fBCacheRoot\fR directive in the server configuration\&.
+ 
+ 
+.TP
+\fIpath\fR
+The root directory of the disk cache to be cleaned\&.  
  

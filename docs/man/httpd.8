@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2026-04-30" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2026-05-08" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -102,6 +102,28 @@ Print the version and build parameters of \fBhttpd\fR, and then exit\&.
 .TP
 \fB-X\fR
 Run httpd in debug mode\&. Only one worker will be started and the server will not detach from the console\&.  
+ 
+.SH "FILES"
+ 
+.PP
+The default paths listed below may be changed at compile time or with various command-line and configuration directives\&. Consult your local installation for the actual locations\&.
+ 
+ 
+.TP
+\fB/usr/local/apache2/conf/httpd\&.conf\fR
+Main server configuration file\&.  
+.TP
+\fB/usr/local/apache2/conf/mime\&.types\fR
+Default MIME type mappings\&.  
+.TP
+\fB/usr/local/apache2/logs/error_log\fR
+Error log file\&.  
+.TP
+\fB/usr/local/apache2/logs/access_log\fR
+Access log file\&.  
+.TP
+\fB/usr/local/apache2/logs/httpd\&.pid\fR
+File containing the process ID of the running daemon\&.  
  
 .PP
 The following arguments are available only on the Windows platform:

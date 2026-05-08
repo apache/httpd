@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APACHECTL" 8 "2026-04-30" "Apache HTTP Server" "apachectl"
+.TH "APACHECTL" 8 "2026-05-08" "Apache HTTP Server" "apachectl"
 
 .SH NAME
 apachectl \- Apache HTTP Server Control Interface
@@ -92,4 +92,17 @@ The following option was available in earlier versions but has been removed\&.
 .TP
 \fBstartssl\fR
 To start \fBhttpd\fR with SSL support, you should edit your configuration file to include the relevant directives and then use the normal \fBapachectl start\fR\&.  
+ 
+.SH "FILES"
+ 
+.PP
+The default paths listed below may be changed at compile time\&. Consult your local installation for the actual locations\&.
+ 
+ 
+.TP
+\fB/usr/local/apache2/bin/envvars\fR
+Environment variable settings sourced at startup\&.  
+.TP
+\fB/usr/local/apache2/bin/httpd\fR
+The httpd binary invoked by apachectl\&.  
  

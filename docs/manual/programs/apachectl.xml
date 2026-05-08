@@ -157,8 +157,8 @@ use the normal <code>apachectl start</code>.</dd>
 
 <section id="files"><title>Files</title>
 
-<note>The default paths listed below may be changed at compile time.
-Consult your local installation for the actual locations.</note>
+<p>The default paths listed below may be changed at compile time.
+Consult your local installation for the actual locations.</p>
 
 <dl>
 <dt><code>/usr/local/apache2/bin/envvars</code></dt>
