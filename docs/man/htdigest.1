@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDIGEST" 1 "2026-04-30" "Apache HTTP Server" "htdigest"
+.TH "HTDIGEST" 1 "2026-05-08" "Apache HTTP Server" "htdigest"
 
 .SH NAME
 htdigest \- manage user files for digest authentication
@@ -59,4 +59,14 @@ The user name to create or update in \fIpasswdfile\fR\&. If \fIusername\fR does 
  
 .PP
 This program is not safe as a setuid executable\&. Do \fInot\fR make it setuid\&.
+ 
+.SH "FILES"
+ 
+.PP
+The digest authentication file path is specified as an argument on the command line and may be located anywhere on the filesystem\&.
+ 
+ 
+.TP
+\fIpasswdfile\fR
+The flat-file containing usernames, realms, and password hashes\&.  
  

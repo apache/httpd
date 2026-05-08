@@ -30,6 +30,8 @@
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
      <p><code class="program"><a href="../programs/apachectl.html">apachectl</a></code> est un frontal pour le serveur HTTP
      Apache. Il a été conçu pour aider l'administrateur à contrôler le

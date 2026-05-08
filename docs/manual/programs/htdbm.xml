@@ -325,8 +325,8 @@
 
 <section id="files"><title>Files</title>
 
-<note>The DBM password file path is specified as an argument on the command
-line and may be located anywhere on the filesystem.</note>
+<p>The DBM password file path is specified as an argument on the command
+line and may be located anywhere on the filesystem.</p>
 
 <dl>
 <dt><var>filename</var></dt>

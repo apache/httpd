@@ -40,6 +40,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#restrictions">Restrictions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#files">Files</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -329,6 +330,18 @@
 
     <p>Usernames are limited to <code>255</code> bytes and may not include the
     character <code>:</code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="files" id="files">Files</a> <a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
+
+<p>The DBM password file path is specified as an argument on the command
+line and may be located anywhere on the filesystem.</p>
+
+<dl>
+<dt><var>filename</var></dt>
+<dd>The DBM format file containing usernames and passwords.</dd>
+</dl>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/htdbm.html" title="English">&nbsp;en&nbsp;</a> |

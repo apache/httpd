@@ -75,8 +75,8 @@
 
 <section id="files"><title>Files</title>
 
-<note>The digest authentication file path is specified as an argument on the
-command line and may be located anywhere on the filesystem.</note>
+<p>The digest authentication file path is specified as an argument on the
+command line and may be located anywhere on the filesystem.</p>
 
 <dl>
 <dt><var>passwdfile</var></dt>
