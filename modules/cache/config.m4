@@ -79,10 +79,10 @@ if test "x$ap_distcache_configured" = "x"; then
   if test "$ap_distcache_found" = "yes"; then
     dnl test for a good version
     AC_MSG_CHECKING(for distcache version)
-    AC_TRY_COMPILE([#include <distcache/dc_client.h>],[
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <distcache/dc_client.h>]],[[
 #if DISTCACHE_CLIENT_API != 0x0001
 #error "distcache API version is unrecognised"
-#endif],
+#endif]])],
       [],
       [ap_distcache_found="no"])
     AC_MSG_RESULT($ap_distcache_found)
@@ -99,9 +99,8 @@ if test "x$ap_distcache_configured" = "x"; then
     ap_distcache_libs="-ldistcache -lnal"
     APR_ADDTO(LIBS, [$ap_distcache_libs])
 
-    AC_TRY_LINK(
-      [#include <distcache/dc_client.h>],
-      [DC_CTX *foo = DC_CTX_new((const char *)0,0);],
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <distcache/dc_client.h>]],
+      [[DC_CTX *foo = DC_CTX_new((const char *)0,0);]])],
       [],
       [ap_distcache_found="no"])
     AC_MSG_RESULT($ap_distcache_found)
