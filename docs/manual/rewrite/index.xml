@@ -23,7 +23,7 @@
 <manualpage metafile="index.xml.meta">
 <parentdocument href="../"/>
 
-  <title>Apache mod_rewrite</title>
+  <title>Guide to Apache mod_rewrite</title>
 
 <summary>
 
@@ -54,7 +54,7 @@
       attach to the rules.</p>
 
       <p>Since <module>mod_rewrite</module> is so powerful, it can indeed be rather
-      complex. This document supplements the <a
+      complex. This guide supplements the <a
       href="../mod/mod_rewrite.html">reference documentation</a>, and
       attempts to allay some of that complexity, and provide highly
       annotated examples of common scenarios that you may handle with
