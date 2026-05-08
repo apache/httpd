@@ -37,20 +37,23 @@ URLs on the fly</description>
       the fly. By default, <module>mod_rewrite</module> maps a URL to a filesystem
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
+
       <p><module>mod_rewrite</module> provides a flexible and powerful way to
       manipulate URLs using an unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URL
       based on server variables, environment variables, HTTP headers, or time
       stamps.</p>
-      <p><module>mod_rewrite</module> operates on the full URL path, including the
-      path-info section. A rewrite rule can be invoked in
-      <code>httpd.conf</code> or in <code>.htaccess</code>. The path generated
+
+      <p><module>mod_rewrite</module> can operate on the full URL-path, or any
+      portion of it, including the PATH_INFO or QUERY_STRING. It can also inspect
+      other values, such as headers, cookies, environment variables.</p>
+
+      <p>A rewrite rule
+      can be invoked in the server configuration files, or in <glossary
+      ref="perdirectory">per-directory</glossary> context. The path generated
       by a rewrite rule can include a query string, or can lead to internal
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
-
-      <p>A regular expression only needs quoting if it contains unescaped space, 
-      in which case single and double quotes are equivalent.</p>
 
       <p>Further details, discussion, and examples, are provided in the
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
