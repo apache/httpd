@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932827:1933762 (outdated) -->
+<!-- English Revision: 1933762 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -798,10 +798,12 @@ répertoire</description>
 
       <dd>Le mot-clé <code>NameWidth</code> vous permet de spécifier la
       largeur en octets de la colonne correspondant au nom du
-      fichier.</dd>
+      fichier. La valeur doit être supérieure à 5, ou <code>*</code> pour une
+      largeur automatique. S’il n’est pas défini ou préfixé par <code>-</code>,
+      la valeur par défaut de 20 octets est utilisée.</dd>
 
-      <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
-      définie), <module
+      <dd>S’il n'est pas
+      défini, <module
       >mod_autoindex</module> va calculer la meilleure largeur
       possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
 
@@ -1077,8 +1079,10 @@ répertoire</description>
      éventuellement héritées d'un directory de niveau supérieur). Par
      contre, si un mot-clé non préfixé est trouvé, il supprime toutes
      les definitions héritées, ainsi que toute
-     définition incrémentale. Considérons l'exemple
-     suivant :</p>
+     définition incrémentale, sauf pour les options prenant une valeur
+     (<code>Charset</code>, <code>Type</code>, <code>DescriptionWidth</code>,
+     <code>NameWidth</code>, <code>IconWidth</code>, <code>IconHeight</code>),
+     qui sont héritées indépendamment. Considérons l'exemple suivant :</p>
 
      <highlight language="config">
 IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
@@ -1095,6 +1099,11 @@ IndexOptions +SuppressSize
      <directive>IndexOptions</directive> pour un répertoire particulier,
      tout en supprimant les définitions héritées, spécifiez les
      mots-clés sans préfixe <code>+</code> ou <code>-</code></p>
+
+     <p>Notez que les préfixes <code>+</code> et <code>-</code> ne peuvent pas
+     être utilisés avec les options qui prennent une valeur comme
+     <code>IconWidth</code>, <code>IconHeight</code>, <code>NameWidth</code> ou
+     <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 </usage>
