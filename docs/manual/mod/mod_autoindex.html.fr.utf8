@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génère automatiquement des index de répertoires d'une
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></td></tr>
@@ -557,15 +555,16 @@ de l'index d'un répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
 </table>
-    <p>La directive <code class="directive">IndexIgnore</code> permet d'effectuer des
-    ajouts à la liste des fichiers à cacher lors de l'affichage de l'index d'un
-    répertoire. <var>fichier</var> est un nom de fichier ou un motif qui peut
-    contenir les caractères génériques <code>?</code> et <code>*</code>.
-    <code>?</code> correspond à tout caractère unique et <code>*</code> à toute
-    chaîne de caractères, y compris la chaîne vide. Des directives IndexIgnore
-    multiples ajoutent des éléments à la liste des fichiers à ignorer au lieu de
-    remplacer cette dernière. Par défaut, la liste contient <code>.</code> (le
-    répertoire actuel).</p>
+    <p>La directive <code class="directive">IndexIgnore</code> permet
+    d'effectuer des ajouts à la liste des fichiers à cacher lors de
+    l'affichage de l'index d'un répertoire. <var>fichier</var> est un nom de
+    fichier ou un motif qui peut contenir les caractères génériques
+    <code>?</code> et <code>*</code>. <code>?</code> correspond à tout caractère
+    unique et <code>*</code> à toute chaîne de caractères, y compris la
+    chaîne vide. Des directives IndexIgnore multiples ajoutent des
+    éléments à la liste des fichiers à ignorer au lieu de remplacer cette
+    dernière. Par défaut, la liste contient <code>.</code> (le répertoire
+    actuel).</p>
 
     <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
@@ -586,7 +585,7 @@ de l'index d'un répertoire</td></tr>
         <li>Un point en début de nom de fichier n’est pas traité de manière
 	particulière. Par exemple, <code>*~</code> correspondra avec
 	<code>.example~</code>, alors que ce ne sera pas le cas avec le shell.</li>
-	</ul>
+      </ul>
     </div>
 
     <div class="note"><h3>Expressions rationnelles</h3>
@@ -738,9 +737,10 @@ répertoire</td></tr>
       sans devoir attendre que toutes les images aient été chargées. En
       l'absence de cette option, c'est la hauteur standard définie par
       le logiciel Apache httpd qui est choisie comme valeur par défaut.
-
+      
       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
+
       </dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
@@ -775,10 +775,12 @@ répertoire</td></tr>
 
       <dd>Le mot-clé <code>NameWidth</code> vous permet de spécifier la
       largeur en octets de la colonne correspondant au nom du
-      fichier.</dd>
+      fichier. La valeur doit être supérieure à 5, ou <code>*</code> pour une
+      largeur automatique. S’il n’est pas défini ou préfixé par <code>-</code>,
+      la valeur par défaut de 20 octets est utilisée.</dd>
 
-      <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
-      définie), <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> va calculer la meilleure largeur
+      <dd>S’il n'est pas
+      défini, <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> va calculer la meilleure largeur
       possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixe la largeur de la
@@ -864,7 +866,7 @@ répertoire</td></tr>
       <dd>L'activation de cette option supprime l'affichage de la date
       de dernière modification dans le cas d'un affichage "amélioré".
 
-      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
       </dd>
 
@@ -880,7 +882,7 @@ répertoire</td></tr>
       <code>hr</code> dans les blocs <code>pre</code> (utilisés pour
       formater les affichages "améliorés").
 
-      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
       </dd>
 
@@ -889,7 +891,7 @@ répertoire</td></tr>
       <dd>L'activation de cette option supprime l'affichage de la taille
       du fichier dans le cas d'un affichage "amélioré".
 
-      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
       </dd>
 
@@ -965,8 +967,7 @@ répertoire</td></tr>
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> de générer du code XHTML 1.0 au
       lieu de HTML 3.2.
-
-      <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
+       <strong>Cette option n'a d'effet que si <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
       est aussi activé.</strong>
       </dd>
 
@@ -981,6 +982,7 @@ répertoire</td></tr>
       spécifié, il doit s’agir de la seule option présente.</div>
       </dd>
     </dl>
+
 
    
    <dl><dt>Options d'index incrémentales</dt>
@@ -1015,8 +1017,10 @@ répertoire</td></tr>
      éventuellement héritées d'un directory de niveau supérieur). Par
      contre, si un mot-clé non préfixé est trouvé, il supprime toutes
      les definitions héritées, ainsi que toute
-     définition incrémentale. Considérons l'exemple
-     suivant :</p>
+     définition incrémentale, sauf pour les options prenant une valeur
+     (<code>Charset</code>, <code>Type</code>, <code>DescriptionWidth</code>,
+     <code>NameWidth</code>, <code>IconWidth</code>, <code>IconHeight</code>),
+     qui sont héritées indépendamment. Considérons l'exemple suivant :</p>
 
      <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize</pre>
@@ -1032,6 +1036,11 @@ IndexOptions +SuppressSize</pre>
      <code class="directive">IndexOptions</code> pour un répertoire particulier,
      tout en supprimant les définitions héritées, spécifiez les
      mots-clés sans préfixe <code>+</code> ou <code>-</code></p>
+
+     <p>Notez que les préfixes <code>+</code> et <code>-</code> ne peuvent pas
+     être utilisés avec les options qui prennent une valeur comme
+     <code>IconWidth</code>, <code>IconHeight</code>, <code>NameWidth</code> ou
+     <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 

@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
@@ -97,8 +95,8 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
     gestionnaire a été défini pour l'URL considérée. Les gestionnaires
     peuvent être définis via des directives telles que
     <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou par d'autres
-    modules tels que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> au cours des
-    substitutions de niveau répertoire.</p>
+    modules comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> au cours d’une substitution
+    par répertoire.</p>
 
     <p>Lorsqu'elle est définie à <code>On</code>,
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> ne prend aucune mesure si un autre
@@ -165,22 +163,25 @@ client envoie une requête pour un répertoire</td></tr>
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
 
-    <p><strong>Note:</strong> Positionner plusieurs directives <code class="directive">DirectoryIndex</code>
-    au coeur du <a href="../sections.html"><em>même context</em></a> complète la liste des ressources et ne l'écrase pas :
-    </p>
-    <pre class="prettyprint lang-config"># Exemple A: Positionner index.html en page d'index, puis ajouter index.php.
+    <div class="note">La définition de plusieurs directives
+    <code class="directive">DirectoryIndex</code> au sein d'un <a href="../sections.html"><em>même
+    contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
+    que de remplacer celle déjà définies :
+    </div>
+    <pre class="prettyprint lang-config"># Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex index.php
 &lt;/Directory&gt;
 
-# Exemple B: La même chose que l'exemple A, mais réalisé au moyen d'une seule directive.
+# Exemple B: identique à l'exemple A, mais avec une seule directive.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html index.php
 &lt;/Directory&gt;
 
-# Exemple C: Pour remplacer la liste des ressources, il faut d'abord la vider :
-# Ici, seul index.php restera référencé comme ressource d'index.
+# Exemple C: pour remplacer la liste des pages d'index par une autre,
+# vous devez tout d'abord supprimer la première liste : dans l'exemple
+# suivant, il ne restera qu'index.php comme page d'index.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html
     DirectoryIndex disabled
@@ -245,9 +246,11 @@ fin"</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument NotFound est disponible à partir de la version 2.5.1
+du serveur HTTP Apache</td></tr>
 </table>
-    <p>La directive <code class="directive">DirectorySlash</code> permet de
-    déterminer si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit corriger ou non les URLs
+    <p>La directive <code class="directive">DirectorySlash</code> permet de déterminer
+    si <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> doit éventuellement corriger les URLs
     pointant vers un répertoire.</p>
 
     <p>En général, si un utilisateur envoie une requête pour une
@@ -297,20 +300,22 @@ fin"</td></tr>
     des requêtes POST en requêtes GET lors d'une redirection, les
     données POST étant alors perdues.</p>
 
+    
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
-aucun fichier</td></tr>
+aucun fichier ou gestionnaire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FallbackResource disabled | <var>url-locale</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Désactivé - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>disabled</code> est disponible à partir
-de la version 2.4.4 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>disabled</code> est disponible depuis la
+version 2.4.4 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de définir un traitement pour toute URL
     qui ne correspond à aucune ressource de votre système de fichiers,
@@ -336,9 +341,9 @@ de la version 2.4.4 du serveur HTTP Apache.</td></tr>
 
     <p>Les fichiers existants comme des images, des fichiers css, etc...
     seront traités normalement.</p>
-    <p>L'argument <code>disabled</code> permet de désactiver cette
-    fonctionnalité dans le cas où l'héritage d'un répertoire parent
-    n'est pas souhaité.</p>
+    <p>Utilisez l'argument <code>disabled</code> pour désactiver cette
+    fonctionnalité si l'héritage d'un répertoire parent n'est pas
+    souhaité.</p>
     <p>Pour un URI intermédiaire tel que
     <em>http://example.com/blog/</em>, cet URI intermédiaire doit être
     spécifié en tant que <var>url-locale</var> :</p>
@@ -353,7 +358,24 @@ de la version 2.4.4 du serveur HTTP Apache.</td></tr>
     <code>/blog/index.php</code>) peut accéder à l'URL de la requête originale
     via la variable de serveur <code>REQUEST_URI</code>. Pour accéder à cette
     variable en PHP, par exemple, utilisez <code>$_SERVER['REQUEST_URI']</code>.</p>
+    <div class="note"><h3>Interaction avec les autres gestionnaires</h3>
+    <p>La directive <code class="directive">FallbackResource</code> n’a d’effet que si
+    aucun autre gestionnaire n’a été assigné à la requête. Si une directive
+    comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> a déjà assigné un gestionnaire à un
+    URL ou à une extension de fichier, la directive
+    <code class="directive">FallbackResource</code> ne l’outrepassera pas. Par exemple,
+    si vous utilisez <code>SetHandler application/x-httpd-php</code> dans une
+    section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, ce
+    gestionnaire s’appliquera à toutes les requêtes dans ce répertoire, même
+    aux requêtes pour des fichiers qui n’existent pas ; la directive
+    <code class="directive">FallbackResource</code> ne sera alors jamais invoquée.</p></div>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="#directorycheckhandler">DirectoryCheckHandler</a></code></li>
+</ul>
 </div>
 </div>
 <div class="bottomlang">
