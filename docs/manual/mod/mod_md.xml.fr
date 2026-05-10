@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1932366:1933742 (outdated) -->
+<!-- English Revision: 1933742 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,8 +37,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats TLS via le protocole ACME (<a
-	href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
+	certificats TLS via le protocole ACME (<rfc>8555</rfc>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
 	monitorer l'état de tous les certificats gérés par mod_md et de configurer
@@ -1207,8 +1206,9 @@ MDRequireHttps permanent
         <usage>
             <p>
 		Cette directive permet de définir la commande à appeler
-		lorsqu'un des évènements "renewed", "installed", "expiring" ou
-		"errored" se produit pour un domaine géré. La commande sera
+		lorsqu'un des évènements "renewed", "installed", "expiring",
+		"errored", "renewing", "challenge-setup:type:domain",
+		"ocsp-renewed" ou "ocsp-errored" se produit pour un domaine géré. La commande sera
 		probablement invoquée pour d'autres évènements dans le futur et
 		ignorera les évènements pour lesquels elle n'aura pas été
 		préparée.
@@ -1271,13 +1271,18 @@ MDMessageCmd /etc/apache/md-message
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-		Un évènement de type ocsp-errored est déclenché lorsque le
+		Un évènement de type "ocsp-errored" est déclenché lorsque le
 		<directive module="mod_md">MDStapling</directive> est activé
 		pour un domaine, et indique qu'une erreur s'est produite en
 		essayant d'obtenir la réponse OCSP  de l'autorité de
 		certification. mod_md essaiera à nouveau d'obtenir cette
 		réponse.		
-            </p>
+            </p><p>
+                Un évènement de type "ocsp-renewed" est déclenché lorsqu’une
+		nouvelle réponse OCSP a été obtenu avec succès pour un
+		certificat de domaine. Cet évènement de produit au plus une fois
+		par jour.
+	    </p>
         </usage>
     </directivesynopsis>
 
@@ -1503,8 +1508,8 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>Définit le motif de nom et d’URL pour un nom de site de
-	vérification de certificat.</description>
+        <description>Définit le motif de nom et d’URL pour un site de
+	vérification de certificat</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1519,11 +1524,11 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDActivationDelay</name>
-        <description>Définit le délai d'activation des nouveaux certificats</description>
+        <description>Délai d’activation des nouveaux certificays</description>
         <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
-        </contextlist>
+        </contextlist>    
         <compatibility>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</compatibility>
         <usage>
@@ -1633,8 +1638,8 @@ MDMessageCmd /etc/apache/md-message
 		pas les renouvellements des autres domaines.
             </p>
 	    <p>
-                Dans mod_md version 2.6.1, le délai par défaut a été augmenté de
-		5 à 30 secondes.
+		 Avec la version 2.6.1 de mod_md, le temps d’attente a été
+		 augmenté de&nbsp;5 à 30&nbsp;secondes.
             </p>
         </usage>
     </directivesynopsis>
@@ -1757,9 +1762,9 @@ MDMessageCmd /etc/apache/md-message
 		sous-domaines spécifiques.
             </p>
         </usage>
-    </directivesynopsis>    
+    </directivesynopsis>
 
-        <directivesynopsis>
+    <directivesynopsis>
         <name>MDCheckInterval</name>
         <description>Détermine la périodicité de la vérification des certificats</description>
         <syntax>MDCheckInterval <var>duration</var></syntax>
