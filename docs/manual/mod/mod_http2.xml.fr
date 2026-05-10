@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933057:1933858 (outdated) -->
+<!-- English Revision: 1933858 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -32,8 +32,7 @@
     HTTP Apache</compatibility>
 
     <summary>
-	<p>Ce module ajoute le support de HTTP/2 (<a
-	href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) au serveur HTTP
+	<p>Ce module ajoute la prise en charge de HTTP/2 (<rfc>7540</rfc>) au serveur HTTP
 	Apache.</p>
 
         <p>Il s'appuie sur la bibliothèque <a
@@ -319,8 +318,8 @@ Protocols h2 h2c http/1.1
             <p>
                 Les server pushes sont détectés en inspectant les
 		en-têtes <code>Link</code> des réponses (voir
-		https://tools.ietf.org/html/rfc5988 pour la
-		spécification). Lorsqu'un lien spécifié de cette manière
+		<rfc>8288</rfc> pour la
+		spécification des liens du web). Lorsqu'un lien spécifié de cette manière
 		possède l'attribut <code>rel=preload</code>, il est
 		considéré comme devant faire l'objet d'un push.
             </p>

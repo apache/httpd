@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148:1933776 (outdated) -->
+<!-- English Revision: 1933776 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -336,6 +336,39 @@ particulier</description>
     AddOutputFilterByType INCLUDES;DEFLATE text/html
 &lt;/Location&gt;
     </highlight>
+
+    <p>Notez que les directives <directive>AddOutputFilterByType</directive>
+    situées dans un même contexte sont additives, mais que leur définition dans
+    un contexte plus spécifique (tel qu’une section <directive type="section"
+    module="core">VirtualHost</directive>, <directive type="section"
+    module="core">Directory</directive> ou <directive type="section"
+    module="core">Location</directive>) remplacera — ne s’ajoutera pas à
+    — toutes définitions héritées d’un contexte plus général. Ce comportement
+    est identique à celui de la directive <directive
+    module="mod_mime">AddOutputFilter</directive>.</p>
+
+    <highlight language="config">
+# Server context: compress text/html and text/plain
+AddOutputFilterByType DEFLATE text/html text/plain
+&lt;VirtualHost *:80&gt;
+    # Remplace la définition globale pour ce serveur virtuel;
+    # seuls les contenus de type text/css seront compressés ici :
+    AddOutputFilterByType DEFLATE text/css
+&lt;/VirtualHost&gt;
+    </highlight>
+
+    <note type="warning"><title>Limitation avec les filtres définis par l’utilisateur</title>
+    <p>La directive <directive>AddOutputFilterByType</directive> fonctionne avec
+    des filtres intégrés standards comme <code>DEFLATE</code> et
+    <code>INCLUDES</code>, mais ne fonctionne pas avec des filtres qui
+    déterminent leur configuration par nom de filtre, comme ceux définis
+    par le module <module>mod_ext_filter</module> ou par la directive
+    <code>LuaOutputFilter</code> du module <module>mod_lua</module>. Cela est dû
+    au fait que le nom du filtre est modifié en interne par l’adjonction du
+    préfixe <code>BYTYPE:</code>. Pour les filtres définis par l’utilisateur,
+    utilisez à la place les directives <directive>FilterDeclare</directive> et
+    <directive>FilterProvider</directive> avec une expression correspondant à
+    <code>%{CONTENT_TYPE}</code>.</p></note>
 
 </usage>
 
