@@ -111,6 +111,12 @@ ProxyPassReverse "/apps/foo" "http://www.example.com/foo"
     <p>Environment variables whose names have the prefix <code>AJP_</code>
     are forwarded to the origin server as AJP request attributes
     (with the <code>AJP_</code> prefix removed from the name of the key).</p>
+
+    <p>Please be aware that these request attributes are only accessible when
+    directly asking for them using the <code>HttpServletRequest.getAttribute</code>
+    method - Tomcat's implementation of the
+    <a href="https://tomcat.apache.org/tomcat-9.0-doc/api/org/apache/catalina/connector/Request.html#getAttributeNames--"><code>getAttributeNames</code></a>
+    method does not list them as those are handled as internal attributes.</p>
 </section>
 
 <section id="overviewprotocol"><title>Overview of the protocol</title>
