@@ -162,7 +162,7 @@ RewriteRule "^(.*)$" "index.php" [L]
 
 <note>For this particular use case - routing all unmatched
 requests to a front controller - the
-<a href="remapping.html#fallback-resource">FallbackResource</a> directive
+<a href="avoid.html#fallback-resource">FallbackResource</a> directive
 is a simpler and more efficient alternative to mod_rewrite.</note>
 
 <p>Without the <code>RewriteBase "/myapp/"</code> line, the rewritten

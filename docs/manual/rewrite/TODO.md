@@ -14,7 +14,7 @@ result in one file "owning" the content and others cross-referencing it.
       (htaccess.xml, plus both the [L] and [END] sections of flags.xml).
       → htaccess.xml owns the full explanation; flags.xml slims down + xrefs.
 
-- [ ] **FallbackResource / front-controller** recipe appears in four
+- [x] **FallbackResource / front-controller** recipe appears in four
       places across three files (avoid.xml, remapping.xml ×2, htaccess.xml).
       → avoid.xml owns it; others cross-reference.
 

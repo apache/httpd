@@ -247,52 +247,19 @@ RewriteRule "^(.*)" "https://%1$1" [R=301,L]
 
   <title>Front Controller / Application Routing</title>
 
-  <dl>
-    <dt>Description:</dt>
+  <p>Most modern web frameworks route all requests through a single
+  entry point (a "front controller"). The
+  <directive module="mod_dir">FallbackResource</directive> directive
+  handles this more simply and efficiently than
+  <module>mod_rewrite</module>. See <a
+  href="avoid.html#fallback-resource">When NOT to use mod_rewrite</a>
+  for the recommended approach.</p>
 
-    <dd>
-      <p>Most modern web frameworks (PHP, Python, Ruby, etc.) use a
-      single entry point - often called a "front controller" - that
-      handles all requests. URLs like <code>/products/widget</code>
-      are routed to <code>index.php</code> (or equivalent), which
-      parses the URL internally.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-
-    <note>For this use case, the
-    <directive module="mod_dir">FallbackResource</directive> directive is
-    almost always the better choice. See the
-    <a href="#fallback-resource">Fallback Resource</a> recipe above.</note>
-
-      <p>If you need <module>mod_rewrite</module> (for example, to add
-      additional conditions), the standard pattern is:</p>
-
-<highlight language="config">
-RewriteEngine On
-RewriteCond "%{REQUEST_FILENAME}" !-f
-RewriteCond "%{REQUEST_FILENAME}" !-d
-RewriteRule "^(.*)$" "/index.php" [L]
-</highlight>
-
-      <p>The <code>!-f</code> and <code>!-d</code> conditions skip the
-      rule for requests that map to an existing file or directory, so
-      static assets (images, CSS, JavaScript) are still served
-      directly.</p>
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>In <code>.htaccess</code> context, consider using
-      <code>[END]</code> instead of <code>[L]</code> to avoid
-      reprocessing loops. See the
-      <a href="htaccess.html#loops">.htaccess looping</a> discussion
-      for details.</p>
-    </dd>
-  </dl>
+  <p>If you genuinely need <module>mod_rewrite</module> for this (for
+  example, to add conditions beyond "file doesn't exist"), see the
+  <a href="htaccess.html#rewritebase">per-directory rewrites</a>
+  document for an annotated example that also demonstrates
+  <directive module="mod_rewrite">RewriteBase</directive> usage.</p>
 
 </section>
 
@@ -696,65 +663,6 @@ to simply change your <directive module="core">DocumentRoot</directive>
 directive, or move all of the content up one directory,
 rather than rewriting URLs.</p>
 </dd>
-</dl>
-
-</section>
-
-<section id="fallback-resource">
-<title>Fallback Resource</title>
-
-<dl>
-<dt>Description:</dt>
-<dd>You want a single resource (say, a certain file, like index.php) to
-handle all requests that come to a particular directory, except those
-that should go to an existing resource such as an image, or a css file.</dd>
-
-<dt>Solution:</dt>
-<dd>
-<p>As of version 2.2.16, you should use the <directive
-module="mod_dir">FallbackResource</directive> directive for this:</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource index.php
-&lt;/Directory&gt;
-</highlight>
-
-<p>However, in earlier versions of Apache, or if your needs are more
-complicated than this, you can use a variation of the following rewrite
-set to accomplish the same thing:</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  RewriteBase "/my_blog"
-
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^"                                    "index.php" [PT]
-&lt;/Directory&gt;
-</highlight>
-
-<p>If, on the other hand, you wish to pass the requested URI as a query
-string argument to index.php, you can replace that RewriteRule with:</p>
-
-<highlight language="config">
-RewriteRule "(.*)" "index.php?$1" [PT,QSA]
-</highlight>
-
-<p>Note that these rulesets can be used in a <code>.htaccess</code>
-file, as well as in a &lt;Directory&gt; block.</p>
-
-</dd>
-
-<dt>Discussion:</dt>
-
-<dd>
-<p>The <directive module="mod_dir">FallbackResource</directive> directive
-is almost always the better choice for this use case. See the
-<a href="avoid.html#fallback-resource">When not to use mod_rewrite</a>
-document for a simpler one-line alternative.</p>
-</dd>
-
 </dl>
 
 </section>
