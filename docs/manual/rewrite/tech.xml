@@ -32,6 +32,7 @@ and URL matching.</p>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="flags.html">RewriteRule Flags</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
 <seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>

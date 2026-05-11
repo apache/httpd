@@ -35,11 +35,13 @@ but this doc should help the beginner get their feet wet.
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
-<!-- <seealso><a href="intro.html">mod_rewrite introduction</a></seealso> -->
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
+<seealso><a href="flags.html">RewriteRule Flags</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p>The Apache module <module>mod_rewrite</module> is a very powerful and

@@ -37,7 +37,7 @@ result in one file "owning" the content and others cross-referencing it.
 
 ## LOW Priority
 
-- [ ] **Harmonize `<seealso>` blocks** — htaccess.xml not consistently
+- [x] **Harmonize `<seealso>` blocks** — htaccess.xml not consistently
       listed in other files' seealso despite being a major topic.
 
 - [ ] **Deprecated stub files** (access.xml, advanced.xml, proxy.xml) —
