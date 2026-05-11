@@ -97,32 +97,13 @@ Redirect "/one/" "http://one.example.com/"
 <a href="remapping.html#canonicalhost">Canonical Hostnames</a>
 recipe.</p>
 
-<p>To redirect <code>http</code> URLs to <code>https</code>, do the
-following:</p>
-
-<highlight language="config">
-&lt;VirtualHost *:80&gt;
-    ServerName www.example.com
-    Redirect "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;
-
-&lt;VirtualHost *:443&gt;
-    ServerName www.example.com
-    # ... SSL configuration goes here
-&lt;/VirtualHost&gt;
-</highlight>
-
-<p>The use of <code>RewriteRule</code> to perform this task may be
-appropriate if there are other <code>RewriteRule</code> directives in
-the same scope. This is because, when there are <code>Redirect</code>
-and <code>RewriteRule</code> directives in the same scope, the
-<code>RewriteRule</code> directives will run first, regardless of the
-order of appearance in the configuration file.</p>
-
-<p>In the case of the <em>http-to-https</em> redirection, the use of
-<code>RewriteRule</code> would be appropriate if you don't have access
-to the main server configuration file, and are obliged to perform this
-task in a <code>.htaccess</code> file instead.</p>
+<p>To redirect <code>http</code> URLs to <code>https</code>, a
+<directive module="mod_alias">Redirect</directive> in a dedicated
+HTTP virtual host is the cleanest approach. See the
+<a href="remapping.html#https-redirect">Forcing HTTPS</a> recipe for
+the recommended configuration and the
+<module>mod_rewrite</module> alternative for <code>.htaccess</code>
+use.</p>
 
 </section>
 

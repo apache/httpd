@@ -32,7 +32,7 @@ result in one file "owning" the content and others cross-referencing it.
       "canonicalhost" and "www-resolve" cover the same concept.
       → Merge "www-resolve" into "canonicalhost".
 
-- [ ] **HTTPS redirect** covered in both avoid.xml and remapping.xml.
+- [x] **HTTPS redirect** covered in both avoid.xml and remapping.xml.
       → remapping.xml owns the recipe; avoid.xml references it.
 
 ## LOW Priority
