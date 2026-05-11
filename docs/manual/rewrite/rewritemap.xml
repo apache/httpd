@@ -34,7 +34,7 @@ and provides examples of each of the various <directive module="mod_rewrite"
   <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
   <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
     <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-      <seealso><a href="htaccess.html">Per-directory rewrites (.htaccess)</a></seealso>
+      <seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
   <section id="introduction">

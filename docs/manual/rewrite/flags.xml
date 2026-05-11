@@ -396,7 +396,7 @@ RewriteRule "^(.*)$" "/index.php" [END]
 <p>This does not apply to new requests resulting from external
 redirects.</p>
 
-<p>See the <a href="htaccess.html#loops">.htaccess looping</a>
+<p>See the <a href="htaccess.html#loops">Per-directory Rewrites</a>
 discussion for a detailed explanation of why [L] behaves differently
 in per-directory context, and when [END] is the right choice.</p>
 

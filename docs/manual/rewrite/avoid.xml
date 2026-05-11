@@ -57,7 +57,7 @@ files to work with, you may need to resort to
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<!--<seealso><a href="htaccess.html">Per-directory rewrites (.htaccess)</a></seealso>
+<!--<seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
 
 <section id="redirect">
