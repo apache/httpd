@@ -7,7 +7,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_rewrite and .htaccess files - Apache HTTP Server Version 2.5</title>
+<title>Per-directory Rewrites - Apache HTTP Server Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -21,7 +21,7 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite and .htaccess files</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Per-directory Rewrites</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
@@ -168,7 +168,7 @@ RewriteRule "^(.*)$" "index.php" [L]</pre>
 
 <div class="note">For this particular use case - routing all unmatched
 requests to a front controller - the
-<a href="remapping.html#fallback-resource">FallbackResource</a> directive
+<a href="avoid.html#fallback-resource">FallbackResource</a> directive
 is a simpler and more efficient alternative to mod_rewrite.</div>
 
 <p>Without the <code>RewriteBase "/myapp/"</code> line, the rewritten
