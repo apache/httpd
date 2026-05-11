@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933097:1933923 (outdated) -->
+<!-- English Revision: 1933923 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -367,16 +367,19 @@ module="mod_ssl">SSLOptions</directive> n'a pas été définie.</p>
 <section id="authzproviders"><title>Fournisseurs d'autorisation
 disponibles avec Require</title>
 
-  <p><module>mod_ssl</module> propose quelques fournisseurs
-  d'autorisation à utiliser avec la directive <directive
+  <p><module>mod_ssl</module> propose les fournisseurs
+  d'autorisation suivants à utiliser avec la directive <directive
   module="mod_authz_core">Require</directive> du module
   <module>mod_authz_core</module>.</p>
 
   <section id="reqssl"><title>Require ssl</title>
 
     <p>Le fournisseur <code>ssl</code> refuse l'accès si une connexion
-    n'est pas chiffrée avec SSL. L'effet est similaire à celui de la
-    directive <directive>SSLRequireSSL</directive>.</p>
+    n'est pas chiffrée avec SSL. À la différence de la directive
+    <directive>SSLRequireSSL</directive>, cette directive peut être utilisée
+    conjointement avec d’autres directives <directive>Require</directive> dans
+    les blocs <directive module="mod_authz_core">RequireAny</directive> ou
+    <directive module="mod_authz_core">RequireAll</directive>.</p>
 
 
     <highlight language="config">
@@ -388,7 +391,7 @@ disponibles avec Require</title>
 
   <section id="reqverifyclient"><title>Require ssl-verify-client</title>
 
-    <p>Le fournisseur <code>ssl</code> autorise l'accès si
+    <p>Le fournisseur <code>ssl-verify-client</code> autorise l'accès si
     l'utilisateur est authentifié via un certificat client valide. Ceci
     n'a un effet que si <code>SSLVerifyClient optional</code> est actif.</p>
 
@@ -799,30 +802,25 @@ casse) :</p>
     Il s'agit du protocole Secure Sockets Layer (SSL) version 3.0 de
     Netscape Corporation. C'est le successeur de SSLv2 et le
     prédécesseur de TLSv1, mais est considéré comme
-    obsolète dans la <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC
-    7568</a></p></li>
+    obsolète dans la <rfc>7568</rfc>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     Il s'agit du protocole  Transport Layer Security (TLS) version 1.0.
-    C'est le successeur de SSLv3, et il est défini dans la <a
-    href="https://www.rfc-editor.org/rfc/rfc2246">RFC2246</a>.</p></li>
+    C'est le successeur de SSLv3, et il est défini dans la <rfc>2246</rfc>.</p></li>
 
 <li><code>TLSv1.1</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.0 définie dans la <a
-    href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>. Il est
+    Une révision du protocole TLS 1.0 définie dans la <rfc>4346</rfc>. Il est
     supporté par la plupart des clients.</p></li>
 
 <li><code>TLSv1.2</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
-    Une révision du protocole TLS 1.1 définie dans la <a
-    href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</p></li>
+    Une révision du protocole TLS 1.1 définie dans la <rfc>5246</rfc>.</p></li>
 
 <li><code>TLSv1.3</code> (avec OpenSSL version 1.1.1 et supérieures)
     <p>
-    Une nouvelle version du protocole TLS définie dans la <a
-    href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</p></li>
+    Une nouvelle version du protocole TLS définie dans la <rfc>8446</rfc>.</p></li>
 
 <li><code>all</code>
     <p>
@@ -1153,38 +1151,52 @@ indépendamment de l'algorithme d'authentification utilisé.
 <p>Enfin, il est aussi possible d'ajouter la clé privée du certificat de
 l'entité finale au fichier de certificat, ce qui permet de se passer
 d'une directive <directive
-module="mod_ssl">SSLCertificateKeyFile</directive> séparée. Cette
-pratique est cependant fortement déconseillée. Dans ce cas, les fichiers de
-certificat qui contiennent de telles clés embarquées doivent être définis
-après les certificats qui utilisent un fichier de clé séparé. En outre,
-si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
-passe de la clé s'ouvre au démarrage du serveur.
-</p>
+module="mod_ssl">SSLCertificateKeyFile</directive> séparée.</p>
+
+<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+fichier</title>
+<p>Cette pratique est fortement déconseillée pour les raisons suivantes :</p>
+<ul>
+<li><strong>Sécurité</strong> : conserver la clé privée dans un fichier séparé
+permet une gestion plus stricte des permissions de fichier. Le fichier de
+certificat peut être lisible par tous (ce sont des données publiques), alors que
+le fichier de clé ne doit être lisible que par le superutilisateur. Combiner
+les deux dans un même fichier implique que toute vulnérabilité ou mauvaise
+configuration qui expose le fichier du certificat exposera aussi la clé privée.</li>
+<li><strong>Contrainte d’ordre</strong> : si un fichier combiné est utilisé,
+toute directive <directive>SSLCertificateFile</directive> référençant un tel
+fichier doit apparaître <em>après</em> toute directive
+<directive>SSLCertificateFile</directive> qui utilise un fichier de clé séparé.
+Ne pas respecter cet ordre provoquera des erreurs au démarrage.</li>
+<li><strong>Maintenance</strong> : avec des fichiers séparés, il est
+immédiatement possible de savoir quel fichier contient quoi, ce qui simplifie la
+rotation des certificats et les audits.</li>
+</ul>
+<p>Si la clé privée est chiffrée, la phrase secrète est demandée au démarrage.</p>
+</note>
 
 <p>Plutôt que de stocker les certificats et les clés privées dans des fichiers,
 on peut utiliser un identificateur de certificat pour identifier un certificat
-stocké dans un jeton. Actuellement, seuls les <a
-href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
-identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <directive
-module="mod_ssl">SSLCertificateKeyFile</directive> est absente, le certificat et
-la clé privée peuvent être chargés avec l'identificateur spécifié via la
-directive <directive module="mod_ssl">SSLCertificateFile</directive>.</p>
+stocké dans un jeton. Actuellement, seuls les URIs PKCS#11 (<rfc>7512</rfc>)
+sont reconnus comme identificateurs de certificats et peuvent être utilisés en
+conjonction avec le moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la
+directive <directive module="mod_ssl">SSLCertificateKeyFile</directive> est
+absente, le certificat et la clé privée peuvent être chargés avec
+l'identificateur spécifié via la directive <directive
+module="mod_ssl">SSLCertificateFile</directive>.</p>
 
 <note>
 <title>Interopérabilité des paramètres DH avec les nombres premiers de
 plus de 1024 bits</title>
 <p>
-Depuis la version 2.4.7, mod_ssl utilise des
-paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
-4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
-version 2.4.10 (voir <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC
-3526</a>), et les fournit aux clients en fonction de la longueur de la
-clé du certificat RSA/DSA. En particulier avec les clients basés sur
-Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
-cours de la négociation - voir cette <a
-href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour
-contourner les problèmes de ce genre.
+Depuis la version 2.4.7, mod_ssl utilise des paramètres DH standardisés avec des
+nombres premiers de 2048, 3072 et 4096 bits, et avec des nombres premiers de
+6144 et 8192 bits depuis la version 2.4.10 (voir la <rfc>3526</rfc>), et les
+fournit aux clients en fonction de la longueur de la clé du certificat RSA/DSA.
+En particulier avec les clients basés sur Java (versions 7 et antérieures), ceci
+peut provoquer des erreurs au cours de la négociation - voir cette <a
+href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour contourner les
+problèmes de ce genre.
 </p>
 </note>
 
@@ -1261,19 +1273,20 @@ pour l'authentification du serveur. A chaque directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> doit être associée
 une directive <directive>SSLCertificateFile</directive> correspondante.</p>
 
-<p>
-La clé privée peut aussi être ajoutée au fichier défini par la directive
-<directive module="mod_ssl">SSLCertificateFile</directive>, mais cette
-pratique est fortement déconseillée. Dans ce cas, les fichiers de
-certificats qui comportent une telle clé doivent être définis après les
-certificats qui utilisent un fichier de clé séparé.</p>
+<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+fichier</title>
+<p>La clé privée peut aussi être combinée avec le certificat dans le fichier
+spécifié par la directive <directive
+module="mod_ssl">SSLCertificateFile</directive>, mais cette pratique est
+fortement déconseillée. Voir l’avertissement dans la documentation de la
+directive <directive>SSLCertificateFile</directive> pour une explication
+complète des risques et contraintes.</p></note>
 
 <p>Plutôt que de stocker des clés privées dans des fichiers, il est possible
 d'identifier une clé privée via un identifiant stocké dans un jeton.
-Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
-URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
-<code>pkcs11</code>.</p>
+Actuellement, seuls les URIs PKCS#11 (<rfc>7512</rfc>) sont reconnus comme
+identifiants de clés privées et peuvent être utilisés en conjonction avec le
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -1891,21 +1904,16 @@ Les <var>option</var>s disponibles sont :</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    Cette option <em>force</em> l'interdiction d'accès lorsque
-    <directive module="mod_ssl">SSLRequireSSL</directive> ou <directive
-    module="mod_ssl">SSLRequire</directive> a décidé que
-    l'accès devait être interdit. Par défaut, dans le cas où
-    une directive ``<code>Satisfy any</code>'' est utilisée, et si
-    d'autres restrictions d'accès ont été franchies, on passe en général
-    outre l'interdiction d'accès due à <code>SSLRequireSSL</code> ou
-    <code>SSLRequire</code> (parce que c'est ainsi que le mécanisme
-    <code>Satisfy</code> d'Apache doit fonctionner). Pour des
-    restrictions d'accès plus strictes, vous pouvez cependant utiliser
-    <code>SSLRequireSSL</code> et/ou <code>SSLRequire</code> en
-    combinaison avec une option ``<code>SSLOptions
-    +StrictRequire</code>''. Une directive ``<code>Satisfy Any</code>''
-    n'a alors aucune chance d'autoriser l'accès si mod_ssl a décidé de
-    l'interdire.</p>
+    Cette option <em>force</em> l'interdiction d'accès lorsque <directive
+    module="mod_ssl">SSLRequireSSL</directive> ou <directive
+    module="mod_ssl">SSLRequire</directive> a décidé que l’accès doit être
+    interdit. Sans l’option <code>StrictRequire</code>, il est possible pour
+    d’autres directives d’autorisation (comme <directive module="mod_authz_core"
+    type="section">RequireAny</directive>) d’outrepasser l’interdiction d’accès
+    de SSL et d’accorder tout de même l’accès. Avec <code>SSLOptions
+    +StrictRequire</code>, l’interdiction de <code>SSLRequireSSL</code> ou
+    <code>SSLRequire</code> s’applique de manière inconditionnelle, sans tenir
+    compte d’autres directives d’autorisation éventuelles.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2921,10 +2929,13 @@ définition de la variable d'environnement <code>REMOTE_USER</code>.
 La valeur de l'argument <var>nom-var</var> peut correspondre à toute <a
 href="#envvars">variable d'environnement SSL</a>.</p>
 
-<p>Lorsque l'option <code>FakeBasicAuth</code> est activée, cette
-directive contrôle la valeur du nom d'utilisateur contenue dans
-l'en-tête d'authentification de base (voir <a
-href="#ssloptions">SSLOptions</a>).</p>
+<p>Lorsque l’option <code>FakeBasicAuth</code> (voir <a
+href="#ssloptions">SSLOptions</a>) ou la directive <directive
+module="mod_ssl">AuthBasicFake</directive> sont activées, cette directive permet
+de contrôler quelle partie du certificat client est utilisée comme nom
+d’utilisateur. Sans la directive <directive>SSLUserName</directive>,
+<code>REMOTE_USER</code> peut ne pas être définie pour d’autres modules ou
+scripts CGI.</p>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -2942,6 +2953,7 @@ du serveur par ordre de préférence</description>
 <default>SSLHonorCipherOrder off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Disponible à partir de la version 2.1 du serveur HTTP Apache</compatibility>
 
 <usage>
 <p>Normalement, ce sont les préférences du client qui sont prises en
@@ -2986,13 +2998,12 @@ SSLCryptoDevice ubsec
 
 <p>
 À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
-que la clé ou le certificat sont spécifiés à l'aide d'<a
-href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+que la clé ou le certificat sont spécifiés à l'aide d'un URIs PKCS#11 (<rfc>7512</rfc>), le chargement de la
 clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
 OpenSSL à utiliser doit être défini et configuré dans le fichier de
 configuration d'OpenSSL et il doit prendre en charge la <a
 href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">méthode
-STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+STORE</a> pour les URIs PKCS#11 (<rfc>7512</rfc>).
 </p>
 </usage>
 </directivesynopsis>
@@ -3001,12 +3012,14 @@ STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a
 <name>SSLOCSPEnable</name>
 <description>Active la validation OCSP de la chaîne de certificats du
 client</description>
-<syntax>SSLOCSPEnable on|leaf|off</syntax>
+<syntax>SSLOCSPEnable on|leaf|off [<var>flags</var>]</syntax>
 <default>SSLOCSPEnable off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Le mode <em>leaf</em> est disponible à partir de la version
-2.4.34 du serveur HTTP Apache</compatibility>
+2.4.34 du serveur HTTP Apache. Le drapeau <em>no_ocsp_for_cert_ok</em> est
+disponible à partir de la version 2.4.29 du serveur HTTP Apache.
+</compatibility>
 
 <usage>
 <p>Cette directive permet d'activer la validation OCSP de la chaîne de
@@ -3019,6 +3032,17 @@ incluse). En mode 'leaf', seul le certificat du client sera validé.</p>
 soit spécifié dans la configuration ; voir les directives <directive
 module="mod_ssl">SSLOCSPDefaultResponder</directive> et <directive
 module="mod_ssl">SSLOCSPOverrideResponder</directive>.</p>
+
+<p>Les drapeaux facultatifs suivants sont disponibles :</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>Normalement, Si la validation OCSP est activée, un certificat qui ne
+    contient pas d’URL de réponse OCSP provoquera un échec de validation.
+    Ajouter ce drapeau permet à un tel certificat de passer la validation. Cela
+    s’avère utile dans les environnements où certains certificats de la chaîne
+    ne contiennent pas d’information de réponse OCSP.</p>
+</li>
+</ul>
 
 <example><title>Exemple</title>
 <highlight language="config">
@@ -3210,7 +3234,7 @@ certificats de serveur comportant des certificats de CA intermédiaires
 dans leur chaîne (c'est un cas typique de nos jours), l'implémentation
 actuelle de l'agrafage OCSP n'atteint que partiellement l'objectif d'
 "économie en questions/réponse et en ressources". Pour plus de détails,
-voir la <a href="https://www.rfc-editor.org/rfc/rfc6961">RFC 6961</a> (TLS
+voir la <rfc>6961</rfc> (TLS
 Multiple Certificate Status Extension).
 </p>
 
@@ -3341,8 +3365,12 @@ réponses concernant les requêtes OCSP
 "good", les réponses
 périmées, etc...). Lorsqu'elle est à
 <code>off</code>, seules les réponses indiquant un statut de certificat
-"good" seront incluses dans les
-négociations TLS avec les clients.</p>
+"good" ou "revoked" seront incluses dans les
+négociations TLS avec les clients.
+Les réponses avec un statut "revoked" sont toujours incluses quelle que soit
+cette définition, car supprimer une révocation connue constituerait un risque
+de sécurité.
+</p>
 </usage>
 </directivesynopsis>
 
@@ -3413,7 +3441,7 @@ d'OpenSSL</compatibility>
 <usage>
 <p>Cette directive permet de définir une clé secrète pour le chiffrement
 et le déchiffrement des tickets de session TLS selon les préconisations
-de la <a href="https://www.rfc-editor.org/rfc/rfc5077">RFC 5077</a>. Elle a
+de la <rfc>5077</rfc>. Elle a
 été conçue à l'origine pour les environnements de clusters où les
 données des sessions TLS doivent être partagées entre plusieurs noeuds.
 Pour les configurations ne comportant qu'une seule instance de httpd, il
@@ -3618,8 +3646,7 @@ répertoire spécifié</description>
 <usage>
 
 <p>
-ECH est décrit dans <a
-href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+ECH est décrit dans la <rfc>9849</rfc>
 ; httpd prend en charge ECH «&nbsp;shared-mode&nbsp;» où l’instance de httpd effectue le
 déchiffrement ECH et héberge les sites web ECH «&nbsp;public-name&nbsp;» et «&nbsp;backend&nbsp;».  
 </p>

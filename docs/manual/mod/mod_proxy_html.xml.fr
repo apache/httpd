@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932817:1933850 (outdated) -->
+<!-- English Revision: 1933850 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -119,9 +119,9 @@ pas suffisant pour le support de l'internationalisation. A cet effet, on a
 introduit la nouvelle directive <directive>ProxyHTMLEnable</directive> qui
 permet de configurer à la fois le filtre de mod_proxy_html et mod_xml2enc. Il
 est d'ailleurs recommandé de toujours utiliser ProxyHTMLEnable, même
-si le support de l'internationalisation n'est pas nécessaire. <strong>Notez que
-ceci constitue un changement par rapport aux précédentes versions où
-mod_proxy_html était activé via les directives de filtrage.</strong></p>
+si le support de l'internationalisation n'est pas nécessaire.</p>
+<note>Ceci constitue un changement par rapport aux précédentes versions où
+mod_proxy_html était activé via les directives de filtrage.</note>
 
 </section>
 
