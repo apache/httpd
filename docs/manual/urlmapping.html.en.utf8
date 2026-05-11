@@ -54,7 +54,7 @@
 <h2><a name="documentroot" id="documentroot">DocumentRoot</a> <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 
     <p>In deciding what file to serve for a given request, httpd's
-    default behavior is to take the URL-Path for the request (the part
+    default behavior is to take the <a href="directive-dict.html#Syntax">URL-Path</a> for the request (the part
     of the URL following the hostname and port) and add it to the end
     of the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> specified
     in your configuration files. Therefore, the files and directories
