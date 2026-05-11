@@ -42,10 +42,11 @@
 RewriteCond basics, and how mod_rewrite fits into the request
 processing lifecycle.</dd>
 
-<dt><a href="htaccess.html">Per-directory Rewrites (.htaccess)</a></dt>
+<dt><a href="htaccess.html">Per-directory Rewrites</a></dt>
 <dd>The key differences between using rewrite rules in server
-configuration versus <code>.htaccess</code> files, including path
-stripping, RewriteBase, and the looping behavior of the [L] flag.</dd>
+configuration versus <glossary ref="perdirectory">per-directory</glossary> 
+context, including path stripping, RewriteBase, and the looping behavior 
+of the [L] flag.</dd>
 
 <dt><a href="flags.html">RewriteRule Flags</a></dt>
 <dd>A complete reference for all flags that can modify the behavior of

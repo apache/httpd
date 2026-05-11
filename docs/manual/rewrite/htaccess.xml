@@ -23,7 +23,7 @@
 <manualpage metafile="htaccess.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>mod_rewrite and .htaccess files</title>
+<title>Per-directory Rewrites</title>
 
 <summary>
 
