@@ -184,65 +184,6 @@ RewriteRule "^" "%1" [R=301,L]
 
 </section>
 
-<section id="www-resolve">
-
-  <title>Canonical www/non-www Hostname</title>
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>You want to force all requests to use either
-      <code>www.example.com</code> or <code>example.com</code>,
-      not both. This ensures search engines treat them as one site
-      and prevents cookie scope issues.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>The best approach does not use <module>mod_rewrite</module> at
-      all. Place a <directive module="mod_alias">Redirect</directive>
-      in the virtual host for the non-canonical hostname:</p>
-
-<highlight language="config">
-# Redirect example.com -> www.example.com
-&lt;VirtualHost *:80 *:443&gt;
-    ServerName example.com
-    Redirect permanent "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;
-</highlight>
-
-      <p>If you only have <code>.htaccess</code> access:</p>
-
-<highlight language="config">
-# Add www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
-RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]
-</highlight>
-
-<highlight language="config">
-# Remove www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
-RewriteRule "^(.*)" "https://%1$1" [R=301,L]
-</highlight>
-
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
-      recipe above, which covers the general case. This recipe focuses
-      specifically on the www/non-www choice, which is the most common
-      hostname canonicalization need.</p>
-    </dd>
-  </dl>
-
-</section>
-
 <section id="front-controller">
 
   <title>Front Controller / Application Routing</title>
@@ -497,6 +438,16 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
+<p>To do the reverse - strip the <code>www.</code> prefix - swap the
+condition:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "^www\.(.+)$"              [NC]
+RewriteRule "^(.*)"        "http://%1/$1"             [L,R,NE]
+</highlight>
+
+<p>To generically add <code>www.</code> to any hostname:</p>
+
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
@@ -514,7 +465,11 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
       <p>If you have access to the server configuration, a
       <directive module="mod_alias">Redirect</directive> in a dedicated
       <directive module="core" type="section">VirtualHost</directive>
-      is the cleanest approach. Use the
+      is the cleanest approach. Canonicalizing the hostname ensures that
+      search engines treat your site as a single entity and avoids
+      cookie scope issues that arise when the same site is reachable
+      under multiple names.</p>
+      <p>Use the
       <directive module="core" type="section">If</directive> directive
       as a middle ground, and <module>mod_rewrite</module> only if you
       are limited to <code>.htaccess</code>.</p>

@@ -28,7 +28,7 @@ result in one file "owning" the content and others cross-referencing it.
       warning boxes within the [P] flag section.
       → Remove the literal duplicate.
 
-- [ ] **Two hostname canonicalization sections in remapping.xml** —
+- [x] **Two hostname canonicalization sections in remapping.xml** —
       "canonicalhost" and "www-resolve" cover the same concept.
       → Merge "www-resolve" into "canonicalhost".
 
