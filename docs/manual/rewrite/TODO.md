@@ -10,7 +10,7 @@ result in one file "owning" the content and others cross-referencing it.
       tables in tech.xml and htaccess.xml.
       → htaccess.xml owns it; others get a brief mention + xref.
 
-- [ ] **[L] vs [END] looping** fully described in three places
+- [x] **[L] vs [END] looping** fully described in three places
       (htaccess.xml, plus both the [L] and [END] sections of flags.xml).
       → htaccess.xml owns the full explanation; flags.xml slims down + xrefs.
 
