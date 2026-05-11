@@ -44,7 +44,6 @@ including detailed descriptions of how each works.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#https-redirect">Forcing HTTPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#www-resolve">Canonical www/non-www Hostname</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#front-controller">Front Controller / Application Routing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
@@ -58,7 +57,7 @@ including detailed descriptions of how each works.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a> <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
@@ -194,62 +193,6 @@ RewriteRule "^" "%1" [R=301,L]</pre>
       if you want to enforce trailing slash behavior for URLs that do
       not correspond to actual directories on disk, or if you want to
       remove trailing slashes.</p>
-    </dd>
-  </dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="www-resolve" id="www-resolve">Canonical www/non-www Hostname</a> <a title="Permanent link" href="#www-resolve" class="permalink">&para;</a></h2>
-
-  
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>You want to force all requests to use either
-      <code>www.example.com</code> or <code>example.com</code>,
-      not both. This ensures search engines treat them as one site
-      and prevents cookie scope issues.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>The best approach does not use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> at
-      all. Place a <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>
-      in the virtual host for the non-canonical hostname:</p>
-
-<pre class="prettyprint lang-config"># Redirect example.com -&gt; www.example.com
-&lt;VirtualHost *:80 *:443&gt;
-    ServerName example.com
-    Redirect permanent "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;</pre>
-
-
-      <p>If you only have <code>.htaccess</code> access:</p>
-
-<pre class="prettyprint lang-config"># Add www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
-RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]</pre>
-
-
-<pre class="prettyprint lang-config"># Remove www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
-RewriteRule "^(.*)" "https://%1$1" [R=301,L]</pre>
-
-
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
-      recipe above, which covers the general case. This recipe focuses
-      specifically on the www/non-www choice, which is the most common
-      hostname canonicalization need.</p>
     </dd>
   </dl>
 
@@ -495,6 +438,15 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
+<p>To do the reverse - strip the <code>www.</code> prefix - swap the
+condition:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "^www\.(.+)$"              [NC]
+RewriteRule "^(.*)"        "http://%1/$1"             [L,R,NE]</pre>
+
+
+<p>To generically add <code>www.</code> to any hostname:</p>
+
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
 RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
@@ -510,7 +462,11 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
       <p>If you have access to the server configuration, a
       <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> in a dedicated
       <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-      is the cleanest approach. Use the
+      is the cleanest approach. Canonicalizing the hostname ensures that
+      search engines treat your site as a single entity and avoids
+      cookie scope issues that arise when the same site is reachable
+      under multiple names.</p>
+      <p>Use the
       <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive
       as a middle ground, and <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> only if you
       are limited to <code>.htaccess</code>.</p>

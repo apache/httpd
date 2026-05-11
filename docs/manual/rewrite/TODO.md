@@ -41,10 +41,10 @@ result in one file "owning" the content and others cross-referencing it.
       listed in other files' seealso despite being a major topic.
 
 - [ ] **Deprecated stub files** (access.xml, advanced.xml, proxy.xml) —
-      consider removal or ensure they don't appear in navigation.
+      Remove from trunk. Leave in 2.4 during sync (they'll drop in 2.6).
 
-- [ ] **Figure numbering collision** — both intro.xml and tech.xml use
-      "Figure 1" for different images.
+- [x] **Figure numbering collision** — both intro.xml and tech.xml use
+      "Figure 1" for different images. Not a problem — separate pages.
 
 ---
 

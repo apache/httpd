@@ -91,7 +91,7 @@ This document shows the alternatives and when to prefer them.</dd>
 and the order in which rules and conditions are evaluated.</dd>
 </dl>
 </div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">The Reference Manual</a></li><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
+<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite Reference Documentation</a></li><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></li><li><a href="../glossary.html">Glossary</a></li></ul></div>
 </div>
 <div class="bottomlang">
