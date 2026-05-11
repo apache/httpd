@@ -5,7 +5,7 @@ result in one file "owning" the content and others cross-referencing it.
 
 ## HIGH Priority
 
-- [ ] **Per-directory path stripping** explained in full across three files
+- [x] **Per-directory path stripping** explained in full across three files
       (intro.xml, tech.xml, htaccess.xml) with near-identical comparison
       tables in tech.xml and htaccess.xml.
       → htaccess.xml owns it; others get a brief mention + xref.
@@ -24,7 +24,7 @@ result in one file "owning" the content and others cross-referencing it.
       description and complexity warnings from intro.xml.
       → Rewritten as concise intro + structured guide overview.
 
-- [ ] **Duplicate SSRF warning in flags.xml** — two nearly identical
+- [x] **Duplicate SSRF warning in flags.xml** — two nearly identical
       warning boxes within the [P] flag section.
       → Remove the literal duplicate.
 

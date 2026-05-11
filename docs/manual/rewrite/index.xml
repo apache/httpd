@@ -85,7 +85,7 @@ and the order in which rules and conditions are evaluated.</dd>
 </dl>
 </summary>
 
-<seealso><a href="../mod/mod_rewrite.html">The Reference Manual</a></seealso>
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite Reference Documentation</a></seealso>
 <seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
 <seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
 wiki</a></seealso>

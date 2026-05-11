@@ -633,10 +633,14 @@ to map remote content into the namespace of the local server.</p>
 <note type="warning">
 <title>Security Warning</title>
 <p>Take care when constructing the target URL of the rule, considering
-the security impact from allowing the client influence over the set of
-URLs to which your server will act as a proxy.  Ensure that the scheme
-and hostname part of the URL is either fixed, or does not allow the
-client undue influence.</p>
+the security impact of allowing the client influence over the set of
+URLs to which your server will act as a proxy. If any part of the
+target URL is derived from user input (backreferences, query strings,
+etc.), an attacker may be able to cause your server to make requests
+to arbitrary internal or external hosts. This is known as a
+Server-Side Request Forgery (SSRF) vulnerability. Ensure that the
+scheme and hostname part of the URL is either fixed, or does not allow
+the client undue influence.</p>
 </note>
 
 <note type="warning">
@@ -656,16 +660,6 @@ will be used automatically.</p>
 
 <p>Note: <module>mod_proxy</module> must be enabled in order
 to use this flag.</p>
-
-<note type="warning"><title>Security warning</title>
-<p>Take care when constructing the target URL of the rule, considering
-the security impact of allowing the client influence over the set of
-URLs to which your server will act as a proxy. If any part of the
-target URL is derived from user input (backreferences, query strings,
-etc.), an attacker may be able to cause your server to make requests
-to arbitrary internal or external hosts. This is known as a
-Server-Side Request Forgery (SSRF) vulnerability.</p>
-</note>
 
 </section>
 
