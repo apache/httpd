@@ -71,64 +71,13 @@ and URL matching.</p>
     <p>In each of these cases, <module>mod_rewrite</module> rewrites the
     <code>REQUEST_URI</code> either to a new URL, or to a filename.</p>
 
-    <p>In <glossary ref="perdirectory">per-directory context</glossary> (i.e., within <code>.htaccess</code> files
-    and <code>Directory</code> blocks), these rules are being applied
-    after a URL has already been translated to a filename. Because of
-    this, the URL-path that <module>mod_rewrite</module> initially compares <directive
-    module="mod_rewrite">RewriteRule</directive> directives against
-    is the full filesystem path to the translated filename with the current
-    directories path (including a trailing slash) removed from the front.</p>
-
-    <p> To illustrate: If rules are in /var/www/foo/.htaccess and a request
-    for /foo/bar/baz is being processed, an expression like ^bar/baz$ would
-    match.</p>
-
-    <p> If a substitution is made in per-directory context, a new internal
-    subrequest is issued with the new URL, which restarts processing of the
-    request phases. If the substitution is a relative path, the <directive
-    module="mod_rewrite">RewriteBase</directive> directive
-    determines the URL-path prefix prepended to the substitution.
-    In per-directory context, care must be taken to
-    create rules which will eventually (in some future "round" of per-directory
-    rewrite processing) not perform a substitution to avoid looping.
-    (See <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
-    for further discussion of this problem.)</p>
-
-    <p>Because of this further manipulation of the URL in per-directory
-    context, you'll need to take care to craft your rewrite rules
-    differently in that context. In particular, remember that the
-    leading directory path will be stripped off of the URL that your
-    rewrite rules will see. Consider the examples below for further
-    clarification.</p>
-
-    <table border="1">
-
-        <tr>
-            <th>Location of rule</th>
-            <th>Rule</th>
-        </tr>
-
-        <tr>
-            <td>VirtualHost section</td>
-            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>.htaccess file in document root</td>
-            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>.htaccess file in images directory</td>
-            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
-        </tr>
-
-    </table>
-
-    <p>For even more insight into how <module>mod_rewrite</module> manipulates URLs in
-    different contexts, you should consult the <a
-    href="../mod/mod_rewrite.html#logging">log entries</a> made during
-    rewriting.</p>
+    <p>In <glossary ref="perdirectory">per-directory context</glossary>,
+    rules are applied during the Fixup phase after the URL has already
+    been translated to a filename. This changes what the pattern matches
+    against and how substitutions are handled. See the
+    <a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
+    document for practical details on path stripping, RewriteBase, and
+    how to avoid looping.</p>
 
 </section>
 

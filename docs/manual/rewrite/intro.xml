@@ -370,21 +370,14 @@ href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 
 <section id="htaccess"><title>.htaccess files</title>
 
-<p>Rewriting is typically configured in the main server configuration
-setting (outside any <directive type="section"
-module="core">Directory</directive> section) or
-inside <directive type="section" module="core">VirtualHost</directive>
-containers. This is the easiest way to do rewriting and is
-recommended. It is possible, however, to do rewriting
-inside <directive type="section" module="core">Directory</directive>
-sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
-files</a> at the expense of some additional complexity. This technique
-is called <glossary ref="perdirectory">per-directory</glossary> rewrites.</p>
-
-<p>The main difference from per-server rewrites is that the path
-prefix of the directory containing the <code>.htaccess</code> file is
-stripped before matching in
-the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <directive module="mod_rewrite">RewriteBase</directive> should be used to assure the request is properly mapped.</p>
+<p>It is possible to use rewrite rules in
+<glossary ref="perdirectory">per-directory</glossary> context
+(<a href="../howto/htaccess.html"><code>.htaccess</code> files</a> and
+<directive type="section" module="core">Directory</directive> blocks),
+but the rules behave differently there — in particular, the directory
+prefix is stripped from the URL before matching. See the
+<a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
+document for full details.</p>
 
 </section>
 

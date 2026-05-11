@@ -123,6 +123,14 @@ where the rule lives:</p>
 in either the pattern or the substitution. This is the single most
 common source of confusion with per-directory rewriting.</p>
 
+<p>When a substitution is made in per-directory context, Apache issues
+a new internal subrequest with the rewritten URL, restarting request
+processing from the top. If the substitution is a relative path,
+the <directive module="mod_rewrite">RewriteBase</directive> directive
+determines what URL-path prefix is prepended. This subrequest
+mechanism is also why rules can loop &mdash; see
+<a href="#loops">below</a>.</p>
+
 </section>
 
 <section id="rewritebase"><title>When you need RewriteBase</title>
