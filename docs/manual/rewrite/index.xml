@@ -25,6 +25,16 @@
 
   <title>Guide to Apache mod_rewrite</title>
 
+<p>The great thing about mod_rewrite is it gives you all the
+configurability and flexibility of Sendmail. The downside to
+mod_rewrite is that it gives you all the configurability and
+flexibility of Sendmail.</p>
+<p><em>-- Brian Behlendorf</em></p>
+
+<p>Despite the tons of examples and docs, mod_rewrite is voodoo.
+Damned cool voodoo, but still voodoo.</p>
+<p><em>-- Brian Moore</em></p>
+
 <summary>
 
     <p><module>mod_rewrite</module> provides a way to modify incoming
