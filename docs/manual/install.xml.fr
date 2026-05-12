@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1927864:1933437 (outdated) -->
+<!-- English Revision: 1933437 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,11 +60,12 @@
     <dd>
     <highlight>
 sudo yum install httpd
-sudo service httpd start
+sudo systemctl enable httpd
+sudo systemctl start httpd
     </highlight>
 
-    <note type="warning">Les dernières versions de ces distributions préfèrent
-    <code>dnf</code> à <code>yum</code>. Voir la <a
+    <note type="warning">Les dernières versions de ces distributions utilisent
+    <code>dnf</code> au lieu de <code>yum</code>. Voir la <a
     href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
     projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
     </dd>
@@ -135,17 +136,16 @@ sudo service apache2 start
       </tr>
     </table>
 
-    <p><em>NN</em> doit être remplacé par le numéro de version courant,
-    et <em>PREFIX</em> par le
-    chemin du répertoire d'installation. Si
-    <em>PREFIX</em> n'est pas spécifié, le chemin du répertoire
-    d'installation prendra sa valeur par défaut, à savoir
-    <code>/usr/local/apache2</code>.</p>
+	    <p><em>NN</em> doit être remplacé par le numéro de version courant,
+	    et <em>PREFIX</em> par le
+	    chemin du répertoire d'installation. Si
+	    <em>PREFIX</em> n'est pas spécifié, le chemin du répertoire
+	    d'installation prendra sa valeur par défaut, à savoir
+	    <code>/usr/local/apache2</code>.</p>
 
-    <p>Chaque étape du processus de compilation et d'installation est
-    décrite plus en détails ci-dessous, à commencer par les prérequis
-    pour compiler et installer Apache httpd.</p>
-
+	    <p>Chaque étape du processus de compilation et d'installation est
+	    décrite plus en détails ci-dessous, à commencer par les prérequis
+	    pour compiler et installer Apache httpd.</p>
     </dd>
     </dl>
 
@@ -153,6 +153,8 @@ sudo service apache2 start
     traitée ici ? N'hésitez pas à nous <a
     href="http://httpd.apache.org/docs-project/">aider à compléter cette
     documentation</a> en nous faisant profiter de votre expérience.</note>
+
+
 </section>
 
 <section id="requirements"><title>Prérequis</title>
@@ -223,7 +225,7 @@ sudo service apache2 start
       <dd>L'interpréteur Perl 5 (les versions 5.003 ou supérieures conviennent)
       est nécessaire pour l'exécution de certains scripts comme
       <program>apxs</program> ou <program>dbmmanage</program>
-      (qui sont écrits en Perl).
+      (qui sont écrits en Perl). 
       Si le script <program>configure</program> ne trouve pas d'interpréteur
       Perl 5, vous ne pourrez pas utiliser les scripts qui en ont besoin.
       Bien entendu, vous pourrez tout de même construire et utiliser
@@ -263,8 +265,10 @@ sudo service apache2 start
     simplement à décompresser et à désarchiver cette dernière :</p>
 
 <example>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+<highlight language="sh">
+$ gzip -d httpd-<em>NN</em>.tar.gz
 $ tar xvf httpd-<em>NN</em>.tar
+</highlight>
 </example>
 
     <p>Ceci créera, dans le répertoire courant, un nouveau répertoire
@@ -336,10 +340,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     et <module>mod_lua</module> :</p>
 
 <example>
-      $ CC="pgcc" CFLAGS="-O2" \<br />
-       ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-ldap=shared \<br />
-       --enable-lua=shared
+<highlight language="sh">
+$ CC="pgcc" CFLAGS="-O2" \
+  ./configure --prefix=/sw/pkg/apache \
+  --enable-ldap=shared \
+  --enable-lua=shared
+</highlight>
 </example>
 
     <p>Plusieurs minutes peuvent être nécessaires à
@@ -451,11 +457,13 @@ $ tar xvf httpd-<em>NN</em>.tar
     effectuer toute modification souhaitée, et de lancer :</p>
 
     <example>
-    $ ./config.nice<br />
-    $ make<br />
-    $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
-    $ <em>PREFIX</em>/bin/apachectl -k start<br />
+<highlight language="sh">
+$ ./config.nice
+$ make
+$ make install
+$ <em>PREFIX</em>/bin/apachectl -k graceful-stop
+$ <em>PREFIX</em>/bin/apachectl -k start
+</highlight>
     </example>
 
     <note type="warning">Vous devez toujours effectuer un test de la nouvelle
