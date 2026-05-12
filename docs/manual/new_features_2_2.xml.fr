@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 1561569:1933502 (outdated) -->
+<!-- English Revision: 1933502 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -169,8 +169,7 @@
 
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
-      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt"
-      	>RFC 2817</a> a été ajouté, ce qui permet de passer d'une
+      <dd>Le support de la <rfc>2817</rfc> a été ajouté, ce qui permet de passer d'une
 	connexion en clair au chiffrement TLS.</dd>
 
       <dt><module>mod_imagemap</module></dt>
