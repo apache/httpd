@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933116:1933739 (outdated) -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,10 +42,7 @@ HTTP de base.</description>
     <ul>
       <li>Support vérifié du <a
       href="http://www.openldap.org/">OpenLDAP SDK</a> (versions 1.x et
-      2.x), du <a href="http://developer.novell.com/ndk/cldap.htm">
-      Novell LDAP SDK</a> et du SDK <a
-      href="http://www.iplanet.com/downloads/developer/">iPlanet
-      (Netscape)</a>.</li>
+      2.x).</li>
 
       <li>Implémentation de politiques d'autorisation complexes en les
       définissant via des filtres LDAP.</li>
@@ -53,8 +50,7 @@ HTTP de base.</description>
       <li>Mise en oeuvre d'une mise en cache des opérations LDAP
       élaborée via <a href="mod_ldap.html">mod_ldap</a>.</li>
 
-      <li>Support de LDAP via SSL (nécessite le SDK Netscape) ou TLS
-      (nécessite le SDK OpenLDAP 2.x ou le SDK LDAP Novell).</li>
+      <li>Support de LDAP via SSL/TLS (nécessite le SDK OpenLDAP 2.x).</li>
     </ul>
 
     <p>Lorsqu'on utilise <module>mod_auth_basic</module>, ce module est
@@ -427,9 +423,15 @@ Require ldap-user "Joe Manager"
 
     <p>Cette directive permet de spécifier un groupe LDAP dont les
     membres auront l'autorisation d'accès. Elle prend comme argument le
-    DN du groupe LDAP. Note : n'entourez pas le nom du groupe avec des
-    guillemets. Par exemple, supposons que l'entrée suivante existe dans
-    l'annuaire LDAP :</p>
+    DN du groupe LDAP.</p>
+
+    <note type="warning">N’entourez pas de guillemets le nom du groupe. À la
+    différence de <code>Require ldap-user</code>, le fournisseur
+    <code>ldap-group</code> ne prend pas en charge les valeurs entre guillemets.</note>
+
+    <p>Supposons par exemple que l’entrée suivante existait dans l’annuaire
+    LDAP :</p>
+
 <example><pre>
 dn: cn=Administrators, o=Example
 objectClass: groupOfUniqueNames
@@ -505,8 +507,11 @@ AuthLDAPMaxSubGroupDepth 1
     Elle permet de spécifier un DN pour lequel l'accès est autorisé. Si
     le DN extrait de
     l'annuaire correspond au DN spécifié par la directive <code>Require
-    ldap-dn</code>, l'autorisation d'accès est accordée. Note :
-    n'entourez pas Le DN de guillemets.</p>
+    ldap-dn</code>, l'autorisation d'accès est accordée.</p>
+
+    <note type="warning">N’entourez pas de guillemets le DN. À la différence de
+    <code>Require ldap-user</code>, le fournisseur <code>ldap-dn</code> ne prend
+    pas en charge les valeurs entre guillemets.</note>
 
     <p>La directive suivante accorderait l'accès à un DN spécifique
     :</p>
