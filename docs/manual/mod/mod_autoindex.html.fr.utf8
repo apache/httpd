@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génère automatiquement des index de répertoires d'une
 manière similaire à la commande Unix <code>ls</code>, ou à la commande
 shell Win32 <code>dir</code></td></tr>
@@ -796,10 +794,12 @@ répertoire</td></tr>
 
       <dd>Le mot-clé <code>NameWidth</code> vous permet de spécifier la
       largeur en octets de la colonne correspondant au nom du
-      fichier.</dd>
+      fichier. La valeur doit être supérieure à 5, ou <code>*</code> pour une
+      largeur automatique. S’il n’est pas défini ou préfixé par <code>-</code>,
+      la valeur par défaut de 20 octets est utilisée.</dd>
 
-      <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
-      définie), <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> va calculer la meilleure largeur
+      <dd>S’il n'est pas
+      défini, <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> va calculer la meilleure largeur
       possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixe la largeur de la
@@ -1036,8 +1036,10 @@ répertoire</td></tr>
      éventuellement héritées d'un directory de niveau supérieur). Par
      contre, si un mot-clé non préfixé est trouvé, il supprime toutes
      les definitions héritées, ainsi que toute
-     définition incrémentale. Considérons l'exemple
-     suivant :</p>
+     définition incrémentale, sauf pour les options prenant une valeur
+     (<code>Charset</code>, <code>Type</code>, <code>DescriptionWidth</code>,
+     <code>NameWidth</code>, <code>IconWidth</code>, <code>IconHeight</code>),
+     qui sont héritées indépendamment. Considérons l'exemple suivant :</p>
 
      <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize</pre>
@@ -1053,6 +1055,11 @@ IndexOptions +SuppressSize</pre>
      <code class="directive">IndexOptions</code> pour un répertoire particulier,
      tout en supprimant les définitions héritées, spécifiez les
      mots-clés sans préfixe <code>+</code> ou <code>-</code></p>
+
+     <p>Notez que les préfixes <code>+</code> et <code>-</code> ne peuvent pas
+     être utilisés avec les options qui prennent une valeur comme
+     <code>IconWidth</code>, <code>IconHeight</code>, <code>NameWidth</code> ou
+     <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 

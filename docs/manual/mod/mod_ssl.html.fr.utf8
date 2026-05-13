@@ -30,8 +30,6 @@
 <a href="../es/mod/mod_ssl.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -448,15 +446,18 @@ Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"</pre>
 <h2><a name="authzproviders" id="authzproviders">Fournisseurs d'autorisation
 disponibles avec Require</a> <a title="Lien permanent" href="#authzproviders" class="permalink">&para;</a></h2>
 
-  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> propose quelques fournisseurs
-  d'autorisation à utiliser avec la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> du module
+  <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> propose les fournisseurs
+  d'autorisation suivants à utiliser avec la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> du module
   <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>.</p>
 
   <h3><a name="reqssl" id="reqssl">Require ssl</a></h3>
 
     <p>Le fournisseur <code>ssl</code> refuse l'accès si une connexion
-    n'est pas chiffrée avec SSL. L'effet est similaire à celui de la
-    directive <code class="directive">SSLRequireSSL</code>.</p>
+    n'est pas chiffrée avec SSL. À la différence de la directive
+    <code class="directive">SSLRequireSSL</code>, cette directive peut être utilisée
+    conjointement avec d’autres directives <code class="directive">Require</code> dans
+    les blocs <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code> ou
+    <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
 
     <pre class="prettyprint lang-config">Require ssl</pre>
@@ -467,7 +468,7 @@ disponibles avec Require</a> <a title="Lien permanent" href="#authzproviders" cl
 
   <h3><a name="reqverifyclient" id="reqverifyclient">Require ssl-verify-client</a></h3>
 
-    <p>Le fournisseur <code>ssl</code> autorise l'accès si
+    <p>Le fournisseur <code>ssl-verify-client</code> autorise l'accès si
     l'utilisateur est authentifié via un certificat client valide. Ceci
     n'a un effet que si <code>SSLVerifyClient optional</code> est actif.</p>
 
@@ -852,35 +853,50 @@ indépendamment de l'algorithme d'authentification utilisé.
 
 <p>Enfin, il est aussi possible d'ajouter la clé privée du certificat de
 l'entité finale au fichier de certificat, ce qui permet de se passer
-d'une directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> séparée. Cette
-pratique est cependant fortement déconseillée. Dans ce cas, les fichiers de
-certificat qui contiennent de telles clés embarquées doivent être définis
-après les certificats qui utilisent un fichier de clé séparé. En outre,
-si la clé est chiffrée, une boîte de dialogue pour entrer le mot de
-passe de la clé s'ouvre au démarrage du serveur.
-</p>
+d'une directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> séparée.</p>
+
+<div class="warning"><h3>N’enregistrez pas clé et certificat dans le même
+fichier</h3>
+<p>Cette pratique est fortement déconseillée pour les raisons suivantes :</p>
+<ul>
+<li><strong>Sécurité</strong> : conserver la clé privée dans un fichier séparé
+permet une gestion plus stricte des permissions de fichier. Le fichier de
+certificat peut être lisible par tous (ce sont des données publiques), alors que
+le fichier de clé ne doit être lisible que par le superutilisateur. Combiner
+les deux dans un même fichier implique que toute vulnérabilité ou mauvaise
+configuration qui expose le fichier du certificat exposera aussi la clé privée.</li>
+<li><strong>Contrainte d’ordre</strong> : si un fichier combiné est utilisé,
+toute directive <code class="directive">SSLCertificateFile</code> référençant un tel
+fichier doit apparaître <em>après</em> toute directive
+<code class="directive">SSLCertificateFile</code> qui utilise un fichier de clé séparé.
+Ne pas respecter cet ordre provoquera des erreurs au démarrage.</li>
+<li><strong>Maintenance</strong> : avec des fichiers séparés, il est
+immédiatement possible de savoir quel fichier contient quoi, ce qui simplifie la
+rotation des certificats et les audits.</li>
+</ul>
+<p>Si la clé privée est chiffrée, la phrase secrète est demandée au démarrage.</p>
+</div>
 
 <p>Plutôt que de stocker les certificats et les clés privées dans des fichiers,
 on peut utiliser un identificateur de certificat pour identifier un certificat
-stocké dans un jeton. Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a> sont reconnus comme
-identificateurs de certificats et peuvent être utilisés en conjonction avec le
-moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est absente, le certificat et
-la clé privée peuvent être chargés avec l'identificateur spécifié via la
-directive <code class="directive">SSLCertificateFile</code>.</p>
+stocké dans un jeton. Actuellement, seuls les URIs PKCS#11 (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>)
+sont reconnus comme identificateurs de certificats et peuvent être utilisés en
+conjonction avec le moteur ou le fournisseur OpenSSL <code>pkcs11</code>. Si la
+directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificateKeyFile</a></code> est
+absente, le certificat et la clé privée peuvent être chargés avec
+l'identificateur spécifié via la directive <code class="directive">SSLCertificateFile</code>.</p>
 
 <div class="note">
 <h3>Interopérabilité des paramètres DH avec les nombres premiers de
 plus de 1024 bits</h3>
 <p>
-Depuis la version 2.4.7, mod_ssl utilise des
-paramètres DH standardisés avec des nombres premiers de 2048, 3072 et
-4096 bits, et avec des nombres premiers de 6144 et 8192 bits depuis la
-version 2.4.10 (voir <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC
-3526</a>), et les fournit aux clients en fonction de la longueur de la
-clé du certificat RSA/DSA. En particulier avec les clients basés sur
-Java (versions 7 et antérieures), ceci peut provoquer des erreurs au
-cours de la négociation - voir cette <a href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour
-contourner les problèmes de ce genre.
+Depuis la version 2.4.7, mod_ssl utilise des paramètres DH standardisés avec des
+nombres premiers de 2048, 3072 et 4096 bits, et avec des nombres premiers de
+6144 et 8192 bits depuis la version 2.4.10 (voir la <a href="https://www.rfc-editor.org/rfc/rfc3526">RFC 3526</a>), et les
+fournit aux clients en fonction de la longueur de la clé du certificat RSA/DSA.
+En particulier avec les clients basés sur Java (versions 7 et antérieures), ceci
+peut provoquer des erreurs au cours de la négociation - voir cette <a href="../ssl/ssl_faq.html#javadh">réponse de la FAQ SSL</a> pour contourner les
+problèmes de ce genre.
 </p>
 </div>
 
@@ -953,19 +969,19 @@ différents noms de fichiers, afin de supporter plusieurs algorithmes
 pour l'authentification du serveur. A chaque directive <code class="directive">SSLCertificateKeyFile</code> doit être associée
 une directive <code class="directive">SSLCertificateFile</code> correspondante.</p>
 
-<p>
-La clé privée peut aussi être ajoutée au fichier défini par la directive
-<code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, mais cette
-pratique est fortement déconseillée. Dans ce cas, les fichiers de
-certificats qui comportent une telle clé doivent être définis après les
-certificats qui utilisent un fichier de clé séparé.</p>
+<div class="warning"><h3>N’enregistrez pas clé et certificat dans le même
+fichier</h3>
+<p>La clé privée peut aussi être combinée avec le certificat dans le fichier
+spécifié par la directive <code class="directive"><a href="#sslcertificatefile">SSLCertificateFile</a></code>, mais cette pratique est
+fortement déconseillée. Voir l’avertissement dans la documentation de la
+directive <code class="directive">SSLCertificateFile</code> pour une explication
+complète des risques et contraintes.</p></div>
 
 <p>Plutôt que de stocker des clés privées dans des fichiers, il est possible
 d'identifier une clé privée via un identifiant stocké dans un jeton.
-Actuellement, seuls les <a href="https://tools.ietf.org/html/rfc7512">PKCS#11
-URIs</a> sont reconnus comme identifiants de clés privées et peuvent être
-utilisés en conjonction avec le moteur ou le fournisseur OpenSSL
-<code>pkcs11</code>.</p>
+Actuellement, seuls les URIs PKCS#11 (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>) sont reconnus comme
+identifiants de clés privées et peuvent être utilisés en conjonction avec le
+moteur ou le fournisseur OpenSSL <code>pkcs11</code>.</p>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config"># Pour utiliser une clé privée stockée dans fichier encodé PEM :
 SSLCertificateKeyFile "/usr/local/apache2/conf/ssl.key/server.key"
@@ -1280,11 +1296,11 @@ SSLCryptoDevice ubsec</pre>
 
 <p>
 À partir de la version 3.0 d'OpenSSL, si aucun moteur n'est spécifié alors
-que la clé ou le certificat sont spécifiés à l'aide d'<a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>, le chargement de la
+que la clé ou le certificat sont spécifiés à l'aide d'un URIs PKCS#11 (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>), le chargement de la
 clé et du certificat est tenté à partir d'un fournisseur OpenSSL. Le fournisseur
 OpenSSL à utiliser doit être défini et configuré dans le fichier de
 configuration d'OpenSSL et il doit prendre en charge la <a href="https://docs.openssl.org/3.0/man7/provider-storemgmt/">méthode
-STORE</a> pour les <a href="https://tools.ietf.org/html/rfc7512">URIs PKCS#11</a>.
+STORE</a> pour les URIs PKCS#11 (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512</a>).
 </p>
 
 </div>
@@ -1301,7 +1317,7 @@ répertoire spécifié</td></tr>
 </table>
 
 <p>
-ECH est décrit dans <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">draft-ietf-tls-esni</a>
+ECH est décrit dans la <a href="https://www.rfc-editor.org/rfc/rfc9849">RFC 9849</a>
 ; httpd prend en charge ECH «&nbsp;shared-mode&nbsp;» où l’instance de httpd effectue le
 déchiffrement ECH et héberge les sites web ECH «&nbsp;public-name&nbsp;» et «&nbsp;backend&nbsp;».  
 </p>
@@ -1472,6 +1488,7 @@ du serveur par ordre de préférence</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.1 du serveur HTTP Apache</td></tr>
 </table>
 <p>Normalement, ce sont les préférences du client qui sont prises en
 compte lors du choix d'un algorithme de chiffrement au cours d'une
@@ -1502,13 +1519,15 @@ spécifié dans le certificat en cours de vérification.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPEnable on|leaf|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPEnable on|leaf|off [<var>flags</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le mode <em>leaf</em> est disponible à partir de la version
-2.4.34 du serveur HTTP Apache</td></tr>
+2.4.34 du serveur HTTP Apache. Le drapeau <em>no_ocsp_for_cert_ok</em> est
+disponible à partir de la version 2.4.29 du serveur HTTP Apache.
+</td></tr>
 </table>
 <p>Cette directive permet d'activer la validation OCSP de la chaîne de
 certificats du client. Si elle est activée, les certificats de la chaîne
@@ -1518,6 +1537,17 @@ incluse). En mode 'leaf', seul le certificat du client sera validé.</p>
 
 <p>Le répondeur OCSP utilisé est soit extrait du certificat lui-même,
 soit spécifié dans la configuration ; voir les directives <code class="directive"><a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></code> et <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code>.</p>
+
+<p>Les drapeaux facultatifs suivants sont disponibles :</p>
+<ul>
+<li><code>no_ocsp_for_cert_ok</code>
+    <p>Normalement, Si la validation OCSP est activée, un certificat qui ne
+    contient pas d’URL de réponse OCSP provoquera un échec de validation.
+    Ajouter ce drapeau permet à un tel certificat de passer la validation. Cela
+    s’avère utile dans les environnements où certains certificats de la chaîne
+    ne contiennent pas d’information de réponse OCSP.</p>
+</li>
+</ul>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLVerifyClient on
 SSLOCSPEnable on
@@ -1800,20 +1830,13 @@ Les <var>option</var>s disponibles sont :</p>
 </li>
 <li><code>StrictRequire</code>
     <p>
-    Cette option <em>force</em> l'interdiction d'accès lorsque
-    <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> ou <code class="directive"><a href="#sslrequire">SSLRequire</a></code> a décidé que
-    l'accès devait être interdit. Par défaut, dans le cas où
-    une directive ``<code>Satisfy any</code>'' est utilisée, et si
-    d'autres restrictions d'accès ont été franchies, on passe en général
-    outre l'interdiction d'accès due à <code>SSLRequireSSL</code> ou
-    <code>SSLRequire</code> (parce que c'est ainsi que le mécanisme
-    <code>Satisfy</code> d'Apache doit fonctionner). Pour des
-    restrictions d'accès plus strictes, vous pouvez cependant utiliser
-    <code>SSLRequireSSL</code> et/ou <code>SSLRequire</code> en
-    combinaison avec une option ``<code>SSLOptions
-    +StrictRequire</code>''. Une directive ``<code>Satisfy Any</code>''
-    n'a alors aucune chance d'autoriser l'accès si mod_ssl a décidé de
-    l'interdire.</p>
+    Cette option <em>force</em> l'interdiction d'accès lorsque <code class="directive"><a href="#sslrequiressl">SSLRequireSSL</a></code> ou <code class="directive"><a href="#sslrequire">SSLRequire</a></code> a décidé que l’accès doit être
+    interdit. Sans l’option <code>StrictRequire</code>, il est possible pour
+    d’autres directives d’autorisation (comme <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>) d’outrepasser l’interdiction d’accès
+    de SSL et d’accorder tout de même l’accès. Avec <code>SSLOptions
+    +StrictRequire</code>, l’interdiction de <code>SSLRequireSSL</code> ou
+    <code>SSLRequire</code> s’applique de manière inconditionnelle, sans tenir
+    compte d’autres directives d’autorisation éventuelles.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2006,13 +2029,12 @@ casse) :</p>
     Il s'agit du protocole Secure Sockets Layer (SSL) version 3.0 de
     Netscape Corporation. C'est le successeur de SSLv2 et le
     prédécesseur de TLSv1, mais est considéré comme
-    obsolète dans la <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC
-    7568</a></p></li>
+    obsolète dans la <a href="https://www.rfc-editor.org/rfc/rfc7568">RFC 7568</a>.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     Il s'agit du protocole  Transport Layer Security (TLS) version 1.0.
-    C'est le successeur de SSLv3, et il est défini dans la <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC2246</a>.</p></li>
+    C'est le successeur de SSLv3, et il est défini dans la <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.</p></li>
 
 <li><code>TLSv1.1</code> (à partir de la version 1.0.1 d'OpenSSL)
     <p>
@@ -3287,8 +3309,12 @@ réponses concernant les requêtes OCSP
 "good", les réponses
 périmées, etc...). Lorsqu'elle est à
 <code>off</code>, seules les réponses indiquant un statut de certificat
-"good" seront incluses dans les
-négociations TLS avec les clients.</p>
+"good" ou "revoked" seront incluses dans les
+négociations TLS avec les clients.
+Les réponses avec un statut "revoked" sont toujours incluses quelle que soit
+cette définition, car supprimer une révocation connue constituerait un risque
+de sécurité.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3369,9 +3395,11 @@ particulier, l'utilisation de cette directive peut provoquer la
 définition de la variable d'environnement <code>REMOTE_USER</code>.
 La valeur de l'argument <var>nom-var</var> peut correspondre à toute <a href="#envvars">variable d'environnement SSL</a>.</p>
 
-<p>Lorsque l'option <code>FakeBasicAuth</code> est activée, cette
-directive contrôle la valeur du nom d'utilisateur contenue dans
-l'en-tête d'authentification de base (voir <a href="#ssloptions">SSLOptions</a>).</p>
+<p>Lorsque l’option <code>FakeBasicAuth</code> (voir <a href="#ssloptions">SSLOptions</a>) ou la directive <code class="directive"><a href="#authbasicfake">AuthBasicFake</a></code> sont activées, cette directive permet
+de contrôler quelle partie du certificat client est utilisée comme nom
+d’utilisateur. Sans la directive <code class="directive">SSLUserName</code>,
+<code>REMOTE_USER</code> peut ne pas être définie pour d’autres modules ou
+scripts CGI.</p>
 
 <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SSLUserName SSL_CLIENT_S_DN_CN</pre>
 </div>

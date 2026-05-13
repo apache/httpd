@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_md.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
     de certificats via le protocole ACME
     </td></tr>
@@ -45,7 +43,7 @@
 	Ce module permet de gérer les propriétés courantes des domaines pour un
 	ou plusieurs serveurs virtuels. Il fournit deux fonctionnalités
 	principales : la première permet la supervision et le renouvellement des
-	certificats TLS via le protocole ACME (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). Le module
+	certificats TLS via le protocole ACME (<a href="https://www.rfc-editor.org/rfc/rfc8555">RFC 8555</a>). Le module
 	effectue le renouvellement des certificats avant leur expiration
 	afin d'éviter une interruption des services internet. Il est possible de
 	monitorer l'état de tous les certificats gérés par mod_md et de configurer
@@ -1010,8 +1008,9 @@
 </table>
             <p>
 		Cette directive permet de définir la commande à appeler
-		lorsqu'un des évènements "renewed", "installed", "expiring" ou
-		"errored" se produit pour un domaine géré. La commande sera
+		lorsqu'un des évènements "renewed", "installed", "expiring",
+		"errored", "renewing", "challenge-setup:type:domain",
+		"ocsp-renewed" ou "ocsp-errored" se produit pour un domaine géré. La commande sera
 		probablement invoquée pour d'autres évènements dans le futur et
 		ignorera les évènements pour lesquels elle n'aura pas été
 		préparée.
@@ -1071,13 +1070,18 @@
 		configurations de clusters peuvent utiliser cet évènement pour
 		distribuer les fichiers de vérification à tous les noeuds.
             </p><p>
-		Un évènement de type ocsp-errored est déclenché lorsque le
+		Un évènement de type "ocsp-errored" est déclenché lorsque le
 		<code class="directive"><a href="#mdstapling">MDStapling</a></code> est activé
 		pour un domaine, et indique qu'une erreur s'est produite en
 		essayant d'obtenir la réponse OCSP  de l'autorité de
 		certification. mod_md essaiera à nouveau d'obtenir cette
 		réponse.		
-            </p>
+            </p><p>
+                Un évènement de type "ocsp-renewed" est déclenché lorsqu’une
+		nouvelle réponse OCSP a été obtenu avec succès pour un
+		certificat de domaine. Cet évènement de produit au plus une fois
+		par jour.
+	    </p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

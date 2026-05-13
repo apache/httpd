@@ -896,7 +896,7 @@ en fonction du type MIME</td></tr>
 d'expiration</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#fallbackresource">FallbackResource</a></td><td class="module"><a href="mod_dir.html">mod_dir</a></td></tr>
 <tr class="odd"><td colspan="2" class="descr">Définit une URL par défaut pour les requêtes qui ne ciblent
-aucun fichier</td></tr>
+aucun fichier ou gestionnaire</td></tr>
 <tr><td><a href="mod_autoindex.html#headername">HeaderName</a></td><td class="module"><a href="mod_autoindex.html">mod_autoindex</a></td></tr>
 <tr><td colspan="2" class="descr">Nom du fichier qui sera inséré au début de la page
 contenant l'index</td></tr>

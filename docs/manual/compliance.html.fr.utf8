@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="./en/compliance.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/compliance.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit le mécanisme utilisé pour définir une
     politique de conformité au protocole HTTP pour un espace d'URL au
@@ -59,7 +57,7 @@
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 
     <p>Le protocole HTTP applique le <strong>principe de
-    robustesse</strong> décrit dans la <a href="http://tools.ietf.org/html/rfc1122">RFC1122</a>, et stipulant
+    robustesse</strong> décrit dans la <a href="https://www.rfc-editor.org/rfc/rfc1122">RFC 1122</a>, et stipulant
     <strong>"Soyez libéral pour ce que vous acceptez, conservateur pour
     ce que vous envoyez"</strong>. Selon ce principe, les clients HTTP
     vont compenser en corrigeant les réponses incorrectes ou mal
@@ -141,8 +139,7 @@
     correspond pas à l'ETag de la réponse, le serveur doit renvoyer un
     code d'erreur <code>412 Precondition Failed</code>. Vous trouverez
     tous les détails du traitement d'un en-tête <code>If-Match</code>
-    dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.24">RFC2616
-    section 14.24</a>.</dd>
+    dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.24">RFC 2616</a>.</dd>
 
     <dt><code>If-None-Match</code></dt>
     <dd>Si l'ETag fourni dans l'en-tête <code>If-None-Match</code>
@@ -150,16 +147,14 @@
     <code>304 Not Modified</code> pour les requêtes GET/HEAD, soit
     <code>412 Precondition Failed</code> pour les autres méthodes. Vous trouverez
     tous les détails du traitement d'un en-tête
-    <code>If-None-Match</code> dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">RFC2616
-    section 14.26</a>.</dd>
+    <code>If-None-Match</code> dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.26">RFC 2616</a>.</dd>
 
     <dt><code>If-Modified-Since</code></dt>
     <dd>Si la date fournie dans l'en-tête <code>If-Modified-Since</code>
     est plus ancienne que celle de l'en-tête <code>Last-Modified</code>
     de la réponse, le serveur doit renvoyer <code>304 Not Modified</code>. Vous trouverez
     tous les détails du traitement d'un en-tête
-    <code>If-Modified-Since</code> dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.25">RFC2616
-    section 14.25</a>.</dd>
+    <code>If-Modified-Since</code> dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.25">RFC 2616</a>.</dd>
 
     <dt><code>If-Unmodified-Since</code></dt>
     <dd>Si la date fournie dans l'en-tête
@@ -167,8 +162,7 @@
     l'en-tête <code>Last-Modified</code> de la réponse, le serveur doit
     renvoyer <code>412 Precondition Failed</code>. Vous trouverez
     tous les détails du traitement d'un en-tête
-    <code>If-Unmodified-Since</code> dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.28">RFC2616
-    section 14.28</a>.</dd>
+    <code>If-Unmodified-Since</code> dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.28">RFC 2616</a>.</dd>
 
     <dt><code>If-Range</code></dt>
     <dd>Si l'ETag fourni dans l'en-tête <code>If-Range</code> correspond
@@ -176,8 +170,7 @@
     en-tête <code>Range</code> valide est présent, le serveur doit
     renvoyer <code>206 Partial Response</code>. Vous trouverez
     tous les détails du traitement d'un en-tête <code>If-Range</code>
-    dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.27">RFC2616
-    section 14.27</a>.</dd>
+    dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.27">RFC 2616</a>.</dd>
 
     </dl>
 
@@ -199,9 +192,8 @@
     <p>Cette politique sera rejetée si la réponse du serveur ne contient pas d'en-tête
     <code>Content-Length</code> explicite.</p>
 
-    <p>De nombreuses méthodes pour déterminer la taille d'un
-    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
-    section 4.4 Message Length</a>.</p>
+    <p>De nombreuses méthodes pour déterminer la taille d'un corps de réponse
+    sont décrites dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-4.4">RFC 2616</a> (Message Length).</p>
 
     <p>Lorsque l'en-tête <code>Content-Length</code> est présent, la
     taille du corps est déclarée au début de la réponse. Si cette
@@ -251,8 +243,7 @@
 
     <p>Le type de media du corps est placé dans un en-tête
     <code>Content-Type</code> dont le format est décrit en détail dans
-    la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">
-    RFC2616 section 3.7 Media Types</a>.</p>
+    la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-3.7">RFC 2616</a> (Media Types).</p>
 
     <p>Un en-tête <code>Content-Type</code> dont la syntaxe est valide
     sera du style :</p>
@@ -263,12 +254,11 @@
 
     <p>Exemples d'en-têtes <code>Content-Type</code> non valides :</p>
 
-    <div class="example"><p><code>
-      # invalide<br />
-      Content-Type: foo<br />
-      # vide<br />
-      Content-Type:
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-config"># invalid
+Content-Type: foo
+# blank
+Content-Type:</pre>
+</div>
 
     <p>L'administrateur peut restreindre la politique à un ou plusieurs
     types spécifiques, ou utiliser des caractères génériques comme
@@ -287,9 +277,8 @@
     <code>Content-Length</code> explicite, ou d'en-tête
     <code>Transfer-Encoding</code> défini à chunked.</p>
 
-    <p>De nombreuses manières pour déterminer la taille d'un
-    corps de réponse sont décrites dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.4">RFC2616
-    section 4.4 Message Length</a>.</p>
+    <p>De nombreuses manières pour déterminer la taille d'un corps de réponse
+    sont décrites dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-4.4">RFC 2616</a> (Message Length).</p>
 
     <p>Pour indiquer la fin de la réponse au client sans que ce dernier
     ait à en connaître la taille au préalable, HTTP/1.1 propose
@@ -355,8 +344,7 @@
     durée de fraîcheur est calculée à partir d'une heuristique.</p>
 
     <p>Vous trouverez tous les détails à propos du calcul d'une durée de
-    fraîcheur dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.2">RFC2616
-    section 13.2 Expiration Model</a>.</p>
+    fraîcheur dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-13.2">RFC 2616</a> (Expiration Model).</p>
 
     <p>Pendant la durée de fraîcheur, un cache n'a pas besoin de
     contacter le serveur original, et il peut renvoyer le contenu situé
@@ -388,11 +376,10 @@
     déclare elle-même qu'elle ne doit pas être mise en cache à l'aide
     d'un en-tête <code>Cache-Control</code> ou <code>Pragma</code>.</p>
 
-    <p>Vous trouverez tous les détails à propos de la manière dont un
-    contenu peut être déclaré comme non cachable dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">RFC2616
-    section 14.9.1 What is Cacheable</a>, et au sein de la définition de
-    l'en-tête <code>Pragma</code> dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">RFC2616
-    section 14.32 Pragma</a>.</p>
+    <p>Vous trouverez tous les détails à propos de la manière dont un contenu
+    peut être déclaré comme non cachable dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.9.1">RFC 2616</a> (What is Cacheable), et au sein de la définition
+    de l'en-tête <code>Pragma</code> dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.32">RFC 2616</a>
+    (Pragma).</p>
 
     <p>Plus précisément, si une combinaison des en-têtes suivants existe
     dans la réponse, cette dernière sera rejetée :</p>
@@ -422,11 +409,10 @@
     ne contient aucun en-tête syntaxiquement correct <code>ETag</code>
     ou <code>Last-Modified</code>.</p>
 
-    <p>Vous trouverez une description complète de l'en-tête
-    <code>ETag</code> dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.19">RFC2616
-    section 14.19 Etag</a>, et de l'en-tête <code>Last-Modified</code>
-    dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.29">RFC2616
-    section 14.29 Last-Modified</a>.</p>
+    <p>Vous trouverez une description complète de l'en-tête <code>ETag</code>
+    dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.19">RFC 2616</a> (Etag), et de l'en-tête
+    <code>Last-Modified</code> dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.29">RFC 2616</a>
+    (Last-Modified).</p>
 
     <p>La vérification est effectuée non seulement en ce qui concerne la
     présence des en-têtes, mais aussi du point de vue de leur syntaxe.</p>
@@ -451,8 +437,7 @@
     en-tête dont la valeur appartient à une liste de valeurs proscrites par
     l'administrateur.</p>
 
-    <p>L'en-tête <code>Vary</code> est décrit en détails dans la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.44">RFC2616
-    section 14.44 Vary</a>.</p>
+    <p>L'en-tête <code>Vary</code> est décrit en détails dans la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.44">RFC 2616</a> (Vary).</p>
 
     <p>Certaines en-têtes définis par les clients, comme
     <code>User-Agent</code>, peuvent contenir des milliers ou même des

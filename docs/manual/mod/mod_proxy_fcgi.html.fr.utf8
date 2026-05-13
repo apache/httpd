@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de FastCGI à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -40,13 +38,13 @@
 <h3>Sommaire</h3>
 
     <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support du protocole <a href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support du protocole <a href="https://fastcgi-archives.github.io/">FastCGI</a>.</p>
 
     <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> et <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>
     doivent être chargés dans le serveur.</p>
 
-    <p>A la différence de <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    <p>A la différence de <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> n'est pas en mesure de démarrer le
     processus de l'application ; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> est
     fourni à cet effet sur certaines plateformes. Le framework
@@ -364,8 +362,8 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TR
     <pre class="prettyprint lang-config">ProxyFCGISetEnvIf true VARIABLE</pre>
 
 
-  La spécification CGI/1.1 <a href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
-  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  La spécification CGI/1.1 ne fait pas de
+  distinction (<a href="https://www.rfc-editor.org/rfc/rfc3875#section-4.1">RFC 3875</a>) entre une variable contenant une chaîne vide et une variable qui
   n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
   cette distinction (ou permettent aux scripts de la faire). Le choix de celle
   que vous allez utiliser dépend de votre implémentation et de la raison qui

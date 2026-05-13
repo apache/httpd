@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_filter.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de configuration de filtre intelligent sensible au
 contexte</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -347,6 +345,34 @@ particulier</td></tr>
     AddOutputFilterByType INCLUDES;DEFLATE text/html
 &lt;/Location&gt;</pre>
 
+
+    <p>Notez que les directives <code class="directive">AddOutputFilterByType</code>
+    situées dans un même contexte sont additives, mais que leur définition dans
+    un contexte plus spécifique (tel qu’une section <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>) remplacera —&nbsp;ne s’ajoutera pas à
+    —&nbsp;toutes définitions héritées d’un contexte plus général. Ce comportement
+    est identique à celui de la directive <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>.</p>
+
+    <pre class="prettyprint lang-config"># Server context: compress text/html and text/plain
+AddOutputFilterByType DEFLATE text/html text/plain
+&lt;VirtualHost *:80&gt;
+    # Remplace la définition globale pour ce serveur virtuel;
+    # seuls les contenus de type text/css seront compressés ici :
+    AddOutputFilterByType DEFLATE text/css
+&lt;/VirtualHost&gt;</pre>
+
+
+    <div class="warning"><h3>Limitation avec les filtres définis par l’utilisateur</h3>
+    <p>La directive <code class="directive">AddOutputFilterByType</code> fonctionne avec
+    des filtres intégrés standards comme <code>DEFLATE</code> et
+    <code>INCLUDES</code>, mais ne fonctionne pas avec des filtres qui
+    déterminent leur configuration par nom de filtre, comme ceux définis
+    par le module <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> ou par la directive
+    <code>LuaOutputFilter</code> du module <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. Cela est dû
+    au fait que le nom du filtre est modifié en interne par l’adjonction du
+    préfixe <code>BYTYPE:</code>. Pour les filtres définis par l’utilisateur,
+    utilisez à la place les directives <code class="directive">FilterDeclare</code> et
+    <code class="directive">FilterProvider</code> avec une expression correspondant à
+    <code>%{CONTENT_TYPE}</code>.</p></div>
 
 
 <h3>Voir aussi</h3>

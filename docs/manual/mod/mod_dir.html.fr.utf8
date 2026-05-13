@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
@@ -164,11 +162,11 @@ client envoie une requête pour un répertoire</td></tr>
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
 
-    <p><strong>Note :</strong>La définition de plusieurs directives
+    <div class="note">La définition de plusieurs directives
     <code class="directive">DirectoryIndex</code> au sein d'un <a href="../sections.html"><em>même
     contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
     que de remplacer celle déjà définies :
-    </p>
+    </div>
     <pre class="prettyprint lang-config"># Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
 &lt;Directory "/foo"&gt;
     DirectoryIndex index.html
@@ -312,7 +310,7 @@ du serveur HTTP Apache</td></tr>
 <div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
-aucun fichier</td></tr>
+aucun fichier ou gestionnaire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FallbackResource disabled | <var>url-locale</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Désactivé - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -363,7 +361,24 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
     <code>/blog/index.php</code>) peut accéder à l'URL de la requête originale
     via la variable de serveur <code>REQUEST_URI</code>. Pour accéder à cette
     variable en PHP, par exemple, utilisez <code>$_SERVER['REQUEST_URI']</code>.</p>
+    <div class="note"><h3>Interaction avec les autres gestionnaires</h3>
+    <p>La directive <code class="directive">FallbackResource</code> n’a d’effet que si
+    aucun autre gestionnaire n’a été assigné à la requête. Si une directive
+    comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> a déjà assigné un gestionnaire à un
+    URL ou à une extension de fichier, la directive
+    <code class="directive">FallbackResource</code> ne l’outrepassera pas. Par exemple,
+    si vous utilisez <code>SetHandler application/x-httpd-php</code> dans une
+    section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, ce
+    gestionnaire s’appliquera à toutes les requêtes dans ce répertoire, même
+    aux requêtes pour des fichiers qui n’existent pas ; la directive
+    <code class="directive">FallbackResource</code> ne sera alors jamais invoquée.</p></div>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="#directorycheckhandler">DirectoryCheckHandler</a></code></li>
+</ul>
 </div>
 </div>
 <div class="bottomlang">

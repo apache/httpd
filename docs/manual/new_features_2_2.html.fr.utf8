@@ -32,8 +32,6 @@
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
   <p>Ce document décrit quelques uns des changements principaux entre
      les versions 2.0 et 2.2 du serveur HTTP Apache. Pour les
@@ -181,7 +179,7 @@
 
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
       
-      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a> a été ajouté, ce qui permet de passer d'une
+      <dd>Le support de la <a href="https://www.rfc-editor.org/rfc/rfc2817">RFC 2817</a> a été ajouté, ce qui permet de passer d'une
 	connexion en clair au chiffrement TLS.</dd>
 
       <dt><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></dt>

@@ -31,8 +31,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation du serveur
@@ -266,10 +264,9 @@ sudo service apache2 start</pre>
     <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
     simplement à décompresser et à désarchiver cette dernière :</p>
 
-<div class="example"><p><code>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-$ tar xvf httpd-<em>NN</em>.tar
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ gzip -d httpd-<em>NN</em>.tar.gz
+$ tar xvf httpd-<em>NN</em>.tar</pre>
+</div>
 
     <p>Ceci créera, dans le répertoire courant, un nouveau répertoire
     contenant le code source de la distribution. Vous devrez vous positionner
@@ -335,12 +332,11 @@ $ tar xvf httpd-<em>NN</em>.tar
     particuliers et les deux modules additionnels <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>
     et <code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code> :</p>
 
-<div class="example"><p><code>
-      $ CC="pgcc" CFLAGS="-O2" \<br />
-       ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-ldap=shared \<br />
-       --enable-lua=shared
-</code></p></div>
+<div class="example"><pre class="prettyprint lang-sh">$ CC="pgcc" CFLAGS="-O2" \
+  ./configure --prefix=/sw/pkg/apache \
+  --enable-ldap=shared \
+  --enable-lua=shared</pre>
+</div>
 
     <p>Plusieurs minutes peuvent être nécessaires à
     <code class="program"><a href="./programs/configure.html">configure</a></code> pour tester la disponibilité des
@@ -449,13 +445,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     l'arborescence des sources de la nouvelle version, de l'éditer pour
     effectuer toute modification souhaitée, et de lancer :</p>
 
-    <div class="example"><p><code>
-    $ ./config.nice<br />
-    $ make<br />
-    $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
-    $ <em>PREFIX</em>/bin/apachectl -k start<br />
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ ./config.nice
+$ make
+$ make install
+$ <em>PREFIX</em>/bin/apachectl -k graceful-stop
+$ <em>PREFIX</em>/bin/apachectl -k start</pre>
+</div>
 
     <div class="warning">Vous devez toujours effectuer un test de la nouvelle
     version dans votre environnement avant de la mettre en production.
