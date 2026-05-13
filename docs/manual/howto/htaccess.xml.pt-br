@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.pt-br.xsl"?>
-<!-- English Revision: 1741841:1933863 (outdated) -->
+<!-- English Revision: 1933863 -->
 <!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,7 +27,8 @@
 
 <summary>
 <p>Arquivos <code>.htaccess</code> oferecem um meio de fazer alterações
- nas configurações por diretório.</p>
+nas configurações por diretório, sem modificar diretamente os arquivos
+de configuração principais do servidor.</p>
 </summary>
 
 <section id="related"><title>Arquivos .htaccess </title>
@@ -36,14 +37,15 @@
             <module>core</module>
             <module>mod_authn_file</module>
             <module>mod_authz_groupfile</module>
-            <module>mod_cgi</module>
             <module>mod_include</module>
             <module>mod_mime</module>
+            <module>mod_rewrite</module>
         </modulelist>
 
         <directivelist>
             <directive module="core">AccessFileName</directive>
             <directive module="core">AllowOverride</directive>
+            <directive module="core">AllowOverrideList</directive>
             <directive module="core">Options</directive>
             <directive module="mod_mime">AddHandler</directive>
             <directive module="core">SetHandler</directive>
@@ -56,23 +58,20 @@
 
     </related>
 
-    <note>O uso de arquivos <code>.htaccess</code> deve ser totalmente evitado se for possível o acesso ao
-    arquivo de configuração httpd principal. O uso de arquivos <code>.htaccess</code> deixa o Servidor Apache HTTP mais lento.
-    Qualquer diretiva que possa ser incluída em um <code>.htaccess</code> fica melhor se for incluída em um bloco <directive module="core">Directory</directive>, pois terá o mesmo efeito com um desempenho melhor.</note>
 </section>
 
 <section id="what">
     <title>O que eles são / Como usá-los</title>
 
-    <p>Os arquivos <code>.htaccess</code> (ou "arquivos de configuração distribuída")
+    <p>Os arquivos <code>.htaccess</code> (ou "arquivos de configuração distribuídos")
     oferecem um meio de fazer alterações nas configurações por diretório. Um
     arquivo, contendo uma ou mais diretivas de configurações, é colocado em um
-    diretório em particular e as diretivas se aplicam àquele diretório e a
+    diretório em particular e as diretivas se aplicam a este diretório e a
     todos os seus subdiretórios.</p>
 
-    <note><title>Nota:</title>
+    <note><title>Observação:</title>
       <p>Se o nome do arquivo precisar ser diferente de <code>.htaccess</code>,
-      deve ser usada a diretiva <directive
+      ele pode ser alterado através da diretiva <directive
       module="core">AccessFileName</directive>. Por exemplo,
       se a preferência for chamar o arquivo de <code>.config</code>, pode
       ser adicionada a seguinte linha ao arquivo de configuração do servidor:</p>
@@ -82,14 +81,17 @@ AccessFileName ".config"
       </highlight>
     </note>
 
-    <p>Em geral, arquivos <code>.htaccess</code> usam a mesma sintaxe
-    que os <a href="../configuring.html#syntax">arquivos de configuração
-    principal</a>. O que pode ser colocado nesses arquivos é determinado pela
-    diretiva <directive module="core">AllowOverride</directive>. Esta
-    diretiva especifica, em categorias, quais diretivas serão
-    honradas caso sejam encontradas em um arquivo <code>.htaccess</code>. Se uma
-    diretiva for permitida em um arquivo <code>.htaccess</code>, a
-    documentação para essa diretiva conterá uma seção Override,
+    <p>Diretivas nos arquivos <code>.htaccess</code> usam a mesma sintaxe
+    que os <a href="../configuring.html#syntax">arquivos principais
+    de configuração</a>. O que pode ser colocado nesses arquivos é determinado pelas
+    diretivas <directive module="core">AllowOverride</directive> E
+    <directive module="core">AllowOverrideList</directive>.
+    <directive module="core">AllowOverride</directive> especifica, em
+    categorias, quais diretivas serão honradas caso sejam encontradas em um
+    arquivo <code>.htaccess</code>, enquanto que <directive
+    module="core">AllowOverrideList</directive> nomeia diretivas
+    individuais a serem permitidas (consulte <a href="#when">abaixo</a>). Se uma diretiva
+    for permitida, a documentação para essa diretiva conterá uma seção Override,
     especificando que valor precisa estar em <directive
     module="core">AllowOverride</directive> para que essa diretiva
     seja permitida.</p>
@@ -102,62 +104,34 @@ AccessFileName ".config"
     <code>FileInfo</code>. Assim, deve-se ter pelo menos
     <code>AllowOverride FileInfo</code> para que essa diretiva seja
     honrada nos arquivos <code>.htaccess</code>.</p>
-
-    <example><title>Exemplo:</title>
-      <table>
-        <tr>
-          <td><a
-          href="../mod/directive-dict.html#Context">Contexto:</a></td>
-          <td>configuração do servidor, host virtual, diretório, .htaccess</td>
-        </tr>
-
-        <tr>
-          <td><a
-          href="../mod/directive-dict.html#Override">Override:</a></td>
-          <td>FileInfo</td>
-        </tr>
-      </table>
-    </example>
-
-    <p>Caso não haja certeza que se uma diretiva em particular é permitida em um
-    arquivo <code>.htaccess</code>, procure na documentação por essa
-    diretiva e verifique na linha Contexto a presença de ".htaccess".</p>
 </section>
 
 <section id="when"><title>Quando (não) usar arquivos .htaccess</title>
 
-    <p>Em geral, arquivos <code>.htaccess</code> só devem ser usados quando
-    não houver como acessar o arquivo de configuração principal do servidor. Existe,
-    por exemplo, um equívoco comum de que a autenticação de usuários
-    deve sempre ser feita em arquivos <code>.htaccess</code> e, mais recentemente,
-    outro equívoco de que as diretivas <module>mod_rewrite</module>
-    devem estar em arquivos <code>.htaccess</code>. Isso simplesmente não é verdade.
-    As configurações de autenticação de usuários podem ser colocadas na configuração principal do servidor,
-    e essa é, na verdade, a maneira preferida de fazer
-    as coisas. Da mesma forma, as diretivas <code>mod_rewrite</code> funcionam melhor,
-    em muitos aspectos, na configuração principal do servidor.</p>
+    <p>Se for possível o acesso ao arquivo de principal de configuração do servidor, todas
+    as configurações devem ser colocadas lá em vez de inseri-las em arquivos
+    <code>.htaccess</code>. Isto inclui autenticação de usuários,
+    regras do <module>mod_rewrite</module> e qualquer outra coisa que você tenha
+    tentação de colocar no <code>.htaccess</code>. Diretivas na configuração
+    principal são carregadas assim que o servidor inicia, e não a cada
+    requisição, e o <code>mod_rewrite</code> em particular funciona melhor
+    no contexto de configuração do servidor.</p>
 
     <p>Os arquivos <code>.htaccess</code> devem ser usados ​​nos casos em que os
     provedores de conteúdo precisam fazer alterações de configuração no servidor
-    por diretório, mas não têm acesso root ao sistema do servidor.
-    Caso o administrador do servidor não esteja disposto a fazer
+    por diretório, mas não têm acesso "root" ao sistema do servidor.
+    Isto é comum com ambientes de hospedagem gerenciados, hospedagem baseada
+    em painel de controle (como cPanel ou Plesk), e sistemas de gerenciamento de conteúdo onde
+    a aplicação envia um arquivo <code>.htaccess</code> como parte de sua
+    distribuição. Caso o administrador do servidor não esteja disposto a fazer
     alterações de configuração frequentes, pode ser desejável permitir que
     usuários individuais façam essas alterações em arquivos <code>.htaccess</code>
-    por conta própria. Isso é particularmente verdadeiro, por exemplo, em casos em que
-    ISPs hospedam vários sites de usuários em uma única máquina e desejam
-    que seus usuários possam alterar sua configuração.</p>
+    por conta própria.</p>
 
-    <p>No entanto, em geral, o uso de arquivos <code>.htaccess</code> deve ser
-    evitado sempre que possível. Qualquer configuração que se considere
-    colocar em um arquivo <code>.htaccess</code> pode ser feita com a mesma eficácia
-    em uma seção <directive module="core"
-    type="section">Directory</directive> no seu arquivo de configuração
-    principal do servidor.</p>
+    <p>Existem dois motivos principais para preferir o arquivo principal de configuração
+    no lugar do <code>.htaccess</code>: desempenho e segurança.</p>
 
-    <p>Existem dois motivos principais para evitar o uso de arquivos
-    <code>.htaccess</code>.</p>
-
-    <p>O primeiro desses motivos é o desempenho. Quando a diretiva <directive
+    <p>Desempenho: Quando a diretiva <directive
     module="core">AllowOverride</directive>
     está configurada para permitir o uso de arquivos <code>.htaccess</code>, o httpd
     procurará em todos os diretórios por arquivos <code>.htaccess</code>. Portanto,
@@ -166,57 +140,64 @@ AccessFileName ".config"
     arquivo <code>.htaccess</code> é carregado sempre que um documento é
     solicitado.</p>
 
-    <p>Observe ainda que o httpd deve procurar arquivos <code>.htaccess</code>
+    <p>Observe ainda que o httpd precisa procurar arquivos <code>.htaccess</code>
     em todos os diretórios de nível superior, a fim de ter um conjunto completo de
     diretivas que ele deve aplicar. (Consulte a seção sobre <a href="#how">como
     as diretivas são aplicadas</a>.) Assim, se um arquivo for solicitado de um
-    diretório <code>/www/htdocs/example</code>, o httpd deverá procurar os
+    diretório <code>/www/htdocs/example</code>, o httpd precisa procurar os
     seguintes arquivos:</p>
 
-    <example>
-      /.htaccess<br />
-      /www/.htaccess<br />
-      /www/htdocs/.htaccess<br />
-      /www/htdocs/example/.htaccess
-    </example>
+    <highlight language="config">
+/.htaccess
+/www/.htaccess
+/www/htdocs/.htaccess
+/www/htdocs/example/.htaccess
+    </highlight>
 
     <p>Assim, para cada acesso a um arquivo fora desse diretório, há 4
     acessos adicionais ao sistema de arquivos, mesmo que nenhum desses arquivos esteja
     presente. (Observe que isso só ocorreria se
-    os arquivos <code>.htaccess</code> estivessem habilitados para <code>/</code>, o que
+    os arquivos <code>.htaccess</code> estivessem habilitados para o diretório <code>/</code>, o que
     normalmente não acontece.)</p>
 
-    <p>No caso de diretivas <directive
-    module="mod_rewrite">RewriteRule</directive>, no contexto do
-    <code>.htaccess</code>, essas expressões regulares devem ser
-    recompiladas a cada requisição ao diretório, enquanto no contexto da configuração principal do
-    servidor, elas são compiladas uma vez e armazenadas em cache.
-    Além disso, as próprias regras são mais complexas, pois é preciso
-    contornar as restrições que acompanham o contexto por diretório
-    e o <code>mod_rewrite</code>. Consulte o <a
-    href="../rewrite/intro.html#htaccess">Guia de Reescrita</a> para obter mais
-    detalhes sobre este assunto.</p>
-
-    <p>A segunda consideração é de segurança. Esses arquivos permitem
-    que os usuários modifiquem a configuração do servidor, o que pode resultar em alterações sobre as quais
-    o administrador não tem controle. Considere cuidadosamente se deseja conceder
+    <p>Segurança: Você está permitindo
+    que usuários modifiquem a configuração do servidor, o que pode resultar em alterações sobre
+    as quais você não tem controle.Considere cuidadosamente se deseja conceder
     esse privilégio aos usuários. Observe também que conceder aos usuários menos
-    privilégios do que o necessário levará a solicitações adicionais de suporte técnico.
-    Certifique-se de informar claramente aos usuários qual o nível de
+    privilégios do que o necessário levará a solicitações adicionais de suporte
+    técnico. Certifique-se de informar claramente aos usuários qual o nível de
     privilégios que foi condedido a eles. Especificar exatamente o valor definido para
     <directive module="core">AllowOverride</directive> e direcioná-los
     para a documentação relevante evitará muita confusão
     posteriormente.</p>
 
+    <p>Se for necessário conceder acesso ao <code>.htaccess</code> porém limitando
+    a um conjunto específico de diretivas em vez de categorias inteiras, use a
+    diretiva <directive module="core">AllowOverrideList</directive>. Isso
+    permite nomear diretivas individuais que são permitidas, fornecendo
+    um controle mais fino que a <directive
+    module="core">AllowOverride</directive> sozinha:</p>
+
+    <highlight language="config">
+# Permite somente diretivas específicas, e não categorias inteiras
+AllowOverride None
+AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
+    </highlight>
+
+    <p>Com esta configuração, qualquer diretiva que não esteja explicitamente listada
+    causará um erro de servidor se encontrada em um arquivo <code>.htaccess</code>.
+    Isto é um meio termo útil entre o acesso total e nenhum
+    acesso.</p>
+
     <p>Observe que é completamente equivalente colocar um arquivo <code>.htaccess</code>
     em um diretório <code>/www/htdocs/example</code> contendo uma
     diretiva, e colocar essa mesma diretiva em uma seção Directory
-    <code>&lt;Directory "/www/htdocs/example"&gt;</code> na sua configuração principal do
+    <code>&lt;Directory "/www/htdocs/example"&gt;</code> na configuração principal do
     servidor:</p>
 
     <p>Arquivo <code>.htaccess</code> em <code>/www/htdocs/example</code>:</p>
 
-    <example><title>Contents of .htaccess file in
+    <example><title>Conteúdo do arquivo .htaccess em
     <code>/www/htdocs/example</code></title>
     <highlight language="config">
 AddType text/example ".exm"
@@ -231,11 +212,6 @@ AddType text/example ".exm"
 &lt;/Directory&gt;
     </highlight>
     </example>
-
-    <p>No entanto, colocar essa configuração no arquivo de configuração do servidor
-    resultará em uma perda de desempenho menor, pois a configuração é
-    carregada uma vez quando o httpd é iniciado, em vez de toda vez que um arquivo é
-    solicitado.</p>
 
     <p>O uso de arquivos <code>.htaccess</code> pode ser completamente desativado
     definindo a diretiva <directive module="core">AllowOverride</directive>
@@ -252,11 +228,11 @@ AllowOverride None
     são aplicadas ao diretório em que o arquivo <code>.htaccess</code>
     está localizado e a todos os seus subdiretórios. No entanto, é importante
     lembrar também que pode haver arquivos <code>.htaccess</code>
-    em diretórios acima na hierarquia. As diretivas são aplicadas na ordem em que
+    em diretórios acima na árvore. As diretivas são aplicadas na ordem em que
     são encontradas. Portanto, um arquivo <code>.htaccess</code> em um determinado
     diretório pode sobrescrever diretivas encontradas em arquivos <code>.htaccess</code>
-    localizados acima na hierarquia de diretórios. E estes, por sua vez, podem ter
-    sobrescrito diretivas encontradas ainda acima na hierarquia, ou no próprio arquivo de
+    localizados acima na árvore de diretórios. E estes, por sua vez, podem ter
+    sobrescrito diretivas encontradas ainda acima na árvore, ou no próprio arquivo de
     configuração principal do servidor.</p>
 
     <p>Exemplo:</p>
@@ -268,7 +244,7 @@ AllowOverride None
 Options +ExecCGI
     </highlight>
 
-    <p>(Observação: "<code>AllowOverride Options</code>" deve estar em vigor
+    <p>(Observação: "<code>AllowOverride Options</code>" precisa estar em vigor
     para permitir o uso da diretiva "<directive
     module="core">Options</directive>" em
     arquivos <code>.htaccess</code>.)</p>
@@ -286,8 +262,8 @@ Options Includes
     sobrescreve completamente qualquer configuração anterior que possa ter estado
     em vigor.</p>
 
-    <section id="merge">
-        <title>Mesclagem do .htaccess com os arquivos de configuração principais</title>
+    <section id="merge"><title>Mesclagem do .htaccess com os arquivos principais
+        de configuração</title>
 
         <p>Conforme discutido na documentação sobre <a
         href="../sections.html">Seções de Configuração</a>,
@@ -319,23 +295,13 @@ Options Includes
 
 <section id="auth"><title>Exemplo de Autenticação</title>
 
-    <p>Se você veio direto para esta parte do documento para descobrir como
-    fazer a autenticação, é importante observar uma coisa. Existe um
-    equívoco comum de que é necessário usar
-    arquivos <code>.htaccess</code> para implementar a autenticação por senha.
-    Isso não é verdade. Colocar as diretivas de autenticação
-    em uma seção <directive module="core" type="section">Directory</directive>
-    no arquivo de configuração principal do servidor é a maneira preferida
-    de implementar isso, e os arquivos <code>.htaccess</code> devem ser usados ​​somente
-    se você não tiver acesso ao arquivo de configuração principal do servidor. Veja <a
-    href="#when">acima</a> uma discussão sobre quando se deve e quando não se deve
-    usar arquivos <code>.htaccess</code>.</p>
+    <p>Como em qualquer caso de uso de <code>.htaccess</code>, inserir estas diretivas em
+    um bloco <directive module="core" type="section">Directory</directive> é
+    preferido quando se tem acesso à configuração principal (consulte
+    <a href="#when">above</a>). O exemplo s seguir mostra o método
+    <code>.htaccess</code>:</p>
 
-    <p>Dito isso, se você ainda acredita que precisa usar um arquivo
-    <code>.htaccess</code>, a configuração a seguir provavelmente
-    funcionará para você.</p>
-
-    <p>Conteúdo de um arquivo <code>.htaccess</code>:</p>
+    <p>Conteúdo de <code>.htaccess</code>:</p>
 
     <highlight language="config">
 AuthType Basic
@@ -381,14 +347,14 @@ AddHandler server-parsed shtml
     Considere os seguintes exemplos:</p>
 
     <highlight language="config">
-    # No arquivo httpd.conf
-    RewriteRule "^/imagens/(.+)\.jpg" "/imagens/$1.png"
+# No arquivo httpd.conf
+RewriteRule "^/imagens/(.+)\.jpg" "/imagens/$1.png"
 
-    # No arquivo .htaccess do diretório raiz
-    RewriteRule "^imagens/(.+)\.jpg" "imagens/$1.png"
+# No arquivo .htaccess do diretório raiz
+RewriteRule "^imagens/(.+)\.jpg" "imagens/$1.png"
 
-    # No arquivo .htaccess do diretório imagens/
-    RewriteRule "^(.+)\.jpg" "$1.png"
+# No arquivo .htaccess do diretório imagens/
+RewriteRule "^(.+)\.jpg" "$1.png"
     </highlight>
 
     <p>Em um arquivo <code>.htaccess</code> no diretório de documentos, a barra inicial
@@ -398,14 +364,24 @@ AddHandler server-parsed shtml
     dele. Portanto, a expressão regular precisa omitir essa parte
     também.</p>
 
-    <p>Consulte a documentação do <a href="../rewrite/">mod_rewrite</a> para
+    <p>Observe também que no contexto do <code>.htaccess</code>, expressões regulares são
+    recompiladas a cada requisição, enquanto que na configuração principal do servidor elas
+    são compiladas apenas uma vez e armazenadas em cache.</p>
+
+    <p>Consulte a <a href="../rewrite/">documentação do mod_rewrite</a> para
     obter mais detalhes sobre como usar o <code>mod_rewrite</code>.</p>
 
 </section>
 
 <section id="cgi"><title>Exemplo de CGI</title>
 
-    <p>Por fim, pode ser necessário usar um arquivo <code>.htaccess</code> para permitir
+    <note>Scripts CGI são um mecanismo legado para conteúdo dinâmico. Para novos
+    desenvolvimentos, considere o uso de <module>mod_proxy_fcgi</module> com um
+    servidor de aplicação FastCGI ou um manipulador específico para algum framework. A
+    informação abaixo permanece útil para ambientes que ainda dependem de
+    CGI tradicional.</note>
+
+    <p>Pode ser necessário usar um arquivo <code>.htaccess</code> para permitir
     a execução de programas CGI em um diretório específico. Isso pode ser
     implementado com a seguinte configuração:</p>
 
@@ -442,19 +418,26 @@ SetHandler cgi-script
     module="core">AllowOverride</directive> não está
     configurada de forma que suas diretivas de configuração sejam respeitadas.
     Certifique-se de que não exista um <code>AllowOverride None</code> em vigor
-    para o escopo do arquivo em questão. Um bom teste para isso é colocar lixo
-    no seu arquivo <code>.htaccess</code> e recarregar a página. Se um erro do servidor não for
-    gerado, então quase certamente existe <code>AllowOverride
-    None</code> em vigor.</p>
+    para o escopo do arquivo em questão. Um bom teste para isso é colocar uma
+    palavra sem sentido no seu arquivo <code>.htaccess</code> e recarregar a
+    página:</p>
+
+    <highlight language="config">
+TestMe
+    </highlight>
+
+    <p>Se um erro do servidor (HTTP 500) não
+    for gerado, é quase certeza que <code>AllowOverride
+    None</code> esteja em vigor.</p>
 
     <p>Se, por outro lado, erros do servidor estiverem sendo gerados ao tentar
     acessar documentos, verifique o registro de erros do httpd. Ele provavelmente informará
     que a diretiva usada no arquivo <code>.htaccess</code> não é
     permitida.</p>
 
-    <example>
-    [Fri Sep 17 18:43:16 2010] [alert] [client 192.168.200.51] /var/www/html/.htaccess: DirectoryIndex not allowed here
-    </example>
+    <highlight language="config">
+[Tue May 06 09:12:31.528374 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here
+    </highlight>
 
     <p>Isso indicará que foi usada uma diretiva que
     nunca é permitida em arquivos <code>.htaccess</code>, ou que simplesmente
@@ -466,11 +449,11 @@ SetHandler cgi-script
     <p>Alternativamente, pode aparecer um erro de sintaxe no
     uso da própria diretiva.</p>
 
-    <example>
-    [Sat Aug 09 16:22:34 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
-    </example>
+    <highlight language="config">
+[Tue May 06 09:14:02.946218 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
+    </highlight>
 
-    <p>Nesse caso, a mensagem de erro deve ser específica para o
+    <p>Neste caso, a mensagem de erro deve ser específica para o
     erro de sintaxe cometido.</p>
 
 </section>
