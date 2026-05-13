@@ -137,7 +137,7 @@ Alias "/foo" "/gaq"</pre>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Alias [<var>URL-path</var>]
 <var>file-path</var>|<var>directory-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
@@ -223,17 +223,6 @@ Alias "/foo" "/gaq"</pre>
     Alias "/var/www/errors.html"
 &lt;/Location&gt;</pre>
 
-
-    <div class="note"><h3>Context restrictions</h3>
-    <p>The two-argument form of <code class="directive">Alias</code> can only
-    be used in server config or <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. The one-argument form,
-    where the URL path is taken from the enclosing section, can be
-    used in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>,
-    <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>,
-    and <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, but
-    not in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-    or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>.</p>
-    </div>
 
 
 </div>
