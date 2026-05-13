@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la couche transport HTTP/2</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>http2_module</td></tr>
@@ -39,7 +37,7 @@
     HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-	<p>Ce module ajoute le support de HTTP/2 (<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>) au serveur HTTP
+	<p>Ce module ajoute la prise en charge de HTTP/2 (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>) au serveur HTTP
 	Apache.</p>
         
         <p>Il s'appuie sur la bibliothèque <a href="http://nghttp2.org/">libnghttp2</a> pour implémenter le
@@ -737,8 +735,8 @@
             <p>
                 Les server pushes sont détectés en inspectant les
 		en-têtes <code>Link</code> des réponses (voir
-		https://tools.ietf.org/html/rfc5988 pour la
-		spécification). Lorsqu'un lien spécifié de cette manière
+		<a href="https://www.rfc-editor.org/rfc/rfc8288">RFC 8288</a> pour la
+		spécification des liens du web). Lorsqu'un lien spécifié de cette manière
 		possède l'attribut <code>rel=preload</code>, il est
 		considéré comme devant faire l'objet d'un push.
             </p>
