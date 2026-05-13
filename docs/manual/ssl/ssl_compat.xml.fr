@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1200006:1933454 (outdated) -->
+<!-- English Revision: 1933454 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -28,16 +28,23 @@
   <title>Chiffrement fort SSL/TLS : Compatibilité</title>
 
 <summary>
+<note type="warning"><title>Document historique</title>
+<p>Ce document décrit la compatibilité avec des produits SSL qui ont été
+abandonnés depuis de nombreuses années (Apache-SSL, Stronghold, Raven SSL, Red Hat
+Secure Web Server). Il n’est conservé qu’à titre de référence historique. Si
+vous configurez mod_ssl sur une installation actuelle de httpd, consultez le <a
+href="ssl_howto.html">didacticiel SSL/TLS</a>. Cette page sera probablement
+supprimée dans une future version.</p>
+</note>
 
-<p>Ce document couvre la compatibilité ascendante entre mod_ssl et
+<p>Cette page couvre la compatibilité ascendante entre mod_ssl et
 d'autres solutions SSL. mod_ssl n'est pas la seule solution SSL pour Apache ;
 quatre autres produits sont (ou ont été) également disponibles :
 <a href="http://www.apache-ssl.org/">Apache-SSL</a>, le produit libre de
 Ben Laurie (d'où mod_ssl est issu à l'origine en 1998), Secure
 Web Server, un produit commercial de Red Hat (basé sur mod_ssl),
 Raven SSL Module, un produit commercial
-de Covalent (basé lui aussi sur mod_ssl), et enfin <a
-href="http://www.redhat.com/explore/stronghold/">Stronghold</a>, produit
+de Covalent (basé lui aussi sur mod_ssl), et enfin Stronghold, produit
 commercial de C2Net et maintenant de Red Hat, (basé sur une branche
 d'évolution différente appelée Sioux jusqu'à Stronghold 2.x et basé sur
 mod_ssl depuis Stronghold 3.x).</p>

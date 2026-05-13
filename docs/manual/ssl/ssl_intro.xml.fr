@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933400:1933507 (outdated) -->
+<!-- English Revision: 1933507 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -700,34 +700,27 @@ href="https://en.wikipedia.org/wiki/PKCS"
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-Voir par exemple <a
-href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.org/html/rfc2045</a>.</dd>
+Voir par exemple la <rfc>2045</rfc>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. Voir <a
-href="https://datatracker.ietf.org/doc/html/rfc6101"
->RFC 6101</a>.</dd>
+Version 3.0</q>, 1996. Voir la <rfc>6101</rfc>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
-1999. Voir <a href="http://ietf.org/rfc/rfc2246.txt"
->http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+1999. Voir la <rfc>2246</rfc>.</dd>
 
 <dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
 <dd><q>Le protocole TLS Version 1.1</q>,
-2006. Voir <a href="http://tools.ietf.org/html/rfc4346"
->http://tools.ietf.org/html/rfc4346</a>.</dd>
+2006. Voir la <rfc>4346</rfc>.</dd>
 
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>Le protocole TLS Version 1.2</q>,
-2008. Voir <a href="http://tools.ietf.org/html/rfc5246"
->http://tools.ietf.org/html/rfc5246</a>.</dd>
+2008. Voir la <rfc>5246</rfc>.</dd>
 
 <dt><a id="TLS13" name="TLS13">[TLS13]</a></dt>
 <dd><q>Le protocole Transport Layer Security (TLS) version 1.3</q>,
-2018. Voir <a href="https://tools.ietf.org/html/rfc8446"
->https://tools.ietf.org/html/rfc8446</a>.</dd>
+2018. Voir la <rfc>8446</rfc>.</dd>
 </dl>
 </section>
 <!-- /references -->
