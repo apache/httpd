@@ -40,7 +40,7 @@ result in one file "owning" the content and others cross-referencing it.
 - [x] **Harmonize `<seealso>` blocks** — htaccess.xml not consistently
       listed in other files' seealso despite being a major topic.
 
-- [ ] **Deprecated stub files** (access.xml, advanced.xml, proxy.xml) —
+- [x] **Deprecated stub files** (access.xml, advanced.xml, proxy.xml) —
       Remove from trunk. Leave in 2.4 during sync (they'll drop in 2.6).
 
 - [x] **Figure numbering collision** — both intro.xml and tech.xml use
