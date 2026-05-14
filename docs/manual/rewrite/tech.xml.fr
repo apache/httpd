@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933072:1933719 (outdated) -->
+<!-- English Revision: 1933719 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,11 +35,9 @@ module <module>mod_rewrite</module> et de la mise en correspondance des URLs</p>
 <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection et remise en
 correspondance</a></seealso>
-<seealso><a href="access.html">Contrôle d'accès</a></seealso>
 <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
-<seealso><a href="proxy.html">Mise en cache</a></seealso>
 <seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Techniques avancées</a></seealso>
+<seealso><a href="htaccess.html">Réécritures en fonction du répertoire (.htaccess)</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="InternalAPI"><title>Phases de l'API</title>
@@ -63,7 +61,7 @@ correspondance</a></seealso>
     <code>.htaccess</code>), mais avant l'appel du gestionnaire de
     contenu.</p>
 
-    <p>Ainsi, lorsqu'une requête arrive et une fois le serveur
+    <p>Lorsqu'une requête arrive et une fois le serveur
     correspondant ou le serveur virtuel déterminé, le moteur de
     réécriture commence à traiter toute directive apparaissant dans la
     configuration de niveau serveur (autrement dit dans le
@@ -82,7 +80,7 @@ correspondance</a></seealso>
     <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
     nom de fichier.</p>
 
-    <p>Dans un contexte de niveau répertoire (autrement dit dans les
+    <p>Dans un <glossary ref="perdirectory">contexte de répertoire</glossary> (autrement dit dans les
     fichiers <code>.htaccess</code> et les sections
     <code>Directory</code>), les règles de réécriture s'appliquent après
     la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
