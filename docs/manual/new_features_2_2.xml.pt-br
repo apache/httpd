@@ -195,7 +195,7 @@
           de autenticação de backend</li>
           <li><code>mod_authz_*</code> -&gt; Módulos que implementam
           autorização (ou acesso)</li>
-          <li><code>mod_authnz_*</code> -&gt; Módulo que implementa tanto
+          <li><code>mod_authnz_*</code> -&gt; Módulos que implementam tanto
           autenticação quanto autorização</li>
           </ul>
           Existe um novo esquema de provedor de backend de
