@@ -82,6 +82,53 @@ and URL matching.</p>
 
 </section>
 
+<section id="order"><title>Module Processing Order</title>
+
+    <p><module>mod_rewrite</module> and <module>mod_alias</module> both
+    operate during the URL-to-filename translation phase, but
+    <module>mod_rewrite</module> runs <strong>first</strong> regardless
+    of the order in which directives appear in the configuration file.
+    This is determined by the hook priority each module registers, not
+    by source order.</p>
+
+    <p>The practical consequence: when both <directive
+    module="mod_rewrite">RewriteRule</directive> and <directive
+    module="mod_alias">Redirect</directive> (or <directive
+    module="mod_alias">RedirectMatch</directive>) are present in the
+    same server or virtual-host context, the rewrite rules are
+    evaluated first. If a <code>RewriteRule</code> matches and rewrites
+    the URI (or returns a redirect), <code>Redirect</code> never sees
+    the request.</p>
+
+    <highlight language="config">
+# In this configuration, the Redirect is never reached for /old
+# because the RewriteRule matches first — even though
+# the Redirect appears earlier in the file.
+Redirect "/old" "http://example.com/new"
+RewriteRule "^/old" "/other" [L]
+</highlight>
+
+    <note><title>Per-directory context reverses the order</title>
+    <p>In <glossary ref="perdirectory">per-directory context</glossary>,
+    the situation is different. <module>mod_alias</module> directives like
+    <code>Redirect</code> still run in the URL-to-filename translation
+    phase, but <module>mod_rewrite</module> rules run later, in the
+    Fixup phase. This means that in per-directory context,
+    <code>Redirect</code> is evaluated <em>before</em>
+    <code>RewriteRule</code>.</p>
+    </note>
+
+    <p>Because of this inconsistency between contexts, mixing
+    <module>mod_rewrite</module> and <module>mod_alias</module>
+    directives in the same scope is a common source of confusion. The
+    simplest advice: choose one module for a given task. If you need
+    rewrite conditions or pattern matching, use
+    <code>RewriteRule</code> exclusively. If a simple prefix redirect
+    suffices, use <code>Redirect</code> and don't add rewrite rules
+    that might interact with it.</p>
+
+</section>
+
 <section id="InternalRuleset"><title>Ruleset Processing</title>
 
       <p>Now when <module>mod_rewrite</module> is triggered in these two API phases, it

@@ -106,6 +106,17 @@ the recommended configuration and the
 <module>mod_rewrite</module> alternative for <code>.htaccess</code>
 use.</p>
 
+    <note><title>Processing order</title>
+    <p>If you do mix <directive module="mod_alias">Redirect</directive>
+    and <directive module="mod_rewrite">RewriteRule</directive> in the
+    same context, be aware that their execution order depends on where
+    they appear. In server/virtual-host context,
+    <module>mod_rewrite</module> runs first; in per-directory context
+    (<code>.htaccess</code>), <module>mod_alias</module> runs first. See
+    <a href="tech.html#order">Module Processing Order</a> for
+    details.</p>
+    </note>
+
 </section>
 
 <section id="alias"><title>URL Aliasing</title>

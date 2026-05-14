@@ -56,7 +56,7 @@ address. Sorted by priority.
 
 ### HIGH — Widely asked, not covered
 
-- [ ] **Redirect vs. RewriteRule processing order** — mod_rewrite runs
+- [x] **Redirect vs. RewriteRule processing order** — mod_rewrite runs
       *before* mod_alias regardless of config file order. Mixing them
       in the same context confuses users every year. Belongs in avoid.xml
       or tech.xml.
