@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330988:1933749 (outdated) -->
+<!-- English Revision: 1933749 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,9 +49,8 @@ l'utilisateur</description>
     obtenue à partir du document source.</p>
 
     <p>Pour modifier les directives de contrôle du cache autres
-    que <code>max-age</code> (voir la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
-    2616 section 14.9</a>), vous pouvez utiliser la directive <directive
+    que <code>max-age</code> (voir la <rfc section="14.9">2616</rfc>,
+    section 14.9)), vous pouvez utiliser la directive <directive
     module="mod_headers">Header</directive>.</p>
 
     <p>Lorsque l'en-tête <code>Expires</code> est déjà présent dans la
@@ -220,6 +219,24 @@ ExpiresByType text/html M604800
     <p>Vous pouvez aussi définir le mode de calcul de la date
     d'expiration en utilisant une <a href="#AltSyn">syntaxe
     alternative</a>, comme décrit plus haut dans ce document.</p>
+
+    <p>Le type MIME peut utiliser des caractères génériques pour le sous-type,
+    comme dans <code>image/*</code>. Cet exemple correspond à tout sous-type
+    sous le type principal. Lorsque le type de contenu d’une requête ne
+    correspond pas à une entrée <directive>ExpiresByType</directive> spécifique,
+    une entrée avec caractères génériques pour le type principal est recherchée
+    avant de se rebattre sur <directive
+    module="mod_expires">ExpiresDefault</directive>.</p>
+
+    <example><title>Exemple avec caractères génériques ::</title>
+    <highlight language="config">
+ExpiresActive On
+# Toutes les images sont périmées après 1 mois
+ExpiresByType image/* "access plus 1 month"
+# Override specifically for GIF
+ExpiresByType image/gif "access plus 1 week"
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
