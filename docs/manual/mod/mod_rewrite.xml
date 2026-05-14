@@ -40,7 +40,7 @@ URLs on the fly</description>
 
       <p><module>mod_rewrite</module> provides a flexible and powerful way to
       manipulate URLs using an unlimited number of rules. Each rule can have an
-      unlimited number of attached rule conditions, to allow you to rewrite URL
+      unlimited number of attached rule conditions, to allow you to rewrite URLs
       based on server variables, environment variables, HTTP headers, or time
       stamps.</p>
 
