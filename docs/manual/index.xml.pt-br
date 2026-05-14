@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
-<!-- English Revision: 1933437:1933438 (outdated) -->
+<!-- English Revision: 1933438 -->
 <!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,6 +27,7 @@
 &httpd.major;.&httpd.minor;</title>
 
 <category id="release"><title>Notas da Versão</title>
+    <page href="new_features_2_6.html">Novas funcionalidades no Apache 2.5/2.6</page>
     <page href="new_features_2_4.html">Novas funcionalidades no Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Novas funcionalidades no Apache 2.1/2.2</page>
     <page href="new_features_2_0.html">Novas funcionalidades no Apache 2.0</page>
@@ -59,6 +60,7 @@
     <page href="dso.html">Objetos Dinâmicos Compartilhados (DSO)</page>
     <page href="env.html">Variáveis de Ambiente</page>
     <page href="logs.html">Arquivos de Registro</page>
+    <page href="compliance.html">Conformidade com o protocolo HTTP</page>
     <page href="urlmapping.html">Mapeando URLs para o Sistema de Arquivos</page>
     <page href="misc/perf-tuning.html">Ajustes de Desempenho</page>
     <page href="misc/security_tips.html">Dicas de Segurança</page>
@@ -70,6 +72,7 @@
 </category>
 
 <category id="howto"><title>Como Fazer / Tutoriais</title>
+    <page href="howto">Página de Índice</page>
     <page href="howto/auth.html">Autenticação e Autorização</page>
     <page href="howto/access.html">Controle de Acesso</page>
     <page href="howto/cgi.html">CGI: Conteúdo Dinâmico</page>
@@ -84,7 +87,6 @@
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/rpm.html">Sistemas Baseados em RPM (Redhat / CentOS / Fedora)</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC Port</page>
 </category>
 
 <category id="other"><title>Outros Tópicos</title>
