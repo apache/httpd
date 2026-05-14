@@ -123,7 +123,11 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"
 
 <p>To limit the characters escaped this way, see <a href="#flag_bne">#flag_bne</a>
         and <a href="#flag_bctls">#flag_bctls</a></p>
+
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+a full explanation of how Apache decodes URIs before pattern matching.</p>
 </section>
+
 
 <section id="flag_bnp"><title>BNP|backrefnoplus (don't escape space to +)</title>
 <p>The [BNP] flag instructs <directive
@@ -139,7 +143,11 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"
 
 
 <p>This flag is available in version 2.4.26 and later.</p>
+
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+background on how encoding is handled in the rewrite pipeline.</p>
 </section>
+
 
 <section id="flag_bctls"><title>BCTLS</title>
 <p>The [BCTLS] flag is similar to the [B] flag, but only escapes
@@ -583,6 +591,9 @@ being converted to its hexcode equivalent, <code>%23</code>, which will
 then result in a 404 Not Found error condition.
 </p>
 
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+the full picture of how Apache encodes and decodes URIs during
+rewriting.</p>
 </section>
 
 <section id="flag_ns"><title>NS|nosubreq</title>

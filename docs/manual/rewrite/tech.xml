@@ -129,6 +129,77 @@ RewriteRule "^/old" "/other" [L]
 
 </section>
 
+<section id="encoding"><title>URL Encoding and Decoding</title>
+
+    <p>Apache httpd unescapes URL-encoded characters in the request URI before any
+    <directive module="mod_rewrite">RewriteRule</directive> pattern
+    matching takes place. A request for
+    <code>/my%20page/cats%3Fdogs</code> is decoded to
+    <code>/my page/cats?dogs</code>, and that decoded string is what the
+    <code>RewriteRule</code> pattern matches against.</p>
+
+    <p>This means you cannot write a pattern that matches the literal
+    URL-encoded form. If you need to distinguish
+    <code>/horses%2Fponies</code> from <code>/horses/ponies</code>, use
+    <code>%{THE_REQUEST}</code> in a <directive
+    module="mod_rewrite">RewriteCond</directive> — it preserves the
+    original request line exactly as the client sent it, before any
+    decoding:</p>
+
+<highlight language="config">
+# Match only the literally-encoded %2F, not a real path separator
+RewriteCond "%{THE_REQUEST}" "/horses%2F"
+RewriteRule "^/horses/ponies$" "/special-handler" [L]
+</highlight>
+
+    <p>After substitution, <module>mod_rewrite</module> re-encodes the
+    resulting URI for output. Several flags control this behavior:</p>
+
+    <ul>
+      <li><a href="flags.html#flag_b">[B]</a> — re-escape
+      backreferences so that special characters captured from the
+      decoded URI are not interpreted as delimiters in the
+      substitution.</li>
+
+      <li><a href="flags.html#flag_bnp">[BNP]</a> — when [B] is
+      active, encode spaces as <code>%20</code> rather than
+      <code>+</code> (appropriate for path components, not query
+      strings).</li>
+
+      <li><a href="flags.html#flag_ne">[NE]</a> — suppress the
+      default escaping of special characters in the substitution
+      result, allowing literal <code>#</code>, <code>?</code>, and
+      other characters to pass through unmodified on external
+      redirects.</li>
+    </ul>
+
+    <section id="allowencodedslashes">
+    <title>AllowEncodedSlashes</title>
+
+    <p>By default, Apache returns 404 for any URL containing an encoded
+    slash (<code>%2F</code>). The <directive
+    module="core">AllowEncodedSlashes</directive> directive controls
+    this behavior:</p>
+
+    <ul>
+      <li><code>Off</code> (default) — reject <code>%2F</code> with
+      404.</li>
+      <li><code>On</code> — allow <code>%2F</code> and decode it to
+      <code>/</code> before passing to handlers.</li>
+      <li><code>NoDecode</code> — allow <code>%2F</code> but keep it
+      in encoded form, letting the backend application distinguish it
+      from a real path separator.</li>
+    </ul>
+
+    <p>When using the <a href="flags.html#flag_b">[B]</a> flag with
+    URLs that may contain encoded slashes, you typically need
+    <code>AllowEncodedSlashes NoDecode</code> to prevent Apache from
+    rejecting the re-encoded result.</p>
+
+    </section>
+
+</section>
+
 <section id="InternalRuleset"><title>Ruleset Processing</title>
 
       <p>Now when <module>mod_rewrite</module> is triggered in these two API phases, it

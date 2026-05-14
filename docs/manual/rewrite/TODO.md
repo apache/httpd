@@ -66,7 +66,7 @@ address. Sorted by priority.
       Behind a reverse proxy, check %{HTTP:X-Forwarded-Proto} instead.
       Add to the HTTPS redirect recipe in remapping.xml.
 
-- [ ] **URL encoding pipeline** — Apache decodes percent-encoded chars
+- [x] **URL encoding pipeline** — Apache decodes percent-encoded chars
       before pattern matching. %{THE_REQUEST} preserves the raw form.
       AllowEncodedSlashes, [B]/[NE]/[BNP] flags. No coherent
       explanation exists in the guide. Could be a new section in
