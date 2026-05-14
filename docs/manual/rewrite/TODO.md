@@ -61,7 +61,7 @@ address. Sorted by priority.
       in the same context confuses users every year. Belongs in avoid.xml
       or tech.xml.
 
-- [ ] **%{HTTPS} behind a load balancer / SSL terminator** — %{HTTPS}
+- [x] **%{HTTPS} behind a load balancer / SSL terminator** — %{HTTPS}
       queries mod_ssl directly; it is not an environment variable.
       Behind a reverse proxy, check %{HTTP:X-Forwarded-Proto} instead.
       Add to the HTTPS redirect recipe in remapping.xml.

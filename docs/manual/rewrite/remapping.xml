@@ -131,6 +131,36 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
       <p>See also the <a href="avoid.html#redirect">When not to use
       mod_rewrite</a> document for more discussion of the
       <code>Redirect</code> approach.</p>
+
+      <note><title>Behind a load balancer or SSL terminator</title>
+      <p>The <code>%{HTTPS}</code> variable is not a general-purpose
+      environment variable — it queries <module>mod_ssl</module>
+      directly. If SSL/TLS is terminated at an upstream load balancer
+      or reverse proxy, <module>mod_ssl</module> is not handling the
+      connection and <code>%{HTTPS}</code> will always report
+      <code>off</code>, even when the original client connected over
+      HTTPS.</p>
+
+      <p>In this situation, check the header set by the upstream proxy
+      instead. Most load balancers set
+      <code>X-Forwarded-Proto</code>:</p>
+      </note>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{HTTP:X-Forwarded-Proto}" =http [NC]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+
+      <note type="warning">
+      <p>Only trust <code>X-Forwarded-Proto</code> if you control the
+      upstream proxy and it overwrites the header on every request. An
+      attacker can forge this header when connecting directly to your
+      server. Consider restricting access so that only your load
+      balancer can reach the backend, or use
+      <module>mod_remoteip</module> to validate the source.</p>
+      </note>
+
     </dd>
   </dl>
 
