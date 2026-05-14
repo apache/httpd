@@ -72,7 +72,7 @@ address. Sorted by priority.
       explanation exists in the guide. Could be a new section in
       intro.xml or tech.xml.
 
-- [ ] **REDIRECT_ prefix for environment variables** — env vars set by
+- [x] **REDIRECT_ prefix for environment variables** — env vars set by
       [E=] are renamed to REDIRECT_FOO after internal redirects. Not
       mentioned in the [E] flag section at all. Add to flags.xml.
 

@@ -376,10 +376,34 @@ RewriteCond "%{ENV:rewritten}"  =1
 
 <p>Note that environment variables do not survive an external
 redirect. You might consider using the [CO] flag to set a
-cookie. For per-directory rewrites, where the final
-substitution is processed as an internal redirect, environment
-variables from the previous round of rewriting are prefixed with
-"REDIRECT_". </p>
+cookie.</p>
+
+    <note><title>REDIRECT_ prefix after internal redirects</title>
+    <p>In <glossary ref="perdirectory">per-directory context</glossary>,
+    a successful substitution triggers an internal redirect. When this
+    happens, all environment variables set during the previous pass —
+    including those created with <code>[E=VAR:VAL]</code> — are renamed
+    with a <code>REDIRECT_</code> prefix. A variable you set as
+    <code>rewritten</code> becomes <code>REDIRECT_rewritten</code> in
+    the redirected request.</p>
+
+    <p>To test for the renamed variable, reference it with the
+    prefix:</p>
+    </note>
+
+<highlight language="config">
+RewriteRule   "^/horses/(.*)" "/ponies/$1" [E=rewritten:1]
+
+# In the next pass, the variable has been renamed:
+RewriteCond "%{ENV:REDIRECT_rewritten}" =1
+RewriteRule "^/ponies/(.*)" "-" [E=seen_redirect:1,L]
+</highlight>
+
+    <p>If the request is redirected multiple times, the prefix stacks:
+    <code>REDIRECT_REDIRECT_rewritten</code>, and so on. See
+    <a href="../env.html#redirect-vars">REDIRECT_ variables</a> for
+    the complete description of this mechanism.</p>
+
 </section>
 
 <section id="flag_end"><title>END</title>
