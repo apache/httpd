@@ -40,7 +40,7 @@ como los usa Apache.</p>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM por defecto</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#static">Compilando un MPM como módulo estático</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dynamic">Compilando un MPM como módulo DSO</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introducción</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>

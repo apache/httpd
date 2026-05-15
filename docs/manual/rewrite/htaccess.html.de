@@ -43,7 +43,7 @@ wie sich die Regeln &#228;ndern, wenn Sie <code class="module"><a href="../mod/m
 .htaccess-Dateien verwenden, und wie Sie mit diesen &#196;nderungen umgehen.</p>
 
 </div>
-<div id="quickview"><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&#252;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li><li><a href="#comments_section">Kommentare</a></li></ul></div>
+<div id="quickview"><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&#252;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>Verf&#252;gbare Sprachen: </span><a href="../de/rewrite/htaccess.html" title="Deutsch">&nbsp;de&nbsp;</a> |

@@ -41,7 +41,7 @@
 以及如何处理这些变化。</p>
 
 </div>
-<div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li><li><a href="#comments_section">评论</a></li></ul></div>
+<div id="quickview"><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

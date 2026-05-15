@@ -67,7 +67,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#manager">Gestor del Balanceador</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#health-check">Comprobaciones de estado dinámicas</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#status">Marcas de estado de los Miembros del Balanceador</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte también</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Proxy Inverso</a> <a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>

@@ -44,7 +44,7 @@
 それらの変更への対処方法について説明します。</p>
 
 </div>
-<div id="quickview"><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
+<div id="quickview"><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

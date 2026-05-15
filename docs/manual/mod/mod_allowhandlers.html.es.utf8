@@ -59,7 +59,7 @@
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
-<li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="allowhandlers" id="allowhandlers">Directiva</a> <a name="AllowHandlers" id="AllowHandlers">AllowHandlers</a> <a title="Enlace permanente" href="#allowhandlers" class="permalink">&para;</a></h2>

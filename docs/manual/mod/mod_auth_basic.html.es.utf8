@@ -62,7 +62,7 @@
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li><a href="../howto/auth.html">Authentication howto</a></li>
-<li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directiva</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a title="Enlace permanente" href="#authbasicauthoritative" class="permalink">&para;</a></h2>

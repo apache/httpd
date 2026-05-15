@@ -86,7 +86,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#override-options">Options</a></li>
 </ul><h3>Voir aussi</h3>
 <ul class="seealso">
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div id="override-list"><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a name="override-all">All</a></h2>
     <p>
       Les directives suivantes sont autorisées dans les fichiers .htaccess, sous

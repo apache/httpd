@@ -46,7 +46,7 @@ transparence des certificats</h1>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Exemples et dÃ©finitions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#subcommands">Commandes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Exemples et dÃ©finitions</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>

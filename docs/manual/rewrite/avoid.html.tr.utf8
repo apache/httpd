@@ -66,7 +66,7 @@ kullanılabilir. Bu nedenle, yalnızca .htaccess dosyalarıyla
 <li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Sanal Konak Oluşturma</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Basit Vekil Kullanımı</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenv">Ortam Değişkeni Sınaması</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="#comments_section">Yorum</a></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirect" id="redirect">Basit Yönlendirme</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>

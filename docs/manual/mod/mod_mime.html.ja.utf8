@@ -124,7 +124,7 @@
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="#comments_section">コメント</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multipleext" id="multipleext">複数の拡張子のあるファイル</a> <a title="Permanent link" href="#multipleext" class="permalink">&para;</a></h2>
