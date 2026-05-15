@@ -38,15 +38,15 @@ URLs on the fly</description>
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
 
-      <p><module>mod_rewrite</module> provides a flexible and powerful way to
-      manipulate URLs using an unlimited number of rules. Each rule can have an
+      <p>It provides a flexible and powerful way to manipulate URLs using an
+      unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URLs
-      based on server variables, environment variables, cookies, HTTP headers, or time
-      stamps.</p>
-
-      <p><module>mod_rewrite</module> can operate on the <a href="directive-dict.html#Syntax">URL-path</a>,
-      or any portion of it (including any <a href="core.html#acceptpathinfo">trailing pathname information</a>).
-      It can also alter the query string (<a href="../expr.html#vars"><code>%{QUERY_STRING}</code></a>).</p>
+      based on server variables, environment variables, cookies, HTTP headers,
+      or timestamps. Rules can operate on the
+      <a href="directive-dict.html#Syntax">URL-path</a> (including any
+      <a href="core.html#acceptpathinfo">trailing pathname information</a>)
+      and can also alter the
+      <a href="../expr.html#vars">query string</a>.</p>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <glossary
