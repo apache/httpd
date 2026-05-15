@@ -9,6 +9,7 @@
   <variants>
     <variant>en</variant>
     <variant>fr</variant>
+    <variant>pt-br</variant>
     <variant outdated="yes">tr</variant>
   </variants>
 </metafile>

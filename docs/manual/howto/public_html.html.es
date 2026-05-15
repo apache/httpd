@@ -56,7 +56,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Restringiendo qu&#233; usuarios pueden usar esta caracter&#237;stica</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">Activando un directorio cgi para cada usuario</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Permitiendo a usuarios cambiar la configuraci&#243;n</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapeando URLs al sistema de ficheros</a></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="../urlmapping.html">Mapeando URLs al sistema de ficheros</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Directorios web por usuario</a></h2>

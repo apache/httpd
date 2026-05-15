@@ -56,7 +56,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">M&#225;s all&#225; de la Autorizaci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#socache">Cache de Autenticaci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">M&#225;s informaci&#243;n</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">M&#243;dulos y Directivas Relacionados</a></h2>

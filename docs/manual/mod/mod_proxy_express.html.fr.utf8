@@ -96,7 +96,7 @@ dynamique inverse de masse</td></tr>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancergrowth">BalancerGrowth</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancerinherit">BalancerInherit</a></code></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="proxyexpressdbmfile" id="proxyexpressdbmfile">Directive</a> <a name="ProxyExpressDBMFile" id="ProxyExpressDBMFile">ProxyExpressDBMFile</a></h2>

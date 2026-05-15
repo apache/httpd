@@ -44,13 +44,12 @@ URLs on the fly</td></tr>
 
       <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides a flexible and powerful way to
       manipulate URLs using an unlimited number of rules. Each rule can have an
-      unlimited number of attached rule conditions, to allow you to rewrite URL
-      based on server variables, environment variables, HTTP headers, or time
+      unlimited number of attached rule conditions, to allow you to rewrite URLs
+      based on server variables, environment variables, cookies, HTTP headers, or time
       stamps.</p>
 
       <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> can operate on the full URL-path, or any
-      portion of it, including the PATH_INFO or QUERY_STRING. It can also inspect
-      other values, such as headers, cookies, environment variables.</p>
+      portion of it, including the PATH_INFO or QUERY_STRING.</p>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. The path generated
@@ -59,7 +58,7 @@ URLs on the fly</td></tr>
       throughput.</p>
 
       <p>Further details, discussion, and examples, are provided in the
-      <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
+      detailed <a href="../rewrite/">Guide to mod_rewrite</a>.</p>
 </div>
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Topics</h3>
 <ul id="topics">
@@ -75,7 +74,7 @@ URLs on the fly</td></tr>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Logging</a></h2>
@@ -93,22 +92,23 @@ URLs on the fly</td></tr>
       level higher than <code>trace2</code> only for debugging!
     </div>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
+        <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
 </div>
 
     <div class="note"><h3>RewriteLog</h3>
       <p>Those familiar with earlier versions of
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will no doubt be looking for the
       <code>RewriteLog</code> and <code>RewriteLogLevel</code>
-      directives. This functionality has been completely replaced by the
-      new per-module logging configuration mentioned above.
+      directives. Since the release of httpd 2.4, these directives
+      have been replaced with the per-module logging configuration
+      provided by <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>.
       </p>
 
       <p>To get just the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-specific log
       messages, pipe the log file through grep:</p>
-    <div class="example"><p><code>
-    tail -f error_log|fgrep '[rewrite:'
-    </code></p></div>
+
+        <div class="example"><pre class="prettyprint lang-sh">tail -f error_log|fgrep '[rewrite:'</pre>
+</div>
     </div>
 
 </div>
@@ -1178,21 +1178,11 @@ sections and consider both set of statements, rather than only the last one.</li
       the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
-      <p>In <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, the NOT character
-      ('<code>!</code>') is also available as a possible pattern
-      prefix. This enables you to negate a pattern; to say, for instance:
-      ``<em>if the current URL does <strong>NOT</strong> match this
-      pattern</em>''. This can be used for exceptional cases, where
-      it is easier to match the negative pattern, or as a last
-      default rule.</p>
-
-<div class="note"><h3>Note</h3>
-When using the NOT character to negate a pattern, you cannot include
-grouped wildcard parts in that pattern. This is because, when the
-pattern does NOT match (ie, the negation matches), there are no
-contents for the groups. Thus, if negated patterns are used, you
-cannot use <code>$N</code> in the substitution string!
-</div>
+      <p>For information on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
+      expressions</a>, including the use of the
+      <code>!</code> prefix to negate a pattern, see the
+      <a href="../rewrite/intro.html#regex">Regular Expressions</a>
+      section of the mod_rewrite introduction.</p>
 
       <p>The <a id="rhs" name="rhs"><em>Substitution</em></a> of a
       rewrite rule is the string that replaces the original URL-path that

@@ -28,6 +28,7 @@
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -40,7 +41,7 @@
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 の特記事項</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">バーチャルホストに対してどう働くのか</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><a href="vhosts/">バーチャルホスト</a></li><li><a href="dns-caveats.html">DNS の問題</a></li><li><a href="#comments_section">コメント</a></li></ul></div>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="vhosts/">バーチャルホスト</a></li><li><a href="dns-caveats.html">DNS の問題</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">概要</a></h2>
@@ -181,6 +182,7 @@
 <a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>

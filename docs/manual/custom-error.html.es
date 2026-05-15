@@ -50,7 +50,7 @@
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Comportamiento</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">Configuraci&#243;n</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#custom">Mesajes de error personalizados y redirecciones</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="behavior" id="behavior">Comportamiento</a></h2>

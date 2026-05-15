@@ -37,7 +37,7 @@
 <div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">&#191;Qu&#233; es un Handler?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#examples">Ejemplos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#programmer">Nota para programadores</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="definition" id="definition">&#191;Qu&#233; es un Handler?</a></h2>

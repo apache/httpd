@@ -28,6 +28,7 @@
 <a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/filter.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/filter.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">Esta traducci&#243;n podr&#237;a estar
@@ -41,7 +42,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#smart">Filtrado Inteligente</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#service">Filtros expuestos como un servicio HTTP</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Usando los Filtros</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Filtros en Apache 2</a></h2>
@@ -176,6 +177,7 @@
 <a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/filter.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/filter.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

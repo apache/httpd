@@ -41,7 +41,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">&#191;Qu&#233; ocurre entre bastidores?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#libraries">M&#243;dulos/librer&#237;as CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">Para m&#225;s informaci&#243;n</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Introducci&#243;n</a></h2>

@@ -47,7 +47,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#tools">Herramientas &#250;tiles para depurar HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#push">Server Push</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#earlyhints">"Early Hints"</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="protocol" id="protocol">El protocolo HTTP/2</a></h2>

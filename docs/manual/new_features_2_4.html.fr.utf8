@@ -27,6 +27,7 @@ serveur HTTP Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/new_features_2_4.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
@@ -42,7 +43,7 @@ serveur HTTP Apache</h1>
 <li><img alt="" src="./images/down.gif" /> <a href="#programs">Améliorations des programmes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#documentation">Documentation</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#developer">Modifications concernant les développeur de modules</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso" /></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="core" id="core">Améliorations du noyau</a></h2>
@@ -496,6 +497,7 @@ serveur HTTP Apache</h1>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/new_features_2_4.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

@@ -50,7 +50,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Errores Durante el Arranque</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Iniciar Apache al Iniciar el Sistema</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Informaci&#243;n Adicional</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="stopping.html">Parar y reiniciar Apache</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="#comments_section">Comentarios</a></li></ul></div>
+</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><a href="stopping.html">Parar y reiniciar Apache</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">C&#243;mo iniciar Apache</a></h2>

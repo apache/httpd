@@ -28,6 +28,7 @@
 <a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
@@ -41,7 +42,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Remarques spécifiques à IPv6</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#protocol">Spécification du protocole avec Listen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Qu'en est-il avec les serveurs virtuels</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Serveurs virtuels</a></li><li><a href="dns-caveats.html">Problèmes liés au DNS</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="vhosts/">Serveurs virtuels</a></li><li><a href="dns-caveats.html">Problèmes liés au DNS</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Vue d'ensemble</a></h2>
@@ -228,6 +229,7 @@ Listen 192.0.2.1:80</pre>
 <a href="./fr/bind.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
