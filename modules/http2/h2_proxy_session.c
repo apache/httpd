@@ -281,23 +281,17 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                 return NGHTTP2_ERR_CALLBACK_FAILURE;
             }
             r = stream->r;
-            if (r->status >= 100 && r->status < 200) {
+            if (ap_is_HTTP_INFO(r->status)) {
                 /* By default, we will forward all interim responses when
                  * we are sitting on a HTTP/2 connection to the client */
                 int forward = session->h2_front;
                 switch(r->status) {
-                    case 100:
+                    case HTTP_CONTINUE:
                         if (stream->waiting_on_100) {
                             stream->waiting_on_100 = 0;
                             r->status_line = ap_get_status_line(r->status);
                             forward = 1;
                         } 
-                        break;
-                    case 103:
-                        /* workaround until we get this into http protocol base
-                         * parts. without this, unknown codes are converted to
-                         * 500... */
-                        r->status_line = "103 Early Hints";
                         break;
                     default:
                         r->status_line = ap_get_status_line(r->status);
@@ -311,7 +305,7 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                     ap_send_interim_response(r, 1);
                 }
             }
-            else if (r->status >= 400) {
+            else if (r->status >= HTTP_BAD_REQUEST) {
                 proxy_dir_conf *dconf;
                 dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
                 if (ap_proxy_should_override(dconf, r->status)) {
@@ -417,7 +411,7 @@ static apr_status_t h2_proxy_stream_add_header_out(h2_proxy_stream *stream,
                           stream->session->id, stream->id, s);
             stream->r->status = (int)apr_atoi64(s);
             if (stream->r->status <= 0) {
-                stream->r->status = 500;
+                stream->r->status = HTTP_INTERNAL_SERVER_ERROR;
                 return APR_EGENERAL;
             }
         }
@@ -509,7 +503,7 @@ static void h2_proxy_stream_end_headers_out(h2_proxy_stream *stream)
                                       server_name, portstr)
                        );
     }
-    if (r->status >= 200) stream->headers_ended = 1;
+    if (r->status >= HTTP_OK) stream->headers_ended = 1;
     
     if (APLOGrtrace2(stream->r)) {
         ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, stream->r, 

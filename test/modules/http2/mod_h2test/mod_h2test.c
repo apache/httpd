@@ -186,7 +186,7 @@ static int h2test_echo_handler(request_rec *r)
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "echo_handler: processing request");
-    r->status = 200;
+    r->status = HTTP_OK;
     r->clength = -1;
     r->chunked = 1;
     apr_table_unset(r->headers_out, "Content-Length");
@@ -290,7 +290,7 @@ static int h2test_delay_handler(request_rec *r)
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "delay_handler: processing request, %ds delay",
                   (int)apr_time_sec(delay));
-    r->status = 200;
+    r->status = HTTP_OK;
     r->clength = -1;
     r->chunked = 1;
     apr_table_unset(r->headers_out, "Content-Length");
@@ -373,7 +373,7 @@ static int h2test_trailer_handler(request_rec *r)
 
     ap_log_rerror(APLOG_MARK, APLOG_TRACE1, 0, r, "trailer_handler: processing request, %d body length",
                   body_len);
-    r->status = 200;
+    r->status = HTTP_OK;
     r->clength = body_len;
     ap_set_content_length(r, body_len);
 
@@ -437,7 +437,7 @@ static int h2test_error_handler(request_rec *r)
     long l;
     apr_time_t delay = 0, body_delay = 0;
     apr_array_header_t *args = NULL;
-    int http_status = 200;
+    int http_status = HTTP_OK;
     apr_status_t error = APR_SUCCESS, body_error = APR_SUCCESS;
 
     if (strcmp(r->handler, "h2test-error")) {

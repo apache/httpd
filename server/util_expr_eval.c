@@ -1650,7 +1650,7 @@ static int op_url_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *ar
         return FALSE;
 
     rsub = ap_sub_req_lookup_uri(arg, r, NULL);
-    if (rsub->status < 400) {
+    if (rsub->status < HTTP_BAD_REQUEST) {
             rc = TRUE;
     }
     expr_eval_log(ctx, APLOG_TRACE5,
@@ -1672,7 +1672,7 @@ static int op_file_subr(ap_expr_eval_ctx_t *ctx, const void *data, const char *a
         return FALSE;
     }
     rsub = ap_sub_req_lookup_file(arg, r, NULL);
-    if (rsub->status < 300 &&
+    if (rsub->status < HTTP_MULTIPLE_CHOICES &&
         /* double-check that file exists since default result is 200 */
         apr_stat(&sb, rsub->filename, APR_FINFO_MIN, ctx->p) == APR_SUCCESS) {
         rc = TRUE;
