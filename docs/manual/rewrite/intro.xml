@@ -163,10 +163,22 @@ well as write your own.</p>
       not <code>c/t</code></td></tr>
 </table>
 
-<p>In <module>mod_rewrite</module> the <code>!</code> character can be
+<p>The <code>!</code> (Not) character can be
 used before a regular expression to negate it. This is, a string will
 be considered to have matched only if it does not match the rest of
 the expression.</p>
+
+<p>When using <code>!</code> to negate a pattern, note that
+<a href="#InternalBackRefs">backreferences</a> (e.g.
+<code>$1</code>, <code>$2</code>) are not available, since the
+pattern does not match.</p>
+
+<p>For example, the following will redirect any request that does
+<em>not</em> start with <code>/admin</code></p>
+
+<highlight language="config">
+RewriteRule "!^/admin" "/xyz.html" [R,L]
+</highlight>
 
 </section>
 
