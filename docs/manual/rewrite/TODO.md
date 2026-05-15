@@ -57,5 +57,5 @@ address. Sorted by priority.
 - [ ] **mod_rewrite cannot inspect POST body** — one-sentence note in
       intro.xml.
 
-- [ ] **flags** - Add examples to flags that lack them.
+- [ ] **flags** - Add examples to flags that lack them. (See bz #70043)
 
