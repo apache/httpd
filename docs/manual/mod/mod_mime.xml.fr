@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932814:1933715 (outdated) -->
+<!-- English Revision: 1933715 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -160,6 +160,30 @@ multiples</title>
     </highlight>
     </example>
 
+    <note><title>Files with no extension</title>
+    <p>Les fichiers sans extension (comme <code>Makefile</code>) ne peuvent pas
+    être reconnus par les directives de <module>mod_mime</module> basées sur
+    l’extension. Pour définir le type de contenu ou le jeu de caractères de tels
+    fichiers, utilisez à la place une section <directive type="section"
+    module="core">Files</directive> ou <directive type="section"
+    module="core">FilesMatch</directive> :</p>
+
+    <highlight language="config">
+# Pour un fichier spécifique :
+&lt;Files "Makefile"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+&lt;/Files&gt;
+
+# Pour tous les fichiers sans extension :
+&lt;FilesMatch "^[^.]+$"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+    AddDefaultCharset UTF-8
+&lt;/FilesMatch&gt;
+    </highlight>
+    </note>
+
 </section>
 
 <section id="contentencoding"><title>Codage du contenu</title>
@@ -171,8 +195,7 @@ multiples</title>
     qui est conçu pour transmettre un fichier binaire sous un format
     ASCII (texte).</p>
 
-    <p>La <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC
-    HTTP/1.1</a>, section 14.11 stipule à ce titre :</p>
+    <p>La RFC HTTP/1.1 (<rfc>2616</rfc>), section 14.11 stipule à ce titre :</p>
 
     <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>Le champ d'en-tête Content-Encoding de l'entité est utilisé en
@@ -392,6 +415,7 @@ gestionnaire spécifié</description>
     elles.</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_dir">FallbackResource</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
