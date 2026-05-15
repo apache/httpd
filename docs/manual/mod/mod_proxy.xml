@@ -1515,7 +1515,7 @@ ProxyPass "/" "balancer://hotcluster/"
 
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
-    that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
+    that make use of <var><glossary ref="pathinfo">PATH_INFO</glossary></var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
     backend.  Note that this keyword may affect the security of your backend,
     as it removes the normal limited protection against URL-based attacks

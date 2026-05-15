@@ -701,7 +701,7 @@ RewriteRule "(.*)"            "-" [F]
   </li>
 
   <li>This solution shows the reverse of the previous ones, copying
-      path components (perhaps PATH_INFO) from the URL into the query string.
+      path components (perhaps <glossary ref="pathinfo">PATH_INFO</glossary>) from the URL into the query string.
 <highlight language="config">
 # The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.

@@ -173,7 +173,7 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
        allows the normal mapping of URI to filename to occur in the server, and the
        local filesystem result is passed to the backend.  When FastCGI is
        configured this way, the server can calculate the most accurate
-       PATH_INFO.
+       <glossary ref="pathinfo">PATH_INFO</glossary>.
       </p>
     <example><title>Proxy via Handler</title>
       <highlight language="config">

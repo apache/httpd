@@ -83,7 +83,7 @@ Options +Includes
     <title>PATH_INFO with Server Side Includes</title>
 
     <p>Files processed for server-side includes no longer accept
-    requests with <code>PATH_INFO</code> (trailing pathname information)
+    requests with <glossary ref="pathinfo">PATH_INFO</glossary> (trailing pathname information)
     by default.  You can use the <directive
     module="core">AcceptPathInfo</directive> directive to
     configure the server to accept requests with <code>PATH_INFO</code>.</p>

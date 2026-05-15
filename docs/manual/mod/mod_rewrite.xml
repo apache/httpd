@@ -526,7 +526,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
                  CONTEXT_PREFIX<br />
                  CONTEXT_DOCUMENT_ROOT<br />
                  IPV6<br />
-                 PATH_INFO<br />
+                 <glossary ref="pathinfo">PATH_INFO</glossary><br />
                  QUERY_STRING<br />
                  REMOTE_ADDR<br />
                  REMOTE_HOST<br />

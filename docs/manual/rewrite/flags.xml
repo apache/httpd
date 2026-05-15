@@ -284,7 +284,7 @@ minutes (24 hours) and is returned for all URIs.</p>
 </section>
 
 <section id="flag_dpi"><title>DPI|discardpath</title>
-<p>The DPI flag causes the PATH_INFO portion of the rewritten URL-path to be
+<p>The DPI flag causes the <glossary ref="pathinfo">PATH_INFO</glossary> portion of the rewritten URL-path to be
 discarded.</p>
 
 <p>In <glossary ref="perdirectory">per-directory context</glossary>,

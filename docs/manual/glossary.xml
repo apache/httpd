@@ -346,6 +346,18 @@
       See: <a href="sections.html">Configuration Sections</a>
     </dd>
 
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>The trailing path information that follows the actual filename
+      in a URL. For example, if <code>/app/index.php/extra/path</code>
+      maps to the file <code>/app/index.php</code>, then the PATH_INFO
+      is <code>/extra/path</code>. It is passed to CGI scripts, PHP,
+      and other handlers as additional context about the request. The
+      <directive module="core">AcceptPathInfo</directive> directive controls
+      whether requests with trailing path information are accepted or
+      rejected.<br />
+      See: <rfc section="4.1.5">3875</rfc>
+    </dd>
+
     <dt><a name="plaintext" id="plaintext">Plaintext</a></dt>
     <dd>The unencrypted text.</dd>
 

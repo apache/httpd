@@ -137,7 +137,7 @@ AcceptFilter https connect
     pathname information that follows an actual filename (or
     non-existent file in an existing directory) will be accepted or
     rejected.  The trailing pathname information can be made
-    available to scripts in the <code>PATH_INFO</code> environment
+    available to scripts in the <glossary ref="pathinfo">PATH_INFO</glossary> environment
     variable.</p>
 
     <p>For example, assume the location <code>/test/</code> points to

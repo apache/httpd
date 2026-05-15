@@ -84,7 +84,7 @@ ProxyPass "/scgi-bin/" "balancer://somecluster/"
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
         <dd>By default <module>mod_proxy_scgi</module> will neither create
-        nor export the <var>PATH_INFO</var> environment variable. This allows
+        nor export the <var><glossary ref="pathinfo">PATH_INFO</glossary></var> environment variable. This allows
         the backend SCGI server to correctly determine <var>SCRIPT_NAME</var>
         and <var>Script-URI</var> and be compliant with RFC 3875 section 3.3.
         If instead you need <module>mod_proxy_scgi</module> to generate

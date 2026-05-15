@@ -526,7 +526,7 @@ end
           <td><code>path_info</code></td>
           <td>string</td>
           <td>no</td>
-          <td>The PATH_INFO extracted from this request.</td>
+          <td>The <glossary ref="pathinfo">PATH_INFO</glossary> extracted from this request.</td>
         </tr>
         <tr>
           <td><code>port</code></td>
