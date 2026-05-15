@@ -123,7 +123,6 @@ HTTP caching filter.</dd>
 <dt><a href="mod_dav.html">mod_dav</a></dt><dd>分散オーサリングとバージョン管理
 (<a href="http://www.webdav.org/">WebDAV</a>) 機能</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 用の汎用ロックモジュール</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>クライアントへ送られる前にコンテンツを圧縮する</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>

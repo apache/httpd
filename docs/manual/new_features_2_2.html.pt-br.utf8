@@ -30,8 +30,6 @@
 <a href="./pt-br/new_features_2_2.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta tradução pode estar desatualizada.
-        Confira a versão em inglês para mudanças recentes.</div>
 
   <p>Este documento descreve algumas das principais mudanças entre as
      versões 2.0 e 2.2 do servidor HTTP Apache. Para obter informações sobre os novos
@@ -208,7 +206,7 @@
           de autenticação de backend</li>
           <li><code>mod_authz_*</code> -&gt; Módulos que implementam
           autorização (ou acesso)</li>
-          <li><code>mod_authnz_*</code> -&gt; Módulo que implementa tanto
+          <li><code>mod_authnz_*</code> -&gt; Módulos que implementam tanto
           autenticação quanto autorização</li>
           </ul>
           Existe um novo esquema de provedor de backend de

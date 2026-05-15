@@ -235,7 +235,6 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_data.html">Apache-Modul mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache-Modul mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache-Modul mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Apache-Modul mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache-Modul mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache-Modul mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache-Modul mod_dialup</a></li>

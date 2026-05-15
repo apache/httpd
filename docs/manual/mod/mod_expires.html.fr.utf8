@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_expires.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_expires.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Génération des en-têtes HTTP <code>Expires</code> et
 <code>Cache-Control</code> en fonction de critères spécifiés par
 l'utilisateur</td></tr>
@@ -57,8 +55,8 @@ l'utilisateur</td></tr>
     obtenue à partir du document source.</p>
 
     <p>Pour modifier les directives de contrôle du cache autres
-    que <code>max-age</code> (voir la <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">RFC
-    2616 section 14.9</a>), vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>.</p>
+    que <code>max-age</code> (voir la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.9">RFC 2616</a>,
+    section 14.9)), vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>.</p>
 
     <p>Lorsque l'en-tête <code>Expires</code> est déjà présent dans la
     réponse générée par le serveur, par exemple s'il a été créé par un
@@ -228,6 +226,20 @@ ExpiresByType text/html M604800</pre>
     <p>Vous pouvez aussi définir le mode de calcul de la date
     d'expiration en utilisant une <a href="#AltSyn">syntaxe
     alternative</a>, comme décrit plus haut dans ce document.</p>
+
+    <p>Le type MIME peut utiliser des caractères génériques pour le sous-type,
+    comme dans <code>image/*</code>. Cet exemple correspond à tout sous-type
+    sous le type principal. Lorsque le type de contenu d’une requête ne
+    correspond pas à une entrée <code class="directive">ExpiresByType</code> spécifique,
+    une entrée avec caractères génériques pour le type principal est recherchée
+    avant de se rebattre sur <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>
+
+    <div class="example"><h3>Exemple avec caractères génériques&nbsp;::</h3><pre class="prettyprint lang-config">ExpiresActive On
+# Toutes les images sont périmées après 1 mois
+ExpiresByType image/* "access plus 1 month"
+# Override specifically for GIF
+ExpiresByType image/gif "access plus 1 week"</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

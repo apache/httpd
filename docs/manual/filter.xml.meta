@@ -12,6 +12,7 @@
     <variant>fr</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
+    <variant>pt-br</variant>
     <variant outdated="yes">tr</variant>
   </variants>
 </metafile>

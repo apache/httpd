@@ -252,7 +252,6 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_data.html">Module Apache mod_data</a></li>
 <li><a href="mod/mod_dav.html">Module Apache mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Module Apache mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Module Apache mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Module Apache mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Module Apache mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Module Apache mod_dialup</a></li>

@@ -138,8 +138,6 @@ traductions ou les réencodages</dd>
 documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</dd>
 <dt><a href="mod_dav_fs.html">mod_dav_fs</a></dt><dd>Implémente le fournisseur filesystem pour
 <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
-<dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>Module de verrouillage générique pour
-<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Gestion des connexions à une base de données SQL</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Comprime le contenu avant de le servir au
 client</dd>

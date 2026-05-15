@@ -210,7 +210,6 @@
 <li><a href="mod/mod_data.html">Apache 模块 mod_data</a></li>
 <li><a href="mod/mod_dav.html">Apache 模块 mod_dav</a></li>
 <li><a href="mod/mod_dav_fs.html">Apache 模块 mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Apache 模块 mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache 模块 mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache 模块 mod_deflate</a></li>
 <li><a href="mod/mod_dialup.html">Apache 模块 mod_dialup</a></li>

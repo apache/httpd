@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache_socache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_cache_socache.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module de stockage à base de cache d'objets partagés
 (socache) pour le filtre de mise en cache HTTP.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -123,11 +121,11 @@ cache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>La directive <code class="directive">CacheSocacheMaxSize</code>
-    définit la taille maximale, en octets, de la somme des en-têtes et
-    du corps d'un document pouvant être stocké dans le cache. Bien
-    entendu, plus la taille des en-têtes sera grande, plus la taille
-    maximale du corps du document s'en trouvera réduite.</p>
+    <p>La directive <code class="directive">CacheSocacheMaxSize</code> définit la taille
+    maximale, en octets, de la somme des en-têtes et du corps d'un document
+    pouvant être stocké dans le cache. La valeur minimale est 1024&nbsp;octets. Bien
+    entendu, plus la taille des en-têtes sera grande, plus la taille maximale du
+    corps du document s'en trouvera réduite.</p>
 
     <p>Le module <code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code> ne tentera de mettre
     en cache que des réponses qui possèdent une taille de contenu
