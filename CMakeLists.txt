@@ -142,6 +142,20 @@ FOREACH(onelib ${APR_LIBRARIES})
   ENDIF()
 ENDFOREACH()
 
+# Generate a per-target wrapper .rc file with the given preprocessor
+# definitions baked in, to avoid passing values with spaces on the
+# windres command line where quoting is not handled correctly.
+FUNCTION(GENERATE_RC_FILE target_name rc_path_var)
+  SET(_rc_file "${CMAKE_BINARY_DIR}/rc/${target_name}_httpd.rc")
+  SET(_content "")
+  FOREACH(_def ${ARGN})
+    STRING(APPEND _content "#define ${_def}\n")
+  ENDFOREACH()
+  STRING(APPEND _content "#include \"${CMAKE_SOURCE_DIR}/build/win32/httpd.rc\"\n")
+  FILE(WRITE "${_rc_file}" "${_content}")
+  SET(${rc_path_var} "${_rc_file}" PARENT_SCOPE)
+ENDFUNCTION()
+
 MACRO(GET_MOD_ENABLE_RANK macro_modname macro_mod_enable_val macro_output_rank)
   IF(${macro_mod_enable_val} STREQUAL "O")
     SET(${macro_output_rank} 0)
@@ -852,7 +866,11 @@ FOREACH (mod ${MODULE_PATHS})
       SET(tmp_mod_main_source ${${mod_main_source}})
     ENDIF()
     SET(all_mod_sources ${tmp_mod_main_source} ${${mod_extra_sources}})
-    ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources} build/win32/httpd.rc)
+    GENERATE_RC_FILE(${mod_name} _mod_rc
+      "LONG_NAME ${mod_name} for Apache HTTP Server"
+      "BIN_NAME ${mod_name}.so"
+    )
+    ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources} ${_mod_rc})
     SET(install_modules ${install_modules} ${mod_name})
     IF(INSTALL_PDB)
       SET(install_modules_pdb ${install_modules_pdb} "$<TARGET_PDB_FILE:${mod_name}>")
@@ -870,10 +888,6 @@ FOREACH (mod ${MODULE_PATHS})
       LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,${mod_name}.so
     )
     TARGET_LINK_LIBRARIES(${mod_name} ${${mod_extra_libs}} libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
-    TARGET_COMPILE_DEFINITIONS(${mod_name} PRIVATE
-      "LONG_NAME=${mod_name} for Apache HTTP Server"
-      "BIN_NAME=${mod_name}.so"
-    )
     TARGET_COMPILE_OPTIONS(${mod_name} PRIVATE "${EXTRA_COMPILE_FLAGS}")
 
     # Extra defines?
@@ -894,7 +908,11 @@ FOREACH (mod ${MODULE_PATHS})
 ENDFOREACH()
 
 ###########   HTTPD LIBRARIES   ############
-ADD_LIBRARY(libhttpd SHARED ${LIBHTTPD_SOURCES} build/win32/httpd.rc)
+GENERATE_RC_FILE(libhttpd _libhttpd_rc
+  "LONG_NAME Apache HTTP Server Core"
+  "BIN_NAME libhttpd.dll"
+)
+ADD_LIBRARY(libhttpd SHARED ${LIBHTTPD_SOURCES} ${_libhttpd_rc})
 SET_TARGET_PROPERTIES(libhttpd PROPERTIES
   LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,libhttpd.dll
 )
@@ -904,25 +922,23 @@ IF(INSTALL_PDB)
 ENDIF()
 TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 TARGET_COMPILE_DEFINITIONS(libhttpd PRIVATE
-  "LONG_NAME=Apache HTTP Server Core"
-  "BIN_NAME=libhttpd.dll"
   "AP_DECLARE_EXPORT"
 )
 TARGET_COMPILE_OPTIONS(libhttpd PRIVATE ${PCRE_CFLAGS} ${EXTRA_COMPILE_FLAGS})
 ADD_DEPENDENCIES(libhttpd test_char_header)
 
 ###########   HTTPD EXECUTABLES   ##########
-ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
+GENERATE_RC_FILE(httpd _httpd_rc
+  "APP_FILE"
+  "LONG_NAME Apache HTTP Server"
+  "BIN_NAME httpd.exe"
+  "ICON_FILE ${CMAKE_SOURCE_DIR}/build/win32/apache.ico"
+)
+ADD_EXECUTABLE(httpd server/main.c ${_httpd_rc})
 SET(install_targets ${install_targets} httpd)
 IF(INSTALL_PDB)
   SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:httpd>)
 ENDIF()
-TARGET_COMPILE_DEFINITIONS(httpd PRIVATE
-  "APP_FILE"
-  "LONG_NAME=Apache HTTP Server"
-  "BIN_NAME=httpd.exe"
-  "ICON_FILE=${CMAKE_SOURCE_DIR}/build/win32/apache.ico"
-)
 TARGET_COMPILE_OPTIONS(httpd PRIVATE "${EXTRA_COMPILE_FLAGS}")
 SET_TARGET_PROPERTIES(httpd PROPERTIES
   LINK_FLAGS "/stack:0x40000"
@@ -944,36 +960,41 @@ SET(htpasswd_extra_sources support/passwd_common.c)
 
 FOREACH(pgm ${standard_support})
   SET(extra_sources ${pgm}_extra_sources)
-  ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}} build/win32/httpd.rc)
+  GENERATE_RC_FILE(${pgm} _pgm_rc
+    "APP_FILE"
+    "LONG_NAME Apache HTTP Server ${pgm} program"
+    "BIN_NAME ${pgm}.exe"
+  )
+  ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}} ${_pgm_rc})
   SET(install_targets ${install_targets} ${pgm})
   IF(INSTALL_PDB)
     SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:${pgm}>)
   ENDIF()
-  TARGET_COMPILE_DEFINITIONS(${pgm} PRIVATE
-      "APP_FILE"
-      "LONG_NAME=Apache HTTP Server ${pgm} program"
-      "BIN_NAME=${pgm}.exe"
-  )
-  TARGET_COMPILE_OPTIONS(${mod_name} PRIVATE "${EXTRA_COMPILE_FLAGS}")
+  TARGET_COMPILE_OPTIONS(${pgm} PRIVATE "${EXTRA_COMPILE_FLAGS}")
   TARGET_LINK_LIBRARIES(${pgm} ${EXTRA_LIBS} ${APR_LIBRARIES})
 ENDFOREACH()
 
-ADD_EXECUTABLE(ab support/ab.c build/win32/httpd.rc)
+GENERATE_RC_FILE(ab _ab_rc
+  "APP_FILE"
+  "LONG_NAME Apache HTTP Server ab program"
+  "BIN_NAME ab.exe"
+)
+ADD_EXECUTABLE(ab support/ab.c ${_ab_rc})
 SET(install_targets ${install_targets} ab)
 IF(INSTALL_PDB)
   SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:ab>)
 ENDIF()
 SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES})
 SET_TARGET_PROPERTIES(ab PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
-TARGET_COMPILE_DEFINITIONS(ab PRIVATE
-    "APP_FILE"
-    "LONG_NAME=Apache HTTP Server ab program"
-    "BIN_NAME=ab.exe"
-)
 TARGET_LINK_LIBRARIES(ab ${EXTRA_LIBS} ${APR_LIBRARIES} Ws2_32.lib)
 
 IF(OPENSSL_FOUND)
-  ADD_EXECUTABLE(abs support/ab.c build/win32/httpd.rc)
+  GENERATE_RC_FILE(abs _abs_rc
+    "APP_FILE"
+    "LONG_NAME Apache HTTP Server ab/SSL program"
+    "BIN_NAME abs.exe"
+  )
+  ADD_EXECUTABLE(abs support/ab.c ${_abs_rc})
   SET(install_targets ${install_targets} abs)
   IF(INSTALL_PDB)
     SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:abs>)
@@ -981,11 +1002,6 @@ IF(OPENSSL_FOUND)
   SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
   SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${OPENSSL_INCLUDE_DIR})
   SET_TARGET_PROPERTIES(abs PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
-  TARGET_COMPILE_DEFINITIONS(abs PRIVATE
-      "APP_FILE"
-      "LONG_NAME=Apache HTTP Server ab/SSL program"
-      "BIN_NAME=abs.exe"
-  )
   TARGET_LINK_LIBRARIES(abs ${EXTRA_LIBS} ${APR_LIBRARIES} ${OPENSSL_LIBRARIES} Ws2_32.lib)
 ENDIF()
 
