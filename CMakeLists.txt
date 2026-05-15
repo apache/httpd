@@ -124,7 +124,7 @@ SET(CHECK_LIBRARIES       "${default_check_libraries}"   CACHE STRING "Check lib
 # end support library configuration
 
 # Misc. options
-OPTION(INSTALL_PDB        "Install .pdb files (if generated)"  ON)
+OPTION(INSTALL_PDB        "Install .pdb files (if generated)"  ${MSVC})
 OPTION(INSTALL_MANUAL     "Install manual"                     ON)
 
 SET(ENABLE_MODULES        "O"                            CACHE STRING "Minimum module enablement (e.g., \"i\" to build all but those without prerequisites)")
@@ -854,7 +854,9 @@ FOREACH (mod ${MODULE_PATHS})
     SET(all_mod_sources ${tmp_mod_main_source} ${${mod_extra_sources}})
     ADD_LIBRARY(${mod_name} SHARED ${all_mod_sources} build/win32/httpd.rc)
     SET(install_modules ${install_modules} ${mod_name})
-    SET(install_modules_pdb ${install_modules_pdb} "$<TARGET_PDB_FILE:${mod_name}>")
+    IF(INSTALL_PDB)
+      SET(install_modules_pdb ${install_modules_pdb} "$<TARGET_PDB_FILE:${mod_name}>")
+    ENDIF()
     IF("${${mod_name}_install_lib}")
       SET(installed_mod_libs_exps
           ${installed_mod_libs_exps}
@@ -897,7 +899,9 @@ SET_TARGET_PROPERTIES(libhttpd PROPERTIES
   LINK_FLAGS /base:@${PROJECT_BINARY_DIR}/BaseAddr.ref,libhttpd.dll
 )
 SET(install_targets ${install_targets} libhttpd)
-SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:libhttpd>)
+IF(INSTALL_PDB)
+  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:libhttpd>)
+ENDIF()
 TARGET_LINK_LIBRARIES(libhttpd ${EXTRA_LIBS} ${APR_LIBRARIES} ${PCRE_LIBRARIES} ${HTTPD_SYSTEM_LIBS})
 TARGET_COMPILE_DEFINITIONS(libhttpd PRIVATE
   "LONG_NAME=Apache HTTP Server Core"
@@ -910,7 +914,9 @@ ADD_DEPENDENCIES(libhttpd test_char_header)
 ###########   HTTPD EXECUTABLES   ##########
 ADD_EXECUTABLE(httpd server/main.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} httpd)
-SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:httpd>)
+IF(INSTALL_PDB)
+  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:httpd>)
+ENDIF()
 TARGET_COMPILE_DEFINITIONS(httpd PRIVATE
   "APP_FILE"
   "LONG_NAME=Apache HTTP Server"
@@ -940,7 +946,9 @@ FOREACH(pgm ${standard_support})
   SET(extra_sources ${pgm}_extra_sources)
   ADD_EXECUTABLE(${pgm} support/${pgm}.c ${${extra_sources}} build/win32/httpd.rc)
   SET(install_targets ${install_targets} ${pgm})
-  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:${pgm}>)
+  IF(INSTALL_PDB)
+    SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:${pgm}>)
+  ENDIF()
   TARGET_COMPILE_DEFINITIONS(${pgm} PRIVATE
       "APP_FILE"
       "LONG_NAME=Apache HTTP Server ${pgm} program"
@@ -952,7 +960,9 @@ ENDFOREACH()
 
 ADD_EXECUTABLE(ab support/ab.c build/win32/httpd.rc)
 SET(install_targets ${install_targets} ab)
-SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:ab>)
+IF(INSTALL_PDB)
+  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:ab>)
+ENDIF()
 SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES})
 SET_TARGET_PROPERTIES(ab PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
 TARGET_COMPILE_DEFINITIONS(ab PRIVATE
@@ -965,7 +975,9 @@ TARGET_LINK_LIBRARIES(ab ${EXTRA_LIBS} ${APR_LIBRARIES} Ws2_32.lib)
 IF(OPENSSL_FOUND)
   ADD_EXECUTABLE(abs support/ab.c build/win32/httpd.rc)
   SET(install_targets ${install_targets} abs)
-  SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:abs>)
+  IF(INSTALL_PDB)
+    SET(install_bin_pdb ${install_bin_pdb} $<TARGET_PDB_FILE:abs>)
+  ENDIF()
   SET_TARGET_PROPERTIES(abs PROPERTIES COMPILE_DEFINITIONS HAVE_OPENSSL)
   SET(tmp_includes ${HTTPD_INCLUDE_DIRECTORIES} ${OPENSSL_INCLUDE_DIR})
   SET_TARGET_PROPERTIES(abs PROPERTIES INCLUDE_DIRECTORIES "${tmp_includes}")
