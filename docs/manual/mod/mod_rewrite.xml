@@ -41,12 +41,11 @@ URLs on the fly</description>
       <p><module>mod_rewrite</module> provides a flexible and powerful way to
       manipulate URLs using an unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URLs
-      based on server variables, environment variables, HTTP headers, or time
+      based on server variables, environment variables, cookies, HTTP headers, or time
       stamps.</p>
 
       <p><module>mod_rewrite</module> can operate on the full URL-path, or any
-      portion of it, including the PATH_INFO or QUERY_STRING. It can also inspect
-      other values, such as headers, cookies, or environment variables.</p>
+      portion of it, including the PATH_INFO or QUERY_STRING.</p>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <glossary
