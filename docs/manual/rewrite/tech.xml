@@ -97,7 +97,7 @@ and URL matching.</p>
     module="mod_alias">RedirectMatch</directive>) are present in the
     same server or virtual-host context, the rewrite rules are
     evaluated first. If a <code>RewriteRule</code> matches and rewrites
-    the URI (or returns a redirect), <code>Redirect</code> never sees
+    the URL-path (or returns a redirect), <code>Redirect</code> never sees
     the request.</p>
 
     <highlight language="config">
@@ -131,7 +131,7 @@ RewriteRule "^/old" "/other" [L]
 
 <section id="encoding"><title>URL Encoding and Decoding</title>
 
-    <p>Apache httpd unescapes URL-encoded characters in the request URI before any
+    <p>Apache httpd unescapes URL-encoded characters in the request URL-path before any
     <directive module="mod_rewrite">RewriteRule</directive> pattern
     matching takes place. A request for
     <code>/my%20page/cats%3Fdogs</code> is decoded to
@@ -153,12 +153,12 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]
 </highlight>
 
     <p>After substitution, <module>mod_rewrite</module> re-encodes the
-    resulting URI for output. Several flags control this behavior:</p>
+    resulting URL-path for output. Several flags control this behavior:</p>
 
     <ul>
       <li><a href="flags.html#flag_b">[B]</a> — re-escape
       backreferences so that special characters captured from the
-      decoded URI are not interpreted as delimiters in the
+      decoded URL-path are not interpreted as delimiters in the
       substitution.</li>
 
       <li><a href="flags.html#flag_bnp">[BNP]</a> — when [B] is

@@ -301,7 +301,7 @@ each rule reflects only the value of PATH_INFO before this round of
 <module>mod_rewrite</module> processing. As a consequence, if large
 portions of the URL-path are matched and copied into a substitution in multiple
 <directive>RewriteRule</directive> directives, without regard for
-which parts of the URI came from the current PATH_INFO, the final
+which parts of the URL-path came from the current PATH_INFO, the final
 URL-path may have multiple copies of PATH_INFO appended to it.</p>
 
 <p>Use this flag on any substitution where the PATH_INFO that resulted
@@ -366,7 +366,7 @@ contexts, including CGI programs, other RewriteRule directives, or
 CustomLog directives.</p>
 
 <p>The following example sets an environment variable called 'image' to a
-value of '1' if the requested URI is an image file. Then, that
+value of '1' if the requested URL-path is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
 
@@ -475,8 +475,8 @@ RewriteRule "\.exe"   "-" [F]
 </highlight>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
-that the requested URI is not modified. There's no reason to rewrite to
-another URI, if you're going to forbid the request.</p>
+that the requested URL-path is not modified. There's no reason to rewrite to
+another URL-path, if you're going to forbid the request.</p>
 
 <p>When using [F], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
@@ -575,7 +575,7 @@ so until there are no more As to be replaced.
 RewriteRule "(.*)A(.*)" "$1B$2" [N]
 </highlight>
 <p>You can think of this as a <code>while</code> loop: While this
-pattern still matches (i.e., while the URI still contains an
+pattern still matches (i.e., while the URL-path still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
@@ -595,7 +595,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]
 <p>Use of the [NC] flag causes the <directive
 module="mod_rewrite">RewriteRule</directive> to be matched in a
 case-insensitive manner. That is, it doesn't care whether letters appear
-as upper-case or lower-case in the matched URI.</p>
+as upper-case or lower-case in the matched URL-path.</p>
 
 <p>In the example below, any request for an image file will be proxied
 to your dedicated image server. The match is case-insensitive, so that
@@ -684,7 +684,7 @@ pushed through the proxy, and any following rules will not be
 considered.</p>
 
 <p>
-You must make sure that the substitution string is a valid URI
+You must make sure that the substitution string is a valid URL
 (typically starting with <code>http://</code><em>hostname</em>) which can be
 handled by the <module>mod_proxy</module>. If not, you will get an
 error from the proxy module. Use this flag to achieve a
@@ -730,7 +730,7 @@ to use this flag.</p>
 <p>
 The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be treated
-as a URI instead. That is to say, the
+as a URL-path instead. That is to say, the
 use of the [PT] flag causes the result of the <directive
 module="mod_rewrite">RewriteRule</directive> to be passed back through
 URL mapping, so that location-based mappings, such as <directive
@@ -773,7 +773,7 @@ is to rewrite to <code>-</code>.</p>
 
 <section id="flag_qsa"><title>QSA|qsappend</title>
 <p>
-When the replacement URI contains a query string, the default behavior
+When the replacement URL contains a query string, the default behavior
 of <directive module="mod_rewrite">RewriteRule</directive> is to discard
 the existing query string, and replace it with the newly generated one.
 Using the [QSA] flag causes the query strings to be combined.
@@ -795,10 +795,10 @@ will be discarded.
 
 <section id="flag_qsd"><title>QSD|qsdiscard</title>
 <p>
-When the requested URI contains a query string, and the target URI does
+When the requested URL contains a query string, and the target URL does
 not, the default behavior of <directive
 module="mod_rewrite">RewriteRule</directive> is to copy that query
-string to the target URI. Using the [QSD] flag causes the query string
+string to the target URL. Using the [QSD] flag causes the query string
 to be discarded.
 </p>
 
@@ -809,10 +809,10 @@ Using [QSD] and [QSA] together will result in [QSD] taking precedence.
 </p>
 
 <p>
-If the target URI has a query string, the default behavior will be
+If the target URL has a query string, the default behavior will be
 observed - that is, the original query string will be discarded and
 replaced with the query string in the <code>RewriteRule</code> target
-URI.
+URL.
 </p>
 
 </section>
@@ -874,7 +874,7 @@ status using their symbolic names: <code>temp</code> (default),
 <p>
 You will almost always want to use [R] in conjunction with [L] (that is,
 use [R,L]) because on its own, the [R] flag prepends
-<code>http://thishost[:thisport]</code> to the URI, but then passes this
+<code>http://thishost[:thisport]</code> to the URL-path, but then passes this
 on to the next rule in the ruleset, which can often result in 'Invalid
 URI in request' warnings.
 </p>
@@ -893,7 +893,7 @@ RewriteRule</directive> and any preceding <directive module="mod_rewrite">
 RewriteCond</directive> directives match). This can be thought of as a
 <code>goto</code> statement in your rewrite ruleset. In the following
 example, we only want to run the <directive module="mod_rewrite">
-RewriteRule</directive> if the requested URI doesn't correspond with an
+RewriteRule</directive> if the requested URL-path doesn't correspond with an
 actual file.</p>
 
 <highlight language="config">

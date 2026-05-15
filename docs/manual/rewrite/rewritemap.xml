@@ -144,7 +144,7 @@ may be used, and give examples of each.</p>
     >RewriteRule</directive>:
     </p>
 
-   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
+   <p> <strong>Redirect a URL-path to an all-lowercase version of itself</strong></p>
     <highlight language="config">
 RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]
@@ -387,7 +387,7 @@ by many requests.
     <directive module="core">Mutex</directive> directive.</p>
 
     <p>A simple example is shown here which will replace all dashes with
-    underscores in a request URI.</p>
+    underscores in a request URL-path.</p>
 
     <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
