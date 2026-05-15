@@ -37,6 +37,8 @@
 and URL matching.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">API Phases</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Module Processing Order</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#encoding">URL Encoding and Decoding</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Ruleset Processing</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -81,6 +83,117 @@ and URL matching.</p>
     <a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
     document for practical details on path stripping, RewriteBase, and
     how to avoid looping.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">Module Processing Order</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> both
+    operate during the URL-to-filename translation phase, but
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> runs <strong>first</strong> regardless
+    of the order in which directives appear in the configuration file.
+    This is determined by the hook priority each module registers, not
+    by source order.</p>
+
+    <p>The practical consequence: when both <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> and <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> (or <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>) are present in the
+    same server or virtual-host context, the rewrite rules are
+    evaluated first. If a <code>RewriteRule</code> matches and rewrites
+    the URL-path (or returns a redirect), <code>Redirect</code> never sees
+    the request.</p>
+
+    <pre class="prettyprint lang-config"># In this configuration, the Redirect is never reached for /old
+# because the RewriteRule matches first — even though
+# the Redirect appears earlier in the file.
+Redirect "/old" "http://example.com/new"
+RewriteRule "^/old" "/other" [L]</pre>
+
+
+    <div class="note"><h3>Per-directory context reverses the order</h3>
+    <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+    the situation is different. <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> directives like
+    <code>Redirect</code> still run in the URL-to-filename translation
+    phase, but <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules run later, in the
+    Fixup phase. This means that in per-directory context,
+    <code>Redirect</code> is evaluated <em>before</em>
+    <code>RewriteRule</code>.</p>
+    </div>
+
+    <p>Because of this inconsistency between contexts, mixing
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
+    directives in the same scope is a common source of confusion. The
+    simplest advice: choose one module for a given task. If you need
+    rewrite conditions or pattern matching, use
+    <code>RewriteRule</code> exclusively. If a simple prefix redirect
+    suffices, use <code>Redirect</code> and don't add rewrite rules
+    that might interact with it.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="encoding" id="encoding">URL Encoding and Decoding</a> <a title="Permanent link" href="#encoding" class="permalink">&para;</a></h2>
+
+    <p>Apache httpd unescapes URL-encoded characters in the request URL-path before any
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern
+    matching takes place. A request for
+    <code>/my%20page/cats%3Fdogs</code> is decoded to
+    <code>/my page/cats?dogs</code>, and that decoded string is what the
+    <code>RewriteRule</code> pattern matches against.</p>
+
+    <p>This means you cannot write a pattern that matches the literal
+    URL-encoded form. If you need to distinguish
+    <code>/horses%2Fponies</code> from <code>/horses/ponies</code>, use
+    <code>%{THE_REQUEST}</code> in a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> — it preserves the
+    original request line exactly as the client sent it, before any
+    decoding:</p>
+
+<pre class="prettyprint lang-config"># Match only the literally-encoded %2F, not a real path separator
+RewriteCond "%{THE_REQUEST}" "/horses%2F"
+RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
+
+
+    <p>After substitution, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> re-encodes the
+    resulting URL-path for output. Several flags control this behavior:</p>
+
+    <ul>
+      <li><a href="flags.html#flag_b">[B]</a> — re-escape
+      backreferences so that special characters captured from the
+      decoded URL-path are not interpreted as delimiters in the
+      substitution.</li>
+
+      <li><a href="flags.html#flag_bnp">[BNP]</a> — when [B] is
+      active, encode spaces as <code>%20</code> rather than
+      <code>+</code> (appropriate for path components, not query
+      strings).</li>
+
+      <li><a href="flags.html#flag_ne">[NE]</a> — suppress the
+      default escaping of special characters in the substitution
+      result, allowing literal <code>#</code>, <code>?</code>, and
+      other characters to pass through unmodified on external
+      redirects.</li>
+    </ul>
+
+    <h3><a name="allowencodedslashes" id="allowencodedslashes">AllowEncodedSlashes</a></h3>
+    
+
+    <p>By default, Apache returns 404 for any URL containing an encoded
+    slash (<code>%2F</code>). The <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> directive controls
+    this behavior:</p>
+
+    <ul>
+      <li><code>Off</code> (default) — reject <code>%2F</code> with
+      404.</li>
+      <li><code>On</code> — allow <code>%2F</code> and decode it to
+      <code>/</code> before passing to handlers.</li>
+      <li><code>NoDecode</code> — allow <code>%2F</code> but keep it
+      in encoded form, letting the backend application distinguish it
+      from a real path separator.</li>
+    </ul>
+
+    <p>When using the <a href="flags.html#flag_b">[B]</a> flag with
+    URLs that may contain encoded slashes, you typically need
+    <code>AllowEncodedSlashes NoDecode</code> to prevent Apache from
+    rejecting the re-encoded result.</p>
+
+    
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
