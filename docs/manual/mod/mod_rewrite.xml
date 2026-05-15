@@ -1198,26 +1198,11 @@ sections and consider both set of statements, rather than only the last one.</li
 </example>
 </note>
 
-      <p>For some hints on <glossary ref="regex">regular
-      expressions</glossary>, see
-      the <a href="../rewrite/intro.html#regex">mod_rewrite
-      Introduction</a>.</p>
-
-      <p>In <module>mod_rewrite</module>, the NOT character
-      ('<code>!</code>') is also available as a possible pattern
-      prefix. This enables you to negate a pattern; to say, for instance:
-      ``<em>if the current URL does <strong>NOT</strong> match this
-      pattern</em>''. This can be used for exceptional cases, where
-      it is easier to match the negative pattern, or as a last
-      default rule.</p>
-
-<note><title>Note</title>
-When using the NOT character to negate a pattern, you cannot include
-grouped wildcard parts in that pattern. This is because, when the
-pattern does NOT match (ie, the negation matches), there are no
-contents for the groups. Thus, if negated patterns are used, you
-cannot use <code>$N</code> in the substitution string!
-</note>
+      <p>For information on <glossary ref="regex">regular
+      expressions</glossary>, including the use of the
+      <code>!</code> prefix to negate a pattern, see the
+      <a href="../rewrite/intro.html#regex">Regular Expressions</a>
+      section of the mod_rewrite introduction.</p>
 
       <p>The <a id="rhs" name="rhs"><em>Substitution</em></a> of a
       rewrite rule is the string that replaces the original URL-path that
