@@ -1,60 +1,10 @@
-# Rewrite Docs — Redundancy Cleanup TODO
-
-Working list of cross-file redundancies to resolve. Each item should
-result in one file "owning" the content and others cross-referencing it.
-
-## HIGH Priority
-
-- [x] **Per-directory path stripping** explained in full across three files
-      (intro.xml, tech.xml, htaccess.xml) with near-identical comparison
-      tables in tech.xml and htaccess.xml.
-      → htaccess.xml owns it; others get a brief mention + xref.
-
-- [x] **[L] vs [END] looping** fully described in three places
-      (htaccess.xml, plus both the [L] and [END] sections of flags.xml).
-      → htaccess.xml owns the full explanation; flags.xml slims down + xrefs.
-
-- [x] **FallbackResource / front-controller** recipe appears in four
-      places across three files (avoid.xml, remapping.xml ×2, htaccess.xml).
-      → avoid.xml owns it; others cross-reference.
-
-## MEDIUM Priority
-
-- [x] **index.xml is a mini-intro, not a TOC** — duplicates module
-      description and complexity warnings from intro.xml.
-      → Rewritten as concise intro + structured guide overview.
-
-- [x] **Duplicate SSRF warning in flags.xml** — two nearly identical
-      warning boxes within the [P] flag section.
-      → Remove the literal duplicate.
-
-- [x] **Two hostname canonicalization sections in remapping.xml** —
-      "canonicalhost" and "www-resolve" cover the same concept.
-      → Merge "www-resolve" into "canonicalhost".
-
-- [x] **HTTPS redirect** covered in both avoid.xml and remapping.xml.
-      → remapping.xml owns the recipe; avoid.xml references it.
-
-## LOW Priority
-
-- [x] **Harmonize `<seealso>` blocks** — htaccess.xml not consistently
-      listed in other files' seealso despite being a major topic.
-
-- [x] **Deprecated stub files** (access.xml, advanced.xml, proxy.xml) —
-      Remove from trunk. Leave in 2.4 during sync (they'll drop in 2.6).
-
-- [x] **Figure numbering collision** — both intro.xml and tech.xml use
-      "Figure 1" for different images. Not a problem — separate pages.
-
----
-
-## Potential Topics to Cover
+# Rewrite Docs —  Suggested addition
 
 Based on 20 years of users@httpd.apache.org questions, these are the
 most common mod_rewrite pain points that the guide does not adequately
 address. Sorted by priority.
 
-### HIGH — Widely asked, not covered
+## HIGH — Widely asked, not covered
 
 - [x] **Redirect vs. RewriteRule processing order** — mod_rewrite runs
       *before* mod_alias regardless of config file order. Mixing them
@@ -85,7 +35,7 @@ address. Sorted by priority.
       put `?query` or full URLs in their patterns. Make this explicit
       in intro.xml's RewriteRule basics section.
 
-### MEDIUM — Common, easy to add
+## MEDIUM — Common, easy to add
 
 - [ ] **Let's Encrypt ACME challenge exemption** — one-liner recipe,
       universally needed alongside HTTPS redirect. Add to remapping.xml.
@@ -100,9 +50,12 @@ address. Sorted by priority.
       current path-stripping section but never called out as a warning
       box. Add to htaccess.xml.
 
-### LOW — Niche but prevents support questions
+## LOW
 
 - [ ] **prg: RewriteMap must flush stdout** — add note to rewritemap.xml.
 
 - [ ] **mod_rewrite cannot inspect POST body** — one-sentence note in
       intro.xml.
+
+- [ ] **flags** - Add examples to flags that lack them.
+
