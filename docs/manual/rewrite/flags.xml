@@ -1032,6 +1032,25 @@ marks where possible.
     map to an unexpected filesystem location.</p>
 
     <p><since>2.5.1</since></p>
+
+<highlight language="config">
+# This rule starts the substitution with a backreference.
+# Since 2.4.60, this is rejected by default to prevent the expanded
+# path from escaping the document root (CVE-2024-38475).
+# Only add UnsafePrefixStat after verifying the substitution cannot
+# resolve to a filesystem path outside your web root.
+RewriteRule "^/mirror/(.+)$" "$1" [PT,UnsafePrefixStat]
+</highlight>
+
+<note type="warning">
+This flag exists because of <a
+href="https://www.cve.org/CVERecord?id=CVE-2024-38475">CVE-2024-38475</a>.
+Without it, a substitution beginning with a backreference or variable
+that happens to match an existing filesystem path could allow requests
+to escape the document root. Use this flag only after confirming that
+the substitution is adequately constrained.
+</note>
+
 </section>
 <section id="flag_unc"><title>UNC</title>
     <p> Setting this flag prevents the merging of multiple leading slashes,
