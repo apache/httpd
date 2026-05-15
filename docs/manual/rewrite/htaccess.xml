@@ -131,6 +131,24 @@ determines what URL-path prefix is prepended. This subrequest
 mechanism is also why rules can loop &mdash; see
 <a href="#loops">below</a>.</p>
 
+
+<p>Because the directory prefix (including the trailing
+slash) is stripped before matching, patterns in
+<glossary ref="perdirectory">per-directory context</glossary>
+will <em>never</em> match a leading slash. A pattern
+beginning with <code>^/</code> will never match in this
+context.</p>
+
+<p>If you need to match against the full original
+URL-path (including the directory prefix), use
+<code>%{REQUEST_URI}</code> in a
+<directive module="mod_rewrite">RewriteCond</directive>:</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_URI}" "^/admin/"
+RewriteRule "^.*$" "-" [F]
+</highlight>
+
 </section>
 
 <section id="rewritebase"><title>When you need RewriteBase</title>
@@ -276,6 +294,24 @@ RewriteRule "^product/(.+)$" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
 parsed on every request, and map initialization (especially for
 <code>dbm:</code>, <code>dbd:</code>, and <code>prg:</code> map types)
 would be prohibitively expensive to repeat each time.</p>
+
+</section>
+
+<section id="context-restrictions"><title>Which contexts support rewrite rules?</title>
+
+<p>Rewrite rules are supported in
+<glossary ref="perdirectory">per-directory context</glossary>
+(<a href="../howto/htaccess.html">.htaccess</a> files,
+<directive module="core" type="section">Directory</directive>, and
+<directive module="core" type="section">If</directive> blocks).</p>
+
+<p>Although rewrite rules are syntactically permitted in
+<directive module="core" type="section">Location</directive>
+and <directive module="core" type="section">Files</directive>
+sections (including their regex counterparts), this is
+unsupported and should never be necessary. Relative
+substitutions, in particular, are likely to break in
+these contexts.</p>
 
 </section>
 

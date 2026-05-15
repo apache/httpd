@@ -1132,70 +1132,13 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 </note>
 
 <note><title><glossary ref="perdirectory">Per-directory</glossary> Rewrites</title>
-<ul>
-<li>The rewrite engine may be used in <a
-href="../howto/htaccess.html">.htaccess</a> files and in <directive type="section"
-module="core">Directory</directive> sections, with some additional
-complexity.</li>
-
-<li>To enable the rewrite engine in this context, you need to set
-<code>RewriteEngine On</code> <strong>and</strong>
-at least one of the <code>FollowSymLinks</code> or
-<code>SymLinksIfOwnerMatch</code>
-<directive module="core">Options</directive> must be enabled. Note
-that these options cannot be set in a distributed configuration file
-(<code>.htaccess</code>) unless
-<directive module="core">AllowOverride</directive> permits it
-in the server configuration.</li>
-
-<li>See the <directive module="mod_rewrite">RewriteBase</directive>
-directive for more information regarding what prefix will be added back to
-relative substitutions.</li>
-
-<li> If you wish to match against the full URL-path in a 
-<glossary ref="perdirectory">per-directory</glossary> context
-RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
-a <directive module="mod_rewrite">RewriteCond</directive>.</li>
-
-<li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
-<em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
-matches in <glossary ref="perdirectory">per-directory</glossary> context.</li>
-
-<li>Although rewrite rules are syntactically permitted in <directive
-type="section" module="core">Location</directive> and <directive
-type="section" module="core">Files</directive> sections
-(including their regular expression counterparts), this
-should never be necessary and is unsupported. A likely feature
-to break in these contexts is relative substitutions.</li>
-
-<li>The <directive module="core">If</directive> blocks
-follow the rules of the <em>directory</em> context.</li>
-
-<li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
-merging sections</a> belonging to the same context. The <directive
-module="mod_rewrite">RewriteOptions</directive> directive can change this behavior,
-for example using the <em>Inherit</em> setting.</li>
-
-<li>The <directive module="mod_rewrite">RewriteOptions</directive> also regulates the
-behavior of sections that are stated at the same nesting level of the configuration. In the
-following example, by default only the RewriteRules stated in the second 
-<directive module="core">If</directive> block
-are considered, since the first ones are overridden. Using <directive
-module="mod_rewrite">RewriteOptions</directive> Inherit forces mod_rewrite to merge the two
-sections and consider both set of statements, rather than only the last one.</li>
-</ul>
-<example>
-<highlight language="config">
-&lt;If "true"&gt;
-  # Without RewriteOptions Inherit, this rule is overridden by the next
-  # section and no redirect will happen for URIs containing 'foo'
-  RewriteRule foo http://example.com/foo [R]
-&lt;/If&gt;
-&lt;If "true"&gt;
-  RewriteRule bar http://example.com/bar [R]
-&lt;/If&gt;
-</highlight>
-</example>
+<p>
+Using rewrite rules in <glossary ref="perdirectory">per-directory
+context</glossary> requires special attention to how patterns are
+matched and how rule inheritance works. See the
+<a href="../rewrite/htaccess.html">Per-directory Rewrites</a>
+guide for complete details.
+</p>
 </note>
 
       <p>For information on <glossary ref="regex">regular
