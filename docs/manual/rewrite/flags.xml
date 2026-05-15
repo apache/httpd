@@ -1058,6 +1058,21 @@ the substitution is adequately constrained.
     substitution starts with multiple literal slashes.</p>
 
     <p><since>2.5.1</since></p>
+
+<highlight language="config">
+# On Windows, rewrite to a UNC file share using a variable.
+# Without [UNC], the leading slashes in the substitution would be
+# collapsed (//server/share becomes /server/share).
+RewriteCond "%{HTTP_HOST}" "^(.+)\.internal$"
+RewriteRule "^/shared/(.*)$" "//%1/fileshare/$1" [UNC]
+</highlight>
+
+<p>This flag is only relevant on Windows. It prevents Apache from
+merging the leading double slash (<code>//</code>) that denotes a
+UNC path when the path is constructed from a backreference or
+variable. If the substitution begins with literal double slashes,
+no flag is needed.</p>
+
 </section>
 
 </manualpage>
