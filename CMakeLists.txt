@@ -762,6 +762,12 @@ SET(LIBHTTPD_SOURCES
 CONFIGURE_FILE(os/win32/win32_config_layout.h
                ${PROJECT_BINARY_DIR}/ap_config_layout.h)
 
+# Generate an empty ap_config_auto.h for MinGW, where ap_config.h
+# expects it but autoconf is not used with the CMake build.
+IF(MINGW)
+  FILE(WRITE ${PROJECT_BINARY_DIR}/ap_config_auto.h "")
+ENDIF()
+
 SET(HTTPD_INCLUDE_DIRECTORIES
   ${PROJECT_BINARY_DIR}
   ${EXTRA_INCLUDES}
