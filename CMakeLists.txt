@@ -337,7 +337,6 @@ SET(MODULE_LIST
   "modules/core/mod_watchdog+I+Watchdog module"
   "modules/database/mod_dbd+I+Apache DBD Framework"
   "modules/dav/fs/mod_dav_fs+I+DAV provider for the filesystem."
-  "modules/dav/lock/mod_dav_lock+I+DAV provider for generic locking"
   "modules/dav/main/mod_dav+I+WebDAV protocol handling."
   "modules/debugging/mod_bucketeer+O+buckets manipulation filter.  Useful only for developers and testing purposes."
   "modules/debugging/mod_dumpio+I+I/O dump filter"
@@ -460,8 +459,6 @@ SET(mod_dav_fs_extra_sources
   modules/dav/fs/quota.c             modules/dav/fs/repos.c
 )
 SET(mod_dav_fs_extra_libs            mod_dav)
-SET(mod_dav_lock_extra_sources       modules/dav/lock/locks.c)
-SET(mod_dav_lock_extra_libs          mod_dav)
 SET(mod_dbd_extra_defines            DBD_DECLARE_EXPORT)
 SET(mod_deflate_requires             ZLIB_FOUND)
 IF(ZLIB_FOUND)
