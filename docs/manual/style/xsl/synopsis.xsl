@@ -327,11 +327,6 @@
                                 <xsl:apply-templates />
                             </li>&lf;
                         </xsl:for-each>
-                        <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-                            <li><a href="#comments_section"><xsl:value-of
-                                    select="$message[@id='comments']" /></a>
-                            </li>
-                        </xsl:if>
                         </ul>
                     </xsl:if>
                 </div> <!-- /#quickview -->
