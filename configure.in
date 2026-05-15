@@ -4,7 +4,7 @@ dnl
 dnl     Use ./buildconf to produce a configure script
 dnl
 
-AC_PREREQ(2.60)
+AC_PREREQ(2.70)
 AC_INIT(ABOUT_APACHE)
 
 AC_CONFIG_HEADERS(include/ap_config_auto.h)
@@ -33,7 +33,7 @@ dnl AC_DISABLE_OPTION_CHECKING defined which turns this off by default.
 dnl We want to have this turned off here since our configure calls can
 dnl contain options for APR / APR-UTIL configure that are unknown to us.
 dnl So avoid confusing the user by turning this off. See also PR 45221.
-ifdef([AC_DISABLE_OPTION_CHECKING], [AC_DISABLE_OPTION_CHECKING])
+AC_DISABLE_OPTION_CHECKING
 
 dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
 dnl by configure until it is too late.  Is that how it should be or not?
@@ -419,12 +419,7 @@ APACHE_SUBST(MKINSTALLDIRS)
 APACHE_SUBST(INSTALL)
 
 dnl Various OS checks that apparently set required flags
-ifdef([AC_USE_SYSTEM_EXTENSIONS], [
 AC_USE_SYSTEM_EXTENSIONS
-], [
-AC_AIX
-AC_MINIX
-])
 
 # Ensure that satisfactory versions of apr and apr-util are 
 # found if external copies are configured.
