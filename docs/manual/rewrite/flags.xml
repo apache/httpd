@@ -186,6 +186,17 @@ control moves on to the next rule. However, if it does not match, then
 the next rule, and any other rules that are chained together, are
 skipped.</p>
 
+<highlight language="config">
+# Rewrite legacy product URLs to the new catalog app,
+# and add a tracking parameter — but only for the rewritten ones.
+RewriteRule "^/products/([0-9]+)$" "/catalog/item/$1" [C]
+RewriteRule "^/catalog/(.*)$" "/catalog/$1?via=legacy" [QSA]
+</highlight>
+
+<p>Without the [C] flag, the second rule would also match requests
+that arrive at <code>/catalog/</code> directly. The chain ensures the
+second rule is only applied when the first rule matched.</p>
+
 </section>
 
 <section id="flag_co"><title>CO|cookie</title>
