@@ -74,7 +74,7 @@ static void *merge_win32_dir_configs(apr_pool_t *p, void *basev, void *addv)
 }
 
 static const char *set_interpreter_source(cmd_parms *cmd, void *dv,
-                                          char *arg)
+                                          const char *arg)
 {
     win32_dir_conf *d = (win32_dir_conf *)dv;
     if (!strcasecmp(arg, "registry")) {
