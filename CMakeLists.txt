@@ -145,6 +145,9 @@ ENDFOREACH()
 # Generate a per-target wrapper .rc file with the given preprocessor
 # definitions baked in, to avoid passing values with spaces on the
 # windres command line where quoting is not handled correctly.
+# For MinGW, compile the .rc via a custom command with only the
+# needed include paths, since windres also cannot handle -I paths
+# containing spaces.
 FUNCTION(GENERATE_RC_FILE target_name rc_path_var)
   SET(_rc_file "${CMAKE_BINARY_DIR}/rc/${target_name}_httpd.rc")
   SET(_content "")
@@ -153,7 +156,21 @@ FUNCTION(GENERATE_RC_FILE target_name rc_path_var)
   ENDFOREACH()
   STRING(APPEND _content "#include \"${CMAKE_SOURCE_DIR}/build/win32/httpd.rc\"\n")
   FILE(WRITE "${_rc_file}" "${_content}")
-  SET(${rc_path_var} "${_rc_file}" PARENT_SCOPE)
+  IF(MINGW)
+    SET(_rc_obj "${CMAKE_BINARY_DIR}/rc/${target_name}_httpd.obj")
+    ADD_CUSTOM_COMMAND(
+      OUTPUT "${_rc_obj}"
+      COMMAND ${CMAKE_RC_COMPILER} -O coff
+        -I "${CMAKE_SOURCE_DIR}/include"
+        "${_rc_file}" "${_rc_obj}"
+      DEPENDS "${_rc_file}"
+              "${CMAKE_SOURCE_DIR}/build/win32/httpd.rc"
+              "${CMAKE_SOURCE_DIR}/include/ap_release.h"
+    )
+    SET(${rc_path_var} "${_rc_obj}" PARENT_SCOPE)
+  ELSE()
+    SET(${rc_path_var} "${_rc_file}" PARENT_SCOPE)
+  ENDIF()
 ENDFUNCTION()
 
 MACRO(GET_MOD_ENABLE_RANK macro_modname macro_mod_enable_val macro_output_rank)
