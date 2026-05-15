@@ -667,6 +667,15 @@ Images, javascript files, or css files, loaded as part of an HTML page,
 are not subrequests - the browser requests them as separate HTTP
 requests.
 </p>
+
+<highlight language="config">
+# Only rewrite direct requests to the front controller,
+# not subrequests from SSI includes or mod_dir.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/app/index.php?page=$1" [NS,L]
+</highlight>
+
 </section>
 
 <section id="flag_p"><title>P|proxy</title>
@@ -815,6 +824,12 @@ replaced with the query string in the <code>RewriteRule</code> target
 URL.
 </p>
 
+<highlight language="config">
+# Redirect old search URLs to the new path, discarding the query string.
+# /search?q=term&amp;page=2  becomes  /find  (query string removed)
+RewriteRule "^/search" "/find" [QSD,R=301,L]
+</highlight>
+
 </section>
 
 <section id="flag_qsl"><title>QSL|qslast</title>
@@ -882,6 +897,11 @@ URI in request' warnings.
 <p>Note: httpd only supports status codes that are included in the HTTP
 spec.  Using an unrecognized status code will result in a 500 error and
 error log message.</p>
+
+<highlight language="config">
+# Redirect requests for the old docs path to the new location.
+RewriteRule "^/docs/(.*)$" "http://docs.example.com/$1" [R=301,L]
+</highlight>
 
 </section>
 
