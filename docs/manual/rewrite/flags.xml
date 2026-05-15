@@ -1003,6 +1003,26 @@ The <code>L</code> flag can be useful in this context to end the
     rewritten result has a '?' in the substitution.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
+
+<highlight language="config">
+# A PHP front controller that routes all requests via a query parameter.
+# Without UnsafeAllow3F, a request like /page%3Fname=test would return
+# 403 Forbidden because the rewritten substitution contains '?' while
+# the original request contains an encoded '%3F'.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]
+</highlight>
+
+<note type="warning">
+This flag exists because of <a
+href="https://www.cve.org/CVERecord?id=CVE-2024-38474">CVE-2024-38474</a>.
+Use it only on rules where you are certain that user-supplied <code>%3F</code>
+in the request cannot be exploited to manipulate the query string of the
+substitution target. Prefer restructuring URLs to avoid encoded question
+marks where possible.
+</note>
+
 </section>
 <section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
     <p> Setting this flag is required in server-scoped substitutions
