@@ -44,8 +44,9 @@ URLs on the fly</description>
       based on server variables, environment variables, cookies, HTTP headers, or time
       stamps.</p>
 
-      <p><module>mod_rewrite</module> can operate on the full URL-path, or any
-      portion of it, including the PATH_INFO or QUERY_STRING.</p>
+      <p><module>mod_rewrite</module> can operate on the <a href="directive-dict.html#Syntax">URL-path</a>,
+      or any portion of it (including any <a href="core.html#acceptpathinfo">trailing pathname information</a>).
+      It can also alter the query string (<a href="../expr.html#vars"><code>%{QUERY_STRING}</code></a>).</p>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <glossary
