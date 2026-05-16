@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673932:1933449 (outdated) -->
+<!-- English Revision: 1933449 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,7 +43,7 @@ CERN</description>
     d'utilisateurs du CERN qui peuvent exploiter ce module.</p>
 
     <p>Pour plus d'information, voir le document sur la <a
-    href="http://www.w3.org/pub/WWW/Daemon/User/Config/General.html#MetaDir"
+    href="https://www.w3.org/Daemon/User/Config/General.html#MetaDir"
     >sémantique des métafichiers du CERN</a>.</p>
 </summary>
 

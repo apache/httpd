@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1690137:1933739 (outdated) -->
+<!-- English Revision: 1933739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- $LastChangedRevision: 2015071101 $ -->
 
@@ -37,7 +37,7 @@
 <p>Ce module implémente la transparence des certificats en conjonction
 avec <module>mod_ssl</module> et les outils en ligne de commande du
 projet open source <a
-href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.
+href="https://certificate.transparency.dev/">certificate-transparency</a>.
 Le but de la transparence des certificats consiste à révéler
 l'utilisation de certificats de confiance délivrés par
 erreur ou dans un but malintentionné. Vous trouverez plus de détails à
@@ -364,7 +364,7 @@ venir.</p>
   log qui est normalement le fichier <code>cpp/client/ct</code> (ou
   <code>ct.exe</code>) de l'arborescence des sources du projet open
   source <a
-  href="https://code.google.com/p/certificate-transparency/">certificate-transparency</a>.</p>
+  href="https://certificate.transparency.dev/">certificate-transparency</a>.</p>
 
   <p>Il est possible d'utiliser une implémentation alternative pour
   extraire les SCTs d'un certificat de serveur à partir du moment où
