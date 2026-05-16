@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1749829:1933746 (outdated) -->
+<!-- English Revision: 1933746 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -43,7 +43,7 @@ contenu</a></description>
       gestionnaire <code>type-map</code>) qui contient une liste
       explicite des fichiers contenant les différentes variantes.</li>
 
-      <li>Une recherche multivues (Multiviews) (activée par l'<directive
+<li>Une recherche multivues (Multiviews) (activée par l'<directive
       module="core">Options</directive> <code>Multiviews</code>), où le
       serveur effectue une recherche de correspondance de modèle de nom
       de fichier implicite, et fait son choix parmi les résultats.</li>
@@ -83,8 +83,7 @@ contenu</a></seealso>
 
       <dt><code>Content-Language:</code></dt>
       <dd>Le(s) langage(s) de la variante, sous la forme d'un symbole de
-      langage Internet standard (<a
-      href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). Par
+      langage Internet standard (<rfc>1766</rfc>). Par
       exemple, <code>en</code> correspond à l'anglais. Si la variante
       contient plusieurs langages, ils sont séparés par des
       virgules.</dd>
@@ -96,11 +95,12 @@ contenu</a></seealso>
       <dt><code>Content-Type:</code></dt>
 
       <dd>
-        Le <glossary ref="mime-type">type MIME</glossary> du document
-	avec des paramètres optionnels. Les paramètres sont séparés du
-	type de médium ainsi qu'entre eux par un point-virgule, et
-	possèdent la syntaxe <code>nom=valeur</code>. Les paramètres
-	courants sont :
+	Le <glossary ref="mime-type">type MIME</glossary> du document avec des
+	paramètres optionnels. Chaque variante doit comporter un en-tête
+	<code>Content-Type</code> ; dans le cas contraire, la négociation ne
+	fonctionnera pas correctement. Les paramètres sont séparés du type de
+	médium ainsi qu'entre eux par un point-virgule, et possèdent la syntaxe
+	<code>nom=valeur</code>. Les paramètres courants sont :
 
         <dl>
           <dt><code>level</code></dt>
@@ -307,6 +307,11 @@ ForceLanguagePriority Fallback
     plusieurs variantes sont également acceptables, ou le premier
     document disponible si aucune variante ne convient à la liste de
     langages acceptables fournie par le client.</p>
+
+    <p><code>ForceLanguagePriority None</code> désactive les deux comportements
+    <code>Prefer</code> et <code>Fallback</code> ; le serveur renverra alors 300
+    (MULTIPLE CHOICES) ou 406 (NOT ACCEPTABLE), selon le cas. <code>None</code>
+    ne peut pas être combiné avec <code>Prefer</code> ou <code>Fallback</code>.</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
