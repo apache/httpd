@@ -108,6 +108,7 @@
     &lf;
     <meta http-equiv="Content-Type"
           content="text/html; charset={$output-encoding}" />&lf;
+    <meta name="viewport" content="width=device-width, initial-scale=1" />&lf;
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
             &lf;
@@ -423,6 +424,27 @@
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
 //--><!]]]]>></xsl:text></script>
 </xsl:template>
 <!-- /bottom -->
@@ -435,6 +457,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:param name="position" select="'top'" />
 
 <xsl:if test="not($is-chm or $is-zip)">
+<xsl:if test="$position = 'top'"><button class="lang-toggle" aria-label="Toggle language list"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>&lf;</xsl:if>
 <div class="{$position}lang">&lf;
     <p>
         <span>
