@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -22,6 +23,7 @@
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteRule Flags</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
@@ -297,7 +299,7 @@ minutes (24 hours) and is returned for all URIs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
-<p>The DPI flag causes the PATH_INFO portion of the rewritten URL-path to be
+<p>The DPI flag causes the <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a> portion of the rewritten URL-path to be
 discarded.</p>
 
 <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
@@ -973,6 +975,24 @@ The <code>L</code> flag can be useful in this context to end the
     rewritten result has a '?' in the substitution.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
+
+<pre class="prettyprint lang-config"># A PHP front controller that routes all requests via a query parameter.
+# Without UnsafeAllow3F, a request like /page%3Fname=test would return
+# 403 Forbidden because the rewritten substitution contains '?' while
+# the original request contains an encoded '%3F'.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]</pre>
+
+
+<div class="warning">
+This flag exists because of <a href="https://www.cve.org/CVERecord?id=CVE-2024-38474">CVE-2024-38474</a>.
+Use it only on rules where you are certain that user-supplied <code>%3F</code>
+in the request cannot be exploited to manipulate the query string of the
+substitution target. Prefer restructuring URLs to avoid encoded question
+marks where possible.
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
@@ -983,6 +1003,23 @@ The <code>L</code> flag can be useful in this context to end the
     map to an unexpected filesystem location.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+
+<pre class="prettyprint lang-config"># This rule starts the substitution with a backreference.
+# Since 2.4.60, this is rejected by default to prevent the expanded
+# path from escaping the document root (CVE-2024-38475).
+# Only add UnsafePrefixStat after verifying the substitution cannot
+# resolve to a filesystem path outside your web root.
+RewriteRule "^/mirror/(.+)$" "$1" [PT,UnsafePrefixStat]</pre>
+
+
+<div class="warning">
+This flag exists because of <a href="https://www.cve.org/CVERecord?id=CVE-2024-38475">CVE-2024-38475</a>.
+Without it, a substitution beginning with a backreference or variable
+that happens to match an existing filesystem path could allow requests
+to escape the document root. Use this flag only after confirming that
+the substitution is adequately constrained.
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
@@ -991,6 +1028,20 @@ The <code>L</code> flag can be useful in this context to end the
     substitution starts with multiple literal slashes.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+
+<pre class="prettyprint lang-config"># On Windows, rewrite to a UNC file share using a variable.
+# Without [UNC], the leading slashes in the substitution would be
+# collapsed (//server/share becomes /server/share).
+RewriteCond "%{HTTP_HOST}" "^(.+)\.internal$"
+RewriteRule "^/shared/(.*)$" "//%1/fileshare/$1" [UNC]</pre>
+
+
+<p>This flag is only relevant on Windows. It prevents Apache from
+merging the leading double slash (<code>//</code>) that denotes a
+UNC path when the path is constructed from a backreference or
+variable. If the substitution begins with literal double slashes,
+no flag is needed.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -1006,6 +1057,27 @@ The <code>L</code> flag can be useful in this context to end the
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>
