@@ -229,7 +229,7 @@
 </div>&lf;
 
 <div id="path">&lf;
-    <a href="http://www.apache.org/">
+    <a href="https://www.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -238,7 +238,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/">
+    <a href="https://httpd.apache.org/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
@@ -247,7 +247,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/docs/">
+    <a href="https://httpd.apache.org/docs/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
