@@ -132,12 +132,16 @@ mechanism is also why rules can loop &mdash; see
 <a href="#loops">below</a>.</p>
 
 
+<note type="warning"><title>Do not start .htaccess patterns with /</title>
 <p>Because the directory prefix (including the trailing
 slash) is stripped before matching, patterns in
 <glossary ref="perdirectory">per-directory context</glossary>
 will <em>never</em> match a leading slash. A pattern
 beginning with <code>^/</code> will never match in this
-context.</p>
+context. A rule like <code>RewriteRule "^/foo" ...</code> will
+silently fail to match anything when placed in a
+<code>.htaccess</code> file.</p>
+</note>
 
 <p>If you need to match against the full original
 URL-path (including the directory prefix), use
@@ -381,6 +385,30 @@ visible in these log entries.</p>
 <note type="warning">Do not leave trace-level logging enabled in
 production. It generates a large volume of output and will affect
 performance.</note>
+
+</section>
+
+<section id="caching"><title>Browser caching of 301 redirects</title>
+
+<p>When you issue a <code>301 Moved Permanently</code> redirect
+(via <code>[R=301]</code> or <directive module="mod_alias"
+>Redirect permanent</directive>), the browser is allowed to cache
+that response indefinitely. This means that even after you fix an
+incorrect redirect rule in your configuration, returning visitors
+may continue to be sent to the old (wrong) destination without
+ever contacting your server again.</p>
+
+<p>While debugging redirect rules, use <code>[R=302]</code>
+(temporary redirect) instead of <code>[R=301]</code>. Switch to 301
+only after you have confirmed the rule is correct. If you have
+already issued an incorrect 301, affected users will need to clear
+their browser cache (or use a private/incognito window) to see
+the corrected behavior.</p>
+
+<note>Search engines also cache 301 redirects. An incorrect 301
+may take days or weeks to be re-crawled, even after the
+configuration is fixed. This is another reason to test with 302
+first.</note>
 
 </section>
 
