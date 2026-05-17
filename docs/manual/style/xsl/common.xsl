@@ -402,7 +402,7 @@
             <xsl:text> </xsl:text>
         </xsl:if>
 
-        <a href="http://www.apache.org/licenses/LICENSE-2.0">
+        <a href="https://www.apache.org/licenses/LICENSE-2.0">
             <xsl:if test="$ext-target">
                 <xsl:attribute name="target">_blank</xsl:attribute>
             </xsl:if>
