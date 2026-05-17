@@ -162,5 +162,7 @@
         <message id="retired.current">Dokumentation des Apache HTTP Server f&#252;r die zuletzt erschienene Version</message>
         <message id="retired.document">Sie können <link>diesem Link</link> folgen, um zur aktuellen Version dieses Dokuments zu gelangen.</message>
 
+        <message id="permalink">Permanent link</message>
+
     </messages>
 </language>

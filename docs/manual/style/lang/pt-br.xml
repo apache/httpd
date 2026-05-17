@@ -163,5 +163,7 @@
         <message id="retired.current">Versão atual da documentação do Servidor HTTP Apache</message>
         <message id="retired.document">Siga <link>este atalho</link> para a versão atual deste documento.</message>
 
+        <message id="permalink">Permanent link</message>
+
     </messages>
 </language>

@@ -155,5 +155,7 @@
         <message id="retired.current">Current release version of Apache HTTP Server documentation</message>
         <message id="retired.document">You may follow <link>this link</link> to go to the current version of this document.</message>
 
+        <message id="permalink">Permanent link</message>
+
     </messages>
 </language>

@@ -55,23 +55,15 @@
 
             <xsl:if test="(not($is-chm) and count(section) > 1) or seealso">
                 <div id="quickview">
-
-<!-- Support Apache logo and link -->
-                    <a class="badge" href="https://www.apache.org/foundation/contributing.html">
-                        <img alt="Support Apache!" src="https://www.apache.org/images/SupportApache-small.png" />
-                    </a>
-<!-- /Support Apache -->
-
                     <xsl:if test="not($is-chm) and count(section) > 1">
                         <ul id="toc">
                         <xsl:apply-templates select="section" mode="index" />
                         </ul>
                     </xsl:if>
 
-                    <!-- The seealso section shows links to related documents
+                     <!-- The seealso section shows links to related documents
                          explicitly set in .xml docs or simply the comments. -->
-                    <xsl:if test="seealso or not($is-chm or $is-zip or
-                                                $metafile/basename = 'index')">
+                    <xsl:if test="seealso">
                         <h3>
                             <xsl:value-of
                                 select="$message[@id='seealso']" />
@@ -83,7 +75,6 @@
                             </li>
                         </xsl:for-each>
                         </ul>
-
                     </xsl:if>
                 </div>&lf; <!-- /#quickview -->
             </xsl:if>

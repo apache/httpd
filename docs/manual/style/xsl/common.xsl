@@ -19,6 +19,7 @@
 
 <!DOCTYPE xsl:stylesheet [
     <!ENTITY nbsp SYSTEM "util/nbsp.xml">
+    <!ENTITY para SYSTEM "util/para.xml">
     <!ENTITY lf SYSTEM "util/lf.xml">
     <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
     %HTTPD-VERSION;
@@ -107,6 +108,7 @@
     &lf;
     <meta http-equiv="Content-Type"
           content="text/html; charset={$output-encoding}" />&lf;
+    <meta name="viewport" content="width=device-width, initial-scale=1" />&lf;
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>
             &lf;
@@ -420,6 +422,27 @@
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
 //--><!]]]]>></xsl:text></script>
 </xsl:template>
 <!-- /bottom -->
@@ -432,6 +455,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <xsl:param name="position" select="'top'" />
 
 <xsl:if test="not($is-chm or $is-zip)">
+<xsl:if test="$position = 'top'"><button class="lang-toggle" aria-label="Toggle language list"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>&lf;</xsl:if>
 <div class="{$position}lang">&lf;
     <p>
         <span>
@@ -496,6 +520,8 @@ if (typeof(prettyPrint) !== 'undefined') {
           <a id="{@id}" name="{@id}">
               <xsl:apply-templates select="title" mode="print" />
           </a>
+          <xsl:text> </xsl:text>
+          <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
 
         <xsl:otherwise>
@@ -514,7 +540,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsections (lower level headings)                            -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section">
+<xsl:template match="section/section" priority="3">
 <!-- Section heading -->
 <h3>
     <xsl:choose>
@@ -539,7 +565,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 <!-- ==================================================================== -->
 <!-- handle subsubsections (h4)                                           -->
 <!-- ==================================================================== -->
-<xsl:template match="section/section/section">
+<xsl:template match="section/section/section" priority="4">
 <!-- Section heading -->
 <h4>
     <xsl:choose>
@@ -705,7 +731,7 @@ if (typeof(prettyPrint) !== 'undefined') {
 
     <xsl:text> | </xsl:text>
 
-    <a href="{$path}/mod/directives.html">
+    <a href="{$path}/mod/quickreference.html">
         <xsl:value-of select="$message[@id='directives']" />
     </a>
 
@@ -878,6 +904,13 @@ if (typeof(prettyPrint) !== 'undefined') {
         </xsl:variable>
 
         <xsl:choose>
+        <!-- No link if within the block that describes the directive itself -->
+        <xsl:when test="$in-modulesynopsis and normalize-space(.) = ancestor::directivesynopsis/name">
+                <xsl:if test="@type='section'">&lt;</xsl:if>
+                <xsl:value-of select="."/>
+                <xsl:if test="@type='section'">&gt;</xsl:if>
+                <xsl:message>Removing link to '<xsl:value-of select="."/>'</xsl:message>
+        </xsl:when>
         <xsl:when test="$in-modulesynopsis and normalize-space(@module) = /modulesynopsis/name">
             <a href="#{$lowerdirective}">
                 <xsl:if test="@type='section'">&lt;</xsl:if>
@@ -899,6 +932,17 @@ if (typeof(prettyPrint) !== 'undefined') {
         <xsl:if test="@type='section'">&lt;</xsl:if>
         <xsl:value-of select="."/>
         <xsl:if test="@type='section'">&gt;</xsl:if>
+        <!-- Missing module reference -->
+        <xsl:choose>
+            <!-- within another directive synopsis -->
+            <xsl:when test="normalize-space(.) != ancestor::directivesynopsis/name">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in directive '<xsl:value-of select="ancestor::directivesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+            <!-- somewhere else (try to find module name to give a hint) -->
+            <xsl:when test="not(ancestor::directivesynopsis/name)">
+                <xsl:message>link to '<xsl:value-of select="."/>' directive could be added in MODULE '<xsl:value-of select="/modulesynopsis/name"/>'</xsl:message>
+            </xsl:when>
+        </xsl:choose>
     </xsl:otherwise>
     </xsl:choose>
 </code>
@@ -1262,11 +1306,7 @@ if (typeof(prettyPrint) !== 'undefined') {
     <xsl:text>Is the document valid (try `build validate-xml`)?</xsl:text>
 </xsl:message>
 </xsl:template>
-<xsl:template match="@*">
-<xsl:copy>
-    <xsl:apply-templates select="*|@*|text()" />
-</xsl:copy>
-</xsl:template>
+<xsl:template match="@*"><xsl:copy /></xsl:template>
 <xsl:template match="br"><br /></xsl:template>
 <xsl:template match="tr"><tr><xsl:apply-templates select="*|@*|text()" /></tr></xsl:template>
 <xsl:template match="th"><th><xsl:apply-templates select="*|@*|text()" /></th></xsl:template>
