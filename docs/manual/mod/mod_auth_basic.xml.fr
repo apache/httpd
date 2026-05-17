@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1907762:1933506 (outdated) -->
+<!-- English Revision: 1933506 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -229,18 +229,15 @@ Apache</compatibility>
     chiffrés, mais ce n'est pas systématique ; chaque fournisseur peut
     choisir son propre mode de stockage des mots de passe.</p>
 
-    <p>Lorsqu'on utilise l'authentification de type Digest, les
-    fournisseurs spécifiés par la directive <directive
-    module="mod_auth_digest">AuthDigestProvider</directive> effectuent
-    une recherche similaire dans leurs bases de
-    données pour trouver un couple utilisateur/mot de passe
-    correspondant. Cependant, à la différence de l'authentification
-    basique, les données associées à chaque utilisateur et comportant le
-    nom d'utilisateur, le domaine de protection (realm) et le mot de
-    passe doivent être contenues dans une chaîne chiffrée (Voir le
-    document <a
-    href="http://tools.ietf.org/html/rfc2617#section-3.2.2.2">RFC 2617,
-    Section 3.2.2.2</a> pour plus de détails à propos du type de
+    <p>Lorsqu'on utilise l'authentification de type Digest, les fournisseurs
+    spécifiés par la directive <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> effectuent une
+    recherche similaire dans leurs bases de données pour trouver un couple
+    utilisateur/mot de passe correspondant. Cependant, à la différence de
+    l'authentification basique, les données associées à chaque utilisateur et
+    comportant le nom d'utilisateur, le domaine de protection (realm) et le mot
+    de passe doivent être contenues dans une chaîne chiffrée (Voir le document
+    <rfc section="3.2.2.2">2617</rfc> pour plus de détails à propos du type de
     chiffrement utilisé pour cette chaîne).</p>
 
     <p>A cause de la différence entre les méthodes de stockage des

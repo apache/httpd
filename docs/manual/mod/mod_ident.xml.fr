@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1924775:1933502 (outdated) -->
+<!-- English Revision: 1933502 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -32,10 +32,8 @@
 <identifier>ident_module</identifier>
 
 <summary>
-    <p>Ce module interroge un démon compatible <a
-    href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> sur un
-    serveur distant afin de déterminer le propriétaire d'une
-    connexion.</p>
+    <p>Ce module interroge un démon compatible <rfc>1413</rfc> sur un serveur
+    distant afin de déterminer le propriétaire d'une connexion.</p>
 </summary>
 <seealso><module>mod_log_config</module></seealso>
 
@@ -49,11 +47,10 @@ l'utilisateur distant</description>
 <context>directory</context></contextlist>
 
 <usage>
-    <p>Cette directive permet d'activer la journalisation compatible <a
-    href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a> du nom de
-    l'utilisateur distant pour chaque connexion, si la machine du client
-    exécute identd ou un démon similaire. Cette information est
-    enregistrée dans le journal des accès en utilisant la <a
+    <p>Cette directive permet d'activer la journalisation compatible
+    <rfc>1413</rfc> du nom de l'utilisateur distant pour chaque connexion, si la
+    machine du client exécute identd ou un démon similaire. Cette information
+    est enregistrée dans le journal des accès en utilisant la <a
     href="mod_log_config.html#formats">chaîne de formatage</a>
     <code>%...l</code>.</p>
 
@@ -84,11 +81,10 @@ ident</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
-    <p>Cette directive permet de spécifier le délai d'attente d'une
-    requête ident. Une valeur par défaut de 30 secondes est recommandée
-    par la <a href="https://www.rfc-editor.org/rfc/rfc1413">RFC 1413</a>,
-    principalement pour prévenir les problèmes qui pourraient être
-    induits par la charge du réseau. Vous pouvez cependant ajuster la
+    <p>Cette directive permet de spécifier le délai d'attente d'une requête
+    ident. Une valeur par défaut de 30 secondes est recommandée par la
+    <rfc>1413</rfc>, principalement pour prévenir les problèmes qui pourraient
+    être induits par la charge du réseau. Vous pouvez cependant ajuster la
     valeur de ce délai en fonction du débit de votre réseau local.</p>
 </usage>
 </directivesynopsis>
