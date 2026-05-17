@@ -251,6 +251,12 @@ those, use a
 <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
 <code>%{QUERY_STRING}</code> variables respectively.</p>
 
+<note><module>mod_rewrite</module> operates entirely on the URL-path
+and HTTP headers. It cannot inspect the request body (e.g., POST
+data). If you need to make routing decisions based on request body
+content, handle that in your application logic or use a module such
+as <module>mod_request</module> paired with a custom filter.</note>
+
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
       alt="Syntax of the RewriteRule directive" /><br />
