@@ -2,13 +2,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Tutoriel Apache httpd : Introduction aux "Inclusions Côté Serveur"
-(Server Side Includes - SSI) - Serveur HTTP Apache Version 2.4</title>
+(Server Side Includes - SSI)  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,17 +18,18 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache httpd : Introduction aux "Inclusions Côté Serveur"
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache httpd : Introduction aux "Inclusions Côté Serveur"
 (Server Side Includes - SSI)</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/ssi.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -35,7 +37,7 @@
 <p>Les SSI permettent d'ajouter du contenu dynamique à des documents
 HTML préexistants.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Introduction</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">Qu'est-ce que SSI ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer votre serveur pour permettre les SSI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basic">Directives SSI de base</a></li>
@@ -44,11 +46,11 @@ HTML préexistants.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#exec">Exécution de commandes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#advanced">Techniques SSI avancées</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#conclusion">Conclusion</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Introduction</a></h2>
- <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
+<h2><a name="related" id="related">Introduction</a> <a title="" href="#related" class="permalink">&para;</a></h2>
+ <table class="related"><tr><th /><th /></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>Cet article traite des Inclusions Côté Serveur (Server Side
     Includes), plus communément appelés SSI. Vous trouverez ici la
@@ -62,7 +64,7 @@ HTML préexistants.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">Qu'est-ce que SSI ?</a></h2>
+<h2><a name="what" id="what">Qu'est-ce que SSI ?</a> <a title="" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes) est constitué de directives placées dans
     des pages HTML, et évaluées par le serveur au moment où les pages
@@ -95,7 +97,7 @@ HTML préexistants.</p>
     servie, vous devez vous tourner vers une autre solution.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurer votre serveur pour permettre les SSI</a></h2>
+<h2><a name="configuring" id="configuring">Configurer votre serveur pour permettre les SSI</a> <a title="" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>Pour permettre l'utilisation des SSI sur votre serveur, vous
@@ -179,7 +181,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">Directives SSI de base</a></h2>
+<h2><a name="basic" id="basic">Directives SSI de base</a> <a title="" href="#basic" class="permalink">&para;</a></h2>
 
     <p>Les directives SSI adoptent la syntaxe suivante :</p>
 <div class="example"><p><code>
@@ -242,7 +244,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">Exemples additionnels</a></h2>
+<h2><a name="additionalexamples" id="additionalexamples">Exemples additionnels</a> <a title="" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>Vous trouverez dans ce qui suit quelques exemples spécifiques de
@@ -310,7 +312,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="config" id="config">Que puis-je configurer d'autre ?</a></h2>
+<h2><a name="config" id="config">Que puis-je configurer d'autre ?</a> <a title="" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>En plus du format de date, vous pouvez utiliser l'élément
@@ -341,7 +343,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     ou Mo, selon le cas.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">Exécution de commandes</a></h2>
+<h2><a name="exec" id="exec">Exécution de commandes</a> <a title="" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>Voici autre chose que vous pouvez faire avec la fonction
@@ -378,7 +380,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     <code>Options</code>.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">Techniques SSI avancées</a></h2>
+<h2><a name="advanced" id="advanced">Techniques SSI avancées</a> <a title="" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>Outre l'affichage de contenu, les SSI d'Apache vous permettent de
@@ -478,7 +480,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">Conclusion</a></h2>
+<h2><a name="conclusion" id="conclusion">Conclusion</a> <a title="" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>SSI ne remplace certainement pas CGI, ou d'autres technologies
     utilisées pour la génération de pages web dynamiques. Mais c'est une
@@ -486,16 +488,37 @@ AddOutputFilter INCLUDES .shtml</pre>
     pages, sans devoir fournir un gros effort supplémentaire.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/ssi.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>prefork - Serveur HTTP Apache Version 2.4</title>
+<title>prefork  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,27 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache MPM prefork</h1>
+<div id="preamble"><h1> prefork</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/prefork.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/prefork.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Implémente un serveur web avec démarrage anticipé de
+<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Implémente un serveur web avec démarrage anticipé de
 processus, sans thread</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_prefork_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>prefork.c</td></tr></table>
-<h3>Sommaire</h3>
+<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>mpm_prefork_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>prefork.c</td></tr></table>
+<h3 />
 
     <p>Ce module multi-processus (MPM) implémente un serveur web avec
     démarrage anticipé de processus. Chaque processus du serveur peut
@@ -56,10 +58,10 @@ processus, sans thread</td></tr>
     vous pensez recevoir, mais assez petite pour conserver suffisamment
     de mémoire RAM pour tous les processus.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
+<div id="quickview"><h3 />
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment ça marche</a></li>
-</ul><h3 class="directives">Directives</h3>
+</ul><h3 class="directives" />
 <ul id="toc">
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
@@ -79,14 +81,14 @@ processus, sans thread</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_prefork">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_prefork">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_prefork" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_prefork" /></li></ul><h3 />
 <ul class="seealso">
 <li><a href="../bind.html">Définition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment ça marche</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Comment ça marche</a> <a title="" href="#how-it-works" class="permalink">&para;</a></h2>
     <p>Un processus de contrôle unique a pour tâche de lancer les
     processus enfants qui attendent les connexions et les traitent au
     fur et à mesure qu'elles arrivent. Apache httpd essaie toujours de
@@ -131,15 +133,15 @@ qu'utilise le serveur HTTP Apache</a></li>
     performances</a></p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="maxspareservers" id="maxspareservers">Directive</a> <a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a></h2>
+<div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers" /> <a title="" href="#maxspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de processus serveurs enfants
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximum de processus serveurs enfants
 inactifs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareServers <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MaxSpareServers 10</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>prefork</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MaxSpareServers <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MaxSpareServers 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>prefork</td></tr>
 </table>
     <p>La directive <code class="directive">MaxSpareServers</code> permet de
     définir le nombre maximum souhaité de processus serveurs enfants
@@ -156,7 +158,7 @@ inactifs</td></tr>
     l'ajustera automatiquement à la valeur de <code class="directive">
     MinSpareServers</code><code> + 1</code>.</p>
 
-<h3>Voir aussi</h3>
+<h3 />
 <ul>
 <li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
@@ -164,15 +166,15 @@ inactifs</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="minspareservers" id="minspareservers">Directive</a> <a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a></h2>
+<div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers" /> <a title="" href="#minspareservers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de processus serveurs enfants
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre minimum de processus serveurs enfants
 inactifs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MinSpareServers <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MinSpareServers 5</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>prefork</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MinSpareServers <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MinSpareServers 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>prefork</td></tr>
 </table>
     <p>La directive <code class="directive">MinSpareServers</code> permet de
     définir le nombre minimum désiré de processus serveurs enfants
@@ -192,7 +194,7 @@ inactifs</td></tr>
     valeur très grande est dans la plupart des cas une mauvaise
     idée.</p>
 
-<h3>Voir aussi</h3>
+<h3 />
 <ul>
 <li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li>
 <li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
@@ -201,16 +203,37 @@ inactifs</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/prefork.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/prefork.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

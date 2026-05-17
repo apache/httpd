@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Exemples d'utilisations de VirtualHost - Serveur HTTP Apache Version 2.4</title>
+<title>Exemples d'utilisations de VirtualHost  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,18 +17,19 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Serveurs virtuels</a></div><div id="page-content"><div id="preamble"><h1>Exemples d'utilisations de VirtualHost</h1>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Serveurs virtuels</a></div><div id="page-content"><div id="preamble"><h1>Exemples d'utilisations de VirtualHost</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -39,7 +41,7 @@
     ou <a href="ip-based.html">par IP</a>.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Fonctionnement de plusieurs serveurs 
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Fonctionnement de plusieurs serveurs 
   virtuels par nom sur une seule adresse IP.</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#twoips">Serveurs virtuels par nom sur plus 
     d'une seule adresse IP.</a></li>
@@ -61,11 +63,11 @@
 	par nom en un serveur virtuel par IP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverpath">Utilisation de la directive 
     <code>ServerPath</code></a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="purename" id="purename">Fonctionnement de plusieurs serveurs 
-  virtuels par nom sur une seule adresse IP.</a></h2>
+  virtuels par nom sur une seule adresse IP.</a> <a title="" href="#purename" class="permalink">&para;</a></h2>
 
     <p>Votre serveur possède plusieurs noms d'hôte qui correspondent à une seule
     adresse IP, et vous souhaitez des réponses différentes si on demande
@@ -135,7 +137,7 @@ Listen 80
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="twoips" id="twoips">Serveurs virtuels par nom sur plus 
-    d'une seule adresse IP.</a></h2>
+    d'une seule adresse IP.</a> <a title="" href="#twoips" class="permalink">&para;</a></h2>
 
   	<div class="note">
           <h3>Note&nbsp;:</h3><p>Toutes les techniques présentées ici 
@@ -179,7 +181,7 @@ DocumentRoot "/www/mainserver"
 <div class="section">
 <h2><a name="intraextra" id="intraextra">Servir le même contenu sur des 
     adresses IP différentes (telle qu'une adresse interne et une 
-    externe).</a></h2>
+    externe).</a> <a title="" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>La machine serveur dispose de deux adresses IP 
     (<code>192.168.1.1</code> et <code>172.20.30.40</code>). Cette 
@@ -217,7 +219,7 @@ DocumentRoot "/www/mainserver"
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="port" id="port">Servir différents sites sur différents 
-    ports.</a></h2>
+    ports.</a> <a title="" href="#port" class="permalink">&para;</a></h2>
 
     <p>Vous disposez de plusieurs domaines pointant sur la même adresse 
     IP et vous voulez également servir de multiples ports. L'exemple
@@ -251,7 +253,7 @@ Listen 8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">Hébergement virtuel basé sur IP</a></h2>
+<h2><a name="ip" id="ip">Hébergement virtuel basé sur IP</a> <a title="" href="#ip" class="permalink">&para;</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
@@ -278,7 +280,7 @@ Listen 8080
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipport" id="ipport">Hébergements virtuels mixtes basés sur 
-    les ports et sur les IP</a></h2>
+    les ports et sur les IP</a> <a title="" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
@@ -315,7 +317,7 @@ Listen 172.20.30.50:8080
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mixed" id="mixed">Hébergements virtuels mixtes basé sur 
-    les noms et sur IP</a></h2>
+    les noms et sur IP</a> <a title="" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>Toute adresse indiquée comme argument d'une section VirtualHost
     et n'apparaissant dans aucun autre serveur virtuel, fait de cette
@@ -353,7 +355,7 @@ Listen 172.20.30.50:8080
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Utilisation simultanée de 
-    <code>Virtual_host</code> et de mod_proxy</a></h2>
+    <code>Virtual_host</code> et de mod_proxy</a> <a title="" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>L'exemple suivant montre comment une machine peut mandater 
     un serveur virtuel fonctionnant sur le serveur d'une autre machine. 
@@ -375,7 +377,7 @@ Listen 172.20.30.50:8080
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="default" id="default">Utilisation de serveurs virtuels 
-    <code>_default_</code></a></h2>
+    <code>_default_</code></a> <a title="" href="#default" class="permalink">&para;</a></h2>
 
     <h3><a name="defaultallports" id="defaultallports">Serveurs virtuels 
     <code>_default_</code> pour tous les ports</a></h3>
@@ -458,7 +460,7 @@ Listen 172.20.30.50:8080
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="migrate" id="migrate">Migration d'un serveur virtuel 
-	par nom en un serveur virtuel par IP</a></h2>
+	par nom en un serveur virtuel par IP</a> <a title="" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>Le serveur virtuel par nom avec le nom de domaine 
     <code>www.example.org</code> (de notre <a href="#name">exemple 
@@ -495,7 +497,7 @@ DocumentRoot "/www/example1"
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="serverpath" id="serverpath">Utilisation de la directive 
-    <code>ServerPath</code></a></h2>
+    <code>ServerPath</code></a> <a title="" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>Dans le cas où vous disposez de deux serveurs virtuels par nom, 
     le client doit transmettre un en-tête <code>Host:</code> correct 
@@ -554,16 +556,37 @@ DocumentRoot "/www/example1"
 
 	</div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

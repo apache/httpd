@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Glossaire - Serveur HTTP Apache Version 2.4</title>
+<title>Glossaire  </title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,23 +17,23 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Glossaire</h1>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div><div id="page-content"><div id="preamble"><h1>Glossaire</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/glossary.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate" />
 
     <p>Ce glossaire définit la terminologie courante relative au serveur HTTP
     Apache en particulier, et aux serveurs web en général. Vous trouverez plus
@@ -40,7 +41,7 @@
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">Définitions</a></h2>
+<h2><a name="definitions" id="definitions">Définitions</a> <a title="" href="#definitions" class="permalink">&para;</a></h2>
 <dl>
 <dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
 
@@ -99,10 +100,10 @@
     <dd>Un ensemble de données servant à authentifier des entités du
     réseau comme un serveur ou un client. Un certificat contient des ensembles
     d'informations X509 à propos de son propriétaire (appelé sujet/subject)
-    et de l'<a class="glossarylink" href="./glossary.html#certificationauthority" title="voir glossaire">Autorité de Certification
+    et de l'<a class="glossarylink" href="./glossary.html#certificationauthority" title="">Autorité de Certification
       (Certification Authority) ou CA</a> signataire (appelée
       le fournisseur/issuer), ainsi que la
-      <a class="glossarylink" href="./glossary.html#publickey" title="voir glossaire">clé publique (public
+      <a class="glossarylink" href="./glossary.html#publickey" title="">clé publique (public
       key)</a> du propriétaire et la
       signature de la CA. Les entités du réseau vérifient ces signatures
       en utilisant les certificats des Autorités de Certification.<br />
@@ -121,14 +122,14 @@
 
     <dt><a name="privatekey" id="privatekey">Clé Privée (Private Key)</a></dt>
     <dd>La clé secrète dans un système de
-    <a class="glossarylink" href="./glossary.html#publickeycryptography" title="voir glossaire">chiffrement à clé publique</a>,
+    <a class="glossarylink" href="./glossary.html#publickeycryptography" title="">chiffrement à clé publique</a>,
     utilisée pour déchiffrer les messages entrants et signer
     les messages sortants.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
 <dt><a name="publickey" id="publickey">Clé Publique (Public Key)</a></dt>
-    <dd>La clé accessible au public dans un système de <a class="glossarylink" href="./glossary.html#publickeycryptography" title="voir glossaire">Chiffrement à clé publique</a>,
+    <dd>La clé accessible au public dans un système de <a class="glossarylink" href="./glossary.html#publickeycryptography" title="">Chiffrement à clé publique</a>,
       utilisée pour chiffrer les messages destinés uniquement à son
       propriétaire et déchiffrer les signatures
       faites par son propriétaire.<br />
@@ -136,15 +137,15 @@
     </dd>
 
 <dt><a name="connect" id="connect">CONNECT</a></dt>
-    <dd>Une <a class="glossarylink" href="./glossary.html#method" title="voir glossaire">méthode</a> HTTP pour encapsuler
+    <dd>Une <a class="glossarylink" href="./glossary.html#method" title="">méthode</a> HTTP pour encapsuler
     des données brutes dans HTTP. Elle peut aussi être utilisée pour encapsuler
     d'autres protocoles, comme le protocole SSL.
     </dd>
 
     <dt><a name="context" id="context">Contexte (Context)</a></dt>
-    <dd>Une portion des <a class="glossarylink" href="./glossary.html#configurationfile" title="voir glossaire">
+    <dd>Une portion des <a class="glossarylink" href="./glossary.html#configurationfile" title="">
     fichiers de configuration</a> dans laquelle certains types de
-    <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">directives</a> sont autorisés.<br />
+    <a class="glossarylink" href="./glossary.html#directive" title="">directives</a> sont autorisés.<br />
       Voir : <a href="mod/directive-dict.html#Context">Termes utilisés
       pour décrire les directives de httpd</a>
     </dd>
@@ -204,9 +205,9 @@
     <dt><a name="certificatsigningrequest" id="certificatsigningrequest">Demande de signature de certificat
       (Certificate Signing Request)</a>
       <a name="csr" id="csr">(CSR)</a></dt>
-    <dd>La soumission d'un <a class="glossarylink" href="./glossary.html#certificate" title="voir glossaire">certificat</a>
-    non signé à une <a class="glossarylink" href="./glossary.html#certificationauthority" title="voir glossaire">Autorité de
-    certification</a>, qui le signe avec la <a class="glossarylink" href="./glossary.html#privatekey" title="voir glossaire">Clé privée</a> de leur
+    <dd>La soumission d'un <a class="glossarylink" href="./glossary.html#certificate" title="">certificat</a>
+    non signé à une <a class="glossarylink" href="./glossary.html#certificationauthority" title="">Autorité de
+    certification</a>, qui le signe avec la <a class="glossarylink" href="./glossary.html#privatekey" title="">Clé privée</a> de leur
       <em>Certificat</em> de CA. Une fois le CSR signé, il devient un vrai
       certificat.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
@@ -214,17 +215,17 @@
 
     <dt><a name="directive" id="directive">Directive</a></dt>
     <dd>Une commande de configuration qui contrôle un ou plusieurs aspects du
-    comportement de httpd.  Les directives sont placées dans le <a class="glossarylink" href="./glossary.html#configurationfile" title="voir glossaire">Fichier de configuration</a><br />
+    comportement de httpd.  Les directives sont placées dans le <a class="glossarylink" href="./glossary.html#configurationfile" title="">Fichier de configuration</a><br />
     Voir : <a href="mod/directives.html">Index des directives</a>
     </dd>
 
 <dt><a name="configurationdirective" id="configurationdirective">Directive de configuration
 	(Configuration Directive)</a></dt>
-    <dd>Voir : <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">Directive</a></dd>
+    <dd>Voir : <a class="glossarylink" href="./glossary.html#directive" title="">Directive</a></dd>
 
     <dt><a name="header" id="header">En-tête (Header)</a></dt>
     <dd>La partie de la requête et de la réponse
-    <a class="glossarylink" href="./glossary.html#http" title="voir glossaire">HTTP</a> qui est envoyée avant le contenu
+    <a class="glossarylink" href="./glossary.html#http" title="">HTTP</a> qui est envoyée avant le contenu
     proprement dit, et contient des méta-informations décrivant le contenu.
     </dd>
 
@@ -259,7 +260,7 @@
     Fichier de configuration
     (Configuration File)</a></dt>
     <dd>Un fichier texte contenant des
-    <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">Directives</a>
+    <a class="glossarylink" href="./glossary.html#directive" title="">Directives</a>
       qui contrôlent la configuration de httpd.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
@@ -272,7 +273,7 @@
       Par exemple, le filtre en sortie
       <code>INCLUDES</code>
       traite les documents pour les
-      <a class="glossarylink" href="./glossary.html#ssi" title="voir glossaire">Server Side Includes (Inclusions côté Serveur)
+      <a class="glossarylink" href="./glossary.html#ssi" title="">Server Side Includes (Inclusions côté Serveur)
       </a>.<br />
       Voir : <a href="filter.html">Filtres</a>
     </dd>
@@ -284,7 +285,7 @@
     fichiers sont directement servis par le serveur, mais certains
     types de fichiers sont "gérés" séparément.  Par exemple, le gestionnaire
       <code>cgi-script</code> désigne les fichiers qui doivent être traités
-      comme <a class="glossarylink" href="./glossary.html#cgi" title="voir glossaire">CGIs</a>.<br />
+      comme <a class="glossarylink" href="./glossary.html#cgi" title="">CGIs</a>.<br />
       Voir : <a href="handler.html">Utilisation des gestionnaires de httpd</a>
     </dd>
 
@@ -308,9 +309,9 @@
 
 
     <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
-    <dd>Un <a class="glossarylink" href="./glossary.html#configurationfile" title="voir glossaire">fichier de configuration</a>
+    <dd>Un <a class="glossarylink" href="./glossary.html#configurationfile" title="">fichier de configuration</a>
     placé à un certain niveau de l'arborescence du site web, et appliquant des
-    <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">directives</a> de configuration au
+    <a class="glossarylink" href="./glossary.html#directive" title="">directives</a> de configuration au
     répertoire dans lequel il est placé, ainsi qu'à tous ses sous-répertoires.
     En dépit de son nom, ce fichier peut contenir pratiquement tout type de
     directive, et pas seulement des directives de contrôle d'accès.<br />
@@ -318,7 +319,7 @@
     </dd>
 
 <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>Le <a class="glossarylink" href="./glossary.html#configurationfile" title="voir glossaire">fichier de configuration
+    <dd>Le <a class="glossarylink" href="./glossary.html#configurationfile" title="">fichier de configuration
     </a> principal de httpd.  Sa localisation par défaut est
       <code>/usr/local/apache2/conf/httpd.conf</code>, mais ceci peut être
       changé en utilisant des options de compilation ou d'exécution.<br />
@@ -329,7 +330,7 @@
     <dd>Le Protocole de Transfert Hypertexte (Sécurisé), le mécanisme de
     communication cryptée standard sur le World Wide Web.
     Il s'agit en fait de HTTP au dessus de
-    <a class="glossarylink" href="./glossary.html#ssl" title="voir glossaire">SSL</a>.<br />
+    <a class="glossarylink" href="./glossary.html#ssl" title="">SSL</a>.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
@@ -338,7 +339,7 @@
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une chaîne de caractères compacte servant à identifier une ressource
   abstraite ou physique.  Elle est formellement définie par la <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
-      utilisées sur le world-wide web sont souvent appelées <a class="glossarylink" href="./glossary.html#url" title="voir glossaire">URLs</a>.
+      utilisées sur le world-wide web sont souvent appelées <a class="glossarylink" href="./glossary.html#url" title="">URLs</a>.
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
@@ -382,7 +383,7 @@ Localisation de Ressource Uniformisée
 (Uniform Resource Locator)
       </a> <a name="url" id="url">(URL)</a></dt>
   <dd>Le nom/adresse d'une ressource sur l'Internet.  Il s'agit du terme
-  informel commun pour ce qui est formellement défini comme <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="voir glossaire">
+  informel commun pour ce qui est formellement défini comme <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="">
       Identificateur de Ressource Uniformisé</a>.
     Les URLs sont généralement construites selon un schéma, comme
     <code>http</code> ou
@@ -405,14 +406,14 @@ Localisation de Ressource Uniformisée
 
     <dt><a name="reverseproxy" id="reverseproxy">Mandataire inverse
     (Reverse Proxy)</a></dt>
-  <dd>Un serveur <a class="glossarylink" href="./glossary.html#proxy" title="voir glossaire">mandataire</a> qui est vu du client
+  <dd>Un serveur <a class="glossarylink" href="./glossary.html#proxy" title="">mandataire</a> qui est vu du client
     comme un <em>serveur d'origine</em>.  Ceci peut s'avérer utile pour
     dissimuler le serveur d'origine réel au client pour des raisons de sécurité,
     ou pour répartir la charge.
   </dd>
 
     <dt><a name="method" id="method">Méthode (Method)</a></dt>
-    <dd>Dans le contexte <a class="glossarylink" href="./glossary.html#http" title="voir glossaire">HTTP</a>, une action à
+    <dd>Dans le contexte <a class="glossarylink" href="./glossary.html#http" title="">HTTP</a>, une action à
       effectuer sur une ressource spécifiée dans la ligne de requête
       par le client.  Parmi les méthodes disponibles dans HTTP, on trouve
       <code>GET</code>, <code>POST</code>,
@@ -426,10 +427,10 @@ Localisation de Ressource Uniformisée
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> sont appelés <dfn>modules statiques</dfn>, alors
     que les modules qui existent séparément et peuvent être chargés
     optionnellement à l'exécution sont appelés
-      <dfn>modules dynamiques</dfn> ou <a class="glossarylink" href="./glossary.html#dso" title="voir glossaire">DSOs</a>.
+      <dfn>modules dynamiques</dfn> ou <a class="glossarylink" href="./glossary.html#dso" title="">DSOs</a>.
       Les modules qui sont inclus par défaut sont appelés
       <dfn>modules de base</dfn>. De nombreux modules disponibles pour httpd
-      ne se trouvent pas dans l'<a class="glossarylink" href="./glossary.html#tarball" title="voir glossaire">archive</a>
+      ne se trouvent pas dans l'<a class="glossarylink" href="./glossary.html#tarball" title="">archive</a>
       du Serveur HTTP Apache .  Il sont appelés
       <dfn>modules tiers</dfn>.<br />
       Voir : <a href="mod/">Index des modules</a>
@@ -439,7 +440,7 @@ Localisation de Ressource Uniformisée
     <dd>Le mot ou la phrase qui protège les fichiers de clés privées.
     Il empêche les utilisateurs non autorisés de les déchiffrer. En général,
     il s'agit simplement de la clé secrète de chiffrement/déchiffrement
-      utilisée pour les <a class="glossarylink" href="./glossary.html#cipher" title="voir glossaire">Algorithmes de chiffrement</a>.<br />
+      utilisée pour les <a class="glossarylink" href="./glossary.html#cipher" title="">Algorithmes de chiffrement</a>.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
@@ -470,7 +471,7 @@ Localisation de Ressource Uniformisée
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">
     Objet Dynamique Partagé (Dynamic Shared Object)
 	</a> <a name="dso" id="dso">(DSO)</a></dt>
-    <dd><a class="glossarylink" href="./glossary.html#module" title="voir glossaire">Modules</a> compilés en dehors du binaire
+    <dd><a class="glossarylink" href="./glossary.html#module" title="">Modules</a> compilés en dehors du binaire
       Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code> et qui peuvent être
       chargés à la demande.<br />
       Voir : <a href="dso.html">Support des objets dynamiques partagés</a>
@@ -485,9 +486,9 @@ Localisation de Ressource Uniformisée
     Outil de gestion des extensions Apache
     (APache eXtension Tool)</a>
     <a name="apxs" id="apxs">(apxs)</a></dt>
-    <dd>Un script Perl qui aide à la compilation des sources de <a class="glossarylink" href="./glossary.html#module" title="voir glossaire">module</a> sous forme d'Objets Dynamiques Partagés
+    <dd>Un script Perl qui aide à la compilation des sources de <a class="glossarylink" href="./glossary.html#module" title="">module</a> sous forme d'Objets Dynamiques Partagés
       (Dynamic Shared Objects ou
-      <a class="glossarylink" href="./glossary.html#dso" title="voir glossaire">DSO</a>s) et facilite leur installation
+      <a class="glossarylink" href="./glossary.html#dso" title="">DSO</a>s) et facilite leur installation
       dans le serveur Web httpd.<br />
       Voir : Page de manuel : <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
@@ -530,7 +531,7 @@ Localisation de Ressource Uniformisée
     <dt><a name="digitalsignature" id="digitalsignature">Signature numérique
     (Digital Signature)</a></dt>
     <dd>Un bloc de texte crypté qui valide un certificat ou un autre fichier.
-    Une <a class="glossarylink" href="./glossary.html#certificationauthority" title="voir glossaire">Autorité de certification</a>
+    Une <a class="glossarylink" href="./glossary.html#certificationauthority" title="">Autorité de certification</a>
       crée une signature en générant une empreinte de la <em>Clé publique</em>
       fournie avec le <em>Certificat</em>; la CA chiffre ensuite l'empreinte
       avec sa propre <em>Clé privée</em>. Seule la clé publique de la CA
@@ -548,8 +549,8 @@ Localisation de Ressource Uniformisée
 <dt><a name="ciphertext" id="ciphertext">Texte crypté
 (Ciphertext)</a></dt>
     <dd>Le résultat du passage d'un document
-    <a class="glossarylink" href="./glossary.html#plaintext" title="voir glossaire">Plaintext</a> (Plein texte) par un
-    <a class="glossarylink" href="./glossary.html#cipher" title="voir glossaire">Cipher</a>.<br />
+    <a class="glossarylink" href="./glossary.html#plaintext" title="">Plaintext</a> (Plein texte) par un
+    <a class="glossarylink" href="./glossary.html#cipher" title="">Cipher</a>.<br />
     Voir : <a href="ssl/">chiffrement SSL/TLS</a>
     </dd>
 
@@ -562,7 +563,7 @@ Localisation de Ressource Uniformisée
       entre autres types <code>text/html</code>,
       <code>image/gif</code>, et <code>application/octet-stream</code>. Dans
       HTTP, le type MIME est transmis dans l'
-      <a class="glossarylink" href="./glossary.html#header" title="voir glossaire">en-tête</a> <code>Content-Type</code>.<br />
+      <a class="glossarylink" href="./glossary.html#header" title="">en-tête</a> <code>Content-Type</code>.<br />
       Voir : <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
@@ -587,18 +588,39 @@ Localisation de Ressource Uniformisée
 </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/glossary.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

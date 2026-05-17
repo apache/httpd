@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_proxy_balancer - Serveur HTTP Apache Version 2.4</title>
+<title>mod_proxy_balancer  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,28 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
 <div id="page-content">
-<div id="preamble"><h1>Module Apache mod_proxy_balancer</h1>
+<div id="preamble"><h1> mod_proxy_balancer</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_balancer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_balancer.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="../en/mod/mod_proxy_balancer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_balancer.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
+<div class="outofdate" />
+<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la répartition de charge</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_balancer_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_balancer.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1 d'Apache</td></tr></table>
-<h3>Sommaire</h3>
+<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>proxy_balancer_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_proxy_balancer.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.1 d'Apache</td></tr></table>
+<h3 />
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
     chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et il fournit le support de
@@ -72,7 +73,7 @@ la répartition de charge</td></tr>
       votre réseau, mais aussi pour l'Internet au sens large.</p>
     </div>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
+<div id="quickview"><h3 />
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">L'algorithme de planification de la répartition de
     charge</a></li>
@@ -85,9 +86,9 @@ la répartition de charge</td></tr>
     (stickyness)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#stickyness_troubleshooting">Résolution des problèmes liés à la répartition de charge par
     abonnement</a></li>
-</ul><h3 class="directives">Directives</h3>
-<p>Ce module ne fournit aucune directive.</p>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_balancer">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_balancer">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+</ul><h3 class="directives" />
+<p />
+<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_balancer" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_balancer" /></li></ul><h3 />
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li>
@@ -98,7 +99,7 @@ la répartition de charge</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="scheduler" id="scheduler">L'algorithme de planification de la répartition de
-    charge</a></h2>
+    charge</a> <a title="" href="#scheduler" class="permalink">&para;</a></h2>
     
     <p>A l'heure actuelle, 4 algorithmes de planification de la répartition de
     charge sont disponibles : ils se basent respectivement sur le comptage des
@@ -112,7 +113,7 @@ la répartition de charge</td></tr>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="stickyness" id="stickyness">Répartition de charge avec abonnement utilisateur
-    (stickyness)</a></h2>
+    (stickyness)</a> <a title="" href="#stickyness" class="permalink">&para;</a></h2>
     
     <p>Le répartiteur supporte l'abonnement utilisateur. Lorsqu'une
     requête est mandatée vers un serveur d'arrière-plan particulier,
@@ -135,7 +136,7 @@ la répartition de charge</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Exemples de configuration d'un répartiteur</a></h2>
+<h2><a name="example" id="example">Exemples de configuration d'un répartiteur</a> <a title="" href="#example" class="permalink">&para;</a></h2>
     
     <p>Avant de nous plonger dans les détails techniques, voici un
     exemple d'utilisation de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> mettant
@@ -170,7 +171,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="environment" id="environment">Variables d'environnement exportées</a></h2>
+<h2><a name="environment" id="environment">Variables d'environnement exportées</a> <a title="" href="#environment" class="permalink">&para;</a></h2>
     
     <p>A l'heure actuelle, 6 variables d'environnement sont exportées :</p>
 
@@ -230,7 +231,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="balancer_manager" id="balancer_manager">Activation du support du gestionnaire de répartiteur</a></h2>
+<h2><a name="balancer_manager" id="balancer_manager">Activation du support du gestionnaire de répartiteur</a> <a title="" href="#balancer_manager" class="permalink">&para;</a></h2>
     
     <p>Cette fonctionnalité <em>nécessite</em> le chargement du module
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>. Le gestionnaire de répartiteur permet
@@ -262,7 +263,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="stickyness_implementation" id="stickyness_implementation">Détails à propos de la répartition de charge par abonnement
-    (stickyness)</a></h2>
+    (stickyness)</a> <a title="" href="#stickyness_implementation" class="permalink">&para;</a></h2>
     
     <p>Si l'abonnement s'appuie sur un cookie, vous devez définir le nom
     de ce cookie dont le contenu précise le serveur d'arrière-plan à
@@ -329,7 +330,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="stickyness_troubleshooting" id="stickyness_troubleshooting">Résolution des problèmes liés à la répartition de charge par
-    abonnement</a></h2>
+    abonnement</a> <a title="" href="#stickyness_troubleshooting" class="permalink">&para;</a></h2>
     
     <p>Si vous êtes confronté à des erreurs d'abonnement, comme la
     nécessité pour les utilisateurs de se reconnecter suite à une perte
@@ -380,14 +381,35 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_balancer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_balancer.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="../en/mod/mod_proxy_balancer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_balancer.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_privileges - Serveur HTTP Apache Version 2.4</title>
+<title>mod_privileges  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,27 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
 <div id="page-content">
-<div id="preamble"><h1>Module Apache mod_privileges</h1>
+<div id="preamble"><h1> mod_privileges</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_privileges.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_privileges.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/mod_privileges.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_privileges.html" title="">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des privilèges de Solaris et de l'exécution des
+<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Support des privilèges de Solaris et de l'exécution des
 serveurs virtuels sous différents identifiants
 utilisateurs.</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>privileges_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_privileges.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache sur les
+<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>privileges_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_privileges.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3 d'Apache sur les
 plates-formes Solaris 10 et OpenSolaris</td></tr></table>
-<h3>Sommaire</h3>
+<h3 />
 
 <p>Ce module permet l'exécution de différents serveurs virtuels sous différents
 identifiants Unix <var>User</var> et <var>Group</var>, et avec différents <a href="https://docs.oracle.com/cd/E19253-01/816-4863/6mb20lvfd/index.html">Privilèges
@@ -67,10 +69,10 @@ applications en langage C telles que les modules Apache pour lesquels la
 séparation des privilèges constitue un problème.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
+<div id="quickview"><h3 />
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations à propos de sécurité</a></li>
-</ul><h3 class="directives">Directives</h3>
+</ul><h3 class="directives" />
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dtraceprivileges">DTracePrivileges</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#privilegesmode">PrivilegesMode</a></li>
@@ -81,12 +83,10 @@ séparation des privilèges constitue un problème.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhostsecure">VHostSecure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhostuser">VHostUser</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_privileges">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_privileges">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
-<ul class="seealso">
-</ul></div>
+<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_privileges" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_privileges" /></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Considérations à propos de sécurité</a></h2>
+<h2><a name="security" id="security">Considérations à propos de sécurité</a> <a title="" href="#security" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduit de nouveaux problèmes de
 sécurité dans les situations où du <strong>code non sûr</strong> peut
@@ -158,16 +158,16 @@ début du cycle de traitement de la requête.</em></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="dtraceprivileges" id="dtraceprivileges">Directive</a> <a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a></h2>
+<div class="directive-section"><h2><a name="DTracePrivileges" id="DTracePrivileges">DTracePrivileges</a> <a name="dtraceprivileges" id="dtraceprivileges" /> <a title="" href="#dtraceprivileges" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les privilèges requis par dtrace sont
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si les privilèges requis par dtrace sont
 activés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DTracePrivileges Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>&gt;Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DTracePrivileges On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>DTracePrivileges Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>&gt;Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé).</td></tr>
 </table>
@@ -179,17 +179,17 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="privilegesmode" id="privilegesmode">Directive</a> <a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a></h2>
+<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode" /> <a title="" href="#privilegesmode" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait un compromis entre d'une part l'efficacité et la
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fait un compromis entre d'une part l'efficacité et la
 vitesse de traitement et d'autre part la sécurité à l'encontre des codes
 malicieux supportant les privilèges.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>PrivilegesMode FAST</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec des
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>PrivilegesMode FAST</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec des
 modules MPMs non threadés (comme <code class="module"><a href="../mod/prefork.html">prefork</a></code> ou un module
 personnalisé).</td></tr>
 </table><p>Cette directive permet de faire un compromis entre les
@@ -225,17 +225,17 @@ n'aurait pas de sens).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostcgimode" id="vhostcgimode">Directive</a> <a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a></h2>
+<div class="directive-section"><h2><a name="VHostCGIMode" id="VHostCGIMode">VHostCGIMode</a> <a name="vhostcgimode" id="vhostcgimode" /> <a title="" href="#vhostcgimode" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur virtuel peut exécuter des
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si le serveur virtuel peut exécuter des
 sous-processus, et définit les privilèges disponibles pour ces
 dernier.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostCGIMode On|Off|Secure</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VHostCGIMode On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostCGIMode On|Off|Secure</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>VHostCGIMode On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé).</td></tr>
 </table>
@@ -261,16 +261,16 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostcgiprivs" id="vhostcgiprivs">Directive</a> <a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a></h2>
+<div class="directive-section"><h2><a name="VHostCGIPrivs" id="VHostCGIPrivs">VHostCGIPrivs</a> <a name="vhostcgiprivs" id="vhostcgiprivs" /> <a title="" href="#vhostcgiprivs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assigne des privilèges au choix aux sous-processus créés
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Assigne des privilèges au choix aux sous-processus créés
 par un serveur virtuel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucun</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostCGIPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Aucun</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé) et lorsque <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> est construit
 avec l'option de compilation
@@ -298,17 +298,17 @@ avec l'option de compilation
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostgroup" id="vhostgroup">Directive</a> <a name="VHostGroup" id="VHostGroup">VHostGroup</a></h2>
+<div class="directive-section"><h2><a name="VHostGroup" id="VHostGroup">VHostGroup</a> <a name="vhostgroup" id="vhostgroup" /> <a title="" href="#vhostgroup" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'identifiant du groupe sous lequel s'exécute un
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'identifiant du groupe sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostGroup <var>identifiant-groupe-unix</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Hérite de l'identifiant du groupe spécifié par la directive
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostGroup <var>identifiant-groupe-unix</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Hérite de l'identifiant du groupe spécifié par la directive
 <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé).</td></tr>
 </table>
@@ -335,22 +335,22 @@ personnalisé).</td></tr>
     problèmes de sécurité similaires à ceux décrits dans la
     documentation de <a href="../suexec.html">suexec</a>.</p></div>
 
-<h3>Voir aussi</h3>
+<h3 />
 <ul>
 <li><code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code></li>
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostprivs" id="vhostprivs">Directive</a> <a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a></h2>
+<div class="directive-section"><h2><a name="VHostPrivs" id="VHostPrivs">VHostPrivs</a> <a name="vhostprivs" id="vhostprivs" /> <a title="" href="#vhostprivs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Assigne des privilèges à un serveur virtuel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucun</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Assigne des privilèges à un serveur virtuel.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostPrivs [+-]?<var>nom-privilège</var> [[+-]?nom-privilège] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Aucun</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé) et lorsque <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> est construit
 avec l'option de compilation
@@ -376,16 +376,16 @@ avec l'option de compilation
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostsecure" id="vhostsecure">Directive</a> <a name="VHostSecure" id="VHostSecure">VHostSecure</a></h2>
+<div class="directive-section"><h2><a name="VHostSecure" id="VHostSecure">VHostSecure</a> <a name="vhostsecure" id="vhostsecure" /> <a title="" href="#vhostsecure" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si le serveur s'exécute avec une sécurité avancée
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si le serveur s'exécute avec une sécurité avancée
 pour les serveurs virtuels.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostSecure On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>VHostSecure On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostSecure On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>VHostSecure On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé).</td></tr>
 </table>
@@ -405,17 +405,17 @@ personnalisé).</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="vhostuser" id="vhostuser">Directive</a> <a name="VHostUser" id="VHostUser">VHostUser</a></h2>
+<div class="directive-section"><h2><a name="VHostUser" id="VHostUser">VHostUser</a> <a name="vhostuser" id="vhostuser" /> <a title="" href="#vhostuser" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'identifiant utilisateur sous lequel s'exécute un
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'identifiant utilisateur sous lequel s'exécute un
 serveur virtuel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>VHostUser <var>identifiant-utilisateur-unix</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Hérite de l'identifiant utilisateur spécifié par la directive
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>VHostUser <var>identifiant-utilisateur-unix</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Hérite de l'identifiant utilisateur spécifié par la directive
 <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible sous Solaris 10 et OpenSolaris avec les
 modules MPM non-threadés (<code class="module"><a href="../mod/prefork.html">prefork</a></code> ou MPM
 personnalisé).</td></tr>
 </table>
@@ -442,7 +442,7 @@ personnalisé).</td></tr>
     problèmes de sécurité similaires à ceux décrits dans la
     documentation de <a href="../suexec.html">suexec</a>.</p></div>
 
-<h3>Voir aussi</h3>
+<h3 />
 <ul>
 <li><code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code></li>
 <li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
@@ -450,13 +450,34 @@ personnalisé).</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_privileges.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_privileges.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/mod_privileges.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_privileges.html" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

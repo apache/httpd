@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Terim Sözlüğü - Apache HTTP Sunucusu Sürüm 2.4</title>
+<title>Terim Sözlüğü  </title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,22 +17,23 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Terim Sözlüğü</h1>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div><div id="page-content"><div id="preamble"><h1>Terim Sözlüğü</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Mevcut Diller: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" title="">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate" />
 
     <p>Bu sözlük, genelinde HTML sayfa sunumuna, özelinde Apache HTTP Sunucusuna
       özgü ortak terminolojinin bir kısmını içerir. Her kavram ile ilgili daha
@@ -39,7 +41,7 @@
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="definitions" id="definitions">Tanımlar</a></h2>
+<h2><a name="definitions" id="definitions">Tanımlar</a> <a title="" href="#definitions" class="permalink">&para;</a></h2>
 
   <dl>
     <dt><a name="algorithm" id="algorithm">Algoritma</a></dt>
@@ -69,7 +71,7 @@
 
     <dt><a name="passphrase" id="passphrase">Anahtar Parolası</a></dt>
     <dd>Özel anahtar dosyalarını yetkisiz kişilerden koruyan sözcük veya
-      cümle. Genellikle sadece <a class="glossarylink" href="./glossary.html#cipher" title="sözlüğe bakınız">şifreler</a>
+      cümle. Genellikle sadece <a class="glossarylink" href="./glossary.html#cipher" title="">şifreler</a>
       için kullanılan gizli şifreleme/şifre çözme anahtarını korur.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
@@ -77,8 +79,8 @@
     <dt><a name="apacheextensiontool" id="apacheextensiontool">Apache Eklenti
       Aracı</a> <a name="apxs" id="apxs">(apxs)</a></dt>
     <dd>İngilizcesi: APache eXtension Tool - apxs</dd>
-    <dd><a class="glossarylink" href="./glossary.html#module" title="sözlüğe bakınız">Modül</a> kaynak kodlarının devinen
-      paylaşımlı nesneler (<a class="glossarylink" href="./glossary.html#dso" title="sözlüğe bakınız">DSO</a>) halinde
+    <dd><a class="glossarylink" href="./glossary.html#module" title="">Modül</a> kaynak kodlarının devinen
+      paylaşımlı nesneler (<a class="glossarylink" href="./glossary.html#dso" title="">DSO</a>) halinde
       derlenmesine ve Apache Sunucusu içinde kurulmasına yardım eden bir Perl
       betiği.<br />Daha ayrıntılı bilgi için <code class="program"><a href="./programs/apxs.html">apxs</a></code> kılavuz
       sayfasına bakınız.
@@ -94,8 +96,8 @@
     </dd>
 
     <dt><a name="context" id="context">Bağlam</a></dt>
-    <dd><a class="glossarylink" href="./glossary.html#configurationfile" title="sözlüğe bakınız">Yapılandırma dosyaları</a>nda
-      sadece belli türdeki <a class="glossarylink" href="./glossary.html#directive" title="sözlüğe bakınız">yönerge</a>lerin
+    <dd><a class="glossarylink" href="./glossary.html#configurationfile" title="">Yapılandırma dosyaları</a>nda
+      sadece belli türdeki <a class="glossarylink" href="./glossary.html#directive" title="">yönerge</a>lerin
       bulunmasına izin verilen bir bölge.<br />
       Bakınız: <a href="mod/directive-dict.html#Context">Apache Yönergelerini
       Açıklamak için Kullanılan Terimler</a>
@@ -108,20 +110,20 @@
     </dd>
 
     <dt><a name="header" id="header">Başlık</a></dt>
-    <dd>Bir <a class="glossarylink" href="./glossary.html#http" title="sözlüğe bakınız">HTTP</a> isteğinin parçası olarak,
+    <dd>Bir <a class="glossarylink" href="./glossary.html#http" title="">HTTP</a> isteğinin parçası olarak,
       gönderilen yanıtta asıl içerikten önce yer alan ve içerik hakkında
       mecazlar içeren veri.
     </dd>
 
     <dt><a name="connect" id="connect">CONNECT</a></dt>
-    <dd>Ham veri kanallarını HTTP üzerinden yönlendirmek için kullanılan bir HTTP <a class="glossarylink" href="./glossary.html#method" title="sözlüğe bakınız">yöntemi</a>. SSL protokolü gibi diğer protokolleri sarmalamakta kullanılabilir.
+    <dd>Ham veri kanallarını HTTP üzerinden yönlendirmek için kullanılan bir HTTP <a class="glossarylink" href="./glossary.html#method" title="">yöntemi</a>. SSL protokolü gibi diğer protokolleri sarmalamakta kullanılabilir.
     </dd>
 
     <dt><a name="dynamicsharedobject" id="dynamicsharedobject">Devingen
       Paylaşımlı Nesne</a> <a name="dso" id="dso">(DSO)</a></dt>
     <dd>İngilizcesi: Dynamic Shared Object (DSO)</dd>
     <dd>İstek halinde yüklenebilen, Apache <code class="program"><a href="./programs/httpd.html">httpd</a></code>
-      çalıştırılabilir dosyasından ayrı olarak derlenmiş <a class="glossarylink" href="./glossary.html#module" title="sözlüğe bakınız">modül</a>lerin ortak adı.<br />
+      çalıştırılabilir dosyasından ayrı olarak derlenmiş <a class="glossarylink" href="./glossary.html#module" title="">modül</a>lerin ortak adı.<br />
       Bakınız: <a href="dso.html">Devingen Paylaşımlı Nesne Desteği</a>
     </dd>
 
@@ -163,13 +165,13 @@
       sahiptir. Normalde tüm dosyalar sunucu tarafından sıradan birer dosya
       olarak işleme sokulduğu halde bazı belli dosyalar diğerlerinden ayrı
       ele alınır. Örneğin, <code>cgi-script</code> eylemcisi dosyaları
-      <a class="glossarylink" href="./glossary.html#cgi" title="sözlüğe bakınız">CGI</a>’ler tarafından işlenebilir hale
+      <a class="glossarylink" href="./glossary.html#cgi" title="">CGI</a>’ler tarafından işlenebilir hale
       getirmek üzere işleme sokar.<br />
       Bakınız: <a href="handler.html">Apache Eylemcilerinin Kullanımı</a>
     </dd>
 
     <dt><a name="publickey" id="publickey">Genel Anahtar</a></dt>
-    <dd><a class="glossarylink" href="./glossary.html#publickeycryptography" title="sözlüğe bakınız">Genel Anahtarlı
+    <dd><a class="glossarylink" href="./glossary.html#publickeycryptography" title="">Genel Anahtarlı
       Şifreleme Tekniği</a>nde, sahibinin yaptığı imzaları çözmeye ve
       sahibine gönderilen iletileri şifrelemeye yarayan genel erişime açık
       anahtar.<br />
@@ -185,7 +187,7 @@
     </dd>
 
     <dt><a name="privatekey" id="privatekey">Gizli Anahtar</a></dt>
-    <dd><a class="glossarylink" href="./glossary.html#publickeycryptography" title="sözlüğe bakınız">Genel Anahtarlı
+    <dd><a class="glossarylink" href="./glossary.html#publickeycryptography" title="">Genel Anahtarlı
       Şifreleme Tekniği</a>nde, giden iletileri imzalamak ve gelen
       iletilerin şifrelerini çözmek amacıyla kullanılan gizli anahtar.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
@@ -195,7 +197,7 @@
       (HTTPS)</a></dt>
     <dd>İngilizcesi: The HyperText Transfer Protocol (Secure), (HTTPS)</dd>
     <dd>Güvenli Hiper Metin Aktarım Protokolü, Genel Ağ’da kullanılan standart
-      şifreli iletişim mekanizmasıdır. Aslında HTTP protokolünün <a class="glossarylink" href="./glossary.html#ssl" title="sözlüğe bakınız">SSL</a> üzerinden gerçekleştirilmesinden başka bir
+      şifreli iletişim mekanizmasıdır. Aslında HTTP protokolünün <a class="glossarylink" href="./glossary.html#ssl" title="">SSL</a> üzerinden gerçekleştirilmesinden başka bir
       şey değildir.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
@@ -218,7 +220,7 @@
     </dd>
 
     <dt><a name="htaccess" id="htaccess">.htaccess</a></dt>
-    <dd>Belge dosyaları ağacı içine yerleştirilen bir <a class="glossarylink" href="./glossary.html#configurationfile" title="sözlüğe bakınız">yapılandırma dosyası</a> olup yerleştiği
+    <dd>Belge dosyaları ağacı içine yerleştirilen bir <a class="glossarylink" href="./glossary.html#configurationfile" title="">yapılandırma dosyası</a> olup yerleştiği
       dizine ve o dizinin alt dizinlerine yapılandırma yönergeleri
       uygulanmasını sağlar. İsmine rağmen böyle bir dosyanın içerebileceği
       yönergeler erişim denetleme yönergeleri ile sınırlı değildir; hemen
@@ -227,7 +229,7 @@
     </dd>
 
     <dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
-    <dd>Ana Apache <a class="glossarylink" href="./glossary.html#configurationfile" title="sözlüğe bakınız">yapılandırma
+    <dd>Ana Apache <a class="glossarylink" href="./glossary.html#configurationfile" title="">yapılandırma
       dosyası</a>.  Dosya sistemindeki öntanımlı yeri
       <code>/usr/local/apache2/conf/httpd.conf</code> olup derleme
       sırasındaki yapılandırmayla veya çalışma anındaki yapılandırmayla
@@ -248,13 +250,13 @@
     <dt><a name="messagedigest" id="messagedigest">İleti Özeti</a></dt>
     <dd>İngilizcesi: Message Digest</dd>
     <dd>Aktarım sırasında içeriğinin değişme olasılığı bulunan bir iletinin
-      içeriğini doğrulamak için kullanılan bir <a class="glossarylink" href="./glossary.html#hash" title="sözlüğe bakınız">özet</a>.<br />
+      içeriğini doğrulamak için kullanılan bir <a class="glossarylink" href="./glossary.html#hash" title="">özet</a>.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
 
     <dt><a name="reverseproxy" id="reverseproxy">Karşı Vekil</a></dt>
     <dd>İstemciye kendini <em>asıl sunucu</em> imiş gibi gösteren bir
-      <a class="glossarylink" href="./glossary.html#proxy" title="sözlüğe bakınız">vekil</a> sunucu. Güvenlik, yük dengelemesi
+      <a class="glossarylink" href="./glossary.html#proxy" title="">vekil</a> sunucu. Güvenlik, yük dengelemesi
       gibi sebeplerle asıl sunucuyu istemcilerden gizlemek için yararlıdır.
     </dd>
 
@@ -272,7 +274,7 @@
       alt belge türünün birleşiminden oluşur. <code>text/html</code>,
       <code>image/gif</code> ve <code>application/octet-stream</code> örnek
       olarak verilebilir. HTTP protokolünde MIME türleri
-      <code>Content-Type</code> <a class="glossarylink" href="./glossary.html#header" title="sözlüğe bakınız">başlığında</a>
+      <code>Content-Type</code> <a class="glossarylink" href="./glossary.html#header" title="">başlığında</a>
       aktarılır.<br />Bakınız: <a href="mod/mod_mime.html">mod_mime</a>
     </dd>
 
@@ -283,10 +285,10 @@
       çalıştırılabiliri içinde derlenmiş modüllere <dfn>durağan modüller</dfn>
       adı verilirken ayrı bir yerde saklanan ve çalışma anında isteğe bağlı
       olarak yüklenebilen modüllere <dfn>devingen modüller</dfn> veya
-      <a class="glossarylink" href="./glossary.html#dso" title="sözlüğe bakınız">DSO</a>’lar denir. Yapılandırmaya öntanımlı
+      <a class="glossarylink" href="./glossary.html#dso" title="">DSO</a>’lar denir. Yapılandırmaya öntanımlı
       olarak dahil edilen modüllere <dfn>temel modüller</dfn> denir. Apache
       için kullanılabilecek modüllerin çoğu Apache HTTP Sunucusunun
-      <a class="glossarylink" href="./glossary.html#tarball" title="sözlüğe bakınız">tar paketi</a> içinde dağıtılmaz; bunlara
+      <a class="glossarylink" href="./glossary.html#tarball" title="">tar paketi</a> içinde dağıtılmaz; bunlara
       <dfn>üçüncü parti modüller</dfn> denir.<br />
       Bakınız: <a href="mod/">Modül Dizini</a>
     </dd>
@@ -336,7 +338,7 @@
 
     <dt><a name="digitalsignature" id="digitalsignature">Sayısal İmza</a></dt>
     <dd>Bir sertifikayı veya bir dosyayı doğrulamakta kullanılan şifreli bir
-      metin. Bir imza <a class="glossarylink" href="./glossary.html#certificationauthority" title="sözlüğe bakınız">Sertifika
+      metin. Bir imza <a class="glossarylink" href="./glossary.html#certificationauthority" title="">Sertifika
       Makamı</a> tarafından bir <em>sertifikaya</em> gömülü olan
       <em>genel anahtardan</em> bir özet üretilerek oluşturulur. İmza şifresi
       sadece <em>sertifika</em> sahibi ağ öğesinin kimliğini doğrulayacak
@@ -347,8 +349,8 @@
     <dt><a name="certificate" id="certificate">Sertifika</a></dt>
     <dd>Sunucu, istemci gibi ağ öğelerinin kimliğini kanıtlamakta kullanılan
       bir veri kaydı. Bir sertifika, sertifika sahibi (buna sertifikanın
-      konusu da denir), sertifikayı imzalayan <a class="glossarylink" href="./glossary.html#certificationauthority" title="sözlüğe bakınız">Sertifika Makamı</a> (SM) (buna
-      sertifika yayıncısı da denir), sertifika sahibinin <a class="glossarylink" href="./glossary.html#publickey" title="sözlüğe bakınız">genel anahtarı</a> ve SM tarafından üretilen imza
+      konusu da denir), sertifikayı imzalayan <a class="glossarylink" href="./glossary.html#certificationauthority" title="">Sertifika Makamı</a> (SM) (buna
+      sertifika yayıncısı da denir), sertifika sahibinin <a class="glossarylink" href="./glossary.html#publickey" title="">genel anahtarı</a> ve SM tarafından üretilen imza
       gibi parçalardan oluşan X.509 bilgisi içerir. Ağ öğeleri bu imzaları SM
       sertifikalarını kullanarak doğrular.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
@@ -356,8 +358,8 @@
 
     <dt><a name="certificatsigningrequest" id="certificatsigningrequest">Sertifika İmzalama İsteği</a> <a name="csr" id="csr">(Sİİ)</a></dt>
     <dd>İngilizcesi: Certificate Signing Request (CSR)</dd>
-    <dd>İmzasız bir sertifikayı  <a class="glossarylink" href="./glossary.html#certificationauthority" title="sözlüğe bakınız">Sertifika Makamı</a>na kendi SM <em>Sertifika</em>sının
-      <a class="glossarylink" href="./glossary.html#privatekey" title="sözlüğe bakınız">özel anahtar</a>ı ile imzalaması
+    <dd>İmzasız bir sertifikayı  <a class="glossarylink" href="./glossary.html#certificationauthority" title="">Sertifika Makamı</a>na kendi SM <em>Sertifika</em>sının
+      <a class="glossarylink" href="./glossary.html#privatekey" title="">özel anahtar</a>ı ile imzalaması
       için yapılan istek. Sİİ imzalanınca bir gerçek sertifika haline
       gelir.<br />Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
@@ -410,7 +412,7 @@
     <dd>Sunucu tarafından alınan ve gönderilen veriye uygulanan bir işlem.
       Giriş süzgeçleri sunucuya istemci tarafından gönderilen veriyi işlerken
       çıkış süzgeçleri sunucu tarafından istemciye gönderilen belgeleri işler.
-      Örneğin, <code>INCLUDES</code> çıkış süzgeci, belgeleri <a class="glossarylink" href="./glossary.html#ssi" title="sözlüğe bakınız">sunucu taraflı içerik</a> için işleme sokar.<br />
+      Örneğin, <code>INCLUDES</code> çıkış süzgeci, belgeleri <a class="glossarylink" href="./glossary.html#ssi" title="">sunucu taraflı içerik</a> için işleme sokar.<br />
       Bakınız: <a href="filter.html">Süzgeçler</a>
     </dd>
 
@@ -421,8 +423,8 @@
     </dd>
 
     <dt><a name="ciphertext" id="ciphertext">Şifreli Metin</a></dt>
-    <dd>Bir <a class="glossarylink" href="./glossary.html#plaintext" title="sözlüğe bakınız">Düz Metin</a> bir
-      <a class="glossarylink" href="./glossary.html#cipher" title="sözlüğe bakınız">Şifre</a>den geçirilince elde edilen
+    <dd>Bir <a class="glossarylink" href="./glossary.html#plaintext" title="">Düz Metin</a> bir
+      <a class="glossarylink" href="./glossary.html#cipher" title="">Şifre</a>den geçirilince elde edilen
       sonuç.<br />Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
 
@@ -446,12 +448,12 @@
       <a name="URI" id="URI">(URI)</a></dd>
     <dd>Soyut veya somut bir özkaynağı betimlemek için kullanılan bütünleşik
       bir karakter dizisi. Aslen <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> tarafından tanımlanmıştır. Genel Ağ’da kullanılan URI’lerden
-      genellikle <a class="glossarylink" href="./glossary.html#url" title="sözlüğe bakınız">URL</a>’ler olarak bahsedilir.
+      genellikle <a class="glossarylink" href="./glossary.html#url" title="">URL</a>’ler olarak bahsedilir.
     </dd>
 
     <dt><a name="uniformresourcelocator" id="uniformresourcelocator">Tektip Özkaynak Konumlayıcı</a></dt>
     <dd>İngilizcesi: Uniform Resource Locator <a name="url" id="url">(URL)</a></dd>
-    <dd>Genel Ağ üzerindeki bir özkaynağın ismi veya adresi. Aslen <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="sözlüğe bakınız">Tektip Özkaynak Betimleyici</a>
+    <dd>Genel Ağ üzerindeki bir özkaynağın ismi veya adresi. Aslen <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="">Tektip Özkaynak Betimleyici</a>
       denilen terimin gayrı resmi karşılığıdır. URL’ler <code>http</code> veya
       <code>https</code> gibi bir şemayı takip eden bir konak adı ve bir dosya
       yolundan oluşurlar.  Örneğin, bu sayfanın URL’si
@@ -468,21 +470,21 @@
     </dd>
 
     <dt><a name="configurationfile" id="configurationfile">Yapılandırma Dosyası</a></dt>
-    <dd>Apache yapılandırmasını denetim altına alan <a class="glossarylink" href="./glossary.html#directive" title="sözlüğe bakınız">yönergeleri</a> içeren bir metin dosyası.<br />
+    <dd>Apache yapılandırmasını denetim altına alan <a class="glossarylink" href="./glossary.html#directive" title="">yönergeleri</a> içeren bir metin dosyası.<br />
       Bakınız: <a href="configuring.html">Yapılandırma Dosyaları</a>
     </dd>
 
     <dt><a name="configurationdirective" id="configurationdirective">Yapılandırma Yönergesi</a></dt>
-    <dd>Bakınız: <a class="glossarylink" href="./glossary.html#directive" title="sözlüğe bakınız">Yönerge</a></dd>
+    <dd>Bakınız: <a class="glossarylink" href="./glossary.html#directive" title="">Yönerge</a></dd>
 
     <dt><a name="directive" id="directive">Yönerge</a></dt>
     <dd>Belli Apache davranışlarından bir veya daha fazlasını denetim altına
-      alan bir yapılandırma komutu. Yönergeler <a class="glossarylink" href="./glossary.html#configurationfile" title="sözlüğe bakınız">yapılandırma dosyalarına</a> yerleştirilir.<br />
+      alan bir yapılandırma komutu. Yönergeler <a class="glossarylink" href="./glossary.html#configurationfile" title="">yapılandırma dosyalarına</a> yerleştirilir.<br />
       Bakınız: <a href="mod/directives.html">Yönerge Dizini</a>
     </dd>
 
     <dt><a name="method" id="method">Yöntem</a></dt>
-    <dd><a class="glossarylink" href="./glossary.html#http" title="sözlüğe bakınız">HTTP</a> bağlamında, istemci tarafından
+    <dd><a class="glossarylink" href="./glossary.html#http" title="">HTTP</a> bağlamında, istemci tarafından
       istek satırında belirtilen, bir özkaynağa uygulanacak bir eylem. HTTP
       bağlamında belirtilebilecek yöntemlere örnek olarak <code>GET</code>,
       <code>POST</code> ve <code>PUT</code> verilebilir.
@@ -496,18 +498,39 @@
 </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>Mevcut Diller: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/glossary.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/glossary.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/glossary.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/glossary.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/glossary.html" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

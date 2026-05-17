@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,20 +17,21 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Compiling and Installing</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Compiling and Installing</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -47,7 +49,7 @@
     example, 2.4.8 to 2.4.9), please skip down to the <a href="#upgrading">upgrading</a> section.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview for the
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview for the
     impatient</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requirements</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li>
@@ -63,7 +65,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Overview for the
-    impatient</a></h2>
+    impatient</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
@@ -158,7 +160,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requirements</a></h2>
+<h2><a name="requirements" id="requirements">Requirements</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>The following requirements exist for building Apache httpd:</p>
 
@@ -223,7 +225,7 @@ sudo service apache2 start</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">Download</a></h2>
+<h2><a name="download" id="download">Download</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>The Apache HTTP Server can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     download site</a>, which lists several mirrors.  Most users of
@@ -243,7 +245,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extract</a></h2>
+<h2><a name="extract" id="extract">Extract</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Extracting the source from the Apache HTTP Server tarball is a
     simple matter of uncompressing, and then untarring:</p>
@@ -258,7 +260,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     compiling the server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configuring the source tree</a></h2>
+<h2><a name="configure" id="configure">Configuring the source tree</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>The next step is to configure the Apache source tree for your
     particular platform and personal requirements. This is done using
@@ -326,7 +328,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     available on the <code class="program"><a href="./programs/configure.html">configure</a></code> manual page.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Build</a></h2>
+<h2><a name="compile" id="compile">Build</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Now you can build the various parts which form the Apache
     package by simply running the command:</p>
@@ -339,7 +341,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     have enabled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">Install</a></h2>
+<h2><a name="install" id="install">Install</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Now it's time to install the package under the configured
     installation <em>PREFIX</em> (see <code>--prefix</code> option
@@ -355,7 +357,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     your configuration files or documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Customize</a></h2>
+<h2><a name="customize" id="customize">Customize</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
@@ -368,7 +370,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Test</a></h2>
+<h2><a name="test" id="test">Test</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
     HTTP server by immediately running:</p>
@@ -385,7 +387,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrading</a></h2>
+<h2><a name="upgrading" id="upgrading">Upgrading</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>The first step in upgrading is to read the release announcement
     and the file <code>CHANGES</code> in the source distribution to
@@ -440,7 +442,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Third-party packages</a></h2>
+<h2><a name="thirdp" id="thirdp">Third-party packages</a> <a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on
@@ -467,15 +469,36 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

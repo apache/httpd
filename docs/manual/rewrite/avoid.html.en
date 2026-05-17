@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,16 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>When not to use mod_rewrite</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>When not to use mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -53,7 +55,7 @@ files to work with, you may need to resort to
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Simple Redirection</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Simple Redirection</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">URL Aliasing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Simple Proxying</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenv">Environment Variable Testing</a></li>
@@ -67,7 +69,7 @@ files to work with, you may need to resort to
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Simple Redirection</a></h2>
+<h2><a name="redirect" id="redirect">Simple Redirection</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> provides the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> and <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directives, which provide a
@@ -128,7 +130,7 @@ task in a <code>.htaccess</code> file instead.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL Aliasing</a></h2>
+<h2><a name="alias" id="alias">URL Aliasing</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p>The <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive
 provides mapping from a URI to a directory - usually a directory outside
 of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Although it
@@ -151,7 +153,7 @@ you have <code>Options FollowSymLinks</code> enabled on your
 server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Simple Proxying</a></h2>
+<h2><a name="proxy" id="proxy">Simple Proxying</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
@@ -199,7 +201,7 @@ to the client.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">Environment Variable Testing</a></h2>
+<h2><a name="setenv" id="setenv">Environment Variable Testing</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is frequently used to take a particular
 action based on the presence or absence of a particular environment
@@ -227,7 +229,7 @@ and in certain other directives.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">Front Controller / Resource Routing</a></h2>
+<h2><a name="fallback-resource" id="fallback-resource">Front Controller / Resource Routing</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
 
 <p>A very common use of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is to route all
 requests for non-existent resources to a single front controller script
@@ -262,7 +264,7 @@ directory:</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ifexpr" id="ifexpr">Conditional Configuration with Expressions</a></h2>
+<h2><a name="ifexpr" id="ifexpr">Conditional Configuration with Expressions</a> <a title="Permanent link" href="#ifexpr" class="permalink">&para;</a></h2>
 
 <p>Many uses of <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 can be replaced by the
@@ -297,7 +299,7 @@ documentation</a> for the full syntax available in
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="blocked-inline-images" id="blocked-inline-images">Forbidding Image Hotlinking</a></h2>
+<h2><a name="blocked-inline-images" id="blocked-inline-images">Forbidding Image Hotlinking</a> <a title="Permanent link" href="#blocked-inline-images" class="permalink">&para;</a></h2>
 
   
 
@@ -355,7 +357,7 @@ RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a></h2>
+<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a> <a title="Permanent link" href="#blocking-of-robots" class="permalink">&para;</a></h2>
 
   
 
@@ -405,7 +407,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="host-deny" id="host-deny">Denying Hosts in a Reject List</a></h2>
+<h2><a name="host-deny" id="host-deny">Denying Hosts in a Reject List</a> <a title="Permanent link" href="#host-deny" class="permalink">&para;</a></h2>
 
   
 
@@ -465,7 +467,7 @@ RewriteRule   "^"                                      "-"           [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">Virtual Hosting</a></h2>
+<h2><a name="vhosts" id="vhosts">Virtual Hosting</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p>Although it is possible to handle <a href="vhosts.html">virtual hosts
 with mod_rewrite</a>, it is seldom the right way. Creating individual
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks is
@@ -487,7 +489,7 @@ seems like the right approach.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="load-balancing" id="load-balancing">Load Balancing</a></h2>
+<h2><a name="load-balancing" id="load-balancing">Load Balancing</a> <a title="Permanent link" href="#load-balancing" class="permalink">&para;</a></h2>
 
   
 
@@ -541,12 +543,33 @@ featureful than anything you can cobble together using
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/avoid.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

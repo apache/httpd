@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>event - Serveur HTTP Apache Version 2.4</title>
+<title>event  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,24 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache MPM event</h1>
+<div id="preamble"><h1> event</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/event.html" title="">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
+<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_event_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>event.c</td></tr></table>
-<h3>Sommaire</h3>
+<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>mpm_event_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>event.c</td></tr></table>
+<h3 />
 
     <p>Le module multi-processus (MPM) <code class="module"><a href="../mod/event.html">event</a></code> est conçu
     pour permettre le traitement d'un nombre accru de requêtes
@@ -48,12 +50,12 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
+<div id="quickview"><h3 />
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#event-worker-relationship">Relations avec le MPM Worker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment tout cela fonctionne</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
-</ul><h3 class="directives">Directives</h3>
+</ul><h3 class="directives" />
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#asyncrequestworkerfactor">AsyncRequestWorkerFactor</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
@@ -76,13 +78,13 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event" /></li></ul><h3 />
 <ul class="seealso">
 <li><a href="worker.html">Le MPM worker</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a></h2>
+<h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a> <a title="" href="#event-worker-relationship" class="permalink">&para;</a></h2>
 <p>Le MPM <code class="module"><a href="../mod/event.html">event</a></code> s'inspire du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> qui
 implémente un serveur hybride multi-processus et multi-threads. Un processus de
 contrôle unique (le parent) est chargé de lancer des processus enfants. Chaque
@@ -97,7 +99,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a> <a title="" href="#how-it-works" class="permalink">&para;</a></h2>
     
     <p>Ce module MPM tente de résoudre le "problème keep
     alive" de HTTP. Lorsqu'un client a effectué une première requête, il peut
@@ -116,7 +118,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
     <p>Cette nouvelle architecture, en exploitant les sockets non blocants et
     les fonctionnalités des noyaux modernes mis en valeur par
-    <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> (comme epoll de Linux), n'a plus besoin du
+    <a class="glossarylink" href="../glossary.html#apr" title="">APR</a> (comme epoll de Linux), n'a plus besoin du
     <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> <code>mpm-accept</code> pour
     éviter le problème de "thundering herd".</p>
 
@@ -318,9 +320,9 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
         
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Prérequis</a></h2>
+<h2><a name="requirements" id="requirements">Prérequis</a> <a title="" href="#requirements" class="permalink">&para;</a></h2>
     <p>Ce MPM dépend des opérations atomiques compare-and-swap
-    d'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> pour la synchronisation des threads. Si
+    d'<a class="glossarylink" href="../glossary.html#apr" title="">APR</a> pour la synchronisation des threads. Si
     vous compilez pour une plate-forme x86 et n'avez pas besoin du
     support 386, ou si vous compilez pour une plate-forme SPARC et
     n'avez pas besoin du support pre-UltraSPARC, ajoutez
@@ -352,15 +354,15 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a></h2>
+<div class="directive-section"><h2><a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a> <a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor" /> <a title="" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions simultanées par thread</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>2</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>event</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.13</td></tr>
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Limite le nombre de connexions simultanées par thread</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>event</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.13</td></tr>
 </table>
     <p>Le MPM event gère certaines connexions de manière asynchrone ;
     dans ce cas, les threads traitant la requête sont alloués selon les
@@ -471,13 +473,34 @@ max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/event.html" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

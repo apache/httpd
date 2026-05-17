@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,16 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">HTTP сервер Apache Версия 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs/">Документация</a> &gt; <a href="./">Версия 2.4</a></div><div id="page-content"><div id="preamble"><h1>Начало работы</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP сервер</a> &gt; <a href="https://httpd.apache.org/docs/">Документация</a> &gt; <a href="./">Версия 2.4</a></div><div id="page-content"><div id="preamble"><h1>Начало работы</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
@@ -32,16 +34,16 @@
 в запуске веб-сайтов вообще, вы можете не знать с чего начать или какие
 вопросы задавать. Этот документ познакомит вас с основами.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Клиенты, серверы и URL-адреса</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Клиенты, серверы и URL-адреса</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dns">Имена хостов и DNS</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">Файлы конфигурации и директивы</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#content">Контент веб-сайта</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#logs">Файлы журналов и устранение неполадок</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Что дальше?</a></li>
-</ul><h3>См. также</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clientserver" id="clientserver">Клиенты, серверы и URL-адреса</a></h2>
+<h2><a name="clientserver" id="clientserver">Клиенты, серверы и URL-адреса</a> <a title="Permanent link" href="#clientserver" class="permalink">&para;</a></h2>
 
 
 <p>Адреса в Интернете записываются с помощью URL — Uniform Resource
@@ -76,7 +78,7 @@ Locator (унифицированный указатель ресурса), ко
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dns" id="dns">Имена хостов и DNS</a></h2>
+<h2><a name="dns" id="dns">Имена хостов и DNS</a> <a title="Permanent link" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>Для того чтобы соединиться с сервером, клиент сначала должен преобразовать
@@ -111,7 +113,7 @@ Locator (унифицированный указатель ресурса), ко
 <a href="http://en.wikipedia.org/wiki/Domain_Name_System">DNS</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Файлы конфигурации и директивы</a></h2>
+<h2><a name="configuration" id="configuration">Файлы конфигурации и директивы</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>HTTP-сервер Apache настроен с помощью простых текстовых файлов.
@@ -160,7 +162,7 @@ HTTP-сервера Apache</a>. Если вы установили httpd из и
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="content" id="content">Контент веб-сайта</a></h2>
+<h2><a name="content" id="content">Контент веб-сайта</a> <a title="Permanent link" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>Содержимое сайта может принимать различные формы, но в широком смысле
@@ -199,7 +201,7 @@ CSS-файлы и другие файлы, которые просто лежа�
 или форумы поддержки, где вы сможете получить ответы на свои вопросы.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Файлы журналов и устранение неполадок</a></h2>
+<h2><a name="logs" id="logs">Файлы журналов и устранение неполадок</a> <a title="Permanent link" href="#logs" class="permalink">&para;</a></h2>
 
 <p>Для вас, как администратора HTTP-сервера Apache,
 самые ценные активы — это файлы журналов (лог-файлы),
@@ -222,7 +224,7 @@ CSS-файлы и другие файлы, которые просто лежа�
 <a href="logs.html">документации о журналах</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Что дальше?</a></h2>
+<h2><a name="other" id="other">Что дальше?</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>Теперь, когда вы знакомы с основами, пора двигаться дальше.</p>
@@ -242,13 +244,34 @@ CSS-файлы и другие файлы, которые просто лежа�
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/quickreference.html">Директивы</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

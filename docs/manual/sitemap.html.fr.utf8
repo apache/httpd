@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Plan du site - Serveur HTTP Apache Version 2.4</title>
+<title>Plan du site  </title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -17,25 +18,25 @@
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page">
 <div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div>
 <div id="page-content"><div id="preamble"><h1>Plan du site</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/sitemap.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate" />
 
 <p>Cette page contient la liste des éléments actuellement disponibles de
 la <a href="./">Documentation du serveur HTTP Apache Version
@@ -201,138 +202,138 @@ mots de passe</a></li>
 décrire les modules Apache</a></li>
 <li><a href="mod/directive-dict.html">Définitions des termes utilisés
 pour décrire les directives Apache</a></li>
-</ul><ul><li><a href="mod/core.html">Fonctionalités de Base Apache</a></li>
-<li><a href="mod/mpm_common.html">Apache MPM : Directives Communes</a></li>
-<li><a href="mod/event.html">Apache MPM event</a></li>
-<li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
-<li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
-<li><a href="mod/prefork.html">Apache MPM prefork</a></li>
-<li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
-<li><a href="mod/worker.html">Apache MPM worker</a></li>
-</ul><ul><li><a href="mod/mod_access_compat.html">Module Apache mod_access_compat</a></li>
-<li><a href="mod/mod_actions.html">Module Apache mod_actions</a></li>
-<li><a href="mod/mod_alias.html">Module Apache mod_alias</a></li>
-<li><a href="mod/mod_allowmethods.html">Module Apache mod_allowmethods</a></li>
-<li><a href="mod/mod_asis.html">Module Apache mod_asis</a></li>
-<li><a href="mod/mod_auth_basic.html">Module Apache mod_auth_basic</a></li>
-<li><a href="mod/mod_auth_digest.html">Module Apache mod_auth_digest</a></li>
-<li><a href="mod/mod_auth_form.html">Module Apache mod_auth_form</a></li>
-<li><a href="mod/mod_authn_anon.html">Module Apache mod_authn_anon</a></li>
-<li><a href="mod/mod_authn_core.html">Module Apache mod_authn_core</a></li>
-<li><a href="mod/mod_authn_dbd.html">Module Apache mod_authn_dbd</a></li>
-<li><a href="mod/mod_authn_dbm.html">Module Apache mod_authn_dbm</a></li>
-<li><a href="mod/mod_authn_file.html">Module Apache mod_authn_file</a></li>
-<li><a href="mod/mod_authn_socache.html">Module Apache mod_authn_socache</a></li>
-<li><a href="mod/mod_authnz_fcgi.html">Module Apache mod_authnz_fcgi</a></li>
-<li><a href="mod/mod_authnz_ldap.html">Module Apache mod_authnz_ldap</a></li>
-<li><a href="mod/mod_authz_core.html">Module Apache mod_authz_core</a></li>
-<li><a href="mod/mod_authz_dbd.html">Module Apache mod_authz_dbd</a></li>
-<li><a href="mod/mod_authz_dbm.html">Module Apache mod_authz_dbm</a></li>
-<li><a href="mod/mod_authz_groupfile.html">Module Apache mod_authz_groupfile</a></li>
-<li><a href="mod/mod_authz_host.html">Module Apache mod_authz_host</a></li>
-<li><a href="mod/mod_authz_owner.html">Module Apache mod_authz_owner</a></li>
-<li><a href="mod/mod_authz_user.html">Module Apache mod_authz_user</a></li>
-<li><a href="mod/mod_autoindex.html">Module Apache mod_autoindex</a></li>
-<li><a href="mod/mod_brotli.html">Module Apache mod_brotli</a></li>
-<li><a href="mod/mod_buffer.html">Module Apache mod_buffer</a></li>
-<li><a href="mod/mod_cache.html">Module Apache mod_cache</a></li>
-<li><a href="mod/mod_cache_disk.html">Module Apache mod_cache_disk</a></li>
-<li><a href="mod/mod_cache_socache.html">Module Apache mod_cache_socache</a></li>
-<li><a href="mod/mod_cern_meta.html">Module Apache mod_cern_meta</a></li>
-<li><a href="mod/mod_cgi.html">Module Apache mod_cgi</a></li>
-<li><a href="mod/mod_cgid.html">Module Apache mod_cgid</a></li>
-<li><a href="mod/mod_charset_lite.html">Module Apache mod_charset_lite</a></li>
-<li><a href="mod/mod_data.html">Module Apache mod_data</a></li>
-<li><a href="mod/mod_dav.html">Module Apache mod_dav</a></li>
-<li><a href="mod/mod_dav_fs.html">Module Apache mod_dav_fs</a></li>
-<li><a href="mod/mod_dav_lock.html">Module Apache mod_dav_lock</a></li>
-<li><a href="mod/mod_dbd.html">Module Apache mod_dbd</a></li>
-<li><a href="mod/mod_deflate.html">Module Apache mod_deflate</a></li>
-<li><a href="mod/mod_dialup.html">Module Apache mod_dialup</a></li>
-<li><a href="mod/mod_dir.html">Module Apache mod_dir</a></li>
-<li><a href="mod/mod_dumpio.html">Module Apache mod_dumpio</a></li>
-<li><a href="mod/mod_echo.html">Module Apache mod_echo</a></li>
-<li><a href="mod/mod_env.html">Module Apache mod_env</a></li>
-<li><a href="mod/mod_example_hooks.html">Module Apache mod_example_hooks</a></li>
-<li><a href="mod/mod_expires.html">Module Apache mod_expires</a></li>
-<li><a href="mod/mod_ext_filter.html">Module Apache mod_ext_filter</a></li>
-<li><a href="mod/mod_file_cache.html">Module Apache mod_file_cache</a></li>
-<li><a href="mod/mod_filter.html">Module Apache mod_filter</a></li>
-<li><a href="mod/mod_headers.html">Module Apache mod_headers</a></li>
-<li><a href="mod/mod_heartbeat.html">Module Apache mod_heartbeat</a></li>
-<li><a href="mod/mod_heartmonitor.html">Module Apache mod_heartmonitor</a></li>
-<li><a href="mod/mod_http2.html">Module Apache mod_http2</a></li>
-<li><a href="mod/mod_ident.html">Module Apache mod_ident</a></li>
-<li><a href="mod/mod_imagemap.html">Module Apache mod_imagemap</a></li>
-<li><a href="mod/mod_include.html">Module Apache mod_include</a></li>
-<li><a href="mod/mod_info.html">Module Apache mod_info</a></li>
-<li><a href="mod/mod_isapi.html">Module Apache mod_isapi</a></li>
-<li><a href="mod/mod_lbmethod_bybusyness.html">Module Apache mod_lbmethod_bybusyness</a></li>
-<li><a href="mod/mod_lbmethod_byrequests.html">Module Apache mod_lbmethod_byrequests</a></li>
-<li><a href="mod/mod_lbmethod_bytraffic.html">Module Apache mod_lbmethod_bytraffic</a></li>
-<li><a href="mod/mod_lbmethod_heartbeat.html">Module Apache mod_lbmethod_heartbeat</a></li>
-<li><a href="mod/mod_ldap.html">Module Apache mod_ldap</a></li>
-<li><a href="mod/mod_log_config.html">Module Apache mod_log_config</a></li>
-<li><a href="mod/mod_log_debug.html">Module Apache mod_log_debug</a></li>
-<li><a href="mod/mod_log_forensic.html">Module Apache mod_log_forensic</a></li>
-<li><a href="mod/mod_logio.html">Module Apache mod_logio</a></li>
-<li><a href="mod/mod_lua.html">Module Apache mod_lua</a></li>
-<li><a href="mod/mod_macro.html">Module Apache mod_macro</a></li>
-<li><a href="mod/mod_md.html">Module Apache mod_md</a></li>
-<li><a href="mod/mod_mime.html">Module Apache mod_mime</a></li>
-<li><a href="mod/mod_mime_magic.html">Module Apache mod_mime_magic</a></li>
-<li><a href="mod/mod_negotiation.html">Module Apache mod_negotiation</a></li>
-<li><a href="mod/mod_nw_ssl.html">Module Apache mod_nw_ssl</a></li>
-<li><a href="mod/mod_privileges.html">Module Apache mod_privileges</a></li>
-<li><a href="mod/mod_proxy.html">Module Apache mod_proxy</a></li>
-<li><a href="mod/mod_proxy_ajp.html">Module Apache mod_proxy_ajp</a></li>
-<li><a href="mod/mod_proxy_balancer.html">Module Apache mod_proxy_balancer</a></li>
-<li><a href="mod/mod_proxy_connect.html">Module Apache mod_proxy_connect</a></li>
-<li><a href="mod/mod_proxy_express.html">Module Apache mod_proxy_express</a></li>
-<li><a href="mod/mod_proxy_fcgi.html">Module Apache mod_proxy_fcgi</a></li>
-<li><a href="mod/mod_proxy_fdpass.html">Module Apache mod_proxy_fdpass</a></li>
-<li><a href="mod/mod_proxy_ftp.html">Module Apache mod_proxy_ftp</a></li>
-<li><a href="mod/mod_proxy_hcheck.html">Module Apache mod_proxy_hcheck</a></li>
-<li><a href="mod/mod_proxy_html.html">Module Apache mod_proxy_html</a></li>
-<li><a href="mod/mod_proxy_http.html">Module Apache mod_proxy_http</a></li>
-<li><a href="mod/mod_proxy_http2.html">Module Apache mod_proxy_http2</a></li>
-<li><a href="mod/mod_proxy_scgi.html">Module Apache mod_proxy_scgi</a></li>
-<li><a href="mod/mod_proxy_uwsgi.html">Module Apache mod_proxy_uwsgi</a></li>
-<li><a href="mod/mod_proxy_wstunnel.html">Module Apache mod_proxy_wstunnel</a></li>
-<li><a href="mod/mod_ratelimit.html">Module Apache mod_ratelimit</a></li>
-<li><a href="mod/mod_reflector.html">Module Apache mod_reflector</a></li>
-<li><a href="mod/mod_remoteip.html">Module Apache mod_remoteip</a></li>
-<li><a href="mod/mod_reqtimeout.html">Module Apache mod_reqtimeout</a></li>
-<li><a href="mod/mod_request.html">Module Apache mod_request</a></li>
-<li><a href="mod/mod_rewrite.html">Module Apache mod_rewrite</a></li>
-<li><a href="mod/mod_sed.html">Module Apache mod_sed</a></li>
-<li><a href="mod/mod_session.html">Module Apache mod_session</a></li>
-<li><a href="mod/mod_session_cookie.html">Module Apache mod_session_cookie</a></li>
-<li><a href="mod/mod_session_crypto.html">Module Apache mod_session_crypto</a></li>
-<li><a href="mod/mod_session_dbd.html">Module Apache mod_session_dbd</a></li>
-<li><a href="mod/mod_setenvif.html">Module Apache mod_setenvif</a></li>
-<li><a href="mod/mod_slotmem_plain.html">Module Apache mod_slotmem_plain</a></li>
-<li><a href="mod/mod_slotmem_shm.html">Module Apache mod_slotmem_shm</a></li>
-<li><a href="mod/mod_so.html">Module Apache mod_so</a></li>
-<li><a href="mod/mod_socache_dbm.html">Module Apache mod_socache_dbm</a></li>
-<li><a href="mod/mod_socache_dc.html">Module Apache mod_socache_dc</a></li>
-<li><a href="mod/mod_socache_memcache.html">Module Apache mod_socache_memcache</a></li>
-<li><a href="mod/mod_socache_redis.html">Module Apache mod_socache_redis</a></li>
-<li><a href="mod/mod_socache_shmcb.html">Module Apache mod_socache_shmcb</a></li>
-<li><a href="mod/mod_speling.html">Module Apache mod_speling</a></li>
-<li><a href="mod/mod_ssl.html">Module Apache mod_ssl</a></li>
-<li><a href="mod/mod_status.html">Module Apache mod_status</a></li>
-<li><a href="mod/mod_substitute.html">Module Apache mod_substitute</a></li>
-<li><a href="mod/mod_suexec.html">Module Apache mod_suexec</a></li>
-<li><a href="mod/mod_systemd.html">Module Apache mod_systemd</a></li>
-<li><a href="mod/mod_unique_id.html">Module Apache mod_unique_id</a></li>
-<li><a href="mod/mod_unixd.html">Module Apache mod_unixd</a></li>
-<li><a href="mod/mod_userdir.html">Module Apache mod_userdir</a></li>
-<li><a href="mod/mod_usertrack.html">Module Apache mod_usertrack</a></li>
-<li><a href="mod/mod_version.html">Module Apache mod_version</a></li>
-<li><a href="mod/mod_vhost_alias.html">Module Apache mod_vhost_alias</a></li>
-<li><a href="mod/mod_watchdog.html">Module Apache mod_watchdog</a></li>
-<li><a href="mod/mod_xml2enc.html">Module Apache mod_xml2enc</a></li>
+</ul><ul><li><a href="mod/core.html" /></li>
+<li><a href="mod/mpm_common.html" /></li>
+<li><a href="mod/event.html"> event</a></li>
+<li><a href="mod/mpm_netware.html"> netware</a></li>
+<li><a href="mod/mpmt_os2.html"> os2</a></li>
+<li><a href="mod/prefork.html"> prefork</a></li>
+<li><a href="mod/mpm_winnt.html"> winnt</a></li>
+<li><a href="mod/worker.html"> worker</a></li>
+</ul><ul><li><a href="mod/mod_access_compat.html"> mod_access_compat</a></li>
+<li><a href="mod/mod_actions.html"> mod_actions</a></li>
+<li><a href="mod/mod_alias.html"> mod_alias</a></li>
+<li><a href="mod/mod_allowmethods.html"> mod_allowmethods</a></li>
+<li><a href="mod/mod_asis.html"> mod_asis</a></li>
+<li><a href="mod/mod_auth_basic.html"> mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_digest.html"> mod_auth_digest</a></li>
+<li><a href="mod/mod_auth_form.html"> mod_auth_form</a></li>
+<li><a href="mod/mod_authn_anon.html"> mod_authn_anon</a></li>
+<li><a href="mod/mod_authn_core.html"> mod_authn_core</a></li>
+<li><a href="mod/mod_authn_dbd.html"> mod_authn_dbd</a></li>
+<li><a href="mod/mod_authn_dbm.html"> mod_authn_dbm</a></li>
+<li><a href="mod/mod_authn_file.html"> mod_authn_file</a></li>
+<li><a href="mod/mod_authn_socache.html"> mod_authn_socache</a></li>
+<li><a href="mod/mod_authnz_fcgi.html"> mod_authnz_fcgi</a></li>
+<li><a href="mod/mod_authnz_ldap.html"> mod_authnz_ldap</a></li>
+<li><a href="mod/mod_authz_core.html"> mod_authz_core</a></li>
+<li><a href="mod/mod_authz_dbd.html"> mod_authz_dbd</a></li>
+<li><a href="mod/mod_authz_dbm.html"> mod_authz_dbm</a></li>
+<li><a href="mod/mod_authz_groupfile.html"> mod_authz_groupfile</a></li>
+<li><a href="mod/mod_authz_host.html"> mod_authz_host</a></li>
+<li><a href="mod/mod_authz_owner.html"> mod_authz_owner</a></li>
+<li><a href="mod/mod_authz_user.html"> mod_authz_user</a></li>
+<li><a href="mod/mod_autoindex.html"> mod_autoindex</a></li>
+<li><a href="mod/mod_brotli.html"> mod_brotli</a></li>
+<li><a href="mod/mod_buffer.html"> mod_buffer</a></li>
+<li><a href="mod/mod_cache.html"> mod_cache</a></li>
+<li><a href="mod/mod_cache_disk.html"> mod_cache_disk</a></li>
+<li><a href="mod/mod_cache_socache.html"> mod_cache_socache</a></li>
+<li><a href="mod/mod_cern_meta.html"> mod_cern_meta</a></li>
+<li><a href="mod/mod_cgi.html"> mod_cgi</a></li>
+<li><a href="mod/mod_cgid.html"> mod_cgid</a></li>
+<li><a href="mod/mod_charset_lite.html"> mod_charset_lite</a></li>
+<li><a href="mod/mod_data.html"> mod_data</a></li>
+<li><a href="mod/mod_dav.html"> mod_dav</a></li>
+<li><a href="mod/mod_dav_fs.html"> mod_dav_fs</a></li>
+<li><a href="mod/mod_dav_lock.html"> mod_dav_lock</a></li>
+<li><a href="mod/mod_dbd.html"> mod_dbd</a></li>
+<li><a href="mod/mod_deflate.html"> mod_deflate</a></li>
+<li><a href="mod/mod_dialup.html"> mod_dialup</a></li>
+<li><a href="mod/mod_dir.html"> mod_dir</a></li>
+<li><a href="mod/mod_dumpio.html"> mod_dumpio</a></li>
+<li><a href="mod/mod_echo.html"> mod_echo</a></li>
+<li><a href="mod/mod_env.html"> mod_env</a></li>
+<li><a href="mod/mod_example_hooks.html"> mod_example_hooks</a></li>
+<li><a href="mod/mod_expires.html"> mod_expires</a></li>
+<li><a href="mod/mod_ext_filter.html"> mod_ext_filter</a></li>
+<li><a href="mod/mod_file_cache.html"> mod_file_cache</a></li>
+<li><a href="mod/mod_filter.html"> mod_filter</a></li>
+<li><a href="mod/mod_headers.html"> mod_headers</a></li>
+<li><a href="mod/mod_heartbeat.html"> mod_heartbeat</a></li>
+<li><a href="mod/mod_heartmonitor.html"> mod_heartmonitor</a></li>
+<li><a href="mod/mod_http2.html"> mod_http2</a></li>
+<li><a href="mod/mod_ident.html"> mod_ident</a></li>
+<li><a href="mod/mod_imagemap.html"> mod_imagemap</a></li>
+<li><a href="mod/mod_include.html"> mod_include</a></li>
+<li><a href="mod/mod_info.html"> mod_info</a></li>
+<li><a href="mod/mod_isapi.html"> mod_isapi</a></li>
+<li><a href="mod/mod_lbmethod_bybusyness.html"> mod_lbmethod_bybusyness</a></li>
+<li><a href="mod/mod_lbmethod_byrequests.html"> mod_lbmethod_byrequests</a></li>
+<li><a href="mod/mod_lbmethod_bytraffic.html"> mod_lbmethod_bytraffic</a></li>
+<li><a href="mod/mod_lbmethod_heartbeat.html"> mod_lbmethod_heartbeat</a></li>
+<li><a href="mod/mod_ldap.html"> mod_ldap</a></li>
+<li><a href="mod/mod_log_config.html"> mod_log_config</a></li>
+<li><a href="mod/mod_log_debug.html"> mod_log_debug</a></li>
+<li><a href="mod/mod_log_forensic.html"> mod_log_forensic</a></li>
+<li><a href="mod/mod_logio.html"> mod_logio</a></li>
+<li><a href="mod/mod_lua.html"> mod_lua</a></li>
+<li><a href="mod/mod_macro.html"> mod_macro</a></li>
+<li><a href="mod/mod_md.html"> mod_md</a></li>
+<li><a href="mod/mod_mime.html"> mod_mime</a></li>
+<li><a href="mod/mod_mime_magic.html"> mod_mime_magic</a></li>
+<li><a href="mod/mod_negotiation.html"> mod_negotiation</a></li>
+<li><a href="mod/mod_nw_ssl.html"> mod_nw_ssl</a></li>
+<li><a href="mod/mod_privileges.html"> mod_privileges</a></li>
+<li><a href="mod/mod_proxy.html"> mod_proxy</a></li>
+<li><a href="mod/mod_proxy_ajp.html"> mod_proxy_ajp</a></li>
+<li><a href="mod/mod_proxy_balancer.html"> mod_proxy_balancer</a></li>
+<li><a href="mod/mod_proxy_connect.html"> mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_express.html"> mod_proxy_express</a></li>
+<li><a href="mod/mod_proxy_fcgi.html"> mod_proxy_fcgi</a></li>
+<li><a href="mod/mod_proxy_fdpass.html"> mod_proxy_fdpass</a></li>
+<li><a href="mod/mod_proxy_ftp.html"> mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_hcheck.html"> mod_proxy_hcheck</a></li>
+<li><a href="mod/mod_proxy_html.html"> mod_proxy_html</a></li>
+<li><a href="mod/mod_proxy_http.html"> mod_proxy_http</a></li>
+<li><a href="mod/mod_proxy_http2.html"> mod_proxy_http2</a></li>
+<li><a href="mod/mod_proxy_scgi.html"> mod_proxy_scgi</a></li>
+<li><a href="mod/mod_proxy_uwsgi.html"> mod_proxy_uwsgi</a></li>
+<li><a href="mod/mod_proxy_wstunnel.html"> mod_proxy_wstunnel</a></li>
+<li><a href="mod/mod_ratelimit.html"> mod_ratelimit</a></li>
+<li><a href="mod/mod_reflector.html"> mod_reflector</a></li>
+<li><a href="mod/mod_remoteip.html"> mod_remoteip</a></li>
+<li><a href="mod/mod_reqtimeout.html"> mod_reqtimeout</a></li>
+<li><a href="mod/mod_request.html"> mod_request</a></li>
+<li><a href="mod/mod_rewrite.html"> mod_rewrite</a></li>
+<li><a href="mod/mod_sed.html"> mod_sed</a></li>
+<li><a href="mod/mod_session.html"> mod_session</a></li>
+<li><a href="mod/mod_session_cookie.html"> mod_session_cookie</a></li>
+<li><a href="mod/mod_session_crypto.html"> mod_session_crypto</a></li>
+<li><a href="mod/mod_session_dbd.html"> mod_session_dbd</a></li>
+<li><a href="mod/mod_setenvif.html"> mod_setenvif</a></li>
+<li><a href="mod/mod_slotmem_plain.html"> mod_slotmem_plain</a></li>
+<li><a href="mod/mod_slotmem_shm.html"> mod_slotmem_shm</a></li>
+<li><a href="mod/mod_so.html"> mod_so</a></li>
+<li><a href="mod/mod_socache_dbm.html"> mod_socache_dbm</a></li>
+<li><a href="mod/mod_socache_dc.html"> mod_socache_dc</a></li>
+<li><a href="mod/mod_socache_memcache.html"> mod_socache_memcache</a></li>
+<li><a href="mod/mod_socache_redis.html"> mod_socache_redis</a></li>
+<li><a href="mod/mod_socache_shmcb.html"> mod_socache_shmcb</a></li>
+<li><a href="mod/mod_speling.html"> mod_speling</a></li>
+<li><a href="mod/mod_ssl.html"> mod_ssl</a></li>
+<li><a href="mod/mod_status.html"> mod_status</a></li>
+<li><a href="mod/mod_substitute.html"> mod_substitute</a></li>
+<li><a href="mod/mod_suexec.html"> mod_suexec</a></li>
+<li><a href="mod/mod_systemd.html"> mod_systemd</a></li>
+<li><a href="mod/mod_unique_id.html"> mod_unique_id</a></li>
+<li><a href="mod/mod_unixd.html"> mod_unixd</a></li>
+<li><a href="mod/mod_userdir.html"> mod_userdir</a></li>
+<li><a href="mod/mod_usertrack.html"> mod_usertrack</a></li>
+<li><a href="mod/mod_version.html"> mod_version</a></li>
+<li><a href="mod/mod_vhost_alias.html"> mod_vhost_alias</a></li>
+<li><a href="mod/mod_watchdog.html"> mod_watchdog</a></li>
+<li><a href="mod/mod_xml2enc.html"> mod_xml2enc</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="developer" id="developer">Documentation du développeur</a></h2>
@@ -365,19 +366,40 @@ fichiers .htaccess</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/sitemap.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Les drapeaux de réécriture - Serveur HTTP Apache Version 2.4</title>
+<title>Les drapeaux de réécriture  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,24 +17,24 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Les drapeaux de réécriture</h1>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Les drapeaux de réécriture</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" title="">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate" />
 
 <p>Ce document décrit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
 des explications détaillées et des exemples.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (échappement dans les références arrières)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (ne pas échapper
 l'espace en +)</a></li>
@@ -63,11 +64,11 @@ l'espace en +)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise en
+</ul><h3 /><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise en
 correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="" href="#introduction" class="permalink">&para;</a></h2>
 <p>Le comportement d'une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> peut être modifié par un ou
 plusieurs drapeaux. Les drapeaux sont situés en fin de règle, entourés
 de crochets, et séparés le cas échéant par des virgules.</p>
@@ -93,7 +94,7 @@ au cours de la même passe du processus de réécriture.
 d'utilisation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (échappement dans les références arrières)</a></h2>
+<h2><a name="flag_b" id="flag_b">B (échappement dans les références arrières)</a> <a title="" href="#flag_b" class="permalink">&para;</a></h2>
 <p>Avec le drapeau [B], la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappe les caractères
 non-alphanumériques avant d'appliquer la transformation.</p>
 
@@ -161,7 +162,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (ne pas échapper
-l'espace en +)</a></h2>
+l'espace en +)</a> <a title="" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>Si le drapeau [BNP] est spécifié, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappera le caractère
 espace en %20 au lieu de '+' dans les références arrières. Ceci s'avère
 utile lorsque la référence arrière est utilisée dans la partie chemin,
@@ -177,7 +178,7 @@ Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a></h2>
+<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>Le drapeau [BCTLS] est similaire à [B], à la différence que seuls les espaces
 et les caractères de contrôle sont échappés. Il s'agit du même jeu de caractères
 rejetés lorsqu'ils sont copiés dans la chaîne de paramètres non codée.
@@ -192,7 +193,7 @@ Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a></h2>
+<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>Les caractères listés dans [BNE=...] sont exclus des listes de caractères
 correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas échappés.
 </p>
@@ -206,7 +207,7 @@ Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a></h2>
+<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="" href="#flag_c" class="permalink">&para;</a></h2>
 <p>Le drapeau [C] ou [chain] indique que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est chaînée avec la
 suivante. Autrement dit, si la règle s'applique, elle est traitée
 normalement et passe le contrôle à la règle suivante. Par contre, si
@@ -215,7 +216,7 @@ chaînées qui suivent, seront sautées.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a></h2>
+<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="" href="#flag_co" class="permalink">&para;</a></h2>
 <p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
 lorsqu'une règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 s'applique. Il possède trois arguments obligatoires et
@@ -302,7 +303,7 @@ pour tous les URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a></h2>
+<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
 réécrit est supprimée.</p>
 <p>Ce drapeau est disponible dans les versions 2.2.12 et supérieures.</p>
@@ -333,7 +334,7 @@ suivantes de cette passe ne verront que le résultat direct des
 substitutions, sans aucun PATH_INFO ajouté.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a></h2>
+<h2><a name="flag_e" id="flag_e">E|env</a> <a title="" href="#flag_e" class="permalink">&para;</a></h2>
 <p>Avec le drapeau [E], ou [env], vous pouvez définir la valeur d'une
 variable d'environnement. Notez que certaines variables d'environnement
 peuvent être définies après le traitement de la règle, annulant par
@@ -384,7 +385,7 @@ CustomLog "logs/access_log" combined env=!image</pre>
 est présentée à titre d'exemple et non de recommandation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a></h2>
+<h2><a name="flag_end" id="flag_end">END</a> <a title="" href="#flag_end" class="permalink">&para;</a></h2>
 <p>L'utilisation du drapeau [END] permet non seulement de terminer le
 processus de réécriture en cours (comme [L]), mais aussi d'empêcher tout
 processus de réécriture ultérieur dans un contexte de répertoire
@@ -394,7 +395,7 @@ processus de réécriture ultérieur dans un contexte de répertoire
 redirection externe.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
+<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="" href="#flag_f" class="permalink">&para;</a></h2>
 <p>L'utilisation du drapeau [F] permet de faire envoyer par le serveur au
 client un code de statut "403 Forbidden". Le même effet peut être obtenu à
 l'aide de la directive <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>,
@@ -417,7 +418,7 @@ réponse est renvoyée immédiatement, et aucune autre règle n'est évaluée.</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a></h2>
+<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="" href="#flag_g" class="permalink">&para;</a></h2>
 <p>Le drapeau [G] permet de faire envoyer par le serveur un code de statut
 "410 Gone" avec la réponse. Ce code indique qu'une ressource qui était
 disponible auparavant ne l'est plus actuellement.</p>
@@ -433,7 +434,7 @@ réponse est renvoyée immédiatement, et aucune autre règle n'est évaluée.</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a></h2>
+<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Force le traitement de la requête résultante par le gestionnaire
 spécifié. Par exemple, on peut utiliser ce drapeau pour forcer
 l'interprétation de tous les fichiers sans extension par le gestionnaire
@@ -467,7 +468,7 @@ rationnelle.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a></h2>
+<h2><a name="flag_l" id="flag_l">L|last</a> <a title="" href="#flag_l" class="permalink">&para;</a></h2>
 <p>Lorsque le drapeau [L] est présent, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 arrête le traitement du jeu de règles. Cela signifie dans la plupart des
 situations que si la règle s'applique, aucune autre règle ne sera
@@ -513,7 +514,7 @@ RewriteRule "^(.*)" "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a></h2>
+<h2><a name="flag_n" id="flag_n">N|next</a> <a title="" href="#flag_n" class="permalink">&para;</a></h2>
 <p>Le drapeau [N] provoque un redémarrage du traitement des règles
 depuis le début, en utilisant le résultat du jeu de règles, sous
 réserve qu'il existe un point de démarrage ; à utiliser avec précautions
@@ -547,7 +548,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a></h2>
+<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>Avec le drapeau [NC], le modèle de la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est comparé à la requête de
 manière insensible à la casse. C'est à dire que cette comparaison
 s'effectue sans tenir compte des majuscules/minuscules dans l'URI
@@ -562,7 +563,7 @@ bien que <code>.JPG</code> seront acceptés.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a></h2>
+<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>Par défaut, lorsqu’une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> résulte en une redirection externe,
 tout caractère dans la sortie qui ne fait pas partie de l’ensemble sûr suivant
 est converti en son code hexa (encodage avec caractère pourcentage) :</p>
@@ -594,7 +595,7 @@ qui aurait provoqué un code d'erreur "404 Not Found".
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a></h2>
+<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>Le drapeau [NS] empêche la règle de s'appliquer aux sous-requêtes.
 Par exemple, une page incluse au moyen d'une SSI (Server
 Side Include) est une sous-requête, et vous ne voudrez probablement pas que
@@ -621,7 +622,7 @@ appelle sous forme de requêtes HTTP à part entière.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a></h2>
+<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="" href="#flag_p" class="permalink">&para;</a></h2>
 <p>L'utilisation du drapeau [P] entraîne le traitement de la requête par
 le module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et ceci via une requête de
 mandataire. Par exemple, si vous voulez que toutes les requêtes d'images
@@ -674,7 +675,7 @@ utiliser ce drapeau.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a></h2>
+<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 Par défaut, la cible (ou chaîne de substitution) d'une règle
@@ -712,7 +713,7 @@ réécrire vers <code>-</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a></h2>
+<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 Quand l'URI de remplacement contient une chaîne de requête, le
 comportement par défaut de la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est de supprimer la <code>
@@ -735,7 +736,7 @@ autrement dit, la chaîne de requête (<code>query string</code>) existante sera
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a></h2>
+<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 Lorsque l'URI de la requête contient une chaîne de paramètres, et si
 l'URI cible n'en contient pas, le comportement par défaut de la
@@ -760,7 +761,7 @@ l'URI cible.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a></h2>
+<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 Par défaut, le premier (le plus à gauche) point d'interrogation de la
 substitution sépare le chemin de la requête de sa chaîne de paramètres. Avec le
@@ -778,7 +779,7 @@ Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a></h2>
+<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 L'utilisation du drapeau [R] provoque l'envoi d'une redirection au
 navigateur. Si une URL pleinement qualifiée (FQDN - fully qualified domain name)
@@ -816,7 +817,7 @@ spécification de HTTP. Utiliser un code d’état non reconnu provoquera une er
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a></h2>
+<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="" href="#flag_s" class="permalink">&para;</a></h2>
 <p>Le drapeau [S] sert à sauter des règles que vous ne voulez pas voir
 exécuter. La syntaxe du drapeau [S] est [S=<em>N</em>], où
 <em>N</em> correspond au nombre de règles à sauter (sous
@@ -870,7 +871,7 @@ via les directives <code class="directive">&lt;If&gt;</code>, <code class="direc
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a></h2>
+<h2><a name="flag_t" id="flag_t">T|type</a> <a title="" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Définit le type MIME de la réponse résultante renvoyée. L'effet est
 identique à celui de la directive <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>.</p>
 
@@ -907,14 +908,14 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a></h2>
+<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Il est nécessaire de définir ce drapeau pour permettre à une réécriture
     de continuer si la requête HTTP en cours d’écriture possède un point d'interrogation encodé, «&nbsp;%3f&nbsp;», et si le résultat réécrit contient un «&nbsp;?&nbsp;» dans
     la substitution. Cela protège d’une URL malveillante tirant avantage d’une
     capture et d’une resubstitution du point d'interrogation encodé.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a></h2>
+<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>La définition de ce drapeau est requise dans les substitutions à
     l'échelle du serveur qui commencent par une variable ou une référence
     arrière et se résolvent en un chemin du système de fichiers. Ces
@@ -922,25 +923,46 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
     d’une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
 
-    <p>Disponible à partir de la version 2.4.60 du serveur HTTP Apache.</p>
+    <p>2.4.60</p>
  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a></h2>
+<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>Définir ce drapeau empêche la fusion des slashes de début multiples tels
     que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
     nécessaire lorsque la substitution de la règle commence par des slashes
     multiples littéraux.</p>
 
-    <p>Disponible à partir de la version 2.4.62 du serveur HTTP Apache.</p>
+    <p>2.4.62</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

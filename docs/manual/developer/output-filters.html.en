@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Guide to writing output filters</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Guide to writing output filters</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/output-filters.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -35,7 +37,7 @@
     <code>RESOURCE</code>-level or <code>CONTENT_SET</code>-level
     filters though some advice is generic to all types of filter.</p>
   </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#basics">Filters and bucket brigades</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#basics">Filters and bucket brigades</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#invocation">Filter invocation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#brigade">Brigade structure</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#buckets">Processing buckets</a></li>
@@ -45,10 +47,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#nonblock">Non-blocking bucket reads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rules">Ten rules for output filters</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecase1">Use case: buffering in mod_ratelimit</a></li>
-</ul><h3>See also</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Filters and bucket brigades</a></h2>
+<h2><a name="basics" id="basics">Filters and bucket brigades</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     
 
     <p>Each time a filter is invoked, it is passed a <em>bucket
@@ -103,7 +105,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="invocation" id="invocation">Filter invocation</a></h2>
+<h2><a name="invocation" id="invocation">Filter invocation</a> <a title="Permanent link" href="#invocation" class="permalink">&para;</a></h2>
     
 
     <p>For any given request, an output filter might be invoked only
@@ -142,7 +144,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="brigade" id="brigade">Brigade structure</a></h2>
+<h2><a name="brigade" id="brigade">Brigade structure</a> <a title="Permanent link" href="#brigade" class="permalink">&para;</a></h2>
     
 
     <p>A bucket brigade is a doubly-linked list of buckets.  The list
@@ -199,7 +201,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="buckets" id="buckets">Processing buckets</a></h2>
+<h2><a name="buckets" id="buckets">Processing buckets</a> <a title="Permanent link" href="#buckets" class="permalink">&para;</a></h2>
 
     
 
@@ -244,7 +246,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="filtering" id="filtering">Filtering brigades</a></h2>
+<h2><a name="filtering" id="filtering">Filtering brigades</a> <a title="Permanent link" href="#filtering" class="permalink">&para;</a></h2>
     
 
     <p>The basic function of any output filter will be to iterate
@@ -297,7 +299,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="state" id="state">Maintaining state</a></h2>
+<h2><a name="state" id="state">Maintaining state</a> <a title="Permanent link" href="#state" class="permalink">&para;</a></h2>
 
     
 
@@ -332,7 +334,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="buffer" id="buffer">Buffering buckets</a></h2>
+<h2><a name="buffer" id="buffer">Buffering buckets</a> <a title="Permanent link" href="#buffer" class="permalink">&para;</a></h2>
     
 
     <p>If a filter decides to store buckets beyond the duration of a
@@ -381,7 +383,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="nonblock" id="nonblock">Non-blocking bucket reads</a></h2>
+<h2><a name="nonblock" id="nonblock">Non-blocking bucket reads</a> <a title="Permanent link" href="#nonblock" class="permalink">&para;</a></h2>
     
 
     <p>The <code>apr_bucket_read</code> function takes an
@@ -433,7 +435,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rules" id="rules">Ten rules for output filters</a></h2>
+<h2><a name="rules" id="rules">Ten rules for output filters</a> <a title="Permanent link" href="#rules" class="permalink">&para;</a></h2>
     
 
     <p>In summary, here is a set of rules for all output filters to
@@ -485,7 +487,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usecase1" id="usecase1">Use case: buffering in mod_ratelimit</a></h2>
+<h2><a name="usecase1" id="usecase1">Use case: buffering in mod_ratelimit</a> <a title="Permanent link" href="#usecase1" class="permalink">&para;</a></h2>
     
     <p>The <a href="http://svn.apache.org/r1833875">r1833875</a> change is a good
     example to show what buffering and keeping state means in the context of an
@@ -559,10 +561,31 @@ chunk_size = (speed / (1000 / RATE_INTERVAL_MS));</pre>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/output-filters.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

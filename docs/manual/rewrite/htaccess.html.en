@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,16 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite and .htaccess files</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite and .htaccess files</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -40,7 +42,7 @@ processes rules in per-directory context, see the
 <a href="tech.html#InternalAPI">Technical Details</a> document.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#prerequisites">Prerequisites: AllowOverride</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#prerequisites">Prerequisites: AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#path-stripping">What URL does the rule see?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">When you need RewriteBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loops">The [L] flag and looping</a></li>
@@ -51,7 +53,7 @@ declared in .htaccess</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="tech.html">Technical details</a></li><li><a href="../mod/mod_rewrite.html#what_is_matched">What is matched?</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="prerequisites" id="prerequisites">Prerequisites: AllowOverride</a></h2>
+<h2><a name="prerequisites" id="prerequisites">Prerequisites: AllowOverride</a> <a title="Permanent link" href="#prerequisites" class="permalink">&para;</a></h2>
 
 <p>Before <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives in a
 <code>.htaccess</code> file will be processed at all, the server
@@ -88,7 +90,7 @@ ability to circumvent directory restrictions
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="path-stripping" id="path-stripping">What URL does the rule see?</a></h2>
+<h2><a name="path-stripping" id="path-stripping">What URL does the rule see?</a> <a title="Permanent link" href="#path-stripping" class="permalink">&para;</a></h2>
 
 <p>In server or virtualhost context, the
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern is
@@ -126,7 +128,7 @@ common source of confusion with per-directory rewriting.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritebase" id="rewritebase">When you need RewriteBase</a></h2>
+<h2><a name="rewritebase" id="rewritebase">When you need RewriteBase</a> <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> makes a substitution in
 <code>.htaccess</code> context, it needs to turn the relative result
@@ -176,7 +178,7 @@ would prepend the filesystem path rather than the URL path.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="loops" id="loops">The [L] flag and looping</a></h2>
+<h2><a name="loops" id="loops">The [L] flag and looping</a> <a title="Permanent link" href="#loops" class="permalink">&para;</a></h2>
 
 <p>In server context, the <code>[L]</code> flag means "stop processing
 the ruleset." In <code>.htaccess</code> context, it means something
@@ -240,7 +242,7 @@ matching rewritten URLs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewritemap-restriction" id="rewritemap-restriction">RewriteMap cannot be
-declared in .htaccess</a></h2>
+declared in .htaccess</a> <a title="Permanent link" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
 can only be declared in server or virtualhost context - not in
@@ -265,7 +267,7 @@ would be prohibitively expensive to repeat each time.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inheritance" id="inheritance">Rule inheritance with RewriteOptions</a></h2>
+<h2><a name="inheritance" id="inheritance">Rule inheritance with RewriteOptions</a> <a title="Permanent link" href="#inheritance" class="permalink">&para;</a></h2>
 
 <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules are <strong>not
 inherited</strong> by subdirectories. If you define rules in
@@ -312,7 +314,7 @@ Available since Apache 2.4.26.</dd>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="debugging" id="debugging">Debugging .htaccess rewrite rules</a></h2>
+<h2><a name="debugging" id="debugging">Debugging .htaccess rewrite rules</a> <a title="Permanent link" href="#debugging" class="permalink">&para;</a></h2>
 
 <p>When <code>.htaccess</code> rules are not doing what you expect,
 the rewrite log is your most important tool. Enable it at the
@@ -334,12 +336,33 @@ performance.</div>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

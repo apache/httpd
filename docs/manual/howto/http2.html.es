@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,16 +17,17 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
 <p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Gu&#237;a HTTP/2</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Gu&#237;a HTTP/2</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/http2.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div>
 <div class="outofdate">Esta traducci&#243;n podr&#237;a estar
             obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
@@ -38,7 +40,7 @@
         y las directivas se mantengan consistentes en cada veri&#243;n.
     </p>
   </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">El protocolo HTTP/2</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">El protocolo HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#implementation">HTTP/2 en Apache httpd</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#building">Compilar httpd con soporte HTTP/2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basic-config">Configuraci&#243;n b&#225;sica</a></li>
@@ -50,7 +52,7 @@
 </ul><h3>Consulte tambi&#233;n</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">El protocolo HTTP/2</a></h2>
+<h2><a name="protocol" id="protocol">El protocolo HTTP/2</a> <a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2>
     
 
     <p>HTTP/2 es la evoluci&#243;n del protocolo de la capa de aplicaci&#243;n con m&#225;s
@@ -112,7 +114,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 en Apache httpd</a></h2>
+<h2><a name="implementation" id="implementation">HTTP/2 en Apache httpd</a> <a title="Enlace permanente" href="#implementation" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -132,7 +134,7 @@
      </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="building" id="building">Compilar httpd con soporte HTTP/2</a></h2>
+<h2><a name="building" id="building">Compilar httpd con soporte HTTP/2</a> <a title="Enlace permanente" href="#building" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -156,7 +158,7 @@
     <p>Hablando de SSL, necesita estar al tanto de que la mayor&#237;a de los navegadores hablan HTTP/2 solo con URLs <code>https:</code>. As&#237; que necesita un servidor con soporte SSL. Pero no solo eso, necesitar&#225; una librer&#237;a SSL que de soporte a la extensi&#243;n <code>ALPN</code>. Si usa OpenSSL, necesita al menos la versi&#243;n 1.0.2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Configuraci&#243;n b&#225;sica</a></h2>
+<h2><a name="basic-config" id="basic-config">Configuraci&#243;n b&#225;sica</a> <a title="Enlace permanente" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>Cuando tiene un <code>httpd</code> compilado con <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> necesita una configuraci&#243;n b&#225;sica para activarlo. Lo primero, como con cualquier otro m&#243;dulo de Apache, es que necesita cargarlo:</p>
@@ -212,7 +214,7 @@
     como gestionar multiples hosts con el mismo certificado</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">Configuraci&#243;n MPM</a></h2>
+<h2><a name="mpm-config" id="mpm-config">Configuraci&#243;n MPM</a> <a title="Enlace permanente" href="#mpm-config" class="permalink">&para;</a></h2>
     
     
     <p>HTTP/2 est&#225; soportado en todos los m&#243;dulos de multi-proceso que se ofrecen con httpd. Aun as&#237;, si usa el mpm <code class="module"><a href="../mod/prefork.html">prefork</a></code>, habr&#225;  restricciones severas.</p>
@@ -226,7 +228,7 @@
     <p>Si realmente est&#225; obligado a usar <code class="module"><a href="../mod/prefork.html">prefork</a></code> y quiere multiples solicitudes, puede configurar la directiva <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code> para hacerlo posible. Sin embargo, si esto falla, es bajo su cuenta y riesgo.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clientes</a></h2>
+<h2><a name="clients" id="clients">Clientes</a> <a title="Enlace permanente" href="#clients" class="permalink">&para;</a></h2>
     
     
     <p>Casi todos los navegadores modernos dan soporte a HTTP/2, pero solo en conexiones SSL: Firefox (v43), Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome para Android (v49) e Internet Explorer (v11 en Windows10) (<a href="http://caniuse.com/#search=http2">Fuente</a>).</p>
@@ -237,7 +239,7 @@
     <p>Muchos de las implementaciones de clientes que no son navegadores soportan HTTP/2 sobre texto plano, h2c. La m&#225;s vers&#225;til es <a href="https://curl.haxx.se">curl</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Herramientas &#250;tiles para depurar HTTP/2</a></h2>
+<h2><a name="tools" id="tools">Herramientas &#250;tiles para depurar HTTP/2</a> <a title="Enlace permanente" href="#tools" class="permalink">&para;</a></h2>
     
 
     <p>La primera herramienta a mencionar es por supuesto <a href="https://curl.haxx.se">curl</a>. Por favor aseg&#250;rese de que su versi&#243;n soporta HTTP/2 comprobando sus <code>Caracter&#237;sticas</code>:</p>
@@ -261,7 +263,7 @@
     <p>Chrome ofrece logs detallados de HTTP/2 en sus conexiones a trav&#233;s de la <a href="chrome://net-internals/#http2">p&#225;gina especial de net-internals</a>. Tambi&#233;n hay una extensi&#243;n interesante para <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a> y <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a> con la que visualizar cuando su navegador usa HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="push" id="push">Server Push</a></h2>
+<h2><a name="push" id="push">Server Push</a> <a title="Enlace permanente" href="#push" class="permalink">&para;</a></h2>
     
     
     <p>El protocolo HTTP/2 permite al servidor hacer PUSH de respuestas a un cliente que nunca las solicit&#243;. El tono de la conversaci&#243;n es: "Aqu&#237; tiene una solicitud que nunca envi&#243; y la respuesta llegar&#225; pronto..."</p>
@@ -351,7 +353,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="earlyhints" id="earlyhints">"Early Hints"</a></h2>
+<h2><a name="earlyhints" id="earlyhints">"Early Hints"</a> <a title="Enlace permanente" href="#earlyhints" class="permalink">&para;</a></h2>
     
 
     <p>Una alternativa de "Pushear" recursos es mandar una cabecera 
@@ -393,12 +395,33 @@
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/http2.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,16 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Using RewriteMap</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Using RewriteMap</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/rewritemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -34,7 +36,7 @@ the use of the <code class="directive"><a href="../mod/mod_rewrite.html#rewritem
 and provides examples of each of the various <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> types.</p>
 
       </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#int">int: Internal Function</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#txt">txt: Plain text maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd: Randomized Plain Text</a></li>
@@ -46,7 +48,7 @@ and provides examples of each of the various <code class="directive"><a href="..
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="htaccess.html">Per-directory rewrites (.htaccess)</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
    <p>
@@ -117,7 +119,7 @@ scopes. You just can't <strong>declare</strong> it in those scopes.</p>
 may be used, and give examples of each.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="int" id="int">int: Internal Function</a></h2>
+<h2><a name="int" id="int">int: Internal Function</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
     
 
     <p>When a MapType of <code>int</code> is used, the MapSource is one
@@ -161,7 +163,7 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="txt" id="txt">txt: Plain text maps</a></h2>
+<h2><a name="txt" id="txt">txt: Plain text maps</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
     
 
     <p>When a MapType of <code>txt</code> is used, the MapSource is a filesystem path to a
@@ -234,7 +236,7 @@ telephone  328
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rnd" id="rnd">rnd: Randomized Plain Text</a></h2>
+<h2><a name="rnd" id="rnd">rnd: Randomized Plain Text</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
     
 
     <p>When a MapType of <code>rnd</code> is used, the MapSource is a
@@ -281,7 +283,7 @@ static   www1|www1|www2|www3|www4
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbm" id="dbm">dbm: DBM Hash File</a></h2>
+<h2><a name="dbm" id="dbm">dbm: DBM Hash File</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
     
 
     <p>When a MapType of <code>dbm</code> is used, the MapSource is a
@@ -335,7 +337,7 @@ by many requests.
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="prg" id="prg">prg: External Rewriting Program</a></h2>
+<h2><a name="prg" id="prg">prg: External Rewriting Program</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
 
     <p>When a MapType of <code>prg</code> is used, the MapSource is a
     filesystem path to an executable program which will providing the
@@ -423,7 +425,7 @@ is sent <code>SIGKILL</code>.</li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbd" id="dbd">dbd or fastdbd: SQL Query</a></h2>
+<h2><a name="dbd" id="dbd">dbd or fastdbd: SQL Query</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
     
 
     <p>When a MapType of <code>dbd</code> or <code>fastdbd</code> is
@@ -454,7 +456,7 @@ is sent <code>SIGKILL</code>.</li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sharding" id="sharding">URL-based sharding across multiple backends</a></h2>
+<h2><a name="sharding" id="sharding">URL-based sharding across multiple backends</a> <a title="Permanent link" href="#sharding" class="permalink">&para;</a></h2>
 
   
 
@@ -521,7 +523,7 @@ RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"<
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Summary</a></h2>
+<h2><a name="summary" id="summary">Summary</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
     
 
     <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive can
@@ -537,12 +539,33 @@ RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"<
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/rewritemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

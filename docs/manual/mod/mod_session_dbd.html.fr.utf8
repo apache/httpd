@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_session_dbd - Serveur HTTP Apache Version 2.4</title>
+<title>mod_session_dbd  </title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,24 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
 <div id="page-content">
-<div id="preamble"><h1>Module Apache mod_session_dbd</h1>
+<div id="preamble"><h1> mod_session_dbd</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/mod_session_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_session_dbd.html" title="">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des session basé sur DBD/SQL</td></tr>
-<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>session_dbd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_session_dbd.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
-<h3>Sommaire</h3>
+<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Support des session basé sur DBD/SQL</td></tr>
+<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>session_dbd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_session_dbd.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<h3 />
 
     <div class="warning"><h3>Avertissement</h3>
       <p>Les modules de session font usage des cookies HTTP, et peuvent
@@ -67,7 +69,7 @@
     la documentation du module <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>.</p>
 
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><h3>Sujets</h3>
+<div id="quickview"><h3 />
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#dbdconfig">Configuration de DBD</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#anonymous">Sessions anonymes</a></li>
@@ -75,7 +77,7 @@
     utilisateur</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#housekeeping">Nettoyage de la base de
     données</a></li>
-</ul><h3 class="directives">Directives</h3>
+</ul><h3 class="directives" />
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdcookiename">SessionDBDCookieName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdcookiename2">SessionDBDCookieName2</a></li>
@@ -86,7 +88,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdselectlabel">SessionDBDSelectLabel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_dbd">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_dbd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session_dbd" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session_dbd" /></li></ul><h3 />
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>
@@ -95,7 +97,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbdconfig" id="dbdconfig">Configuration de DBD</a></h2>
+<h2><a name="dbdconfig" id="dbdconfig">Configuration de DBD</a> <a title="" href="#dbdconfig" class="permalink">&para;</a></h2>
 
       <p>Pour que le module <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> puisse être
       configuré et maintenir une session, il faut tout d'abord
@@ -119,7 +121,7 @@ DBDPrepareSQL "delete from session where expiry != 0 and expiry &lt; %lld" clean
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="anonymous" id="anonymous">Sessions anonymes</a></h2>
+<h2><a name="anonymous" id="anonymous">Sessions anonymes</a> <a title="" href="#anonymous" class="permalink">&para;</a></h2>
 
       <p>Les sessions anonymes sont identifiées par un UUID unique, et
       stockées dans un cookie au niveau du navigateur. Cette méthode est
@@ -147,7 +149,7 @@ SessionDBDCookieName session path=/</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="peruser" id="peruser">Sessions propres à un
-    utilisateur</a></h2>
+    utilisateur</a> <a title="" href="#peruser" class="permalink">&para;</a></h2>
 
       <p>Les sessions propres à un utilisateur sont identifiées par le
       nom de l'utilisateur authentifié avec succès. Ceci permet
@@ -176,7 +178,7 @@ SessionDBDPerUser On</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="housekeeping" id="housekeeping">Nettoyage de la base de
-    données</a></h2>
+    données</a> <a title="" href="#housekeeping" class="permalink">&para;</a></h2>
       <p>Avec le temps, la base de données va commencer à accumuler des
       sessions expirées. Pour le moment, le module
       <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code> n'est pas en mesure de gérer
@@ -189,15 +191,15 @@ SessionDBDPerUser On</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdcookiename" id="sessiondbdcookiename">Directive</a> <a name="SessionDBDCookieName" id="SessionDBDCookieName">SessionDBDCookieName</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDCookieName" id="SessionDBDCookieName">SessionDBDCookieName</a> <a name="sessiondbdcookiename" id="sessiondbdcookiename" /> <a title="" href="#sessiondbdcookiename" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 qui contient
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nom et attributs du cookie RFC2109 qui contient
 l'identifiant de session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName <var>nom</var> <var>attributs</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDCookieName <var>nom</var> <var>attributs</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDCookieName</code> permet
     de spécifier le nom et les attributs optionnels d'un cookie
@@ -220,15 +222,15 @@ SessionDBDCookieName session path=/private;domain=example.com;httponly;secure;ve
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdcookiename2" id="sessiondbdcookiename2">Directive</a> <a name="SessionDBDCookieName2" id="SessionDBDCookieName2">SessionDBDCookieName2</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDCookieName2" id="SessionDBDCookieName2">SessionDBDCookieName2</a> <a name="sessiondbdcookiename2" id="sessiondbdcookiename2" /> <a title="" href="#sessiondbdcookiename2" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2965 qui contient
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nom et attributs du cookie RFC2965 qui contient
 l'identifiant de session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDCookieName2 <var>nom</var> <var>attributs</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDCookieName2</code> permet
     de spécifier le nom et les attributs optionnels d'un cookie
@@ -251,15 +253,15 @@ SessionDBDCookieName2 session path=/private;domain=example.com;httponly;secure;v
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdcookieremove" id="sessiondbdcookieremove">Directive</a> <a name="SessionDBDCookieRemove" id="SessionDBDCookieRemove">SessionDBDCookieRemove</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDCookieRemove" id="SessionDBDCookieRemove">SessionDBDCookieRemove</a> <a name="sessiondbdcookieremove" id="sessiondbdcookieremove" /> <a title="" href="#sessiondbdcookieremove" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les cookies de session doivent être supprimés
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si les cookies de session doivent être supprimés
 des en-têtes HTTP entrants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDCookieRemove On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDCookieRemove On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDCookieRemove On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDCookieRemove On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDCookieRemove</code> permet
     de déterminer si les cookies contenant l'identifiant de session
@@ -275,15 +277,15 @@ des en-têtes HTTP entrants</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbddeletelabel" id="sessiondbddeletelabel">Directive</a> <a name="SessionDBDDeleteLabel" id="SessionDBDDeleteLabel">SessionDBDDeleteLabel</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDDeleteLabel" id="SessionDBDDeleteLabel">SessionDBDDeleteLabel</a> <a name="sessiondbddeletelabel" id="sessiondbddeletelabel" /> <a title="" href="#sessiondbddeletelabel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour supprimer des sessions de la
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>La requête SQL à utiliser pour supprimer des sessions de la
 base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDDeleteLabel <var>étiquette</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDDeleteLabel deletesession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDDeleteLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDDeleteLabel deletesession</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDDeleteLabel</code> permet
     de définir l'étiquette de la requête de suppression à utiliser par
@@ -294,15 +296,15 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdinsertlabel" id="sessiondbdinsertlabel">Directive</a> <a name="SessionDBDInsertLabel" id="SessionDBDInsertLabel">SessionDBDInsertLabel</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDInsertLabel" id="SessionDBDInsertLabel">SessionDBDInsertLabel</a> <a name="sessiondbdinsertlabel" id="sessiondbdinsertlabel" /> <a title="" href="#sessiondbdinsertlabel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour insérer des sessions dans la
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>La requête SQL à utiliser pour insérer des sessions dans la
 base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDInsertLabel <var>étiquette</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDInsertLabel insertsession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDInsertLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDInsertLabel insertsession</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDInsertLabel</code> permet
     de définir l'étiquette de la requête d'insertion par défaut à
@@ -317,14 +319,14 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdperuser" id="sessiondbdperuser">Directive</a> <a name="SessionDBDPerUser" id="SessionDBDPerUser">SessionDBDPerUser</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDPerUser" id="SessionDBDPerUser">SessionDBDPerUser</a> <a name="sessiondbdperuser" id="sessiondbdperuser" /> <a title="" href="#sessiondbdperuser" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active une session propre à un utilisateur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDPerUser Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active une session propre à un utilisateur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDPerUser On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDPerUser Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDPerUser</code> permet
     d'activer une session propre à un utilisateur, dont la clé sera le
@@ -334,15 +336,15 @@ base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdselectlabel" id="sessiondbdselectlabel">Directive</a> <a name="SessionDBDSelectLabel" id="SessionDBDSelectLabel">SessionDBDSelectLabel</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDSelectLabel" id="SessionDBDSelectLabel">SessionDBDSelectLabel</a> <a name="sessiondbdselectlabel" id="sessiondbdselectlabel" /> <a title="" href="#sessiondbdselectlabel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour sélectionner des sessions
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>La requête SQL à utiliser pour sélectionner des sessions
 dans la base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDSelectLabel <var>étiquette</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDSelectLabel selectsession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDSelectLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDSelectLabel selectsession</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDSelectLabel</code> permet
     de définir l'étiquette de la requête de sélection par défaut à
@@ -352,15 +354,15 @@ dans la base de données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="sessiondbdupdatelabel" id="sessiondbdupdatelabel">Directive</a> <a name="SessionDBDUpdateLabel" id="SessionDBDUpdateLabel">SessionDBDUpdateLabel</a></h2>
+<div class="directive-section"><h2><a name="SessionDBDUpdateLabel" id="SessionDBDUpdateLabel">SessionDBDUpdateLabel</a> <a name="sessiondbdupdatelabel" id="sessiondbdupdatelabel" /> <a title="" href="#sessiondbdupdatelabel" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La requête SQL à utiliser pour mettre à jour des sessions
+<tr><th><a href="directive-dict.html#Description">:</a></th><td>La requête SQL à utiliser pour mettre à jour des sessions
 préexistantes dans la base de données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionDBDUpdateLabel <var>étiquette</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionDBDUpdateLabel updatesession</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_dbd</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionDBDUpdateLabel <var>étiquette</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionDBDUpdateLabel updatesession</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
+<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">SessionDBDUpdateLabel</code> permet
     de définir l'étiquette de la requête de mise à jour par défaut à
@@ -378,13 +380,34 @@ préexistantes dans la base de données</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/mod/mod_session_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>: </span><a href="../en/mod/mod_session_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_session_dbd.html" title="">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

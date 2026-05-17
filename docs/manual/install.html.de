@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,20 +17,21 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Kompilieren und Installieren</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Kompilieren und Installieren</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Verf&#252;gbare Sprachen: </span><a href="./de/install.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
             nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
@@ -52,7 +54,7 @@
     <p>Wenn Sie von einer Unterversion auf die n&#228;chste aktualisieren (z.B.
     von 2.0.50 auf 2.0.51), springen Sie bitte zum Abschnitt <a href="#upgrading">Upgrade</a>.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">&#220;berblick f&#252;r die Ungeduldigen</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">&#220;berblick f&#252;r die Ungeduldigen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#requirements">Anforderungen</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#download">Download</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#extract">Auspacken</a></li>
@@ -65,7 +67,7 @@
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="programs/configure.html">Den Quellcode konfigurieren</a></li><li><a href="invoking.html">Apache starten</a></li><li><a href="stopping.html">Beenden und Neustarten</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">&#220;berblick f&#252;r die Ungeduldigen</a></h2>
+<h2><a name="overview" id="overview">&#220;berblick f&#252;r die Ungeduldigen</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -128,7 +130,7 @@
     Installationsvorganges genauer beschrieben.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Anforderungen</a></h2>
+<h2><a name="requirements" id="requirements">Anforderungen</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Folgende Anforderungen gelten f&#252;r die Erstellung des
     Apache:</p>
@@ -182,7 +184,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="download" id="download">Download</a></h2>
+<h2><a name="download" id="download">Download</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>Der Apache kann von der <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     Downloadseite</a> heruntergeladen werden, auf der verschiedene Spiegelserver
@@ -205,7 +207,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Auspacken</a></h2>
+<h2><a name="extract" id="extract">Auspacken</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Das Auspacken des Quellcodes aus dem Apache HTTPD Tarball besteht
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
@@ -222,7 +224,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Den Codebaum konfigurieren</a></h2>
+<h2><a name="configure" id="configure">Den Codebaum konfigurieren</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>Der n&#228;chste Schritt ist die Konfiguration des
     Apache-Codebaumes f&#252;r Ihre spezielle Plattform und Ihre
@@ -296,7 +298,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Erstellen</a></h2>
+<h2><a name="compile" id="compile">Erstellen</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Nun k&#246;nnen Sie die verschiedenen Teile, die das Apache-Paket
     bilden, einfach durch Ausf&#252;hren des folgenden Befehls erstellen:</p>
@@ -309,7 +311,7 @@
     der Module, die Sie aktiviert haben, sehr stark variieren.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">Installieren</a></h2>
+<h2><a name="install" id="install">Installieren</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Nun endlich installieren Sie das Package unter dem konfigurierten
     Installations-<em>PREFIX</em> (siehe oben: Option <code>--prefix</code>
@@ -321,7 +323,7 @@
     oder Dokumente nicht &#252;berschrieben.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Anpassen</a></h2>
+<h2><a name="customize" id="customize">Anpassen</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Als n&#228;chstes k&#246;nnen Sie Ihren Apache HTTP Server anpassen,
     indem Sie die <a href="configuring.html">Konfigurationsdateien</a>
@@ -334,7 +336,7 @@
     Sie unter <a href="http://httpd.apache.org/docs/2.4/">http://httpd.apache.org/docs/2.4/</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="test" id="test">Testen</a></h2>
+<h2><a name="test" id="test">Testen</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Sie k&#246;nnen nun Ihren Apache HTTP Server <a href="invoking.html">starten</a>, indem Sie einfach</p>
 
@@ -352,7 +354,7 @@
   <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrade</a></h2>
+<h2><a name="upgrading" id="upgrading">Upgrade</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>Der erste Schritt beim Aktualisieren besteht darin, die
     Versionsank&#252;ndigung sowie die <code>CHANGES</code>-Datei in der
@@ -405,15 +407,36 @@
 <p><span>Verf&#252;gbare Sprachen: </span><a href="./de/install.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

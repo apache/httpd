@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,16 +17,17 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
 <p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Tutorial de Apache: Contenido Din&#225;mico con CGI</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Tutorial de Apache: Contenido Din&#225;mico con CGI</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/cgi.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -34,17 +36,17 @@
             documentaci&#243;n para comprobar si se han producido cambios
             recientemente.</div>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introducci&#243;n</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introducci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurando Apache para permitir CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">Escribiendo un programa CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">&#161;Pero todav&#237;a no funciona!</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">&#191;Qu&#233; ocurre entre bastidores?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#libraries">M&#243;dulos/librer&#237;as CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">Para m&#225;s informaci&#243;n</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Introducci&#243;n</a></h2>
+<h2><a name="intro" id="intro">Introducci&#243;n</a> <a title="Enlace permanente" href="#intro" class="permalink">&para;</a></h2>
 	    
 		<table class="related"><tr><th>M&#243;dulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
 
@@ -57,7 +59,7 @@
 		iniciaci&#243;n para escribir programas CGI.</p>
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurando Apache para permitir CGI</a></h2>
+<h2><a name="configuring" id="configuring">Configurando Apache para permitir CGI</a> <a title="Enlace permanente" href="#configuring" class="permalink">&para;</a></h2>
 		
 
         <p>Para conseguir que sus programas CGI funcionen correctamente,
@@ -207,7 +209,7 @@
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">Escribiendo un programa CGI</a></h2>
+<h2><a name="writing" id="writing">Escribiendo un programa CGI</a> <a title="Enlace permanente" href="#writing" class="permalink">&para;</a></h2>
         
 
         <p>Hay dos diferencias principales entre programaci&#243;n ``regular'' y 
@@ -271,7 +273,7 @@ print "Hola, Mundo.";</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">&#161;Pero todav&#237;a no funciona!</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">&#161;Pero todav&#237;a no funciona!</a> <a title="Enlace permanente" href="#troubleshoot" class="permalink">&para;</a></h2>
         
 
         <p>Hay 4 cosas b&#225;sicas que puede llegar a ver en su navegador cuando
@@ -448,7 +450,7 @@ print "Hola, Mundo.";</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">&#191;Qu&#233; ocurre entre bastidores?</a></h2>
+<h2><a name="behindscenes" id="behindscenes">&#191;Qu&#233; ocurre entre bastidores?</a> <a title="Enlace permanente" href="#behindscenes" class="permalink">&para;</a></h2>
         
 
         <p>En cuanto tenga conocimiento avanzado de programaci&#243;n CGI, le ser&#225; 
@@ -546,7 +548,7 @@ foreach my $key (keys %ENV) {
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">M&#243;dulos/librer&#237;as CGI</a></h2>
+<h2><a name="libraries" id="libraries">M&#243;dulos/librer&#237;as CGI</a> <a title="Enlace permanente" href="#libraries" class="permalink">&para;</a></h2>
         
 
         <p>Cuando escribe programas CGI, deber&#237;a considerar usar una librer&#237;a de
@@ -566,7 +568,7 @@ foreach my $key (keys %ENV) {
         </p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">Para m&#225;s informaci&#243;n</a></h2>
+<h2><a name="moreinfo" id="moreinfo">Para m&#225;s informaci&#243;n</a> <a title="Enlace permanente" href="#moreinfo" class="permalink">&para;</a></h2>
         
 
         <p>La especificaci&#243;n actual de CGI est&#225; disponible en el
@@ -589,14 +591,35 @@ foreach my $key (keys %ENV) {
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/cgi.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/cgi.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

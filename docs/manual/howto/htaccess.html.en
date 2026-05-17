@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,16 +17,17 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server Tutorial: .htaccess files</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server Tutorial: .htaccess files</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
@@ -35,7 +37,7 @@
 changes on a per-directory basis, without modifying the main server 
 configuration files directly.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess files</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#what">What they are/How to use them</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#when">When (not) to use .htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#how">How directives are applied</a></li>
@@ -44,15 +46,15 @@ configuration files directly.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Rewrite Rules in .htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI example</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Troubleshooting</a></li>
-</ul><h3>See also</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess files</a></h2>
+<h2><a name="related" id="related">.htaccess files</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="what" id="what">What they are/How to use them</a></h2>
+<h2><a name="what" id="what">What they are/How to use them</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> files (or "distributed configuration files")
@@ -84,6 +86,10 @@ configuration files directly.</p>
     specifying what value must be in <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> in order for that
     directive to be permitted.</p>
 
+    <div class="note">The default value of <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> is <code>None</code>.
+    This means <code>.htaccess</code> files are completely ignored
+    unless you explicitly enable them for a directory.</div>
+
     <p>For example, if you look at the documentation for the <code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code>
     directive, you will find that it is permitted in <code>.htaccess</code>
     files. (See the Context line in the directive summary.) The <a href="../mod/directive-dict.html#Context">Override</a> line reads
@@ -92,7 +98,7 @@ configuration files directly.</p>
     honored in <code>.htaccess</code> files.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="when" id="when">When (not) to use .htaccess files</a></h2>
+<h2><a name="when" id="when">When (not) to use .htaccess files</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>If you have access to the main server configuration file, you
     should put all of your configuration there instead of in
@@ -197,7 +203,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how" id="how">How directives are applied</a></h2>
+<h2><a name="how" id="how">How directives are applied</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p>The configuration directives found in a <code>.htaccess</code> file
     are applied to the directory in which the <code>.htaccess</code> file
@@ -260,7 +266,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">Authentication example</a></h2>
+<h2><a name="auth" id="auth">Authentication example</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>As with any <code>.htaccess</code> use, placing these directives in
     a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> block is
@@ -284,7 +290,7 @@ Require group admins</pre>
     more complete discussion of authentication and authorization.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes example</a></h2>
+<h2><a name="ssi" id="ssi">Server Side Includes example</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>Another use of <code>.htaccess</code> files is to enable Server Side
     Includes for a particular directory. This may be done with the following
@@ -304,7 +310,7 @@ AddHandler server-parsed shtml</pre>
     complete discussion of server-side includes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a></h2>
+<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a> <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 <p>When using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in
 <code>.htaccess</code> files, be aware that the per-directory context
 changes things a bit. In particular, rules are taken to be relative to
@@ -336,7 +342,7 @@ further details on using <code class="module"><a href="../mod/mod_rewrite.html">
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI example</a></h2>
+<h2><a name="cgi" id="cgi">CGI example</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <div class="note">CGI scripts are a legacy mechanism for dynamic content. For new
     deployments, consider using <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> with a
@@ -369,7 +375,7 @@ SetHandler cgi-script</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a></h2>
+<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>When you put configuration directives in a <code>.htaccess</code>
     file, and you don't get the desired effect, there are a number of
@@ -417,15 +423,36 @@ SetHandler cgi-script</pre>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/htaccess.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

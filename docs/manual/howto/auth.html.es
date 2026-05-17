@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,19 +17,20 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
 <p class="apache">Versi&#243;n 2.4 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Autenticaci&#243;n y Autorizaci&#243;n</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&#243;n</a> &gt; <a href="../">Versi&#243;n 2.4</a> &gt; <a href="./">How-To / Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Autenticaci&#243;n y Autorizaci&#243;n</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/auth.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">Esta traducci&#243;n podr&#237;a estar
             obsoleta. Consulte la versi&#243;n en ingl&#233;s de la
@@ -43,7 +45,7 @@
 
     <p>Para informaci&#243;n de control de acceso de forma gen&#233;rica visite<a href="access.html">How to de Control de Acceso</a>.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">M&#243;dulos y Directivas Relacionados</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">M&#243;dulos y Directivas Relacionados</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introducci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">Los Prerequisitos</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">Conseguir que funcione</a></li>
@@ -56,10 +58,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#beyond">M&#225;s all&#225; de la Autorizaci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#socache">Cache de Autenticaci&#243;n</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">M&#225;s informaci&#243;n</a></li>
-</ul><h3>Consulte tambi&#233;n</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">M&#243;dulos y Directivas Relacionados</a></h2>
+<h2><a name="related" id="related">M&#243;dulos y Directivas Relacionados</a> <a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
 
 <p>Hay tres tipos de m&#243;dulos involucrados en los procesos de la autenticaci&#243;n 
 	y autorizaci&#243;n. Normalmente deber&#225;s escoger al menos un m&#243;dulo de cada grupo.</p>
@@ -116,7 +118,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducci&#243;n</a></h2>
+<h2><a name="introduction" id="introduction">Introducci&#243;n</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
     <p>Si se tiene informaci&#243;n en nuestra p&#225;gina web que sea informaci&#243;n 
     	sensible o pensada para un grupo reducido de usuarios/personas,
     	las t&#233;cnicas que se describen en este manual, le servir&#225;n  
@@ -132,7 +134,7 @@
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a> <a title="Enlace permanente" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>Las directivas que se usan en este art&#237;culo necesitaran ponerse ya sea 
     	en el fichero de configuraci&#243;n principal del servidor ( t&#237;picamente en 
     	la secci&#243;n 
@@ -171,7 +173,7 @@
     para la configuraci&#243;n y uso de autenticaci&#243;n y autorizaci&#243;n en el servidor web.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a></h2>
+<h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a> <a title="Enlace permanente" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Aqu&#237; est&#225; lo b&#225;sico de c&#243;mo proteger con contrase&#241;a un directorio en tu
      servidor.</p>
 
@@ -295,7 +297,7 @@ Require user rbowen
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que m&#225;s de una persona 
-	entre</a></h2>
+	entre</a> <a title="Enlace permanente" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>Las directivas mencionadas arriba s&#243;lo permiten a una persona 
     (especialmente con un usuario que en ej ejemplo es <code>rbowen</code>) 
     en el directorio. En la mayor&#237;a de los casos, se querr&#225; permitir el acceso
@@ -360,7 +362,7 @@ Require group GroupName</pre>
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a></h2>
+<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a> <a title="Enlace permanente" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Debido a la forma en que se especifica la autenticaci&#243;n b&#225;sica,
     su nombre de usuario y la contrase&#241;a deben ser verificados cada vez 
     que se solicita un documento desde el servidor. Esto es, incluso si&nbsp;
@@ -381,7 +383,7 @@ Require group GroupName</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dbmdbd" id="dbmdbd">M&#233;todo alternativo de almacenamiento de las 
-	contrase&#241;as</a></h2>
+	contrase&#241;as</a> <a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
 
     <p>Debido a que el almacenamiento de las contrase&#241;as en texto plano tiene 
     	el problema mencionado anteriormente, puede que se prefiera guardar 
@@ -408,7 +410,7 @@ Require group GroupName</pre>
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para m&#225;s detalles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Uso de m&#250;ltiples proveedores</a></h2>
+<h2><a name="multprovider" id="multprovider">Uso de m&#250;ltiples proveedores</a> <a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
 
     <p>Con la introducci&#243;n de la nueva autenticaci&#243;n basada en un proveedor y
      una arquitectura de autorizaci&#243;n, ya no estaremos restringidos a un &#250;nico
@@ -470,7 +472,7 @@ Require group GroupName</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">M&#225;s all&#225; de la Autorizaci&#243;n</a></h2>
+<h2><a name="beyond" id="beyond">M&#225;s all&#225; de la Autorizaci&#243;n</a> <a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
 
     <p>El modo en que la autorizaci&#243;n puede ser aplicada es ahora mucho m&#225;s flexible
     	que us solo chequeo contra un almac&#233;n de datos (contrase&#241;as). Ordenando la 
@@ -646,7 +648,7 @@ Require group GroupName</pre>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Cache de Autenticaci&#243;n</a></h2>
+<h2><a name="socache" id="socache">Cache de Autenticaci&#243;n</a> <a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
 	<p>
 		Puede haber momentos en que la autenticaci&#243;n ponga una carga 
 		inaceptable en el proveedor (de autenticaci&#243;n) o en tu red.
@@ -661,7 +663,7 @@ Require group GroupName</pre>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">M&#225;s informaci&#243;n</a></h2>
+<h2><a name="moreinformation" id="moreinformation">M&#225;s informaci&#243;n</a> <a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>
     	Tambi&#233;n deber&#237;a leer la documentaci&#243;n para
@@ -686,15 +688,36 @@ Require group GroupName</pre>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/auth.html" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&#243;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

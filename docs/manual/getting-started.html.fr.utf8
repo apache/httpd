@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Pour démarrer - Serveur HTTP Apache Version 2.4</title>
+<title>Pour démarrer  </title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -16,35 +17,35 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
-<p class="apache">Serveur HTTP Apache Version 2.4</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
+<p class="apache" />
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Pour démarrer</h1>
+<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div><div id="page-content"><div id="preamble"><h1>Pour démarrer</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/getting-started.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate" />
 
 <p>Si vous ne connaissez rien au serveur HTTP Apache, ou même au
 fonctionnement d'un site web, vous vous demandez probablement par où
 commencer et quelles questions poser. Ce document vous permettra de
 parcourir les bases du sujet.</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Clients, serveurs et URLs</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Clients, serveurs et URLs</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#dns">Noms d'hôte et DNS</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#configuration">Fichiers de configuration et directives</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#content">Contenu du site web</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#logs">Fichiers journaux et résolution des problèmes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Et maintenant, comment faire pour aller plus loin ?</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso" /></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="clientserver" id="clientserver">Clients, serveurs et URLs</a></h2>
+<h2><a name="clientserver" id="clientserver">Clients, serveurs et URLs</a> <a title="" href="#clientserver" class="permalink">&para;</a></h2>
 
 
 <p>
@@ -85,7 +86,7 @@ journaux</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dns" id="dns">Noms d'hôte et DNS</a></h2>
+<h2><a name="dns" id="dns">Noms d'hôte et DNS</a> <a title="" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>Pour se connecter à un serveur, le client doit tout d'abord traduire
@@ -121,7 +122,7 @@ dernier : </p>
 et à propos du DNS à <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Fichiers de configuration et directives</a></h2>
+<h2><a name="configuration" id="configuration">Fichiers de configuration et directives</a> <a title="" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>La configuration du serveur HTTP Apache s'effectue via de simples
@@ -164,7 +165,7 @@ configuration du serveur. Vous trouverez plus de détails à propos des fichiers
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="content" id="content">Contenu du site web</a></h2>
+<h2><a name="content" id="content">Contenu du site web</a> <a title="" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>Si le contenu du site web peut se présenter sous de nombreuses
@@ -204,7 +205,7 @@ ce document, et nous vous invitons à consulter le site de leur éditeur
 pour accéder à leur documentation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Fichiers journaux et résolution des problèmes</a></h2>
+<h2><a name="logs" id="logs">Fichiers journaux et résolution des problèmes</a> <a title="" href="#logs" class="permalink">&para;</a></h2>
 
 <p>En tant qu'administrateur d'un serveur HTTP Apache, vos sources
 d'informations principales sont les fichiers journaux, et en particulier
@@ -229,7 +230,7 @@ l'erreur.</p>
 <p>Vous trouverez plus de détails à ce sujet dans la <a href="logs.html">Documentation sur la journalisation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="other" id="other">Et maintenant, comment faire pour aller plus loin ?</a></h2>
+<h2><a name="other" id="other">Et maintenant, comment faire pour aller plus loin ?</a> <a title="" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>La question des prérequis étant réglée, il est temps de passer aux
@@ -249,14 +250,35 @@ nombreuses choses que vous devez savoir.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/getting-started.html" title="Français">&nbsp;fr&nbsp;</a> |
+<p><span>: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/getting-started.html" title="">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

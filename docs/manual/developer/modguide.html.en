@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Developing modules for the Apache HTTP Server 2.4</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Developing modules for the Apache HTTP Server 2.4</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -29,7 +31,7 @@
 <p>This document explains how you can develop modules for the Apache HTTP 
 Server 2.4</p>
 </div>
-<div id="quickview"><a href="https://www.apache.org/foundation/contributing.html" class="badge"><img src="https://www.apache.org/images/SupportApache-small.png" alt="Support Apache!" /></a><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#basics">Defining a module</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hooking">Getting started: Hooking into the server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#handling">Building a handler</a></li>
@@ -40,7 +42,7 @@ Server 2.4</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <h3><a name="what" id="what">What we will be discussing in this document</a></h3>
 <p>
 This document will discuss how you can create modules for the Apache 
@@ -89,7 +91,7 @@ as simple as:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Defining a module</a></h2>
+<h2><a name="basics" id="basics">Defining a module</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
 <p>
 <img src="../images/build_a_mod_3.png" alt="Module name tags" /><br />
 Every module starts with the same declaration, or name tag if you will, 
@@ -139,7 +141,7 @@ return to all these elements later in this document.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="hooking" id="hooking">Getting started: Hooking into the server</a></h2>
+<h2><a name="hooking" id="hooking">Getting started: Hooking into the server</a> <a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
 <h3><a name="hook_intro" id="hook_intro">An introduction to hooks</a></h3>
 <p>
 When handling requests in Apache HTTP Server 2.4, the first thing you will need to do is 
@@ -248,7 +250,7 @@ can create. Some other ways of hooking are:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handling" id="handling">Building a handler</a></h2>
+<h2><a name="handling" id="handling">Building a handler</a> <a title="Permanent link" href="#handling" class="permalink">&para;</a></h2>
 <p>
 A handler is essentially a function that receives a callback when a request 
 to the server is made. It is passed a record of the current request (how it was 
@@ -713,7 +715,7 @@ This version in its entirety can be found here:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Adding configuration options</a></h2>
+<h2><a name="configuration" id="configuration">Adding configuration options</a> <a title="Permanent link" href="#configuration" class="permalink">&para;</a></h2>
 <p>
 In this next segment of this document, we will turn our eyes away from the 
 digest module and create a new example module, whose only function is to 
@@ -1068,7 +1070,7 @@ configuration file.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="context" id="context">Context aware configurations</a></h2>
+<h2><a name="context" id="context">Context aware configurations</a> <a title="Permanent link" href="#context" class="permalink">&para;</a></h2>
 <h3><a name="context_intro" id="context_intro">Introduction to context aware configurations</a></h3>
 <p>
 In Apache HTTP Server 2.4, different URLs, virtual hosts, directories etc can have very 
@@ -1556,7 +1558,7 @@ void *merge_dir_conf(apr_pool_t *pool, void *BASE, void *ADD)
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Summing up</a></h2>
+<h2><a name="summary" id="summary">Summing up</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
 <p>
 We have now looked at how to create simple modules for Apache HTTP Server 2.4 and 
 configuring them. What you do next is entirely up to you, but it is my 
@@ -1567,7 +1569,7 @@ or check out the rest of our documentation for further tips.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="snippets" id="snippets">Some useful snippets of code</a></h2>
+<h2><a name="snippets" id="snippets">Some useful snippets of code</a> <a title="Permanent link" href="#snippets" class="permalink">&para;</a></h2>
 
 <h3><a name="get_post" id="get_post">Retrieve variables from POST form data</a></h3>
 
@@ -1720,10 +1722,31 @@ static int example_handler(request_rec *r)
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>
