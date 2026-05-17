@@ -898,17 +898,17 @@ URI in request' warnings.
 spec.  Using an unrecognized status code will result in a 500 error and
 error log message.</p>
 
-<note type="warning"><title>[R=4xx] is still a redirect</title>
+<note type="warning"><title>[R=4xx] does not serve the substitution</title>
 <p>When a status code outside the 300-399 range is specified (e.g.,
-<code>[R=403]</code> or <code>[R=410]</code>), the substitution string
-is dropped and httpd sends a bare error response &mdash; it does not
-serve any content from the substitution URL, nor does it invoke your
-<directive module="core">ErrorDocument</directive> pages.
-If you want to deny access while also serving a custom error page,
-use the <a href="#flag_f">[F]</a> or <a href="#flag_g">[G]</a> flags
-instead, or combine a
-<code>[R=4xx]</code> rule with an
-<directive module="core">ErrorDocument</directive> directive.</p>
+<code>[R=403]</code> or <code>[R=410]</code>), the
+<em>substitution string is ignored</em>. The URL you wrote as the
+target is not served to the client. Instead, httpd returns the
+specified status code and handles it through the normal error
+response path (including any configured
+<directive module="core">ErrorDocument</directive>).
+If you want to deny access, the <a href="#flag_f">[F]</a> and
+<a href="#flag_g">[G]</a> flags are clearer ways to express the
+same intent.</p>
 </note>
 
 <highlight language="config">
