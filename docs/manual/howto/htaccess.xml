@@ -96,6 +96,11 @@ AccessFileName ".config"
     module="core">AllowOverride</directive> in order for that
     directive to be permitted.</p>
 
+    <note>The default value of <directive
+    module="core">AllowOverride</directive> is <code>None</code>.
+    This means <code>.htaccess</code> files are completely ignored
+    unless you explicitly enable them for a directory.</note>
+
     <p>For example, if you look at the documentation for the <directive
     module="core">AddDefaultCharset</directive>
     directive, you will find that it is permitted in <code>.htaccess</code>
