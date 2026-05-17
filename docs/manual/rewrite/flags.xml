@@ -898,6 +898,19 @@ URI in request' warnings.
 spec.  Using an unrecognized status code will result in a 500 error and
 error log message.</p>
 
+<note type="warning"><title>[R=4xx] is still a redirect</title>
+<p>When a status code outside the 300-399 range is specified (e.g.,
+<code>[R=403]</code> or <code>[R=410]</code>), the substitution string
+is dropped and httpd sends a bare error response &mdash; it does not
+serve any content from the substitution URL, nor does it invoke your
+<directive module="core">ErrorDocument</directive> pages.
+If you want to deny access while also serving a custom error page,
+use the <a href="#flag_f">[F]</a> or <a href="#flag_g">[G]</a> flags
+instead, or combine a
+<code>[R=4xx]</code> rule with an
+<directive module="core">ErrorDocument</directive> directive.</p>
+</note>
+
 <highlight language="config">
 # Redirect requests for the old docs path to the new location.
 RewriteRule "^/docs/(.*)$" "http://docs.example.com/$1" [R=301,L]
