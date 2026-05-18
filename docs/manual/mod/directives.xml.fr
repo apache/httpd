@@ -27,17 +27,17 @@
   <summary>
     <p>
       Toutes les directives Apache disponibles dans la distribution standard
-      d'Apache sont r&eacute;f&eacute;renc&eacute;es ici. Elles sont d&eacute;crites en utilisant un
-      format normalis&eacute;, et <a href="directive-dict.html"
-      rel="Glossary">un dictionnaire</a> des termes utilis&eacute;s dans leurs
+      d'Apache sont référencées ici. Elles sont décrites en utilisant un
+      format normalisé, et <a href="directive-dict.html"
+      rel="Glossary">un dictionnaire</a> des termes utilisés dans leurs
       descriptions est disponible.
     </p>
 
     <p>
       Un <a href="quickreference.html">
-      Document de r&eacute;f&eacute;rence rapide des directives</a>
-      est &eacute;galement disponible. Il fournit des d&eacute;tails &agrave; propos de chaque directive
-      sous une forme abr&eacute;g&eacute;e.
+      Document de référence rapide des directives</a>
+      est également disponible. Il fournit des détails à propos de chaque directive
+      sous une forme abrégée.
     </p>
   </summary>
 </directiveindex>

@@ -799,7 +799,7 @@ static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 
 static void ssl_print_cert_info(BIO *bio, X509 *cert)
 {
-    X509_NAME *dn;
+    const X509_NAME *dn;
     EVP_PKEY *pk;
     char buf[1024];
 

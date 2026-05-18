@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933438:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite 技术细节</title>
+
+<summary>
+<p>本文档讨论 <module>mod_rewrite</module> 和 URL 匹配的一些技术细节。</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 简介</a></seealso>
+<seealso><a href="remapping.html">重定向和重映射</a></seealso>
+<seealso><a href="access.html">访问控制</a></seealso>
+<seealso><a href="vhosts.html">虚拟主机</a></seealso>
+<seealso><a href="proxy.html">代理</a></seealso>
+<seealso><a href="rewritemap.html">使用 RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高级技术</a></seealso>
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="InternalAPI"><title>API 阶段</title>
+
+    <p>Apache HTTP 服务器分多个阶段处理请求。在每个阶段，
+    一个或多个模块可能被调用来处理请求生命周期的那个部分。
+    这些阶段包括 URL 到文件名转换、身份验证、授权、内容和日志记录等。
+    （这不是一个详尽的列表。）</p>
+
+    <p><module>mod_rewrite</module> 在其中两个阶段（或通常所说的"钩子"）
+    中起作用，以影响 URL 的重写方式。</p>
+
+    <p>首先，它使用 URL 到文件名转换钩子，该钩子在 HTTP
+    请求被读取之后、但在任何授权开始之前触发。其次，它使用 Fixup 钩子，
+    该钩子在授权阶段之后、在目录级配置文件（<code>.htaccess</code> 文件）
+    被读取之后、但在内容处理程序被调用之前触发。</p>
+
+    <p>当请求进入并确定了对应的服务器或虚拟主机后，
+    重写引擎开始处理出现在服务器级配置中的所有 <module>mod_rewrite</module>
+    指令。（即在主服务器配置文件和 <directive module="core"
+    type="section">Virtualhost</directive> 配置段中。）
+    这发生在 URL 到文件名转换阶段。</p>
+
+    <p>几个步骤之后，一旦找到最终的数据目录，
+    就会应用目录级配置指令（<code>.htaccess</code> 文件和 <directive
+    module="core" type="section">Directory</directive> 块）。
+    这发生在 Fixup 阶段。</p>
+
+    <p>在每种情况下，<module>mod_rewrite</module> 都会将
+    <code>REQUEST_URI</code> 重写为新的 URL 或文件名。</p>
+
+    <p>在目录级上下文中（即在 <code>.htaccess</code> 文件和
+    <code>Directory</code> 块中），这些规则在 URL
+    已经被转换为文件名之后才被应用。因此，<module>mod_rewrite</module>
+    最初用来与 <directive module="mod_rewrite">RewriteRule</directive>
+    指令进行比较的 URL 路径是转换后的完整文件系统路径，
+    其中当前目录路径（包括尾部斜杠）已从前面被移除。</p>
+
+    <p>举例来说：如果规则位于 /var/www/foo/.htaccess 中，
+    正在处理对 /foo/bar/baz 的请求，则表达式 ^bar/baz$ 将会匹配。</p>
+
+    <p>如果在目录级上下文中进行了替换，将使用新的 URL
+    发出新的内部子请求，重新开始请求阶段的处理。如果替换是相对路径，
+    <directive module="mod_rewrite">RewriteBase</directive>
+    指令决定在替换前面添加的 URL 路径前缀。在目录级上下文中，
+    必须注意创建的规则最终（在未来某轮目录级重写处理中）不会执行替换，
+    以避免循环。（参见 <a
+    href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
+    以进一步讨论此问题。）</p>
+
+    <p>由于在目录级上下文中对 URL 进行了进一步操作，
+    你需要注意在该上下文中以不同方式编写重写规则。特别要记住，
+    前导目录路径将从你的重写规则所看到的 URL 中被去除。
+    请参考下面的示例以进一步说明。</p>
+
+    <table border="1">
+
+        <tr>
+            <th>规则位置</th>
+            <th>规则</th>
+        </tr>
+
+        <tr>
+            <td>VirtualHost 配置段</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>文档根目录下的 .htaccess 文件</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>images 目录下的 .htaccess 文件</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
+        </tr>
+
+    </table>
+
+    <p>要更深入地了解 <module>mod_rewrite</module> 如何在不同上下文中操作 URL，
+    你应该查阅重写期间生成的<a
+    href="../mod/mod_rewrite.html#logging">日志条目</a>。</p>
+
+</section>
+
+<section id="InternalRuleset"><title>规则集处理</title>
+
+      <p>现在当 <module>mod_rewrite</module> 在这两个 API 阶段被触发时，
+      它从其配置结构中读取已配置的规则集（该配置结构在服务器级上下文中于启动时创建，
+      或在目录级上下文中于 Apache 内核的目录遍历过程中创建）。
+      然后使用包含的规则集（一条或多条规则及其条件）启动 URL 重写引擎。
+      URL 重写引擎本身的操作在两种配置上下文中完全相同。
+      只有最终结果的处理方式不同。</p>
+
+      <p>规则集中规则的顺序很重要，因为重写引擎以一种特殊的（且不太直观的）
+      顺序处理它们。规则如下：重写引擎逐条遍历规则集中的规则
+      （<directive module="mod_rewrite">RewriteRule</directive> 指令），
+      当某条规则匹配时，它会可选地遍历对应的条件
+      （<code>RewriteCond</code> 指令）。由于历史原因，
+      条件写在前面，因此控制流程有点绕。参见图 1 了解更多细节。</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png"
+          alt="RewriteRule 和 RewriteCond 匹配流程" /><br />
+      <dfn>图 1：</dfn>重写规则集的控制流程
+</p>
+      <p>首先，URL 与每条规则的<em>模式</em>进行匹配。如果匹配失败，
+      <module>mod_rewrite</module> 立即停止处理该规则，并继续处理下一条规则。
+      如果<em>模式</em>匹配成功，<module>mod_rewrite</module>
+      会查找对应的规则条件（RewriteCond 指令，
+      在配置中紧接在 RewriteRule 之前出现）。
+      如果没有条件，则用从字符串<em>替换</em>构造的新值替换 URL，
+      并继续其规则循环。但如果存在条件，则启动一个内部循环，
+      按照条件列出的顺序处理它们。对于条件，逻辑是不同的：
+      我们不是将模式与当前 URL 匹配。而是首先通过展开变量、
+      反向引用、映射查找<em>等</em>来创建一个字符串 <em>TestString</em>，
+      然后尝试将 <em>CondPattern</em> 与之匹配。如果模式不匹配，
+      则整组条件和对应规则都失败。如果模式匹配，则处理下一个条件，
+      直到没有更多条件为止。如果所有条件都匹配，
+      则继续用<em>替换</em>替换 URL。</p>
+
+</section>
+
+
+</manualpage>

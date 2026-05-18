@@ -3686,12 +3686,17 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
         newcond->regexp  = regexp;
     }
     else if (newcond->ptype == CONDPAT_AP_EXPR) {
+        int in_htaccess = cmd->pool == cmd->temp_pool;
         unsigned int flags = newcond->flags & CONDFLAG_NOVARY ?
                              AP_EXPR_FLAG_DONT_VARY : 0;
+        /* Use restricted ap_expr() parser in htaccess context. */
+        if (in_htaccess) flags |= AP_EXPR_FLAG_RESTRICTED;
         newcond->expr = ap_expr_parse_cmd(cmd, a2, flags, &err, NULL);
         if (err)
             return apr_psprintf(cmd->pool, "RewriteCond: cannot compile "
-                                "expression \"%s\": %s", a2, err);
+                                "expression%s \"%s\" %s",
+                                in_htaccess ? " in htaccess context" : "",
+                                a2, err);
     }
 
     return NULL;

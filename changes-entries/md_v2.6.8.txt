@@ -1,0 +1,5 @@
+  *) mod_md: update to version 2.6.8
+     - Fix the ARI related `replaces` property in ACME order creation to only
+       be used when the CA supports ARI and it is enabled in the menu config.
+     - Fix compatibility with APR versions before 1.6.0 which do not have
+       `apr_cstr_casecmp` and should use `apr_strnatcasecmp` instead.

@@ -138,17 +138,42 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <p>If you would prefer only the last dot-separated part of the
     filename to be mapped to a particular piece of meta-data, then do
     not use the <code>Add*</code> directives. For example, if you wish
-    to have the file <code>foo.html.cgi</code> processed as a CGI
-    script, but not the file <code>bar.cgi.html</code>, then instead
-    of using <code>AddHandler cgi-script .cgi</code>, use</p>
+    to have the file <code>foo.html.asis</code> served by the <code>send-as-is</code>
+    handler provided by <module>mod_asis</module>
+    script, but not the file <code>bar.asis.html</code>, then instead
+    of using <code>AddHandler send-asis .asis</code>, use</p>
 
     <example><title>Configure handler based on final extension only</title>
     <highlight language="config">
-&lt;FilesMatch "[^.]+\.cgi$"&gt;
-  SetHandler cgi-script
+&lt;FilesMatch "[^.]+\.asis$"&gt;
+  SetHandler send-asis
 &lt;/FilesMatch&gt;
     </highlight>
     </example>
+
+    <note><title>Files with no extension</title>
+    <p>Files with no extension (such as <code>Makefile</code>) cannot
+    be matched by <module>mod_mime</module>'s extension-based directives.
+    To set the content type or charset for such files, use a
+    <directive type="section" module="core">Files</directive> or
+    <directive type="section" module="core">FilesMatch</directive>
+    section instead:</p>
+
+    <highlight language="config">
+# For a specific file:
+&lt;Files "Makefile"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+&lt;/Files&gt;
+
+# For all files with no extension:
+&lt;FilesMatch "^[^.]+$"&gt;
+    ForceType text/plain
+    AddDefaultCharset UTF-8
+    AddDefaultCharset UTF-8
+&lt;/FilesMatch&gt;
+    </highlight>
+    </note>
 
 </section>
 
@@ -161,8 +186,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     designed for transmitting a binary file in an ASCII (text)
     format.</p>
 
-    <p>The <a href="https://www.rfc-editor.org/rfc/rfc2616">HTTP/1.1
-    RFC</a>, section 14.11 puts it this way:</p>
+    <p>The HTTP/1.1 RFC (<rfc>2616</rfc>), section 14.11 puts it this way:</p>
 
     <blockquote cite="https://www.rfc-editor.org/rfc/rfc2616">
       <p>The Content-Encoding entity-header field is used as a modifier to
@@ -361,16 +385,13 @@ handler</description>
     <p>Files having the name <var>extension</var> will be served by the
     specified <var><a href="../handler.html">handler-name</a></var>. This
     mapping is added to any already in force, overriding any mappings that
-    already exist for the same <var>extension</var>. For example, to
-    activate CGI scripts with the file extension <code>.cgi</code>, you
-    might use:</p>
+    already exist for the same <var>extension</var>. For example, to associate 
+    <code>.var</code> files with the <code>type-map</code> handler provided by
+    <module>mod_negotiation</module>, you might use:</p>
 
     <highlight language="config">
-AddHandler cgi-script .cgi
+AddHandler type-map .var
     </highlight>
-
-    <p>Once that has been put into your httpd.conf file, any file containing
-    the <code>.cgi</code> extension will be treated as a CGI program.</p>
 
     <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot. Filenames may have <a
@@ -379,6 +400,7 @@ AddHandler cgi-script .cgi
     them.</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_dir">FallbackResource</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

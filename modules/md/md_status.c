@@ -97,6 +97,31 @@ leave:
     return rv;
 }
 
+static int md_job_json_seems_valid(md_json_t *json, md_store_t *store,
+                                   md_store_group_t group, const char *name,
+                                   apr_pool_t *p)
+{
+
+    if (!json) return FALSE;
+    if ((group == MD_SG_STAGING) &&
+        md_json_getb(json, MD_KEY_FINISHED, NULL) &&
+        md_json_getb(json, MD_KEY_NOTIFIED_RENEWED, NULL)) {
+        md_t *md;
+        /* A finished job in the staging area needs to have produced results */
+        if(!md_exists(store, group, name, p)) return FALSE;
+
+        if (APR_SUCCESS == md_load(store, MD_SG_DOMAINS, name, &md, p)) {
+            int i;
+            for (i = 0; i < md_cert_count(md); ++i) {
+                md_pkey_spec_t *spec = md_pkeys_spec_get(md->pks, i);
+                if(md_pubcert_load(store, group, name, spec, NULL, p) != APR_SUCCESS)
+                    return FALSE;
+            }
+        }
+    }
+    return TRUE;
+}
+
 static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const char *name,
                               struct md_reg_t *reg, int with_log, apr_pool_t *p)
 {
@@ -104,7 +129,13 @@ static apr_status_t job_loadj(md_json_t **pjson, md_store_group_t group, const c
 
     md_store_t *store = md_reg_store_get(reg);
     rv = md_store_load_json(store, group, name, MD_FN_JOB, pjson, p);
-    if (APR_SUCCESS == rv && !with_log) md_json_del(*pjson, MD_KEY_LOG, NULL);
+    if (APR_SUCCESS == rv) {
+        if (!md_job_json_seems_valid(*pjson, store, group, name, p)) {
+          *pjson = NULL;
+          return APR_ENOENT;
+        }
+        if(!with_log) md_json_del(*pjson, MD_KEY_LOG, NULL);
+    }
     return rv;
 }
 
@@ -384,7 +415,8 @@ apr_status_t md_job_load(md_job_t *job)
     apr_status_t rv;
     
     rv = md_store_load_json(job->store, job->group, job->mdomain, MD_FN_JOB, &jprops, job->p);
-    if (APR_SUCCESS == rv) {
+    if ((APR_SUCCESS == rv) &&
+        md_job_json_seems_valid(jprops, job->store, job->group, job->mdomain, job->p)) {
         md_job_from_json(job, jprops, job->p);
     }
     return rv;

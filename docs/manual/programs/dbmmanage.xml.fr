@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 1884207 -->
+<!-- English Revision: 1933136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,13 +29,13 @@
 utilisateurs au format DBM</title>
 
 <summary>
-    <p><code>dbmmanage</code> permet de créer et de maintenir les
+    <p><program>dbmmanage</program> permet de créer et de maintenir les
     fichiers au format DBM où sont stockés les noms d'utilisateurs et
     mots de passe à des fins d'authentification de base des utilisateurs
     HTTP via le module <module>mod_authn_dbm</module>. Il est possible
     de restreindre l'accès aux ressources disponibles sur le serveur
     HTTP Apache aux seuls utilisateurs spécifiés dans les fichiers créés
-    par <code>dbmmanage</code>. Ce programme ne peut être utilisé
+    par <program>dbmmanage</program>. Ce programme ne peut être utilisé
     qu'avec des fichiers d'utilisateurs au format DBM. Pour
     l'utilisation de fichiers textes, voir le programme
     <program>htpasswd</program>.</p>
@@ -186,20 +186,20 @@ utilisateurs au format DBM</title>
     GDBM, et Berkeley DB 2. Malheureusement, toutes ces bibliothèques
     utilisent des formats de fichiers différents, et vous devez vous
     assurer que le format de fichier utilisé par <var>nom-fichier</var>
-    correspond au format attendu par <code>dbmmanage</code>.
-    Actuellement, <code>dbmmanage</code> n'a aucun moyen de savoir à
+    correspond au format attendu par <program>dbmmanage</program>.
+    Actuellement, <program>dbmmanage</program> n'a aucun moyen de savoir à
     quel type de fichier DBM il a à faire. S'il est utilisé avec un
     format inapproprié, il ne renverra rien, ou pourra créer un fichier
     DBM différent avec un nom différent, ou au pire, va corrompre le
     fichier DBM si vous avez tenté de le modifier.</p>
 
-    <p><code>dbmmanage</code> possède une liste de préférences en
+    <p><program>dbmmanage</program> possède une liste de préférences en
     matière de formats DBM, définies dans le tableau
     <code>@AnyDBM::ISA</code> au début du programme. Comme nous
     préférons le format de fichier Berkeley DB 2, l'ordre dans lequel
-    <code>dbmmanage</code> va rechercher les bibliothèques système est
+    <program>dbmmanage</program> va rechercher les bibliothèques système est
     Berkeley DB 2, puis NDBM, GDBM et enfin SDBM. La première
-    bibliothèque trouvée sera celle que <code>dbmmanage</code> tentera
+    bibliothèque trouvée sera celle que <program>dbmmanage</program> tentera
     d'utiliser pour toutes les opérations sur les fichiers DBM. Cette
     ordre est sensiblement différent de l'ordre standard de Perl
     <code>@AnyDBM::ISA</code>, et de l'ordre utilisé par l'appel

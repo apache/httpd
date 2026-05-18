@@ -238,7 +238,10 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
     <tr><td><code>REQUEST_SCHEME</code></td>
         <td>The scheme part of the request's URI</td></tr>
     <tr><td><code>REQUEST_URI</code></td>
-        <td>The path part of the request's URI</td></tr>
+        <td>The path part of the request's URI, excluding the query
+            string.  Note that this differs from the CGI environment
+            variable of the same name, which includes the query string.
+            </td></tr>
     <tr><td><code>DOCUMENT_URI</code></td>
         <td>Same as <code>REQUEST_URI</code></td></tr>
     <tr><td><code>REQUEST_FILENAME</code></td>
@@ -258,7 +261,7 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;
         <td>The user name of the owner of the script.</td></tr>
     <tr><td><code>SCRIPT_GROUP</code></td>
         <td>The group name of the group of the script.</td></tr>
-    <tr><td><code>PATH_INFO</code></td>
+    <tr><td><glossary ref="pathinfo">PATH_INFO</glossary></td>
         <td>The trailing path name information, see
             <directive module="core">AcceptPathInfo</directive></td></tr>
     <tr><td><code>QUERY_STRING</code></td>

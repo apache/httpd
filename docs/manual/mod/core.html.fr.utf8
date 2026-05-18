@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Fonctionalités de Base Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -33,6 +35,8 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalités de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -138,9 +142,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="acceptfilter" id="acceptfilter">Directive</a> <a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a title="Lien permanent" href="#acceptfilter" class="permalink">&para;</a></h2>
@@ -559,10 +561,11 @@ All pour les versions antérieures</code></td></tr>
 
       <dd>
       Permet l'utilisation des directives contrôlant les fonctionnalités
-      spécifiques d'un répertoire (<code class="directive"><a href="#options">Options</a></code> et <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>). "Options" doit être
-      suivi d'un signe "égal", puis d'une liste d'options séparées par des
-      virgules (pas d'espaces) ; ces options doivent être définies à
-      l'aide de la commande <code class="directive"><a href="#options">Options</a></code>.
+      spécifiques d'un répertoire (<code class="directive"><a href="#options">Options</a></code> et <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).
+      Pour restreindre les options pouvant être outrepassées, ajoutez un
+      signe "égal" suivi d'une liste d'options, séparées par des virgules
+      (sans espaces), pouvant être définies à l'aide de la directive
+      <code class="directive"><a href="#options">Options</a></code>.
 
       <div class="note"><h3>Désactivation implicite des options</h3>
       <p>Bien que la liste des options disponibles dans les fichiers
@@ -633,6 +636,12 @@ All pour les versions antérieures</code></td></tr>
     <code>None</code>, les fichiers <a href="#accessfilename">.htaccess</a> sont totalement ignorés. Dans
     ce cas, le serveur ne cherchera même pas à lire des fichiers
     <code>.htaccess</code> dans le système de fichiers.</p>
+
+    <div class="note">
+    <p>La valeur <code>None</code> ne peut pas être combinée avec d’autres
+    valeurs. Si c’est le cas, une erreur sera produite qui interrompra la
+    lecture de la configuration.</p>
+    </div>
 
     <p>Example:</p>
 
@@ -902,7 +911,7 @@ DESACTIVÉS à partir de la version 2.3.0.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de définir une variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Define <var>nom-paramètre</var> [<var>valeur-paramètre</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -1534,15 +1543,6 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
     directive <code>ErrorDocument 401</code>, elle devra faire référence
     à un document par le biais d'un chemin local.</strong></p>
 
-    <p>Microsoft Internet Explorer (MSIE) ignore par défaut les messages
-    d'erreur générés par le serveur lorsqu'ils sont trop courts et
-    remplacent ses propres messages d'erreur "amicaux". Le seuil de
-    taille varie en fonction du type d'erreur, mais en général, si la
-    taille de votre message d'erreur est supérieure à 512 octets, il y a
-    peu de chances pour que MSIE l'occulte, et il sera affiché par ce
-    dernier. Vous trouverez d'avantage d'informations dans l'article de
-    la base de connaissances Microsoft <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
-
     <p>Bien que la plupart des messages d'erreur internes originaux
     puissent être remplacés, ceux-ci sont cependant conservés dans
     certaines circonstances sans tenir compte de la définition de la
@@ -1773,25 +1773,27 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
         <td>L'heure actuelle</td></tr>
 <tr><td><code>%{u}t</code></td>
         <td>L'heure actuelle avec les microsecondes</td></tr>
-<tr class="odd"><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{m}t</code></td>
+        <td>L'heure actuelle avec les millisecondes</td></tr>
+<tr><td><code>%{cu}t</code></td>
         <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
 	microsecondes</td></tr>
-<tr><td><code>%{cuz}t</code></td>
+<tr class="odd"><td><code>%{cuz}t</code></td>
         <td>L'heure actuelle au format ISO 8601 étendu (compact), avec les
 	microsecondes et la zone horaire au format standard ISO 8601:2000.
 	Disponible depuis la version 2.4.58 seulement</td></tr>
-<tr class="odd"><td><code>%{%-format}t</code></td>
+<tr><td><code>%{%-format}t</code></td>
         <td>L'heure actuelle formatée selon la fonction
 	<code>strftime(3)</code>. Disponible depuis la version 2.4.58
 	seulement</td></tr>
-<tr><td><code>%v</code></td>
+<tr class="odd"><td><code>%v</code></td>
         <td>Le nom de serveur canonique <code class="directive"><a href="#servername">ServerName</a></code> du serveur actuel.</td></tr>
-<tr class="odd"><td><code>%V</code></td>
+<tr><td><code>%V</code></td>
         <td>Le nom de serveur du serveur qui sert la requête en accord
 	avec la définition de la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>.</td></tr>
-<tr><td><code>\&nbsp;</code> (anti-slash espace)</td>
+<tr class="odd"><td><code>\&nbsp;</code> (anti-slash espace)</td>
         <td>Espace non délimiteur</td></tr>
-<tr class="odd"><td><code>%&nbsp;</code> (pourcentage espace)</td>
+<tr><td><code>%&nbsp;</code> (pourcentage espace)</td>
         <td>Délimiteur de champ (aucune sortie)</td></tr>
 </table>
 
@@ -1813,7 +1815,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ 
     <p>Cet exemple renverrait un message d'erreur du style :</p>
 
     <div class="example"><p><code>
-    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
     <p>Notez que, comme indiqué plus haut, certains champs sont
@@ -4385,6 +4387,10 @@ particulier</td></tr>
     <p>En l'absence de toute définition d'options, la valeur par défaut
     est <code>FollowSymlinks</code>.</p>
 
+    <p>Les options <code>All</code> et <code>None</code> doivent être spécifiées
+    en première position. Les modificateurs + et - ne peuvent pas être
+    utilisés avec les options <code>All</code> et <code>None</code>.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="protocol" id="protocol">Directive</a> <a name="Protocol" id="Protocol">Protocol</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
@@ -5579,7 +5585,7 @@ et son port</td></tr>
     <code>http://www.example.com/splat/</code>. Si vous avez activé
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
-    fois pour <code>www.example.com</code> -- voir <a href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
+    fois pour <code>www.example.com</code> -- voir <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">la
     foire aux questions sur ce sujet pour plus d'informations</a>).
     Par contre, si <code class="directive">UseCanonicalName</code> est définie à
     <code>Off</code>, Apache httpd redirigera l'utilisateur vers
@@ -5838,28 +5844,32 @@ Apache.</td></tr>
 <a href="../fr/mod/core.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

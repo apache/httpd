@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -14,14 +15,15 @@
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
 <p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Módulos de MultiProcesamiento (MPMs)</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/mpm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -32,36 +34,32 @@
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 
 <p>Este documento describe que es un Módulo de Multiprocesamiento y
 como los usa Apache.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introducción</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#choosing">Cómo Elegir un MPM</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#defaults">MPM por defecto</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="#comments_section">Comentarios</a></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#static">Compilando un MPM como módulo estático</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#dynamic">Compilando un MPM como módulo DSO</a></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introducción</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 
-    <p>Apache está diseñado para ser un servidor web potente
+    <p>El servidor Apache HTTPD está diseñado para ser un servidor web potente
     y flexible que pueda funcionar en la más amplia variedad de
     plataformas y entornos. Las diferentes plataformas y los
     diferentes entornos, hacen que a menudo sean necesarias diferentes
     características o funcionalidades, o que una misma
     característica o funcionalidad sea implementada de diferente
-    manera para obtener una mayor eficiencia. Apache se ha adaptado
+    manera para obtener una mayor eficiencia. Apache httpd se ha adaptado
     siempre a una gran variedad de entornos a través de su
-    diseño modular. Este diseño permite a los
-    administradores de sitios web elegir que características van
-    a ser incluidas en el servidor seleccionando que módulos se
-    van a cargar, ya sea al compilar o al ejecutar el servidor.</p>
+    diseño modular. Este diseño permite a los administradores de sitios web 
+    elegir que características van a ser incluidas en el servidor seleccionando 
+    que módulos se van a cargar, ya sea al compilar o al ejecutar el servidor.</p>
 
-    <p>Apache 2.0 extiende este diseño modular hasta las
+    <p>El servidor Apache HTTP 2.0 extiende este diseño modular hasta las
     funciones más básicas de un servidor web. El servidor
     viene con una serie de Módulos de MultiProcesamiento que son
     responsables de conectar con los puertos de red de la
@@ -72,22 +70,21 @@ como los usa Apache.</p>
     servidor ofrece dos beneficios importantes:</p>
 
     <ul>
-      <li>Apache puede soportar de una forma más fácil y
+      <li>Apache httpd puede soportar de una forma más fácil y
       eficiente una amplia variedad de sistemas operativos. En
-      concreto, la versión de Windows de Apache es mucho más
+      concreto, la versión del servidor en Windows es mucho más
       eficiente, porque el módulo <code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code>
       puede usar funcionalidades nativas de red en lugar de usar la
-      capa POSIX como hace Apache 1.3. Este beneficio se extiende
+      capa POSIX como hace Apache HTTPD 1.3. Este beneficio se extiende
       también a otros sistemas operativos que implementan sus
-      respectivos MPMs.</li>
+      MPMs especializados.</li>
 
       <li>El servidor puede personalizarse mejor para las necesidades
       de cada sitio web. Por ejemplo, los sitios web que necesitan
-      más que nada escalibildad pueden usar un MPM hebrado como
-      <code class="module"><a href="./mod/worker.html">worker</a></code>, mientras que los sitios web que
+      más que nada escalibildad pueden usar un MPM multihilo como
+      <code class="module"><a href="./mod/worker.html">worker</a></code> o <code class="module"><a href="./mod/event.html">event</a></code>, mientras que los sitios web que
       requieran por encima de otras cosas estabilidad o compatibilidad
-      con software antiguo pueden usar
-      <code class="module"><a href="./mod/prefork.html">prefork</a></code>.
+      con software antiguo pueden usar <code class="module"><a href="./mod/prefork.html">prefork</a></code>.
       </li>
     </ul>
 
@@ -96,26 +93,6 @@ como los usa Apache.</p>
     solo un MPM puede estar cargado en el servidor en un determinado
     momento. La lista de MPMs disponibles está en la <a href="mod/">sección índice de Módulos</a>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="choosing" id="choosing">Cómo Elegir un MPM</a> <a title="Enlace permanente" href="#choosing" class="permalink">&para;</a></h2>
-
-    <p>Los MPMs deben elegirse durante el proceso de
-    configuración, y deben ser compilados en el servidor. Los
-    compiladores son capaces de optimizar muchas funciones si se usan
-    hebras, pero solo si se sabe que se están usando hebras. Como
-    algunos MPM usan hebras en Unix y otros no, Apache tendrá un
-    mejor rendimiento si el MPM es elegido en el momento de compilar y
-    está incorporado en el servidor.</p>
-
-    <p>Para elegir el MPM deseado, use el argumento --with-mpm=
-    <em>NAME</em> con el script ./configure.  <em>NAME</em> es el
-    nombre del MPM deseado.</p>
-
-    <p>Una vez que el servidor ha sido compilado, es posible
-    determinar que MPM ha sido elegido usando <code>./httpd
-    -l</code>. Este comando lista todos los módulos compilados en
-    el servidor, incluido en MPM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="defaults" id="defaults">MPM por defecto</a> <a title="Enlace permanente" href="#defaults" class="permalink">&para;</a></h2>
@@ -132,6 +109,76 @@ especifica lo contrario al compilar.</p>
 <tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
 <tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
+
+<div class="note"><p>Aquí, 'Unix' indicaba sistemas operativos tipo Unix, tales como
+Linux, BSD, Solares, Mac OS X, etc.</p></div>
+
+<p>En el caso de Unix, la decisiónd e qué MPM se debe instalar se basa
+en dos preguntas:</p>
+<p>1. ¿El sistema soporta hilos?</p>
+<p>2. ¿El sistema soporta thread-safe polling (Especificamente, las funciones
+kqueue y epoll)?</p>
+
+<p>Si la respuesta a ambas preguntas es 'si', el MPM por defecto es
+<code class="module"><a href="./mod/event.html">event</a></code>.</p>
+
+<p>Si la respuesta a #1 es 'si', pero la respues a #2 es 'no', el módulo por
+defecto será <code class="module"><a href="./mod/worker.html">worker</a></code>.</p>
+
+<p>Si la respuesta a ambas preguntas es 'no', entonces el MPM por defecto
+será <code class="module"><a href="./mod/prefork.html">prefork</a></code>.</p>
+
+<p>En términos prácticos, esto significa que el valor por defecto casi siempre
+será <code class="module"><a href="./mod/event.html">event</a></code>, puesto que todos los sistemas operativos modernos
+soportan estas dos características.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="static" id="static">Compilando un MPM como módulo estático</a> <a title="Enlace permanente" href="#static" class="permalink">&para;</a></h2>
+
+    <p>Los MPMs pueden ser compilados como módulos estáticos en todas las plataformas. 
+    Un solo MPM es elegido en tiempo de compilación y se enlaza al servidor. El servidor
+    debe ser recompilado para cambiar el MPM.</p>
+
+    <p>Para anular la elección por defecto de MPM, usar la opción
+    <code>--with-mpm=<em>NOMBRE</em></code> del script
+    <code class="program"><a href="./programs/configure.html">configure</a></code>. <em>NOMBRE</em> es el nombre del MPM deseado.</p>
+
+    <p>Una vez el servidor ha sido compilado, es posible determinar qué MPM fue elegido usando 
+    <code>./httpd -l</code>. Este comando listará cada módulo compilado en el servidor
+    incluyendo el MPM.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamic" id="dynamic">Compilando un MPM como módulo DSO</a> <a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
+
+    <p>En Unix y plataformas similares, MPMs se pueden compilar como módulos
+    DSO y ser cargados dinámicamente en el servidor de la misma forma que otros
+    módulos DSO. Compilar MPMs como módulos DSO permite cambiar de MPM actualizando
+    la directiva <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+    para el MPM en lugar de tener que recompilar el servidor.</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+
+
+    <p>Intentar usar <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+    con más de un MPM dará como un fallo con el siguiente error.</p>
+
+    <div class="example"><p><code>AH00534: httpd: Configuration error: More than one MPM
+    loaded.</code></p></div>
+
+    <p>Esta características se habilita con la opción 
+    <code>--enable-mpms-shared</code> del script <code class="program"><a href="./programs/configure.html">configure</a></code>.
+    Con el parámetro <code><em>all</em></code>, se instalaran todos los MPMs posibles
+    en la plataforma.  Alternativamente, se puede especificar una lista de MPMs 
+    como parámetro.</p>
+
+    <p>El MPM por defecto, bien seleccionado automáticamente o especificado con la
+    opción <code>--with-mpm</code> del script <code class="program"><a href="./programs/configure.html">configure</a></code>
+    script, se cargaran en el fichero de configuración del servidor generado. 
+    Editar la directiva <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> para seleccionar
+    un MPM diferente.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="./de/mpm.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -142,28 +189,32 @@ especifica lo contrario al compilar.</p>
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comentarios</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mpm.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="http://wiki.apache.org/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

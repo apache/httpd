@@ -52,6 +52,7 @@ address)</description>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="mod_authz_core.html#authzresults">Authorization Result States</a></seealso>
 
 <section id="requiredirectives"><title>The Require Directives</title>
 

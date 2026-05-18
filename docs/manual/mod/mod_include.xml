@@ -83,7 +83,7 @@ Options +Includes
     <title>PATH_INFO with Server Side Includes</title>
 
     <p>Files processed for server-side includes no longer accept
-    requests with <code>PATH_INFO</code> (trailing pathname information)
+    requests with <glossary ref="pathinfo">PATH_INFO</glossary> (trailing pathname information)
     by default.  You can use the <directive
     module="core">AcceptPathInfo</directive> directive to
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
@@ -450,13 +450,17 @@ Options +Includes
       default error message will be included.</p>
 
       <example>
-        # Simple example<br />
-        &lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
+<highlight language="html">
+# Simple example
+&lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
+</highlight>
       </example>
 
       <example>
-        # Dedicated onerror paths<br />
-        &lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
+<highlight language="html">
+# Dedicated onerror paths
+&lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
+</highlight>
       </example>
 
       </dd>
@@ -625,10 +629,12 @@ Options +Includes
     <p>The basic flow control elements are:</p>
 
     <example>
-      &lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#else --&gt;<br />
-      &lt;!--#endif --&gt;
+<highlight language="html">
+&lt;!--#if expr="test_condition" --&gt;
+&lt;!--#elif expr="test_condition" --&gt;
+&lt;!--#else --&gt;
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <p>The <code>if</code> element works like an if statement in a
@@ -658,26 +664,24 @@ Options +Includes
     belongs to the 10.0.0.0/8 subnet.</p>
 
     <example>
-      &lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
-      <indent>
-        from local net<br />
-      </indent>
-      &lt;!--#else --&gt;<br />
-      <indent>
-        from somewhere else<br />
-      </indent>
-      &lt;!--#endif --&gt;
+<highlight language="html">
+&lt;!--#if expr='-R "10.0.0.0/8"' --&gt;
+  from local net
+&lt;!--#else --&gt;
+  from somewhere else
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <p>The below example will print "foo is bar" if the variable
     <code>foo</code> is set to the value "bar".</p>
 
     <example>
-      &lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
-      <indent>
-        foo is bar<br />
-      </indent>
-      &lt;!--#endif --&gt;
+<highlight language="html">
+&lt;!--#if expr='v("foo") = "bar"' --&gt;
+  foo is bar
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <note><title>Reference Documentation</title>
@@ -706,12 +710,12 @@ Options +Includes
       for whether access would be granted, not whether the URL exists.</p>
 
       <example><title>Example</title>
-        &lt;!--#if expr="-A /private" --&gt;<br />
-        <indent>
-          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
-          information.<br />
-        </indent>
-        &lt;!--#endif --&gt;
+<highlight language="html">
+&lt;!--#if expr="-A /private" --&gt;
+  Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+  information.
+&lt;!--#endif --&gt;
+</highlight>
       </example>
       </dd>
 
@@ -734,11 +738,11 @@ Options +Includes
       stored in the special variable <code>$0</code></p>
 
       <example><title>Example</title>
-        &lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
-        <indent>
-          &lt;!--#set var="session" value="$1" --&gt;<br />
-        </indent>
-        &lt;!--#endif --&gt;
+<highlight language="html">
+&lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;
+  &lt;!--#set var="session" value="$1" --&gt;
+&lt;!--#endif --&gt;
+</highlight>
       </example>
       </dd>
 
@@ -774,8 +778,10 @@ Options +Includes
     most tightly. Thus, the following are equivalent:</p>
 
     <example>
-      &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
-      &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+<highlight language="html">
+&lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;
+&lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+</highlight>
     </example>
 
     <p>The boolean operators <code>&amp;&amp;</code> and <code>||</code>
@@ -848,6 +854,10 @@ Options +Includes
 SSIEndTag "%&gt;"
     </highlight>
 
+    <note type="warning">
+    Value may not include any whitespace.
+    </note>
+
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
@@ -919,6 +929,10 @@ SSIStartTag "&lt;%"
 SSIEndTag   "%&gt;"
     </highlight>
 
+    <note type="warning">
+    Value may not include any whitespace.
+    </note>
+
     <p>The example given above, which also specifies a matching
     <directive module="mod_include">SSIEndTag</directive>, will
     allow you to use SSI directives as shown in the example
@@ -976,7 +990,7 @@ SSITimeFormat "%R, %B %d, %Y"
         response by adding <code>no-etag</code> to the request notes.</p>
 
       <p>The <directive>SSIETag</directive> directive suppresses this
-        behaviour, and allows the server to generate an <code>ETag</code> header.
+        behavior, and allows the server to generate an <code>ETag</code> header.
         This can be used to enable caching of the output. Note that a backend server
         or dynamic content generator may generate an ETag of its own, ignoring
         <code>no-etag</code>, and this ETag will be passed by
@@ -1016,7 +1030,7 @@ server.</description>
         the <code>Last-Modified</code> header is stripped from the response.</p>
 
       <p>The <directive>SSILastModified</directive> directive overrides this
-        behaviour, and allows the <code>Last-Modified</code> header to be respected
+        behavior, and allows the <code>Last-Modified</code> header to be respected
         if already present, or set if the header is not already present. This can
         be used to enable caching of the output. <directive>SSILastModified</directive>
         can take on the following values:</p>

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1174747:1911948 (outdated) -->
+<!-- English Revision: 1174747:1934161 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -105,6 +105,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
 <syntax>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
 <var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
   <usage>
@@ -412,6 +413,7 @@ URL’ye yönlendirir.</description>
 <syntax>ScriptAlias <var>URL-yolu</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
   <usage>

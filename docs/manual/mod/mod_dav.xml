@@ -53,10 +53,13 @@ Dav On
     must be compiled into the server or loaded at runtime using the
     <directive module="mod_so">LoadModule</directive> directive.</p>
 
-    <p>You may wish to add a <directive module="core" type="section"
-    >Limit</directive> clause inside the <directive module="core"
-    type="section">Location</directive> directive to limit access to
-    DAV-enabled locations. If you want to set the maximum amount of
+    <p>In the example below, <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> is used to ensure that
+    DAV-specific methods (i.e., methods other than <code>GET</code>,
+    <code>POST</code> and <code>OPTIONS</code>) are limited to the
+    authenticated user.</p>
+
+    <p>If you want to set the maximum amount of
     bytes that a DAV client can send at one request, you have to use
     the <directive module="core">LimitXMLRequestBody</directive>
     directive. The "normal" <directive module="core"
@@ -66,16 +69,16 @@ Dav On
     <example><title>Full Example</title>
     <highlight language="config">
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
-    Require all granted
     Dav On
 
     AuthType Basic
     AuthName "DAV"
     AuthUserFile "user.passwd"
 
-    &lt;LimitExcept GET POST OPTIONS&gt;
+    &lt;RequireAny&gt;
+        Require method GET POST OPTIONS
         Require user admin
-    &lt;/LimitExcept&gt;
+    &lt;/RequireAny&gt;
 &lt;/Directory&gt;
       </highlight>
     </example>

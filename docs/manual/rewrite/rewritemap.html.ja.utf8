@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>RewriteMap の使用 - Apache HTTP サーバ バージョン 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteMap の使用</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
+
+
+    <p>このドキュメントは <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブの使用方法を
+説明し、さまざまな <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+タイプの例を提供します。</p>
+
+    <div class="warning">これらの例の多くは、特定のサーバ設定ではそのまま
+動作しないことに注意してください。そのため、単にコピー＆ペーストするのではなく、
+内容を理解することが重要です。</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">はじめに</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#int">int: 内部関数</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#txt">txt: プレーンテキストマップ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd: ランダム化プレーンテキスト</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm: DBM ハッシュファイル</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#prg">prg: 外部書き換えプログラム</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd または fastdbd: SQL クエリ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#summary">まとめ</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">はじめに</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+    
+
+   <p>
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブは、
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> または
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> ディレクティブの
+   コンテキストで呼び出せる外部関数を定義し、正規表現だけでは実行が
+   複雑すぎたり特殊すぎたりする書き換えを行います。この検索のソースは、
+   以下のセクションに記載されているタイプのいずれかで、
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> リファレンス
+   ドキュメントに列挙されています。</p>
+
+   <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+   ディレクティブの構文は以下の通りです:</p>
+
+<pre class="prettyprint lang-config">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</pre>
+
+
+    <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a> は、
+    マップに割り当てる任意の名前で、後のディレクティブで使用します。
+    引数は以下の構文でマップに渡されます:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br /> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>このような構文が出現すると、マップ <em>MapName</em> が参照され、
+      キー <em>LookupKey</em> が検索されます。キーが見つかった場合、
+      マップ関数の構文は <em>SubstValue</em> で置換されます。キーが
+      見つからなかった場合は、<em>DefaultValue</em> で置換されるか、
+      <em>DefaultValue</em> が指定されていない場合は空文字列で
+      置換されます。</p>
+
+    <p>例えば、<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> を
+      以下のように定義できます:</p>
+    <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
+
+    <p>その後、このマップを <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      で以下のように使用できます:</p>
+      <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
+
+
+<p>マップで何も見つからなかった場合に備えて、デフォルト値を指定
+できます:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</pre>
+
+
+<div class="note"><h3>ディレクトリ単位および .htaccess コンテキスト</h3>
+<p>
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブは
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> セクションや
+<code>.htaccess</code> ファイルでは使用できません。マップはサーバまたは
+バーチャルホストのコンテキストで宣言する必要があります。作成したマップは、
+それらのスコープ内の <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+および <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+ディレクティブで使用できます。それらのスコープでマップを
+<strong>宣言</strong>することはできません。</p>
+</div>
+
+<p>以下のセクションでは、使用可能なさまざまな <em>MapType</em> を
+説明し、それぞれの例を示します。</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="int" id="int">int: 内部関数</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+    
+
+    <p>MapType に <code>int</code> を使用すると、MapSource は利用可能な
+    内部 <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> 関数の
+    いずれかになります。モジュール作成者は、
+    <code>ap_register_rewrite_mapfunc</code> API を使用して追加の内部
+    関数を登録できます。
+    デフォルトで提供される関数は以下の通りです:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br />
+             キーをすべて大文字に変換します。</li>
+      <li><strong>tolower</strong>:<br />
+             キーをすべて小文字に変換します。</li>
+      <li><strong>escape</strong>:<br />
+             キー内の特殊文字を 16 進エンコーディングに変換します。</li>
+      <li><strong>unescape</strong>:<br />
+             キー内の 16 進エンコーディングを特殊文字に戻します。</li>
+    </ul>
+
+    <p>
+    これらの関数のいずれかを使用するには、int 関数を参照する
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> を作成し、
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> で使用します:
+    </p>
+
+   <p><strong>URI をすべて小文字のバージョンにリダイレクト</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
+
+
+    <div class="note">
+    <p>ここで提供されている例は説明目的のみであり、推奨ではありません。
+    URL を大文字小文字を区別しないようにしたい場合は、代わりに
+    <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> の使用を検討してください。
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="txt" id="txt">txt: プレーンテキストマップ</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+    
+
+    <p>MapType に <code>txt</code> を使用すると、MapSource はプレーンテキストの
+    マッピングファイルへのファイルシステムパスで、1 行に 1 つのスペース区切りの
+    キー/値ペアが含まれます。オプションで、'#' 文字で始まるコメント行を
+    含めることができます。</p>
+
+    <p>有効なテキスト書き換えマップファイルの構文は以下の通りです:</p>
+
+    <div class="example"><p><code>
+      # コメント行<br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # コメント<br />
+    </code></p></div>
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> が呼び出されると、
+    引数が各行の最初の引数から検索され、見つかった場合は置換値が
+    返されます。</p>
+
+    <p>例えば、マップファイルを使用して製品名を製品 ID に変換し、
+    覚えやすい URL を実現するには、以下のレシピを使用できます:</p>
+<p><strong>製品から ID への設定</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+    <p>ここでは、<code>prods.php</code> スクリプトが
+    <code>id=NOTFOUND</code> という引数を受け取った場合の処理を
+    理解していると仮定しています (検索マップで製品が見つからなかった場合)。</p>
+
+    <p>ファイル <code>/etc/apache2/productmap.txt</code> には
+    以下が含まれます:</p>
+
+    <div class="example"><h3>製品から ID へのマップ</h3><p><code>
+##<br />
+##  productmap.txt - 製品から ID へのマップファイル<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </code></p></div>
+
+    <p>したがって、<code>http://example.com/product/television</code> が
+    リクエストされると、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+    が適用され、リクエストは内部的に <code>/prods.php?id=993</code>
+    にマッピングされます。</p>
+
+    <div class="note"><h3>注: .htaccess ファイル</h3>
+    この例はサーバまたはバーチャルホストのスコープで使用するよう
+    作成されています。<code>.htaccess</code> ファイルで使用する場合は、
+    何かにマッチするように書き換えパターンから先頭のスラッシュを
+    削除する必要があります:
+    <pre class="prettyprint lang-config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+    </div>
+
+    <div class="note"><h3>キャッシュされた検索</h3>
+    <p>
+    検索されたキーは、マップファイルの <code>mtime</code> (変更時刻) が
+    変更されるか、httpd サーバが再起動されるまで httpd にキャッシュ
+    されます。これにより、多くのリクエストで呼び出されるマップの
+    パフォーマンスが向上します。
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rnd" id="rnd">rnd: ランダム化プレーンテキスト</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+    
+
+    <p>MapType に <code>rnd</code> を使用すると、MapSource はプレーンテキストの
+    マッピングファイルへのファイルシステムパスで、各行にはキーと
+    <code>|</code> で区切られた 1 つ以上の値が含まれます。キーが
+    マッチすると、これらの値の 1 つがランダムに選択されます。</p>
+
+    <p>例えば、以下のマップファイルとディレクティブを使用して、
+    リバースプロキシ経由で複数のバックエンドサーバ間のランダムな
+    ロードバランシングを提供できます。画像は 'static' プール内の
+    サーバの 1 つに送信され、それ以外は 'dynamic' プールの 1 つに
+    送信されます。</p>
+
+    <div class="example"><h3>書き換えマップファイル</h3><p><code>
+##<br />
+##  map.txt -- 書き換えマップ<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </code></p></div>
+<p><strong>設定ディレクティブ</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
+
+
+    <p>画像がリクエストされ、最初のルールがマッチすると、
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> はマップファイルで
+    文字列 <code>static</code> を検索し、指定されたホスト名の 1 つを
+    ランダムに返します。それが <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+    のターゲットで使用されます。</p>
+
+    <p>サーバの 1 つがより多く選択されるようにしたい場合
+    (例えば、サーバの 1 つがより多くのメモリを持ち、より多くの
+    リクエストを処理できる場合)、マップファイルにそのサーバを
+    複数回記述してください。</p>
+
+    <div class="example"><p><code>
+static   www1|www1|www2|www3|www4
+    </code></p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbm" id="dbm">dbm: DBM ハッシュファイル</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+    
+
+    <p>MapType に <code>dbm</code> を使用すると、MapSource はマッピングで
+    使用されるキー/値ペアを含む DBM データベースファイルへの
+    ファイルシステムパスです。これは <code>txt</code> マップと
+    まったく同じように動作しますが、DBM はインデックス化されており
+    テキストファイルはそうではないため、はるかに高速です。これにより、
+    目的のキーへのアクセスが高速になります。</p>
+
+    <p>特定の dbm タイプをオプションで指定できます:</p>
+
+ <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
+
+
+    <p>タイプは <code>sdbm</code>、<code>gdbm</code>、<code>ndbm</code>、
+    または <code>db</code> です。
+    ただし、Apache HTTP Server に付属の <a href="../programs/httxt2dbm.html">httxt2dbm</a> ユーティリティを
+    使用することを推奨します。httpd 自体のビルド時に使用されたものと
+    マッチする正しい DBM ライブラリを使用するためです。</p>
+
+    <p>dbm ファイルを作成するには、まず <a href="#txt">txt</a> セクションで
+    説明されているテキストマップファイルを作成し、次に
+    <code>httxt2dbm</code> を実行します:</p>
+
+<div class="example"><p><code>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</code></p></div>
+
+<p>その後、<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+ディレクティブで結果のファイルを参照できます:</p>
+
+<pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
+
+
+<div class="note">
+<p>dbm タイプによっては、共通のベース名で複数のファイルが生成される
+ことがあることに注意してください。例えば、<code>mapfile.map.dir</code>
+と <code>mapfile.map.pag</code> という 2 つのファイルが存在する
+場合があります。これは正常であり、<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+ディレクティブではベース名 <code>mapfile.map</code> のみを使用
+してください。</p>
+</div>
+
+<div class="note"><h3>キャッシュされた検索</h3>
+<p>
+検索されたキーは、マップファイルの <code>mtime</code> (変更時刻) が
+変更されるか、httpd サーバが再起動されるまで httpd にキャッシュ
+されます。これにより、多くのリクエストで呼び出されるマップの
+パフォーマンスが向上します。
+</p>
+</div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prg" id="prg">prg: 外部書き換えプログラム</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+
+    <p>MapType に <code>prg</code> を使用すると、MapSource はマッピング動作を
+    提供する実行可能プログラムへのファイルシステムパスです。これは
+    コンパイル済みバイナリファイル、または Python や Perl などの
+    インタプリタ言語のプログラムです。</p>
+
+    <p>このプログラムは Apache HTTP Server の起動時に一度起動され、
+    <code>STDIN</code> と <code>STDOUT</code> を通じて書き換えエンジンと
+    通信します。各マップ関数の検索では、キーがプログラムの
+    <code>STDIN</code> に書き込まれ、その後に改行文字が続きます。
+    プログラムは <code>STDIN</code> から 1 行 (改行を含む) を読み取り、
+    応答を改行で終わる 1 行として <code>STDOUT</code> に書き込む
+    必要があります。キーに改行文字が含まれることはありません。
+    改行を含むキーが検出された場合、検索は失敗します。</p>
+
+    <p>対応する検索値がない場合、マッププログラムは 4 文字の
+    文字列 "<code>NULL</code>" を返して、これを示す必要があります。
+    この比較は大文字小文字を区別しないため、"null"、"Null" 等も
+    検索失敗として扱われます。その結果、マッピングプログラムが
+    リテラル文字列 "NULL" をマップされた値として返すことは
+    できません。</p>
+
+    <p>プログラムの <code>STDERR</code> は httpd 親プロセスから
+    継承されるため、プログラムが <code>STDERR</code> に書き込む内容は
+    httpd 自体のエラー出力 (通常は <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>) と同じ場所に記録されます。</p>
+
+    <p>外部書き換えプログラムは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code> が <code>on</code> に
+    設定されていないコンテキストで定義されている場合は起動されません。</p>
+
+    <p>デフォルトでは、外部書き換えプログラムは httpd を起動した
+    ユーザ:グループとして実行されます。これは UNIX システムでは
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> の 3 番目の
+    引数として <code>username:groupname</code> 形式でユーザ名と
+    グループ名を渡すことで変更できます。</p>
+
+    <p>この機能は <code>rewrite-map</code> ミューテックスを使用しており、
+    プログラムとの信頼性のある通信に必要です。ミューテックスの
+    メカニズムとロックファイルは <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
+    ディレクティブで設定できます。</p>
+
+    <p>リクエスト URI 内のすべてのダッシュをアンダースコアに置き換える
+    シンプルな例を以下に示します。</p>
+
+    <p><strong>書き換え設定</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
+
+
+    <p><strong>dash2under.py</strong></p>
+    <pre class="prettyprint lang-python">#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)</pre>
+
+
+<div class="note"><h3>注意!</h3>
+<ul>
+<li>書き換えマッププログラムはできるだけシンプルに保ってください。
+プログラムがハングすると、httpd はマップからのレスポンスを
+無期限に待つことになり、その結果 httpd がリクエストへの応答を
+停止します。</li>
+<li>プログラムでバッファリングを必ずオフにしてください。上記の
+Python の例では、<code>print()</code> に <code>flush=True</code> を
+渡すことでこれを行っています。バッファされた I/O は httpd が
+出力を待つ原因となり、ハングします。</li>
+<li>プログラムは 1 コピーのみで、サーバ起動時に開始されることを
+忘れないでください。すべてのリクエストはこの 1 つのボトルネックを
+通過する必要があります。多くのリクエストがこのプロセスを通過する
+必要がある場合や、スクリプト自体が非常に遅い場合、これは
+著しい速度低下を引き起こす可能性があります。</li>
+<li>マッピングプログラムが終了しても、自動的に再起動されません。
+以降の検索はサーバが再起動されるまで失敗します。</li>
+<li>マッピングプログラムは、関連する設定ディレクティブが変更されたか
+どうかに関係なく、サーバの再起動 (graceful またはそれ以外) 時に
+常に kill され再起動されます。シャットダウン時にプログラムには
+<code>SIGTERM</code> が送信されます。3 秒以内に終了しない場合は
+<code>SIGKILL</code> が送信されます。</li>
+</ul>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbd" id="dbd">dbd または fastdbd: SQL クエリ</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+    
+
+    <p>MapType に <code>dbd</code> または <code>fastdbd</code> を使用すると、
+    MapSource は単一の引数を取り、単一の値を返す SQL SELECT 文です。</p>
+
+    <p>この文を実行するために、<code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> を正しい
+    データベースを指すように設定する必要があります。</p>
+
+    <p>この MapType には 2 つの形式があります。
+    MapType に <code>dbd</code> を使用すると、各マップリクエストで
+    クエリが実行されますが、<code>fastdbd</code> を使用すると
+    データベース検索が内部的にキャッシュされます。したがって、
+    <code>fastdbd</code> はより効率的で高速ですが、サーバが
+    再起動されるまでデータベースの変更を検出しません。</p>
+
+    <p>クエリが複数の行を返す場合、結果セットからランダムな行が
+    使用されます。</p>
+
+    <div class="example"><h3>例</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
+</div>
+
+    <div class="note"><h3>注</h3>
+    <p>クエリ名は SQL プリペアドステートメントのラベルとして
+    データベースドライバに渡されるため、データベースで必要な
+    ルール (大文字小文字の区別など) に従う必要があります。</p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="summary" id="summary">まとめ</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブは
+    複数回使用できます。各マッピング関数に対して 1 つの
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブを
+    使用して書き換えマップファイルを宣言してください。</p>
+
+    <p>ディレクトリ単位のコンテキスト (<code>.htaccess</code> ファイルや
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ブロック)
+    ではマップを<strong>宣言</strong>できませんが、ディレクトリ単位の
+    コンテキストでこのマップを<strong>使用</strong>することは可能です。</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

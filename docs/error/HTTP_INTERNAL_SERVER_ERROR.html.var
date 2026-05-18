@@ -47,7 +47,7 @@ Body:----------de--
 
     Die Anfrage kann nicht beantwortet werden, da im Server
     ein interner Fehler aufgetreten ist.
-    Der Server ist entweder &uuml;berlastet oder ein Fehler in
+    Der Server ist entweder überlastet oder ein Fehler in
     einem CGI-Skript ist aufgetreten.
 
   <!--#endif -->
@@ -85,7 +85,7 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;Error del servidor!" -->
+<!--#set var="TITLE" value="¡Error del servidor!" -->
 <!--#include virtual="include/top.html" -->
 
     Se ha producido un error interno en el servidor y no
@@ -100,8 +100,8 @@ Body:----------es--
    <!--#else -->
 
     Se ha producido un error interno en el servidor y no se
-    ha podido completar su solicitud. O el servidor est&aacute;
-    sobrecargado o ha habido un fallo en la ejecuci&oacute;n de 
+    ha podido completar su solicitud. O el servidor está
+    sobrecargado o ha habido un fallo en la ejecución de 
     un programa CGI.
 
   <!--#endif -->
@@ -118,8 +118,8 @@ Body:----------fr--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    Le serveur a &eacute;t&eacute; victime d'une erreur interne et n'a pas
-    &eacute;t&eacute; capable de faire aboutir votre requ&ecirc;te.
+    Le serveur a été victime d'une erreur interne et n'a pas
+    été capable de faire aboutir votre requête.
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -128,9 +128,9 @@ Body:----------fr--
 
   <!--#else -->
 
-    Le serveur a &eacute;t&eacute; victime d'une erreur interne et n'a pas
-    &eacute;t&eacute; capable de faire aboutir votre requ&ecirc;te.
-    Soit le server est surcharg&eacute; soit il s'agit d'une erreur dans
+    Le serveur a été victime d'une erreur interne et n'a pas
+    été capable de faire aboutir votre requête.
+    Soit le server est surchargé soit il s'agit d'une erreur dans
     le script CGI.
 
   <!--#endif -->
@@ -141,26 +141,26 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="Earr&aacute;id fhreastala&iacute;!"
+<!--#set var="TITLE" value="Earráid fhreastalaí!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    Thit an freastala&iacute; ar earr&aacute;id inmhe&aacute;nach
-    agus theip air do chuid iarratais a comhl&iacute;onadh.
+    Thit an freastalaí ar earráid inmheánach
+    agus theip air do chuid iarratais a comhlíonadh.
 
     <!--#include virtual="include/spacer.html" -->
 
-    Teachtaireacht earr&aacute;ide:
+    Teachtaireacht earráide:
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    Thit an freastala&iacute; ar earr&aacute;id inmhe&aacute;nach
-    agus theip air do chuid iarratais a comhl&iacute;onadh.
-    Is f&eacute;idir go bhfuil an freastala&iacute; 
-    r&oacute;l&oacute;aidithe, n&oacute; go raibh earr&aacute;id 
-    i script CGI &eacute;igin.
+    Thit an freastalaí ar earráid inmheánach
+    agus theip air do chuid iarratais a comhlíonadh.
+    Is féidir go bhfuil an freastalaí 
+    rólóaidithe, nó go raibh earráid 
+    i script CGI éigin.
 
   <!--#endif -->
 
@@ -176,7 +176,7 @@ Body:----------it--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    Il server ha generato un errore interno e non &egrave;
+    Il server ha generato un errore interno e non è
     in grado di soddisfare la richiesta.
 
     <!--#include virtual="include/spacer.html" -->
@@ -186,9 +186,9 @@ Body:----------it--
 
   <!--#else -->
 
-    Il server ha generato un errore interno e non &egrave;
+    Il server ha generato un errore interno e non è
     in grado di soddisfare la richiesta. Il server potrebbe
-    essere sovraccarico oppure si &egrave; verificato un
+    essere sovraccarico oppure si è verificato un
     errore in uno script CGI.
 
   <!--#endif -->
@@ -341,8 +341,8 @@ Body:-------pt-br--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
     
-    O servidor encontrou um erro interno e n&atilde;o pode
-    completar sua requisi&ccedil;&atilde;o.   
+    O servidor encontrou um erro interno e não pode
+    completar sua requisição.   
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -351,9 +351,9 @@ Body:-------pt-br--
 
   <!--#else -->
 
-    O servidor encontrou um erro interno e n&atilde;o
-    foi poss&iacute;vel completar sua requisi&ccedil;&atilde;o.
-    O servidor est&aacute; sobrecarregado ou existe um 
+    O servidor encontrou um erro interno e não
+    foi possível completar sua requisição.
+    O servidor está sobrecarregado ou existe um 
     erro em um script CGI.
 
   <!--#endif -->
@@ -369,7 +369,7 @@ Body:----------pt--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-	O servidor encontrou um erro interno e n&atilde;o pode completar
+	O servidor encontrou um erro interno e não pode completar
 	o seu pedido.
 
     <!--#include virtual="include/spacer.html" -->
@@ -379,8 +379,8 @@ Body:----------pt--
 
   <!--#else -->
 
-	O servidor encontrou um erro interno e n&atilde;o pode completar
-	o seu pedido. Ou o servidor est&aacute; sobrecarregado, ou ocorreu
+	O servidor encontrou um erro interno e não pode completar
+	o seu pedido. Ou o servidor está sobrecarregado, ou ocorreu
 	um erro num <i>script</i> CGI.
 
   <!--#endif -->
@@ -480,8 +480,8 @@ Body:----------sv--
 
   <!--#if expr="-n v('REDIRECT_ERROR_NOTES')" -->
 
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran.
+    Servern råkade ut för ett internt fel och det var inte möjligt
+    att slutföra din begäran.
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -490,9 +490,9 @@ Body:----------sv--
 
   <!--#else -->
 
-    Servern r&aring;kade ut f&ouml;r ett internt fel och det var inte m&ouml;jligt
-    att slutf&ouml;ra din beg&auml;ran. Servern &auml;r antingen &ouml;verbelastad
-    eller s&aring; inneh&aring;ller CGI-skriptet fel.
+    Servern råkade ut för ett internt fel och det var inte möjligt
+    att slutföra din begäran. Servern är antingen överbelastad
+    eller så innehåller CGI-skriptet fel.
 
   <!--#endif -->
 

@@ -157,7 +157,8 @@ cache</description>
 <usage>
     <p>The <directive>CacheSocacheMaxSize</directive> directive sets the
     maximum size, in bytes, for the combined headers and body of a document
-    to be considered for storage in the cache. The larger the headers that
+    to be considered for storage in the cache. The value must be at
+    least 1024 bytes. The larger the headers that
     are stored alongside the body, the smaller the body may be.</p>
 
     <p>The <module>mod_cache_socache</module> module will only attempt to

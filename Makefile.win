@@ -508,7 +508,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	 $(MAKE) $(MAKEOPT) -f libhttpd.mak        CFG="libhttpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f libapreq.mak        CFG="libapreq - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f httpd.mak           CFG="httpd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 # build ldap prior to authnz_ldap
 	cd modules\ldap
@@ -539,9 +538,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_authz_host.mak  CFG="mod_authz_host - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_owner.mak CFG="mod_authz_owner - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_user.mak  CFG="mod_authz_user - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
-	cd modules\apreq
-	 $(MAKE) $(MAKEOPT) -f mod_apreq.mak       CFG="mod_apreq - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\arch\win32
 	 $(MAKE) $(MAKEOPT) -f mod_isapi.mak       CFG="mod_isapi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -828,7 +824,6 @@ _build:
 
 _copybin:
 	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
-	copy $(LONG)\libapreq.$(src_dll) 			"$(inst_dll)" <.y
 	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 !IF EXIST("srclib\apr-util")
@@ -872,7 +867,6 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_owner.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
-	copy modules\apreq\$(LONG)\mod_apreq.$(src_so) 	"$(inst_so)" <.y
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_cache_disk.$(src_so)	"$(inst_so)" <.y

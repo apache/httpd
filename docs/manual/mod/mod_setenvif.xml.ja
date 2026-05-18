@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 658546:1915443 (outdated) -->
+<!-- English Revision: 658546:1933502 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -250,7 +250,9 @@
 <directivesynopsis>
 <name>SetEnvIfExpr</name>
 <description>Sets environment variables based on an ap_expr expression</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 

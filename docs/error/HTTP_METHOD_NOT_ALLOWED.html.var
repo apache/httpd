@@ -19,7 +19,7 @@ Body:----------de--
 --><!--#include virtual="include/top.html" -->
 
     Die <!--#echo var="REDIRECT_REQUEST_METHOD" -->-Methode
-    ist f&uuml;r den angeforderten URL nicht erlaubt.
+    ist für den angeforderten URL nicht erlaubt.
 
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -39,10 +39,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;M&eacute;todo no permitido!" -->
+<!--#set var="TITLE" value="¡Método no permitido!" -->
 <!--#include virtual="include/top.html" -->
 
-    No se permite el m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->  
+    No se permite el método <!--#echo var="REDIRECT_REQUEST_METHOD" -->  
     para la URL solicitada.
 
 <!--#include virtual="include/bottom.html" -->
@@ -52,11 +52,11 @@ Content-language: fr
 Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
---><!--#set var="TITLE" value="M&eacute;thode interdite!"
+--><!--#set var="TITLE" value="Méthode interdite!"
 --><!--#include virtual="include/top.html" -->
 
-    La m&eacute;thode <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    n'est pas utilisable pour l'URL demand&eacute;e.
+    La méthode <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    n'est pas utilisable pour l'URL demandée.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
@@ -67,9 +67,9 @@ Body:----------ga--
 <!--#set var="TITLE" value="Modh neamhcheadaithe!"
 --><!--#include virtual="include/top.html" -->
 
-    N&iacute;l cead an modh 
+    Níl cead an modh 
     <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    a &uacute;as&aacute;id leis an URL iarraithe.
+    a úasáid leis an URL iarraithe.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
@@ -82,7 +82,7 @@ Body:----------it--
 --><!--#include virtual="include/top.html" -->
 
     Il metodo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    non &egrave; consentito per l'URL richiesto.
+    non è consentito per l'URL richiesto.
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
@@ -156,11 +156,11 @@ Content-language: pt-br
 Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
---><!--#set var="TITLE" value="M&eacute;todo n&atilde;o permitido!"
+--><!--#set var="TITLE" value="Método não permitido!"
 --><!--#include virtual="include/top.html" -->
 
-    O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    n&atilde;o &eacute; permitido para a URL requisitada.
+    O método <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    não é permitido para a URL requisitada.
 
 <!--#include virtual="include/bottom.html" -->
 -------pt-br--
@@ -168,11 +168,11 @@ Body:-------pt-br--
 Content-language: pt
 Content-type: text/html; charset=ISO-8859-1
 Body:----------pt--
-<!--#set var="TITLE" value="M&eacute;todo n&atilde;o permitido!"
+<!--#set var="TITLE" value="Método não permitido!"
 --><!--#include virtual="include/top.html" -->
 
-	O m&eacute;todo <!--#echo var="REDIRECT_REQUEST_METHOD" --> n&atilde;o
-	&eacute; permitido para o URL pedido.
+	O método <!--#echo var="REDIRECT_REQUEST_METHOD" --> não
+	é permitido para o URL pedido.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -219,11 +219,11 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Metoden inte till&aring;ten!"
+--><!--#set var="TITLE" value="Metoden inte tillåten!"
 --><!--#include virtual="include/top.html" -->
 
     <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    metoden &auml;r inte till&aring;ten f&ouml;r den f&ouml;rfr&aring;gade
+    metoden är inte tillåten för den förfrågade
     adressen.
 
 <!--#include virtual="include/bottom.html" -->

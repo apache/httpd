@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 105569:1924775 (outdated) -->
+<!-- English Revision: 105569:1933587 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -128,6 +128,7 @@
 <description>지정한 저장관리자를 사용하여 지정한 URL을 캐쉬한다</description>
 <syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -158,7 +159,11 @@
 <directivesynopsis>
 <name>CacheHeader</name>
 <description>Add an X-Cache header to the response.</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -167,6 +172,7 @@
 <description>특정 URL을 캐쉬하지 않는다</description>
 <syntax>CacheDisable <var> url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -185,7 +191,10 @@
 <description>문서를 캐쉬하는 초단위 최대시간</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (하루)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -203,7 +212,11 @@
 <directivesynopsis>
 <name>CacheMinExpire</name>
 <description>The minimum time in seconds to cache a document</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -212,7 +225,10 @@
 <description>만기시간을 지정하지않은 문서를 캐쉬할 기본 기간.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (one hour)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -230,42 +246,63 @@
 <directivesynopsis>
 <name>CacheQuickHandler</name>
 <description>Run the cache from the quick handler.</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStaleOnError</name>
 <description>Serve stale content in place of 5xx responses.</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStoreExpired</name>
 <description>Attempt to cache responses that the server reports as expired</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStoreNoStore</name>
 <description>Attempt to cache requests or responses that have been marked as no-store.</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStorePrivate</name>
 <description>Attempt to cache responses that the server has marked as private</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheDetailHeader</name>
 <description>Add an X-Cache-Detail header to the response.</description>
-<contextlist><context>server config</context><context>virtual host</context><context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context>
+      <context>virtual host</context>
+      <context>directory</context>
+      <context>.htaccess</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -274,7 +311,10 @@
 <description>응답에 Last Modified 헤더가 없다는 사실을 무시한다.</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -295,7 +335,8 @@
 <directivesynopsis>
 <name>CacheIgnoreQueryString</name>
 <description>Ignore query string when caching</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -303,7 +344,8 @@
 <name>CacheIgnoreURLSessionIdentifiers</name>
 <description>Ignore defined session identifiers encoded in the URL when caching
 </description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -333,7 +375,9 @@
 <directivesynopsis>
 <name>CacheKeyBaseURL</name>
 <description>Override the base URL of reverse proxied cache keys.</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
@@ -343,7 +387,10 @@
 계수.</description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -372,21 +419,24 @@
 <directivesynopsis>
 <name>CacheLock</name>
 <description>Enable the thundering herd lock.</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheLockMaxAge</name>
 <description>Set the maximum possible age of a cache lock.</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheLockPath</name>
 <description>Set the lock path directory.</description>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 <usage><p>Documentation not yet translated. Please see English version of document.</p></usage>
 </directivesynopsis>
 

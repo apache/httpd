@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933068:1934245 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="remapping.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite によるリダイレクトとリマッピング</title>
+
+<summary>
+
+<p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<module>mod_rewrite</module> を使用してリクエストをリダイレクトおよびリマッピング
+する方法を説明します。<module>mod_rewrite</module> の一般的な使用例を多数含んでおり、
+それぞれの動作についての詳細な説明も含まれています。</p>
+
+<note type="warning">これらの例の多くは、特定のサーバ設定ではそのまま
+動作しないことに注意してください。そのため、単にコピー＆ペーストするのではなく、
+内容を理解することが重要です。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<!--<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>-->
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+<seealso><a href="proxy.html">プロキシ</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap の使用</a></seealso>
+<seealso><a href="advanced.html">高度なテクニック</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+<section id="old-to-new">
+
+  <title>旧 URL から新 URL へ (内部)</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>最近ページ <code>foo.html</code> を <code>bar.html</code> に
+      リネームし、後方互換性のために旧 URL も提供したいとします。
+      ただし、旧 URL のユーザにはページがリネームされたことを
+      気づかせたくありません - つまり、ブラウザのアドレスが
+      変更されないようにします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>以下のルールで旧 URL を内部的に新しいものに書き換えます:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="old-to-new-extern">
+
+  <title>旧 URL から新 URL への書き換え (外部)</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>再び、最近ページ <code>foo.html</code> を <code>bar.html</code>
+      にリネームし、後方互換性のために旧 URL を提供したいとします。
+      しかし今回は、旧 URL のユーザに新しい URL を知らせたい、
+      つまりブラウザの Location フィールドも変更されるようにしたいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>新しい URL への HTTP リダイレクトを強制し、ブラウザと
+      ユーザの表示を変更します:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]
+</highlight>
+</dd>
+
+<dt>議論</dt>
+
+    <dd>
+    <p>この例では、上記の<a href="#old-to-new-intern">内部</a>の例と
+    対比して、単純に Redirect ディレクティブを使用できます。
+    <module>mod_rewrite</module> は、前の例でクライアントからリダイレクトを
+    隠すために使用されました:</p>
+
+    <highlight language="config">
+Redirect "/foo.html" "/bar.html"
+    </highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="movehomedirs">
+
+  <title>リソースの別サーバへの移動</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>リソースが別のサーバに移動した場合、人々がブックマークを
+      更新する間、旧サーバでも URL がしばらく機能し続けるように
+      したいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p><module>mod_rewrite</module> を使用してこれらの URL を新しいサーバに
+      リダイレクトできますが、Redirect や RedirectMatch ディレクティブの
+      使用も検討してください。</p>
+
+<highlight language="config">
+#With mod_rewrite
+RewriteEngine on
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
+</highlight>
+
+<highlight language="config">
+#With RedirectMatch
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
+</highlight>
+
+<highlight language="config">
+#With Redirect
+Redirect "/docs/" "http://new.example.com/docs/"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="static-to-dynamic">
+
+  <title>静的から動的へ</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>静的ページ <code>foo.html</code> を動的バリアント
+      <code>foo.cgi</code> にシームレスに、つまりブラウザ/ユーザに
+      気づかれずに変換するにはどうすればよいでしょうか。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>URL を CGI スクリプトに書き換え、ハンドラを
+      <strong>cgi-script</strong> に強制して、CGI プログラムとして
+      実行されるようにします。
+      これにより、<code>/~quux/foo.html</code> へのリクエストは
+      内部的に <code>/~quux/foo.cgi</code> の呼び出しに
+      つながります。</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="backward-compatibility">
+
+  <title>ファイル拡張子変更の後方互換性</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p><code>document.YYYY</code> から <code>document.XXXX</code> への
+      移行後、例えば <code>.html</code> ファイル群を <code>.php</code> に
+      変換した後に、URL の後方互換性 (仮想的にまだ存在する状態) を
+      どのように保つことができるでしょうか？</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>URL は旧拡張子から新拡張子に書き換えられますが、新拡張子の
+      ターゲットファイルが存在し、かつ旧拡張子の元のファイルが
+      存在しない場合のみです。それ以外の場合、URL はそのまま
+      変更されません。</p>
+
+<highlight language="config">
+#   backward compatibility ruleset for
+#   rewriting document.html to document.php
+#   when and only when document.php exists
+&lt;Directory "/var/www/htdocs"&gt;
+    RewriteEngine on
+    RewriteBase   "/var/www/htdocs"
+
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
+&lt;/Directory&gt;
+</highlight>
+    </dd>
+
+    <dt>議論</dt>
+    <dd>
+    <p>この例では、<module>mod_rewrite</module> のあまり知られていない
+    機能を利用しています。ルールセットの実行順序を活用しています。
+    具体的には、<module>mod_rewrite</module> は RewriteCond ディレクティブを
+    評価する前に RewriteRule の左辺を評価します。
+    そのため、RewriteCond ディレクティブが評価される時点で
+    $1 はすでに定義されています。これにより、同じベースファイル名を使用して
+    元のファイル (<code>document.html</code>) とターゲットファイル
+    (<code>document.php</code>) の存在を確認できます。</p>
+
+    <p>このルールセットはディレクトリ単位のコンテキスト
+    (&lt;Directory&gt; ブロックまたは .htaccess ファイル内) で
+    使用するよう設計されているため、<code>-f</code> チェックは
+    正しいディレクトリパスを参照します。作業しているディレクトリベースを
+    指定するために <directive module="mod_rewrite">RewriteBase</directive>
+    ディレクティブを設定する必要があるかもしれません。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalhost">
+
+<title>正規ホスト名</title>
+
+      <dl>
+        <dt>説明:</dt>
+
+        <dd>このルールの目的は、同じサイトに到達するために使用される
+        可能性のある他のホスト名よりも、特定のホスト名の使用を強制
+        することです。例えば、<strong>example.com</strong> の代わりに
+        <strong>www.example.com</strong> の使用を強制したい場合は、
+        以下のレシピのバリアントを使用できます。</dd>
+
+        <dt>解決方法:</dt>
+
+        <dd>
+
+<p>最善の方法は <module>mod_rewrite</module> をまったく使わず、
+非正規のホスト名用のバーチャルホストに配置した <directive
+module="mod_alias">Redirect</directive> ディレクティブを使用する
+ことです。</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect "/" "http://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName www.example.com
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>あるいは、<directive module="core" type="section">If</directive>
+ディレクティブを使用して実現することもできます:
+(<strong>2.4 以降</strong>)</p>
+
+<highlight language="config">
+&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>あるいは、例えばサイトの一部を HTTPS にリダイレクトするには、
+以下のようにします:</p>
+
+<highlight language="config">
+&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+    Redirect "/admin/" "https://www.example.com/admin/"
+&lt;/If&gt;
+</highlight>
+
+<p>何らかの理由でまだ <module>mod_rewrite</module> を使用したい場合 -
+例えば、より大きな RewriteRule のセットと組み合わせる必要がある場合 -
+以下のレシピのいずれかを使用できます。</p>
+
+<p>ポート 80 以外で実行されているサイトの場合:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+</highlight>
+
+<p>ポート 80 で実行されているサイトの場合:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
+</highlight>
+
+        <p>
+        すべてのドメイン名に対してこれを汎用的に行いたい場合 -
+        つまり、<strong>example.com</strong> のすべての可能な値に対して
+        <strong>example.com</strong> を <strong>www.example.com</strong>
+        にリダイレクトしたい場合 - 以下のレシピを使用できます:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+</highlight>
+
+    <p>これらのルールセットは、メインサーバ設定ファイルまたはサーバの
+    <directive module="core">DocumentRoot</directive> に配置した
+    <code>.htaccess</code> ファイルのいずれでも動作します。</p>
+        </dd>
+      </dl>
+
+</section>
+
+<section id="multipledirs">
+
+  <title>複数のディレクトリでのページ検索</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+      <p>特定のリソースが複数の場所に存在する可能性があり、
+      リクエスト時にそれらの場所でリソースを検索したいとします。
+      おそらく最近ディレクトリ構造を再編成し、コンテンツを
+      複数の場所に分割したためです。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>以下のルールセットは 2 つのディレクトリでリソースを検索し、
+      どちらにも見つからない場合は、リクエストされた場所からそのまま
+      提供しようとします。</p>
+
+<highlight language="config">
+RewriteEngine on
+
+#   first try to find it in dir1/...
+#   ...and if found stop and be happy:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
+
+#   second try to find it in dir2/...
+#   ...and if found stop and be happy:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
+
+#   else go on for other Alias or ScriptAlias directives,
+#   etc.
+RewriteRule "^"     "-"                                          [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="archive-access-multiplexer">
+
+  <title>地理的に分散されたサーバへのリダイレクト</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+    <p>ウェブサイトの多数のミラーがあり、アクセス元の国に最も近い
+    ミラーにリダイレクトしたいとします。</p>
+    </dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+    <p>リクエスト元のクライアントのホスト名を参照して、どの国から
+    アクセスしているかを判定します。IP アドレスの検索ができない場合は、
+    デフォルトサーバにフォールバックします。</p>
+    <p>使用したいサーバのリストを構築するために <directive
+    module="mod_rewrite">RewriteMap</directive> ディレクティブを
+    使用します。</p>
+
+<highlight language="config">
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+</highlight>
+
+<example>
+##  map.mirrors -- マルチプレクシングマップ<br />
+<br />
+de        http://www.example.de/<br />
+uk        http://www.example.uk/<br />
+com       http://www.example.com/<br />
+##EOF##
+</example>
+    </dd>
+
+    <dt>議論</dt>
+    <dd>
+    <note type="warning">このルールセットは
+    <directive module="core">HostNameLookups</directive> が
+    <code>on</code> に設定されていることに依存しており、
+    パフォーマンスに大きな影響を与える可能性があります。</note>
+
+    <p><directive module="mod_rewrite">RewriteCond</directive>
+    ディレクティブは、リクエスト元のクライアントのホスト名の最後の
+    部分 (国コード) をキャプチャし、後続の RewriteRule はその値を
+    使用してマップファイルから適切なミラーホストを検索します。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalurl">
+
+<title>正規 URL</title>
+
+<dl>
+ <dt>説明:</dt>
+
+   <dd>
+     <p>一部のウェブサーバでは、リソースに対して複数の URL が存在します。
+     通常、正規の URL (実際に使用および配布される URL) と、単なる
+     ショートカット、内部用の URL 等があります。ユーザがリクエストで
+     どの URL を提供したかに関係なく、最終的にブラウザのアドレスバーに
+     正規の URL が表示されるようにしたいとします。</p>
+   </dd>
+
+   <dt>解決方法:</dt>
+
+     <dd>
+       <p>すべての非正規 URL に対して外部 HTTP リダイレクトを行い、
+       ブラウザの表示を修正し、以降のすべてのリクエストに反映させます。
+       以下のルールセット例では、<code>/puppies</code> と
+       <code>/canines</code> を正規の <code>/dogs</code> に
+       置き換えます。</p>
+
+<highlight language="config">
+RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
+</highlight>
+        </dd>
+
+     <dt>議論:</dt>
+     <dd>
+     これは実際には Redirect または RedirectMatch ディレクティブで
+     実現すべきです:
+
+     <highlight language="config">
+RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
+     </highlight>
+     </dd>
+      </dl>
+
+</section>
+
+<section id="moveddocroot">
+
+  <title><code>DocumentRoot</code> の移動</title>
+
+  <dl>
+    <dt>説明:</dt>
+
+    <dd>
+<p>通常、ウェブサーバの <directive module="core">DocumentRoot</directive>
+は URL "<code>/</code>" に直接対応します。
+しかし、このデータが最優先ではない場合も多くあります。例えば、
+訪問者がサイトに最初にアクセスしたときに特定のサブディレクトリ
+<code>/about/</code> に移動させたい場合があります。これは以下の
+ルールセットで実現できます:</p>
+</dd>
+
+    <dt>解決方法:</dt>
+
+    <dd>
+      <p>URL <code>/</code> を <code>/about/</code> にリダイレクトします:
+      </p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
+</highlight>
+
+<p>これは <directive module="mod_alias">RedirectMatch</directive>
+ディレクティブでも処理できることに注意してください:</p>
+
+<highlight language="config">
+RedirectMatch "^/$" "http://example.com/about/"
+</highlight>
+
+<p>この例はルート URL のみを書き換えることに注意してください。つまり、
+<code>http://example.com/</code> へのリクエストは書き換えますが、
+<code>http://example.com/page.html</code> へのリクエストは書き換えません。
+実際にドキュメントルートを変更した場合 - つまり、コンテンツの
+<strong>すべて</strong>が実際にそのサブディレクトリにある場合 - URL を
+書き換えるよりも、単に <directive module="core">DocumentRoot</directive>
+ディレクティブを変更するか、すべてのコンテンツを 1 つ上のディレクトリに
+移動する方がはるかに望ましいです。</p>
+</dd>
+</dl>
+
+</section>
+
+<section id="fallback-resource">
+<title>フォールバックリソース</title>
+
+<dl>
+<dt>説明:</dt>
+<dd>特定のディレクトリに来るすべてのリクエストを単一のリソース
+(例えば特定のファイル、index.php など) で処理したいが、
+画像や CSS ファイルなどの既存のリソースへのリクエストは
+そのまま処理したいとします。</dd>
+
+<dt>解決方法:</dt>
+<dd>
+<p>バージョン 2.2.16 以降では、このために <directive
+module="mod_dir">FallbackResource</directive> ディレクティブを
+使用してください:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;
+</highlight>
+
+<p>ただし、以前のバージョンの Apache や、これよりも複雑なニーズがある
+場合は、以下の書き換えセットのバリエーションを使用して同じことを
+実現できます:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
+
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
+&lt;/Directory&gt;
+</highlight>
+
+<p>一方、リクエストされた URI をクエリ文字列引数として index.php に
+渡したい場合は、その RewriteRule を以下に置き換えることができます:</p>
+
+<highlight language="config">
+RewriteRule "(.*)" "index.php?$1" [PT,QSA]
+</highlight>
+
+<p>これらのルールセットは <code>.htaccess</code> ファイルでも
+&lt;Directory&gt; ブロックでも使用できることに注意してください。</p>
+
+</dd>
+
+</dl>
+
+</section>
+
+<section id="rewrite-query">
+<title>クエリ文字列の書き換え</title>
+
+<dl>
+<dt>説明:</dt>
+<dd>クエリ文字列から特定の値をキャプチャし、それを置換するか
+URL の別のコンポーネントに組み込みたいとします。</dd>
+
+<dt>解決方法:</dt>
+<dd>
+<p>このセクションの多くの解決方法は同じ条件を使用し、マッチした値を
+%2 バックリファレンスに残します。%1 はクエリ文字列の先頭 (対象キーまで)、
+%3 は残りの部分です。この条件は、柔軟性のため、また置換で二重の
+'&amp;&amp;' を避けるためにやや複雑です。</p>
+<ul>
+  <li>この方法はマッチするキーと値を削除します:
+
+<highlight language="config">
+# Remove mykey=???
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"
+</highlight>
+  </li>
+
+  <li>この方法はキャプチャした値を URL 置換で使用し、'?' を追加して
+  元のクエリの残りを破棄します:
+
+<highlight language="config">
+# Copy from query string to PATH_INFO
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]
+</highlight>
+  </li>
+
+  <li>この方法は後続の条件でキャプチャした値を確認します:
+
+<highlight language="config">
+# Capture the value of mykey in the query string
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]
+</highlight>
+  </li>
+
+  <li>この方法は前の方法の逆で、URL からパスコンポーネント
+      (おそらく PATH_INFO) をクエリ文字列にコピーします:
+<highlight language="config">
+# The desired URL might be /products/kitchen-sink, and the script expects
+# /path?products=kitchen-sink.
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</section>
+
+
+</manualpage>

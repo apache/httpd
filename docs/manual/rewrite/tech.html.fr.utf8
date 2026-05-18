@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,24 +17,33 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Détails techniques sur le module Apache mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document passe en revue certains détails techniques à propos du
-module mod_rewrite et de la mise en correspondance des URLs</p>
+module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de la mise en correspondance des URLs</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Traitement du jeu de règles</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+correspondance</a></li><li><a href="flags.html">Drapeaux de réécriture</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="htaccess.html">Réécritures en fonction du répertoire</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="InternalAPI" id="InternalAPI">Phases de l'API</a> <a title="Lien permanent" href="#InternalAPI" class="permalink">&para;</a></h2>
@@ -46,7 +56,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
       authentification, autorisation, gestion de contenu ou journalisation (la
       liste n'est pas exhaustive).</p>
 
-    <p>mod_rewrite agit dans deux de ces phases (ou accroches - hooks -
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> agit dans deux de ces phases (ou accroches - hooks -
     comme on les nomme souvent) pour la réécriture des URLs.</p>
 
     <p>Tout d'abord, il utilise le hook traduction URL vers nom de
@@ -59,7 +69,7 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
 
     <p>Lorsqu'une requête arrive et une fois le serveur
     correspondant ou le serveur virtuel déterminé, le moteur de
-    réécriture commence à traiter toute directive apparaissant dans la
+    réécriture commence à traiter toute directive <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> apparaissant dans la
     configuration de niveau serveur (autrement dit dans le
     fichier de configuration principal du serveur et les sections
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>).
@@ -71,76 +81,22 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
     (fichiers <code>.htaccess</code> et sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) sont appliquées. Ce processus
     s'exécute au cours de la phase Fixup.</p>
 
-    <p>Dans tous ces cas, mod_rewrite réécrit le
+    <p>Dans tous ces cas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> réécrit le
     <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
     nom de fichier.</p>
 
-    <p>Dans un contexte de niveau répertoire (autrement dit dans les
-    fichiers <code>.htaccess</code> et les sections
-    <code>Directory</code>), les règles de réécriture s'appliquent après
-    la traduction de l'URL en nom de fichier. C'est pourquoi le chemin
-    URL auquel mod_rewrite compare initialement les directives
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est le
-    chemin complet vers le nom de fichier traduit amputé de la partie
-    répertoires (y compris le dernier slash).</p>
-
-    <p>Un exemple : si les règles se trouvent dans
-    /var/www/foo/.htaccess et si une requête pour /foo/bar/baz est
-    traité, une expression comme ^bar/baz$ correspondra.</p>
-
-    <p>Si une substitution intervient dans un contexte de répertoire,
-    une nouvelle sous-requête interne est générée avec la nouvelle URL,
-    ce qui relance le traitement des phases de la requête. Si la
-    substitution est un chemin relatif, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> détermine le chemin URL
-    devant préfixer cette substitution. Dans un contexte de répertoire,
-    il faut s'assurer de créer des règles qui
-    n'effectueront pas de substitution au
-    cours d'une passe ultérieure du processus de réécriture au niveau
-    répertoire afin d'éviter les bouclages . Voir <a href="http://wiki.apache.org/httpd/RewriteLooping">Bouclage dans le
-    processus de réécriture</a> pour une discussion plus détaillée à
-    propos de ce problème.</p>
-
-    <p>En conséquence de cette manipulation de l'URL , vous devrez
-    pensez à confectionner différemment vos règles de réécriture dans un
-    contexte de niveau répertoire. En particulier, rappelez-vous que le
-    chemin de répertoire sera absent de l'URL que vos règles de
-    réécriture verront. Voici quelques exemples qui permettront de
-    clarifier les choses :</p>
-
-    <table class="bordered">
-
-        <tr>
-            <th>Position de la règle</th>
-            <th>Règle</th>
-        </tr>
-
-        <tr>
-            <td>Section VirtualHost</td>
-            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>Fichier .htaccess à la racine des documents</td>
-            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
-        </tr>
-
-        <tr>
-            <td>Fichier .htaccess dans le répertoire images</td>
-            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
-        </tr>
-
-    </table>
-
-    <p>Pour une étude plus approfondie de la manière dont mod_rewrite
-    manipule les URLs dans les différents contextes, vous pouvez
-    consulter les <a href="../mod/mod_rewrite.html#logging">entrées du
-    journal</a> générées au cours du processus de réécriture.</p>
+    <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de répertoire</a>,
+    les règles sont appliquées durant la phase "Fixup" après que l’URL a été
+    traduite en nom de fichier. Cela modifie ce à quoi correspond le motif et la
+    manière dont les substitutions sont gérées. Voir le document <a href="htaccess.html#path-stripping">Réécritures en fonction du
+    répertoire</a> pour des détails pratiques à propos de la suppression du
+    chemin, de RewriteBase et de la manière d’éviter un bouclage.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="InternalRuleset" id="InternalRuleset">Traitement du jeu de règles</a> <a title="Lien permanent" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
-      <p>Maintenant, quand mod_rewrite se lance dans ces deux phases de
+      <p>Maintenant, quand <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se lance dans ces deux phases de
       l'API, il lit le jeu de règles configurées depuis la structure
       contenant sa configuration (qui a été elle-même créée soit au
       démarrage d'Apache pour le contexte du serveur, soit lors du
@@ -169,15 +125,15 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
 </p>
       <p>L'URL est tout d'abord comparée au
       <em>Modèle</em> de chaque règle. Lorsqu'une règle ne s'applique
-      pas, mod_rewrite stoppe immédiatement le traitement de cette règle
+      pas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> stoppe immédiatement le traitement de cette règle
       et passe à la règle suivante. Si l'URL correspond au
-      <em>Modèle</em>, mod_rewrite recherche la présence de conditions
+      <em>Modèle</em>, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> recherche la présence de conditions
       correspondantes (les directives Rewritecond apparaissant dans la
       configuration juste
-      avant les règles de réécriture). S'il n'y en a pas, mod_rewrite remplace
+      avant les règles de réécriture). S'il n'y en a pas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> remplace
       l'URL par une chaîne élaborée à partir de la chaîne de
       <em>Substitution</em>, puis passe à la règle suivante. Si des
-      conditions sont présentes, mod_rewrite lance un bouclage
+      conditions sont présentes, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> lance un bouclage
       secondaire afin de les traiter selon l'ordre dans lequel elles
       sont définies. La logique de traitement des conditions est
       différente : on ne compare pas l'URL à un modèle. Une chaîne de
@@ -194,30 +150,40 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/tech.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p><span>Langues Disponibles: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

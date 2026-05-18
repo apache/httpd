@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933071:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="avoid.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>mod_rewrite を使わない場合</title>
+
+<summary>
+
+<p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<module>mod_rewrite</module> について最も重要な概念の一つ、
+すなわち、いつ使用を避けるべきかについて説明します。</p>
+
+<p><module>mod_rewrite</module> は、他の代替手段が不十分な場合の最後の手段と
+考えるべきです。よりシンプルな代替手段がある場合に使用すると、
+設定が混乱しやすく、壊れやすく、メンテナンスしにくくなります。
+他にどのような代替手段が利用できるかを理解することは、
+<module>mod_rewrite</module> を習得するための非常に重要なステップです。</p>
+
+<p>これらの例の多くは、特定のサーバ設定ではそのまま動作しないことに
+注意してください。そのため、単にコピー＆ペーストするのではなく、
+内容を理解することが重要です。</p>
+
+<p><module>mod_rewrite</module> が適切なツールである最も一般的な状況は、
+最善の解決策がサーバ設定ファイルへのアクセスを必要とし、そのアクセスが
+ない場合です。一部の設定ディレクティブはサーバ設定ファイルでのみ
+使用可能です。そのため、.htaccess ファイルのみを使用できるホスティング
+環境にいる場合は、<module>mod_rewrite</module> に頼る必要があるかもしれません。</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+<seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+<seealso><a href="access.html">アクセス制御</a></seealso>
+<seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+<seealso><a href="proxy.html">プロキシ</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap の使用</a></seealso>
+<seealso><a href="advanced.html">高度なテクニック</a></seealso>
+<!--<seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>-->
+
+<section id="redirect">
+<title>シンプルなリダイレクト</title>
+
+<p><module>mod_alias</module> は、ある URL から別の URL へのリダイレクト手段を
+提供する <directive module="mod_alias">Redirect</directive> および <directive
+module="mod_alias">RedirectMatch</directive> ディレクティブを提供します。
+この種の、ある URL または URL のクラスを別の場所へのシンプルなリダイレクトは、
+<directive module="mod_rewrite">RewriteRule</directive> ではなく、これらの
+ディレクティブを使用して行うべきです。<code>RedirectMatch</code> では
+リダイレクト基準に正規表現を含めることができ、<code>RewriteRule</code> を
+使用する利点の多くを享受できます。</p>
+
+<p><code>RewriteRule</code> の一般的な使用法は、URL のクラス全体を
+リダイレクトすることです。例えば、<code>/one</code> ディレクトリのすべての
+URL を <code>http://one.example.com/</code> にリダイレクトする必要がある場合や、
+すべての <code>http</code> リクエストを <code>https</code> に
+リダイレクトする必要がある場合などです。</p>
+
+<p>これらの状況は <code>Redirect</code> ディレクティブで処理する方が
+適切です。<code>Redirect</code> はパス情報を保持することを忘れないでください。
+つまり、URL <code>/one</code> のリダイレクトは、<code>/one/two.html</code>
+や <code>/one/three/four.html</code> など、その配下のすべての URL も
+リダイレクトします。</p>
+
+<p><code>/one</code> 配下の URL を
+<code>http://one.example.com</code> にリダイレクトするには、
+以下のようにします:</p>
+
+<highlight language="config">
+Redirect "/one/" "http://one.example.com/"
+</highlight>
+
+<p>あるホスト名から別のホスト名にリダイレクトするには、例えば
+<code>example.com</code> を <code>www.example.com</code> にリダイレクトするには、
+<a href="remapping.html#canonicalhost">正規ホスト名</a>
+のレシピを参照してください。</p>
+
+<p><code>http</code> URL を <code>https</code> にリダイレクトするには、
+以下のようにします:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL 設定をここに記述
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>同じスコープに他の <code>RewriteRule</code> ディレクティブがある場合は、
+このタスクに <code>RewriteRule</code> を使用するのが適切な場合があります。
+これは、同じスコープに <code>Redirect</code> と <code>RewriteRule</code>
+ディレクティブがある場合、設定ファイルでの出現順序に関係なく、
+<code>RewriteRule</code> ディレクティブが先に実行されるためです。</p>
+
+<p><em>http から https への</em>リダイレクトの場合、メインサーバ設定ファイルに
+アクセスできず、<code>.htaccess</code> ファイルでこのタスクを実行する必要がある
+場合は、<code>RewriteRule</code> の使用が適切です。</p>
+
+</section>
+
+<section id="alias"><title>URL エイリアス</title>
+<p><directive module="mod_alias">Alias</directive> ディレクティブは、
+URI からディレクトリ (通常は <directive module="core">DocumentRoot</directive>
+の外部のディレクトリ) へのマッピングを提供します。このマッピングを
+<module>mod_rewrite</module> で行うことは可能ですが、シンプルさとパフォーマンスの
+理由から <directive module="mod_alias">Alias</directive> が推奨される
+方法です。</p>
+
+<example><title>Alias の使用</title>
+<highlight language="config">
+Alias "/cats" "/var/www/virtualhosts/felines/htdocs"
+</highlight>
+</example>
+
+<p>
+サーバ設定ファイルにアクセスできない場合に、このマッピングを行うために
+<module>mod_rewrite</module> を使用するのが適切な場合があります。Alias は
+サーバまたはバーチャルホストのコンテキストでのみ使用でき、
+<code>.htaccess</code> ファイルでは使用できません。
+</p>
+
+<p>サーバで <code>Options FollowSymLinks</code> が有効になっている場合は、
+シンボリックリンクも同じことを実現する方法の一つです。</p>
+</section>
+
+<section id="vhosts"><title>バーチャルホスティング</title>
+<p><a href="vhosts.html">mod_rewrite でバーチャルホスト</a>を
+処理することは可能ですが、適切な方法であることはめったにありません。
+個別の <directive module="core" type="section">VirtualHost</directive>
+ブロックを作成するのがほぼ常に正しい方法です。非常に多数のバーチャルホストが
+ある場合は、<module>mod_vhost_alias</module> を使用してこれらのホストを
+自動的に作成することを検討してください。</p>
+
+<p><module>mod_macro</module> などのモジュールも、
+多数のバーチャルホストを動的に作成するのに便利です。</p>
+
+<p>ホスティングサービスがサーバ設定ファイルへのアクセスを提供せず、
+<code>.htaccess</code> ファイルを使用した設定に制限されている場合は、
+バーチャルホスト作成に <module>mod_rewrite</module> を使用するのが
+適切な場合があります。</p>
+
+<p>それでも適切なアプローチと思われる場合に、これをどのように実現
+するかの詳細については、<a href="vhosts.html">mod_rewrite による
+バーチャルホスト</a>ドキュメントを参照してください。</p>
+
+</section>
+
+<section id="proxy"><title>シンプルなプロキシ</title>
+
+<p><directive module="mod_rewrite">RewriteRule</directive> は、書き換えた URI を
+<module>mod_proxy</module> 経由で渡すための <a href="flags.html#flag_p">[P]</a>
+フラグを提供します。</p>
+
+<highlight language="config">
+RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]
+</highlight>
+
+<p>ただし、上の例のように実際のパターンマッチングが不要な場合は、
+<directive module="mod_proxy">ProxyPass</directive> ディレクティブの方が
+適切な選択です。上の例は以下のように記述できます:</p>
+
+<highlight language="config">
+ProxyPass "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p><directive module="mod_rewrite">RewriteRule</directive> と <directive
+module="mod_proxy">ProxyPass</directive> のどちらを使用する場合でも、
+バックエンドサーバから発行されるリダイレクトをキャッチするために
+<directive module="mod_proxy">ProxyPassReverse</directive> ディレクティブを
+使用する必要があることに注意してください:</p>
+
+<highlight language="config">
+ProxyPassReverse "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p>同じスコープで他の <code>RewriteRule</code> が有効な場合は、
+<code>RewriteRule</code> は通常 <code>ProxyPass</code> よりも先に適用されるため、
+実現しようとしていることを横取りする可能性があり、代わりに
+<code>RewriteRule</code> を使用する必要がある場合があります。</p>
+
+</section>
+
+<section id="setenv"><title>環境変数のテスト</title>
+
+<p><module>mod_rewrite</module> は、特定の環境変数やリクエストヘッダの
+有無に基づいて特定のアクションを実行するために頻繁に使用されます。
+これは <directive module="core" type="section">If</directive>
+ディレクティブを使用してより効率的に行えます。</p>
+
+<p>例えば、正規ホスト名を強制するために <directive>RewriteRule</directive>
+を使用する一般的なシナリオ、つまり <code>example.com</code> の代わりに
+<code>www.example.com</code> を使用させるシナリオを考えてみましょう。
+これは、次に示すように <directive module="core" type="section">If</directive>
+ディレクティブを使用して行えます:</p>
+
+<highlight language="config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>このテクニックは、任意のリクエストヘッダ、レスポンスヘッダ、または
+環境変数に基づいてアクションを実行するために使用でき、多くの一般的な
+シナリオで <module>mod_rewrite</module> を置き換えることができます。</p>
+
+<p>特に <directive module="core" type="section">If</directive> セクションや
+その他の特定のディレクティブで使用できる式の種類の概要については、
+<a href="../expr.html">式の評価ドキュメント</a>を参照してください。</p>
+
+</section>
+
+</manualpage>

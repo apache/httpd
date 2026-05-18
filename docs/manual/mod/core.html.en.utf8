@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Core Features</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
@@ -138,9 +140,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#warning">Warning</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Directive</a> <a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
@@ -252,7 +252,7 @@ AcceptFilter https connect</pre>
     pathname information that follows an actual filename (or
     non-existent file in an existing directory) will be accepted or
     rejected.  The trailing pathname information can be made
-    available to scripts in the <code>PATH_INFO</code> environment
+    available to scripts in the <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a> environment
     variable.</p>
 
     <p>For example, assume the location <code>/test/</code> points to
@@ -311,24 +311,36 @@ AcceptFilter https connect</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>While processing a request, the server looks for
-    the first existing configuration file from this list of names in
-    every directory of the path to the document, if distributed
+    <p>The AccessFileName directive allows you to change the name of the file
+    that will be considered for per-directory configuration overrides, in the
+    event that <code class="directive"><a href="#allowoverride">AllowOverride</a></code> is enabled
+    for that directory.</p>
+
+    <div class="warning">We do not recommend that you change this value, and
+    especially that you do not list multiple possible file names, as it makes
+    troubleshooting more difficult for anyone not familiar with your local
+    settings.</div>
+
+    <p>While processing a request, the server looks for files with the name
+    (or names) defined in <code>AccessFileName</code>
+    in every directory of the path to the document, if distributed
     configuration files are <a href="#allowoverride">enabled for that
-    directory</a>. For example:</p>
-
-    <pre class="prettyprint lang-config">AccessFileName .acl</pre>
-
-
-    <p>Before returning the document
+    directory</a>. For example Before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
-    <code>/.acl</code>, <code>/usr/.acl</code>,
-    <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives unless they have been disabled with:</p>
+    <code>/.htaccess</code>, <code>/usr/.htaccess</code>,
+    <code>/usr/local/.htaccess</code> and <code>/usr/local/web/.htaccess</code>
+    for directives.</p>
+
+    <p>For this reason, the default configuration file contains the following stanza:</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
+
+
+    <p>This configuration block helps prevent unnecessary file accesses in directories
+    outside of your <code class="directive"><a href="#documentroot">DocumentRoot</a></code>. See also the note
+    about this in the <code>AllowOverride</code> directive documentation.</p>
 
 
 <h3>See also</h3>
@@ -431,15 +443,14 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 <code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverride None (2.3.9 and later), AllowOverride All (2.3.8 and earlier)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverride None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>When the server finds an <code>.htaccess</code> file (as
-    specified by <code class="directive"><a href="#accessfilename">AccessFileName</a></code>),
-    it needs to know which directives declared in that file can override
-    earlier configuration directives.</p>
+    <p>When the server finds a distributed configuration file (Usually called
+    <code>.htaccess</code> - configurable by the <code class="directive"><a href="#accessfilename">AccessFileName</a></code>), it needs to know which directives
+    declared in that file can override earlier configuration directives.</p>
 
     <div class="note"><h3>Only available in &lt;Directory&gt; sections</h3>
     <code class="directive">AllowOverride</code> is valid only in
@@ -504,9 +515,12 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
-      Allow use of the directives controlling host access (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
-
-
+      Allow use of the legacy host access control directives (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>). For the modern
+      equivalent, see the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+      directive, which is controlled by <code>AuthConfig</code>.
+      Also includes <code class="directive"><a href="../mod/mod_include.html#ssietag">SSIETag</a></code>,
+      <code class="directive"><a href="../mod/mod_include.html#ssilastmodified">SSILastModified</a></code>, and
+      <code class="directive"><a href="../mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.</dd>
 
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
@@ -515,7 +529,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       Allow use of AllowOverride option to treat invalid (unrecognized
       or disallowed) directives in
       .htaccess as nonfatal. Instead of causing an Internal Server
-      Error, disallowed or unrecognised directives will be ignored
+      Error, disallowed or unrecognized directives will be ignored
       and a warning logged:
       <ul>
           <li><strong>Nonfatal=Override</strong> treats directives
@@ -540,8 +554,9 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       Allow use of the directives controlling specific directory
       features (<code class="directive"><a href="#options">Options</a></code> and
       <code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code>).
-      An equal sign may be given followed by a comma-separated list, without
-      spaces, of options that may be set using the <code class="directive"><a href="#options">Options</a></code> command.
+      To restrict which options may be overridden, specify an equal sign
+      followed by a comma-separated list, without spaces, of options that
+      may be set using the <code class="directive"><a href="#options">Options</a></code> directive.
 
       <div class="note"><h3>Implicit disabling of Options</h3>
       <p>Even though the list of options that may be used in .htaccess files
@@ -588,7 +603,7 @@ NoDecode option available in 2.3.12 and later.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Individual directives that are allowed in
 <code>.htaccess</code> files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</code></td></tr>
+[<var>directive</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowOverrideList None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -611,6 +626,11 @@ NoDecode option available in 2.3.12 and later.</td></tr>
     ignored.  In this case, the server will not even attempt to read
     <code>.htaccess</code> files in the filesystem.</p>
 
+    <div class="note">
+    <p>A value of <code>None</code> cannot be combined with other values. 
+    Doing so will result in an error that aborts config parsing.</p>
+    </div>
+
     <p>Example:</p>
 
     <pre class="prettyprint lang-config">AllowOverride None
@@ -631,7 +651,15 @@ AllowOverrideList CookieTracking CookieName</pre>
     grants permission to the <code>AuthConfig</code>
     directive grouping and <code class="directive">AllowOverrideList</code> grants
     permission to only two directives from the <code>FileInfo</code> directive
-    grouping. All others will cause an Internal Server Error.</p>
+    grouping. The effective set of permitted directives is the union of
+    both. All others will cause an Internal Server Error.</p>
+
+    <p>In addition, certain directives are always permitted in
+    <code>.htaccess</code> files whenever the override mechanism is
+    enabled (i.e., <code class="directive"><a href="#allowoverride">AllowOverride</a></code>
+    is not <code>None</code>). These are listed in the
+    <a href="overrides.html#override-all">All</a> section of the
+    <a href="overrides.html">override class index</a>.</p>
 
 <h3>See also</h3>
 <ul>
@@ -742,6 +770,13 @@ variables</td></tr>
     which may be different than the original request from the client
     due to internal redirects or subrequests.</dd>
   </dl>
+
+  <div class="note"><h3>Note</h3>
+  <p>The CGI environment variable <code>REQUEST_URI</code> contains the
+      full original URI from the request line, including the query string.
+      This differs from the server variable <code>%{REQUEST_URI}</code>
+      used in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <a href="../expr.html">
+      ap_expr</a>, which contains only the path component.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -919,7 +954,7 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. You may also use <code>[]</code> character ranges. None
     of the wildcards match a `/' character, so <code>&lt;Directory
     "/*/public_html"&gt;</code> will not match
@@ -1003,20 +1038,22 @@ named file-system directory, sub-directories, and their contents.</td></tr>
     the corresponding <code class="directive">&lt;Directory&gt;</code> will
     be applied.</p>
 
-   <p><strong>Note that the default access for
+    <div class="warning">
+    <p>The default access for
     <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
-    as</strong></p>
+    as</p>
 
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;</pre>
 
 
-    <p><strong>and then override this for directories you
+    <p>Then override this for directories you
     <em>want</em> accessible. See the <a href="../misc/security_tips.html">Security Tips</a> page for more
-    details.</strong></p>
+    details.</p>
+    </div>
 
     <p>The directory sections occur in the <code>httpd.conf</code> file.
     <code class="directive">&lt;Directory&gt;</code> directives
@@ -1043,10 +1080,15 @@ the contents of file-system directories matching a regular expression.</td></tr>
 </table>
     <p><code class="directive">&lt;DirectoryMatch&gt;</code> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory (and the files within),
-    the same as <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.
-    However, it takes as an argument a
-    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.  For example:</p>
+    of directives which will apply to directories (and the files
+    within) whose filesystem path matches the given
+    <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.
+    Unlike <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>,
+    it does not automatically apply to subdirectories unless the
+    pattern also matches them.  It takes as an argument a
+    regular expression that is matched as a substring — it is not
+    anchored at the start or end unless you explicitly include
+    <code>^</code> or <code>$</code> in the pattern.  For example:</p>
 
     <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
@@ -1066,8 +1108,9 @@ the contents of file-system directories matching a regular expression.</td></tr>
 
     <div class="note"><h3>Trailing Slash</h3>
       This directive applies to requests for directories that may or may
-      not end in a trailing slash, so expressions that are anchored to the
-      end of line ($) must be written with care.
+      not end in a trailing slash. If you anchor your pattern with
+      <code>$</code>, you may need to match both forms, e.g.,
+      <code>&lt;DirectoryMatch "^/var/www/?$"&gt;</code>.
     </div>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
@@ -1369,7 +1412,7 @@ version 2.3.9.</td></tr>
 
     <div class="warning"><h3>Note</h3>
         <p> This directive is evaluated at configuration processing time, 
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <code class="directive"><a href="#if">&lt;If&gt;</a></code> section.</p>
     </div>
 
@@ -1424,6 +1467,21 @@ ErrorDocument 403 Forbidden!
 ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
+    <p>When the argument is a text string (i.e., not a path or URL),
+    it is sent to the client with a content type of
+    <code>text/html</code>, so you may include HTML markup. You can
+    use the backslash line-continuation character to spread the
+    document across multiple lines:</p>
+
+    <pre class="prettyprint lang-config">ErrorDocument 403 "\
+&lt;html&gt;&lt;head&gt;\
+&lt;title&gt;403 Forbidden&lt;/title&gt;\
+&lt;/head&gt;&lt;body&gt;\
+&lt;h1&gt;Forbidden&lt;/h1&gt;\
+&lt;p&gt;You do not have permission to access this resource.&lt;/p&gt;\
+&lt;/body&gt;&lt;/html&gt;"</pre>
+
+
     <p>Additionally, the special value <code>default</code> can be used
     to specify Apache httpd's simple hardcoded message.  While not required
     under normal circumstances, <code>default</code> will restore
@@ -1452,14 +1510,6 @@ ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
     receive the 401 status code. Therefore, <strong>if you use an
     <code>ErrorDocument 401</code> directive, then it must refer to a local
     document.</strong></p>
-
-    <p>Microsoft Internet Explorer (MSIE) will by default ignore
-    server-generated error messages when they are "too small" and substitute
-    its own "friendly" error messages. The size threshold varies depending on
-    the type of error, but in general, if you make your error document
-    greater than 512 bytes, then MSIE will show the server-generated
-    error rather than masking it.  More information is available in
-    Microsoft Knowledge Base article <a href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>.</p>
 
     <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
@@ -1570,14 +1620,14 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
     without causing any log message, the additional information is not logged
     either.</p>
 
-    <p>It can happen that some format string items do not produce output.  For
+    <p>It can happen that some format specifiers do not produce output.  For
     example, the Referer header is only present if the log message is
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
     produced, the default behavior is to delete everything from the preceding
-    space character to the next space character.  This means the log line is
+    space character to the next space character.  This means the format string is
     implicitly divided into fields on non-whitespace to whitespace transitions.
-    If a format string item does not produce output, the whole field is
+    If a format specifier does not produce output, the whole field is
     omitted.  For example, if the remote address <code>%a</code> in the log
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
@@ -1593,8 +1643,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
     omitted.</p>
 
     <p>A number as modifier can be used to assign a log severity level to a
-    format item. The item will only be logged if the severity of the log
-    message is not higher than the specified log severity level. The number can
+    format item. The item will only be logged if the log message has a
+    severity level of the specified number or more severe (i.e., the
+    message's level number is less than or equal to the modifier). The number can
     range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
 
     <p>For example, here's what would happen if you added modifiers to
@@ -1613,11 +1664,12 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 <tr>
     <td><code>%4{Referer}i</code></td>
     <td>Logs the <code>Referer</code> only if the log message severity
-    is higher than 4.</td>
+    is 4 (warn) or more severe (i.e., levels 1 through 4:
+    alert, crit, error, warn).</td>
     </tr>
 </table>
 
-    <p>Some format string items accept additional parameters in braces.</p>
+    <p>Some format specifiers accept additional parameters in braces.</p>
 
     <table class="bordered"><tr class="header"><th>Format&nbsp;String</th> <th>Description</th></tr>
 <tr><td><code>%%</code></td>
@@ -1664,26 +1716,28 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
         <td>The current time</td></tr>
 <tr><td><code>%{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
-<tr class="odd"><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{m}t</code></td>
+        <td>The current time including milliseconds</td></tr>
+<tr><td><code>%{cu}t</code></td>
         <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
-<tr><td><code>%{cuz}t</code></td>
+<tr class="odd"><td><code>%{cuz}t</code></td>
         <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds and time zone in the ISO 8601:2000 standard format.
             Available since 2.4.58 only</td></tr>
-<tr class="odd"><td><code>%{%-format}t</code></td>
+<tr><td><code>%{%-format}t</code></td>
 	<td>The current time formatted per the <code>strftime(3)</code> function.
 	    Available since 2.4.58 only</td></tr>
-<tr><td><code>%v</code></td>
+<tr class="odd"><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
-<tr class="odd"><td><code>%V</code></td>
+<tr><td><code>%V</code></td>
         <td>The server name of the server serving the request according to the
             <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>
             setting.</td></tr>
-<tr><td><code>\&nbsp;</code> (backslash space)</td>
+<tr class="odd"><td><code>\&nbsp;</code> (backslash space)</td>
         <td>Non-field delimiting space</td></tr>
-<tr class="odd"><td><code>%&nbsp;</code> (percent space)</td>
+<tr><td><code>%&nbsp;</code> (percent space)</td>
         <td>Field delimiter (no output)</td></tr>
 </table>
 
@@ -1702,7 +1756,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ 
     <p>This would result in error messages such as:</p>
 
     <div class="example"><p><code>
-    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
     <p>Notice that, as discussed above, some fields are omitted
@@ -1853,7 +1907,7 @@ filenames</td></tr>
 
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
-    and <code>*</code> matches any sequences of characters.</p>
+    and <code>*</code> matches any sequence of characters.</p>
     <pre class="prettyprint lang-config">&lt;Files "cat.html"&gt;
     # Insert stuff that applies to cat.html here
 &lt;/Files&gt;
@@ -2130,8 +2184,8 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.2.32 or 2.4.24 and later</td></tr>
 </table>
     <p>This directive changes the rules applied to the HTTP Request Line
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230 §3.1.1</a>) and the HTTP Request Header Fields
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230 §3.2</a>), which are now applied by default or using
+    (<a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.1.1">RFC 7230</a>) and the HTTP Request Header Fields
+    (<a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.2">RFC 7230</a>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
     custom user-agents which must be deprecated the <code>Unsafe</code>
     option has been added to revert to the legacy behaviors.</p>
@@ -2150,10 +2204,10 @@ media type in the HTTP Content-Type header field</td></tr>
       <p>Prior to the introduction of this directive, the Apache HTTP Server
       request message parsers were tolerant of a number of forms of input
       which did not conform to the protocol.
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 §9.4 Request Splitting</a> and
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.5">§9.5 Response Smuggling</a> call out only two of the potential
+      <a href="https://www.rfc-editor.org/rfc/rfc7230#section-9.4">RFC 7230</a> (Request Splitting) and
+      <a href="https://www.rfc-editor.org/rfc/rfc7230#section-9.5">RFC 7230</a> (Response Smuggling) call out only two of the potential
       risks of accepting non-conformant request messages, while
-      <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230 §3.5</a> "Message Parsing Robustness" identify the
+      <a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.5">RFC 7230</a> "Message Parsing Robustness" identify the
       risks of accepting obscure whitespace and request message formatting. 
       As of the introduction of this directive, all grammar rules of the
       specification are enforced in the default <code>Strict</code> operating
@@ -2186,7 +2240,7 @@ media type in the HTTP Content-Type header field</td></tr>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
-      <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231 §4.1</a> "Request Methods" "Overview" requires that
+      <p><a href="https://www.rfc-editor.org/rfc/rfc7231#section-4.1">RFC 7231</a> "Request Methods" "Overview" requires that
       origin servers shall respond with a HTTP 501 status code when an
       unsupported method is encountered in the request line.
       This already happens when the <code>LenientMethods</code> option is used,
@@ -2212,11 +2266,11 @@ media type in the HTTP Content-Type header field</td></tr>
       </dd>
       <dt>Allow0.9|Require1.0</dt>
       <dd>
-      <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616 §19.6</a> "Compatibility With Previous Versions" had
+      <p><a href="https://www.rfc-editor.org/rfc/rfc2616#section-19.6">RFC 2616</a> "Compatibility With Previous Versions" had
       encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
       supersedes this with "The expectation to support HTTP/0.9 requests has
-      been removed" and offers additional comments in 
-      <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
+      been removed" and offers additional comments in
+      <a href="https://www.rfc-editor.org/rfc/rfc7230#appendix-A">RFC 7230</a> Appendix A. The <code>Require1.0</code> option allows
       the user to remove support of the default <code>Allow0.9</code> option's
       behavior.</p>
 
@@ -2762,7 +2816,14 @@ methods</td></tr>
     <div class="warning">A <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section should always be
     used in preference to a <code class="directive">&lt;Limit&gt;</code>
     section when restricting access, since a <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section provides protection
-    against arbitrary methods.</div>
+    against arbitrary methods.  See also the
+    <a href="../sections.html#merging">configuration sections
+    merging documentation</a> for a warning about how
+    <code class="directive">&lt;Limit&gt;</code> inside
+    <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
+    can silently override
+    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>
+    restrictions.</div>
 
     <p>The <code class="directive">&lt;Limit&gt;</code> and
     <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
@@ -3128,12 +3189,18 @@ URLs</td></tr>
     <p>For all origin (non-proxy) requests, the URL to be matched is a
     URL-path of the form <code>/path/</code>.  <em>No scheme, hostname,
     port, or query string may be included.</em>  For proxy requests, the
-    URL to be matched is of the form
+    URL to be matched depends on the type of proxy. With a
+    <strong>forward</strong> proxy (<code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code>), the URL to be
+    matched is of the form
     <code>scheme://servername/path</code>, and you must include the
-    prefix.</p>
+    prefix. With a <strong>reverse</strong> proxy (configured via
+    <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
+    <code class="directive"><a href="../mod/mod_proxy.html#rewriterule ... [p]">RewriteRule ... [P]</a></code>),
+    the request arrives as a local URL-path, so use <code>/path/</code>
+    just as you would for origin requests.</p>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><a class="glossarylink" href="../glossary.html#regex" title="see glossary">Regular expressions</a>
@@ -3987,8 +4054,12 @@ directory</td></tr>
       The server will follow symbolic links in this directory. This is
       the default setting.
       <div class="note">
-      <p>Even though the server follows the symlink it does <em>not</em>
+      <p>When the server follows the symlink it does <em>not</em>
       change the pathname used to match against <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections.</p>
+
+      <p>Disabling this option also prevents
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> from operating in per-directory
+      context (<code>.htaccess</code> files and <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections).</p>
 
       <p>The <code>FollowSymLinks</code> and
       <code>SymLinksIfOwnerMatch</code> <code class="directive">Options</code> work only in <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> sections or
@@ -4107,6 +4178,10 @@ directory</td></tr>
     <p>The default in the absence of any other settings is
     <code>FollowSymlinks</code>.</p>
 
+    <p>When using the <code>All</code> and <code>None</code>, they must
+    be the first option listed. The + and - modifiers cannot be used with
+    the <code>All</code> and <code>None</code> options.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Directive</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
@@ -4177,6 +4252,14 @@ directory</td></tr>
         <p>It is safe to specify protocols that are unavailable/disabled. Such
         protocol names will simply be ignored.</p>
         
+        <div class="note"><h3>Note</h3>
+        <p>The <code>http/1.1</code> protocol is always available and
+            cannot be excluded by omitting it from this directive.
+            This directive controls which additional protocols are
+            available for negotiation, and, when used with
+            <code class="directive">ProtocolsHonorOrder</code>, their preference
+            order.</p></div>
+
         <p>Protocols specified in base servers are inherited for virtual hosts 
             only if the virtual host has no own Protocols directive. Or, the other
             way around, Protocols directives in virtual hosts replace any
@@ -4255,7 +4338,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
     <p>This directive allows to configure the size (in bytes) of the memory
     buffer used to read data from the network or files.</p>
 
-    <p>A larger buffer can increase peformances with larger data, but consumes
+    <p>A larger buffer can increase performances with larger data, but consumes
     more memory per connection. The minimum configurable size is
     <var>1024</var>.</p>
 
@@ -4637,9 +4720,10 @@ itself</td></tr>
     identify a virtual host, when using <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
     <p>Additionally, this is used when
-    creating self-referential redirection URLs when 
-    <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> is set to a non-default
-    value.</p>
+    creating self-referential redirection URLs when
+    <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> is set to
+    <code>On</code>. When <code>UseCanonicalName</code> is set to
+    <code>DNS</code>, a reverse DNS lookup is used instead.</p>
 
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
@@ -4700,6 +4784,12 @@ itself</td></tr>
     </code></p></div>
     </div>
 
+    <div class="warning">
+    <p>IPv6 addresses in <code class="directive">ServerName</code> are not
+        currently supported and will produce a startup error, even when
+        enclosed in square brackets. This is a
+        <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=52178">known issue</a>.</p></div>
+
 
 <h3>See also</h3>
 <ul>
@@ -4723,11 +4813,19 @@ is accessed by an incompatible browser</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code class="directive">ServerPath</code> directive sets the legacy
-    URL pathname for a host, for use with <a href="../vhosts/">name-based virtual hosts</a>.</p>
+    URL pathname for a host, for use with <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+
+    <div class="note"><p>This is a legacy feature for providing compatibility with
+    HTTP/1.0 clients that do not send a <code>Host:</code> header. When
+    such a client requests a URL matching a vhost's
+    <code class="directive">ServerPath</code>, the request is served from that
+    vhost. In practice, all modern HTTP clients send the
+    <code>Host:</code> header, making this directive unnecessary.</p></div>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
+<li><a href="../vhosts/name-based.html">Name-based Virtual Host Support</a></li>
+<li><a href="../vhosts/examples.html#serverpath">ServerPath example</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -4924,11 +5022,14 @@ handler</td></tr>
     <div class="note"><h3>Note</h3>
     <p>Because <code class="directive">SetHandler</code> overrides default handlers,
     normal behavior such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</p></div>
+    directories or index files is suppressed. It also overrides
+    <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code>, since the
+    request already has an explicit handler assigned.</p></div>
 
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -5052,7 +5153,7 @@ certain events before failing a request</td></tr>
       </li>
 
       <li>When writing data to the client, the length of time to wait
-      for an acknowledgement of a packet if the send buffer is
+      for an acknowledgment of a packet if the send buffer is
       full.</li>
 
       <li>In <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> and <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>,
@@ -5095,6 +5196,11 @@ certain events before failing a request</td></tr>
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64Kb.</p>
 
+    <p>The <code>TRACE</code> method cannot be restricted using
+    <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> or
+    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>.
+    Use <code class="directive">TraceEnable</code> instead.</p>
+
     <div class="note"><h3>Note</h3>
 
     <p>Despite claims to the contrary, enabling the <code>TRACE</code>
@@ -5131,7 +5237,7 @@ certain events before failing a request</td></tr>
         may be inadvertently derived from untrusted inputs. </p>
         <p> Windows systems should be isolated at the network layer from
         making outbound SMB/NTLM calls to unexpected destinations as a
-        more comprehensive and pre-emptive measure.</p>
+        more comprehensive and preemptive measure.</p>
     </div>
 
     <div class="warning"><h3>Directive Ordering</h3>
@@ -5207,7 +5313,7 @@ port</td></tr>
     <code>http://www.example.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
-    for <code>www.example.com</code> -- see <a href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
+    for <code>www.example.com</code> -- see <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
     the FAQ on this subject for more information</a>). But if
     <code class="directive">UseCanonicalName</code> is set <code>Off</code>, then
     Apache httpd will redirect to <code>http://www/splat/</code>.</p>
@@ -5429,7 +5535,7 @@ hostname or IP address</td></tr>
 
     <div class="warning"><h3>Note</h3>
         <p> This directive is evaluated at configuration processing time,
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <code class="directive"><a href="#if">&lt;If&gt;</a></code> section.</p>
     </div>
 
@@ -5442,28 +5548,32 @@ hostname or IP address</td></tr>
 <a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/core.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

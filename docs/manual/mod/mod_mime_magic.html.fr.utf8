@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,10 +26,13 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_mime_magic</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime_magic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_mime_magic.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Détermine le type MIME d'un fichier à partir de quelques
 octets de son contenu</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -56,11 +60,10 @@ octets de son contenu</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="format" id="format">Format du fichier magique</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
@@ -259,6 +262,70 @@ octets de son contenu</td></tr>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="mimemagicdecompression" id="mimemagicdecompression">Directive</a> <a name="MimeMagicDecompression" id="MimeMagicDecompression">MimeMagicDecompression</a> <a title="Lien permanent" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activer la décompression des fichiers compressés pour la détection
+du type MIME</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicDecompression On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MimeMagicDecompression Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
+</table>
+    <p>La directive <code class="directive">MimeMagicDecompression</code> permet
+    d’indiquer si <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> doit tenter de décompresser
+    les fichiers qui semblent compressés (gzip, compress, etc.) de façon à
+    déterminer le type MIME de leur contenu. Cette fonctionnalité est
+    <strong>désactivée par défaut</strong> et ne doit être activée que si vous
+    en comprenez les inconvénients significatifs. Elle a pour raison d’exister
+    le maintien d’une compatibilité avec les versions précédentes de httpd, mais
+    son utilisation est déconseillée.</p>
+
+    <div class="warning"><h3>Problèmes de sécurité et de compatibilité</h3>
+    <p>Cette fonctionnalité présente plusieurs défauts sérieux et est désactivée
+    par défaut&nbsp;:</p>
+    <ol>
+    <li><strong>Non-conformité aux RFC&nbsp;:</strong> les documents des normes
+    insistent sur la nécessité de définir l’en-tête Content-Encoding pour les
+    fichiers déjà compressés (comme les fichiers .zip ou .gz). Voir la <a href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-encoding">RFC
+    9110</a>.</li>
+
+    <li><strong>Atteinte à l’intégrité du contenu&nbsp;:</strong> lorsque l’en-tête
+    Content-Encoding est défini, la plupart des clients HTTP décompressent le
+    fichier avant de l’écrire sur disque. Cela a pour conséquence que le fichier
+    téléchargé possède une taille et une somme de contrôle différentes de celles
+    de l’original, ce qui empêche la vérification de la signature et la
+    validation de la somme de contrôle. Les sites de distribution de logiciels
+    trouvent cela particulièrement problématique.</li>
+
+    <li><strong>Comportement imprévisible&nbsp;:</strong> cette fonctionnalité ne
+    s’applique qu’aux fichiers dont l’extension ne correspond à aucun type MIME.
+    Cela peut provoquer un comportement incohérent quand certains fichiers d’un
+    répertoire sont affectés et d’autres non, ce qui rend les problèmes
+    difficiles à diagnostiquer.</li>
+
+    <li><strong>Impact sur les performances&nbsp;:</strong> la décompression
+    nécessite un fourchage (forking) et l’exécution d’un processus
+    <code>gzip</code> externe pour chaque fichier compressé, ce qui induit une
+    surcharge significative.</li>
+
+    <li><strong>Risque de sécurité&nbsp;:</strong> transmettre un fichier téléchargé
+    non fiable à un binaire (<code>gzip</code>) externe peut exposer le serveur
+    à des bombes de décompression, à un épuisement des ressources ou à des
+    vulnérabilités d’exécution de code à distance dans l’outil de décompression.</li>
+    </ol>
+    </div>
+
+    <div class="example"><h3>Exemple (non recommandé)</h3><pre class="prettyprint lang-config"># N’activer que si vous comprenez parfaitement les risques
+MimeMagicDecompression On</pre>
+</div>
+
+    <p>Dans la plupart des cas, il vaut mieux s’assurer que les fichiers
+    possèdent une extension appropriée à la détection du type par
+    <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> que d’utiliser cette fonctionnalité.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
@@ -285,28 +352,32 @@ spécifié</td></tr>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime_magic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_mime_magic.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_mime_magic.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -27,12 +27,12 @@
   <summary>
     <p>
       Ci-dessous se trouve la liste de tous les modules qui font partie de
-      la distribution du serveur HTTP Apache.  Voir aussi la liste alphab&eacute;tique compl&egrave;te
+      la distribution du serveur HTTP Apache.  Voir aussi la liste alphabétique complète
       de <a href="directives.html">toutes les directives du serveur HTTP Apache</a>.
     </p>
   </summary>
   <seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a>
   </seealso>
-  <seealso><a href="quickreference.html">Document de r&eacute;f&eacute;rence rapide des directives</a>
+  <seealso><a href="quickreference.html">Document de référence rapide des directives</a>
   </seealso>
 </moduleindex>

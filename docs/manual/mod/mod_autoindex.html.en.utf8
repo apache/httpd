@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_autoindex</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_autoindex.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -105,9 +107,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="query" id="query">Autoindex Request Query Arguments</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
@@ -544,14 +544,34 @@ a directory</td></tr>
 </table>
     <p>The <code class="directive">IndexIgnore</code> directive adds to the
     list of files to hide when listing a directory. <var>File</var> is a
-    shell-style wildcard expression or full
-    filename. Multiple IndexIgnore directives add
-    to the list, rather than replacing the list of ignored
-    files. By default, the list contains <code>.</code> (the current
-    directory).</p>
+    filename or pattern which may contain the <code>?</code> and
+    <code>*</code> wildcard characters. <code>?</code> matches any
+    single character, and <code>*</code> matches any sequence of
+    characters, including an empty sequence. Multiple IndexIgnore
+    directives add to the list, rather than replacing the list of
+    ignored files. By default, the list contains <code>.</code> (the
+    current directory).</p>
 
     <pre class="prettyprint lang-config">IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t</pre>
 
+
+    <p>If <var>File</var> contains a <code>/</code> character, only
+    the portion after the last <code>/</code> is used for matching
+    against filenames. For example, <code>*/.??*</code> is equivalent
+    to <code>.??*</code>.</p>
+
+    <div class="note"><h3>Differences from shell wildcard patterns</h3>
+      <p>The wildcard matching used here is <em>not</em> the same as
+      shell-style (glob) filename pattern matching. In particular:</p>
+      <ul>
+        <li>Bracket expressions such as <code>[abc]</code> or
+        <code>[!.]</code> are not supported; they are treated as
+        literal characters.</li>
+        <li>A leading <code>.</code> in a filename is not treated
+        specially. For example, <code>*~</code> will match
+        <code>.example~</code>, whereas a shell glob would not.</li>
+      </ul>
+    </div>
 
     <div class="note"><h3>Regular Expressions</h3>
       <p>This directive does not currently work in configuration sections
@@ -730,9 +750,11 @@ indexing</td></tr>
                | *]</a></dt>
 
       <dd>The <code>NameWidth</code> keyword allows you to specify the width
-      of the filename column in bytes.</dd>
+      of the filename column in bytes. The value must be greater than
+      5, or <code>*</code> for automatic width. If unset or prefixed
+      with <code>-</code>, the default of 20 bytes is used.</dd>
 
-      <dd><code>-NameWidth</code> (or unset) allows <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width, but only up
+      <dd>When unset, <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width, but only up
       to 20 bytes wide.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixes the column width to
@@ -785,7 +807,7 @@ indexing</td></tr>
       directive, the module usually includes the contents of the file
       after a standard HTML preamble (<code>&lt;html&gt;</code>,
       <code>&lt;head&gt;</code>, <em>et cetera</em>). The
-      <code>SuppressHTMLPreamble</code> option disables this behaviour,
+      <code>SuppressHTMLPreamble</code> option disables this behavior,
       causing the module to start the display with the header file
       contents. The header file must contain appropriate HTML instructions
       in this case. If there is no header file, the preamble is generated
@@ -904,6 +926,16 @@ indexing</td></tr>
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
 
+      <dt><a name="indexoptions.none" id="indexoptions.none">None</a></dt>
+
+      <dd>The <code>None</code> keyword disables all indexing options
+      for the directory. No fancy indexing features will be enabled.
+      <div class="note"><code>None</code> cannot be prefixed with <code>+</code>
+      or <code>-</code>, and it cannot be combined with any other
+      <code class="directive">IndexOptions</code> keyword. If <code>None</code>
+      is specified, it must be the only option given.</div>
+      </dd>
+
     </dl>
 
 
@@ -938,7 +970,12 @@ indexing</td></tr>
      settings (which may have been inherited from an upper-level
      directory). However, whenever an unprefixed keyword is processed, it
      clears all inherited options and any incremental settings encountered
-     so far. Consider the following example:</p>
+     so far, except for options that take a value
+     (<code>Charset</code>, <code>Type</code>,
+     <code>DescriptionWidth</code>, <code>NameWidth</code>,
+     <code>IconWidth</code>, <code>IconHeight</code>),
+     which are inherited independently.
+     Consider the following example:</p>
 
      <pre class="prettyprint lang-config">IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
 IndexOptions +SuppressSize</pre>
@@ -952,6 +989,11 @@ IndexOptions +SuppressSize</pre>
      <p>To unconditionally set the <code class="directive">IndexOptions</code> for
      a particular directory, clearing the inherited settings, specify
      keywords without any <code>+</code> or <code>-</code> prefixes.</p>
+
+     <p>Note that the <code>+</code> and <code>-</code> prefixes cannot
+     be used with options that take a value, such as
+     <code>IconWidth</code>, <code>IconHeight</code>,
+     <code>NameWidth</code>, or <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 
@@ -1063,28 +1105,32 @@ ReadmeName /include/FOOTER.html</pre>
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_autoindex.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

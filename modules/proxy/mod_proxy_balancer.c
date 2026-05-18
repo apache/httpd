@@ -1960,7 +1960,7 @@ static int balancer_handler(request_rec *r)
     if (apr_table_elts(params)
         && (!ref || !safe_referer(r, ref))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10187)
-                      "ignoring params in balancer-manager cross-site access");
+                      "ignoring params in balancer-manager cross-site access %s: %s", ref, ap_get_server_name(r));                      
         apr_table_clear(params);
     }
     

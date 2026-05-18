@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 1933438:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Apache mod_rewrite Teknik Ayrıntıları</title>
+
+<summary>
+<p>Bu belge, <module>mod_rewrite</module> ve URL eşleştirmesinin bazı
+teknik ayrıntılarını tartışır.</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Modül belgeleri</a></seealso>
+<seealso><a href="intro.html">mod_rewrite'a giriş</a></seealso>
+<seealso><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></seealso>
+<seealso><a href="access.html">Erişim denetimi</a></seealso>
+<seealso><a href="vhosts.html">Sanal konaklar</a></seealso>
+<seealso><a href="proxy.html">Vekil kullanımı</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap Kullanımı</a></seealso>
+<seealso><a href="advanced.html">İleri teknikler</a></seealso>
+<seealso><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></seealso>
+
+<section id="InternalAPI"><title>API Aşamaları</title>
+
+    <p>Apache HTTP Sunucusu, istekleri birkaç aşamada işler. Bu
+    aşamaların her birinde, istek yaşam döngüsünün o bölümünü
+    işlemek üzere bir veya daha fazla modül çağrılabilir. Aşamalar
+    URL-dosyaadı çevirisi, kimlik doğrulama, yetkilendirme, içerik
+    ve günlükleme gibi şeyleri içerir. (Bu kapsamlı bir liste
+    değildir.)</p>
+
+    <p><module>mod_rewrite</module>, URL'lerin nasıl yeniden
+    yazılabileceğini etkilemek için bu aşamalardan ikisinde (veya
+    sıklıkla çağrıldıkları şekliyle "kancalarda") çalışır.</p>
+
+    <p>İlk olarak, HTTP isteği okunduktan sonra ancak herhangi bir
+    yetkilendirme başlamadan önce gerçekleşen URL-dosyaadı çevirisi
+    kancasını kullanır. İkinci olarak, yetkilendirme aşamalarından
+    sonra ve dizin başına yapılandırma dosyaları
+    (<code>.htaccess</code> dosyaları) okunduktan sonra ancak içerik
+    işleyicisi çağrılmadan önce gerçekleşen Düzeltme (Fixup)
+    kancasını kullanır.</p>
+
+    <p>Bir istek geldikten ve karşılık gelen sunucu veya sanal konak
+    belirlendikten sonra, yeniden yazma motoru sunucu başına
+    yapılandırmada görünen <module>mod_rewrite</module> yönergelerini
+    işlemeye başlar. (Yani ana sunucu yapılandırma dosyası ve
+    <directive module="core" type="section">Virtualhost</directive>
+    bölümleri.) Bu, URL-dosyaadı aşamasında gerçekleşir.</p>
+
+    <p>Birkaç adım sonra, son veri dizinleri bulunduktan sonra dizin
+    başına yapılandırma yönergeleri (<code>.htaccess</code> dosyaları
+    ve <directive module="core" type="section">Directory</directive>
+    blokları) uygulanır. Bu, Düzeltme aşamasında gerçekleşir.</p>
+
+    <p>Bu durumların her birinde <module>mod_rewrite</module>,
+    <code>REQUEST_URI</code>'yi ya yeni bir URL'ye ya da bir dosya
+    adına yeniden yazar.</p>
+
+    <p>Dizin başına bağlamda (yani <code>.htaccess</code> dosyaları ve
+    <code>Directory</code> blokları içinde) bu kurallar, bir URL
+    zaten bir dosya adına çevrilmiş olduktan sonra uygulanır. Bu
+    nedenle, <module>mod_rewrite</module> modülünün <directive
+    module="mod_rewrite">RewriteRule</directive> yönergelerini
+    başlangıçta karşılaştırdığı URL yolu, çevrilen dosya adının tam
+    dosya sistemi yolu olup geçerli dizin yolu (sondaki eğik çizgi
+    dahil) öndeki kısımdan çıkarılmıştır.</p>
+
+    <p>Göstermek gerekirse: Kurallar /var/www/foo/.htaccess içindeyse
+    ve /foo/bar/baz isteği işleniyorsa, ^bar/baz$ gibi bir ifade
+    eşleşecektir.</p>
+
+    <p>Dizin başına bağlamda bir değiştirme yapılırsa, yeni URL ile
+    yeni bir dahili alt istek verilir ve bu da istek aşamalarının
+    işlenmesini yeniden başlatır. Değiştirme göreli bir yolsa,
+    <directive module="mod_rewrite">RewriteBase</directive> yönergesi
+    değiştirmenin önüne eklenen URL yolu önekini belirler. Dizin
+    başına bağlamda, döngüyü önlemek için sonunda (gelecekteki bir
+    dizin başına yeniden yazma işleme "turunda") değiştirme yapmayan
+    kurallar oluşturmaya dikkat edilmelidir. (Bu sorunun daha ayrıntılı
+    tartışması için <a
+    href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
+    sayfasına bakın.)</p>
+
+    <p>Dizin başına bağlamda URL'nin bu ek işlenmesi nedeniyle, bu
+    bağlamda yeniden yazma kurallarınızı farklı şekilde oluşturmaya
+    dikkat etmeniz gerekecektir. Özellikle, baştaki dizin yolunun
+    yeniden yazma kurallarınızın göreceği URL'den çıkarılacağını
+    unutmayın. Daha fazla açıklama için aşağıdaki örneklere bakın.</p>
+
+    <table border="1">
+
+        <tr>
+            <th>Kuralın konumu</th>
+            <th>Kural</th>
+        </tr>
+
+        <tr>
+            <td>VirtualHost bölümü</td>
+            <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>Belge kökündeki .htaccess dosyası</td>
+            <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
+        </tr>
+
+        <tr>
+            <td>images dizinindeki .htaccess dosyası</td>
+            <td>RewriteRule "^(.+)\.jpg" "$1.gif"</td>
+        </tr>
+
+    </table>
+
+    <p><module>mod_rewrite</module> modülünün farklı bağlamlarda
+    URL'leri nasıl değiştirdiği hakkında daha fazla bilgi için,
+    yeniden yazma sırasında oluşturulan <a
+    href="../mod/mod_rewrite.html#logging">günlük kayıtlarına</a>
+    başvurmalısınız.</p>
+
+</section>
+
+<section id="InternalRuleset"><title>Kural Kümesi İşleme</title>
+
+      <p>Şimdi <module>mod_rewrite</module> bu iki API aşamasında
+      tetiklendiğinde, yapılandırılmış kural kümelerini yapılandırma
+      yapısından okur (bu yapı sunucu başına bağlam için başlangıçta
+      veya dizin başına bağlam için Apache çekirdeğinin dizin
+      yürüyüşü sırasında oluşturulmuştur). Ardından URL yeniden
+      yazma motoru içerilen kural kümesiyle (bir veya daha fazla kural
+      ve bunların koşulları birlikte) başlatılır. URL yeniden yazma
+      motorunun çalışması her iki yapılandırma bağlamı için de
+      tamamen aynıdır. Yalnızca nihai sonuç işleme farklıdır.</p>
+
+      <p>Kural kümesindeki kuralların sırası önemlidir; çünkü yeniden
+      yazma motoru bunları özel (ve çok belirgin olmayan) bir sırada
+      işler. Kural şudur: Yeniden yazma motoru kural kümesini kural
+      kural (<directive module="mod_rewrite">RewriteRule</directive>
+      yönergeleri) döner ve belirli bir kural eşleştiğinde isteğe
+      bağlı olarak karşılık gelen koşulları (<code>RewriteCond</code>
+      yönergeleri) döner. Tarihsel nedenlerle koşullar önce verilir
+      ve bu nedenle kontrol akışı biraz dolambaçlıdır. Daha fazla
+      ayrıntı için Şekil 1'e bakın.</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png"
+          alt="RewriteRule ve RewriteCond eşleştirme akışı" /><br />
+      <dfn>Şekil 1:</dfn>Yeniden yazma kural kümesindeki kontrol akışı
+</p>
+      <p>İlk olarak URL, her kuralın <em>Kalıp</em>'ıyla eşleştirilir.
+      Başarısız olursa <module>mod_rewrite</module> bu kuralı hemen
+      işlemeyi durdurur ve sonraki kuralla devam eder. <em>Kalıp</em>
+      eşleşirse <module>mod_rewrite</module> karşılık gelen kural
+      koşullarını (yapılandırmada RewriteRule'un hemen üstünde görünen
+      RewriteCond yönergeleri) arar. Hiçbiri yoksa, URL'yi
+      <em>Değiştirme</em> dizgesinden oluşturulan yeni bir değerle
+      değiştirir ve kural döngüsüne devam eder. Ancak koşullar
+      varsa, listelenme sırasına göre bunları işlemek için bir iç
+      döngü başlatır. Koşullar için mantık farklıdır: geçerli URL'ye
+      karşı bir kalıp eşleştirmeyiz. Bunun yerine, önce değişkenleri,
+      geri başvuruları, eşlem aramalarını <em>vb.</em> genişleterek
+      bir <em>SınamaDizgesi</em> oluştururuz ve ardından
+      <em>KoşulKalıbı</em>'nı bununla eşleştirmeye çalışırız. Kalıp
+      eşleşmezse, koşulların tamamı ve karşılık gelen kural başarısız
+      olur. Kalıp eşleşirse, daha fazla koşul kalmayana kadar bir
+      sonraki koşul işlenir. Tüm koşullar eşleşirse, URL'nin
+      <em>Değiştirme</em> ile değiştirilmesiyle işleme devam
+      eder.</p>
+
+</section>
+
+
+</manualpage>

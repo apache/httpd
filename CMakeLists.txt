@@ -17,7 +17,7 @@
 
 # CMAKE_MINIMUM_REQUIRED should be the first directive in the file:
 # https://cmake.org/cmake/help/latest/command/cmake_minimum_required.html
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.16...3.29)
 
 PROJECT(HTTPD C)
 
@@ -321,7 +321,6 @@ SET(MODULE_LIST
   "modules/aaa/mod_authz_host+A+host-based authorization control"
   "modules/aaa/mod_authz_owner+I+'require file-owner' authorization control"
   "modules/aaa/mod_authz_user+A+'require user' authorization control"
-  "modules/apreq/mod_apreq+i+Apache Request Filter"
   "modules/arch/win32/mod_isapi+I+isapi extension support"
   "modules/cache/mod_cache+I+dynamic file caching.  At least one storage management module (e.g. mod_cache_disk) is also necessary."
   "modules/cache/mod_cache_disk+I+disk caching module"
@@ -338,7 +337,6 @@ SET(MODULE_LIST
   "modules/core/mod_watchdog+I+Watchdog module"
   "modules/database/mod_dbd+I+Apache DBD Framework"
   "modules/dav/fs/mod_dav_fs+I+DAV provider for the filesystem."
-  "modules/dav/lock/mod_dav_lock+I+DAV provider for generic locking"
   "modules/dav/main/mod_dav+I+WebDAV protocol handling."
   "modules/debugging/mod_bucketeer+O+buckets manipulation filter.  Useful only for developers and testing purposes."
   "modules/debugging/mod_dumpio+I+I/O dump filter"
@@ -437,9 +435,6 @@ SET(installed_mod_libs_exps)
 # Define extra definitions, sources, headers, etc. required by some modules.
 # This could be included in the master list of modules above, though it 
 # certainly would get a lot more unreadable.
-SET(mod_apreq_extra_defines          APREQ_DECLARE_EXPORT)
-SET(mod_apreq_extra_sources          modules/apreq/handle.c)
-SET(mod_apreq_main_source            modules/apreq/filter.c)
 SET(mod_authz_dbd_extra_defines      AUTHZ_DBD_DECLARE_EXPORT)
 SET(mod_authnz_ldap_requires         APR_HAS_LDAP)
 SET(mod_authnz_ldap_extra_libs       mod_ldap)
@@ -464,8 +459,6 @@ SET(mod_dav_fs_extra_sources
   modules/dav/fs/quota.c             modules/dav/fs/repos.c
 )
 SET(mod_dav_fs_extra_libs            mod_dav)
-SET(mod_dav_lock_extra_sources       modules/dav/lock/locks.c)
-SET(mod_dav_lock_extra_libs          mod_dav)
 SET(mod_dbd_extra_defines            DBD_DECLARE_EXPORT)
 SET(mod_deflate_requires             ZLIB_FOUND)
 IF(ZLIB_FOUND)
@@ -684,17 +677,6 @@ SET(HTTPD_MAIN_SOURCES
 SET(LIBHTTPD_SOURCES
   ${extra_builtin_modules}
   ${PROJECT_BINARY_DIR}/modules.c
-  server/apreq_cookie.c
-  server/apreq_error.c
-  server/apreq_module.c
-  server/apreq_module_cgi.c
-  server/apreq_module_custom.c
-  server/apreq_param.c
-  server/apreq_parser.c
-  server/apreq_parser_header.c
-  server/apreq_parser_multipart.c
-  server/apreq_parser_urlencoded.c
-  server/apreq_util.c
   modules/arch/win32/mod_win32.c
   modules/core/mod_so.c
   modules/http/byterange_filter.c
@@ -921,7 +903,6 @@ TARGET_COMPILE_DEFINITIONS(libhttpd PRIVATE
   "LONG_NAME=Apache HTTP Server Core"
   "BIN_NAME=libhttpd.dll"
   "AP_DECLARE_EXPORT"
-  "APREQ_DECLARE_EXPORT"
 )
 TARGET_COMPILE_OPTIONS(libhttpd PRIVATE ${PCRE_CFLAGS} ${EXTRA_COMPILE_FLAGS})
 ADD_DEPENDENCIES(libhttpd test_char_header)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1741251:1927033 (outdated) -->
+<!-- English Revision: 1741251:1934245 (outdated) -->
 <!-- Translated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!-- Reviewed by Sergio Ramos-->
 <!--
@@ -538,7 +538,8 @@ which no other media type configuration could be found.
 <name>Define</name>
 <description>Define the existence of a variable</description>
 <syntax>Define <var>parameter-name</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
 
 <usage>
     <p>Equivalent to passing the <code>-D</code> argument to <program
@@ -3823,7 +3824,7 @@ certain events before failing a request</description>
 <description>Determines the behaviour on <code>TRACE</code> requests</description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Available in Apache HTTP Server 1.3.34, 2.0.55 and later</compatibility>
 
 <usage>
@@ -3849,7 +3850,8 @@ certain events before failing a request</description>
 <name>UnDefine</name>
 <description>Undefine the existence of a variable</description>
 <syntax>UnDefine <var>parameter-name</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p>Undoes the effect of a <directive module="core">Define</directive> or

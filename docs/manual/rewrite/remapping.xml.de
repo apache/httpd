@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1933068:1934245 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="remapping.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Umleitung und Neuzuordnung mit mod_rewrite</title>
+
+<summary>
+
+<p>Dieses Dokument ergänzt die <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">Referenzdokumentation</a>. Es beschreibt,
+wie Sie <module>mod_rewrite</module> verwenden können, um Anfragen
+umzuleiten und neu zuzuordnen. Dies beinhaltet viele Beispiele für gängige
+Verwendungen von <module>mod_rewrite</module>, einschließlich detaillierter
+Beschreibungen, wie jedes einzelne funktioniert.</p>
+
+<note type="warning">Beachten Sie, dass viele dieser Beispiele nicht unverändert in Ihrer
+speziellen Serverkonfiguration funktionieren werden. Es ist daher wichtig, dass Sie
+sie verstehen, anstatt die Beispiele einfach auszuschneiden und in Ihre
+Konfiguration einzufügen.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Moduldokumentation</a></seealso>
+<seealso><a href="intro.html">Einführung in mod_rewrite</a></seealso>
+<!--<seealso><a href="remapping.html">Umleitung und Neuzuordnung</a></seealso>-->
+<seealso><a href="access.html">Zugriffskontrolle</a></seealso>
+<seealso><a href="vhosts.html">Virtuelle Hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">Verwendung von RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Fortgeschrittene Techniken</a></seealso>
+<seealso><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></seealso>
+
+<section id="old-to-new">
+
+  <title>Von Alt zu Neu (intern)</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Angenommen, wir haben kürzlich die Seite
+      <code>foo.html</code> in <code>bar.html</code> umbenannt und
+      möchten nun die alte URL aus Gründen der Abwärtskompatibilität
+      weiterhin bereitstellen. Dabei sollen die Benutzer der alten URL
+      jedoch nicht bemerken, dass die Seite umbenannt wurde - das heißt,
+      die Adresse soll sich in ihrem Browser nicht ändern.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Wir schreiben die alte URL intern auf die neue um, mit der
+      folgenden Regel:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="old-to-new-extern">
+
+  <title>Umschreiben von Alt zu Neu (extern)</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Angenommen erneut, dass wir kürzlich die Seite
+      <code>foo.html</code> in <code>bar.html</code> umbenannt haben und
+      nun die alte URL aus Gründen der Abwärtskompatibilität weiterhin
+      bereitstellen möchten. Diesmal möchten wir aber, dass die Benutzer
+      der alten URL auf die neue hingewiesen werden, d.h. die
+      Adresszeile ihres Browsers soll sich ebenfalls ändern.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Wir erzwingen eine HTTP-Umleitung auf die neue URL, was zu einer
+      Änderung der Browser-Adresszeile und damit der Ansicht der Benutzer
+      führt:</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]
+</highlight>
+</dd>
+
+<dt>Diskussion</dt>
+
+    <dd>
+    <p>In diesem Beispiel können wir im Gegensatz zum
+    <a href="#old-to-new-intern">internen</a> Beispiel oben einfach die
+    Redirect-Direktive verwenden. <module>mod_rewrite</module> wurde in
+    diesem früheren Beispiel verwendet, um die Umleitung vor dem Client
+    zu verbergen:</p>
+
+    <highlight language="config">
+Redirect "/foo.html" "/bar.html"
+    </highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="movehomedirs">
+
+  <title>Ressource auf einen anderen Server verschoben</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Wenn eine Ressource auf einen anderen Server verschoben wurde,
+      möchten Sie möglicherweise, dass URLs für eine gewisse Zeit weiterhin
+      auf dem alten Server funktionieren, während die Benutzer ihre
+      Lesezeichen aktualisieren.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Sie können <module>mod_rewrite</module> verwenden, um diese URLs
+      auf den neuen Server umzuleiten, aber Sie könnten auch die Redirect-
+      oder RedirectMatch-Direktive in Betracht ziehen.</p>
+
+<highlight language="config">
+#Mit mod_rewrite
+RewriteEngine on
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
+</highlight>
+
+<highlight language="config">
+#Mit RedirectMatch
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
+</highlight>
+
+<highlight language="config">
+#Mit Redirect
+Redirect "/docs/" "http://new.example.com/docs/"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="static-to-dynamic">
+
+  <title>Von statisch zu dynamisch</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Wie können wir eine statische Seite
+      <code>foo.html</code> nahtlos in eine dynamische Variante
+      <code>foo.cgi</code> umwandeln, d.h. ohne dass der
+      Browser/Benutzer es bemerkt?</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Wir schreiben die URL einfach auf das CGI-Skript um und
+      erzwingen, dass der Handler <strong>cgi-script</strong> ist,
+      damit es als CGI-Programm ausgeführt wird. So führt eine Anfrage
+      an <code>/~quux/foo.html</code> intern zum Aufruf von
+      <code>/~quux/foo.cgi</code>.</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="backward-compatibility">
+
+  <title>Abwärtskompatibilität bei Änderung der Dateiendung</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Wie können wir URLs abwärtskompatibel machen (virtuell weiterhin
+      existierend), nachdem <code>document.YYYY</code> zu
+      <code>document.XXXX</code> migriert wurde, z.B. nach der Konvertierung
+      einer Reihe von <code>.html</code>-Dateien nach <code>.php</code>?</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Die URL wird nur dann von der alten auf die neue Endung
+      umgeschrieben, wenn die Zieldatei mit der neuen Endung existiert
+      und die Originaldatei mit der alten Endung nicht existiert.
+      Andernfalls bleibt die URL unverändert.</p>
+
+<highlight language="config">
+#   Abwärtskompatibilitäts-Regelsatz für
+#   Umschreibung von document.html zu document.php
+#   wenn und nur wenn document.php existiert
+&lt;Directory "/var/www/htdocs"&gt;
+    RewriteEngine on
+    RewriteBase   "/var/www/htdocs"
+
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
+&lt;/Directory&gt;
+</highlight>
+    </dd>
+
+    <dt>Diskussion</dt>
+    <dd>
+    <p>Dieses Beispiel nutzt eine oft übersehene Funktion von
+    <module>mod_rewrite</module>, indem es die Ausführungsreihenfolge des
+    Regelsatzes ausnutzt. Insbesondere wertet <module>mod_rewrite</module>
+    die linke Seite der RewriteRule aus, bevor es die
+    RewriteCond-Direktiven auswertet. Folglich ist $1 bereits definiert,
+    wenn die RewriteCond-Direktiven ausgewertet werden. Dies ermöglicht
+    es uns, die Existenz der Original- (<code>document.html</code>) und
+    Zieldatei (<code>document.php</code>) unter Verwendung desselben
+    Basisdateinamens zu prüfen.</p>
+
+    <p>Dieser Regelsatz ist für die Verwendung im Verzeichniskontext
+    (in einem &lt;Directory&gt;-Block oder in einer .htaccess-Datei)
+    konzipiert, sodass die <code>-f</code>-Prüfungen im korrekten
+    Verzeichnispfad suchen. Möglicherweise müssen Sie eine <directive
+    module="mod_rewrite">RewriteBase</directive>-Direktive setzen, um das
+    Verzeichnis anzugeben, in dem Sie arbeiten.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalhost">
+
+<title>Kanonische Hostnamen</title>
+
+      <dl>
+        <dt>Beschreibung:</dt>
+
+        <dd>Das Ziel dieser Regel ist es, die Verwendung eines bestimmten
+        Hostnamens zu erzwingen, anstelle anderer Hostnamen, die für den
+        Zugriff auf dieselbe Website verwendet werden könnten. Wenn Sie
+        beispielsweise die Verwendung von <strong>www.example.com</strong>
+        anstelle von <strong>example.com</strong> erzwingen möchten,
+        können Sie eine Variante des folgenden Rezepts verwenden.</dd>
+
+        <dt>Lösung:</dt>
+
+        <dd>
+
+<p>Der allerbeste Weg, dies zu lösen, verwendet gar nicht <module>mod_rewrite</module>,
+sondern die <directive module="mod_alias">Redirect</directive>-Direktive
+in einem virtuellen Host für den nicht-kanonischen Hostnamen.</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect "/" "http://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName www.example.com
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>Alternativ können Sie dies mit der
+<directive module="core" type="section">If</directive>-Direktive
+erreichen: (<strong>ab Version 2.4</strong>)</p>
+
+<highlight language="config">
+&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>Oder, um beispielsweise einen Teil Ihrer Website auf HTTPS umzuleiten,
+könnten Sie Folgendes tun:</p>
+
+<highlight language="config">
+&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+    Redirect "/admin/" "https://www.example.com/admin/"
+&lt;/If&gt;
+</highlight>
+
+<p>Wenn Sie aus irgendeinem Grund dennoch <module>mod_rewrite</module>
+verwenden möchten - zum Beispiel, wenn Sie dies mit einer größeren Menge
+von RewriteRules benötigen - können Sie eines der folgenden Rezepte
+verwenden.</p>
+
+<p>Für Websites, die auf einem anderen Port als 80 laufen:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+</highlight>
+
+<p>Und für eine Website auf Port 80:</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
+</highlight>
+
+        <p>
+        Wenn Sie dies generisch für alle Domainnamen tun möchten - das
+        heißt, wenn Sie <strong>example.com</strong> für alle möglichen
+        Werte von <strong>example.com</strong> auf
+        <strong>www.example.com</strong> umleiten möchten, können Sie
+        das folgende Rezept verwenden:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+</highlight>
+
+    <p>Diese Regelsätze funktionieren sowohl in Ihrer
+    Hauptserverkonfigurationsdatei als auch in einer <code>.htaccess</code>-Datei,
+    die im <directive module="core">DocumentRoot</directive> des Servers
+    abgelegt wird.</p>
+        </dd>
+      </dl>
+
+</section>
+
+<section id="multipledirs">
+
+  <title>Suche nach Seiten in mehr als einem Verzeichnis</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+      <p>Eine bestimmte Ressource könnte an einem von mehreren Orten
+      existieren, und wir möchten an diesen Orten nach der Ressource
+      suchen, wenn sie angefordert wird. Vielleicht haben wir kürzlich
+      unsere Verzeichnisstruktur umorganisiert und Inhalte auf mehrere
+      Orte verteilt.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Der folgende Regelsatz sucht in zwei Verzeichnissen nach der
+      Ressource und versucht, falls sie an keinem der beiden Orte
+      gefunden wird, sie einfach vom angeforderten Ort auszuliefern.</p>
+
+<highlight language="config">
+RewriteEngine on
+
+#   zuerst versuchen, es in dir1/ zu finden...
+#   ...und wenn gefunden, anhalten und zufrieden sein:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
+
+#   dann versuchen, es in dir2/ zu finden...
+#   ...und wenn gefunden, anhalten und zufrieden sein:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
+
+#   sonst weiter zu anderen Alias- oder ScriptAlias-Direktiven usw.
+RewriteRule "^"     "-"                                          [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="archive-access-multiplexer">
+
+  <title>Umleitung auf geografisch verteilte Server</title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+    <p>Wir haben zahlreiche Spiegelserver unserer Website und möchten
+    Besucher auf denjenigen umleiten, der sich in dem Land befindet, in
+    dem sie sich aufhalten.</p>
+    </dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+    <p>Anhand des Hostnamens des anfragenden Clients bestimmen wir, aus
+    welchem Land er kommt. Wenn wir keine Auflösung seiner IP-Adresse
+    durchführen können, greifen wir auf einen Standardserver zurück.</p>
+    <p>Wir verwenden eine <directive module="mod_rewrite">RewriteMap</directive>-Direktive,
+    um eine Liste der gewünschten Server zu erstellen.</p>
+
+<highlight language="config">
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+</highlight>
+
+<example>
+##  map.mirrors -- Multiplexing-Map<br />
+<br />
+de        http://www.example.de/<br />
+uk        http://www.example.uk/<br />
+com       http://www.example.com/<br />
+##EOF##
+</example>
+    </dd>
+
+    <dt>Diskussion</dt>
+    <dd>
+    <note type="warning">Dieser Regelsatz setzt voraus, dass
+    <directive module="core">HostNameLookups</directive> auf <code>on</code>
+    gesetzt ist, was einen erheblichen Leistungseinbruch bedeuten kann.</note>
+
+    <p>Die <directive module="mod_rewrite">RewriteCond</directive>-Direktive
+    erfasst den letzten Teil des Hostnamens des anfragenden Clients - den
+    Ländercode - und die nachfolgende RewriteRule verwendet diesen Wert,
+    um den entsprechenden Spiegelhost in der Map-Datei nachzuschlagen.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalurl">
+
+<title>Kanonische URLs</title>
+
+<dl>
+ <dt>Beschreibung:</dt>
+
+   <dd>
+     <p>Auf manchen Webservern gibt es mehr als eine URL für eine
+     Ressource. Normalerweise gibt es kanonische URLs (die tatsächlich
+     verwendet und verteilt werden) und solche, die nur Abkürzungen,
+     interne Adressen usw. sind. Unabhängig davon, welche URL der
+     Benutzer mit der Anfrage angegeben hat, sollte er schließlich die
+     kanonische URL in der Adresszeile seines Browsers sehen.</p>
+   </dd>
+
+   <dt>Lösung:</dt>
+
+     <dd>
+       <p>Wir führen eine externe HTTP-Umleitung für alle nicht-kanonischen
+       URLs durch, um sie in der Adressanzeige des Browsers und für alle
+       nachfolgenden Anfragen zu korrigieren. Im folgenden Beispiel-Regelsatz
+       ersetzen wir <code>/puppies</code> und <code>/canines</code>
+       durch die kanonische URL <code>/dogs</code>.</p>
+
+<highlight language="config">
+RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
+</highlight>
+        </dd>
+
+     <dt>Diskussion:</dt>
+     <dd>
+     Dies sollte eigentlich mit Redirect- oder RedirectMatch-Direktiven
+     erreicht werden:
+
+     <highlight language="config">
+RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
+     </highlight>
+     </dd>
+      </dl>
+
+</section>
+
+<section id="moveddocroot">
+
+  <title>Verschobenes <code>DocumentRoot</code></title>
+
+  <dl>
+    <dt>Beschreibung:</dt>
+
+    <dd>
+<p>Normalerweise entspricht das <directive module="core">DocumentRoot</directive>
+des Webservers direkt der URL "<code>/</code>". Aber oft sind diese Daten
+nicht wirklich von höchster Priorität. Beispielsweise möchten Sie
+vielleicht, dass Besucher beim ersten Betreten einer Website in ein
+bestimmtes Unterverzeichnis <code>/about/</code> geleitet werden. Dies
+kann mit dem folgenden Regelsatz erreicht werden:</p>
+</dd>
+
+    <dt>Lösung:</dt>
+
+    <dd>
+      <p>Wir leiten die URL <code>/</code> nach
+      <code>/about/</code> um:
+      </p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
+</highlight>
+
+<p>Beachten Sie, dass dies auch mit der <directive
+module="mod_alias">RedirectMatch</directive>-Direktive gehandhabt werden
+kann:</p>
+
+<highlight language="config">
+RedirectMatch "^/$" "http://example.com/about/"
+</highlight>
+
+<p>Beachten Sie auch, dass das Beispiel nur die Stamm-URL umschreibt.
+Das heißt, es schreibt eine Anfrage für <code>http://example.com/</code>
+um, aber nicht eine Anfrage für <code>http://example.com/page.html</code>.
+Wenn Sie tatsächlich Ihr Document Root geändert haben - das heißt, wenn
+<strong>alle</strong> Ihre Inhalte tatsächlich in diesem Unterverzeichnis
+liegen - ist es wesentlich besser, einfach Ihre
+<directive module="core">DocumentRoot</directive>-Direktive zu ändern
+oder alle Inhalte ein Verzeichnis nach oben zu verschieben, anstatt URLs
+umzuschreiben.</p>
+</dd>
+</dl>
+
+</section>
+
+<section id="fallback-resource">
+<title>Fallback-Ressource</title>
+
+<dl>
+<dt>Beschreibung:</dt>
+<dd>Sie möchten, dass eine einzelne Ressource (beispielsweise eine bestimmte
+Datei wie index.php) alle Anfragen behandelt, die an ein bestimmtes
+Verzeichnis gerichtet sind, mit Ausnahme derjenigen, die an eine vorhandene
+Ressource wie ein Bild oder eine CSS-Datei gehen sollen.</dd>
+
+<dt>Lösung:</dt>
+<dd>
+<p>Ab Version 2.2.16 sollten Sie hierfür die <directive
+module="mod_dir">FallbackResource</directive>-Direktive verwenden:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;
+</highlight>
+
+<p>In älteren Versionen von Apache oder wenn Ihre Anforderungen
+komplizierter sind, können Sie eine Variante des folgenden
+Umschreibungssatzes verwenden, um dasselbe zu erreichen:</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
+
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
+&lt;/Directory&gt;
+</highlight>
+
+<p>Wenn Sie andererseits die angeforderte URI als Query-String-Argument
+an index.php übergeben möchten, können Sie diese RewriteRule ersetzen
+durch:</p>
+
+<highlight language="config">
+RewriteRule "(.*)" "index.php?$1" [PT,QSA]
+</highlight>
+
+<p>Beachten Sie, dass diese Regelsätze sowohl in einer
+<code>.htaccess</code>-Datei als auch in einem &lt;Directory&gt;-Block
+verwendet werden können.</p>
+
+</dd>
+
+</dl>
+
+</section>
+
+<section id="rewrite-query">
+<title>Query-String umschreiben</title>
+
+<dl>
+<dt>Beschreibung:</dt>
+<dd>Sie möchten einen bestimmten Wert aus einem Query-String erfassen
+und ihn entweder ersetzen oder in eine andere Komponente der URL
+einbinden.</dd>
+
+<dt>Lösungen:</dt>
+<dd>
+<p>Viele der Lösungen in diesem Abschnitt verwenden dieselbe Bedingung,
+die den übereinstimmenden Wert in der Rückreferenz %2 belässt. %1 ist der
+Anfang des Query-Strings (bis zum interessierenden Schlüssel) und %3 ist
+der Rest. Diese Bedingung ist etwas komplex, um Flexibilität zu gewährleisten
+und doppelte '&amp;&amp;' in den Ersetzungen zu vermeiden.</p>
+<ul>
+  <li>Diese Lösung entfernt den übereinstimmenden Schlüssel und Wert:
+
+<highlight language="config">
+# mykey=??? entfernen
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"
+</highlight>
+  </li>
+
+  <li>Diese Lösung verwendet den erfassten Wert in der URL-Ersetzung
+  und verwirft den Rest des ursprünglichen Query-Strings durch Anhängen
+  eines '?':
+
+<highlight language="config">
+# Vom Query-String in PATH_INFO kopieren
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]
+</highlight>
+  </li>
+
+  <li>Diese Lösung prüft den erfassten Wert in einer nachfolgenden Bedingung:
+
+<highlight language="config">
+# Den Wert von mykey im Query-String erfassen
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]
+</highlight>
+  </li>
+
+  <li>Diese Lösung zeigt die Umkehrung der vorherigen und kopiert
+      Pfadkomponenten (möglicherweise PATH_INFO) aus der URL in den
+      Query-String.
+<highlight language="config">
+# Die gewünschte URL könnte /products/kitchen-sink sein, und das Skript erwartet
+# /path?products=kitchen-sink.
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</section>
+
+</manualpage>

@@ -345,6 +345,14 @@ ProxyPass "/apps"     "http://127"
 &lt;/Proxy&gt;
       </highlight>
 
+      <note><title>HTTPS/CONNECT requests</title>
+      <p>The <code>&lt;Proxy "*"&gt;</code> wildcard above matches all
+      requests, including HTTPS requests tunneled via the CONNECT method.
+      Note that access control for CONNECT tunnels can only match against
+      the host and port — path-based matching (e.g.,
+      <code>&lt;Proxy "https://example.com/path/"&gt;</code>) does not
+      work because CONNECT requests do not contain a path.</p></note>
+
       <p>For more information on access control directives, see
       <module>mod_authz_host</module>.</p>
 
@@ -414,6 +422,12 @@ ProxyPass "/apps"     "http://127"
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;
         </highlight>
+
+      <p>Note that <code>force-proxy-request-1.0</code> also implies
+      <code>proxy-sendcl</code>, because HTTP/1.0 does not support
+      chunked transfer encoding. Chunked request body forwarding
+      (via <code>proxy-sendchunked</code>) will be disabled when
+      this option is set.</p>
 
       <p> In 2.4.26 and later, the "no-proxy" environment variable can be set to disable 
       <module>mod_proxy</module> processing the current request.
@@ -754,6 +768,7 @@ expressions</description>
     Balancers available for a virtualhost in addition to the
     number pre-configured. It only takes effect if there is at
     least one pre-configured Balancer.</p>
+    <p>The value must be between 0 and 1000.</p>
 </usage>
 </directivesynopsis>
 
@@ -928,17 +943,20 @@ expressions</description>
     the socket is local, the hostname used (in this case <code>localhost</code>)
     is moot, but it is passed as the Host: header value of the request.</p>
 
-    <note><strong>Note:</strong> The path associated with the <code>unix:</code>
+    <note>The path associated with the <code>unix:</code>
     URL is <directive>DefaultRuntimeDir</directive> aware.</note>
 
-    <note><strong>Note:</strong> <directive>RewriteRule</directive> requires
+    <note><directive>RewriteRule</directive> requires
     the <code>[P,NE]</code> option to prevent the <code>'|'</code> character
     from being escaped.</note>
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>. The same will occur inside a
+    >Location</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>path</var> argument is required. The same will occur inside a
     <directive type="section" module="core">LocationMatch</directive> section;
     however, ProxyPass does not interpret the regexp as such, so it is necessary
     to use <directive>ProxyPassMatch</directive> in this situation instead.</p>
@@ -1024,8 +1042,15 @@ ProxyPass "/mirror/foo/i" "!"
     <note type="warning"><title>Ordering ProxyPass Directives in Locations</title>
       <p>Only one <directive module="mod_proxy">ProxyPass</directive> directive
       can be placed in a <directive module="core">Location</directive> block,
-      and the most specific location will take precedence.</p>
+      and the last matching
+      <directive module="core">Location</directive> block takes precedence,
+      following the standard
+      <a href="../sections.html#merging">section merging</a> rules.
+      Place more-specific <directive module="core">Location</directive>
+      blocks <em>after</em> less-specific ones to ensure the intended
+      <directive module="mod_proxy">ProxyPass</directive> applies.</p>
     </note>
+
     <note type="warning"><title>Exclusions and the no-proxy environment variable</title>
       <p>Exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directives. In 2.4.26 and later, the "no-proxy"
@@ -1057,6 +1082,15 @@ ProxyPass "/mirror/foo/i" "!"
     process, and <code>max</code> and other settings are not coordinated
     among all child processes, except when only one child process is allowed
     by configuration or MPM design.</p>
+    </note>
+
+    <note><title>Connection pooling with prefork MPM</title>
+    <p>With the prefork MPM, connections to backends are not pooled
+    (each child process handles one connection at a time). The
+    <code>acquire</code> and <code>ttl</code> parameters, which
+    control connection pool behavior, have no effect when using
+    prefork. The <code>min</code>, <code>smax</code>, and
+    <code>hmax</code> pool sizing parameters are also ignored.</p>
     </note>
 
     <p>Use the <code>ttl</code> parameter to set an optional
@@ -1286,7 +1320,7 @@ ProxyPass "/example" "http://backend.example.com" max=20 ttl=120 retry=300
         <td><p>Protocol accepted by <module>mod_proxy_http</module> or
         <module>mod_proxy_wstunnel</module> for the HTTP Upgrade mechanism
         upon negotiation by the HTTP client/browser (per
-        <a href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 - Upgrade</a>).
+        <rfc anchor="name-upgrade">9110</rfc> - Upgrade).
         See the <a href="#protoupgrade">Protocol Upgrade</a> note below</p>
     </td></tr>
     <tr><td>mapping</td>
@@ -1481,7 +1515,7 @@ ProxyPass "/" "balancer://hotcluster/"
 
     <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
     But this may be incompatible with some backends, particularly those
-    that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
+    that make use of <var><glossary ref="pathinfo">PATH_INFO</glossary></var>.  The optional <var>nocanon</var>
     keyword suppresses this and passes the URL path "raw" to the
     backend.  Note that this keyword may affect the security of your backend,
     as it removes the normal limited protection against URL-based attacks
@@ -1560,8 +1594,26 @@ when the <var>url</var> parameter contains backreference(s) (see note below).
        matches, the server will substitute any parenthesized matches into the given
        string and use it as a new <var>url</var>.</p>
 
-    <note><strong>Note: </strong>This directive cannot be used within a
+    <note>This directive cannot be used within a
     <code>&lt;Directory&gt;</code> context.</note>
+
+    <note type="warning"><title>Worker matching with backreferences</title>
+    <p>When <directive>ProxyPassMatch</directive> contains
+    backreferences (e.g., <code>$1</code>) in the target URL, each
+    request produces a different resolved URL. Because <a
+    href="#workers">workers</a> are matched by URL, these requests
+    will not match the worker created by this directive and will
+    instead use the default reverse proxy worker, which does not
+    reuse connections or cache DNS lookups. To enable connection
+    pooling, define an explicit worker for the backend separately:</p>
+    <highlight language="config">
+ProxyPass        "/notused" "http://backend.example.com/" connectiontimeout=5 timeout=30
+ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"
+    </highlight>
+    <p>The explicit <directive>ProxyPass</directive> worker definition
+    ensures that the backend connection pool is available for use by
+    <directive>ProxyPassMatch</directive> requests.</p>
+    </note>
 
     <p>Suppose the local server has address <code>http://example.com/</code>;
     then</p>
@@ -1580,7 +1632,10 @@ ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
     <p>When used inside a <directive type="section" module="core"
     >LocationMatch</directive> section, the first argument is omitted and the
     regexp is obtained from the <directive type="section" module="core"
-    >LocationMatch</directive>.</p>
+    >LocationMatch</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>regex</var> argument is required.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <directive module="mod_rewrite">RewriteRule</directive> directive with the
@@ -1600,7 +1655,7 @@ ProxyPassMatch "^/(.*\.gif)$" "http://backend.example.com/$1"
       behavior regarding reuse/keepalive of backend connections (which were
       never reused before for these URLs), the parameter <var>enablereuse</var>
       (or <var>disablereuse</var>) default to <code>off</code> (resp. <code>on</code>)
-      in this case. Setting <code>enablereuse=on</code> explicitely allows to
+      in this case. Setting <code>enablereuse=on</code> explicitly allows to
       reuse connections <strong>unless</strong> some backreference(s) belong in
       the <code>authority</code> part (hostname and/or port) of the <var>url</var>
       (this condition is enforced since Apache HTTP Server 2.4.55, and produces
@@ -1701,7 +1756,10 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
-    >Location</directive>. The same occurs inside a <directive type="section"
+    >Location</directive>. When used outside a <directive type="section"
+    module="core">Location</directive> or <directive type="section"
+    module="core">LocationMatch</directive> section, the
+    <var>path</var> argument is required. The same occurs inside a <directive type="section"
     module="core">LocationMatch</directive> section, but will probably not work as
     intended, as ProxyPassReverse will interpret the regexp literally as a
     path; if needed in this situation, specify the ProxyPassReverse outside
@@ -1858,7 +1916,9 @@ connections</description>
 <usage>
     <p>The <directive>ProxyIOBufferSize</directive> directive adjusts the size
     of the internal buffer which is used as a scratchpad for the data between
-    input and output. The size must be at least <code>512</code>.</p>
+    input and output. The size must be at least <code>512</code>, or set
+    to <code>0</code> to indicate that the system's default buffer size
+    should be used.</p>
 
     <p>In almost every case, there's no reason to change that value.</p>
 
@@ -2062,7 +2122,7 @@ NoProxy         .example.com 192.168.112.0/21
     the default domain which the apache proxy server will belong to. If a
     request to a host without a domain name is encountered, a redirection
     response to the same host with the configured <var>Domain</var> appended
-    will be generated.</p>
+    will be generated. The domain name must start with a dot.</p>
 
     <example><title>Example</title>
     <highlight language="config">
@@ -2086,8 +2146,7 @@ header for proxied requests</description>
 <usage>
     <p>This directive controls the use of the <code>Via:</code> HTTP
     header by the proxy. Its intended use is to control the flow of
-    proxy requests along a chain of proxy servers.  See <a
-    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1), section
+    proxy requests along a chain of proxy servers.  See <rfc>2616</rfc> (HTTP/1.1), section
     14.45 for an explanation of <code>Via:</code> header lines.</p>
 
     <ul>

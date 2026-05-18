@@ -341,7 +341,7 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * @param fmt The format string
  * @param ... The arguments to use to fill out fmt.
  * @note ap_log_error is implemented as a macro
- * @note Use APLOG_MARK to fill out file and line
+ * @note Use APLOG_MARK to fill out file, line, and module_index
  * @note If a request_rec is available, use that with ap_log_rerror()
  * in preference to calling this function.  Otherwise, if a conn_rec is
  * available, use that with ap_log_cerror() in preference to calling

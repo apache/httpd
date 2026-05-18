@@ -26,12 +26,12 @@
   <title>httpd - Apache Hypertext Transfer Protocol Server</title>
 
 <summary>
-     <p><code>httpd</code> is the Apache HyperText Transfer Protocol
+     <p><program>httpd</program> is the Apache HyperText Transfer Protocol
      (HTTP) server program.  It is designed to be run as a standalone
      daemon process. When used like this it will create a pool of
      child processes or threads to handle requests.</p>
 
-     <p>In general, <code>httpd</code> should not be invoked directly,
+     <p>In general, <program>httpd</program> should not be invoked directly,
      but rather should be invoked via <program>
      apachectl</program> on Unix-based systems or <a
      href="../platform/windows.html#winsvc">as a service on Windows NT,
@@ -88,7 +88,7 @@ module="core">ServerRoot</directive>. The default is
 
 <dt><code>-k <code>start|restart|graceful|stop|graceful-stop</code></code></dt>
 
-<dd>Signals <code>httpd</code> to start, restart, or stop.  See <a
+<dd>Signals <program>httpd</program> to start, restart, or stop.  See <a
 href="../stopping.html">Stopping Apache httpd</a> for more information.</dd>
 
 <dt><code>-C <var>directive</var></code></dt>
@@ -161,11 +161,11 @@ DUMP_...</var> arguments to print information about the configuration,
 
 <dt><code>-v</code></dt>
 
-<dd>Print the version of <code>httpd</code>, and then exit.</dd>
+<dd>Print the version of <program>httpd</program>, and then exit.</dd>
 
 <dt><code>-V</code></dt>
 
-<dd>Print the version and build parameters of <code>httpd</code>, and
+<dd>Print the version and build parameters of <program>httpd</program>, and
 then exit.</dd>
 
 <dt><code>-X</code></dt>
@@ -217,6 +217,31 @@ information about the configuration:</p>
   <dd>If <module>mod_ssl</module> is loaded, print details of
   configured SSL/TLS certificates.</dd>
 </dl>
+</section>
+
+<section id="files"><title>Files</title>
+
+<p>The default paths listed below may be changed at compile time or with
+various command-line and configuration directives. Consult your local
+installation for the actual locations.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/conf/httpd.conf</code></dt>
+<dd>Main server configuration file.</dd>
+
+<dt><code>/usr/local/apache2/conf/mime.types</code></dt>
+<dd>Default MIME type mappings.</dd>
+
+<dt><code>/usr/local/apache2/logs/error_log</code></dt>
+<dd>Error log file.</dd>
+
+<dt><code>/usr/local/apache2/logs/access_log</code></dt>
+<dd>Access log file.</dd>
+
+<dt><code>/usr/local/apache2/logs/httpd.pid</code></dt>
+<dd>File containing the process ID of the running daemon.</dd>
+</dl>
+
 </section>
 
 </manualpage>

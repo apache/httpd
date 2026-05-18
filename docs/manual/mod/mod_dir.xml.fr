@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1894515 -->
+<!-- English Revision: 1933850 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -110,11 +110,11 @@ client envoie une requête pour un répertoire</description>
     arguments sont présents avant ou après lui, même s'ils sont
     eux-mêmes des arguments "disabled".</p>
 
-    <p><strong>Note :</strong>La définition de plusieurs directives
+    <note>La définition de plusieurs directives
     <directive>DirectoryIndex</directive> au sein d'un <a href="../sections.html"><em>même
     contexte</em></a> permet d'ajouter des ressources à rechercher plutôt
     que de remplacer celle déjà définies :
-    </p>
+    </note>
     <highlight language="config">
 # Exemple A: définit index.html comme page d'index, ainsi qu'index.php.
 &lt;Directory "/foo"&gt;
@@ -193,8 +193,7 @@ répertoires.
 fin"</description>
 <syntax>DirectorySlash On|Off|NotFound</syntax>
 <default>DirectorySlash On</default>
-<contextlist><context>server config</context><context>virtual
-host</context>
+<contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
 <compatibility>L'argument NotFound est disponible à partir de la version 2.5.1
@@ -265,7 +264,7 @@ du serveur HTTP Apache</compatibility>
 <directivesynopsis>
 <name>FallbackResource</name>
 <description>Définit une URL par défaut pour les requêtes qui ne ciblent
-aucun fichier</description>
+aucun fichier ou gestionnaire</description>
 <syntax>FallbackResource disabled | <var>url-locale</var></syntax>
 <default>Désactivé - httpd renvoie un code d'erreur 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -318,7 +317,22 @@ version 2.4.4 du serveur HTTP Apache</compatibility>
     <code>/blog/index.php</code>) peut accéder à l'URL de la requête originale
     via la variable de serveur <code>REQUEST_URI</code>. Pour accéder à cette
     variable en PHP, par exemple, utilisez <code>$_SERVER['REQUEST_URI']</code>.</p>
+    <note><title>Interaction avec les autres gestionnaires</title>
+    <p>La directive <directive>FallbackResource</directive> n’a d’effet que si
+    aucun autre gestionnaire n’a été assigné à la requête. Si une directive
+    comme <directive module="core">SetHandler</directive> ou <directive
+    module="mod_mime">AddHandler</directive> a déjà assigné un gestionnaire à un
+    URL ou à une extension de fichier, la directive
+    <directive>FallbackResource</directive> ne l’outrepassera pas. Par exemple,
+    si vous utilisez <code>SetHandler application/x-httpd-php</code> dans une
+    section <directive type="section" module="core">Directory</directive>, ce
+    gestionnaire s’appliquera à toutes les requêtes dans ce répertoire, même
+    aux requêtes pour des fichiers qui n’existent pas ; la directive
+    <directive>FallbackResource</directive> ne sera alors jamais invoquée.</p></note>
 </usage>
+<seealso><directive module="core">SetHandler</directive></seealso>
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><directive module="mod_dir">DirectoryCheckHandler</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -337,17 +351,22 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</compatibility>
     <p>La directive <directive>DirectoryCheckHandler</directive> permet
     de faire en sorte que <module>mod_dir</module> recherche un index
     de répertoire ou ajoute des slashes de fin lorsqu'un autre
-    gestionnaire à été défini pour l'URL considérée. Les gestionnaires
+    gestionnaire a été défini pour l'URL considérée. Les gestionnaires
     peuvent être définis à l'exécution via des directives telles que
     <directive module="core">SetHandler</directive> ou par d'autres
     modules.</p>
 
-    <p>Dans les versions antérieures à 2.4, ce module ne modifiait pas
-    son comportement si un autre gestionnaire avait été défini pour
-    l'URL considérée. Ceci permettait de servir des index de répertoires
-    même si une directive <directive>SetHandler</directive> avait été
-    définie pour un répertoire entier, mais pouvait aussi être à
-    l'origine de conflits avec d'autres modules.</p> 
+    <p>Lorsqu'elle est définie à <code>On</code>,
+    <module>mod_dir</module> ne prend aucune mesure si un autre
+    gestionnaire a déjà été défini pour l'URL.</p>
+
+    <p>Lorsqu'elle est définie à <code>Off</code> (la valeur par
+    défaut), <module>mod_dir</module> traite la requête quel que soit
+    le gestionnaire éventuellement défini. Ceci permet de servir des
+    index de répertoires même si une directive
+    <directive>SetHandler</directive> a été définie pour un répertoire
+    entier, mais peut aussi être à l'origine de conflits avec d'autres
+    modules.</p>
 </usage>
 </directivesynopsis>
 

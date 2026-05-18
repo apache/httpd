@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1928265 -->
+<!-- English Revision: 1928265:1933778 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,7 +60,7 @@ le Serveur HTTP Apache.</p>
     principaux ne sont prises en compte par httpd que lorsque le serveur
     est démarré ou redémarré.</p>
 
-    <p>Le serveur lit aussi un fichier contenant les types de document mime ;
+    <p>Le serveur lit aussi un fichier contenant les types de document mime&nbsp;;
     ce fichier est défini par la directive <directive
     module="mod_mime">TypesConfig</directive>,
     et se nomme <code>mime.types</code> par défaut.</p>
@@ -75,7 +75,7 @@ le Serveur HTTP Apache.</p>
     cette continuation soit prise en compte, il ne doit y avoir aucun caractère
     ni blanc entre l'anti-slash et la fin de la ligne.</p>
 
-    <p>Les lignes qui commencent par un croisillon « # » sont interprétées comme
+    <p>Les lignes qui commencent par un croisillon «&nbsp;#&nbsp;» sont interprétées comme
     des commentaires et sont ignorées. Les commentaires <strong>ne doivent
     pas</strong> se trouver sur la même ligne qu’une directive de configuration,
     y compris au début de la continuation d’une ligne comme décrit dans le

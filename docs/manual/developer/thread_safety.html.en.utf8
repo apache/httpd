@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server 2.x Thread Safety Issues</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/thread_safety.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -38,7 +40,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#functions">Common standard troublesome functions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#commonlibs">Common 3rd Party Libraries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#liblist">Library List</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="variables" id="variables">Global and static variables</a> <a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
@@ -129,7 +131,6 @@
       libz.so.1 =&gt; /usr/lib/libz.so.1 (0x403e2000)<br />
       libpng.so.2 =&gt; /usr/lib/libpng.so.2 (0x403f0000)<br />
       libmysqlclient.so.11 =&gt; /usr/lib/libmysqlclient.so.11 (0x40411000)<br />
-      libming.so =&gt; /usr/lib/libming.so (0x40449000)<br />
       libm.so.6 =&gt; /lib/libm.so.6 (0x40487000)<br />
       libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0x404a8000)<br />
       libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0x404e7000)<br />
@@ -157,11 +158,11 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+<tr class="odd"><td><a href="https://www.oracle.com/database/technologies/related/berkeleydb.html">Berkeley DB</a></td>
         <td>3.x, 4.x</td>
         <td>Yes</td>
         <td>Be careful about sharing a connection across threads.</td></tr>
-<tr><td><a href="http://sources.redhat.com/bzip2/index.html">bzip2</a></td>
+<tr><td><a href="https://sourceware.org/bzip2/">bzip2</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Both low-level and high-level APIs are thread-safe. However,
@@ -170,7 +171,7 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+<tr><td><a href="https://github.com/uw-imap/imap">C-Client</a></td>
         <td> </td>
         <td>Perhaps</td>
         <td>c-client uses <code>strtok()</code> and
@@ -213,7 +214,7 @@
         <td>Yes</td>
         <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="http://www.imagemagick.com/www/changelog.html">Change log</a>).
         </td></tr>
-<tr class="odd"><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en">Imlib2</a></td>
+<tr class="odd"><td><a href="https://www.enlightenment.org/about-efl">Imlib2</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
@@ -225,52 +226,44 @@
         <td> </td>
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
-            more information, please read <a href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html">http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
-<tr><td><a href="http://www.opaque.net/ming/">Ming</a></td>
-        <td>0.2a</td>
-        <td>?</td>
-        <td> </td></tr>
-<tr class="odd"><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
+            more information, please read <a href="https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html">https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html</a>.</td></tr>
+<tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.openldap.org/">OpenLDAP</a></td>
+<tr class="odd"><td><a href="http://www.openldap.org/">OpenLDAP</a></td>
         <td>2.1.x</td>
         <td>Yes</td>
         <td>Use <code>ldap_r</code> library variant to ensure
         thread-safety.</td></tr>
-<tr class="odd"><td><a href="http://www.openssl.org/">OpenSSL</a></td>
+<tr><td><a href="http://www.openssl.org/">OpenSSL</a></td>
         <td>0.9.6g</td>
         <td>Yes</td>
         <td>Requires proper usage of <code>CRYPTO_num_locks</code>,
         <code>CRYPTO_set_locking_callback</code>,
         <code>CRYPTO_set_id_callback</code></td></tr>
-<tr><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
+<tr class="odd"><td><a href="http://www.oracle.com/">liboci8 (Oracle 8+)</a></td>
         <td>8.x,9.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://pdflib.com/">pdflib</a></td>
+<tr><td><a href="http://pdflib.com/">pdflib</a></td>
         <td>5.0.x</td>
         <td>Yes</td>
         <td>PDFLib docs claim it is thread safe; changes.txt indicates it
             has been partially thread-safe since V1.91: <a href="http://www.pdflib.com/products/pdflib-family/pdflib/">http://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
-<tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+<tr class="odd"><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.0.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
+<tr><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.2.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr><td><a href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html">libpq (PostgreSQL)</a></td>
+<tr class="odd"><td><a href="https://www.postgresql.org/docs/8.4/libpq-threading.html">libpq (PostgreSQL)</a></td>
         <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>
-<tr class="odd"><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml">Sablotron</a></td>
-        <td>0.95</td>
-        <td>?</td>
-        <td /></tr>
 <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
         <td>Yes</td>
@@ -280,28 +273,32 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/thread_safety.html" title="English">&nbsp;en&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/thread_safety.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -78,7 +78,8 @@ static apr_status_t ad_setup_order(md_proto_driver_t *d, md_result_t *result, in
         md_acme_order_purge(d->store, d->p, MD_SG_STAGING, md, d->env);
     }
     
-    if (ad->cred->spec && ad->md->ca_account) {
+    if (ad->cred->spec && ad->md->ca_account && ad->md->ari_renewals &&
+        ad->acme->api.v2.renewal_info) {
         /* are we replacing a previous certificate on the same account? */
         int i;
         for (i = 0; i < md_pkeys_spec_count(d->md->pks); ++i) {

@@ -26,11 +26,11 @@
 <title>dbmmanage - Manage user authentication files in DBM format</title>
 
 <summary>
-    <p><code>dbmmanage</code> is used to create and update the DBM format files
+    <p><program>dbmmanage</program> is used to create and update the DBM format files
     used to store usernames and password for basic authentication of HTTP users
     via <module>mod_authn_dbm</module>.
     Resources available from the Apache HTTP server can be restricted to just
-    the users listed in the files created by <code>dbmmanage</code>. This
+    the users listed in the files created by <program>dbmmanage</program>. This
     program can only be used when the usernames are stored in a DBM file. To
     use a flat-file database see <program>htpasswd</program>.</p>
 
@@ -166,19 +166,19 @@
     may exist on your system. The three primary examples are SDBM, NDBM, the GNU
     project's GDBM, and Berkeley DB 2. Unfortunately, all these libraries use
     different file formats, and you must make sure that the file format used
-    by <var>filename</var> is the same format that <code>dbmmanage</code>
-    expects to see. <code>dbmmanage</code> currently has no way of determining
+    by <var>filename</var> is the same format that <program>dbmmanage</program>
+    expects to see. <program>dbmmanage</program> currently has no way of determining
     what type of DBM file it is looking at. If used against the wrong format,
     will simply return nothing, or may create a different DBM file with a
     different name, or at worst, it may corrupt the DBM file if you were
     attempting to write to it.</p>
 
-    <p><code>dbmmanage</code> has a list of DBM format preferences, defined by
+    <p><program>dbmmanage</program> has a list of DBM format preferences, defined by
     the <code>@AnyDBM::ISA</code> array near the beginning of the program. Since
     we prefer the Berkeley DB 2 file format, the order in which
-    <code>dbmmanage</code> will look for system libraries is Berkeley DB 2,
+    <program>dbmmanage</program> will look for system libraries is Berkeley DB 2,
     then NDBM, then GDBM and then SDBM. The first library found will be the
-    library <code>dbmmanage</code> will attempt to use for all DBM file
+    library <program>dbmmanage</program> will attempt to use for all DBM file
     transactions. This ordering is slightly  different than the standard
     <code>@AnyDBM::ISA</code> ordering in Perl, as well as the ordering used by
     the simple <code>dbmopen()</code> call in Perl, so if you use any other

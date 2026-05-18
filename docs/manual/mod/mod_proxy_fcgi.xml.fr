@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1823832 -->
+<!-- English Revision: 1933506:1934245 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -34,15 +34,14 @@
 <summary>
     <p>Pour fonctionner, ce module <em>nécessite</em> le chargement de
     <module>mod_proxy</module>. Il fournit le support du protocole <a
-    href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    href="https://fastcgi-archives.github.io/">FastCGI</a>.</p>
 
     <p>Ainsi, pour pouvoir traiter le protocole <code>FastCGI</code>,
     <module>mod_proxy</module> et <module>mod_proxy_fcgi</module>
     doivent être chargés dans le serveur.</p>
 
     <p>A la différence de <a
-    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a> et <a
-    href="http://www.fastcgi.com/">mod_fastcgi</a>,
+    href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>,
     <module>mod_proxy_fcgi</module> n'est pas en mesure de démarrer le
     processus de l'application ; <program>fcgistarter</program> est
     fourni à cet effet sur certaines plateformes. Le framework
@@ -380,9 +379,8 @@ ProxyFCGISetEnvIf "reqenv('PATH_TRANSLATED') =~ m#(/.*prefix)(\d+)(.*)#" PATH_TR
 
     <highlight language="config">ProxyFCGISetEnvIf true VARIABLE</highlight>
 
-  La spécification CGI/1.1 <a
-  href="https://tools.ietf.org/html/rfc3875#section-4.1">ne fait pas de
-  distinction</a> entre une variable contenant une chaîne vide et une variable qui
+  La spécification CGI/1.1 ne fait pas de
+  distinction (<rfc section="4.1">3875</rfc>) entre une variable contenant une chaîne vide et une variable qui
   n'existe pas. De nombreuses implémentations CGI et FastCGI font cependant
   cette distinction (ou permettent aux scripts de la faire). Le choix de celle
   que vous allez utiliser dépend de votre implémentation et de la raison qui

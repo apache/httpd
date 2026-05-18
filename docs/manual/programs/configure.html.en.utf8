@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>configure - Configure the source tree</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/configure.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -29,7 +31,7 @@
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>The <code>configure</code> script configures the source tree
+    <p>The <code class="program"><a href="../programs/configure.html">configure</a></code> script configures the source tree
     for compiling and installing the Apache HTTP Server on your
     particular platform. Various options allow the compilation of a
     server corresponding to your personal requirements.</p>
@@ -41,11 +43,11 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Environment variables</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../install.html">Compiling and Installing</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../install.html">Compiling and Installing</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Synopsis</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
-    <p>You should call the <code>configure</code> script from within the
+    <p>You should call the <code class="program"><a href="../programs/configure.html">configure</a></code> script from within the
     root directory of the distribution.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
@@ -69,7 +71,7 @@
   <h3><a name="configurationoptions" id="configurationoptions">Configuration options</a></h3>
 
     <p>The following options influence the behavior of
-    <code>configure</code> itself.</p>
+    <code class="program"><a href="../programs/configure.html">configure</a></code> itself.</p>
 
     <dl>
       <dt><code>-C</code></dt>
@@ -89,7 +91,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>The <code>configure</code> script is run normally but does
+      <dd>The <code class="program"><a href="../programs/configure.html">configure</a></code> script is run normally but does
         not create output files. This is useful to check the test results
         before generating makefiles for compilation.</dd>
 
@@ -100,7 +102,7 @@
 
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Defines directory <var>DIR</var> to be the source file directory.
-        Default is the directory where <code>configure</code> is located, or
+        Default is the directory where <code class="program"><a href="../programs/configure.html">configure</a></code> is located, or
         the parent directory.</dd>
 
       <dt><code>--silent</code></dt>
@@ -218,7 +220,8 @@
           <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>, <code class="program"><a href="../programs/suexec.html">suexec</a></code>, etc. which
           are necessary to run the Apache HTTP Server. By default
           <code>sbindir</code> is set to
-          <code><var>EPREFIX</var>/sbin</code>.</dd>
+          <code><var>EPREFIX</var>/bin</code> (the same as
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Install modifiable architecture-independent data in <var>DIR</var>.
@@ -286,7 +289,7 @@
       </dl>
 
       <div class="note"><h3>Note</h3>
-        <code>configure</code> will not complain about
+        <code class="program"><a href="../programs/configure.html">configure</a></code> will not complain about
         <code>--enable-<var>foo</var></code> even if <var>foo</var> doesn't
         exist, so you need to type carefully.
       </div>
@@ -374,7 +377,7 @@
             modules. The module source file <code><var>module-file</var></code>
             will be searched in the <code>modules/<var>module-type</var></code>
             subdirectory of your Apache HTTP server source tree. If it is not found
-            there <code>configure</code> is considering <var>module-file</var> to be
+            there <code class="program"><a href="../programs/configure.html">configure</a></code> is considering <var>module-file</var> to be
             an absolute file path and tries to copy the source file into the
             <var>module-type</var> subdirectory. If the subdirectory doesn't
             exist it will be created and populated with a standard
@@ -486,7 +489,7 @@
           is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
-          have to tell <code>configure</code> the path to the
+          have to tell <code class="program"><a href="../programs/configure.html">configure</a></code> the path to the
           <code>apr-config</code> script. You may set the absolute path and name
           or the directory to the installed APR. <code>apr-config</code> must
           exist within this directory or the subdirectory
@@ -496,19 +499,19 @@
         <dd>The Apache Portable Runtime Utilities (APU) are part of the
           httpd source distribution and will automatically be build
           together with the HTTP server. If you want to use an already installed
-          APU instead you have to tell <code>configure</code> the path to the
+          APU instead you have to tell <code class="program"><a href="../programs/configure.html">configure</a></code> the path to the
           <code>apu-config</code> script. You may set the absolute path and name
           or the directory to the installed APU. <code>apu-config</code> must
           exist within this directory or the subdirectory
           <code>bin</code>.</dd>
 
         <dt><code>--with-ssl=<var>DIR</var></code></dt>
-        <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> has been enabled <code>configure</code>
+        <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> has been enabled <code class="program"><a href="../programs/configure.html">configure</a></code>
           searches for an installed OpenSSL. You can set the directory path
           to the SSL/TLS toolkit instead.</dd>
 
         <dt><code>--with-z=<var>DIR</var></code></dt>
-        <dd><code>configure</code> searches automatically for an installed
+        <dd><code class="program"><a href="../programs/configure.html">configure</a></code> searches automatically for an installed
           <code>zlib</code> library if your source configuration requires one
           (e.g., when <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is enabled). You can set the
           directory path to the compression library instead.</dd>
@@ -524,10 +527,10 @@
 
       <dl>
         <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
-        <dd>If no <var>path</var> is specified, <code>configure</code> will
+        <dd>If no <var>path</var> is specified, <code class="program"><a href="../programs/configure.html">configure</a></code> will
           search for the include files and libraries of a GNU DBM
           installation in the usual search paths. An explicit
-          <var>path</var> will cause <code>configure</code> to look in
+          <var>path</var> will cause <code class="program"><a href="../programs/configure.html">configure</a></code> to look in
           <code><var>path</var>/lib</code> and
           <code><var>path</var>/include</code> for the relevant files.
           Finally, the <var>path</var> may specify specific include and
@@ -596,7 +599,7 @@
       <dd>Build a statically linked version of <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code>.</dd>
     </dl>
 
-    <h4><a name="suexec" id="suexec"><code>suexec</code> configuration options</a></h4>
+    <h4><a name="suexec" id="suexec"><code class="program"><a href="../programs/suexec.html">suexec</a></code> configuration options</a></h4>
       
       <p>The following options are used to fine tune the behavior of <code class="program"><a href="../programs/suexec.html">suexec</a></code>. See <a href="suexec.html#install">Configuring and installing suEXEC</a>
         for further information.</p>
@@ -651,7 +654,7 @@
 <div class="section">
 <h2><a name="env" id="env">Environment variables</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
   <p>There are some useful environment variables to override the choices made by
-    <code>configure</code> or to help it to find libraries and programs with
+    <code class="program"><a href="../programs/configure.html">configure</a></code> or to help it to find libraries and programs with
     nonstandard names or locations.</p>
 
   
@@ -679,28 +682,32 @@
 <a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/configure.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy_balancer</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_balancer.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_balancer.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -68,12 +70,12 @@
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">Load balancer scheduler algorithm</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#stickyness">Load balancer stickyness</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stickiness">Load balancer stickiness</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Examples of a balancer configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#environment">Exported Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancer_manager">Enabling Balancer Manager Support</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#stickyness_implementation">Details on load balancer stickyness</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#stickyness_troubleshooting">Troubleshooting load balancer stickyness</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stickiness_implementation">Details on load balancer stickiness</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#stickiness_troubleshooting">Troubleshooting load balancer stickiness</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>This module provides no
             directives.</p>
@@ -84,7 +86,7 @@
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancergrowth">BalancerGrowth</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code></li>
 <li><code class="directive"><a href="../mod/mod_proxy.html#balancerinherit">BalancerInherit</a></code></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="scheduler" id="scheduler">Load balancer scheduler algorithm</a> <a title="Permanent link" href="#scheduler" class="permalink">&para;</a></h2>
@@ -100,18 +102,18 @@
     configure the Balancer and BalancerMembers.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="stickyness" id="stickyness">Load balancer stickyness</a> <a title="Permanent link" href="#stickyness" class="permalink">&para;</a></h2>
+<h2><a name="stickiness" id="stickiness">Load balancer stickiness</a> <a title="Permanent link" href="#stickiness" class="permalink">&para;</a></h2>
     
-    <p>The balancer supports stickyness. When a request is proxied
+    <p>The balancer supports stickiness. When a request is proxied
     to some back-end, then all following requests from the same user
     should be proxied to the same back-end. Many load balancers implement
     this feature via a table that maps client IP addresses to back-ends.
     This approach is transparent to clients and back-ends, but suffers
     from some problems: unequal load distribution if clients are themselves
-    hidden behind proxies, stickyness errors when a client uses a dynamic
-    IP address that changes during a session and loss of stickyness, if the
+    hidden behind proxies, stickiness errors when a client uses a dynamic
+    IP address that changes during a session and loss of stickiness, if the
     mapping table overflows.</p>
-    <p>The module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> implements stickyness
+    <p>The module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> implements stickiness
     on top of two alternative means: cookies and URL encoding. Providing the
     cookie can be either done by the back-end or by the Apache web server
     itself. The URL encoding is usually done on the back-end.</p>
@@ -132,7 +134,7 @@ ProxyPass        "/test" "balancer://mycluster"
 ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 
-    <p>Another example of how to provide load balancing with stickyness
+    <p>Another example of how to provide load balancing with stickiness
     using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>, even if the back-end server does
     not set a suitable session cookie:
     </p>
@@ -231,9 +233,9 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     containers can be dynamically controlled by the Manager.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="stickyness_implementation" id="stickyness_implementation">Details on load balancer stickyness</a> <a title="Permanent link" href="#stickyness_implementation" class="permalink">&para;</a></h2>
+<h2><a name="stickiness_implementation" id="stickiness_implementation">Details on load balancer stickiness</a> <a title="Permanent link" href="#stickiness_implementation" class="permalink">&para;</a></h2>
     
-    <p>When using cookie based stickyness, you need to configure the
+    <p>When using cookie based stickiness, you need to configure the
     name of the cookie that contains the information about which back-end
     to use. This is done via the <var>stickysession</var> attribute added
     to either <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> or
@@ -245,11 +247,11 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code>. The cookie can either
     be set by the back-end, or as shown in the above
     <a href="#example">example</a> by the Apache web server itself.</p>
-    <p>Some back-ends use a slightly different form of stickyness cookie,
+    <p>Some back-ends use a slightly different form of stickiness cookie,
     for instance Apache Tomcat. Tomcat adds the name of the Tomcat instance
     to the end of its session id cookie, separated with a dot (<code>.</code>)
     from the session id. Thus if the Apache web server finds a dot in the value
-    of the stickyness cookie, it only uses the part behind the dot to search
+    of the stickiness cookie, it only uses the part behind the dot to search
     for the route. In order to let Tomcat know about its instance name, you
     need to set the attribute <code>jvmRoute</code> inside the Tomcat
     configuration file <code>conf/server.xml</code> to the value of the
@@ -257,7 +259,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     The name of the session cookie used by Tomcat (and more generally by Java
     web applications based on servlets) is <code>JSESSIONID</code>
     (upper case) but can be configured to something else.</p>
-    <p>The second way of implementing stickyness is URL encoding.
+    <p>The second way of implementing stickiness is URL encoding.
     The web server searches for a query parameter in the URL of the request.
     The name of the parameter is specified again using <var>stickysession</var>.
     The value of the parameter is used to lookup a member worker with <var>route</var>
@@ -288,15 +290,15 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     for the same request, the information from the request parameter is used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="stickyness_troubleshooting" id="stickyness_troubleshooting">Troubleshooting load balancer stickyness</a> <a title="Permanent link" href="#stickyness_troubleshooting" class="permalink">&para;</a></h2>
+<h2><a name="stickiness_troubleshooting" id="stickiness_troubleshooting">Troubleshooting load balancer stickiness</a> <a title="Permanent link" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
     
-    <p>If you experience stickyness errors, e.g. users lose their
+    <p>If you experience stickiness errors, e.g. users lose their
     application sessions and need to login again, you first want to
     check whether this is because the back-ends are sometimes unavailable
     or whether your configuration is wrong. To find out about possible
     stability problems with the back-ends, check your Apache error log
     for proxy error messages.</p>
-    <p>To verify your configuration, first check, whether the stickyness
+    <p>To verify your configuration, first check, whether the stickiness
     is based on a cookie or on URL encoding. Next step would be logging
     the appropriate data in the access log by using an enhanced
     <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code>.
@@ -325,9 +327,9 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     <p>Common reasons for loss of session are session timeouts,
     which are usually configurable on the back-end server.</p>
     <p>The balancer also logs detailed information about handling
-    stickyness to the error log, if the log level is set to
+    stickiness to the error log, if the log level is set to
     <code>debug</code> or higher. This is an easy way to
-    troubleshoot stickyness problems, but the log volume might
+    troubleshoot stickiness problems, but the log volume might
     be too high for production servers under high load.</p>
 </div>
 </div>
@@ -335,28 +337,32 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_balancer.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_balancer.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_proxy_balancer.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

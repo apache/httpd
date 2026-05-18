@@ -295,19 +295,27 @@
 
   <title>Dynamic content security</title>
 
-  <p>When setting up dynamic content, such as <code>mod_php</code>,
-  <code>mod_perl</code> or <code>mod_python</code>, many security considerations
-  get out of the scope of <code>httpd</code> itself, and you need to consult
-  documentation from those modules. For example, PHP lets you setup <a
-  href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
-  which is most usually disabled by default. Another example is <a
-  href="http://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
-  security. For more information about those, consult each project
-  documentation.</p>
+  <p>When you use dynamic content frameworks — whether through
+  <code>mod_php</code>, <code>mod_perl</code>, <code>mod_python</code>,
+  or any other embedded or external content generator — security
+  responsibilities extend beyond httpd itself. Each framework has its
+  own security model, configuration options, and hardening guides.
+  Consult the documentation for whatever technology you use to generate
+  dynamic content, and keep it up to date.</p>
 
-  <p>At the Apache level, a module named <a href="http://modsecurity.org/">mod_security</a>
-  can be seen as a HTTP firewall and, provided you configure it finely enough,
-  can help you enhance your dynamic content security.</p>
+  <p>General principles apply regardless of framework:</p>
+  <ul>
+  <li>Minimize the privileges available to your scripts and applications.</li>
+  <li>Validate and sanitize all user input.</li>
+  <li>Keep your content framework and its dependencies patched and current.</li>
+  <li>Review the framework's security configuration — defaults are not
+  always secure.</li>
+  </ul>
+
+  <p>At the Apache level, a web application firewall such as
+  <a href="https://modsecurity.org/">ModSecurity</a> can provide an
+  additional layer of defense by inspecting and filtering HTTP traffic
+  before it reaches your application.</p>
 
   </section>
 
@@ -396,45 +404,40 @@ UserDir disabled root
 
     <title>Watching Your Logs</title>
 
-    <p>To keep up-to-date with what is actually going on against your server
-    you have to check the <a href="../logs.html">Log Files</a>.  Even though
-    the log files only reports what has already happened, they will give you
-    some understanding of what attacks is thrown against the server and
-    allow you to check if the necessary level of security is present.</p>
+    <p>To keep up to date with what is actually going on against your
+    server, check the <a href="../logs.html">Log Files</a> regularly.
+    Log files only report what has already happened, but they help you
+    understand what attacks are being attempted and whether your security
+    configuration is effective.</p>
 
     <p>A couple of examples:</p>
 
-    <example>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
-      grep "client denied" error_log | tail -n 10
-    </example>
+    <highlight language="sh">
+grep -c "\.\.\/" access_log
+grep "client denied" error_log | tail -n 10
+    </highlight>
 
-    <p>The first example will list the number of attacks trying to exploit the
-    <a href="http://online.securityfocus.com/bid/4876/info/">Apache Tomcat
-    Source.JSP Malformed Request Information Disclosure Vulnerability</a>,
-    the second example will list the ten last denied clients, for example:</p>
-
-    <example>
-      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
-      by server configuration: /usr/local/apache/htdocs/.htpasswd
-    </example>
-
-    <p>As you can see, the log files only report what already has happened, so
-    if the client had been able to access the <code>.htpasswd</code> file you
-    would have seen something similar to:</p>
+    <p>The first example counts requests that contain path traversal
+    sequences — a common sign of probing for vulnerabilities. The second
+    lists the ten most recent denied clients, for example:</p>
 
     <example>
-      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
+      [Mon Apr 14 09:42:03.817295 2026] [authz_core:error] [pid 1234:tid 5678]
+      [client 192.168.1.100:54312] AH01630: client denied by server configuration:
+      /usr/local/apache2/htdocs/.env
     </example>
 
-    <p>in your <a href="../logs.html#accesslog">Access Log</a>. This means
-    you probably commented out the following in your server configuration
-    file:</p>
+    <p>As you can see, the log files only report what already has happened.
+    If the client had been able to access the <code>.env</code> file, you
+    would instead see a <code>200</code> response in your
+    <a href="../logs.html#accesslog">Access Log</a> — which means your
+    server configuration needs tightening. Make sure you deny access to
+    sensitive files:</p>
 
     <highlight language="config">
-&lt;Files ".ht*"&gt;
+&lt;FilesMatch "^\.(?!well-known)"&gt;
     Require all denied
-&lt;/Files&gt;
+&lt;/FilesMatch&gt;
     </highlight>
 
   </section>

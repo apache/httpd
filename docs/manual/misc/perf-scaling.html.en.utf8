@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Performance Scaling</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-scaling.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -29,14 +31,14 @@
 </div>
 
 
-        <p>The Performance Tuning page in the Apache 1.3 documentation says:
+        <p>The Performance Tuning page in the Apache HTTP Server 1.3 documentation says:
         </p>
         <blockquote><p>
-            "Apache is a general webserver, which is designed to be
+            "httpd is a general webserver, which is designed to be
                 correct first, and fast
                 second. Even so, its performance is quite satisfactory. Most
                 sites have less than 10Mbits of outgoing bandwidth, which
-                Apache can fill using only a low end Pentium-based
+                httpd can fill using only a low end Pentium-based
                 webserver."</p>
         </blockquote>
         <p>However, this sentence was written a few years ago, and in the
@@ -66,7 +68,7 @@
         </a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#further-considerations">Further Considerations
         </a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
@@ -78,7 +80,7 @@
             gather information about its performance, or lack thereof.
             We'll assume that you don't have an unlimited budget for
             server hardware, so the existing infrastructure will have to do the
-            job. You have no desire to compile your own Apache, or to recompile
+            job. You have no desire to compile your own httpd, or to recompile
             the operating system kernel. We do assume, though, that you have
             some familiarity with the Apache httpd configuration file.
         </p>
@@ -272,7 +274,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 
                 <p>The mod_status module gives an overview of the server
                     performance at a given moment. It generates an HTML page
-                    with, among others, the number of Apache processes running
+                    with, among others, the number of httpd processes running
                     and how many bytes each has served, and the CPU load caused
                     by httpd and the rest of the system. The Apache Software
                     Foundation uses <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> on its own
@@ -344,7 +346,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 <p>On a server that is visible to the Internet, expect to see a
                     lot of exploit attempt and worm attacks in the error log. A
                     lot of these will be targeted at other server platforms
-                    instead of Apache, but the current state of affairs is that
+                    instead of httpd, but the current state of affairs is that
                     attack scripts just throw everything they have at any open
                     port, regardless of which server is actually running or
                     what applications might be installed. You could block these
@@ -520,7 +522,7 @@ Swap:       3903784      12540  3891244</pre></div>
                             <p>-</p>
                         </td>
                         <td>
-                            <p>Remote username as authenticated by Apache</p>
+                            <p>Remote username as authenticated by httpd</p>
                         </td>
                     </tr>
                     <tr>
@@ -602,7 +604,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 <p>This approach also works on Windows, just not as smoothly.
                     While the httpd process on your Windows server will keep
                     writing to the log file after it has been renamed, the
-                    Windows Service that runs Apache can not do a graceful
+                    Windows Service that runs httpd can not do a graceful
                     restart. Restarting a Service on Windows means stopping it
                     and then starting it again. The advantage of a graceful
                     restart is that the httpd child processes get to complete
@@ -629,9 +631,9 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </code></p></div>
 
                 <p>The program on the other end of the pipe will receive the
-                    Apache log data on its stdin stream, and can do with this
+                    httpd log data on its stdin stream, and can do with this
                     data whatever it wants. The rotatelogs program that comes
-                    with Apache seamlessly turns over the log file based on
+                    with httpd seamlessly turns over the log file based on
                     time elapsed or the amount of data written, and leaves the
                     old log files with a timestamp suffix to its name. This
                     method for rotating logfiles works well on unix platforms,
@@ -643,7 +645,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
             <h4><a name="logging-and-performance" id="logging-and-performance">Logging and Performance
                 </a></h4>
                 
-                <p>Writing entries to the Apache log files obviously takes some
+                <p>Writing entries to the httpd log files obviously takes some
                     effort, but the information gathered from the logs is so
                     valuable that under normal circumstances logging should not
                     be turned off. For optimal performance, you should put your
@@ -672,12 +674,12 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     to make httpd print the hostname of the virtual host that
                     received the request or the error at the beginning of each
                     log line. A simple Perl script can split out the log file
-                    after it rotates: one is included with the Apache source
+                    after it rotates: one is included with the httpd source
                     under <code>support/split-logfile</code>.
                 </p>
                 <p>
                     You can use the <code class="directive"><a href="../mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code>
-                    directive to have Apache collect several log lines in
+                    directive to have httpd collect several log lines in
                     memory before writing them to disk. This might yield better
                     performance, but could affect the order in which the
                     server's log is written.
@@ -696,7 +698,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 test load against your web server.
             </p>
             <ul>
-                <li>Apache ships with a test program called ab, short for
+                <li>httpd ships with a test program called ab, short for
                     Apache Bench. It can generate a web server load by
                     repeatedly asking for the same file in rapid succession.
                     You can specify a number of concurrent connections and have
@@ -718,7 +720,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </li>
                 <li>
                     <p>ASF external projects, that have proven to be quite
-                        good: grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>
+                        good: grinder, tsung
                     </p>
                 </li>
             </ul>
@@ -740,16 +742,16 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         <h3><a name="apache-configuration" id="apache-configuration">Httpd Configuration
             </a></h3>
             
-            <p>The Apache 2.2 httpd is by default a pre-forking web server.
+            <p>The httpd 2.2 server is by default a pre-forking web server.
                 When the server starts, the parent process spawns a number of
                 child processes that do the actual work of servicing requests.
-                But Apache httpd 2.0 introduced the concept of the
+                But httpd 2.0 introduced the concept of the
                 Multi-Processing Module (MPM). Developers can write MPMs to
                 suit the process- or threadingarchitecture of their specific
-                operating system. Apache 2 comes with special MPMs for Windows,
+                operating system. httpd 2 comes with special MPMs for Windows,
                 OS/2, Netware and BeOS. On unix-like platforms, the two most
                 popular MPMs are Prefork and Worker. The Prefork MPM offers the
-                same pre-forking process model that Apache 1.3 uses. The Worker
+                same pre-forking process model that httpd 1.3 uses. The Worker
                 MPM runs a smaller number of child processes, and spawns
                 multiple request handling threads within each child process. In
                 2.4 MPMs are no longer hard-wired. They too can be exchanged
@@ -785,7 +787,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     </code>
                     and <code>MaxSpareServers
                     </code>
-                    ,which specify the number of workers Apache keeps waiting
+                    ,which specify the number of workers httpd keeps waiting
                     in the wings ready to serve requests. The absolute maximum
                     number of processes is configurable through the <code>
                         ServerLimit
@@ -804,11 +806,11 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     complicated. Threaded MPMs support the <code>
                         ThreadsPerChild
                     </code>
-                    directive1 . Apache requires that <code>MaxClients</code>
+                    directive1 . httpd requires that <code>MaxClients</code>
                     is evenly divisible by <code>ThreadsPerChild
                     </code>
                     .If you set either directive to a number that doesn't
-                    meet this requirement, Apache will send a message of
+                    meet this requirement, httpd will send a message of
                     complaint to the error log and adjust the <code>
                         ThreadsPerChild
                     </code>
@@ -848,7 +850,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 <p>The difference between these two is the amount of memory
                     per-process. The shared segment really exists only once and
                     is used for the code and libraries loaded and the dynamic
-                    inter-process tally, or 'scoreboard,' that Apache
+                    inter-process tally, or 'scoreboard,' that httpd
                     keeps. How much memory each process takes for itself
                     depends heavily on the number and kind of modules you use.
                     The best approach to use in determining this need is to
@@ -908,7 +910,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 <p>This has been a sore point within the PHP community. The PHP
                     processor heavily relies on third-party libraries and
                     cannot guarantee that all of these are thread-safe. The
-                    good news is that if you are running Apache on Linux, you
+                    good news is that if you are running httpd on Linux, you
                     can run PHP in the preforked MPM without fear of losing too
                     much performance relative to the threaded option.
                 </p>
@@ -949,7 +951,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     the server may exhibit the Thundering Herd syndrome.
                 </p>
                 <p>Consider an American Football team poised on the line of
-                    scrimmage. If the football players were Apache processes
+                    scrimmage. If the football players were httpd processes
                     all team members would go for the ball simultaneously at
                     the snap. One process would get it, and all the others
                     would have to lumber back to the line for the next snap. In
@@ -962,9 +964,9 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     avoid it whenever possible. Hence the revolving door
                     construction. In recent years, many operating systems,
                     including Linux and Solaris, have put code in place to
-                    prevent the Thundering Herd syndrome. Apache recognizes
+                    prevent the Thundering Herd syndrome. httpd recognizes
                     this and if you run with just one network listener, meaning
-                    one virtual host or just the main server, Apache will
+                    one virtual host or just the main server, httpd will
                     refrain from using an accept mutex. If you run with
                     multiple listeners (for instance because you have a virtual
                     host serving SSL requests), it will activate the accept
@@ -983,7 +985,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     manipulate them with care.
                 </p>
                 <p>There is no compelling reason to disable the accept mutex.
-                    Apache automatically recognizes the single listener
+                    httpd automatically recognizes the single listener
                     situation described above and knows if it is safe to run
                     without mutex on your platform.
                 </p>
@@ -1009,12 +1011,12 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 
                 <p>The usual mantra regarding RAM is "more is
                     better". As discussed above, unused RAM is put to good
-                    use as file system cache. The Apache processes get bigger
+                    use as file system cache. The httpd processes get bigger
                     if you load more modules, especially if you use modules
                     that generate dynamic page content within the processes,
                     like PHP and mod_perl. A large configuration file-with many
                     virtual hosts-also tends to inflate the process footprint.
-                    Having ample RAM allows you to run Apache with more child
+                    Having ample RAM allows you to run httpd with more child
                     processes, which allows the server to process more
                     concurrent requests.
                 </p>
@@ -1069,7 +1071,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </a></h4>
                 
                 <p>Given a machine with plenty of RAM and processor capacity,
-                    you can run hundreds of Apache processes if necessary. . .
+                    you can run hundreds of httpd processes if necessary. . .
                     and if your kernel allows it.
                 </p>
                 <p>Consider a situation in which several hundred web servers
@@ -1114,7 +1116,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </code></p></div>
 
                 <p>command. Once again, this must be done prior to starting
-                    Apache.
+                    httpd.
                 </p>
 
 
@@ -1191,9 +1193,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                     will show which services are enabled and disable them
                     respectively.
                 </p>
-                <p>In a similar fashion, cast a critical eye on the Apache
-                    modules you load. Most binary distributions of Apache
-                    httpd, and pre-installed versions that come with Linux
+                <p>In a similar fashion, cast a critical eye on the httpd
+                    modules you load. Most binary distributions of httpd, and pre-installed versions that come with Linux
                     distributions, have their modules enabled through the
                     <code class="directive">LoadModule</code> directive.
                 </p>
@@ -1244,7 +1245,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 Valentine's Day. When the user searches for red roses,
                 they are served the pre-rendered page. Queries for, say, yellow
                 roses will be generated directly from the database. The
-                mod_rewrite module included with Apache is a great tool to
+                mod_rewrite module included with httpd is a great tool to
                 implement these substitutions.
             </p>
 
@@ -1273,14 +1274,14 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
                 </code></p></div>
 
                 <p>This can be run periodically from Cron, after you upload
-                    content, etc. To make Apache substitute the statically
+                    content, etc. To make httpd substitute the statically
                     rendered pages for the dynamic content, we'll use
-                    mod_rewrite. This module is included with the Apache source
+                    mod_rewrite. This module is included with the httpd source
                     code, but is not compiled by default. It can be built with
                     the server by passing the option <code>--enable-rewrite[=shared]</code>
                     to the configure command. Many binary distributions of
-                    Apache come with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite </a></code> included. The following is an
-                    example of an Apache virtual host that takes advantage of
+                    httpd come with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite </a></code> included. The following is an
+                    example of an httpd virtual host that takes advantage of
                     pre-rendered blog pages:
                 </p>
 
@@ -1444,35 +1445,39 @@ CacheMaxExpire 21600</pre>
             desired the performance, we will soon discover that <em>one</em>
             system might prove a bottleneck. How to make a system fit for
             growth, or how to put a number of systems into tune will be
-            discussed in <a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
+            discussed in <a href="https://cwiki.apache.org/confluence/display/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
         </p>
     </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-scaling.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

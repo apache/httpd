@@ -1,0 +1,4 @@
+  *) mod_http2: update to version 2.0.37
+     Prevent double purge of a stream, resulting in a double free.
+     Fixes PR 69899.
+     [Stefan Eissing]

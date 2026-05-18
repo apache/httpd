@@ -1,0 +1,4 @@
+  *) mod_ssl: Add SerialNumber as a recognized attribute type for SSL
+     distinguished name variables.  [Michael Osipov <michaelo apache.org>,
+     Benjamin Demarteau <benjamin.demarteau liege.be>]
+

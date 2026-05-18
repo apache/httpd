@@ -28,8 +28,7 @@ from Clients' networks in a proxy context.</description>
 <status>Base</status>
 <sourcefile>mod_proxy_html.c</sourcefile>
 <identifier>proxy_html_module</identifier>
-<compatibility>Version 2.4 and later.  Available as a third-party module
-for earlier 2.x versions</compatibility>
+<compatibility>Version 2.4 and later</compatibility>
 
 <summary>
 <p>This module provides an output filter to rewrite HTML links in a
@@ -56,7 +55,7 @@ making it accessible from outside.</p>
 <module>mod_xml2enc</module> (see <a href="#i18n">Internationalisation</a>)
 and is a standard module in HTTPD 2.4 and development versions.</p>
 </section>
-<section id="custom"><title>Customised HTML Parsing</title>
+<section id="custom"><title>Customized HTML Parsing</title>
 <p>Internally, mod_proxy_html uses the HTMLParser module from the
 third-party <a href="http://xmlsoft.org/">libxml2</a> library.
 Unlike other libxml2 parsers, HTMLParser deals with HTML without
@@ -77,7 +76,7 @@ stylesheets or scripts: for those you should use another parser such as
 The main customisation directives are <directive>ProxyHTMLLinks</directive>
 and <directive>ProxyHTMLEvents</directive>.  By default these are set in 
 configuration file <var>proxy-html.conf</var>, which also contains
-comments to help you customise your parser if required.</p>
+comments to help you customize your parser if required.</p>
 <note>For historical reasons, configuring mod_proxy_html to rewrite
 URLs in scripting events does not by default rewrite URLs in stylesheets.
 This can be changed by uncommenting the relevant line in
@@ -107,8 +106,9 @@ still be configured using regular filter directives, this will not support
 i18n at all.  Instead, a new directive <directive>ProxyHTMLEnable</directive>
 has been introduced to configure both mod_proxy_html's filter and mod_xml2enc.
 It is recommended that you always use ProxyHTMLEnable even where i18n
-support is not required. <strong>Note that this is a change from earlier
-versions where filter directives were used to activate mod_proxy_html.</strong></p>
+support is not required.</p>
+<note>This is a change from earlier
+versions where filter directives were used to activate mod_proxy_html.</note>
 
 </section>
 
@@ -211,7 +211,7 @@ will be considered as HTML links.</p>
 (note that this happens automatically for HTML links).</p></dd>
 <dt>l</dt>
 <dd><p>Opposite to L.  Overrides the one-change-only default
-behaviour with HTML links.</p></dd>
+behavior with HTML links.</p></dd>
 <dt>R</dt>
 <dd><p>Use Regular Expression matching-and-replace.  <code>from-pattern</code>
 is a regexp, and <code>to-pattern</code> a replacement string that may be
@@ -329,6 +329,7 @@ module="core">LogLevel</directive> Debug.</p>
 <name>ProxyHTMLFixups</name>
 <description>Fixes for simple HTML errors.</description>
 <syntax>ProxyHTMLFixups [lowercase] [dospath] [reset]</syntax>
+<default>ProxyHTMLFixups none</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>
@@ -437,6 +438,12 @@ module for earlier 2.x versions</compatibility>
 apply <directive module="mod_proxy_html">ProxyHTMLURLMap</directive>s to where enabled.
 You can specify any number of attributes in one or more
 <directive>ProxyHTMLEvents</directive> directives.</p>
+<note><title>Requires ProxyHTMLExtended</title>
+<p>Scripting events are only processed when
+<directive module="mod_proxy_html">ProxyHTMLExtended</directive> is set to
+<var>On</var>.  Without it, event attributes are passed through unmodified
+even if listed in <directive>ProxyHTMLEvents</directive>.</p>
+</note>
 <p>Normally you'll set this globally.  If you set <directive>ProxyHTMLEvents</directive> in more than
 one scope so that one overrides the other, you'll need to specify a complete
 set in each of those scopes.</p>
@@ -493,6 +500,7 @@ ProxyHTMLLinks  script     src for
 <name>ProxyHTMLCharsetOut</name>
 <description>Specify a charset for mod_proxy_html output.</description>
 <syntax>ProxyHTMLCharsetOut <var>Charset | *</var></syntax>
+<default>ProxyHTMLCharsetOut UTF-8</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 </contextlist>

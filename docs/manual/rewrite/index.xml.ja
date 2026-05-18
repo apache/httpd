@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1933438:1934111 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache mod_rewrite</title>
+
+<summary>
+
+    <p><module>mod_rewrite</module> は、<a href="intro.html#regex">正規表現</a>
+    ルールに基づいて受信 URL リクエストを動的に変更する方法を提供します。
+    これにより、任意の URL を内部 URL 構造に自由にマッピングできます。</p>
+
+      <p>各ルールに対して無制限の数のルールと無制限の数の
+      付随するルール条件をサポートしており、非常に柔軟で強力な URL 操作
+      メカニズムを提供します。URL 操作はさまざまなテストに依存できます:
+      サーバ変数、環境変数、HTTP ヘッダ、タイムスタンプ、外部データベース
+      検索、およびさまざまな他の外部プログラムやハンドラを使用して、
+      きめ細かい URL マッチングを実現できます。</p>
+
+      <p>書き換えルールは、完全な URL (パス情報とクエリ文字列部分を含む)
+      に対して動作でき、サーバ単位のコンテキスト
+      (<code>httpd.conf</code>)、バーチャルホスト単位のコンテキスト
+      (<directive type="section" module="core">VirtualHost</directive> ブロック)、
+      またはディレクトリ単位のコンテキスト (<code>.htaccess</code> ファイルと
+      <directive type="section" module="core">Directory</directive> ブロック)
+      で使用できます。書き換えの結果は、ルールに付加する
+      <a href="flags.html">フラグ</a>に応じて、さらなるルール処理、
+      内部サブ処理、外部リクエストリダイレクト、またはプロキシ
+      パススルーにつながります。</p>
+
+      <p><module>mod_rewrite</module> は非常に強力であるため、かなり
+      複雑になり得ます。このドキュメントは
+      <a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を
+      補足し、その複雑さを軽減し、<module>mod_rewrite</module> で扱う可能性のある
+      一般的なシナリオの詳細な注釈付きの例を提供することを試みます。
+      しかし同時に、<module>mod_rewrite</module> を使用すべきでない場合や、
+      代わりに他の標準的な Apache 機能を使用して不要な複雑さを避けるべき場合も
+      示そうとしています。</p>
+
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite リファレンスドキュメント</a></li>
+<li><a href="intro.html">正規表現と mod_rewrite の紹介</a></li>
+<li><a href="flags.html">RewriteRule フラグ</a></li>
+<li><a href="rewritemap.html">RewriteMap の使用</a></li>
+<li><a href="avoid.html">mod_rewrite を使う<strong>べきでない</strong>場合</a></li>
+<li><a href="remapping.html">mod_rewrite を使った URL のリダイレクトとリマッピング</a></li>
+<li><a href="access.html">mod_rewrite を使ったアクセス制御</a></li>
+<li><a href="vhosts.html">mod_rewrite を使った動的バーチャルホスト</a></li>
+<li><a href="proxy.html">mod_rewrite を使った動的プロキシ</a></li>
+<li><a href="advanced.html">高度なテクニック</a></li>
+<li><a href="tech.html">技術的詳細</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite リファレンスドキュメント</a></seealso>
+<seealso><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></seealso>
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
+wiki</a></seealso>
+<seealso><a href="../glossary.html">用語集</a></seealso>
+
+
+</manualpage>

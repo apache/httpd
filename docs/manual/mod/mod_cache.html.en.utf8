@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_cache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_cache.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -51,8 +53,8 @@
     <p>RFC 2616 compliant caching provides a mechanism to verify whether
     stale or expired content is still fresh, and can represent a significant
     performance boost when the origin server supports <strong>conditional
-    requests</strong> by honouring the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>
+    requests</strong> by honoring the
+    If-None-Match (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.26">RFC 2616</a>)
     HTTP request header. Content is only regenerated from scratch when the content
     has changed, and not when the cached entry expires.</p>
 
@@ -81,13 +83,13 @@
 
     <p>Under normal operation, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> will respond to
     and can be controlled by the
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
+    Cache-Control (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.9">RFC 2616</a>)
     and
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    Pragma (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.32">RFC 2616</a>)
     headers sent from a client in a request, or from a
     server within a response. Under exceptional circumstances,
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> can be configured to override these headers
-    and force site specific behaviour, however such behaviour will be limited
+    and force site specific behavior, however such behavior will be limited
     to this cache only, and will not affect the operation of other caches
     that may exist between the client and server, and as a result is not
     recommended unless strictly necessary.</p>
@@ -97,12 +99,12 @@
     by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> when the
     <code class="directive"><a href="#cachelock">CacheLock</a></code> directive is suitably
     configured. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    Warning (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.46">RFC 2616</a>)
     HTTP header with a 110 response code. RFC 2616 also allows a cache to return
     stale data when the attempt made to refresh the stale data returns an
-    error 500 or above, and this behaviour is supported by default by
+    error 500 or above, and this behavior is supported by default by
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. Such responses will contain a
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
+    Warning (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.46">RFC 2616</a>)
     HTTP header with a 111 response code.</p>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more
@@ -163,7 +165,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cache">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cache">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Caching Guide</a></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Related Modules and Directives</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
@@ -346,7 +348,7 @@ CustomLog "invalidated-requests.log" common env=cache-invalidate</pre>
 
 
   <p>For module authors, a hook called <var>cache_status</var> is available,
-  allowing modules to respond to the caching outcomes above in customised
+  allowing modules to respond to the caching outcomes above in customized
   ways.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -413,6 +415,14 @@ CacheDetailHeader on</pre>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
+    <div class="note"><p>This directive is only valid in
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and
+    <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> sections
+    among the per-directory contexts. It is not supported in
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, or
+    <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> sections.</p></div>
+
     <p>The <code class="directive">CacheDisable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to <em>not</em> cache urls at or below
     <var>url-string</var>.</p>
@@ -623,7 +633,7 @@ CacheHeader on</pre>
     <p><code class="directive">CacheIgnoreHeaders</code> takes a space separated list
     of HTTP headers that should not be stored in the cache. If only hop-by-hop
     headers not should be stored in the cache (the RFC 2616 compliant
-    behaviour), <code class="directive">CacheIgnoreHeaders</code> can be set to
+    behavior), <code class="directive">CacheIgnoreHeaders</code> can be set to
     <code>None</code>.</p>
 
     <div class="example"><h3>Example 1</h3><pre class="prettyprint lang-config">CacheIgnoreHeaders Set-Cookie</pre>
@@ -635,7 +645,7 @@ CacheHeader on</pre>
     <div class="warning"><h3>Warning:</h3>
       If headers like <code>Expires</code> which are needed for proper cache
       management are not stored due to a
-      <code class="directive">CacheIgnoreHeaders</code> setting, the behaviour of
+      <code class="directive">CacheIgnoreHeaders</code> setting, the behavior of
       mod_cache is undefined.
     </div>
 
@@ -661,6 +671,13 @@ header.</td></tr>
     the document then the value specified by the
     <code class="directive"><a href="#cachedefaultexpire">CacheDefaultExpire</a></code> directive will be used to
     generate an expiration date.</p>
+
+    <div class="note">More precisely, a 200 OK response is only cached if it includes
+    at least one of the <code>Last-Modified</code>, <code>ETag</code>,
+    or <code>Expires</code> headers, or a <code>Cache-Control: max-age</code>
+    or <code>s-maxage</code> directive. This directive bypasses that
+    requirement entirely. When any of those headers are already present,
+    this directive has no effect.</div>
 
     <pre class="prettyprint lang-config">CacheIgnoreNoLastMod On</pre>
 
@@ -1047,28 +1064,32 @@ CacheStaleOnError on</pre>
 <a href="../fr/mod/mod_cache.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_cache.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

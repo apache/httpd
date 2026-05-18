@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
 <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -14,14 +15,15 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="directive-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Module</a></div><div id="preamble"><h1>Verzeichnis der Direktiven</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Verf&#252;gbare Sprachen: </span><a href="../de/mod/directives.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -254,7 +256,6 @@
 <li><a href="mod_dav.html#dav" id="D" name="D">Dav</a></li>
 <li><a href="mod_dav.html#davbasepath">DavBasePath</a></li>
 <li><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity</a></li>
-<li><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdb">DavLockDB</a></li>
 <li><a href="mod_dav_fs.html#davlockdbtype">DavLockDBType</a></li>
 <li><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery</a></li>
@@ -343,6 +344,7 @@
 <li><a href="mod_http2.html#h2maxdataframelen">H2MaxDataFrameLen</a></li>
 <li><a href="mod_http2.html#h2maxheaderblocklen">H2MaxHeaderBlockLen</a></li>
 <li><a href="mod_http2.html#h2maxsessionstreams">H2MaxSessionStreams</a></li>
+<li><a href="mod_http2.html#h2maxstreamerrors">H2MaxStreamErrors</a></li>
 <li><a href="mod_http2.html#h2maxworkeridleseconds">H2MaxWorkerIdleSeconds</a></li>
 <li><a href="mod_http2.html#h2maxworkers">H2MaxWorkers</a></li>
 <li><a href="mod_http2.html#h2minworkers">H2MinWorkers</a></li>
@@ -432,6 +434,7 @@
 <li><a href="mpm_common.html#listen">Listen</a></li>
 <li><a href="mpm_common.html#listenbacklog">ListenBackLog</a></li>
 <li><a href="mpm_common.html#listencoresbucketsratio">ListenCoresBucketsRatio</a></li>
+<li><a href="mpm_common.html#listentcpdeferaccept">ListenTCPDeferAccept</a></li>
 <li><a href="mod_so.html#loadfile">LoadFile</a></li>
 <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
 <li><a href="core.html#location">&lt;Location&gt;</a></li>
@@ -478,6 +481,7 @@
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
 <li><a href="mod_md.html#mdactivationdelay">MDActivationDelay</a></li>
 <li><a href="mod_md.html#mdbaseserver">MDBaseServer</a></li>
+<li><a href="mod_md.html#mdcacertificatefile">MDCACertificateFile</a></li>
 <li><a href="mod_md.html#mdcachallenges">MDCAChallenges</a></li>
 <li><a href="mod_md.html#mdcertificateagreement">MDCertificateAgreement</a></li>
 <li><a href="mod_md.html#mdcertificateauthority">MDCertificateAuthority</a></li>
@@ -494,6 +498,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>
 <li><a href="mod_md.html#mdmembers">MDMembers</a></li>
@@ -507,6 +512,7 @@
 <li><a href="mod_md.html#mdprofile">MDProfile</a></li>
 <li><a href="mod_md.html#mdprofilemandatory">MDProfileMandatory</a></li>
 <li><a href="mod_md.html#mdrenewmode">MDRenewMode</a></li>
+<li><a href="mod_md.html#mdrenewviaari">MDRenewViaARI</a></li>
 <li><a href="mod_md.html#mdrenewwindow">MDRenewWindow</a></li>
 <li><a href="mod_md.html#mdrequirehttps">MDRequireHttps</a></li>
 <li><a href="mod_md.html#mdretrydelay">MDRetryDelay</a></li>
@@ -525,6 +531,7 @@
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
+<li><a href="mod_mime_magic.html#mimemagicdecompression">MimeMagicDecompression</a></li>
 <li><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></li>
 <li><a href="mod_mime.html#mimeoptions">MimeOptions</a></li>
 <li><a href="prefork.html#minspareservers">MinSpareServers</a></li>
@@ -741,6 +748,7 @@
 <li><a href="mod_ssl.html#sslclienthellovars">SSLClientHelloVars</a></li>
 <li><a href="mod_ssl.html#sslcompression">SSLCompression</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
+<li><a href="mod_ssl.html#sslechkeydir">SSLECHKeyDir</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
@@ -799,6 +807,7 @@
 <li><a href="mod_ssl.html#sslusestapling">SSLUseStapling</a></li>
 <li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
 <li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
+<li><a href="mod_ssl.html#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 <li><a href="mpm_common.html#startservers">StartServers</a></li>
 <li><a href="mpm_common.html#startthreads">StartThreads</a></li>
 <li><a href="core.html#stricthostcheck">StrictHostCheck</a></li>
@@ -850,28 +859,32 @@
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/directives.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Kommentare</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/directives.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

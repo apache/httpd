@@ -80,14 +80,20 @@ extern "C" {
 /* Signal used to gracefully restart (as a quoted string) */
 #define AP_SIG_GRACEFUL_STRING "SIGUSR1"
 
+#ifndef AP_SIG_GRACEFUL_STOP
 /* Signal used to gracefully stop */
 #define AP_SIG_GRACEFUL_STOP SIGWINCH
+#endif
 
+#ifndef AP_SIG_GRACEFUL_STOP_SHORT
 /* Signal used to gracefully stop (without SIG prefix) */
 #define AP_SIG_GRACEFUL_STOP_SHORT WINCH
+#endif
 
+#ifndef AP_SIG_GRACEFUL_STOP_STRING
 /* Signal used to gracefully stop (as a quoted string) */
 #define AP_SIG_GRACEFUL_STOP_STRING "SIGWINCH"
+#endif
 
 /**
  * Callback function used for ap_reclaim_child_processes() and

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1308409:1928022 (outdated) -->
+<!-- English Revision: 1308409:1933657 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -260,7 +260,7 @@
 <seealso><a href="../dns-caveats.html">DNS ve Apache ile ilgili Konular</a> </seealso>
 <seealso><a href="../bind.html">Apache HTTP Sunucusunun Kullandığı Adreslerin
     ve Portların Ayarlanması</a></seealso>
-<seealso><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress"
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress"
 ><code>Address already in use</code> hata iletisinin ve diğer sebeplerin
 açıklaması</a></seealso>
 </directivesynopsis>

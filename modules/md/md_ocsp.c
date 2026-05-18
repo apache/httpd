@@ -46,7 +46,21 @@
 #include "md_ocsp.h"
 
 #define MD_OCSP_ID_LENGTH   SHA_DIGEST_LENGTH
-   
+
+/* Max acceptable OCSP response size (DER-encoded responses are typically <2 KiB) */
+#define MD_OCSP_MAX_RESPONSE_LEN    (64 * 1024)
+/* Timeout for OCSP responses */
+#define MD_OCSP_DEFAULT_TIMEOUT apr_time_from_sec(60)
+/* Timeout for connecting to OCSP servers */
+#define MD_OCSP_CONNECT_TIMEOUT apr_time_from_sec(30)
+/*
+ * Below this throughput in bytes per second an OCSP response is regarded as
+ * stalled.
+ */
+#define MD_OCSP_STALLING_BYTES 10
+/* Maximum duration for a stalled period during an OCSP response */
+#define MD_OCSP_STALLING_TIME apr_time_from_sec(30)
+
 struct md_ocsp_reg_t {
     apr_pool_t *p;
     md_store_t *store;
@@ -901,6 +915,12 @@ void md_ocsp_renew(md_ocsp_reg_t *reg, apr_pool_t *p, apr_pool_t *ptemp, apr_tim
     
     rv = md_http_create(&http, ptemp, reg->user_agent, reg->proxy_url);
     if (APR_SUCCESS != rv) goto cleanup;
+
+    md_http_set_response_limit(http, MD_OCSP_MAX_RESPONSE_LEN);
+    md_http_set_timeout_default(http, MD_OCSP_DEFAULT_TIMEOUT);
+    md_http_set_connect_timeout_default(http, MD_OCSP_CONNECT_TIMEOUT);
+    md_http_set_stalling_default(http, MD_OCSP_STALLING_BYTES,
+                                 MD_OCSP_STALLING_TIME);
     
     rv = md_http_multi_perform(http, next_todo, &ctx);
 
@@ -930,9 +950,9 @@ apr_status_t md_ocsp_remove_responses_older_than(md_ocsp_reg_t *reg, apr_pool_t 
 typedef struct {
     apr_pool_t *p;
     md_ocsp_reg_t *reg;
-    int good;
-    int revoked;
-    int unknown;
+    unsigned good;
+    unsigned revoked;
+    unsigned unknown;
 } ocsp_summary_ctx_t;
 
 static int add_to_summary(void *baton, const void *key, apr_ssize_t klen, const void *val)

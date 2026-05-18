@@ -48,7 +48,7 @@ Listen @@SSLPort@@
 #      https://wiki.mozilla.org/Security/Server_Side_TLS 
 #   These policies will be updated over time in new releases to keep
 #   settings compatible and secure with "modern" browser, or if you
-#   need to support legacy installtions, "intermediate" might be your
+#   need to support legacy installations, "intermediate" might be your
 #   choice.
 #   If you run the following command on your installation, the exact
 #   contents of the defined SSL policies will be listed:

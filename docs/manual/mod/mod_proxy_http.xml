@@ -54,7 +54,7 @@
 
 <section id="env"><title>Environment Variables</title>
     <p>In addition to the configuration directives that control the
-    behaviour of <module>mod_proxy</module>, there are a number of
+    behavior of <module>mod_proxy</module>, there are a number of
     <dfn>environment variables</dfn> that control the HTTP protocol
     provider. Environment variables below that don't specify specific values
     are enabled when set to any value.</p>

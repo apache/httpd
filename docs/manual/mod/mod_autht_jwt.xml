@@ -32,7 +32,7 @@
     <p>This module provides token parsing front-ends such as
     <module>mod_auth_bearer</module> the ability to authenticate users
     by verifying a JWT token as described in
-    <a href="https://www.rfc-editor.org/rfc/rfc7519">RFC 7519</a>.</p>
+    <rfc>7519</rfc>.</p>
 
     <p>A JWT token is read from the <var>Authorization</var> header
     with an <var>auth-scheme</var> of <var>Bearer</var>.</p>
@@ -105,7 +105,7 @@ JWT token</description>
     <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
     <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
     as the third parameter. The contents of the bearer token is still visible, and so
-    the channel must still be protected from evesdropping through TLS.</p>
+    the channel must still be protected from eavesdropping through TLS.</p>
 
     <p>If the signature is verified, and if present, the <var>sub</var> claim is
     assigned to REMOTE_USER.</p>
@@ -158,7 +158,7 @@ JWT token</description>
     <p>If the algorithm type <var>HS256</var> is used, the algorithm is set to
     <var>HMAC-SHA256</var>, and the secret is set within the <var>file</var> specified
     as the third parameter. The contents of the bearer token is still visible, and so
-    the channel must still be protected from evesdropping through TLS.</p>
+    the channel must still be protected from eavesdropping through TLS.</p>
 
     <example><title>Verification Example</title>
     <highlight language="config">

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 1302855:1927033 (outdated) -->
+<!-- English Revision: 1302855:1934245 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -695,7 +695,7 @@ için iptal edilmiştir.</compatibility>
 <description>Bir değişken tanımlar</description>
 <syntax>Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+</contextlist>
 
 <usage>
     <p>Tek değiştirgeli biçemi <program>httpd</program>’yi <code>-D</code>
@@ -2748,7 +2748,8 @@ uygulanır.</description>
 </syntax>
 <default>LogLevel warn</default>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
+<context>directory</context>
+</contextlist>
 <compatibility>Modül ve dizin bağlamındaki yapılandırmalar Apache HTTP
     Sunucusunun 2.3.6 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
@@ -2992,8 +2993,8 @@ uygulanır.</description>
   <var>aralık-sayısı</var></syntax>
 <default>MaxRangeOverlaps 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
-    <context>directory</context>
-</contextlist>
+        <context>directory</context>
+    </contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.3.15 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
 
@@ -3030,8 +3031,8 @@ uygulanır.</description>
     <var>aralık-sayısı</var></syntax>
 <default>MaxRangeReversals 20</default>
 <contextlist><context>server config</context><context>virtual host</context>
-    <context>directory</context>
-</contextlist>
+        <context>directory</context>
+    </contextlist>
 <compatibility>Apache HTTP Sunucusunun 2.3.15 ve sonraki sürümlerinde
     kullanılabilmektedir.</compatibility>
 
@@ -3446,8 +3447,7 @@ uygulanır.</description>
 <name>Protocol</name>
 <description>Dinlenen bir soket için protokol</description>
 <syntax>Protocol <var>protokol</var></syntax>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Apache httpd 2.1.5 ve sonrasında kullanılabilmektedir.
     Windows'ta ise Apache httpd 2.3.3 ve sonrasında
     kullanılabilmektedir.
@@ -4089,8 +4089,7 @@ belirler.</description>
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <syntax>TimeOut <var>saniye</var></syntax>
 <default>TimeOut 60</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>TimeOut</directive> yönergesi Apache httpd’nin aşağıdaki
@@ -4123,8 +4122,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 </description>
 <syntax>TraceEnable <var>[on|off|extended]</var></syntax>
 <default>TraceEnable on</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 <compatibility>Apache HTTP Sunucusunun 1.3.34, 2.0.55 ve sonraki sürümlerinde
     kuallanılabilir.</compatibility>
 
@@ -4158,7 +4156,8 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <name>UnDefine</name>
 <description>Bir değişkeni tanımsız yapar</description>
 <syntax>UnDefine <var>değişken-ismi</var></syntax>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
 
 <usage>
     <p><directive module="core">Define</directive> yönergesinde veya

@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_ldap</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -50,8 +52,7 @@ cache du résultat à destination des autres modules LDAP</td></tr>
     <p>Le support SSL/TLS est conditionné par le kit de développement
     LDAP qui a été lié à <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. Au moment où ces
     lignes sont écrites, APR-util supporte <a href="http://www.openldap.org/">OpenLDAP SDK</a> (version 2.x ou
-    supérieure), <a href="http://developer.novell.com/ndk/cldap.htm">Novell LDAP
-    SDK</a>, <a href="https://wiki.mozilla.org/LDAP_C_SDK">
+    supérieure), <a href="https://wiki.mozilla.org/LDAP_C_SDK">
     Mozilla LDAP SDK</a>, le SDK LDAP Solaris natif (basé sur Mozilla)
     ou le SDK LDAP Microsoft natif. Voir le site web <a href="http://apr.apache.org">APR</a> pour plus de détails.</p>
 
@@ -84,9 +85,7 @@ cache du résultat à destination des autres modules LDAP</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapverifyservercert">LDAPVerifyServerCert</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ldap">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ldap">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ldap">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ldap">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exampleconfig" id="exampleconfig">Exemple de configuration</a> <a title="Lien permanent" href="#exampleconfig" class="permalink">&para;</a></h2>
@@ -257,12 +256,7 @@ LDAPOpCacheTTL 600
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -278,12 +272,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -332,12 +321,7 @@ LDAPTrustedGlobalCert CA_CERT7_DB /certs/cert7.db
 LDAPTrustedGlobalCert CERT_KEY3_DB /certs/key3.db
 # Spécifie le fichier secmod si nécessaire
 LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-
-    Require host yourdomain.example.com
-
-    Satisfy any
+&lt;Location "/protected"&gt;
     AuthType Basic
     AuthName "LDAP Protected"
     AuthBasicProvider ldap
@@ -345,39 +329,6 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
 &lt;/Location&gt;</pre>
-
-
-    
-
-    <h3><a name="settingcerts-novell" id="settingcerts-novell">SDK Novell</a></h3>
-
-        <p>Un ou plusieurs certificats de CA doivent être spécifiés pour
-	que le SDK Novell fonctionne correctement. Ces certificats
-	peuvent être spécifiés sous forme de fichiers au format binaire
-	DER ou codés en Base64 (PEM).</p>
-
-	<p>Note: Les certificats clients sont spécifiés globalement plutôt qu'à
-	chaque connexion, et doivent être spécifiés à l'aide de la directive
-	<code class="directive"><a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> comme
-	ci-dessous. Définir des certificats clients via la directive <code class="directive"><a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> engendrera une
-	erreur qui sera journalisée, au moment de la tentative de connexion avec
-	le serveur LDAP.</p>
-
-	<p>Le SDK supporte SSL et STARTTLS, le choix étant défini par le
-	paramètre de la directive <code class="directive"><a href="#ldaptrustedmode">LDAPTrustedMode</a></code>. Si une URL de type
-	ldaps:// est spécifiée, le mode SSL est forcé, et l'emporte sur cette
-	directive.</p>
-
-        <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
-LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
-LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-# Spécifie un fichier contenant des certificats clients
-# ainsi qu'une clé
-LDAPTrustedGlobalCert CERT_BASE64 /certs/cert1.pem
-LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
-# N'utilisez pas cette directive, sous peine de provoquer
-# une erreur
-#LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem</pre>
 
 
     
@@ -406,20 +357,15 @@ LDAPTrustedGlobalCert KEY_BASE64 /certs/key1.pem [password]
         <pre class="prettyprint lang-config"># Spécifie deux fichiers contenant des certificats de CA
 LDAPTrustedGlobalCert CA_DER /certs/cacert1.der
 LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
-&lt;Location "/ldap-status"&gt;
-    SetHandler ldap-status
-    
-    Require host yourdomain.example.com
-    
+&lt;Location "/protected"&gt;
+    AuthType Basic
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
     LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem
     LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem
     # CA certs respecified due to per-directory client certs
     LDAPTrustedClientCert CA_DER /certs/cacert1.der
     LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem
-    Satisfy any
-    AuthType Basic
-    AuthName "LDAP Protected"
-    AuthBasicProvider ldap
     AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one
     Require valid-user
 &lt;/Location&gt;</pre>
@@ -816,7 +762,7 @@ Tous les SDK LDAP ne supportent pas les certificats clients par
 connexion.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedClientCert <var>type</var>
 <var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
@@ -882,10 +828,10 @@ clients globaux</td></tr>
       <li>CERT_KEY3_DB - fichier de base de données des certificats
       clients de Netscape key3.db</li>
       <li>CERT_NICKNAME - certificat client "nickname" (SDK Netscape)</li>
-      <li>CERT_PFX - certificat client codé en PKCS#12 (SDK Novell)</li>
+      <li>CERT_PFX - certificat client codé en PKCS#12</li>
       <li>KEY_DER - clé privée codée en binaire DER</li>
       <li>KEY_BASE64 - clé privée codée en PEM</li>
-      <li>KEY_PFX - clé privée codée en PKCS#12 (SDK Novell)</li>
+      <li>KEY_PFX - clé privée codée en PKCS#12</li>
     </ul>
 
 </div>
@@ -935,28 +881,32 @@ serveur</td></tr>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_ldap.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,11 +26,14 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_include</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_include.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Documents html interprétés par le serveur (Server Side
 Includes ou SSI)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -72,7 +76,7 @@ Includes ou SSI)</td></tr>
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
 <li><a href="../filter.html">Les filtres</a></li>
 <li><a href="../howto/ssi.html">Tutoriel SSI</a></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enabling" id="enabling">Activation des SSI</a> <a title="Lien permanent" href="#enabling" class="permalink">&para;</a></h2>
@@ -500,15 +504,13 @@ AddOutputFilter INCLUDES .shtml</pre>
       pas spécifié, c'est le message d'erreur par défaut qui sera
       inclus.</p>
 
-      <div class="example"><p><code>
-        # Exemple simple<br />
-        &lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
-      </code></p></div>
+      <div class="example"><pre class="prettyprint lang-html"># Exemple simple<br />
+&lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;</pre>
+</div>
 
-      <div class="example"><p><code>
-        # Chemins onerror dédiés<br />
-        &lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
-      </code></p></div>
+      <div class="example"><pre class="prettyprint lang-html"># Chemins onerror dédiés<br />
+&lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;</pre>
+</div>
 
       </dd>
       </dl>
@@ -678,12 +680,11 @@ AddOutputFilter INCLUDES .shtml</pre>
     <p>Les éléments de base du contrôle d'inclusion conditionnelle sont
     :</p>
 
-    <div class="example"><p><code>
-      &lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#else --&gt;<br />
-      &lt;!--#endif --&gt;
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-html">&lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
+&lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
+&lt;!--#else --&gt;<br />
+&lt;!--#endif --&gt;</pre>
+</div>
 
     <p>L'élément <code>if</code> fonctionne de la même manière que
     la directive if d'un langage de programmation. La condition est
@@ -714,28 +715,20 @@ AddOutputFilter INCLUDES .shtml</pre>
     <p>Dans l'exemple suivant, "depuis le réseau local"  sera affiché si
     l'adresse IP du client appartient au sous-réseau 10.0.0.0/8.</p>
 
-    <div class="example"><p><code>
-      &lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
-      <span class="indent">
-        depuis le réseau local<br />
-      </span>
-      &lt;!--#else --&gt;<br />
-      <span class="indent">
-        depuis ailleurs<br />
-      </span>
-      &lt;!--#endif --&gt;
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-html">&lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
+  depuis le réseau local<br />
+&lt;!--#else --&gt;<br />
+  depuis ailleurs<br />
+&lt;!--#endif --&gt;</pre>
+</div>
 
     <p>Dans l'exemple suivant, "foo vaut bar" sera affiché si la variable
     <code>foo</code> contient la valeur "bar".</p>
 
-    <div class="example"><p><code>
-      &lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
-      <span class="indent">
-        foo vaut bar<br />
-      </span>
-      &lt;!--#endif --&gt;
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-html">&lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
+  foo vaut bar<br />
+&lt;!--#endif --&gt;</pre>
+</div>
 
     <div class="note"><h3>Documentation de référence</h3>
     <p>Voir aussi <a href="../expr.html">Les expressions dans le serveur
@@ -764,14 +757,11 @@ AddOutputFilter INCLUDES .shtml</pre>
       le test porte sur l'autorisation d'accès à l'URL, et non sur son
       existence.</p>
 
-      <div class="example"><h3>Exemple</h3><p><code>
-        &lt;!--#if expr="-A /prive" --&gt;<br />
-        <span class="indent">
-          Cliquez &lt;a href="/prive"&gt;ici&lt;/a&gt; pour accéder aux
-	  informations privées.<br />
-        </span>
-        &lt;!--#endif --&gt;
-      </code></p></div>
+      <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-html">&lt;!--#if expr="-A /prive" --&gt;<br />
+  Cliquez &lt;a href="/prive"&gt;ici&lt;/a&gt; pour accéder aux
+  informations privées.<br />
+&lt;!--#endif --&gt;</pre>
+</div>
       </dd>
 
       <dt><code><var>chaîne1</var> = <var>chaîne2</var><br />
@@ -794,13 +784,10 @@ AddOutputFilter INCLUDES .shtml</pre>
       de la chaîne correspondant à l'expression rationnelle est stocké
       dans la variable spéciale <code>$0</code>.</p>
 
-      <div class="example"><h3>Exemple</h3><p><code>
-        &lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
-        <span class="indent">
-          &lt;!--#set var="session" value="$1" --&gt;<br />
-        </span>
-        &lt;!--#endif --&gt;
-      </code></p></div>
+      <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-html">&lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
+&lt;!--#set var="session" value="$1" --&gt;<br />
+&lt;!--#endif --&gt;</pre>
+</div>
       </dd>
 
       <dt><code><var>chaîne1</var> &lt; <var>chaîne2</var><br />
@@ -835,10 +822,9 @@ AddOutputFilter INCLUDES .shtml</pre>
     la priorité la plus haute. Ainsi, les deux directives suivantes sont
     équivalentes :</p>
 
-    <div class="example"><p><code>
-      &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
-      &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-html">&lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
+&lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;</pre>
+</div>
 
     <p>Les opérateurs booléens <code>&amp;&amp;</code> et
     <code>||</code> ont la même priorité. Ainsi, si vous voulez
@@ -919,6 +905,10 @@ AddOutputFilter INCLUDES .shtml</pre>
 
     <pre class="prettyprint lang-config">SSIEndTag "%&gt;"</pre>
 
+
+    <div class="warning">
+    La valeur ne doit pas contenir d’espace.
+    </div>
 
 
 <h3>Voir aussi</h3>
@@ -1086,6 +1076,10 @@ include</td></tr>
 SSIEndTag   "%&gt;"</pre>
 
 
+    <div class="warning">
+    La valeur ne doit pas contenir d’espace.
+    </div>
+
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive
     <code class="directive"><a href="#ssiendtag">SSIEndTag</a></code>, vous pourrez
     inscrire des directives SSI comme dans l'exemple suivant :</p>
@@ -1206,28 +1200,32 @@ d'exécution est positionné</td></tr>
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_include.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_include.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

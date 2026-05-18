@@ -1,0 +1,931 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>RewriteRule Bayrakları - Apache HTTP Sunucusu Sürüm 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteRule Bayrakları</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+
+<p>Bu belge, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yönergesinde kullanılabilecek bayrakları ayrıntılı açıklamalar ve
+örneklerle açıklar.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Giriş</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (geri başvuruları kodla)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (boşluğu +'ya kodlama)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_end">END</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_g">G|gone</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_h">H|handler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_l">L|last</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_n">N|next</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_nc">NC|nocase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_ne">NE|noescape</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_ns">NS|nosubreq</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_p">P|proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_pt">PT|passthrough</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsa">QSA|qsappend</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsd">QSD|qsdiscard</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsl">QSL|qslast</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_r">R|redirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_s">S|skip</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_t">T|type</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yönergesinin davranışı bir veya daha fazla bayrakla
+değiştirilebilir. Bayraklar kuralın sonunda köşeli parantez içinde
+belirtilir ve birden fazla bayrak virgülle ayrılır.</p>
+<pre class="prettyprint lang-config">RewriteRule pattern target [Flag1,Flag2,Flag3]</pre>
+
+
+<p>Her bayrağın (birkaç istisna dışında) <code>CO</code> gibi kısa bir
+biçimi ve <code>cookie</code> gibi uzun bir biçimi vardır. Kısa biçim
+en yaygın olarak kullanılsa da, her bayrağın ne yapması gerektiğini
+hatırlamanız için uzun biçime aşina olmanız önerilir. Bazı bayraklar
+bir veya daha fazla argüman alır. Bayraklar büyük/küçük harf
+duyarsızdır.</p>
+
+<p>İstekle ilişkili üstveriyi değiştiren bayraklar (T=, H=, E=), bir
+değiştirme ('-' dışında) aynı yeniden yazma işleme turunda
+gerçekleştirildiğinde dizin başına ve htaccess bağlamında etkili
+olmaz.</p>
+
+<p>Burada mevcut bayrakların her biri, nasıl kullanabileceğinize dair
+bir örnekle birlikte sunulmaktadır.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_b" id="flag_b">B (geri başvuruları kodla)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<p>[B] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yönergesine dönüşümü uygulamadan önce alfasayısal olmayan karakterleri
+kodlamasını söyler.</p>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> URL'leri eşlemeden önce kodlarını
+çözmek zorundadır, bu nedenle geri başvurular uygulandığında kodları
+çözülmüş olur. B bayrağı kullanıldığında, geri başvurulardaki
+alfasayısal olmayan karakterler kodlanır. Örneğin, şu kuralı ele
+alalım:</p>
+
+<p>Sunucu değişkenlerinin benzer şekilde kodlanması için
+    "escape" <a href="#mapfunc">eşleme işlevine</a> bakın</p>
+
+
+<pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</pre>
+
+
+<p>Arama terimi 'x &amp; y/z' olduğunda, tarayıcı bunu
+'x%20%26%20y%2Fz' olarak kodlar ve istek 'search/x%20%26%20y%2Fz'
+olur. B bayrağı olmadan bu yeniden yazma kuralı 'search.php?term=x
+&amp; y/z' ile eşleşir ki bu geçerli bir URL değildir ve
+<code>search.php?term=x%20&amp;y%2Fz=</code> olarak kodlanır, bu da
+amaçlanan değildir.</p>
+
+<p>Aynı kuralda B bayrağı ayarlandığında, parametreler çıktı URL'sine
+geçirilmeden önce yeniden kodlanır ve doğru bir eşleme olan
+<code>/search.php?term=x%20%26%20y%2Fz</code> elde edilir.</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1" [B,PT]</pre>
+
+
+<p>Bu belirli örneğin çalışması için <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> yönergesini
+<code>On</code> olarak ayarlamanız gerekebileceğini unutmayın; çünkü
+httpd URL'lerde kodlanmış eğik çizgilere izin vermez ve bir tane
+görürse 404 döndürür.</p>
+
+<p>Bu kodlama özellikle vekil durumunda gereklidir; arka uç, kodları
+çözülmüş bir URL ile karşılaşırsa bozulabilir.</p>
+
+<p>Bu bayrağa bir alternatif, %{THE_REQUEST} değerine karşı yakalama
+yapan bir <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+kullanmaktır; bu, dizgeleri kodlanmış biçimde yakalar.</p>
+
+<p>2.4.26 ve sonrasında, geri başvurulardaki kodlamayı belirli
+karakterlerle sınırlayabilirsiniz: <code>[B=#?;]</code>. Not: Boşluk
+karakteri kodlanacak karakterler listesinde kullanılabilir, ancak
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin
+üçüncü argümanının tamamını tırnak içine almanız ve boşluğun listenin
+son karakteri olmaması gerekir.</p>
+
+<pre class="prettyprint lang-config"># Boşlukları ve soru işaretlerini kodla. Son argüman etrafındaki
+# tırnak işaretleri, boşluk dahil edildiğinde gereklidir.
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
+
+
+<p>Bu şekilde kodlanan karakterleri sınırlamak için <a href="#flag_bne">#flag_bne</a> ve <a href="#flag_bctls">#flag_bctls</a> bayraklarına bakın</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (boşluğu +'ya kodlama)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<p>[BNP] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yönergesine geri başvurulardaki boşluk karakterini '+' yerine %20
+olarak kodlamasını söyler. Geri başvuru sorgu dizgesi yerine yol
+bileşeninde kullanılacaksa yararlıdır.</p>
+
+<pre class="prettyprint lang-config"># Form gönderimi yoluyla sorgu dizgesinde kullanılan + yerine yolda
+# boşlukları %20 olarak kodla
+RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
+
+
+
+<p>Bu bayrak 2.4.26 ve sonraki sürümlerde mevcuttur.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<p>[BCTLS] bayrağı [B] bayrağına benzer, ancak yalnızca kontrol
+karakterlerini ve boşluk karakterini kodlar. Bu, sorgu dizgesine
+kodlanmadan kopyalandıklarında reddedilen karakter kümesiyle
+aynıdır.</p>
+
+<pre class="prettyprint lang-config"># Kontrol karakterlerini ve boşlukları kodla
+RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
+
+
+<p>Bu bayrak 2.5.1 ve sonraki sürümlerde mevcuttur.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<p>[BNE=...] içindeki karakter listesi, [B] veya [BCTLS] bayraklarının
+karakterlerinden istisna olarak değerlendirilir. Listelenen karakterler
+kodlanmayacaktır.</p>
+
+<pre class="prettyprint lang-config"># Öntanımlı karakterleri kodla, ancak / karakterini bırak
+RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
+
+
+<p>Bu bayrak 2.5.1 ve sonraki sürümlerde mevcuttur.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<p>[C] veya [chain] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin bir sonraki
+kurala zincirleneceğini belirtir. Yani, kural eşleşirse her zamanki
+gibi işlenir ve denetim bir sonraki kurala geçer. Ancak eşleşmezse bir
+sonraki kural ve birlikte zincirlenen diğer kurallar atlanır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<p>[CO] veya [cookie] bayrağı, belirli bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> eşleştiğinde bir çerez
+ayarlamanıza olanak tanır. Argüman üç zorunlu ve beş isteğe bağlı
+alandan oluşur.</p>
+
+<p>Bayrağın tüm öznitelikler dahil tam sözdizimi şöyledir:</p>
+
+<div class="example"><p><code>
+[CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
+</code></p></div>
+
+<p>Çerez alanlarından herhangi birinde birebir ':' karakterine ihtiyaç
+duyulursa, alternatif bir sözdizimi mevcuttur. Alternatif sözdizimini
+etkinleştirmek için çerez "Name" alanının önüne ';' karakteri
+konulmalı ve alan ayırıcıları ';' olarak belirtilmelidir.</p>
+
+<div class="example"><p><code>
+[CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
+</code></p></div>
+
+<p>Çerezin ayarlanması için bir ad, bir değer ve bir alan adı
+bildirmelisiniz.</p>
+
+<dl>
+<dt>Alan Adı (Domain)</dt>
+<dd>Çerezin geçerli olmasını istediğiniz alan adı. Bu,
+<code>www.example.com</code> gibi bir konak adı veya
+<code>.example.com</code> gibi bir alan adı olabilir. En az iki
+parçadan oluşmalı ve bir nokta ile ayrılmalıdır. Yani yalnızca
+<code>.com</code> veya <code>.net</code> olamaz. Bu tür çerezler
+çerez güvenlik modeli tarafından yasaklanmıştır.</dd>
+</dl>
+
+<p>İsteğe bağlı olarak aşağıdaki değerleri de ayarlayabilirsiniz:</p>
+
+<dl>
+<dt>Ömür (Lifetime)</dt>
+<dd>Çerezin kalıcı olacağı süre, dakika cinsinden.</dd>
+<dd>0 değeri, çerezin yalnızca geçerli tarayıcı oturumu süresince
+kalıcı olacağını belirtir. Hiçbir değer belirtilmezse bu öntanımlı
+değerdir.</dd>
+<dd>Negatif bir değer, çerezin tarayıcıda silinmesine neden olur.</dd>
+
+<dt>Yol (Path)</dt>
+<dd>Geçerli web sitesinde çerezin geçerli olduğu yol;
+<code>/customers/</code> veya <code>/files/download/</code> gibi.</dd>
+<dd>Öntanımlı olarak <code>/</code> olarak ayarlanır - yani web
+sitesinin tamamı.</dd>
+
+<dt>Güvenli (Secure)</dt>
+<dd><code>secure</code>, <code>true</code> veya <code>1</code> olarak
+ayarlanırsa, çerez yalnızca güvenli (https) bağlantılar üzerinden
+aktarılabilir.</dd>
+
+<dt>httponly</dt>
+<dd><code>HttpOnly</code>, <code>true</code> veya <code>1</code>
+olarak ayarlanırsa, çerez <code>HttpOnly</code> bayrağıyla
+ayarlanır; bu, çerezin bu özelliği destekleyen tarayıcılarda
+JavaScript koduna erişilemez olduğu anlamına gelir.</dd>
+
+<dt>samesite</dt>
+<dd><code>false</code> veya <code>0</code> dışında bir değere
+ayarlanırsa, <code>SameSite</code> özniteliği belirtilen değere
+ayarlanır. Tipik değerler <code>None</code>, <code>Lax</code> ve
+<code>Strict</code>'tir. 2.5.1 ve sonrasında mevcuttur.</dd>
+</dl>
+
+
+<p>Şu örneği ele alalım:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
+
+
+<p>Verilen örnekte, kural isteği yeniden yazmaz. "-" yeniden yazma
+hedefi, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülüne isteği değiştirmeden
+geçirmesini söyler. Bunun yerine, 'frontdoor' adlı bir çerezi 'yes'
+değeriyle ayarlar. Çerez <code>.example.com</code> alan adındaki
+herhangi bir konak için geçerlidir. 1440 dakika (24 saat) sonra sona
+erecek şekilde ayarlanır ve tüm URI'ler için döndürülür.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<p>DPI bayrağı, yeniden yazılmış URI'nin PATH_INFO bölümünün
+atılmasına neden olur.</p>
+<p>Bu bayrak 2.2.12 ve sonraki sürümlerde mevcuttur.</p>
+<p>Dizin başına bağlamda, her <code class="directive">RewriteRule</code>
+yönergesinin karşılaştırdığı URI, URI'nin ve PATH_INFO'nun geçerli
+değerlerinin birleşimidir.</p>
+
+<p>Geçerli URI, istemcinin istediği ilk URI, önceki bir
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turunun sonucu veya geçerli
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turundaki önceki bir kuralın
+sonucu olabilir.</p>
+
+<p>Buna karşılık, her kuraldan önce URI'ye eklenen PATH_INFO yalnızca
+bu <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turundan önceki PATH_INFO
+değerini yansıtır. Sonuç olarak, URI'nin büyük bölümleri birden fazla
+<code class="directive">RewriteRule</code> yönergesinde bir değiştirmeye
+eşlenip kopyalanırsa ve URI'nin hangi bölümlerinin geçerli
+PATH_INFO'dan geldiğine dikkat edilmezse, son URI'ye PATH_INFO'nun
+birden fazla kopyası eklenebilir.</p>
+
+<p>Bu bayrağı, önceki dosya sistemi eşlemesinden kaynaklanan
+PATH_INFO'nun ilgilendirmediği herhangi bir değiştirmede kullanın. Bu
+bayrak, bu <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turu başlamadan önce
+oluşturulan PATH_INFO'yu kalıcı olarak unutur. PATH_INFO, geçerli
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turu tamamlanana kadar yeniden
+hesaplanmaz. Bu tur boyunca sonraki kurallar, yalnızca değiştirmelerin
+doğrudan sonucunu görür; eklenmiş bir PATH_INFO olmaz.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<p>[E] veya [env] bayrağıyla bir ortam değişkeninin değerini
+ayarlayabilirsiniz. Bazı ortam değişkenlerinin kural çalıştıktan sonra
+ayarlanabileceğini ve böylece ayarladığınız değeri geçersiz
+kılabileceğini unutmayın. Ortam değişkenlerinin nasıl çalıştığı
+hakkında daha fazla ayrıntı için <a href="../env.html">Ortam
+Değişkenleri belgesine</a> bakın.</p>
+
+<p>Bu bayrağın tam sözdizimi şöyledir:</p>
+
+<pre class="prettyprint lang-config">[E=VAR:VAL]
+[E=!VAR]</pre>
+
+
+<p><code>VAL</code>, genişletilen geri başvurular (<code>$N</code>
+veya <code>%N</code>) içerebilir.</p>
+
+<p>Kısa biçimi kullanarak</p>
+
+<div class="example"><p><code>
+[E=VAR]
+</code></p></div>
+
+<p><code>VAR</code> adlı ortam değişkenini boş bir değere
+ayarlayabilirsiniz.</p>
+
+<p>Şu biçim</p>
+
+<div class="example"><p><code>
+[E=!VAR]
+</code></p></div>
+
+<p>daha önce ayarlanmış <code>VAR</code> adlı ortam değişkeninin
+silinmesine olanak tanır.</p>
+
+<p>Ortam değişkenleri daha sonra CGI programları, diğer RewriteRule
+yönergeleri veya CustomLog yönergeleri dahil olmak üzere çeşitli
+bağlamlarda kullanılabilir.</p>
+
+<p>Aşağıdaki örnek, istenen URI bir resim dosyasıysa 'image' adlı bir
+ortam değişkenini '1' değerine ayarlar. Daha sonra bu ortam değişkeni,
+bu istekleri erişim günlüğünden dışlamak için kullanılır.</p>
+
+<pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
+CustomLog   "logs/access_log"    combined env=!image</pre>
+
+
+<p>Aynı etkinin <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>
+kullanılarak elde edilebileceğini unutmayın. Bu teknik bir öneri olarak
+değil, bir örnek olarak sunulmuştur.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<p>[END] bayrağı kullanmak, yalnızca geçerli yeniden yazma işleme
+turunu durdurmakla kalmaz ([L] gibi), aynı zamanda dizin başına
+(htaccess) bağlamda sonraki yeniden yazma işlemlerinin de
+gerçekleşmesini engeller.</p>
+
+<p>Bu, harici yönlendirmelerden kaynaklanan yeni istekler için
+geçerli değildir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<p>[F] bayrağı kullanmak, sunucunun istemciye 403 Yasak durum kodu
+döndürmesine neden olur. Aynı davranış <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> yönergesiyle de
+gerçekleştirilebilir ancak bu, Yasak durumu atamada daha fazla esneklik
+sağlar.</p>
+
+<p>Aşağıdaki kural, <code>.exe</code> dosyalarının sunucunuzdan
+indirilmesini yasaklar.</p>
+
+<pre class="prettyprint lang-config">RewriteRule "\.exe"   "-" [F]</pre>
+
+
+<p>Bu örnek, yeniden yazma hedefi için "-" sözdizimini kullanır; bu,
+istenen URI'nin değiştirilmediği anlamına gelir. İsteği yasaklayacaksanız
+başka bir URI'ye yeniden yazmanın bir nedeni yoktur.</p>
+
+<p>[F] kullanıldığında, [L] zımnen uygulanır - yani yanıt hemen
+döndürülür ve başka kural değerlendirilmez.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<p>[G] bayrağı, sunucuyu yanıtla birlikte 410 Kalktı durum kodu
+döndürmeye zorlar. Bu, bir kaynağın eskiden mevcut olduğunu ancak
+artık mevcut olmadığını belirtir.</p>
+
+<p>[F] bayrağında olduğu gibi, [G] bayrağını kullanırken genellikle
+yeniden yazma hedefi için "-" sözdizimini kullanırsınız:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "oldproduct"   "-" [G,NC]</pre>
+
+
+<p>[G] kullanıldığında, [L] zımnen uygulanır - yani yanıt hemen
+döndürülür ve başka kural değerlendirilmez.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<p>Elde edilen isteğin belirtilen işleyici ile işlenmesini zorlar.
+Örneğin, dosya uzantısı olmayan tüm dosyaların php işleyicisi
+tarafından çözümlenmesini zorlamak için kullanılabilir:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "!\."  "-" [H=application/x-httpd-php]</pre>
+
+
+<p>
+Yukarıdaki düzenli ifade - <code>!\.</code> - birebir <code>.</code>
+karakterini içermeyen herhangi bir istekle eşleşir.
+</p>
+
+<p>Bu, bazı koşullara dayalı olarak işleyiciyi zorlamak için de
+kullanılabilir. Örneğin, sunucu bağlamında kullanılan aşağıdaki
+kod parçası, <code>.phps</code> uzantısıyla istendiğinde
+<code>.php</code> dosyalarının <code>mod_php</code> tarafından
+<em>görüntülenmesini</em> sağlar:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^(/source/.+\.php)s$" "$1" [H=application/x-httpd-php-source]</pre>
+
+
+<p>Yukarıdaki düzenli ifade - <code>^(/source/.+\.php)s$</code> -
+<code>/source/</code> ile başlayan, ardından 1 veya n karakter gelen
+ve birebir <code>.phps</code> ile biten herhangi bir istekle eşleşir.
+$1 geri başvurusu, düzenli ifadenin parantez içindeki yakalanan
+eşleşmeye referans verir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<p>[L] bayrağı, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün kural kümesini
+işlemeyi durdurmasına neden olur. Çoğu bağlamda, kural eşleşirse başka
+kural işlenmeyeceği anlamına gelir. Bu, Perl'deki <code>last</code>
+komutuna veya C'deki <code>break</code> komutuna karşılık gelir. Bu
+bayrağı, geçerli kuralın diğer kurallar dikkate alınmadan hemen
+uygulanması gerektiğini belirtmek için kullanın.</p>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesini
+<code>.htaccess</code> dosyalarında veya <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümlerinde kullanıyorsanız,
+kuralların nasıl işlendiğini anlamanız önemlidir. Bunun basitleştirilmiş
+biçimi, kurallar işlendikten sonra yeniden yazılmış isteğin URL
+çözümleme motoruna geri verildiğidir. Yeniden yazılmış istek
+işlenirken <code>.htaccess</code> dosyası veya <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümüyle tekrar karşılaşılması
+ve kural kümesinin baştan çalıştırılması mümkündür. En yaygın olarak
+bu, kurallardan birinin dahili veya harici bir yönlendirmeye neden
+olması durumunda olur ve istek sürecinin yeniden başlamasına yol
+açar.</p>
+
+<p>Bu nedenle, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+yönergelerini bu bağlamlardan birinde kullanıyorsanız, kuralların
+döngüye girmesinden kaçınmak için açık adımlar atmanız ve bir dizi
+kuralın yürütülmesini sonlandırmak için yalnızca [L] bayrağına
+güvenmemeniz önemlidir; aşağıda gösterildiği gibi.</p>
+
+<p>Alternatif bir bayrak olan [END], yalnızca geçerli yeniden yazma
+işleme turunu sonlandırmak için değil, aynı zamanda dizin başına
+(htaccess) bağlamda sonraki yeniden yazma işlemlerinin de
+gerçekleşmesini engellemek için kullanılabilir. Bu, harici
+yönlendirmelerden kaynaklanan yeni istekler için geçerli değildir.</p>
+
+<p>Burada verilen örnek, herhangi bir isteği <code>index.php</code>'ye
+yeniden yazar ve orijinal isteği <code>index.php</code>'ye sorgu
+dizgesi argümanı olarak verir; ancak <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, istek zaten
+<code>index.php</code> için ise <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin
+atlanmasını sağlar.</p>
+
+<pre class="prettyprint lang-config">RewriteBase "/"
+RewriteCond "%{REQUEST_URI}" !=/index.php
+RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<p>
+[N] bayrağı, kural kümesinin şimdiye kadarki sonucu başlangıç noktası
+olarak kullanarak en baştan yeniden başlamasına neden olur. Döngüye
+neden olabileceğinden son derece dikkatli kullanın.
+</p>
+<p>
+[Next] bayrağı, örneğin bir istekteki belirli bir dizgeyi veya harfi
+tekrar tekrar değiştirmek istediğinizde kullanılabilir. Burada
+gösterilen örnek, bir istekteki her yerde A'yı B ile değiştirecek ve
+değiştirilecek A kalmayana kadar bunu yapmaya devam edecektir.
+</p>
+<pre class="prettyprint lang-config">RewriteRule "(.*)A(.*)" "$1B$2" [N]</pre>
+
+<p>Bunu bir <code>while</code> döngüsü olarak düşünebilirsiniz: Bu
+kalıp hâlâ eşleştiği sürece (yani URI hâlâ bir <code>A</code>
+içerdiği sürece), bu değiştirmeyi yap (yani <code>A</code>'yı
+<code>B</code> ile değiştir).</p>
+
+<p>2.5.0 ve sonrasında, bu modül istenmeyen döngülere karşı koruma
+sağlamak için 10.000 yinelemeden sonra hata döndürür. N bayrağına
+eklenerek alternatif bir maksimum yineleme sayısı belirtilebilir.</p>
+<pre class="prettyprint lang-config"># Döngünün her geçişinde 1 karakter değiştirmeye razı ol
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
+# ... veya 10 döngüden sonra vazgeç
+RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<p>[NC] bayrağının kullanımı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin büyük/küçük
+harf duyarsız biçimde eşleştirilmesine neden olur. Yani eşleşen
+URI'de harflerin büyük veya küçük harf olarak görünüp görünmediği
+önemli değildir.</p>
+
+<p>Aşağıdaki örnekte, herhangi bir resim dosyası isteği özel resim
+sunucunuza vekil olarak iletilir. Eşleşme büyük/küçük harf
+duyarsızdır; bu nedenle örneğin hem <code>.jpg</code> hem de
+<code>.JPG</code> dosyaları kabul edilir.</p>
+
+<pre class="prettyprint lang-config">RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]</pre>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<p>Öntanımlı olarak, bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> harici yönlendirmeyle
+sonuçlandığında, çıktıda aşağıdaki güvenli küme dışında kalan
+karakterler onaltılık kod (yüzde kodlu) eşdeğerlerine
+dönüştürülür:</p>
+
+<ul>
+  <li>Alfasayısal karakterler: <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>Özel karakterler: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>Örneğin, <code>#</code> karakteri <code>%23</code>'e ve
+<code>?</code> karakteri <code>%3F</code>'e dönüştürülür.
+<code>%</code> karakteri de kodlanır (<code>%25</code>'e), bu da
+değiştirmede zaten mevcut olan yüzde kodlamanın çift kodlanacağı
+anlamına gelir.</p>
+
+<p>[NE] bayrağı kullanmak bu kodlamayı engeller ve <code>#</code> ile
+<code>?</code> gibi karakterlerin yönlendirme URL'sine
+değiştirilmeden geçmesine olanak tanır.</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
+
+
+<p>
+Yukarıdaki örnek <code>/anchor/xyz</code> adresini
+<code>/bigpage.html#xyz</code> adresine yönlendirecektir. [NE]
+kullanılmazsa # karakteri onaltılık kod eşdeğeri olan
+<code>%23</code>'e dönüştürülür ve bu da 404 Bulunamadı hata durumuna
+yol açar.
+</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<p>[NS] bayrağının kullanımı, kuralın alt isteklerde kullanılmasını
+engeller. Örneğin, SSI (Sunucu Tarafı Dahil Etme) kullanılarak dahil
+edilen bir sayfa bir alt istektir ve bu alt isteklerde yeniden
+yazmaların gerçekleşmesini engellemek isteyebilirsiniz. Ayrıca,
+<code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> olası dizin öntanımlı dosyaları (örneğin
+<code>index.html</code> dosyaları) hakkında bilgi edinmeye
+çalıştığında, bu bir dahili alt istektir ve genellikle bu tür alt
+isteklerde yeniden yazmaları engellemek istersiniz. Alt isteklerde,
+kuralların tamamının uygulanması her zaman yararlı olmaz ve hatalara
+bile neden olabilir. Sorunlu kuralları dışlamak için bu bayrağı
+kullanın.</p>
+
+<p>Bu kuralı kullanıp kullanmamaya karar vermek için: URL'leri CGI
+betikleriyle ön ekliyorsanız ve bunların CGI betiği tarafından
+işlenmesini zorluyorsanız, alt isteklerde sorunlarla (veya önemli ek
+yükle) karşılaşmanız olasıdır. Bu durumlarda bu bayrağı kullanın.</p>
+
+<p>
+Bir HTML sayfasının parçası olarak yüklenen resimler, javascript
+dosyaları veya css dosyaları alt istek değildir - tarayıcı bunları
+ayrı HTTP istekleri olarak ister.
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<p>[P] bayrağının kullanımı, isteğin <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+tarafından işlenmesine ve bir vekil isteği üzerinden ele alınmasına
+neden olur. Örneğin, tüm resim isteklerinin bir arka uç resim
+sunucusu tarafından işlenmesini istiyorsanız, şöyle bir şey
+yapabilirsiniz:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "/(.*)\.(jpg|gif|png)$" "http://images.example.com/$1.$2" [P]</pre>
+
+
+<p>[P] bayrağının kullanımı [L] anlamına gelir - yani istek hemen
+vekil üzerinden iletilir ve sonraki kurallar dikkate alınmaz.</p>
+
+<p>
+Değiştirme dizgesinin <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> tarafından
+işlenebilecek geçerli bir URI olduğundan (genellikle
+<code>http://</code><em>konakadı</em> ile başlayan) emin olmalısınız.
+Değilse, vekil modülünden bir hata alırsınız. Bu bayrağı, uzak
+içeriği yerel sunucunun ad alanına eşlemek için <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> yönergesinin daha güçlü
+bir uygulamasını gerçekleştirmek için kullanın.</p>
+
+<div class="warning">
+<h3>Güvenlik Uyarısı</h3>
+<p>Kuralın hedef URL'sini oluştururken, istemcinin sunucunuzun vekil
+olarak davranacağı URL kümesi üzerindeki etkisinin güvenlik
+sonuçlarını dikkate alın. URL'nin şema ve konak adı bölümünün ya sabit
+olduğundan ya da istemciye gereksiz etki izni vermediğinden emin
+olun.</p>
+</div>
+
+<div class="warning">
+<h3>Performans uyarısı</h3>
+<p>Bu bayrağı kullanmak, kalıcı bağlantıları yönetmeyen öntanımlı
+işçi bu durumda kullanıldığından bağlantı havuzlama/yeniden kullanımı
+olmaksızın <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> kullanımını tetikler.</p>
+<p>Kalıcı bağlantıları kullanmak için en azından hedef URL'nin şema
+ve konak bölümü için örneğin bir zaman aşımı ayarladığınız
+<code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> yönergesi içeren
+bir <code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code> bloğu
+kurmalısınız.</p>
+<p><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> veya
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> ile
+kurarsanız kalıcı bağlantılar otomatik olarak kullanılacaktır.</p>
+</div>
+
+<p>Not: Bu bayrağı kullanmak için <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
+etkinleştirilmiş olmalıdır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+
+<p>
+Bir RewriteRule'daki hedef (veya değiştirme dizgesi) öntanımlı olarak
+bir dosya yolu olarak kabul edilir. [PT] bayrağının kullanılması,
+bunun yerine bir URI olarak işlenmesine neden olur. Yani, [PT]
+bayrağının kullanılması, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sonucunun, <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> veya <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> gibi konum tabanlı
+eşlemelerin etki edebilmesi için URL eşlemesine geri iletilmesine
+neden olur.
+</p>
+
+<p>
+Örneğin, /icons için bir <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> tanımınız varsa ve oraya
+işaret eden bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> varsa, <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> yönergesinin
+değerlendirilmesini sağlamak için [PT] bayrağını kullanmalısınız.
+</p>
+
+<pre class="prettyprint lang-config">Alias "/icons" "/usr/local/apache/icons"
+RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
+
+
+<p>
+Bu durumda [PT] bayrağının atlanması, Alias'ın yok sayılmasına neden
+olur ve 'Dosya bulunamadı' hatası döndürülür.
+</p>
+
+<p><code>PT</code> bayrağı <code>L</code> bayrağını ima eder:
+isteği bir sonraki işleme aşamasına geçirmek için yeniden yazma
+durdurulur.</p>
+
+<p><code>PT</code> bayrağının <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri veya
+<code>.htaccess</code> dosyaları gibi dizin başına bağlamlarda
+zımnen uygulandığını unutmayın. Bundan kaçınmanın tek yolu
+<code>-</code>'ye yeniden yazmaktır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<p>
+Değiştirme URI'si bir sorgu dizgesi içerdiğinde, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin öntanımlı
+davranışı mevcut sorgu dizgesini atıp yeni oluşturulanla
+değiştirmektir. [QSA] bayrağı kullanmak sorgu dizgelerinin
+birleştirilmesine neden olur.
+</p>
+
+<p>Şu kuralı ele alalım:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "/pages/(.+)" "/page.php?page=$1" [QSA]</pre>
+
+
+<p>[QSA] bayrağıyla, <code>/pages/123?one=two</code> isteği
+<code>/page.php?page=123&amp;one=two</code> ile eşlenir. [QSA]
+bayrağı olmadan, aynı istek
+<code>/page.php?page=123</code> ile eşlenir - yani mevcut sorgu
+dizgesi atılır.
+</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<p>
+İstenen URI bir sorgu dizgesi içerdiğinde ve hedef URI içermediğinde,
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesinin
+öntanımlı davranışı o sorgu dizgesini hedef URI'ye kopyalamaktır.
+[QSD] bayrağı kullanmak sorgu dizgesinin atılmasına neden olur.
+</p>
+
+<p>Bu bayrak 2.4.0 ve sonraki sürümlerde mevcuttur.</p>
+
+<p>
+[QSD] ve [QSA] birlikte kullanıldığında [QSD] öncelikli olur.
+</p>
+
+<p>
+Hedef URI bir sorgu dizgesine sahipse, öntanımlı davranış
+gözlemlenir - yani orijinal sorgu dizgesi atılır ve
+<code>RewriteRule</code> hedef URI'sindeki sorgu dizgesiyle
+değiştirilir.
+</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<p>
+Öntanımlı olarak, değiştirmedeki ilk (en soldaki) soru işareti yolu
+sorgu dizgesinden ayırır. [QSL] bayrağı kullanmak, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesine iki bileşeni
+son (en sağdaki) soru işaretini kullanarak ayırmasını söyler.</p>
+
+<p>
+Bu, dosya adlarında birebir soru işaretleri bulunan dosyalara eşleme
+yaparken yararlıdır. Değiştirmede sorgu dizgesi kullanılmıyorsa, bu
+bayrakla birlikte sonuna bir soru işareti eklenebilir.</p>
+
+<p>Bu bayrak 2.4.19 ve sonraki sürümlerde mevcuttur.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<p>
+[R] bayrağı kullanmak, tarayıcıya bir HTTP yönlendirmesi
+verilmesine neden olur. Tam nitelikli bir URL belirtilmişse (yani
+<code>http://sunucuadı/</code> dahil), o konuma bir yönlendirme
+verilir. Aksi takdirde, yönlendirmeyle gönderilen URL'yi oluşturmak
+için geçerli protokol, sunucu adı ve bağlantı noktası numarası
+kullanılır.
+</p>
+
+<p>
+[R=305] sözdizimi kullanılarak geçerli herhangi bir HTTP yanıt durum
+kodu belirtilebilir; hiçbiri belirtilmezse öntanımlı olarak 302 durum
+kodu kullanılır. Belirtilen durum kodunun mutlaka bir yönlendirme
+(3xx) durum kodu olması gerekmez. Ancak durum kodu yönlendirme
+aralığının (300-399) dışındaysa değiştirme dizgesi tamamen atılır ve
+<code>L</code> kullanılmış gibi yeniden yazma durdurulur.</p>
+
+<p>Yanıt durum kodlarına ek olarak, yönlendirme durumunu sembolik
+adlarıyla da belirtebilirsiniz: <code>temp</code> (öntanımlı),
+<code>permanent</code> veya <code>seeother</code>.</p>
+
+<p>
+[R] bayrağını neredeyse her zaman [L] ile birlikte kullanmak
+istersiniz (yani [R,L] kullanın); çünkü [R] bayrağı tek başına
+URI'nin önüne <code>http://bukonak[:buport]</code> ekler ancak bunu
+kural kümesindeki bir sonraki kurala geçirir ve bu da çoğu zaman
+'İstekte Geçersiz URI' uyarılarına neden olabilir.
+</p>
+
+<p>Not: httpd yalnızca HTTP belirtiminde bulunan durum kodlarını
+destekler. Tanınmayan bir durum kodu kullanmak 500 hatasına ve hata
+günlüğü mesajına neden olacaktır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<p>[S] bayrağı, çalıştırmak istemediğiniz kuralları atlamak için
+kullanılır. Atlama bayrağının sözdizimi [S=<em>N</em>]'dir; burada
+<em>N</em> atlanacak kural sayısını belirtir (<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ve ondan önceki
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> yönergeleri
+eşleştiği takdirde). Bu, yeniden yazma kural kümenizde bir
+<code>goto</code> deyimi olarak düşünülebilir. Aşağıdaki örnekte,
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesini
+yalnızca istenen URI gerçek bir dosyaya karşılık gelmiyorsa
+çalıştırmak istiyoruz.</p>
+
+<pre class="prettyprint lang-config"># İstek var olmayan bir dosya için mi?
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+# Öyleyse, bu iki RewriteRule'u atla
+RewriteRule ".?"                  "-" [S=2]
+
+RewriteRule "(.*\.gif)"           "images.php?$1"
+RewriteRule "(.*\.html)"          "docs.php?$1"</pre>
+
+
+<p>Bu teknik yararlıdır; çünkü bir <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> yalnızca hemen ardından
+gelen <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> için
+geçerlidir. Bu nedenle, bir <code>RewriteCond</code>'un birkaç
+<code>RewriteRule</code> için geçerli olmasını istiyorsanız, olası
+bir teknik bu koşulları olumsuzlamak ve [Skip] bayrağıyla bir
+<code>RewriteRule</code> eklemektir. Bunu, sözde if-then-else
+yapıları oluşturmak için kullanabilirsiniz: then yan tümcesinin son
+kuralı <code>skip=N</code> olur; burada N, else yan tümcesindeki
+kural sayısıdır:</p>
+<pre class="prettyprint lang-config"># Dosya var mı?
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+# "else" kısmına gitmek istiyorsak 3 satır atlayarak bir if-then-else yapısı oluştur.
+RewriteRule ".?"                  "-" [S=3]
+
+# EĞER dosya varsa:
+    RewriteRule "(.*\.gif)"  "images.php?$1"
+    RewriteRule "(.*\.html)" "docs.php?$1"
+    # "else" kısmını atla.
+    RewriteRule ".?"         "-" [S=1]
+# DEĞİLSE...
+    RewriteRule "(.*)"       "404.php?file=$1"
+# SON</pre>
+
+
+<p>Bu tür yapılandırmayı, bunun yerine <code class="directive">&lt;If&gt;</code>, <code class="directive">&lt;ElseIf&gt;</code> ve <code class="directive">&lt;Else&gt;</code> yönergelerini kullanarak
+gerçekleştirmek muhtemelen daha kolaydır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<p>Elde edilen yanıtın gönderileceği MIME türünü ayarlar. Bu,
+<code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> yönergesiyle aynı
+etkiye sahiptir.</p>
+
+<p>Örneğin, Perl kaynak kodunu belirli bir şekilde istendiğinde düz
+metin olarak sunmak için aşağıdaki tekniği kullanabilirsiniz:</p>
+
+<pre class="prettyprint lang-config"># .pl dosyalarını düz metin olarak sun
+RewriteRule "\.pl$"  "-" [T=text/plain]</pre>
+
+
+<p>Veya dosya uzantısı olmayan jpeg resimleri üreten bir kameranız
+varsa, bu resimlerin dosya adlarına bakarak doğru MIME türüyle
+sunulmasını zorlayabilirsiniz:</p>
+
+<pre class="prettyprint lang-config"># Adında 'IMG' bulunan dosyalar jpg resimlerdir.
+RewriteRule "IMG"  "-" [T=image/jpg]</pre>
+
+
+<p>Bunun önemsiz bir örnek olduğunu ve bunun yerine <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> kullanılarak
+daha iyi yapılabileceğini lütfen unutmayın. Yeniden yazmaya
+başvurmadan önce her zaman bir soruna alternatif çözümleri
+düşünün; yeniden yazma her zaman alternatiflerden daha az verimli
+bir çözüm olacaktır.</p>
+
+<p>
+Dizin başına bağlamda kullanılıyorsa, <em><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+işlemesinin tüm turu boyunca</em> değiştirme olarak yalnızca
+<code>-</code> (tire) kullanın; aksi takdirde dahili yeniden
+işleme (sonraki <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> işleme turları dahil)
+nedeniyle bu bayrakla ayarlanan MIME türü kaybolur.
+<code>L</code> bayrağı bu bağlamda <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+işlemesinin <em>geçerli</em> turunu sonlandırmak için yararlı
+olabilir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+    <p>Yazılmakta olan HTTP isteğinde kodlanmış bir soru işareti
+    '%3f' varsa ve yeniden yazılmış sonucun değiştirmesinde '?' varsa,
+    yeniden yazmanın devam etmesine izin vermek için bu bayrağın
+    ayarlanması gereklidir. Bu, kodlanmış soru işaretinin yakalanması
+    ve yeniden değiştirilmesinden yararlanan kötü niyetli bir URL'ye
+    karşı koruma sağlar.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+    <p>Sunucu kapsamlı değiştirmeler bir değişken veya geri başvuru
+    ile başlayıp bir dosya sistemi yoluna çözümlendiğinde bu bayrağın
+    ayarlanması gereklidir. Bu değiştirmeler belge kökü ile
+    öneklenmez. Bu, genişletilmiş değiştirmenin beklenmeyen bir dosya
+    sistemi konumuna eşlenmesine neden olan kötü niyetli bir URL'ye
+    karşı koruma sağlar.</p>
+
+    <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+    <p>Bu bayrağın ayarlanması, Windows UNC yollarında kullanıldığı
+    gibi birden fazla baştaki eğik çizginin birleştirilmesini engeller.
+    Kural değiştirmesi birden fazla birebir eğik çizgi ile
+    başladığında bayrak gerekli değildir.</p>
+
+    <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

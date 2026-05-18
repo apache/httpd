@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache mod_rewrite 入門 - Apache HTTP サーバ バージョン 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite 入門</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div class="toplang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">この日本語訳はすでに古くなっている
+            可能性があります。
+            最近更新された内容を見るには英語版をご覧下さい。
+        </div>
+
+<p>このドキュメントは <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> の使用に必要な基本概念を説明します。
+他のドキュメントではさらに詳しく説明しますが、このドキュメントは
+初心者が最初の一歩を踏み出すのに役立つはずです。
+</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">はじめに</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#regex">正規表現</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule の基本</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flags">書き換えフラグ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">書き換え条件</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">書き換えマップ</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess ファイル</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">はじめに</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<p>Apache モジュール <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は、URL 操作を行う方法を
+提供する非常に強力で洗練されたモジュールです。これを使用すると、
+必要なほぼすべての種類の URL 書き換えを行うことができます。
+ただし、やや複雑で、初心者には敷居が高く感じられるかもしれません。
+また、書き換えルールを実際に何をしているか理解せずに、魔法の呪文として
+扱う傾向もあります。</p>
+
+<p>このドキュメントは、以下の内容が単にコピーされるのではなく、
+理解されるための十分な背景を提供することを目指しています。
+</p>
+
+<p>多くの一般的な URL 操作タスクは <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> の
+フルパワーと複雑さを必要としないことを忘れないでください。シンプルな
+タスクについては、<code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> と
+<a href="../urlmapping.html">URL からファイルシステムへの
+マッピング</a>に関するドキュメントを参照してください。</p>
+
+<p>最後に、先に進む前に、<code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+ディレクティブを使用して <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> のログレベルを
+trace レベルのいずれかに設定してください。これにより圧倒的な量の情報が
+得られますが、<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 設定の問題をデバッグするのに
+不可欠です。各ルールがどのように処理されるかを正確に教えてくれます。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="regex" id="regex">正規表現</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> は <a href="http://pcre.org/">Perl 互換
+正規表現</a>の語彙を使用します。このドキュメントでは、正規表現の
+詳細なリファレンスを提供しようとはしていません。そのためには、
+<a href="http://pcre.org/pcre.txt">PCRE man ページ</a>、
+<a href="http://perldoc.perl.org/perlre.html">Perl 正規表現
+man ページ</a>、および
+<a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Jeffrey Friedl 著
+『詳説 正規表現』</a> (第 3 版は 2006 年のものですが、正規表現の
+構文は本質的に変わっておらず、このテーマの決定的なリファレンスです)
+を推奨します。</p>
+
+<p>このドキュメントでは、圧倒されることなく始められるように、
+十分な正規表現の語彙を提供しようとしています。
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> が魔法の呪文ではなく、
+科学的な公式であるようになることを願っています。</p>
+
+<h3><a name="regexvocab" id="regexvocab">正規表現の語彙</a></h3>
+
+<p>以下は、正規表現と <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> を書くために必要な
+最小限の構成要素です。これらは完全な正規表現の語彙を表すものでは
+ありませんが、良い出発点であり、基本的な正規表現を読むだけでなく、
+自分で書くのにも役立つはずです。</p>
+
+<table>
+<tr>
+<th>文字</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+
+<tr>
+    <td><code>.</code></td>
+    <td>任意の 1 文字にマッチ</td>
+    <td><code>c.t</code> は <code>cat</code>、<code>cot</code>、
+      <code>cut</code> 等にマッチ</td>
+</tr>
+<tr>
+    <td><code>+</code></td>
+    <td>直前のマッチを 1 回以上繰り返す</td>
+    <td><code>a+</code> は <code>a</code>、<code>aa</code>、
+      <code>aaa</code> 等にマッチ</td>
+</tr>
+<tr>
+    <td><code>*</code></td>
+    <td>直前のマッチを 0 回以上繰り返す</td>
+    <td><code>a*</code> は <code>a+</code> がマッチするすべてにマッチするが、
+      空文字列にもマッチする</td>
+</tr>
+<tr>
+    <td><code>?</code></td>
+    <td>マッチをオプションにする</td>
+    <td><code>colou?r</code> は <code>color</code> と
+    <code>colour</code> にマッチ</td>
+</tr>
+<tr>
+    <td><code>\</code></td>
+    <td>次の文字をエスケープ</td>
+    <td><code>\.</code> は上記で説明した<em>任意の 1 文字</em>ではなく、
+    <code>.</code> (ドット) にマッチ</td>
+</tr>
+<tr>
+    <td><code>^</code></td>
+    <td>アンカーと呼ばれ、文字列の先頭にマッチ</td>
+    <td><code>^a</code> は <code>a</code> で始まる文字列にマッチ</td>
+</tr>
+<tr>
+    <td><code>$</code></td>
+    <td>もう一つのアンカーで、文字列の末尾にマッチ</td>
+    <td><code>a$</code> は <code>a</code> で終わる文字列にマッチ</td>
+</tr>
+<tr>
+    <td><code>( )</code></td>
+    <td>複数の文字を 1 つの単位にグループ化し、バックリファレンスで
+      使用するためのマッチをキャプチャ</td>
+    <td><code>(ab)+</code> は <code>ababab</code> にマッチ - つまり、
+      <code>+</code> がグループに適用される。バックリファレンスの
+      詳細は<a href="#InternalBackRefs">以下</a>を参照</td>
+</tr>
+<tr>
+    <td><code>[ ]</code></td>
+    <td>文字クラス - いずれかの文字にマッチ</td>
+    <td><code>c[uoa]t</code> は <code>cut</code>、<code>cot</code>、
+      <code>cat</code> にマッチ</td>
+</tr>
+<tr>
+    <td><code>[^ ]</code></td>
+    <td>否定文字クラス - 指定されていない任意の文字にマッチ</td>
+    <td><code>c[^/]t</code> は <code>cat</code> や <code>c=t</code> に
+      マッチするが、<code>c/t</code> にはマッチしない</td></tr>
+</table>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> では、正規表現の前に <code>!</code> 文字を
+使用して否定できます。つまり、式の残りの部分にマッチしない場合にのみ、
+文字列がマッチしたとみなされます。</p>
+
+
+
+<h3><a name="InternalBackRefs" id="InternalBackRefs">正規表現バックリファレンスの利用</a></h3>
+
+      <p>ここで覚えておくべき重要なことがあります: <em>Pattern</em> 内または
+      <em>CondPattern</em> 内で括弧を使用するたびに、内部的にバックリファレンスが
+      作成され、<code>$N</code> および <code>%N</code> という文字列で使用
+      できます (以下を参照)。これらは
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> の
+      <em>Substitution</em> パラメータまたは
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> の
+      <em>TestString</em> パラメータの作成に使用できます。</p>
+      <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> パターン内の
+      キャプチャは、(直感に反して) すべての先行する
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> ディレクティブで
+      利用可能です。これは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      式が個々の条件よりも先に評価されるためです。</p>
+
+      <p>図 1 は、バックリファレンスが展開のためにどの場所に
+      転送されるかを示すとともに、RewriteRule と RewriteCond の
+      マッチングのフローを図示しています。次の章では、これらの
+      バックリファレンスの使用方法を探りますので、最初は少し
+      馴染みがないように感じても心配しないでください。
+      </p>
+
+<p class="figure">
+      <img src="../images/rewrite_backreferences.png" alt="RewriteRule と RewriteCond マッチングのフロー" /><br />
+      <dfn>図 1:</dfn> ルールを通るバックリファレンスのフロー。<br />
+      この例では、<code>/test/1234</code> へのリクエストは <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code> に変換されます。
+</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewriterule" id="rewriterule">RewriteRule の基本</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> は、
+スペースで区切られた 3 つの引数で構成されます。引数は以下の通りです</p>
+<ol>
+<li><var>Pattern</var>: ルールの影響を受ける受信 URL;</li>
+<li><var>Substitution</var>: マッチするリクエストの送信先;</li>
+<li><var>[flags]</var>: 書き換えられたリクエストに影響するオプション。</li>
+</ol>
+
+<p><var>Pattern</var> は<a href="#regex">正規表現</a>です。
+最初 (最初の書き換えルールまたは置換が発生するまで) は、受信リクエストの
+URL パス (ホスト名の後、クエリ文字列の開始を示す疑問符の前の部分) に対して
+マッチされます。ディレクトリ単位のコンテキストでは、ルールが定義された
+ディレクトリに対するリクエストの相対パスに対してマッチされます。
+置換が発生すると、後続のルールは置換された値に対してマッチされます。
+</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" alt="RewriteRule ディレクティブの構文" /><br />
+      <dfn>図 2:</dfn> RewriteRule ディレクティブの構文
+</p>
+
+
+<p><var>Substitution</var> 自体は以下の 3 つのいずれかです:</p>
+
+<dl>
+<dt>1. リソースへの完全なファイルシステムパス</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games" "/usr/local/games/web/puzzles.html"</pre>
+
+<p>これは、<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ディレクティブと
+同様に、リクエストをファイルシステム上の任意の場所にマッピングします。</p>
+</dd>
+
+<dt>2. リソースへの Web パス</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/games$" "/puzzles.html"</pre>
+
+<p><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> が
+<code>/usr/local/apache2/htdocs</code> に設定されている場合、
+このディレクティブは <code>http://example.com/games</code> への
+リクエストをパス <code>/usr/local/apache2/htdocs/puzzles.html</code>
+にマッピングします。</p>
+
+</dd>
+
+<dt>3. 絶対 URL</dt>
+<dd>
+<pre class="prettyprint lang-config">RewriteRule "^/product/view$" "http://site2.example.com/seeproduct.html" [R]</pre>
+
+<p>これは、指定された URL に対する新しいリクエストを行うよう
+クライアントに指示します。</p>
+</dd>
+</dl>
+
+<div class="warning"><strong>1</strong> と <strong>2</strong> はまったく同じ構文であることに注意してください。違いは、<strong>1</strong> の場合はターゲットパスのトップレベル (つまり <code>/usr/</code>) がファイルシステム上に存在するのに対し、<strong>2</strong> の場合は存在しない (つまり、ファイルシステムのルートレベルディレクトリとして <code>/bar/</code> が存在しない) ことです。</div>
+
+<p><var>Substitution</var> には、<var>Pattern</var> でマッチした
+受信 URL パスの部分への<em>バックリファレンス</em>も含めることができます。
+以下を考えてみてください:</p>
+<pre class="prettyprint lang-config">RewriteRule "^/product/(.*)/view$" "/var/web/productdb/$1"</pre>
+
+<p>変数 <code>$1</code> は、<var>Pattern</var> 内の括弧内の
+式でマッチしたテキストに置き換えられます。例えば、
+<code>http://example.com/product/r14df/view</code> へのリクエストは
+パス <code>/var/web/productdb/r14df</code> にマッピングされます。</p>
+
+<p>括弧内の式が複数ある場合、変数 <code>$1</code>、<code>$2</code>、
+<code>$3</code> 等の順序で利用できます。</p>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flags" id="flags">書き換えフラグ</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> の動作は、
+ルールの末尾に 1 つ以上のフラグを適用することで変更できます。例えば、
+ルールのマッチング動作は <code>[NC]</code> フラグの適用で
+大文字小文字を区別しないようにできます:
+</p>
+<pre class="prettyprint lang-config">RewriteRule "^puppy.html" "smalldog.html" [NC]</pre>
+
+
+<p>利用可能なフラグ、その意味、および例の詳細については、
+<a href="flags.html">書き換えフラグ</a>ドキュメントを参照してください。</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritecond" id="rewritecond">書き換え条件</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<p>1 つ以上の <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+ディレクティブを使用して、後続の
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> の対象となる
+リクエストの種類を制限できます。最初の引数はリクエストの特性を
+記述する変数、2 番目の引数は変数にマッチする必要がある
+<a href="#regex">正規表現</a>、3 番目のオプション引数はマッチの
+評価方法を変更するフラグのリストです。</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" alt="RewriteCond ディレクティブの構文" /><br />
+      <dfn>図 3:</dfn> RewriteCond ディレクティブの構文
+</p>
+
+<p>例えば、特定の IP 範囲からのすべてのリクエストを別のサーバに
+送信するには、以下を使用できます:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{REMOTE_ADDR}" "^10\.2\."
+RewriteRule "(.*)"           "http://intranet.example.com$1"</pre>
+
+
+<p>複数の <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> が
+指定された場合、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+が適用されるには、すべてがマッチする必要があります。例えば、
+クエリ文字列に "hack" という単語を含むリクエストを拒否するが、
+"go" という単語を含む cookie がある場合は除外するには、以下を使用
+できます:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{QUERY_STRING}" "hack"
+RewriteCond "%{HTTP_COOKIE}"  !go
+RewriteRule "."               "-"   [F]</pre>
+
+<p>感嘆符は否定マッチを指定しており、cookie に "go" が含まれていない
+場合にのみルールが適用されます。</p>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> 内の正規表現の
+マッチは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> の
+<var>Substitution</var> で変数 <code>%1</code>、<code>%2</code> 等を
+使用して使用できます。例えば、以下はサイトへのアクセスに使用された
+ホスト名に応じて、リクエストを異なるディレクトリに振り分けます:</p>
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "(.*)"
+RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
+
+<p><code>http://example.com/foo/bar</code> へのリクエストの場合、
+<code>%1</code> は <code>example.com</code> を含み、
+<code>$1</code> は <code>foo/bar</code> を含みます。</p>
+
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rewritemap" id="rewritemap">書き換えマップ</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ディレクティブは、
+書き換えを行うための外部関数を呼び出す方法を提供します。これについては
+<a href="rewritemap.html">RewriteMap 補足ドキュメント</a>でより詳細に
+説明されています。</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">.htaccess ファイル</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+
+<p>書き換えは通常、メインサーバ設定
+(<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+セクション外) または
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+コンテナ内で設定されます。これが書き換えの最も簡単な方法であり、
+推奨されます。ただし、追加の複雑さを伴いますが、
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+セクションや <a href="../howto/htaccess.html"><code>.htaccess</code>
+ファイル</a>内で書き換えを行うことも可能です。このテクニックは
+ディレクトリ単位の書き換えと呼ばれます。</p>
+
+<p>サーバ単位の書き換えとの主な違いは、<code>.htaccess</code>
+ファイルを含むディレクトリのパスプレフィックスが
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> でのマッチング前に
+削除されることです。さらに、リクエストが適切にマッピングされるように
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> を使用する
+必要があります。</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>翻訳済み言語: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

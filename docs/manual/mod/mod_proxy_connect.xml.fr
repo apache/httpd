@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1780210 -->
+<!-- English Revision: 1932337 -->
 <!-- French translation : Lucien GENTIS -->
 
 
@@ -57,7 +57,7 @@ des requêtes <code>CONNECT</code></description>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
-<section id="notes"><title>Informations sur les requ&ecirc;tes</title>
+<section id="notes"><title>Informations sur les requêtes</title>
     <p><module>mod_proxy_connect</module> enregistre les informations
     suivantes pour journalisation via le format <code>%{NOMVAR}n</code>
     dans les directives <directive
@@ -66,8 +66,8 @@ des requêtes <code>CONNECT</code></description>
     </p>
     <dl>
         <dt>proxy-source-port</dt>
-        <dd>Le port local utilis&eacute; pour la connexion vers le serveur
-	d'arri&egrave;re-plan.</dd>
+        <dd>Le port local utilisé pour la connexion vers le serveur
+	d'arrière-plan.</dd>
     </dl>
 
     <p>Les requêtes avec méthode CONNECT sont traitées dans les sections
@@ -89,7 +89,7 @@ des requêtes <code>CONNECT</code></description>
 <description>Ports autorisés à se <code>CONNECT</code>er à travers le
 mandataire</description>
 <syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
-[<var>port</var>[-<var>port</var>]] ...</syntax>
+[<var>port</var>[-<var>port</var>]] ... | None</syntax>
 <default>AllowCONNECT 443 563</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
@@ -104,11 +104,14 @@ d'Apache 2.3.5. Tranches de ports disponibles depuis Apache 2.3.7.</compatibilit
     connexion <code>https</code> est requise et où le tunneling
     mandataire sur HTTP est en service.</p>
 
-    <p>Par défaut, seuls les ports par défauts https (<code>443</code>)
+    <p>Par défaut, seuls les ports par défaut https (<code>443</code>)
     et snews (<code>563</code>) sont pris en compte. Vous pouvez
     utiliser la directive <directive>AllowCONNECT</directive> pour
     outrepasser ces valeurs par défaut et n'autoriser les connexions que
     vers les ports spécifiés.</p>
+
+    <p>Définir la valeur à <code>None</code> pour interdire les requêtes
+    <code>CONNECT</code> vers tous les ports, y compris ceux par défaut.</p>
 </usage>
 </directivesynopsis>
 

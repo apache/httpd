@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1927861 -->
+<!-- English Revision: 1933438 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -264,8 +264,10 @@ sudo service apache2 start
     simplement à décompresser et à désarchiver cette dernière :</p>
 
 <example>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+<highlight language="sh">
+$ gzip -d httpd-<em>NN</em>.tar.gz
 $ tar xvf httpd-<em>NN</em>.tar
+</highlight>
 </example>
 
     <p>Ceci créera, dans le répertoire courant, un nouveau répertoire
@@ -337,10 +339,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     et <module>mod_lua</module> :</p>
 
 <example>
-      $ CC="pgcc" CFLAGS="-O2" \<br />
-       ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-ldap=shared \<br />
-       --enable-lua=shared
+<highlight language="sh">
+$ CC="pgcc" CFLAGS="-O2" \
+  ./configure --prefix=/sw/pkg/apache \
+  --enable-ldap=shared \
+  --enable-lua=shared
+</highlight>
 </example>
 
     <p>Plusieurs minutes peuvent être nécessaires à
@@ -452,11 +456,13 @@ $ tar xvf httpd-<em>NN</em>.tar
     effectuer toute modification souhaitée, et de lancer :</p>
 
     <example>
-    $ ./config.nice<br />
-    $ make<br />
-    $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
-    $ <em>PREFIX</em>/bin/apachectl -k start<br />
+<highlight language="sh">
+$ ./config.nice
+$ make
+$ make install
+$ <em>PREFIX</em>/bin/apachectl -k graceful-stop
+$ <em>PREFIX</em>/bin/apachectl -k start
+</highlight>
     </example>
 
     <note type="warning">Vous devez toujours effectuer un test de la nouvelle
@@ -491,7 +497,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     situation n'est pas appelée à évoluer de sitôt.</p>
 
     <p>Une  <a
-    href="http://wiki.apache.org/httpd/DistrosDefaultLayout">description
+    href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
     de ces distributions tierces</a> est maintenue dans le wiki du
     serveur HTTP, et doit en refléter l'état actuel. Vous devrez
     cependant vous familiariser par vous-même avec la gestion du paquet

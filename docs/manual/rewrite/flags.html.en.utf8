@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,22 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteRule Flags</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
 <p>This document discusses the flags which are available to the
@@ -60,7 +68,7 @@ providing detailed explanations and examples.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -79,7 +87,7 @@ long form, so that you remember what each flag is supposed to do.
 Some flags take one or more arguments. Flags are not case sensitive.</p>
 
 <p>Flags that alter metadata associated with the request (T=, H=, E=)
-have no affect in per-directory and htaccess context, when a substitution
+have no effect in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>, when a substitution
 (other than '-') is performed during the same round of rewrite processing.
 </p>
 
@@ -91,7 +99,7 @@ of how you might use them.</p>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
 characters before applying the transformation.</p>
 
-<p><code>mod_rewrite</code> has to unescape URLs before mapping them,
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> has to unescape URLs before mapping them,
 so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
@@ -139,6 +147,9 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 <p>To limit the characters escaped this way, see <a href="#flag_bne">#flag_bne</a>
         and <a href="#flag_bctls">#flag_bctls</a></p>
+
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+a full explanation of how Apache decodes URIs before pattern matching.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (don't escape space to +)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
@@ -153,6 +164,9 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 
 
 <p>This flag is available in version 2.4.26 and later.</p>
+
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+background on how encoding is handled in the rewrite pipeline.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
@@ -165,7 +179,7 @@ characters rejected when they are copied into the query string unencoded.
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -179,7 +193,7 @@ escaped.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 
-<p>This flag is available in version 2.5.1 and later.</p>
+<p>This flag is available in version 2.4.57 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
@@ -188,6 +202,16 @@ rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
 the next rule, and any other rules that are chained together, are
 skipped.</p>
+
+<pre class="prettyprint lang-config"># Rewrite legacy product URLs to the new catalog app,
+# and add a tracking parameter — but only for the rewritten ones.
+RewriteRule "^/products/([0-9]+)$" "/catalog/item/$1" [C]
+RewriteRule "^/catalog/(.*)$" "/catalog/$1?via=legacy" [QSA]</pre>
+
+
+<p>Without the [C] flag, the second rule would also match requests
+that arrive at <code>/catalog/</code> directly. The chain ensures the
+second rule is only applied when the first rule matched.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -266,7 +290,7 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 
 <p>In the example give, the rule doesn't rewrite the request.
-The "-" rewrite target tells mod_rewrite to pass the request
+The "-" rewrite target tells <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to pass the request
 through unchanged. Instead, it sets a cookie
 called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
 in the <code>.example.com</code> domain. It is set to expire in 1440
@@ -275,33 +299,45 @@ minutes (24 hours) and is returned for all URIs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
-<p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
+<p>The DPI flag causes the <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a> portion of the rewritten URL-path to be
 discarded.</p>
-<p>This flag is available in version 2.2.12 and later.</p>
-<p>In per-directory context, the URI each <code class="directive">RewriteRule</code>
-compares against is the concatenation of the current values of the URI
-and PATH_INFO.</p>
 
-<p>The current URI can be the initial URI as requested by the client, the
-result of a previous round of mod_rewrite processing, or the result of
-a prior rule in the current round of mod_rewrite processing.</p>
+<p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+the URL-path each <code class="directive">RewriteRule</code> compares against
+is the concatenation of the current URL-path and PATH_INFO.</p>
 
-<p>In contrast, the PATH_INFO that is appended to the URI before each
-rule reflects only the value of PATH_INFO before this round of
-mod_rewrite processing. As a consequence, if large portions
-of the URI are matched and copied into a substitution in multiple
+<p>The current URL-path can be the initial path as requested by the
+client, the result of a previous round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+processing, or the result of a prior rule in the current round of
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing.</p>
+
+<p>In contrast, the PATH_INFO that is appended to the URL-path before
+each rule reflects only the value of PATH_INFO before this round of
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing. As a consequence, if large
+portions of the URL-path are matched and copied into a substitution in multiple
 <code class="directive">RewriteRule</code> directives, without regard for
-which parts of the URI came from the current PATH_INFO, the final
-URI may have multiple copies of PATH_INFO appended to it.</p>
+which parts of the URL-path came from the current PATH_INFO, the final
+URL-path may have multiple copies of PATH_INFO appended to it.</p>
 
 <p>Use this flag on any substitution where the PATH_INFO that resulted
 from the previous mapping of this request to the filesystem is not of
 interest.  This flag permanently forgets the PATH_INFO established
-before this round of mod_rewrite processing began. PATH_INFO will
-not be recalculated until the current round of mod_rewrite processing
+before this round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing began. PATH_INFO will
+not be recalculated until the current round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing
 completes.  Subsequent rules during this round of processing will see
 only the direct result of substitutions, without any PATH_INFO
 appended.</p>
+
+<pre class="prettyprint lang-config"># Request: /app/script.php/extra/path (PATH_INFO is /extra/path)
+# Without DPI, the substitution would see "script.php/extra/path"
+# and could inadvertently copy PATH_INFO into the result.
+RewriteRule "^script\.php(.*)$" "/new-app/handler$1" [DPI]</pre>
+
+
+<p>The [DPI] flag discards <code>/extra/path</code> so that only the
+substitution result (<code>/new-app/handler</code>) is passed to
+subsequent rules or the final request.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
@@ -343,7 +379,7 @@ contexts, including CGI programs, other RewriteRule directives, or
 CustomLog directives.</p>
 
 <p>The following example sets an environment variable called 'image' to a
-value of '1' if the requested URI is an image file. Then, that
+value of '1' if the requested URL-path is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
 
@@ -353,15 +389,83 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 <p>Note that this same effect can be obtained using <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. This technique is offered as
 an example, not as a recommendation.</p>
+
+<p><strong>Setting environment variables for tracking rewrites</strong></p>
+
+<p>At times, we want to maintain some kind of status when we
+perform a rewrite. For example, you want to make a note that
+you've done that rewrite, so that you can check later to see if a
+request came via that rewrite. One way to do this is by setting an
+environment variable.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]</pre>
+
+
+<p>Later in your ruleset you might check for this environment
+variable using a RewriteCond:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}"  =1</pre>
+
+
+<p>Note that environment variables do not survive an external
+redirect. You might consider using the [CO] flag to set a
+cookie.</p>
+
+    <div class="note"><h3>REDIRECT_ prefix after internal redirects</h3>
+    <p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+    a successful substitution triggers an internal redirect. When this
+    happens, all environment variables set during the previous pass —
+    including those created with <code>[E=VAR:VAL]</code> — are renamed
+    with a <code>REDIRECT_</code> prefix. A variable you set as
+    <code>rewritten</code> becomes <code>REDIRECT_rewritten</code> in
+    the redirected request.</p>
+
+    <p>To test for the renamed variable, reference it with the
+    prefix:</p>
+    </div>
+
+<pre class="prettyprint lang-config">RewriteRule   "^/horses/(.*)" "/ponies/$1" [E=rewritten:1]
+
+# In the next pass, the variable has been renamed:
+RewriteCond "%{ENV:REDIRECT_rewritten}" =1
+RewriteRule "^/ponies/(.*)" "-" [E=seen_redirect:1,L]</pre>
+
+
+    <p>If the request is redirected multiple times, the prefix stacks:
+    <code>REDIRECT_REDIRECT_rewritten</code>, and so on. See
+    <a href="../env.html#redirect-vars">REDIRECT_ variables</a> for
+    the complete description of this mechanism.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Using the [END] flag terminates not only the current round of rewrite
 processing (like [L]) but also prevents any subsequent rewrite
-processing from occurring in per-directory (htaccess) context.</p>
+processing from occurring in
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. This
+makes it the preferred flag for most per-directory rules.</p>
+
+<p>In server or virtualhost context, [END] and [L] behave identically.
+The difference matters in per-directory context, where [L] stops the
+current pass but the ruleset is re-applied on the rewritten URL. This
+can cause infinite loops. [END] prevents all further rewrite processing,
+breaking the cycle.</p>
+
+<pre class="prettyprint lang-config"># In .htaccess: route all requests to a front controller
+# [L] would cause a loop here; [END] does not
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [END]</pre>
+
 
 <p>This does not apply to new requests resulting from external
 redirects.</p>
+
+<p>See the <a href="htaccess.html#loops">Per-directory Rewrites</a>
+discussion for a detailed explanation of why [L] behaves differently
+in per-directory context, and when [END] is the right choice.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
@@ -377,8 +481,8 @@ downloaded from your server.</p>
 
 
 <p>This example uses the "-" syntax for the rewrite target, which means
-that the requested URI is not modified. There's no reason to rewrite to
-another URI, if you're going to forbid the request.</p>
+that the requested URL-path is not modified. There's no reason to rewrite to
+another URL-path, if you're going to forbid the request.</p>
 
 <p>When using [F], an [L] is implied - that is, the response is returned
 immediately, and no further rules are evaluated.</p>
@@ -437,30 +541,12 @@ further rules will be processed. This corresponds to the
 C. Use this flag to indicate that the current rule should be applied
 immediately without considering further rules.</p>
 
-<p>If you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
-<code>.htaccess</code> files or in
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections,
-it is important to have some understanding of how the rules are
-processed.  The simplified form of this is that once the rules have been
-processed, the rewritten request is handed back to the URL parsing
-engine to do what it may with it. It is possible that as the rewritten
-request is handled, the <code>.htaccess</code> file or
-<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section
-may be encountered again, and thus the ruleset may be run again from the
-start. Most commonly this will happen if one of the rules causes a
-redirect - either internal or external - causing the request process to
-start over.</p>
-
-<p>It is therefore important, if you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives in one of these
-contexts, that you take explicit steps to avoid rules looping, and not
-count solely on the [L] flag to terminate execution of a series of
-rules, as shown below.</p>
-
-<p> An alternative flag, [END], can be used to terminate not only the
-current round of rewrite processing but prevent any subsequent
-rewrite processing from occurring in per-directory (htaccess)
-context. This does not apply to new requests resulting from external
-redirects.</p>
+<p>In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context,
+[L] stops the current pass through the ruleset, but the rewritten
+request may be re-processed from the top — which can cause loops.
+Use the <a href="#flag_end">[END]</a> flag to prevent this, or see
+the <a href="htaccess.html#loops">Per-directory Rewrites</a> document
+for a full discussion of the issue and alternative solutions.</p>
 
 <p>The example given here will rewrite any request to
 <code>index.php</code>, giving the original request as a query string
@@ -488,7 +574,7 @@ so until there are no more As to be replaced.
 <pre class="prettyprint lang-config">RewriteRule "(.*)A(.*)" "$1B$2" [N]</pre>
 
 <p>You can think of this as a <code>while</code> loop: While this
-pattern still matches (i.e., while the URI still contains an
+pattern still matches (i.e., while the URL-path still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
@@ -506,7 +592,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 <h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>Use of the [NC] flag causes the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be matched in a
 case-insensitive manner. That is, it doesn't care whether letters appear
-as upper-case or lower-case in the matched URI.</p>
+as upper-case or lower-case in the matched URL-path.</p>
 
 <p>In the example below, any request for an image file will be proxied
 to your dedicated image server. The match is case-insensitive, so that
@@ -518,11 +604,26 @@ example.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
-<p>By default, special characters, such as <code>&amp;</code> and
-<code>?</code>, for example, will be converted to their hexcode
-equivalent for rules that result in external redirects. 
-Using the [NE] flag prevents that from happening.
-</p>
+<p>By default, when a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+results in an external redirect, any characters in the output that are
+not in the following safe set will be converted to their hexcode
+(percent-encoded) equivalents:</p>
+
+<ul>
+  <li>Alphanumeric characters: <code>A-Z</code>, <code>a-z</code>,
+  <code>0-9</code></li>
+  <li>Special characters: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
+</ul>
+
+<p>For example, <code>#</code> would be converted to <code>%23</code>,
+and <code>?</code> to <code>%3F</code>. The <code>%</code> character
+is also escaped (to <code>%25</code>), which means that any
+percent-encoding already present in the substitution will be
+double-encoded.</p>
+
+<p>Using the [NE] flag prevents this escaping, allowing characters
+such as <code>#</code> and <code>?</code> to pass through to the
+redirect URL unmodified.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
 
@@ -534,6 +635,9 @@ being converted to its hexcode equivalent, <code>%23</code>, which will
 then result in a 404 Not Found error condition.
 </p>
 
+<p>See <a href="tech.html#encoding">URL Encoding and Decoding</a> for
+the full picture of how Apache encodes and decodes URIs during
+rewriting.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
@@ -558,6 +662,14 @@ Images, javascript files, or css files, loaded as part of an HTML page,
 are not subrequests - the browser requests them as separate HTTP
 requests.
 </p>
+
+<pre class="prettyprint lang-config"># Only rewrite direct requests to the front controller,
+# not subrequests from SSI includes or mod_dir.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/app/index.php?page=$1" [NS,L]</pre>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
@@ -574,7 +686,7 @@ pushed through the proxy, and any following rules will not be
 considered.</p>
 
 <p>
-You must make sure that the substitution string is a valid URI
+You must make sure that the substitution string is a valid URL
 (typically starting with <code>http://</code><em>hostname</em>) which can be
 handled by the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. If not, you will get an
 error from the proxy module. Use this flag to achieve a
@@ -584,10 +696,14 @@ to map remote content into the namespace of the local server.</p>
 <div class="warning">
 <h3>Security Warning</h3>
 <p>Take care when constructing the target URL of the rule, considering
-the security impact from allowing the client influence over the set of
-URLs to which your server will act as a proxy.  Ensure that the scheme
-and hostname part of the URL is either fixed, or does not allow the
-client undue influence.</p>
+the security impact of allowing the client influence over the set of
+URLs to which your server will act as a proxy. If any part of the
+target URL is derived from user input (backreferences, query strings,
+etc.), an attacker may be able to cause your server to make requests
+to arbitrary internal or external hosts. This is known as a
+Server-Side Request Forgery (SSRF) vulnerability. Ensure that the
+scheme and hostname part of the URL is either fixed, or does not allow
+the client undue influence.</p>
 </div>
 
 <div class="warning">
@@ -615,7 +731,7 @@ to use this flag.</p>
 <p>
 The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be treated
-as a URI instead. That is to say, the
+as a URL-path instead. That is to say, the
 use of the [PT] flag causes the result of the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
 URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a
 chance to take effect.
@@ -652,7 +768,7 @@ is to rewrite to <code>-</code>.</p>
 <div class="section">
 <h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
-When the replacement URI contains a query string, the default behavior
+When the replacement URL contains a query string, the default behavior
 of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to discard
 the existing query string, and replace it with the newly generated one.
 Using the [QSA] flag causes the query strings to be combined.
@@ -673,9 +789,9 @@ will be discarded.
 <div class="section">
 <h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
-When the requested URI contains a query string, and the target URI does
+When the requested URL contains a query string, and the target URL does
 not, the default behavior of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to copy that query
-string to the target URI. Using the [QSD] flag causes the query string
+string to the target URL. Using the [QSD] flag causes the query string
 to be discarded.
 </p>
 
@@ -686,11 +802,16 @@ Using [QSD] and [QSA] together will result in [QSD] taking precedence.
 </p>
 
 <p>
-If the target URI has a query string, the default behavior will be
+If the target URL has a query string, the default behavior will be
 observed - that is, the original query string will be discarded and
 replaced with the query string in the <code>RewriteRule</code> target
-URI.
+URL.
 </p>
+
+<pre class="prettyprint lang-config"># Redirect old search URLs to the new path, discarding the query string.
+# /search?q=term&amp;page=2  becomes  /find  (query string removed)
+RewriteRule "^/search" "/find" [QSD,R=301,L]</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -705,6 +826,20 @@ the two components using the last (right-most) question mark.  </p>
 This is useful when mapping to files that have literal question marks in 
 their filename.  If no query string is used in the substitution, 
 a question mark can be appended to it in combination with this flag.  </p>
+
+<p>For example, if a legacy application expects a query string that
+itself contains a question mark:</p>
+
+<pre class="prettyprint lang-config"># Map /lookup/foo?bar to /app?type=foo?bar
+# Without [QSL], the first ? in the substitution would split the
+# path, producing /app with query string type=foo?bar incorrectly.
+# With [QSL], the LAST ? is used as the delimiter.
+RewriteRule "^/lookup/(.*)" "/app?type=$1" [QSL,PT]</pre>
+
+
+<p>Without [QSL], the substitution <code>/app?type=foo?bar</code>
+would be split at the first <code>?</code>, losing the literal question
+mark in the value.</p>
 
 <p> This flag is available in version 2.4.19 and later.</p>
 
@@ -735,10 +870,18 @@ status using their symbolic names: <code>temp</code> (default),
 <p>
 You will almost always want to use [R] in conjunction with [L] (that is,
 use [R,L]) because on its own, the [R] flag prepends
-<code>http://thishost[:thisport]</code> to the URI, but then passes this
+<code>http://thishost[:thisport]</code> to the URL-path, but then passes this
 on to the next rule in the ruleset, which can often result in 'Invalid
 URI in request' warnings.
 </p>
+
+<p>Note: httpd only supports status codes that are included in the HTTP
+spec.  Using an unrecognized status code will result in a 500 error and
+error log message.</p>
+
+<pre class="prettyprint lang-config"># Redirect requests for the old docs path to the new location.
+RewriteRule "^/docs/(.*)$" "http://docs.example.com/$1" [R=301,L]</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -750,7 +893,7 @@ RewriteRule</a></code> and any preceding <code class="directive"><a href="../mod
 RewriteCond</a></code> directives match). This can be thought of as a
 <code>goto</code> statement in your rewrite ruleset. In the following
 example, we only want to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
-RewriteRule</a></code> if the requested URI doesn't correspond with an
+RewriteRule</a></code> if the requested URL-path doesn't correspond with an
 actual file.</p>
 
 <pre class="prettyprint lang-config"># Is the request for a non-existent file?
@@ -819,19 +962,37 @@ invariably be a less efficient solution than the alternatives.</p>
 
 <p>
 If used in per-directory context, use only <code>-</code> (dash)
-as the substitution <em>for the entire round of mod_rewrite processing</em>,
+as the substitution <em>for the entire round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing</em>,
 otherwise the MIME-type set with this flag is lost due to an internal
-re-processing (including subsequent rounds of mod_rewrite processing).
+re-processing (including subsequent rounds of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing).
 The <code>L</code> flag can be useful in this context to end the
-<em>current</em> round of mod_rewrite processing.</p>
+<em>current</em> round of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> processing.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p> Setting this flag is required to allow a rewrite to continue If the
     HTTP request being written has an encoded question mark, '%3f', and the
-    rewritten result has a '?' in the substiution.  This protects from a malicious
+    rewritten result has a '?' in the substitution.  This protects from a malicious
     URL taking advantage of a capture and re-substitution of the encoded
     question mark.</p>
+
+<pre class="prettyprint lang-config"># A PHP front controller that routes all requests via a query parameter.
+# Without UnsafeAllow3F, a request like /page%3Fname=test would return
+# 403 Forbidden because the rewritten substitution contains '?' while
+# the original request contains an encoded '%3F'.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]</pre>
+
+
+<div class="warning">
+This flag exists because of <a href="https://www.cve.org/CVERecord?id=CVE-2024-38474">CVE-2024-38474</a>.
+Use it only on rules where you are certain that user-supplied <code>%3F</code>
+in the request cannot be exploited to manipulate the query string of the
+substitution target. Prefer restructuring URLs to avoid encoded question
+marks where possible.
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
@@ -842,6 +1003,23 @@ The <code>L</code> flag can be useful in this context to end the
     map to an unexpected filesystem location.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+
+<pre class="prettyprint lang-config"># This rule starts the substitution with a backreference.
+# Since 2.4.60, this is rejected by default to prevent the expanded
+# path from escaping the document root (CVE-2024-38475).
+# Only add UnsafePrefixStat after verifying the substitution cannot
+# resolve to a filesystem path outside your web root.
+RewriteRule "^/mirror/(.+)$" "$1" [PT,UnsafePrefixStat]</pre>
+
+
+<div class="warning">
+This flag exists because of <a href="https://www.cve.org/CVERecord?id=CVE-2024-38475">CVE-2024-38475</a>.
+Without it, a substitution beginning with a backreference or variable
+that happens to match an existing filesystem path could allow requests
+to escape the document root. Use this flag only after confirming that
+the substitution is adequately constrained.
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
@@ -850,32 +1028,56 @@ The <code>L</code> flag can be useful in this context to end the
     substitution starts with multiple literal slashes.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
+
+<pre class="prettyprint lang-config"># On Windows, rewrite to a UNC file share using a variable.
+# Without [UNC], the leading slashes in the substitution would be
+# collapsed (//server/share becomes /server/share).
+RewriteCond "%{HTTP_HOST}" "^(.+)\.internal$"
+RewriteRule "^/shared/(.*)$" "//%1/fileshare/$1" [UNC]</pre>
+
+
+<p>This flag is only relevant on Windows. It prevents Apache from
+merging the leading double slash (<code>//</code>) that denotes a
+UNC path when the path is constructed from a backreference or
+variable. If the substitution begins with literal double slashes,
+no flag is needed.</p>
+
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/flags.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p><span>Available Languages: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

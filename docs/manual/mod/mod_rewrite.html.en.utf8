@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -41,23 +43,25 @@ URLs on the fly</td></tr>
       the fly. By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> maps a URL to a filesystem
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
-      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides a flexible and powerful way to
-      manipulate URLs using an unlimited number of rules. Each rule can have an
-      unlimited number of attached rule conditions, to allow you to rewrite URL
-      based on server variables, environment variables, HTTP headers, or time
-      stamps.</p>
-      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operates on the full URL path, including the
-      path-info section. A rewrite rule can be invoked in
-      <code>httpd.conf</code> or in <code>.htaccess</code>. The path generated
+
+      <p>It provides a flexible and powerful way to manipulate URLs using an
+      unlimited number of rules. Each rule can have an
+      unlimited number of attached rule conditions, to allow you to rewrite URLs
+      based on server variables, environment variables, cookies, HTTP headers,
+      or timestamps. Rules can operate on the
+      <a href="directive-dict.html#Syntax">URL-path</a> (including any
+      <a href="core.html#acceptpathinfo">trailing pathname information</a>)
+      and can also alter the
+      <a href="../expr.html#vars">query string</a>.</p>
+
+      <p>A rewrite rule
+      can be invoked in the server configuration files, or in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. The path generated
       by a rewrite rule can include a query string, or can lead to internal
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
-      <p>A regular expression only needs quoting if it contains unescaped space, 
-      in which case single and double quotes are equivalent.</p>
-
       <p>Further details, discussion, and examples, are provided in the
-      <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
+      detailed <a href="../rewrite/">Guide to mod_rewrite</a>.</p>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -73,7 +77,8 @@ URLs on the fly</td></tr>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
+<li><a href="rewrite/index.html">Guide to mod_rewrite</a></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Logging</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
@@ -91,22 +96,23 @@ URLs on the fly</td></tr>
       level higher than <code>trace2</code> only for debugging!
     </div>
 
-    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
+        <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
 </div>
 
     <div class="note"><h3>RewriteLog</h3>
       <p>Those familiar with earlier versions of
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will no doubt be looking for the
       <code>RewriteLog</code> and <code>RewriteLogLevel</code>
-      directives. This functionality has been completely replaced by the
-      new per-module logging configuration mentioned above.
+      directives. Since the release of httpd 2.4, these directives
+      have been replaced with the per-module logging configuration
+      provided by <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>.
       </p>
 
       <p>To get just the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-specific log
       messages, pipe the log file through grep:</p>
-    <div class="example"><p><code>
-    tail -f error_log|fgrep '[rewrite:'
-    </code></p></div>
+
+        <div class="example"><pre class="prettyprint lang-sh">tail -f error_log|fgrep '[rewrite:'</pre>
+</div>
     </div>
 
 </div>
@@ -122,41 +128,26 @@ URLs on the fly</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>The <code class="directive">RewriteBase</code> directive specifies the
-      URL prefix to be used for per-directory (htaccess)
+      URL prefix to be used for
+      <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a>
       <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives that
       substitute a relative path.</p>
       <p> This directive is <em>required</em> when you use a relative path
-      in a substitution in per-directory (htaccess) context unless any 
+      in a substitution in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context unless any
       of the following conditions are true:</p>
       <ul>
           <li> The original request, and the substitution, are underneath the
                <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
                (as opposed to reachable by other means, such as
                <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>).</li>
-          <li> The <em>filesystem</em> path to the directory containing the
-               <code class="directive"><a href="#rewriterule">RewriteRule</a></code>,
-               suffixed by the relative
-               substitution is also valid as a URL path on the server
-               (this is rare).</li>
+          <li> The directory-path for which the RewriteRule applies, 
+               suffixed by the relative substitution, is also valid
+               as a URL-path on the server (this is rare).</li>
           <li> In Apache HTTP Server 2.4.16 and later, this directive may be
                 omitted when the request is mapped via
                 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
                 or <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</li>
       </ul>
-
-<p> In the example below, <code class="directive">RewriteBase</code> is necessary
-    to avoid rewriting to http://example.com/opt/myapp-1.2.3/welcome.html
-    since the resource was not relative to the document root.  This
-    misconfiguration would normally cause the server to look for an "opt"
-    directory under the document root.</p>
-<pre class="prettyprint lang-config">DocumentRoot "/var/www/example.com"
-AliasMatch "^/myapp" "/opt/myapp-1.2.3"
-&lt;Directory "/opt/myapp-1.2.3"&gt;
-    RewriteEngine On
-    RewriteBase "/myapp/"
-    RewriteRule "^index\.html$"  "welcome.html"
-&lt;/Directory&gt;</pre>
-
 
 
 </div>
@@ -237,7 +228,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                  CONTEXT_PREFIX<br />
                  CONTEXT_DOCUMENT_ROOT<br />
                  IPV6<br />
-                 PATH_INFO<br />
+                 <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a><br />
                  QUERY_STRING<br />
                  REMOTE_ADDR<br />
                  REMOTE_HOST<br />
@@ -297,8 +288,10 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                 correspond to the similarly named HTTP
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
-                Most are documented <a href="../expr.html#vars">here</a>
-                or elsewhere in the Manual or in the CGI specification.</p>
+                Most are documented in the 
+                <a href="../expr.html#vars">Expressions doc</a>, in the
+                <a href="../env.html">Environment Variables doc</a>,
+                or the CGI specification (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>).</p>
 
                 <p>SERVER_NAME and SERVER_PORT depend on the values of
                 <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> and
@@ -371,6 +364,12 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
                   <code>REQUEST_URI</code> 
                   has already been %-decoded, to re-encode it pass it through
                   the "escape" <a href="#mapfunc">mapping-function</a>.
+                  Note that this server variable differs from the CGI
+                  environment variable of the same name: in a CGI context,
+                  <code>REQUEST_URI</code> contains the full original URI
+                  from the request line, including the query string. See
+                  the <code class="directive"><a href="../mod/core.html#cgivar">CGIVar</a></code>
+                  directive for details.
                   </dd>
 
                   <dt><code>THE_REQUEST</code></dt>
@@ -465,7 +464,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
         <em>after</em> the URL translation phase (during which
         <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operates).</p>
         <p>On the other hand, because <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> implements
-        its per-directory context (<code>.htaccess</code> file) via
+        its <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
         <code>%{REMOTE_USER}</code> in that context.</p></li>
@@ -484,7 +483,7 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
       <em>CondPattern</em>.</p>
 
       <p><em>CondPattern</em> is usually a
-      <em>perl compatible regular expression</em>, but there is
+      <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, but there is
       additional syntax available to perform other useful tests against
       the <em>Teststring</em>:</p>
 
@@ -1089,117 +1088,37 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       in which they will be applied at run-time.</p>
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
-      a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>.  What this pattern is compared against varies depending
+      a <a id="regexp" name="regexp"><a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
+      expression</a></a>.  What this pattern is compared against varies depending
       on where the <code class="directive">RewriteRule</code> directive is defined. </p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>
 
-<ul>
-      <li><p>In <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> context,
-      The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string (e.g. "/app1/index.html").
-      This is the (%-decoded) <a href="directive-dict.html#Syntax">URL-path</a>.</p></li>
-
-      <li><p>In per-directory context (<code class="directive"><a href="../mod/core.html#directory">Directory</a></code> and .htaccess),
-      the <em>Pattern</em> is matched against only a partial path, for example a request
-      of "/app1/index.html" may result in comparison against "app1/index.html" 
-      or "index.html" depending on where the <code class="directive">RewriteRule</code> is 
-      defined.</p>
-
-      <p>The directory path where the rule is defined is stripped from the currently mapped
-      filesystem path before comparison (up to and including a trailing slash). 
-      The net result of this per-directory prefix stripping is that rules in
-      this context only match against the portion of the currently mapped filesystem path 
-      "below" where the rule is defined.</p>
-
-      <p>Directives such as <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> and <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, or even the 
-      result of previous <code class="directive">RewriteRule</code> substitutions, determine
-      the currently mapped filesystem path.  
-      </p>
-      </li>
-
-      <li><p>If you wish to match against the hostname, port, or query string, use a
-      <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
-      <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
-      <code>%{QUERY_STRING}</code> variables respectively.</p></li>
-</ul>
+<p>
+The <em>Pattern</em> is matched against the %-decoded URL-path
+(in server context) or the directory-relative path (in
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>).
+See <a href="../rewrite/intro.html#rewriterule">RewriteRule
+Basics</a> for details on what the pattern is matched against
+in each context.
+</p>
 </div>
 
-<div class="note"><h3>Per-directory Rewrites</h3>
-<ul>
-<li>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files and in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections, with some additional
-complexity.</li>
-
-<li>To enable the rewrite engine in this context, you need to set
-"<code>RewriteEngine On</code>" <strong>and</strong>
-"<code>Options FollowSymLinks</code>" must be enabled. If your
-administrator has disabled override of <code>FollowSymLinks</code> for
-a user's directory, then you cannot use the rewrite engine. This
-restriction is required for security reasons.</li>
-
-<li>See the <code class="directive"><a href="#rewritebase">RewriteBase</a></code>
-directive for more information regarding what prefix will be added back to
-relative substitutions.</li>
-
-<li> If you wish to match against the full URL-path in a per-directory
-(htaccess) RewriteRule, use the <code>%{REQUEST_URI}</code> variable in
-a <code class="directive"><a href="#rewritecond">RewriteCond</a></code>.</li>
-
-<li>The removed prefix always ends with a slash, meaning the matching occurs against a string which
-<em>never</em> has a leading slash.  Therefore, a <em>Pattern</em> with <code>^/</code> never
-matches in per-directory context.</li>
-
-<li>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections
-(including their regular expression counterparts), this
-should never be necessary and is unsupported. A likely feature
-to break in these contexts is relative substitutions.</li>
-
-<li>The <code class="directive"><a href="../mod/core.html#if">If</a></code> blocks
-follow the rules of the <em>directory</em> context.</li>
-
-<li>By default, mod_rewrite overrides rules when <a href="../sections.html#merging">
-merging sections</a> belonging to the same context. The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> directive can change this behavior,
-for example using the <em>Inherit</em> setting.</li>
-
-<li>The <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> also regulates the
-behavior of sections that are stated at the same nesting level of the configuration. In the
-following example, by default only the RewriteRules stated in the second 
-<code class="directive"><a href="../mod/core.html#if">If</a></code> block
-are considered, since the first ones are overridden. Using <code class="directive"><a href="#rewriteoptions">RewriteOptions</a></code> Inherit forces mod_rewrite to merge the two
-sections and consider both set of statements, rather than only the last one.</li>
-</ul>
-<div class="example"><pre class="prettyprint lang-config">&lt;If "true"&gt;
-  # Without RewriteOptions Inherit, this rule is overridden by the next
-  # section and no redirect will happen for URIs containing 'foo'
-  RewriteRule foo http://example.com/foo [R]
-&lt;/If&gt;
-&lt;If "true"&gt;
-  RewriteRule bar http://example.com/bar [R]
-&lt;/If&gt;</pre>
-</div>
+<div class="note"><h3><a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">Per-directory</a> Rewrites</h3>
+<p>
+Using rewrite rules in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory
+context</a> requires special attention to how patterns are
+matched and how rule inheritance works. See the
+<a href="../rewrite/htaccess.html">Per-directory Rewrites</a>
+guide for complete details.
+</p>
 </div>
 
-      <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
-      expressions</a>, see
-      the <a href="../rewrite/intro.html#regex">mod_rewrite
-      Introduction</a>.</p>
-
-      <p>In <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, the NOT character
-      ('<code>!</code>') is also available as a possible pattern
-      prefix. This enables you to negate a pattern; to say, for instance:
-      ``<em>if the current URL does <strong>NOT</strong> match this
-      pattern</em>''. This can be used for exceptional cases, where
-      it is easier to match the negative pattern, or as a last
-      default rule.</p>
-
-<div class="note"><h3>Note</h3>
-When using the NOT character to negate a pattern, you cannot include
-grouped wildcard parts in that pattern. This is because, when the
-pattern does NOT match (ie, the negation matches), there are no
-contents for the groups. Thus, if negated patterns are used, you
-cannot use <code>$N</code> in the substitution string!
-</div>
+      <p>For information on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
+      expressions</a>, including the use of the
+      <code>!</code> prefix to negate a pattern, see the
+      <a href="../rewrite/intro.html#regex">Regular Expressions</a>
+      section of the mod_rewrite introduction.</p>
 
       <p>The <a id="rhs" name="rhs"><em>Substitution</em></a> of a
       rewrite rule is the string that replaces the original URL-path that
@@ -1211,25 +1130,22 @@ cannot use <code>$N</code> in the substitution string!
         <dt>file-system path</dt>
 
         <dd>Designates the location on the file-system of the resource
-        to be delivered to the client.  Substitutions are only
-        treated as a file-system path when the rule is configured in
-        server (virtualhost) context and the first component of the
-        path in the substitution exists in the file-system</dd>
+        to be delivered to the client. A substitution beginning with
+        <code>/</code> is treated as a file-system path only in
+        server or virtual host context, and only when the first
+        component of the path exists in the file-system. In
+        <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+        this guessing does not occur.</dd>
 
         <dt>URL-path</dt>
 
         <dd>A <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>-relative path to the
-        resource to be served. Note that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-        tries to guess whether you have specified a file-system path
-        or a URL-path by checking to see if the first segment of the
-        path exists at the root of the file-system. For example, if
-        you specify a <em>Substitution</em> string of
-        <code>/www/file.html</code>, then this will be treated as a
-        URL-path <em>unless</em> a directory named <code>www</code>
-        exists at the root or your file-system (or, in the case of
-        using rewrites in a <code>.htaccess</code> file, relative to
-        your document root), in which case it will
-        be treated as a file-system path. If you wish other
+        resource to be served. In server or virtual host context,
+        if the first segment of the path exists at the root of the
+        file-system, the substitution is treated as a file-system
+        path instead.  For example, <code>/www/file.html</code> is
+        a URL-path unless a directory named <code>www</code> exists
+        at the root of the file-system. If you wish other
         URL-mapping directives (such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>) to be applied to the
         resulting URL-path, use the <code>[PT]</code> flag as
         described below.</dd>
@@ -1256,6 +1172,27 @@ cannot use <code>$N</code> in the substitution string!
 
       </dl>
 
+      <div class="note"><h3>How path substitutions are interpreted</h3>
+      <p>Whether a path substitution is treated as a file-system path
+      or a URL-path depends on the context and whether it begins with
+      a slash:</p>
+      <ul>
+        <li><strong>Starts with <code>/</code>, server/vhost context:</strong>
+        Treated as a file-system path if the first path component exists
+        on disk; otherwise treated as a URL-path.</li>
+        <li><strong>Starts with <code>/</code>, <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context:</strong>
+        Always treated as a URL-path. No file-system guessing occurs.</li>
+        <li><strong>Does not start with <code>/</code> (relative),
+        server/vhost context:</strong> Treated as a URL-path relative
+        to the current request URI.</li>
+        <li><strong>Does not start with <code>/</code> (relative),
+        <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context:</strong> Treated as a URL-path relative
+        to the directory-path for which the <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> or <code>.htaccess</code>
+        applies. See <code class="directive">RewriteBase</code> for controlling
+        the prefix added to relative substitutions.</li>
+      </ul>
+      </div>
+
       <p>In addition to plain text, the <em>Substitution</em> string can include</p>
 
       <ol>
@@ -1274,9 +1211,16 @@ cannot use <code>$N</code> in the substitution string!
 
       <p>Back-references are identifiers of the form
       <code>$</code><strong>N</strong>
-      (<strong>N</strong>=0..9), which will be replaced
-      by the contents of the <strong>N</strong>th group of the
-      matched <em>Pattern</em>. The server-variables are the same
+      (<strong>N</strong>=0..9). <code>$0</code> refers to the
+      entire string matched by the <em>Pattern</em>, while
+      <code>$1</code>..<code>$9</code> refer to the corresponding
+      captured groups from the matched <em>Pattern</em>.
+      Similarly, back-references
+      <code>%0</code>..<code>%9</code> refer to the most recently
+      matched
+      <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
+      <em>CondPattern</em>: <code>%0</code> is the entire match and
+      <code>%1</code>..<code>%9</code> are the captured groups. The server-variables are the same
       as for the <em>TestString</em> of a
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
       directive. The mapping-functions come from the
@@ -1359,7 +1303,7 @@ cannot use <code>$N</code> in the substitution string!
         <td>END</td>
         <td>Stop the rewriting process immediately and don't apply any
         more rules. Also prevents further execution of rewrite rules
-        in per-directory and .htaccess context. (Available in 2.3.9 and later)
+        in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. (Available in 2.3.9 and later)
         <em><a href="../rewrite/flags.html#flag_end">details ...</a></em></td>
     </tr>
 <tr>
@@ -1386,8 +1330,7 @@ cannot use <code>$N</code> in the substitution string!
 <tr>
         <td>last|L</td>
         <td>Stop the rewriting process immediately and don't apply any
-        more rules. Especially note caveats for per-directory and
-        .htaccess context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
+        more rules. Especially note caveats for <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context (see also the END flag). <em><a href="../rewrite/flags.html#flag_l">details ...</a></em></td>
     </tr>
 <tr class="odd">
         <td>next|N</td>
@@ -1495,11 +1438,11 @@ directive.</p>
 </div>
 
 
-     <p>Here are all possible substitution combinations and their
+     <p>Here are the possible combinations of substitution string
+      form, context, and the [R] and [P] flags, and their
       meanings:</p>
 
-      <p><strong>Inside per-server configuration
-      (<code>httpd.conf</code>)<br />
+      <p><strong>Outside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration<br />
        for request ``<code>GET
       /somepath/pathinfo</code>'':</strong><br />
       </p>
@@ -1558,9 +1501,9 @@ directive.</p>
 </tr>
 </table>
 
-      <p><strong>Inside per-directory configuration for
+      <p><strong>Inside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration for
       <code>/somepath</code><br />
-       (<code>/physical/path/to/somepath/.htaccess</code>, with
+       (e.g., <code>.htaccess</code> or <code>&lt;Directory&gt;</code>, with
       <code>RewriteBase "/somepath"</code>)<br />
        for request ``<code>GET
       /somepath/localpath/pathinfo</code>'':</strong><br />
@@ -1627,28 +1570,32 @@ redirection</td>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_rewrite.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

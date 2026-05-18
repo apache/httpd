@@ -54,7 +54,7 @@
     applicable to a general-purpose web server.</p>
 
     <p> Name-based virtual hosting builds off of the IP-based virtual host
-    selection algorithm, meaning that comparisons of ther requested hostname
+    selection algorithm, meaning that comparisons of the requested hostname
     to configured hostnames occurs only within the set of virtual hosts that 
     share the most specific IP:PORT based match at the network layer.</p>
 

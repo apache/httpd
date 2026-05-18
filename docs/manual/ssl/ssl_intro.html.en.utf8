@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: An Introduction</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -41,7 +43,7 @@ and examples as a starting point for further exploration.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificates</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#references">References</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cryptographictech" id="cryptographictech">Cryptographic Techniques</a> <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
@@ -408,6 +410,12 @@ establishing a protocol session.</p>
         <td>Update of TLS 1.1 deprecating MD5 as hash, and adding incompatibility
         to SSL so it will never negotiate the use of SSLv2.</td>
     </tr>
+    <tr><td>TLS v1.3</td>
+        <td>Internet Standard (from IETF) [<a href="#TLS13">TLS13</a>]</td>
+        <td>Major revision of TLS 1.2 removing legacy cryptography, mandating
+        perfect forward secrecy, and redesigning the handshake protocol for
+        improved security and performance.</td>
+    </tr>
     </table>
 
 
@@ -602,7 +610,7 @@ the Internet Engineering Task Force (IETF).</p>
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
 <dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,
-1996. See <a href="http://www.counterpane.com/">http://www.counterpane.com/</a> for various other materials by Bruce
+1996. See <a href="https://www.schneier.com/">https://www.schneier.com/</a> for various other materials by Bruce
 Schneier.</dd>
 
 <dt><a id="ASN1" name="ASN1">[ASN1]</a></dt>
@@ -617,56 +625,64 @@ Framework</q>. For references, see <a href="http://en.wikipedia.org/wiki/X.509">
 
 <dt><a id="PKCS" name="PKCS">[PKCS]</a></dt>
 <dd><q>Public Key Cryptography Standards (PKCS)</q>,
-RSA Laboratories Technical Notes, See <a href="http://www.rsasecurity.com/rsalabs/pkcs/">http://www.rsasecurity.com/rsalabs/pkcs/</a>.</dd>
+RSA Laboratories Technical Notes, See <a href="https://en.wikipedia.org/wiki/PKCS">https://en.wikipedia.org/wiki/PKCS</a>.</dd>
 
 <dt><a id="MIME" name="MIME">[MIME]</a></dt>
 <dd>N. Freed, N. Borenstein, <q>Multipurpose Internet Mail Extensions
 (MIME) Part One: Format of Internet Message Bodies</q>, RFC2045.
-See for instance <a href="http://tools.ietf.org/html/rfc2045">http://tools.ietf.org/html/rfc2045</a>.</dd>
+See for instance <a href="https://www.rfc-editor.org/rfc/rfc2045">RFC 2045</a>.</dd>
 
 <dt><a id="SSL3" name="SSL3">[SSL3]</a></dt>
 <dd>Alan O. Freier, Philip Karlton, Paul C. Kocher, <q>The SSL Protocol
-Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.txt">http://www.netscape.com/eng/ssl3/draft302.txt</a>.</dd>
+Version 3.0</q>, 1996. See <a href="https://www.rfc-editor.org/rfc/rfc6101">RFC 6101</a>.</dd>
 
 <dt><a id="TLS1" name="TLS1">[TLS1]</a></dt>
 <dd>Tim Dierks, Christopher Allen, <q>The TLS Protocol Version 1.0</q>,
-1999. See <a href="http://ietf.org/rfc/rfc2246.txt">http://ietf.org/rfc/rfc2246.txt</a>.</dd>
+1999. See <a href="https://www.rfc-editor.org/rfc/rfc2246">RFC 2246</a>.</dd>
 
 <dt><a id="TLS11" name="TLS11">[TLS11]</a></dt>
 <dd><q>The TLS Protocol Version 1.1</q>,
-2006. See <a href="http://tools.ietf.org/html/rfc4346">http://tools.ietf.org/html/rfc4346</a>.</dd>
+2006. See <a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>.</dd>
 
 <dt><a id="TLS12" name="TLS12">[TLS12]</a></dt>
 <dd><q>The TLS Protocol Version 1.2</q>,
-2008. See <a href="http://tools.ietf.org/html/rfc5246">http://tools.ietf.org/html/rfc5246</a>.</dd>
+2008. See <a href="https://www.rfc-editor.org/rfc/rfc5246">RFC 5246</a>.</dd>
+
+<dt><a id="TLS13" name="TLS13">[TLS13]</a></dt>
+<dd><q>The Transport Layer Security (TLS) Protocol Version 1.3</q>,
+2018. See <a href="https://www.rfc-editor.org/rfc/rfc8446">RFC 8446</a>.</dd>
 </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/ssl/ssl_intro.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

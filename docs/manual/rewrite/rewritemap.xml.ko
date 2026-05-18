@@ -1,0 +1,486 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1932819:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+<manualpage metafile="rewritemap.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+  <title>RewriteMap 사용하기</title>
+  <summary>
+
+    <p>이 문서는 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">참조 문서</a>를 보충합니다.
+<directive module="mod_rewrite">RewriteMap</directive> 지시어의
+사용법을 설명하고 다양한 <directive module="mod_rewrite"
+>RewriteMap</directive> 유형의 예제를 제공합니다.</p>
+
+    <note type="warning">이 예제들 중 많은 것이 특정 서버 설정에서
+그대로 작동하지 않을 수 있으므로, 단순히 예제를 복사하여
+설정에 붙여넣기보다는 이해하는 것이 중요합니다.</note>
+
+  </summary>
+  <seealso><a href="../mod/mod_rewrite.html">모듈 문서</a></seealso>
+  <seealso><a href="intro.html">mod_rewrite 소개</a></seealso>
+  <seealso><a href="remapping.html">리다이렉션과 재매핑</a></seealso>
+  <seealso><a href="access.html">접근 제어</a></seealso>
+  <seealso><a href="vhosts.html">가상 호스트</a></seealso>
+  <seealso><a href="proxy.html">프록시</a></seealso>
+  <seealso><a href="advanced.html">고급 기술</a></seealso>
+  <seealso><a href="avoid.html">mod_rewrite를 사용하지 말아야 할 경우</a></seealso>
+
+  <section id="introduction">
+    <title>소개</title>
+
+   <p>
+   <directive module="mod_rewrite">RewriteMap</directive> 지시어는
+   <directive module="mod_rewrite">RewriteRule</directive> 또는
+   <directive module="mod_rewrite">RewriteCond</directive> 지시어의
+   컨텍스트에서 호출할 수 있는 외부 함수를 정의하여
+   정규 표현식만으로는 너무 복잡하거나 너무 전문화된
+   재작성을 수행합니다. 이 조회의 소스는 아래 섹션에
+   나열되고 <directive module="mod_rewrite">RewriteMap</directive>
+   참조 문서에 열거된 유형 중 하나일 수 있습니다.</p>
+
+   <p><directive module="mod_rewrite">RewriteMap</directive>
+   지시어의 구문은 다음과 같습니다:</p>
+
+<highlight language="config">
+RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</highlight>
+
+    <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a>은
+    맵에 할당하는 임의의 이름이며, 이후 지시어에서
+    사용합니다. 인수는 다음 구문을 통해 맵에 전달됩니다:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br/> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>이러한 구조가 발생하면 맵 <em>MapName</em>이
+      조회되고 키 <em>LookupKey</em>가 검색됩니다. 키가
+      발견되면 맵 함수 구조는 <em>SubstValue</em>로
+      대체됩니다. 키를 찾지 못하면 <em>DefaultValue</em>로
+      대체되거나, <em>DefaultValue</em>가 지정되지 않은
+      경우 빈 문자열로 대체됩니다.</p>
+
+    <p>예를 들어 다음과 같이
+      <directive module="mod_rewrite">RewriteMap</directive>을
+      정의할 수 있습니다:</p>
+    <highlight language="config">
+RewriteMap examplemap "txt:/path/to/file/map.txt"
+    </highlight>
+    <p>그러면 <directive module="mod_rewrite">RewriteRule</directive>에서
+      다음과 같이 이 맵을 사용할 수 있습니다:</p>
+      <highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1}"
+      </highlight>
+
+<p>맵에서 아무것도 찾지 못한 경우를 대비하여 기본값을
+지정할 수 있습니다:</p>
+
+<highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"
+</highlight>
+
+<note><title>디렉토리별 및 .htaccess 컨텍스트</title>
+<p>
+<directive module="mod_rewrite">RewriteMap</directive> 지시어는
+<directive module="core" type="section">Directory</directive> 섹션이나
+<code>.htaccess</code> 파일에서 사용할 수 없습니다. 서버 또는
+가상호스트 컨텍스트에서 맵을 선언해야 합니다. 일단 생성된 맵은
+해당 범위의 <directive module="mod_rewrite">RewriteRule</directive>과
+<directive module="mod_rewrite">RewriteCond</directive> 지시어에서
+사용할 수 있습니다. 해당 범위에서 <strong>선언</strong>할 수
+없을 뿐입니다.</p>
+</note>
+
+<p>다음 섹션에서는 사용할 수 있는 다양한 <em>MapType</em>을
+설명하고 각각의 예제를 제공합니다.</p>
+  </section>
+
+  <section id="int">
+    <title>int: 내부 함수</title>
+
+    <p>MapType이 <code>int</code>인 경우 MapSource는 사용 가능한
+    내부 <directive module="mod_rewrite">RewriteMap</directive>
+    함수 중 하나입니다. 모듈 작성자는
+    <code>ap_register_rewrite_mapfunc</code> API를 등록하여
+    추가 내부 함수를 제공할 수 있습니다.
+    기본적으로 제공되는 함수는 다음과 같습니다:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br/>
+             키를 모두 대문자로 변환합니다.</li>
+      <li><strong>tolower</strong>:<br/>
+             키를 모두 소문자로 변환합니다.</li>
+      <li><strong>escape</strong>:<br/>
+             키의 특수 문자를 16진수 인코딩으로 변환합니다.</li>
+      <li><strong>unescape</strong>:<br/>
+             키의 16진수 인코딩을 다시 특수 문자로 변환합니다.</li>
+    </ul>
+
+    <p>
+    이러한 함수 중 하나를 사용하려면 int 함수를 참조하는
+    <directive module="mod_rewrite">RewriteMap</directive>을
+    생성한 다음 <directive module="mod_rewrite"
+    >RewriteRule</directive>에서 사용합니다:
+    </p>
+
+   <p><strong>URI를 모두 소문자 버전으로 리다이렉트</strong></p>
+    <highlight language="config">
+RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]
+    </highlight>
+
+    <note>
+    <p>여기에 제공된 예제는 설명 목적으로만 제공되며
+    권장 사항이 아닙니다. URL을 대소문자 구분 없이
+    만들려면 대신 <module>mod_speling</module> 사용을
+    고려하십시오.
+    </p>
+    </note>
+
+  </section>
+
+  <section id="txt">
+    <title>txt: 일반 텍스트 맵</title>
+
+    <p>MapType이 <code>txt</code>인 경우 MapSource는
+    한 줄에 하나의 공백으로 구분된 키/값 쌍을 포함하는
+    일반 텍스트 매핑 파일의 파일 시스템 경로입니다.
+    선택적으로 '#' 문자로 시작하는 주석이 포함될 수
+    있습니다.</p>
+
+    <p>유효한 텍스트 재작성 맵 파일은 다음과 같은 구문을
+    가집니다:</p>
+
+    <example>
+      # 주석 줄<br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # 주석<br />
+    </example>
+
+    <p><directive module="mod_rewrite">RewriteMap</directive>이
+    호출되면 인수가 줄의 첫 번째 인수에서 검색되고,
+    발견되면 치환 값이 반환됩니다.</p>
+
+    <p>예를 들어, 기억하기 쉬운 URL을 위해 제품 이름을
+    제품 ID로 변환하는 맵 파일을 사용할 수 있습니다:</p>
+<p><strong>제품에서 ID로의 설정</strong></p>
+    <highlight language="config">
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+
+    <p>여기서 <code>prods.php</code> 스크립트는 조회 맵에서
+    제품을 찾지 못했을 때 <code>id=NOTFOUND</code> 인수를
+    받으면 어떻게 해야 하는지 알고 있다고 가정합니다.</p>
+
+    <p><code>/etc/apache2/productmap.txt</code> 파일에는
+    다음이 포함됩니다:</p>
+
+    <example><title>제품에서 ID로의 맵</title>
+##<br />
+##  productmap.txt - 제품에서 ID로의 맵 파일<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </example>
+
+    <p>따라서 <code>http://example.com/product/television</code>이
+    요청되면 <directive module="mod_rewrite">RewriteRule</directive>이
+    적용되고 요청은 내부적으로
+    <code>/prods.php?id=993</code>에 매핑됩니다.</p>
+
+    <note><title>참고: .htaccess 파일</title>
+    주어진 예제는 서버 또는 가상호스트 범위에서 사용하도록
+    작성되었습니다. <code>.htaccess</code> 파일에서 사용할
+    계획이라면, 무엇이든 일치하도록 재작성 패턴에서 앞의
+    슬래시를 제거해야 합니다:
+    <highlight language="config">
+RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+    </note>
+
+    <note><title>캐시된 조회</title>
+    <p>
+    조회된 키는 맵 파일의 <code>mtime</code>(수정 시간)이
+    변경되거나 httpd 서버가 재시작될 때까지 httpd에 의해
+    캐시됩니다. 이는 많은 요청에 의해 호출되는 맵의
+    성능을 향상시킵니다.
+    </p>
+    </note>
+
+  </section>
+  <section id="rnd">
+    <title>rnd: 무작위 일반 텍스트</title>
+
+    <p>MapType이 <code>rnd</code>인 경우 MapSource는 일반
+    텍스트 매핑 파일의 파일 시스템 경로이며, 각 줄에는
+    키와 <code>|</code>로 구분된 하나 이상의 값이 포함됩니다.
+    키가 일치하면 이 값 중 하나가 무작위로 선택됩니다.</p>
+
+    <p>예를 들어, 리버스 프록시를 통한 무작위 부하 분산을
+    위해 다음 맵 파일과 지시어를 사용할 수 있습니다.
+    이미지는 'static' 풀의 서버 중 하나로 전송되고,
+    나머지는 'dynamic' 풀의 서버 중 하나로 전송됩니다.</p>
+
+    <example><title>재작성 맵 파일</title>
+##<br />
+##  map.txt -- 재작성 맵<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </example>
+<p><strong>설정 지시어</strong></p>
+    <highlight language="config">
+RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]
+    </highlight>
+
+    <p>따라서 이미지가 요청되고 이 규칙 중 첫 번째가
+    일치하면 <directive module="mod_rewrite">RewriteMap</directive>은
+    맵 파일에서 문자열 <code>static</code>을 조회하고
+    지정된 호스트명 중 하나를 무작위로 반환하여
+    <directive module="mod_rewrite">RewriteRule</directive>
+    대상에서 사용합니다.</p>
+
+    <p>서버 중 하나가 선택될 확률을 높이려면(예를 들어
+    서버 중 하나가 더 많은 메모리를 가지고 있어 더 많은
+    요청을 처리할 수 있는 경우) 맵 파일에 해당 서버를
+    더 많이 나열하면 됩니다.</p>
+
+    <example>
+static   www1|www1|www2|www3|www4
+    </example>
+
+  </section>
+
+  <section id="dbm">
+    <title>dbm: DBM 해시 파일</title>
+
+    <p>MapType이 <code>dbm</code>인 경우 MapSource는
+    매핑에 사용할 키/값 쌍을 포함하는 DBM 데이터베이스
+    파일의 파일 시스템 경로입니다. 이것은 <code>txt</code>
+    맵과 정확히 같은 방식으로 작동하지만, DBM은 인덱싱되어
+    있는 반면 텍스트 파일은 그렇지 않으므로 훨씬 빠릅니다.
+    이를 통해 원하는 키에 더 빠르게 접근할 수 있습니다.</p>
+
+    <p>선택적으로 특정 dbm 유형을 지정할 수 있습니다:</p>
+
+ <highlight language="config">
+RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"
+ </highlight>
+
+    <p>유형은 <code>sdbm</code>, <code>gdbm</code>,
+    <code>ndbm</code> 또는 <code>db</code>일 수 있습니다.
+    그러나 httpd 자체가 빌드될 때 사용된 것과 일치하는
+    올바른 DBM 라이브러리를 사용하므로 Apache HTTP Server와
+    함께 제공되는 <a href="../programs/httxt2dbm.html">httxt2dbm</a>
+    유틸리티를 사용하는 것이 좋습니다.</p>
+
+    <p>dbm 파일을 생성하려면 먼저 <a href="#txt">txt</a>
+    섹션에 설명된 대로 텍스트 맵 파일을 생성합니다. 그런 다음
+    <code>httxt2dbm</code>을 실행합니다:</p>
+
+<example>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</example>
+
+<p>그런 다음 <directive module="mod_rewrite">RewriteMap</directive>
+지시어에서 결과 파일을 참조할 수 있습니다:</p>
+
+<highlight language="config">
+RewriteMap mapname "dbm:/etc/apache/mapfile.map"
+</highlight>
+
+<note>
+<p>일부 dbm 유형에서는 공통 기본 이름을 가진 둘 이상의
+파일이 생성됩니다. 예를 들어 <code>mapfile.map.dir</code>과
+<code>mapfile.map.pag</code>라는 두 파일이 있을 수 있습니다.
+이것은 정상이며 <directive module="mod_rewrite">RewriteMap</directive>
+지시어에서 기본 이름인 <code>mapfile.map</code>만 사용하면
+됩니다.</p>
+</note>
+
+<note><title>캐시된 조회</title>
+<p>
+조회된 키는 맵 파일의 <code>mtime</code>(수정 시간)이
+변경되거나 httpd 서버가 재시작될 때까지 httpd에 의해
+캐시됩니다. 이는 많은 요청에 의해 호출되는 맵의
+성능을 향상시킵니다.
+</p>
+</note>
+
+  </section>
+
+  <section id="prg"><title>prg: 외부 재작성 프로그램</title>
+
+    <p>MapType이 <code>prg</code>인 경우 MapSource는
+    매핑 동작을 제공할 실행 가능한 프로그램의 파일 시스템
+    경로입니다. 이것은 컴파일된 바이너리 파일이거나
+    Python이나 Perl과 같은 인터프리터 언어의 프로그램일 수
+    있습니다.</p>
+
+    <p>이 프로그램은 Apache HTTP Server가 시작될 때 한 번
+    시작되며, <code>STDIN</code>과 <code>STDOUT</code>을
+    통해 재작성 엔진과 통신합니다. 각 맵 함수 조회에 대해
+    키가 프로그램의 <code>STDIN</code>에 기록되고 그 뒤에
+    줄바꿈 문자가 옵니다. 프로그램은 <code>STDIN</code>에서
+    한 줄을 읽고(줄바꿈 포함) 응답을
+    <code>STDOUT</code>에 줄바꿈으로 끝나는 한 줄로
+    작성해야 합니다. 키에는 줄바꿈 문자가 포함되지
+    않으며, 줄바꿈이 포함된 키가 발견되면 조회가
+    실패합니다.</p>
+
+    <p>대응하는 조회 값이 없으면 맵 프로그램은
+    네 문자 문자열 "<code>NULL</code>"을 반환하여 이를
+    나타내야 합니다. 이 비교는 대소문자를 구분하지
+    않으므로 "null", "Null" 등도 실패한 조회로
+    처리됩니다. 결과적으로 매핑 프로그램이 매핑된 값으로
+    리터럴 문자열 "NULL"을 반환하는 것은 불가능합니다.</p>
+
+    <p>프로그램의 <code>STDERR</code>은 httpd 부모
+    프로세스에서 상속되므로 프로그램이 <code>STDERR</code>에
+    쓰는 모든 것은 httpd의 자체 오류 출력과 같은 곳(일반적으로
+    <directive module="core">ErrorLog</directive>)에
+    기록됩니다.</p>
+
+    <p>외부 재작성 프로그램은 <directive
+    module="mod_rewrite">RewriteEngine</directive>이
+    <code>on</code>으로 설정되지 않은 컨텍스트에서
+    정의된 경우 시작되지 않습니다.</p>
+
+    <p>기본적으로 외부 재작성 프로그램은 httpd를 시작한
+    user:group으로 실행됩니다. 이것은 UNIX 시스템에서
+    <directive module="mod_rewrite">RewriteMap</directive>의
+    세 번째 인수로 <code>username:groupname</code> 형식으로
+    사용자 이름과 그룹 이름을 전달하여 변경할 수 있습니다.</p>
+
+    <p>이 기능은 프로그램과의 안정적인 통신에 필요한
+    <code>rewrite-map</code> 뮤텍스를 활용합니다.
+    뮤텍스 메커니즘과 잠금 파일은 <directive
+    module="core">Mutex</directive> 지시어로 구성할 수
+    있습니다.</p>
+
+    <p>여기에 요청 URI에서 모든 대시를 밑줄로 대체하는
+    간단한 예제가 나와 있습니다.</p>
+
+    <p><strong>재작성 설정</strong></p>
+    <highlight language="config">
+RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"
+    </highlight>
+
+    <p><strong>dash2under.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)
+    </highlight>
+
+<note><title>주의!</title>
+<ul>
+<li>재작성 맵 프로그램을 가능한 한 간단하게 유지하십시오.
+프로그램이 멈추면 httpd가 맵의 응답을 무한정 기다리게 되고,
+이는 다시 httpd가 요청에 응답하지 못하게 합니다.</li>
+<li>프로그램에서 버퍼링을 끄십시오. 위의 Python 예제에서는
+<code>print()</code>에 <code>flush=True</code>를 전달하여
+이를 수행합니다. 버퍼링된 I/O는 httpd가 출력을 기다리게
+하므로 멈추게 됩니다.</li>
+<li>서버 시작 시 시작되는 프로그램의 복사본은 하나뿐입니다.
+모든 요청이 이 하나의 병목을 통과해야 합니다. 많은 요청이
+이 프로세스를 통과해야 하거나 스크립트 자체가 매우 느린
+경우 상당한 속도 저하를 초래할 수 있습니다.</li>
+<li>매핑 프로그램이 종료되면 자동으로 다시 시작되지 않습니다.
+서버가 재시작될 때까지 후속 조회가 실패합니다.</li>
+<li>매핑 프로그램은 관련 설정 지시어가 변경되었는지 여부에
+관계없이 서버 재시작(graceful 또는 기타) 시 항상 종료되고
+다시 시작됩니다. 종료 시 프로그램에 <code>SIGTERM</code>이
+전송되며, 3초 이내에 종료되지 않으면
+<code>SIGKILL</code>이 전송됩니다.</li>
+</ul>
+</note>
+
+</section>
+
+
+  <section id="dbd">
+    <title>dbd 또는 fastdbd: SQL 쿼리</title>
+
+    <p>MapType이 <code>dbd</code> 또는 <code>fastdbd</code>인
+    경우 MapSource는 단일 인수를 받아 단일 값을 반환하는
+    SQL SELECT 문입니다.</p>
+
+    <p>이 문이 실행되려면 올바른 데이터베이스를 가리키도록
+    <module>mod_dbd</module>를 구성해야 합니다.</p>
+
+    <p>이 MapType에는 두 가지 형태가 있습니다.
+    <code>dbd</code> MapType을 사용하면 각 맵 요청마다
+    쿼리가 실행되고, <code>fastdbd</code>를 사용하면
+    데이터베이스 조회가 내부적으로 캐시됩니다. 따라서
+    <code>fastdbd</code>가 더 효율적이고 빠르지만,
+    서버가 재시작될 때까지 데이터베이스 변경 사항을
+    반영하지 않습니다.</p>
+
+    <p>쿼리가 둘 이상의 행을 반환하면 결과 세트에서
+    무작위 행이 사용됩니다.</p>
+
+    <example><title>예제</title>
+    <highlight language="config">
+RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+    </highlight>
+    </example>
+
+    <note><title>참고</title>
+    <p>쿼리 이름은 SQL 준비된 문의 레이블로 데이터베이스
+    드라이버에 전달되므로 데이터베이스에 필요한 모든
+    규칙(대소문자 구분 등)을 따라야 합니다.</p></note>
+
+  </section>
+  <section id="summary">
+    <title>요약</title>
+
+    <p><directive module="mod_rewrite">RewriteMap</directive> 지시어는
+    여러 번 사용할 수 있습니다. 각 매핑 함수에 대해 하나의
+    <directive module="mod_rewrite">RewriteMap</directive> 지시어를
+    사용하여 재작성 맵 파일을 선언합니다.</p>
+
+    <p>디렉토리별 컨텍스트(<code>.htaccess</code> 파일이나
+    <directive module="core" type="section">Directory</directive>
+    블록)에서는 맵을 <strong>선언</strong>할 수 없지만
+    디렉토리별 컨텍스트에서 이 맵을 <strong>사용</strong>하는
+    것은 가능합니다.</p>
+
+  </section>
+</manualpage>

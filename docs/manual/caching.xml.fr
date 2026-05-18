@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1836060 -->
+<!-- English Revision: 1933506 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -46,20 +46,16 @@
 
     <dl>
         <dt>Mise en cache HTTP à trois états RFC2616</dt>
-        <dd><module>mod_cache</module> et son module de fournisseur
-	<module>mod_cache_disk</module> proposent une mise en cache
-	intelligente de niveau HTTP. Le contenu proprement dit est
-	stocké dans le cache, et mod_cache vise à respecter tous les
-	en-têtes HTTP, ainsi que les options qui contrôlent la mise en
-	cache du contenu comme décrit dans la <a
-	href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
-	13 de la RFC2616</a>. <module>mod_cache</module> peut gérer des
-	configurations de mise en cache simples, mais aussi complexes
-	comme dans les cas où vous avez à faire à des contenus mandatés,
-	à des contenus locaux dynamiques, ou lorsque vous avez besoin
-	d'accélérer l'accès aux fichiers locaux situés sur disque
-	supposé lent.
-        </dd>
+	<dd><module>mod_cache</module> et son module de fournisseur
+	<module>mod_cache_disk</module> proposent une mise en cache intelligente
+	de niveau HTTP. Le contenu proprement dit est stocké dans le cache, et
+	mod_cache vise à respecter tous les en-têtes HTTP, ainsi que les options
+	qui contrôlent la mise en cache du contenu comme décrit dans <rfc
+	section="13">2616</rfc>. <module>mod_cache</module> peut gérer des
+	configurations de mise en cache simples, mais aussi complexes comme dans
+	les cas où vous avez à faire à des contenus mandatés, à des contenus
+	locaux dynamiques, ou lorsque vous avez besoin d'accélérer l'accès aux
+	fichiers locaux situés sur disque supposé lent.  </dd>
 
         <dt>Mise en cache d'objets partagés de forme clé/valeur à deux
 	états</dt>
@@ -113,10 +109,8 @@
     </related>
 
     <p>Le module <module>mod_cache</module> permet de tirer avantage du
-    mécanisme de mise en cache en ligne faisant partie
-    intégrante du protocole HTTP, et décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">section
-    13 de la RFC2616</a>.</p>
+    mécanisme de mise en cache en ligne faisant partie intégrante du protocole
+    HTTP, et décrit dans la <rfc section="13">2616</rfc>.</p>
 
     <p>A la différence d'un cache simple clé/valeur à deux états où le
     contenu est supprimé lorsqu'il est périmé, un cache HTTP comporte un
@@ -171,9 +165,8 @@
     </dd>
     </dl>
 
-    <p>Le fonctionnement détaillé d'un cache HTTP est décrit dans la <a
-    href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
-    13 de la RFC2616</a>.</p>
+    <p>Le fonctionnement détaillé d'un cache HTTP est décrit dans la <rfc
+    section="13">2616</rfc>.</p>
 
     <section>
       <title>Interaction avec le serveur</title>
@@ -353,12 +346,10 @@
     <section>
       <title>Que peut-on mettre en cache ?</title>
 
-      <p>La liste complète des conditions nécessaires pour qu'une
-      réponse puisse être enregistrée dans un cache HTTP est fournie
-      dans la <a
-      href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">section
-      13.4 Response Cacheability de la RFC2616</a>, et peut se résumer
-      ainsi :</p>
+      <p>La liste complète des conditions nécessaires pour qu'une réponse puisse
+      être enregistrée dans un cache HTTP est fournie dans la <rfc
+      section="13.4">2616</rfc> (Response Cacheability), et peut se résumer
+      ainsi&nbsp;:</p>
 
       <ol>
         <li>La mise en cache doit être activée pour cette URL. Voir les
@@ -535,7 +526,7 @@ CacheDirLength 1
       64^22 possibilités pour une empreinte. Par exemple, une URL peut posséder
       l'empreinte <code>xyTGxSMO2b68mBCykqkp1w</code>. Cette empreinte est
       utilisée pour préfixer les noms de fichiers spécifiques à cette URL à
-      l'intérieur du cache ; cependant, elle est tout d'abord placée dans les
+      l'intérieur du cache&nbsp;; cependant, elle est tout d'abord placée dans les
       répertoires du cache selon les directives
       <directive module="mod_cache_disk">CacheDirLevels</directive> et
       <directive module="mod_cache_disk">CacheDirLength</directive>.</p>
@@ -642,7 +633,7 @@ CacheSocache memcache:memcd.example.com:11211
 
       <p>En outre, il est possible de spécifier plusieurs serveurs
       <code>memcached</code> en les ajoutant à la fin de la ligne
-      <code>CacheSocache memcache:</code> et en les séparant par des virgules :</p>
+      <code>CacheSocache memcache:</code> et en les séparant par des virgules&nbsp;:</p>
 
       <highlight language="config">
 CacheEnable socache /
@@ -650,7 +641,7 @@ CacheSocache memcache:mem1.example.com:11211,mem2.example.com:11212
       </highlight>
 
       <p>Divers autres fournisseurs <module>mod_cache_socache</module> utilisent
-      aussi ce format. Par exemple :</p>
+      aussi ce format. Par exemple&nbsp;:</p>
 
       <highlight language="config">
 CacheEnable socache /
@@ -693,7 +684,7 @@ CacheSocache dbm:/path/to/datafile
     href="socache.html">socache</a>.</p>
 
     <p>Pour chaque implémentation, un module supplémentaire est fourni
-    qui offre les services d'arrière-plan suivants :</p>
+    qui offre les services d'arrière-plan suivants&nbsp;:</p>
 
     <dl>
     <dt><module>mod_socache_dbm</module></dt>
@@ -837,7 +828,7 @@ CacheSocache dbm:/path/to/datafile
     bande passante dont vous disposez. Par contre, les temps d'accès à la
     mémoire sont de l'ordre de la nano-seconde.</p>
 
-    <p>Cependant la mémoire système n'est pas bon marché ; à capacité égale,
+    <p>Cependant la mémoire système n'est pas bon marché&nbsp;; à capacité égale,
     c'est de loin le type de stockage le plus coûteux et il est important de
     s'assurer qu'elle est utilisée efficacement. Le fait de mettre en cache
     des fichiers en mémoire diminue d'autant la quantité de mémoire système
@@ -986,7 +977,7 @@ sys     0m0.000s</pre>
       <p>Cela représente un risque relativement élevé par rapport aux autres
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
       Si vous utilisez <module>mod_cache_disk</module>, vous devez garder ceci à
-      l'esprit : effectuez toujours les mises à jour de httpd quand des
+      l'esprit&nbsp;: effectuez toujours les mises à jour de httpd quand des
       correctifs de sécurité sont annoncés et exécutez les processus CGI sous un
       utilisateur autre qu'apache en utilisant <a href="suexec.html">suEXEC</a>
       dans la mesure du possible.</p>
@@ -1013,7 +1004,7 @@ sys     0m0.000s</pre>
 
       <p>Ce document n'est pas le bon endroit pour une discussion approfondie
       à propos de la Dissimulation de requêtes HTTP (utilisez plutôt votre
-      moteur de recherche favori) ; il est cependant important de savoir qu'il
+      moteur de recherche favori)&nbsp;; il est cependant important de savoir qu'il
       est possible d'élaborer une série de requêtes, et d'exploiter une
       vulnérabilité d'un serveur web d'origine de façon que l'attaquant
       puisse contrôler entièrement le contenu renvoyé par le mandataire.</p>

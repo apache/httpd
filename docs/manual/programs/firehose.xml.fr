@@ -25,21 +25,21 @@
 <manualpage metafile="firehose.xml.meta">
 <parentdocument href="./">Programs</parentdocument>
 
-<title>firehose - D&eacute;multiplexe un flux firehose</title>
+<title>firehose - Démultiplexe un flux firehose</title>
 
 <summary>
-    <p><code>firehose</code> d&eacute;multiplexe le flux de connexions
-    multiplex&eacute;es donn&eacute;, et enregistre chacune d'entre elles dans un
+    <p><code>firehose</code> démultiplexe le flux de connexions
+    multiplexées donné, et enregistre chacune d'entre elles dans un
     fichier individuel.</p>
 
-    <p>Lors de son enregistrement, chaque connexion est plac&eacute;e dans un
-    fichier d&eacute;di&eacute; dont le nom est g&eacute;n&eacute;r&eacute; &agrave; partir de l'UUID de la
-    connexion dans le flux. Si le flux comporte des requ&ecirc;tes et des
-    r&eacute;ponses, ces derni&egrave;res feront l'objet de fichiers s&eacute;par&eacute;s.</p>
+    <p>Lors de son enregistrement, chaque connexion est placée dans un
+    fichier dédié dont le nom est généré à partir de l'UUID de la
+    connexion dans le flux. Si le flux comporte des requêtes et des
+    réponses, ces dernières feront l'objet de fichiers séparés.</p>
 
-    <p>Si le param&egrave;tre optionnel prefix est sp&eacute;cifi&eacute;, les connexions qui
-    commencent par le pr&eacute;fixe donn&eacute; seront incluses. Le pr&eacute;fixe doit
-    correspondre exactement au premier fragment pour un r&eacute;sultat de
+    <p>Si le paramètre optionnel prefix est spécifié, les connexions qui
+    commencent par le préfixe donné seront incluses. Le préfixe doit
+    correspondre exactement au premier fragment pour un résultat de
     comparaison positif.</p>
 
 </summary>
@@ -47,28 +47,28 @@
 
 <section id="synopsis"><title>Syntaxe</title>
     <p><code><strong>firehose</strong>
-    [ -<strong>f</strong> <var>entr&eacute;e</var> ]
-    [ -<strong>o</strong> <var>r&eacute;pertoire-sortie</var> ]
+    [ -<strong>f</strong> <var>entrée</var> ]
+    [ -<strong>o</strong> <var>répertoire-sortie</var> ]
     [ -<strong>u</strong> <var>uuid</var> ]
     [ -<strong>h</strong> ]
     [ --<strong>version</strong> ]
-    [<var>pr&eacute;fixe1</var> [...]]</code></p>
+    [<var>préfixe1</var> [...]]</code></p>
 
 </section>
 
 <section id="options"><title>Options</title>
     <dl>
     <dt><code>--file, -f <var>nom-fichier</var></code></dt>
-    <dd>Fichier depuis lequel doit &ecirc;tre lu le flux firehose. La valeur
-    par d&eacute;faut est stdin.</dd>
+    <dd>Fichier depuis lequel doit être lu le flux firehose. La valeur
+    par défaut est stdin.</dd>
 
-    <dt><code>--output-directory, -o </code> <var>r&eacute;pertoire-sortie</var></dt>
-    <dd>R&eacute;pertoire dans lequel les connexions d&eacute;multiplex&eacute;es doivent
-    &ecirc;tre enregistr&eacute;es.</dd>
+    <dt><code>--output-directory, -o </code> <var>répertoire-sortie</var></dt>
+    <dd>Répertoire dans lequel les connexions démultiplexées doivent
+    être enregistrées.</dd>
 
     <dt><code>--uuid, -u</code> <var>uuid</var></dt>
-    <dd>L'UUID de la connexion &agrave; d&eacute;multiplexer. Plusieurs UUID peuvent
-    &ecirc;tre sp&eacute;cifi&eacute;s. Par d&eacute;faut, tout les UUID seront d&eacute;multiplex&eacute;s.</dd>
+    <dd>L'UUID de la connexion à démultiplexer. Plusieurs UUID peuvent
+    être spécifiés. Par défaut, tout les UUID seront démultiplexés.</dd>
 
     <dt><code>--help, -h</code></dt>
     <dd>Ce texte d'aide.</dd>

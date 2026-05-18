@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 504183:1924775 (outdated) -->
+<!-- English Revision: 504183:1933587 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -132,6 +132,7 @@
 <description>指定したストレージ管理方式を使ってのキャッシュを有効にする</description>
 <syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
@@ -181,6 +182,7 @@
 <description>特定の URL をキャッシュしない</description>
 <syntax>CacheDisable <var> url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -199,7 +201,10 @@
 <description>ドキュメントをキャッシュする最大時間を秒数で表したもの</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (一日)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+    <context>virtual host</context>
+    <context>directory</context>
+    <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -220,7 +225,10 @@
 <description>ドキュメントをキャッシュする最小秒数</description>
 <syntax>CacheMinExpire <var>seconds</var></syntax>
 <default>CacheMinExpire 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -240,7 +248,10 @@
 <description>期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
 <default>CacheDefaultExpire 3600 (1時間)</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -260,7 +271,10 @@
 <description>応答に Last Modified が無くても気にしないようにする</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -345,7 +359,10 @@
 </description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -432,7 +449,10 @@
 <description>private と指定されているレスポンスのキャッシュを試みる。</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>
@@ -462,7 +482,10 @@
 <description>no-store と指定されているレスポンスのキャッシュを試みる。</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
+  <context>virtual host</context>
+  <context>directory</context>
+  <context>.htaccess</context>
 </contextlist>
 
 <usage>

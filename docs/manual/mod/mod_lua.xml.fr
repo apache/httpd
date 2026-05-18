@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1921260 -->
+<!-- English Revision: 1933058:1934245 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,11 +62,11 @@ fonctionnement interne de httpd.</p>
 <p>La directive de base pour le chargement du module est</p>
 
 <highlight language="config">
-    LoadModule lua_module modules/mod_lua.so
+LoadModule lua_module modules/mod_lua.so
 </highlight>
 
 <p>
-<code>mod_lua</code> fournit un gestionnaire nommé
+<module>mod_lua</module> fournit un gestionnaire nommé
 <code>lua-script</code> qui peut être utilisé avec une directive
 <directive module="core">SetHandler</directive> ou <directive
 module="mod_mime">AddHandler</directive> :</p>
@@ -79,7 +79,7 @@ module="mod_mime">AddHandler</directive> :</p>
 
 <p>
 Ceci aura pour effet de faire traiter les requêtes pour les fichiers
-dont l'extension est <code>.lua</code> par <code>mod_lua</code> en
+dont l'extension est <code>.lua</code> par <module>mod_lua</module> en
 invoquant cette fonction de <code>gestion</code> de fichier.
 </p>
 
@@ -95,7 +95,7 @@ réponse. <module>mod_proxy</module>, <module>mod_cgi</module> et
 <module>mod_status</module> sont des exemples de modules comportant un
 gestionnaire.</p>
 
-<p><code>mod_lua</code> cherche toujours à invoquer une fonction Lua pour le
+<p><module>mod_lua</module> cherche toujours à invoquer une fonction Lua pour le
 gestionnaire, plutôt que de simplement évaluer le corps d'un script dans
 le style de CGI. Une fonction de gestionnaire se présente comme suit :</p>
 
@@ -216,7 +216,7 @@ ou la définition de types MIME : </p>
 <table border="1" style="zebra">
     <tr>
         <th>Phase d'accroche</th>
-        <th>Directive mod_lua</th>
+        <th>Directive de <module>mod_lua</module></th>
         <th>Description</th>
     </tr>
     <tr>
@@ -487,11 +487,11 @@ end
           <td>oui</td>
 	  <td>Le nom du <a href="../handler.html">gestionnaire</a> qui
 	  doit traiter la requête, par exemple <code>lua-script</code>
-	  si elle doit être traitée par mod_lua. Cette valeur est en
+	  si elle doit être traitée par <module>mod_lua</module>. Cette valeur est en
 	  général définie via les directives <directive
 	  module="mod_mime">AddHandler</directive> ou <directive
 	  module="core">SetHandler</directive>, mais peut aussi l'être
-	  via mod_lua pour permettre à un autre gestionnaire de traiter
+	  via <module>mod_lua</module> pour permettre à un autre gestionnaire de traiter
 	  une requête spécifique qui ne serait pas traitée par défaut
 	  par ce dernier.
             </td>
@@ -1374,7 +1374,7 @@ end
 
     <p>Lorsqu'elles ne sont plus utilisées, les connexions aux bases de
 données doivent être fermées avec <code>database:close()</code>. Si vous
-ne les fermez pas manuellement, mod_lua les fermera peut-être en tant
+ne les fermez pas manuellement, <module>mod_lua</module> les fermera peut-être en tant
 que résidus collectés, mais si ce n'est pas le cas, vous pouvez finir
 pas avoir trop de connexions vers la base de données inutilisées. Les
 deux mesures suivantes sont pratiquement identiques :
@@ -1410,7 +1410,7 @@ le cas des requêtes dynamiques, utilisez <code>db:prepare</code> ou
 <directivesynopsis>
 <name>LuaRoot</name>
 <description>Spécifie le chemin de base pour la résolution des chemins
-relatifs dans les directives de mod_lua</description>
+relatifs dans les directives de <module>mod_lua</module></description>
 <syntax>LuaRoot /chemin/vers/un/répertoire</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -1419,7 +1419,7 @@ relatifs dans les directives de mod_lua</description>
 
 <usage>
     <p>Cette directive permet de spécifier le chemin de base qui sera
-    utilisé pour évaluer tous les chemins relatifs dans mod_lua. En
+    utilisé pour évaluer tous les chemins relatifs dans <module>mod_lua</module>. En
     l'absence de cette directive, les chemins relatifs sont résolus par
     rapport au répertoire de travail courant, ce qui ne sera pas
     toujours approprié pour un serveur.</p>
@@ -1963,7 +1963,6 @@ parentes sont fusionnées dans les enfants</description>
 traitement de la requête</description>
 <syntax>LuaQuickHandler /path/to/script.lua hook_function_name</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
 <usage>

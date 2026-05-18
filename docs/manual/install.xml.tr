@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 1296735:1927861 (outdated) -->
+<!-- English Revision: 1296735:1933438 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -424,7 +424,7 @@
       görünmüyor.</p>
 
     <p>Bu <a
-      href="http://wiki.apache.org/httpd/DistrosDefaultLayout">üçüncü parti
+      href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">üçüncü parti
       dağıtımlarla ilgili bir açıklamaya</a> HTTP
       Sunucu wikisinde yer verilmiş olup bunların şu anki durumunu
       yansıtmaktadır. Ancak, yine de, dağıtımınızın belli platformlarla ilgili

@@ -42,7 +42,7 @@
       yet checks and acts upon the error.</p>
     </section>
 
-    <section id="init"><title>Initialisation Routines</title>
+    <section id="init"><title>Initialization Routines</title>
       <p>These should now be renamed to better signify where they sit
       in the overall process. So the name gets a small change from
       <code>mmap_init</code> to <code>mmap_post_config</code>. The arguments
@@ -171,7 +171,7 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
       </example>
 
       <p>Some of these read directly across, some don't. I'll try to
-      summarise what should be done below.</p>
+      summarize what should be done below.</p>
 
       <p>The stages that read directly across :</p>
 

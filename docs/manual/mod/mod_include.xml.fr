@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1892902 -->
+<!-- English Revision: 1933179:1934245 (outdated) -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -493,13 +493,17 @@ AddOutputFilter INCLUDES .shtml
       inclus.</p>
 
       <example>
-        # Exemple simple<br />
-        &lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
+<highlight language="html">      
+# Exemple simple<br />
+&lt;!--#include virtual="/not-exist.html" onerror="/error.html" --&gt;
+</highlight>
       </example>
 
       <example>
-        # Chemins onerror dédiés<br />
-        &lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
+<highlight language="html">
+# Chemins onerror dédiés<br />
+&lt;!--#include virtual="/path-a.html" onerror="/error-a.html" virtual="/path-b.html" onerror="/error-b.html" --&gt;
+</highlight>
       </example>
 
       </dd>
@@ -676,10 +680,12 @@ AddOutputFilter INCLUDES .shtml
     :</p>
 
     <example>
-      &lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
-      &lt;!--#else --&gt;<br />
-      &lt;!--#endif --&gt;
+<highlight language="html">    
+&lt;!--#if expr="<var>test_condition</var>" --&gt;<br />
+&lt;!--#elif expr="<var>test_condition</var>" --&gt;<br />
+&lt;!--#else --&gt;<br />
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <p>L'élément <code>if</code> fonctionne de la même manière que
@@ -712,26 +718,24 @@ AddOutputFilter INCLUDES .shtml
     l'adresse IP du client appartient au sous-réseau 10.0.0.0/8.</p>
 
     <example>
-      &lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
-      <indent>
-        depuis le réseau local<br />
-      </indent>
-      &lt;!--#else --&gt;<br />
-      <indent>
-        depuis ailleurs<br />
-      </indent>
-      &lt;!--#endif --&gt;
+<highlight language="html">    
+&lt;!--#if expr='-R "10.0.0.0/8"' --&gt;<br />
+  depuis le réseau local<br />
+&lt;!--#else --&gt;<br />
+  depuis ailleurs<br />
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <p>Dans l'exemple suivant, "foo vaut bar" sera affiché si la variable
     <code>foo</code> contient la valeur "bar".</p>
 
     <example>
-      &lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
-      <indent>
-        foo vaut bar<br />
-      </indent>
-      &lt;!--#endif --&gt;
+<highlight language="html">    
+&lt;!--#if expr='v("foo") = "bar"' --&gt;<br />
+  foo vaut bar<br />
+&lt;!--#endif --&gt;
+</highlight>
     </example>
 
     <note><title>Documentation de référence</title>
@@ -763,12 +767,12 @@ AddOutputFilter INCLUDES .shtml
       existence.</p>
 
       <example><title>Exemple</title>
-        &lt;!--#if expr="-A /prive" --&gt;<br />
-        <indent>
-          Cliquez &lt;a href="/prive"&gt;ici&lt;/a&gt; pour accéder aux
-	  informations privées.<br />
-        </indent>
-        &lt;!--#endif --&gt;
+<highlight language="html">      
+&lt;!--#if expr="-A /prive" --&gt;<br />
+  Cliquez &lt;a href="/prive"&gt;ici&lt;/a&gt; pour accéder aux
+  informations privées.<br />
+&lt;!--#endif --&gt;
+</highlight>
       </example>
       </dd>
 
@@ -794,11 +798,11 @@ AddOutputFilter INCLUDES .shtml
       dans la variable spéciale <code>$0</code>.</p>
 
       <example><title>Exemple</title>
-        &lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
-        <indent>
-          &lt;!--#set var="session" value="$1" --&gt;<br />
-        </indent>
-        &lt;!--#endif --&gt;
+<highlight language="html">      
+&lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
+&lt;!--#set var="session" value="$1" --&gt;<br />
+&lt;!--#endif --&gt;
+</highlight>
       </example>
       </dd>
 
@@ -835,8 +839,10 @@ AddOutputFilter INCLUDES .shtml
     équivalentes :</p>
 
     <example>
-      &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
-      &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+<highlight language="html">    
+&lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;<br />
+&lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+</highlight>
     </example>
 
     <p>Les opérateurs booléens <code>&amp;&amp;</code> et
@@ -926,6 +932,10 @@ AddOutputFilter INCLUDES .shtml
       SSIEndTag "%&gt;"
     </highlight>
 
+    <note type="warning">
+    La valeur ne doit pas contenir d’espace.
+    </note>
+
 </usage>
 <seealso><directive module="mod_include">SSIStartTag</directive></seealso>
 </directivesynopsis>
@@ -1001,6 +1011,10 @@ include</description>
 SSIStartTag "&lt;%"
 SSIEndTag   "%&gt;"      
     </highlight>
+
+    <note type="warning">
+    La valeur ne doit pas contenir d’espace.
+    </note>
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive
     <directive module="mod_include">SSIEndTag</directive>, vous pourrez

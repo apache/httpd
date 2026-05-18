@@ -177,7 +177,7 @@
     </strong>: Enforce a minimum HTTP version within a request</dt>
     <dd>When a request is encountered with an HTTP version number less than
     the required minimum version, the request is rejected. The following
-    version numbers are recognised:
+    version numbers are recognized:
     <ul><li><code>HTTP/1.1</code></li>
     <li><code>HTTP/1.0</code></li>
     <li><code>HTTP/0.9</code></li>

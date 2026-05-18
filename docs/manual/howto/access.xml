@@ -202,6 +202,14 @@ RewriteRule "^/fridge"     "-"       [F]
 
     <p>See also the <a href="auth.html">Authentication and Authorization</a>
     howto.</p>
+
+    <p>See the <a href="../sections.html#merging">configuration sections
+    merging documentation</a> for a warning about how
+    <directive type="section" module="core">Limit</directive> inside
+    <directive type="section" module="core">Location</directive>
+    can silently override
+    <directive type="section" module="core">Directory</directive>
+    access restrictions.</p>
 </section>
 
 </manualpage>

@@ -104,7 +104,7 @@
     </ul>
 
     <p>For further trouble-shooting instructions, consult the
-    Apache <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a>.</p>
+    Apache <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a>.</p>
 </section>
 
 <section id="boot"><title>Starting at Boot-Time</title>

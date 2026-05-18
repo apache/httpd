@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.zh-cn.xsl"?>
-<!-- English Revision: 1044380:1793932 (outdated) -->
+<!-- English Revision: 1044380:1933438 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -61,7 +61,7 @@
 <page href="filter.html">过滤器</page>
 <page href="suexec.html">执行 CGI 前的用户切换(suEXEC)</page>
 <page href="misc/perf-tuning.html">性能调谐</page>
-<page href="http://wiki.apache.org/httpd/FAQ">常见问题</page>
+<page href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</page>
 </category>
 
 <category id="vhosts">

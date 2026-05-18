@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148 -->
+<!-- English Revision: 1933502 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,8 +33,7 @@ MD5</description>
 
 <summary>
     <p>Ce module implémente l'authentification HTTP basée sur les
-    condensés MD5 (<a
-    href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
+    condensés MD5 (<rfc>2617</rfc>), et
     fournit une alternative à <module>mod_auth_basic</module> en
     ne transmettant plus le mot de passe en clair. Cependant, cela ne
     suffit pas pour améliorer la sécurité de manière significative par

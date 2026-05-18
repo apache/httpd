@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 1780210 -->
+<!-- English Revision: 1933086 $ -->
+<!-- Updated and corrected by: Daniel Ferradal -->
 <!-- Translation Update by: Luis Gil de Bernabé Pfeiffer -->
 <!-- Reviewed by: Sergio Ramos -->
 
@@ -30,7 +31,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 	<title>Glosario</title>
 	<summary>
 	<p>Éste glosario define las terminologías más comunes
-	relacionada con Apache en particular, y con los servidores web en
+	relacionada con el servidor Apache HTTP en particular, y con los servidores web en
 	general. En los enlaces que hay asociados a cada término se puede
 	encontrar información más detallada de cada uno.</p>
 	</summary>
@@ -117,13 +118,13 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		donde están permitidos ciertos tipos de <glossary
 		ref="directive">directivas</glossary>.<br />
 		Consulte: <a href="mod/directive-dict.html#Context">Términos 
-		usados para describir las directivas de Apache</a></dd>
+		usados para describir las directivas de httpd</a></dd>
 
 
 		<dt><a name="accesscontrol" id="accesscontrol">Control de Acceso.</a></dt> 
 		<dd>La
 		restricción en el acceso al entorno de una red. En el contexto de
-		Apache significa normalmente la restricción en el acceso a
+		httpd significa normalmente la restricción en el acceso a
 		ciertas <em>URLs</em>.<br /> 
 		Consulte: <a href="howto/auth.html">Autentificación, Autorización, y
 		Control de Acceso</a></dd>
@@ -139,7 +140,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dt><a name="directive" id="directive">Directiva</a></dt>
 		<dd>Un comando de
 		configuración que controla uno o más aspectos del
-		comportamiento de Apache.  Las directivas se ponen en el <glossary
+		comportamiento de httpd.  Las directivas se ponen en el <glossary
 		ref="configurationfile">Fichero de Configuración</glossary><br />
 		Consulte: <a href="mod/directives.html">Índice de
 		Directivas</a></dd>
@@ -169,13 +170,13 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		/> Consulte: <a href="ssl/">Encriptado SSL/TLS</a></dd>
 
 
-		<dt><a name="regularexpresion" id="regularexpresion">Expresiones Regulares</a> 
+		<dt><a name="regularexpression" id="regularexpression">Expresiones Regulares</a> 
 		<a name="regex">(Regex)</a></dt> <dd>Una forma de describir un patrón en un 
 		texto - por ejemplo, "todas las palabras que empiezan con la letra "A"
 		o "todos los números de teléfono que contienen 10
 		dígitos" o incluso "Todas las frases entre comas, y que no
 		contengan ninguna letra Q". Las Expresiones Regulares son útiles en
-		Apache porque permiten aplicar ciertos atributos a colecciones de
+		httpd porque permiten aplicar ciertos atributos a colecciones de
 		ficheros o recursos de una forma flexible - por ejemplo, todos los
 		archivos .gif y .jpg que estén en el directorio "imágenes"
 		podrían ser escritos como "<code>/images/.*(jpg|gif)$</code>".
@@ -188,7 +189,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		una cadena, se puede escapar usando "\". Históricamente, la variable &amp;
 		se podía usar como un alias a $0 en algunos sitios. 
 		Esto ya no esta soportado desde la versión 2.3.6.
-		Apache usa Expresiones Regulares compatibles con Perl gracias a la
+		httpd usa Expresiones Regulares compatibles con Perl gracias a la
 		librería <a href="http://www.pcre.org/">PCRE</a>.
 		Puedes encontrar más documentación sobre las expresiones regulares 
 		de PCRE y su sintaxis en esa página o en la
@@ -199,7 +200,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dt><a name="configurationfile" id="configurationfile">Fichero de Configuración.</a></dt>
 		<dd>Un fichero de texto que contiene <glossary
 		ref="directive">Directivas</glossary> que controlan la configuración
-		de Apache.<br /> Consulte: <a href="configuring.html">Ficheros de
+		de httpd.<br /> Consulte: <a href="configuring.html">Ficheros de
 		Configuración</a></dd>
 
 
@@ -216,10 +217,10 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		<dt><a name="httpd.conf" id="httpd.conf">httpd.conf</a></dt>
 		<dd>Es el <glossary
 		ref="configurationfile">fichero de configuración</glossary> principal
-		de Apache. Su ubicación por defecto es
+		de httpd. Su ubicación por defecto es
 		<code>/usr/local/apache2/conf/httpd.conf</code>, pero puede moverse
-		usando opciones de configuración al compilar o al iniciar
-		Apache.<br /> Consulte: <a href="configuring.html">Ficheros de
+		usando configuración en tiempo de compilación o de ejecución.<br /> 
+		Consulte: <a href="configuring.html">Ficheros de
 		Configuración</a></dd>
 
 		<dt><a name="filter" id="filter">Filtro</a></dt>
@@ -248,21 +249,21 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="handler" id="handler">Handler</a></dt> 
 		<dd>Es una representación
-		interna de Apache de una acción a ser ejecutada cuando se llama a
+		interna de httpd de una acción a ser ejecutada cuando se llama a
 		un fichero. Generalmente, los ficheros tienen un handler (manejador)
 		implícito, basado en el tipo de fichero. Normalmente, todos los
 		ficheros son simplemente servidos por el servidor, pero sobre algunos
 		tipos de ficheros se ejecutan acciones complementarias.  Por ejemplo,
 		el handler <code>cgi-script</code> designa los ficheros a ser
 		procesados como <glossary ref="cgi">CGIs</glossary>.<br /> Consulte: <a
-		href="handler.html">Uso de Handlers en Apache</a></dd>
+		href="handler.html">Uso de Handlers en httpd</a></dd>
 
 		<dt><a name="apacheextensiontool" id="apacheextensiontool">Herramienta de extensión de
 		Apache.</a> <a name="apxs" id="apxs">(apxs)</a></dt>
 		<dd>Es un script escrito en Perl que ayuda a compilar el código
 		fuente de algunos <glossary ref="module">módulos</glossary> para 
 		convertirlos en Objetos Dinámicos Compartidos (<glossary ref="dso.html">DSO</glossary>s)
-		y ayuda a instalarlos en el Servidor Web de Apache.<br /> 
+		y ayuda a instalarlos en el servidor web httpd.<br /> 
 		Consulte: Manual de: <program>apxs</program></dd>
 
 
@@ -278,14 +279,14 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 
 
-		<dt><a name="virtualhosting">Hosting Virtual</a></dt> <dd>Se trata de
-		servir diferentes sitios web con una sola entidad de Apache.  <em>El
+		<dt><a name="virtualhosting" id="virtualhosting">Hosting Virtual</a></dt> <dd>Se trata de
+		servir diferentes sitios web con una sola instancia de httpd.  <em>El
 		hosting virtual de IPs</em> diferencia los sitios web basándose en sus
 		direcciones IP, mientras que el <em>hosting virtual basado en
 		nombres</em> usa solo el nombre del host y de esta manera puede alojar
 		muchos sitios web con la misma dirección IP.<br /> Consulte: <a
 		href="vhosts/">Documentación sobre Hosting Virtual en
-		Apache</a></dd>
+		httpd</a></dd>
 
 
 		<dt><a name="uniformresourceidentifier">Identificador de Recursos
@@ -338,17 +339,17 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="module" id="module">Módulo</a></dt>
 		<dd>Una parte independiente
-		de un programa. La mayor parte de la funcionalidad de Apache
+		de un programa. La mayor parte de la funcionalidad de httpd
 		está contenida en módulos que pueden incluirse o excluirse.
-		Los módulos que se compilan con el binario <program> httpd </program>de Apache se
+		Los módulos que se compilan con el binario de <program> httpd </program> se
 		llaman <em>módulos estáticos</em>, mientras que los que se
 		almacenan de forma separada y pueden ser cargados de forma opcional,
 		se llaman <em>módulos dinámicos</em> o <glossary ref="dso">DSOs</glossary>.
 		Los módulos que están incluidos por defecto de llaman
 		<em>módulos base</em>.  Hay muchos módulos disponibles para
-		Apache que no se distribuyen con la <glossary
+		httpd que no se distribuyen con la <glossary
 		ref="tarball">tarball</glossary> del
-		Servidor HTTP Apache.  Estos módulos son llamados
+		Servidor Apache HTTP.  Estos módulos son llamados
 		<em>módulos de terceros</em>.<br /> Consulte: <a
 		href="mod/">Índice de Módulos</a></dd>
 
@@ -381,15 +382,15 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		(<a name="mmn">MMN Module Magic
 		Number</a>)</dt> <dd> El módulo del número
 		mágico es una constante definida en el código
-		fuente de Apache que está asociado con la compatibilidad binaria
+		fuente de httpd que está asociado con la compatibilidad binaria
 		de los módulos. Ese número cambia cuando cambian las
-		estructuras internas de Apache, las llamadas a funciones y otras
+		estructuras internas de httpd, las llamadas a funciones y otras
 		partes significativas de la interfaz de programación de manera
 		que la compatibilidad binaria no puede garantizarse sin cambiarlo.  Si
 		cambia el número mágico de módulo, todos los
 		módulos de terceros tienen que ser al menos recompilados, y
 		algunas veces, incluso hay que introducir ligeras modificaciones para
-		que funcionen con la nueva versión de Apache </dd>
+		que funcionen con la nueva versión de httpd. </dd>
 
 
 		<dt><a name="fully-qualifieddomain-name" id="fully-qualifieddomain-name">Nombre de dominio
@@ -441,7 +442,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 			id="hypertexttransferprotocol">Protocolo de Transferencia de
 		Hipertexto</a> <a name="http">(HTTP)</a></dt> 
 		<dd>Es el protocolo de
-		transmisión estádar usado en la World Wide Web.  Apache
+		transmisión estándar usado en la World Wide Web.  httpd
 		implementa la versión 1.1 de este protocolo, al que se hace
 		referencia como HTTP/1.1 y definido por el <a
 		href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.</dd>
@@ -509,7 +510,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 
 		<dt><a name="subrequest" id="subrequest">Subconsulta</a></dt>
-		<dd>Apache proporciona una API de subconsultasd a los módulos,
+		<dd>httpd proporciona una API de subconsultasd a los módulos,
 		que permiten a otros sistemas de ficheros o paths de URL ser parcial o totalmente evaluados
 		por el servidor. Un ejemplo de los que usan esta API sería
 		<directive module="mod_dir">DirectoryIndex</directive>,
@@ -518,7 +519,7 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 
 		<dt><a name="tarball" id="tarball">Tarball</a></dt> <dd>Un grupo de ficheros
 		puestos en un solo paquete usando la utilidad <code>tar</code>.  Las
-		distribuciones Apache se almacenan en ficheros comprimidos con tar o
+		distribuciones httpd se almacenan en ficheros comprimidos con tar o
 		con pkzip.</dd>
 
 		<dt><a name="ciphertext" id="ciphertext">Texto cifrado.</a></dt> 
@@ -547,11 +548,11 @@ Note: I have sorted alphabetically the file so it will be easy to use this page.
 		name="env-variable">(env-variable)</a></dt> 
 		<dd>Variables que
 		gestionan el shell del sistema operativo y que se usan para guardar
-		información y para la comunicación entre programas.  Apache
+		información y para la comunicación entre programas.  httpd
 		también contiene variables internas que son referidas como
 		variables de entorno, pero que son almacenadas en las estructuras
-		internas de Apache, en lugar de en el entorno del shell.<br />
-		Consulte: <a href="env.html">Variables de entorno de Apache</a></dd>
+		internas de httpd, en lugar de en el entorno del shell.<br />
+		Consulte: <a href="env.html">Variables de entorno de Apache httpd</a></dd>
 
 
 		<dt><a name="x.509" id="x.509">X.509</a></dt> <dd>Un esquema de certificado de

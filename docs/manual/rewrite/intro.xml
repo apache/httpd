@@ -35,14 +35,13 @@ but this doc should help the beginner get their feet wet.
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
-<!-- <seealso><a href="intro.html">mod_rewrite introduction</a></seealso> -->
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
-<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
+<seealso><a href="flags.html">RewriteRule Flags</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-<seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
-<seealso><a href="advanced.html">Advanced techniques</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p>The Apache module <module>mod_rewrite</module> is a very powerful and
@@ -73,14 +72,16 @@ it will tell you exactly how each rule is processed.</p>
 
 <section id="regex"><title>Regular Expressions</title>
 
-<p><module>mod_rewrite</module> uses the <a href="http://pcre.org/">Perl Compatible
+<p><module>mod_rewrite</module> uses the <a href="https://www.pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
+recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre">Perl regular
 expression man page</a>, and <a
-href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
+2006, but regular expression syntax is essentially unchanged, and this
+remains the definitive reference on the subject).</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
 to get you started, without being overwhelming, in the hope that
@@ -164,10 +165,22 @@ well as write your own.</p>
       not <code>c/t</code></td></tr>
 </table>
 
-<p>In <module>mod_rewrite</module> the <code>!</code> character can be
+<p>The <code>!</code> (Not) character can be
 used before a regular expression to negate it. This is, a string will
 be considered to have matched only if it does not match the rest of
 the expression.</p>
+
+<p>When using <code>!</code> to negate a pattern, note that
+<a href="#InternalBackRefs">backreferences</a> (e.g.
+<code>$1</code>, <code>$2</code>) are not available, since the
+pattern does not match.</p>
+
+<p>For example, the following will redirect any request that does
+<em>not</em> start with <code>/admin</code></p>
+
+<highlight language="config">
+RewriteRule "!^/admin" "/xyz.html" [R,L]
+</highlight>
 
 </section>
 
@@ -217,14 +230,32 @@ of three arguments separated by spaces. The arguments are</p>
 </ol>
 
 <p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
-It is initially (for the first rewrite rule or until a substitution occurs)
-matched against the URL-path of the incoming request (the part after the
-hostname but before any question mark indicating the beginning of a query
-string) or, in per-directory context, against the request's path relative
-to the directory for which the rule is defined. Once a substitution has
-occurred, the rules that follow are matched against the substituted
-value.
+In server or virtualhost context, it is matched against the
+%-decoded <a href="../directive-dict.html#Syntax">URL-path</a>
+of the incoming request &mdash; the part after the hostname and port,
+and not including the query string (e.g., <code>/app/index.html</code>).
+In <glossary ref="perdirectory">per-directory context</glossary>,
+the pattern is matched against the request's path relative to the
+directory for which the rule is defined (with the directory prefix
+stripped &mdash; see <a href="htaccess.html#path-stripping">Per-directory
+Rewrites</a> for details).
 </p>
+
+<p>Once a substitution has occurred, any rules that follow are
+matched against the substituted value.</p>
+
+<p>The <var>Pattern</var> is matched only against the URL-path
+&mdash; not the hostname, port, or query string. To match against
+those, use a
+<directive module="mod_rewrite">RewriteCond</directive> with the
+<code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
+<code>%{QUERY_STRING}</code> variables respectively.</p>
+
+<note><module>mod_rewrite</module> operates entirely on the URL-path
+and HTTP headers. It cannot inspect the request body (e.g., POST
+data). If you need to make routing decisions based on request body
+content, handle that in your application logic or use a module such
+as <module>mod_request</module> paired with a custom filter.</note>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
@@ -371,21 +402,93 @@ href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 
 <section id="htaccess"><title>.htaccess files</title>
 
-<p>Rewriting is typically configured in the main server configuration
-setting (outside any <directive type="section"
-module="core">Directory</directive> section) or
-inside <directive type="section" module="core">VirtualHost</directive>
-containers. This is the easiest way to do rewriting and is
-recommended. It is possible, however, to do rewriting
-inside <directive type="section" module="core">Directory</directive>
-sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
-files</a> at the expense of some additional complexity. This technique
-is called per-directory rewrites.</p>
+<p>It is possible to use rewrite rules in
+<glossary ref="perdirectory">per-directory</glossary> context
+(<a href="../howto/htaccess.html"><code>.htaccess</code> files</a> and
+<directive type="section" module="core">Directory</directive> blocks),
+but the rules behave differently there — in particular, the directory
+prefix is stripped from the URL before matching. See the
+<a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
+document for full details.</p>
 
-<p>The main difference with per-server rewrites is that the path
-prefix of the directory containing the <code>.htaccess</code> file is
-stripped before matching in
-the <directive module="mod_rewrite">RewriteRule</directive>. In addition, the <directive module="mod_rewrite">RewriteBase</directive> should be used to assure the request is properly mapped.</p>
+</section>
+
+<section id="security"><title>Security Considerations</title>
+
+<p><module>mod_rewrite</module> is a powerful URL manipulation tool, and
+with that power comes the potential for security mistakes. This section
+highlights the most common security pitfalls to watch for when writing
+rewrite rules.</p>
+
+<section id="security-redirect"><title>Open Redirects</title>
+
+<p>If a <directive module="mod_rewrite">RewriteRule</directive>
+constructs a redirect URL using unvalidated user input, an attacker
+can craft a link that redirects visitors to a malicious site while
+appearing to originate from your domain. This is known as an
+<em>open redirect</em> vulnerability.</p>
+
+<p>For example, this rule is dangerous:</p>
+
+<highlight language="config">
+# DANGEROUS - allows open redirect
+RewriteRule "^/redirect" "%{QUERY_STRING}" [R,L]
+</highlight>
+
+<p>An attacker could use
+<code>https://yoursite.com/redirect?https://evil.com</code> to redirect
+users to a malicious site. Always validate or constrain redirect
+targets. If the destination must be on your own site, ensure the
+substitution begins with <code>/</code> (a relative path) rather than
+allowing a full URL from user input.</p>
+
+</section>
+
+<section id="security-ssrf"><title>Server-Side Request Forgery (SSRF)</title>
+
+<p>When using the <a href="flags.html#flag_p">[P] (proxy) flag</a>,
+<module>mod_rewrite</module> causes the server to make an HTTP request
+to the substitution URL on behalf of the client. If any part of that
+URL is derived from user input - backreferences, query strings, or
+headers - an attacker may be able to cause your server to make requests
+to arbitrary internal services or external hosts.</p>
+
+<p>For example:</p>
+
+<highlight language="config">
+# DANGEROUS - user controls the proxy target
+RewriteCond "%{QUERY_STRING}" "target=(.+)"
+RewriteRule "^/fetch" "http://%1" [P]
+</highlight>
+
+<p>An attacker could use this to probe internal network services that
+are not otherwise accessible from the internet. Always use a fixed
+hostname in proxy targets, and limit backreferences to the path
+component only.</p>
+
+</section>
+
+<section id="security-path"><title>Path Traversal</title>
+
+<p>Rewrite rules that map user-supplied path components directly to
+the filesystem can allow path traversal attacks if the input is not
+properly constrained. For example:</p>
+
+<highlight language="config">
+# DANGEROUS - allows path traversal
+RewriteRule "^/files/(.+)" "/var/data/$1" [L]
+</highlight>
+
+<p>A request for <code>/files/../../etc/passwd</code> could potentially
+access files outside the intended directory. Use restrictive patterns
+in your <directive module="mod_rewrite">RewriteRule</directive> (for
+example, <code>[a-zA-Z0-9_-]+</code> instead of <code>.+</code>), and
+rely on Apache's built-in protections
+(<directive module="core">Options</directive> and
+<directive module="core" type="section">Directory</directive>
+restrictions) as defense in depth.</p>
+
+</section>
 
 </section>
 

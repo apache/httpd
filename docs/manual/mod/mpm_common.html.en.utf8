@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache MPM Common Directives</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/mpm_common.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mpm_common.html" title="English">&nbsp;en&nbsp;</a> |
@@ -62,9 +64,7 @@ more than one multi-processing module (MPM)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_common">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_common">Report a bug</a></li></ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="#comments_section">Comments</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_common">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_common">Report a bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Directive</a> <a title="Permanent link" href="#accepterrorsnonfatal" class="permalink">&para;</a></h2>
@@ -286,7 +286,7 @@ Listen 192.170.2.5:8000</pre>
       IPv6 address without also accepting connections via IPv4, or
       conflicting with a Listen directive using an IPv4 address bound
       to the same port.  (If the server is built with IPv4-mapped
-      addresses <em>disabled</em>, this is the default behaviour and
+      addresses <em>disabled</em>, this is the default behavior and
       this option has no effect.)</li>
 
       <li><code>multipathtcp</code>: Enable the use of
@@ -308,7 +308,7 @@ Listen 192.170.2.5:8000</pre>
 <li><a href="../dns-caveats.html">DNS Issues</a></li>
 <li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
     uses</a></li>
-<li><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Further
+<li><a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">Further
 discussion of the <code>Address already in use</code> error message,
 including other causes.</a></li>
 </ul>
@@ -499,9 +499,29 @@ simultaneously</td></tr>
     <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
     or <code class="module"><a href="../mod/worker.html">worker</a></code>), <code class="directive">MaxRequestWorkers</code> restricts
     the total number of threads that will be available to serve clients.
-    For hybrid MPMs, the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
+    For threaded and hybrid MPMs, the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
     <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxRequestWorkers</code> to a value that requires more than 16 processes,
     you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
+
+    <p>For threaded and hybrid MPMs, <code class="directive">MaxRequestWorkers</code>
+    must be at least as large as
+    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>, and
+    should be an integer multiple of
+    <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>. If it
+    is not a multiple, the server will round it down to the nearest
+    multiple at startup and log a warning.</p>
+
+    <div class="example"><h3>Warning: MaxRequestWorkers too small</h3><p><code>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </code></p></div>
+
+    <div class="example"><h3>Warning: MaxRequestWorkers not a multiple of ThreadsPerChild</h3><p><code>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </code></p></div>
 
     <p><code class="directive">MaxRequestWorkers</code> was called
     <code class="directive">MaxClients</code> before version 2.3.13. The old name is still
@@ -589,6 +609,10 @@ spikes</td></tr>
     similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>.  For
     <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>5</code>.</p>
 
+    <p>The value of <code class="directive">MinSpareThreads</code> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li>
@@ -644,7 +668,8 @@ of the daemon</td></tr>
     bytes specified.</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS default.</p>
+    OS default. If set to a non-zero value, it must be at least
+    <code>512</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -703,7 +728,8 @@ Apache HTTP Server</a></li>
     (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    default value provided by your OS.</p>
+    default value provided by your OS. If set to a non-zero value,
+    it must be at least <code>512</code>.</p>
 
     <p>Further configuration of your operating system may be required to elicit
     better performance on high speed, high latency connections.</p>
@@ -769,6 +795,10 @@ Apache HTTP Server</a></li>
       MAX_SERVER_LIMIT in the mpm source file and rebuild the server.</p>
     </div>
 
+    <p>The value of <code class="directive">ServerLimit</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
+
 <h3>See also</h3>
 <ul>
 <li><a href="../stopping.html">Stopping and Restarting Apache HTTP Server</a></li>
@@ -796,6 +826,11 @@ Apache HTTP Server</a></li>
     <code class="module"><a href="../mod/event.html">event</a></code> default to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">
     prefork</a></code> defaults to <code>5</code>; <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>
     defaults to <code>2</code>.</p>
+
+    <p>The value of <code class="directive">StartServers</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged. On <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, a value of 0
+    is also accepted; values less than 0 will be increased to 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -863,6 +898,10 @@ per child process</td></tr>
       source file and rebuild the server.</p>
     </div>
 
+    <p>The value of <code class="directive">ThreadLimit</code> must be at least
+    1. Values less than 1 will be automatically increased to 1 and a
+    warning will be logged.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a name="threadsperchild" id="threadsperchild">Directive</a> <a title="Permanent link" href="#threadsperchild" class="permalink">&para;</a></h2>
@@ -892,6 +931,15 @@ per child process</td></tr>
     higher value is configured, it will be automatically reduced at start-up
     and a warning will be logged. The relationship between these 2 directives
     is explained in <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>.</p>
+
+    <p>The value of <code class="directive">ThreadsPerChild</code> must be at
+    least 1. Values less than 1 will be automatically increased to 1
+    and a warning will be logged.</p>
+
+    <p>The value of <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code>
+    must be an integer multiple of <code class="directive">ThreadsPerChild</code>.
+    See <code class="directive"><a href="#maxrequestworkers">MaxRequestWorkers</a></code> for
+    details.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -956,28 +1004,32 @@ client connections</td></tr>
 <a href="../fr/mod/mpm_common.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mpm_common.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

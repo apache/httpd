@@ -2,12 +2,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Tutoriel Apache : Contenu dynamique basé sur CGI - Serveur HTTP Apache Version 2.5</title>
+<title>Didacticiel du serveur HTTP Apache : Contenu dynamique basé sur CGI - Serveur HTTP Apache Version 2.5</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Tutoriel Apache : Contenu dynamique basé sur CGI</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Recettes et tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Didacticiel du serveur HTTP Apache : Contenu dynamique basé sur CGI</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/cgi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -29,15 +31,17 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer Apache pour autoriser CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#configuring">Configurer httpd pour autoriser CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writing">Ecrire un programme CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Mais ça ne marche toujours pas !</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#behindscenes">Que se passe-t-il en coulisse</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#libraries">Bibliothèques et modules CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinfo">Pour plus d'informations</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Introduction</a> <a title="Lien permanent" href="#intro" class="permalink">&para;</a></h2>
@@ -51,18 +55,18 @@
     s'agit d'une méthode simple pour ajouter du contenu dynamique à votre site
     web en utilisant votre langage de programmation préféré.
     Ce document est une introduction à la configuration de CGI sur votre
-    serveur web Apache, et une initiation à l'écriture de programmes
+    serveur web HTTP Apache, et une initiation à l'écriture de programmes
     CGI.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurer Apache pour autoriser CGI</a> <a title="Lien permanent" href="#configuring" class="permalink">&para;</a></h2>
+<h2><a name="configuring" id="configuring">Configurer httpd pour autoriser CGI</a> <a title="Lien permanent" href="#configuring" class="permalink">&para;</a></h2>
     
 
-    <p>Apache doit être configuré pour permettre l'exécution des
+    <p>httpd doit être configuré pour permettre l'exécution des
     programmes CGI, pour que vos programmes CGI puissent fonctionner
     correctement. Il existe plusieurs méthodes pour y parvenir.</p>
 
-    <div class="warning">Note: si Apache a été compilé avec le support
+    <div class="warning">Note: si httpd a été compilé avec le support
     des modules partagés (DSO), vous devez vous assurer que le module CGI est
     chargé ; vous devez pour cela vérifier que la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> correspondante n'a pas été
     commentée dans votre <code>httpd.conf</code>. Une directive correcte
@@ -82,8 +86,8 @@
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
 
-      <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> indique à Apache qu'un
-      répertoire particulier est dédié aux programmes CGI. Apache
+      <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> indique à httpd qu'un
+      répertoire particulier est dédié aux programmes CGI. httpd
       considérera que tout fichier situé dans ce répertoire est un
       programme CGI, et tentera de l'exécuter lorsque cette ressource
       fera l'objet d'une requête client.</p>
@@ -95,7 +99,7 @@
 
 
       <p>Cet exemple est tiré de votre fichier de configuration
-      <code>httpd.conf</code> par défaut, si vous avez installé Apache
+      <code>httpd.conf</code> par défaut, si vous avez installé httpd
       dans son répertoire par défaut. La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> est similaire à la
       directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, qui
       définit à quel répertoire particulier doit correspondre un préfixe
@@ -107,17 +111,17 @@
       réside dans le fait que <code class="directive">ScriptAlias</code> indique
       en plus que tout ce qui se trouve sous le préfixe d'URL doit être
       considéré comme un programme CGI. Ainsi, l'exemple ci-dessus
-      indique à Apache que toute requête pour une ressource commençant
+      indique à httpd que toute requête pour une ressource commençant
       par <code>/cgi-bin/</code> doit être servie depuis le répertoire
       <code>/usr/local/apache2/cgi-bin/</code>, et doit être traitée en
       tant que programme CGI.</p>
 
       <p>Par exemple, si une requête pour l'URL
       <code>http://www.example.com/cgi-bin/test.pl</code> est
-      effectuée, Apache tentera d'exécuter le fichier
+      effectuée, httpd tentera d'exécuter le fichier
       <code>/usr/local/apache2/cgi-bin/test.pl</code> et en renverra la
       sortie. Bien entendu, le fichier doit exister, être exécutable, et
-      retourner sa sortie d'une manière particulière, sinon Apache
+      retourner sa sortie d'une manière particulière, sinon httpd
       renverra un message d'erreur.</p>
     
 
@@ -161,7 +165,7 @@
 &lt;/Directory&gt;</pre>
 
 
-      <p>La directive ci-dessus indique à Apache qu'il doit permettre
+      <p>La directive ci-dessus indique à httpd qu'il doit permettre
       l'exécution des fichiers CGI. Vous devez aussi indiquer au serveur
       quels fichiers sont des fichiers CGI. La directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> suivante indique au
       serveur qu'il doit traiter tous les fichiers possédant une
@@ -249,7 +253,7 @@ print "Hello, World.";</pre>
 
       <p>Même si Perl ne vous est pas familier, vous devriez être
       capable de comprendre le fonctionnement de ce programme. La
-      première ligne indique à Apache (ou à toute interface à partir de
+      première ligne indique à httpd (ou à toute interface à partir de
       laquelle le programme s'exécute) que ce programme peut être
       exécuté en fournissant son fichier à l'interpréteur
       <code>/usr/bin/perl</code>. La seconde ligne affiche la
@@ -293,19 +297,19 @@ print "Hello, World.";</pre>
 
       <dt>Le code source de votre programme CGI ou un message "POST
       Method Not Allowed"</dt>
-      <dd>Cela signifie que vous n'avez pas configuré Apache de manière
+      <dd>Cela signifie que vous n'avez pas configuré httpd de manière
       à ce qu'il puisse traiter votre programme CGI. Relisez la section
-      sur la <a href="#configuring">configuration d'Apache</a>, et
+      sur la <a href="#configuring">configuration de httpd</a>, et
       essayez de trouver votre erreur.</dd>
 
       <dt>Un message commençant par "Forbidden"</dt>
       <dd>Ce type de message est révélateur d'un problème de
       droits. Consultez le <a href="#errorlogs">journal des erreurs
-      d'Apache</a> et la section ci-dessous sur les <a href="#permissions">droits des fichiers</a>.</dd>
+      de httpd</a> et la section ci-dessous sur les <a href="#permissions">droits des fichiers</a>.</dd>
 
       <dt>Un message contenant "Internal Server Error"</dt>
       <dd>Si vous consultez le <a href="#errorlogs">journal des erreurs
-      d'Apache</a>, vous y trouverez probablement des messages du type
+      de httpd</a>, vous y trouverez probablement des messages du type
       "Premature end of script headers" (Fin prématurée des en-têtes de
       script), éventuellement accompagnés d'un message d'erreur généré
       par votre programme CGI. Dans ce cas, il va vous falloir lire
@@ -382,7 +386,7 @@ print "Hello, World.";</pre>
 
       <p>Si votre programme CGI dépend de <a href="#env">variables
       d'environnement</a> non standards, vous devrez vous assurez que
-      ces variables lui sont bien transmises par Apache.</p>
+      ces variables lui sont bien transmises par httpd.</p>
 
       <p>Lorsque des en-têtes HTTP ne sont pas transmis à
       l'environnement, assurez-vous qu'ils sont bien formatés selon la
@@ -410,13 +414,13 @@ print "Hello, World.";</pre>
       </code></p></div>
 
       <p>(N'invoquez pas l'interpréteur <code>perl</code>. Le shell et
-      Apache doivent être capable de le déterminer à partir de <a href="#pathinformation">l'information sur le chemin</a> située sur
+      httpd doivent être capable de le déterminer à partir de <a href="#pathinformation">l'information sur le chemin</a> située sur
       la première ligne du script.)</p>
 
       <p>La première chose que vous devriez voir affichée par votre
       programme est un ensemble d'en-têtes HTTP, comprenant entre autres
       le <code>Content-Type</code>, et suivi d'une ligne vide. Si vous
-      voyez quoi que ce soit d'autre, Apache renverra l'erreur
+      voyez quoi que ce soit d'autre, httpd renverra l'erreur
       <code>Premature end of script headers</code> si vous tentez
       d'exécuter le programme depuis le serveur. Voir <a href="#writing">Ecriture d'un programme CGI</a> ci-dessus pour
       plus de détails.</p>
@@ -449,7 +453,7 @@ print "Hello, World.";</pre>
 
       <p>Pour savoir si vous pouvez utiliser suexec, tapez la commande
       <code>apachectl -V</code>, et regardez le chemin indiqué par
-      <code>SUEXEC_BIN</code>. Si au démarrage d'Apache, ce dernier
+      <code>SUEXEC_BIN</code>. Si au démarrage d'httpd, ce dernier
       trouve un exécutable <code class="program"><a href="../programs/suexec.html">suexec</a></code> dans ce chemin,
       suexec sera activé.</p>
 
@@ -492,7 +496,7 @@ print "Hello, World.";</pre>
       définissent aussi des variables d'environnement, de façon à ce
       qu'ils puissent communiquer entre eux. Ces variables définissent
       entre autre le type de navigateur (Netscape, IE, Lynx), le type de
-      serveur (Apache, IIS, WebSite), le nom du programme CGI en cours
+      serveur (httpd, IIS, WebSite), le nom du programme CGI en cours
       d'exécution, etc...</p>
 
       <p>Ces variables sont à la disposition du programmeur CGI, et
@@ -503,12 +507,12 @@ print "Hello, World.";</pre>
 
       <p>Ce programme CGI basique en Perl permet d'afficher toutes les
       variables d'environnement qui sont échangées. Deux programmes
-      similaires sont fournis avec la distribution d'Apache et situés
+      similaires sont fournis avec la distribution de httpd et situés
       dans le répertoire <code>cgi-bin</code>.
       Notez que certaines variables sont
       obligatoires, alors que d'autres sont optionnelles, si bien que
       vous verrez s'afficher certaines variables qui ne font pas partie
-      de la liste officielle. De plus, Apache vous propose de nombreuses
+      de la liste officielle. De plus, httpd vous propose de nombreuses
       méthodes pour <a href="../env.html">ajouter vos propres
       variables d'environnement</a> aux variables de base fournies par
       défaut.</p>
@@ -607,8 +611,8 @@ foreach my $key (keys %ENV) {
 
     <p>Notez que les questions à propos de problèmes CGI ne doivent
     <strong>jamais</strong> être postées dans la base de données de
-    bogues d'Apache, à moins que vous ne soyez sûr d'avoir trouvé un
-    problème dans le code source d'Apache.</p>
+    bogues de httpd, à moins que vous ne soyez sûr d'avoir trouvé un
+    problème dans le code source de httpd.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -616,28 +620,32 @@ foreach my $key (keys %ENV) {
 <a href="../fr/howto/cgi.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/howto/cgi.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

@@ -282,6 +282,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->profile = add->profile? add->profile : base->profile;
     nsc->profile_mandatory = (add->profile_mandatory != DEF_VAL)? add->profile_mandatory : base->profile_mandatory;
     nsc->stapling = (add->stapling != DEF_VAL)? add->stapling : base->stapling;
+    nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
     nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
     nsc->current = NULL;

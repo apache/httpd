@@ -1,0 +1,539 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>RewriteMap Kullanımı - Apache HTTP Sunucusu Sürüm 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<script src="../style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
+<img alt="" src="../images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteMap Kullanımı</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+
+
+    <p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesinin
+kullanımını açıklar ve çeşitli <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> türlerinin her birine örnekler sunar.</p>
+
+    <div class="warning">Bu örneklerin birçoğunun sizin sunucu
+yapılandırmanızda değişiklik yapılmadan çalışmayacağını unutmayın; bu
+nedenle örnekleri yapılandırmanıza kopyalayıp yapıştırmak yerine
+anlamanız önemlidir.</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Giriş</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#int">int: Dahili İşlev</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#txt">txt: Düz Metin Eşlemleri</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rnd">rnd: Rastgeleleştirilmiş Düz Metin</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbm">dbm: DBM Adresleme Dosyası</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#prg">prg: Harici Yeniden Yazma Programı</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbd">dbd veya fastdbd: SQL Sorgusu</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#summary">Özet</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+    
+
+   <p>
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesi,
+   düzenli ifadelerle gerçekleştirilmesi çok karmaşık veya çok özel
+   olan yeniden yazma işlemlerini yapmak üzere
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> veya
+   <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> yönergeleri
+   bağlamında çağrılabilecek harici bir işlev tanımlar. Bu aramanın
+   kaynağı, aşağıdaki bölümlerde listelenen türlerden herhangi biri
+   olabilir ve <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+   başvuru belgelerinde numaralandırılmıştır.</p>
+
+   <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+   yönergesinin sözdizimi şöyledir:</p>
+
+<pre class="prettyprint lang-config">RewriteMap <em>EşlemAdı</em> <em>EşlemTürü</em>:<em>EşlemKaynağı</em>
+</pre>
+
+
+    <p><a id="mapfunc" name="mapfunc"><em>EşlemAdı</em></a>, eşleme
+    için atadığınız keyfi bir addır ve daha sonra yönergelerde
+    kullanacaksınız. Argümanlar eşlemeye aşağıdaki sözdizimi ile
+    iletilir:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>EşlemAdı</em> <code>:</code> <em>AramaAnahtarı</em>
+        <code>}</code> <br /> <code>${</code> <em>EşlemAdı</em> <code>:</code>
+        <em>AramaAnahtarı</em> <code>|</code> <em>ÖntanımlıDeğer</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>Böyle bir yapı oluştuğunda, <em>EşlemAdı</em> eşlemine
+      başvurulur ve <em>AramaAnahtarı</em> aranır. Anahtar bulunursa
+      eşlem-işlev yapısı <em>DeğiştirmeDeğeri</em> ile değiştirilir.
+      Anahtar bulunamazsa <em>ÖntanımlıDeğer</em> ile veya hiçbir
+      <em>ÖntanımlıDeğer</em> belirtilmemişse boş dizgeyle
+      değiştirilir.</p>
+
+    <p>Örneğin, bir
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> şöyle
+      tanımlayabilirsiniz:</p>
+    <pre class="prettyprint lang-config">RewriteMap examplemap "txt:/path/to/file/map.txt"</pre>
+
+    <p>Daha sonra bu eşlemi bir
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      içinde şöyle kullanabilirsiniz:</p>
+      <pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1}"</pre>
+
+
+<p>Eşlemde hiçbir şey bulunamazsa öntanımlı bir değer
+belirtilebilir:</p>
+
+<pre class="prettyprint lang-config">RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"</pre>
+
+
+<div class="note"><h3>Dizin başına ve .htaccess bağlamı</h3>
+<p>
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesi
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+bölümlerinde veya <code>.htaccess</code> dosyalarında kullanılamaz.
+Eşlemi sunucu veya sanal konak bağlamında bildirmelisiniz. Eşlemi
+oluşturduktan sonra, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ve <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> yönergelerinizde bu
+kapsamlarda kullanabilirsiniz. Ancak bu kapsamlarda
+<strong>bildirme</strong> yapamazsınız.</p>
+</div>
+
+<p>Aşağıdaki bölümler kullanılabilecek çeşitli <em>EşlemTürü</em>
+değerlerini açıklar ve her birine örnekler verir.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="int" id="int">int: Dahili İşlev</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+    
+
+    <p><code>int</code> EşlemTürü kullanıldığında, EşlemKaynağı
+    kullanılabilir dahili <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> işlevlerinden biridir.
+    Modül yazarları, <code>ap_register_rewrite_mapfunc</code> API'sini
+    kullanarak ek dahili işlevler sağlayabilir. Öntanımlı olarak
+    sağlanan işlevler şunlardır:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br />
+             Anahtarı tamamen büyük harfe dönüştürür.</li>
+      <li><strong>tolower</strong>:<br />
+             Anahtarı tamamen küçük harfe dönüştürür.</li>
+      <li><strong>escape</strong>:<br />
+             Anahtardaki özel karakterleri onaltılık kodlamaya
+            çevirir.</li>
+      <li><strong>unescape</strong>:<br />
+             Anahtardaki onaltılık kodlamaları özel karakterlere geri
+            çevirir.</li>
+    </ul>
+
+    <p>
+    Bu işlevlerden birini kullanmak için, int işlevine başvuran bir
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> oluşturun
+    ve ardından bunu <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergenizde
+    kullanın:
+    </p>
+
+   <p><strong>Bir URI'yi tamamen küçük harfli sürümüne
+   yönlendir</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]</pre>
+
+
+    <div class="note">
+    <p>Burada sunulan örneğin yalnızca açıklama amaçlı olduğunu ve
+    bir öneri olmadığını lütfen unutmayın. URL'leri büyük/küçük harf
+    duyarsız yapmak istiyorsanız, bunun yerine
+    <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> kullanmayı düşünün.
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="txt" id="txt">txt: Düz Metin Eşlemleri</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+    
+
+    <p><code>txt</code> EşlemTürü kullanıldığında, EşlemKaynağı satır
+    başına bir boşlukla ayrılmış anahtar/değer çifti içeren düz metin
+    eşlem dosyasının bir dosya sistemi yoludur. İsteğe bağlı olarak,
+    bir satır '#' karakteriyle başlayan bir açıklama içerebilir.</p>
+
+    <p>Geçerli bir metin yeniden yazma eşlem dosyası aşağıdaki
+    sözdizimine sahip olacaktır:</p>
+
+    <div class="example"><p><code>
+      # Açıklama satırı<br />
+      <strong><em>EşleşenAnahtar</em> <em>DeğiştirmeDeğeri</em></strong><br />
+      <strong><em>EşleşenAnahtar</em> <em>DeğiştirmeDeğeri</em></strong> # açıklama<br />
+    </code></p></div>
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    çağrıldığında, argüman bir satırın ilk argümanında aranır ve
+    bulunursa değiştirme değeri döndürülür.</p>
+
+    <p>Örneğin, daha kolay hatırlanan URL'ler için ürün adlarını
+    ürün kimliklerine çevirmek üzere aşağıdaki tarifi kullanarak bir
+    eşlem dosyası kullanabiliriz:</p>
+<p><strong>Ürün-kimlik yapılandırması</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+    <p>Burada <code>prods.php</code> betiğinin, bir ürün arama
+    eşleminde bulunmadığında <code>id=NOTFOUND</code> argümanını
+    aldığında ne yapacağını bildiğini varsayıyoruz.</p>
+
+    <p><code>/etc/apache2/productmap.txt</code> dosyası daha sonra
+    şunları içerir:</p>
+
+    <div class="example"><h3>Ürün-kimlik eşlem dosyası</h3><p><code>
+##<br />
+##  productmap.txt - Ürün-Kimlik eşlem dosyası<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </code></p></div>
+
+    <p>Böylece, <code>http://example.com/product/television</code>
+    istendiğinde, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+    uygulanır ve istek dahili olarak
+    <code>/prods.php?id=993</code> ile eşlenir.</p>
+
+    <div class="note"><h3>Not: .htaccess dosyaları</h3>
+    Verilen örnek sunucu veya sanal konak kapsamında kullanılmak üzere
+    hazırlanmıştır. Bunu bir <code>.htaccess</code> dosyasında
+    kullanmayı planlıyorsanız, herhangi bir şeyle eşleşebilmesi için
+    yeniden yazma kalıbından baştaki eğik çizgiyi kaldırmanız
+    gerekecektir:
+    <pre class="prettyprint lang-config">RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+    </div>
+
+    <div class="note"><h3>Önbelleğe alınmış aramalar</h3>
+    <p>
+    Aranan anahtarlar, eşlem dosyasının <code>mtime</code>
+    (değiştirme zamanı) değişene veya httpd sunucusu yeniden
+    başlatılana kadar httpd tarafından önbelleğe alınır. Bu, birçok
+    istek tarafından çağrılan eşlemler için daha iyi performans
+    sağlar.
+    </p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="rnd" id="rnd">rnd: Rastgeleleştirilmiş Düz Metin</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+    
+
+    <p><code>rnd</code> EşlemTürü kullanıldığında, EşlemKaynağı her
+    satırı bir anahtar ve <code>|</code> ile ayrılmış bir veya daha
+    fazla değer içeren düz metin eşlem dosyasının bir dosya sistemi
+    yoludur. Anahtar eşleşirse bu değerlerden biri rastgele
+    seçilir.</p>
+
+    <p>Örneğin, ters vekil aracılığıyla birkaç arka uç sunucu
+    arasında rastgele yük dengeleme sağlamak için aşağıdaki eşlem
+    dosyasını ve yönergeleri kullanabilirsiniz. Resimler 'static'
+    havuzundaki sunuculardan birine gönderilirken, diğer her şey
+    'dynamic' havuzuna gönderilir.</p>
+
+    <div class="example"><h3>Yeniden yazma eşlem dosyası</h3><p><code>
+##<br />
+##  map.txt -- yeniden yazma eşlem dosyası<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </code></p></div>
+<p><strong>Yapılandırma yönergeleri</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]</pre>
+
+
+    <p>Böylece, bir resim istendiğinde ve bu kurallardan ilki
+    eşleştiğinde, <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    eşlem dosyasında <code>static</code> dizgesini arar ve belirtilen
+    konak adlarından birini rastgele döndürür; bu daha sonra
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> hedefinde
+    kullanılır.</p>
+
+    <p>Sunuculardan birinin daha sık seçilmesini istiyorsanız (örneğin,
+    sunuculardan birinin daha fazla belleği varsa ve daha fazla isteği
+    işleyebiliyorsa), onu eşlem dosyasında daha fazla kez listeleyin.</p>
+
+    <div class="example"><p><code>
+static   www1|www1|www2|www3|www4
+    </code></p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbm" id="dbm">dbm: DBM Adresleme Dosyası</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+    
+
+    <p><code>dbm</code> EşlemTürü kullanıldığında, EşlemKaynağı
+    eşlemede kullanılacak anahtar/değer çiftleri içeren bir DBM
+    veritabanı dosyasının dosya sistemi yoludur. Bu, <code>txt</code>
+    eşlemiyle tamamen aynı şekilde çalışır, ancak DBM dizinlendiğinden
+    ve metin dosyası dizinlenmediğinden çok daha hızlıdır. Bu, istenen
+    anahtara daha hızlı erişim sağlar.</p>
+
+    <p>İsteğe bağlı olarak belirli bir dbm türü belirtebilirsiniz:</p>
+
+ <pre class="prettyprint lang-config">RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"</pre>
+
+
+    <p>Tür <code>sdbm</code>, <code>gdbm</code>, <code>ndbm</code>
+    veya <code>db</code> olabilir. Ancak, Apache HTTP Sunucusu ile
+    sağlanan <a href="../programs/httxt2dbm.html">httxt2dbm</a>
+    aracını kullanmanız önerilir; çünkü httpd'nin kendisi
+    oluşturulurken kullanılan doğru DBM kitaplığını kullanacaktır.</p>
+
+    <p>Bir dbm dosyası oluşturmak için önce <a href="#txt">txt</a>
+    bölümünde açıklandığı gibi bir metin eşlem dosyası oluşturun.
+    Ardından <code>httxt2dbm</code>'yi çalıştırın:</p>
+
+<div class="example"><p><code>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</code></p></div>
+
+<p>Daha sonra ortaya çıkan dosyaya <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergenizde
+başvurabilirsiniz:</p>
+
+<pre class="prettyprint lang-config">RewriteMap mapname "dbm:/etc/apache/mapfile.map"</pre>
+
+
+<div class="note">
+<p>Bazı dbm türleriyle, ortak bir temel adla birden fazla dosya
+oluşturulduğunu unutmayın. Örneğin, <code>mapfile.map.dir</code>
+ve <code>mapfile.map.pag</code> adlı iki dosyanız olabilir. Bu
+normaldir ve <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+yönergenizde yalnızca <code>mapfile.map</code> temel adını
+kullanmanız yeterlidir.</p>
+</div>
+
+<div class="note"><h3>Önbelleğe alınmış aramalar</h3>
+<p>
+Aranan anahtarlar, eşlem dosyasının <code>mtime</code>
+(değiştirme zamanı) değişene veya httpd sunucusu yeniden
+başlatılana kadar httpd tarafından önbelleğe alınır. Bu, birçok
+istek tarafından çağrılan eşlemler için daha iyi performans
+sağlar.
+</p>
+</div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="prg" id="prg">prg: Harici Yeniden Yazma Programı</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+
+    <p><code>prg</code> EşlemTürü kullanıldığında, EşlemKaynağı
+    eşleme davranışını sağlayacak çalıştırılabilir bir programın
+    dosya sistemi yoludur. Bu, derlenmiş bir ikili dosya veya Python
+    ya da Perl gibi yorumlanan bir dilde yazılmış bir program
+    olabilir.</p>
+
+    <p>Bu program, Apache HTTP Sunucusu başlatıldığında bir kez
+    başlatılır ve ardından yeniden yazma motoruyla
+    <code>STDIN</code> ve <code>STDOUT</code> aracılığıyla
+    iletişim kurar. Her eşlem işlevi aramasında, anahtar programın
+    <code>STDIN</code>'ine yazılır ve ardından bir satırsonu karakteri
+    gelir. Program, <code>STDIN</code>'den bir satır okumalı (satırsonu
+    dahil) ve yanıtını <code>STDOUT</code>'a tek bir satırsonu ile
+    sonlandırılmış satır olarak yazmalıdır. Anahtarlar hiçbir zaman
+    satırsonu karakteri içermez; satırsonu içeren bir anahtarla
+    karşılaşılırsa arama başarısız olur.</p>
+
+    <p>Karşılık gelen bir arama değeri yoksa, eşlem programı bunu
+    belirtmek için dört karakterlik "<code>NULL</code>" dizgesini
+    döndürmelidir. Bu karşılaştırmanın büyük/küçük harf duyarsız
+    olduğunu unutmayın; "null", "Null" vb. de başarısız arama olarak
+    değerlendirilir. Sonuç olarak, bir eşleme programının eşlenen
+    değer olarak "NULL" birebir dizgesini döndürmesi mümkün
+    değildir.</p>
+
+    <p>Programın <code>STDERR</code>'si httpd üst sürecinden
+    miras alınır; bu nedenle programın <code>STDERR</code>'ye
+    yazdığı her şey httpd'nin kendi hata çıktısıyla (genellikle
+    <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>) aynı yere
+    gider.</p>
+
+    <p>Harici yeniden yazma programları, <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code> <code>on</code>
+    olarak ayarlanmamış bir bağlamda tanımlanmışlarsa
+    başlatılmaz.</p>
+
+    <p>Öntanımlı olarak, harici yeniden yazma programları httpd'yi
+    başlatan kullanıcı:grup olarak çalıştırılır. Bu, UNIX
+    sistemlerinde <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    yönergesine üçüncü argüman olarak
+    <code>kullanıcıadı:grupadı</code> biçiminde kullanıcı adı ve
+    grup adı geçirilerek değiştirilebilir.</p>
+
+    <p>Bu özellik, programla güvenilir iletişim için gerekli olan
+    <code>rewrite-map</code> mutex'ini kullanır. Mutex mekanizması
+    ve kilit dosyası <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>
+    yönergesiyle yapılandırılabilir.</p>
+
+    <p>Burada, bir istek URI'sindeki tüm tireleri alt çizgilerle
+    değiştirecek basit bir örnek gösterilmektedir.</p>
+
+    <p><strong>Yeniden yazma yapılandırması</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"</pre>
+
+
+    <p><strong>dash2under.py</strong></p>
+    <pre class="prettyprint lang-python">#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)</pre>
+
+
+<div class="note"><h3>Dikkat!</h3>
+<ul>
+<li>Yeniden yazma eşlem programınızı olabildiğince basit tutun.
+Program askıda kalırsa, httpd'nin eşlemden yanıt beklerken süresiz
+olarak beklemesine neden olur ve bu da httpd'nin isteklere yanıt
+vermesini durduracaktır.</li>
+<li>Programınızda arabelleğe almayı kapattığınızdan emin olun.
+Yukarıdaki Python örneğinde bu, <code>print()</code> işlevine
+<code>flush=True</code> geçirilerek yapılır. Arabelleğe alınmış G/Ç,
+httpd'nin çıktıyı beklemesine neden olur ve askıda kalmasına
+yol açar.</li>
+<li>Sunucu başlangıcında başlatılan programın yalnızca bir kopyası
+olduğunu unutmayın. Tüm isteklerin bu tek darboğazdan geçmesi
+gerekecektir. Birçok istek bu süreçten geçmek zorundaysa veya
+betiğin kendisi çok yavaşsa bu önemli yavaşlamalara neden
+olabilir.</li>
+<li>Eşleme programı sonlanırsa otomatik olarak yeniden
+başlatılmaz. Sonraki aramalar, sunucu yeniden başlatılana kadar
+başarısız olur.</li>
+<li>Eşleme programı, ilgili yapılandırma yönergelerinin değişip
+değişmediğine bakılmaksızın herhangi bir sunucu yeniden
+başlatmasında (zarif veya başka türlü) her zaman sonlandırılır
+ve yeniden başlatılır. Kapatmada programa <code>SIGTERM</code>
+gönderilir; 3 saniye içinde çıkmazsa <code>SIGKILL</code>
+gönderilir.</li>
+</ul>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbd" id="dbd">dbd veya fastdbd: SQL Sorgusu</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+    
+
+    <p><code>dbd</code> veya <code>fastdbd</code> EşlemTürü
+    kullanıldığında, EşlemKaynağı tek bir argüman alan ve tek bir
+    değer döndüren bir SQL SELECT deyimidir.</p>
+
+    <p>Bu deyimin yürütülmesi için <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> modülünün
+    doğru veritabanına işaret edecek şekilde yapılandırılması
+    gerekir.</p>
+
+    <p>Bu EşlemTürünün iki biçimi vardır. <code>dbd</code> EşlemTürü
+    kullanmak, sorgunun her eşlem isteğinde yürütülmesine neden
+    olurken, <code>fastdbd</code> kullanmak veritabanı aramalarını
+    dahili olarak önbelleğe alır. Böylece <code>fastdbd</code> daha
+    verimli ve dolayısıyla daha hızlı olsa da, sunucu yeniden
+    başlatılana kadar veritabanındaki değişiklikleri almaz.</p>
+
+    <p>Bir sorgu birden fazla satır döndürürse, sonuç kümesinden
+    rastgele bir satır kullanılır.</p>
+
+    <div class="example"><h3>Örnek</h3><pre class="prettyprint lang-config">RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"</pre>
+</div>
+
+    <div class="note"><h3>Not</h3>
+    <p>Sorgu adı veritabanı sürücüsüne bir SQL hazır deyimi için
+    etiket olarak iletilir ve bu nedenle veritabanınız için gereken
+    tüm kuralları (büyük/küçük harf duyarlılığı gibi) izlemelidir.</p>
+    </div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="summary" id="summary">Özet</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesi
+    birden fazla kez kullanılabilir. Her eşleme-işlevi için yeniden
+    yazma eşlem dosyasını bildirmek üzere bir
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesi
+    kullanın.</p>
+
+    <p>Dizin başına bağlamda (<code>.htaccess</code> dosyaları veya
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    blokları) bir eşlem <strong>bildirmeniz</strong> mümkün olmasa da,
+    bu eşlemi dizin başına bağlamda <strong>kullanmanız</strong>
+    mümkündür.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/rewritemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/rewritemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/rewritemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/rewritemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/rewritemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/rewritemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/rewritemap.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

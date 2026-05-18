@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 1044378 -->
+<!-- English Revision: 1044378:1933438 (outdated) -->
 <!-- Updated by Luis Gil de Bernabé Pfeiffer lgilbernabe[AT]apache.org -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,7 +28,7 @@
 <summary>
 
     <p>Las preguntas frecuentes se han movido a la  <a
-    href="http://wiki.apache.org/httpd/FAQ">Wiki de HTTP Server (en Inglés)</a>.</p>
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Wiki de HTTP Server (en Inglés)</a>.</p>
 </summary>
 
 </manualpage>

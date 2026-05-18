@@ -1053,3 +1053,188 @@ h2:hover > .permalink {
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  * -> The End <-
  * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ * Responsive / Mobile
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/* Globe toggle - hidden on desktop */
+.lang-toggle {
+    display: none;
+}
+
+/* Quickview toggle - hidden on desktop */
+.qv-toggle {
+    display: none;
+}
+
+/* Tablet breakpoint */
+@media (max-width: 900px) {
+    div.section,
+    div.directive-section {
+        margin-left: 30px;
+    }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+    body {
+        padding: 0 0.5em;
+    }
+
+    div#page-header {
+        margin-left: 0;
+        background-color: #405871;
+        padding: 5px 0 8px;
+    }
+
+    div#page-header p.apache {
+        padding: 0 10px;
+        text-align: center;
+    }
+
+    div#page-header p.menu {
+        display: none;
+    }
+
+    /* Language toggle: hidden by default, shown on globe click */
+    .toplang {
+        display: none;
+        margin: 0.5em 0;
+        padding: 0 10px;
+    }
+
+    .toplang.open {
+        display: block;
+    }
+
+    .toplang p {
+        font-size: 11px;
+        text-align: center;
+    }
+
+    .lang-toggle {
+        display: inline-block;
+        background: #557697;
+        color: #fff;
+        border: none;
+        font-size: 12px;
+        cursor: pointer;
+        padding: 4px 10px;
+        border-radius: 3px;
+    }
+
+    div#page-header img {
+        width: 100%;
+        max-width: 248px;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+
+    div#preamble {
+        margin-left: 0;
+    }
+
+    div.section,
+    div.directive-section {
+        margin: 0;
+        padding: 0;
+    }
+
+    div#path {
+        margin-left: 0;
+    }
+
+    div#page-content {
+        margin-left: 0;
+        margin-right: 0;
+        padding-right: 0;
+    }
+
+    div#footer {
+        margin-left: 0;
+    }
+
+    div.note,
+    div.example,
+    div.warning {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    #quickview {
+        position: absolute !important;
+        right: 0;
+        width: 75%;
+        max-width: 300px;
+        max-height: 80vh;
+        overflow-y: auto;
+        margin: 0;
+        padding: 12px;
+        display: none;
+        background-color: #f0f0f0;
+        border-radius: 4px 0 0 4px;
+        box-shadow: -2px 2px 8px rgba(0,0,0,0.3);
+        z-index: 1000;
+    }
+
+    #quickview.open {
+        display: block;
+    }
+
+    .qv-toggle {
+        display: block;
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1001;
+        background: #557697;
+        color: #fff;
+        border: none;
+        font-size: 14px;
+        padding: 6px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .qv-toggle:hover {
+        background: #405871;
+    }
+
+    div#directive-ref {
+        padding-left: 0;
+    }
+
+    div#directive-list {
+        margin-left: 0;
+    }
+
+    /* Prevent tables from overflowing */
+    table {
+        display: block;
+        overflow-x: auto;
+        max-width: 100%;
+    }
+
+    /* Front page: stack the 3-column layout */
+    table#indextable,
+    table#indextable td {
+        display: block;
+        width: 100%;
+        border-left: none;
+        padding: 0;
+    }
+
+    table#indextable td {
+        border-top: 1px solid #aaa;
+        padding: 0.5em 0;
+    }
+
+    /* Prevent code blocks from overflowing */
+    pre {
+        overflow-x: auto;
+        max-width: 100%;
+    }
+}

@@ -517,15 +517,35 @@ a directory</description>
 <usage>
     <p>The <directive>IndexIgnore</directive> directive adds to the
     list of files to hide when listing a directory. <var>File</var> is a
-    shell-style wildcard expression or full
-    filename. Multiple IndexIgnore directives add
-    to the list, rather than replacing the list of ignored
-    files. By default, the list contains <code>.</code> (the current
-    directory).</p>
+    filename or pattern which may contain the <code>?</code> and
+    <code>*</code> wildcard characters. <code>?</code> matches any
+    single character, and <code>*</code> matches any sequence of
+    characters, including an empty sequence. Multiple IndexIgnore
+    directives add to the list, rather than replacing the list of
+    ignored files. By default, the list contains <code>.</code> (the
+    current directory).</p>
 
     <highlight language="config">
       IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
     </highlight>
+
+    <p>If <var>File</var> contains a <code>/</code> character, only
+    the portion after the last <code>/</code> is used for matching
+    against filenames. For example, <code>*/.??*</code> is equivalent
+    to <code>.??*</code>.</p>
+
+    <note><title>Differences from shell wildcard patterns</title>
+      <p>The wildcard matching used here is <em>not</em> the same as
+      shell-style (glob) filename pattern matching. In particular:</p>
+      <ul>
+        <li>Bracket expressions such as <code>[abc]</code> or
+        <code>[!.]</code> are not supported; they are treated as
+        literal characters.</li>
+        <li>A leading <code>.</code> in a filename is not treated
+        specially. For example, <code>*~</code> will match
+        <code>.example~</code>, whereas a shell glob would not.</li>
+      </ul>
+    </note>
 
     <note><title>Regular Expressions</title>
       <p>This directive does not currently work in configuration sections
@@ -730,9 +750,11 @@ indexing</description>
                | *]</a></dt>
 
       <dd>The <code>NameWidth</code> keyword allows you to specify the width
-      of the filename column in bytes.</dd>
+      of the filename column in bytes. The value must be greater than
+      5, or <code>*</code> for automatic width. If unset or prefixed
+      with <code>-</code>, the default of 20 bytes is used.</dd>
 
-      <dd><code>-NameWidth</code> (or unset) allows <module
+      <dd>When unset, <module
       >mod_autoindex</module> to calculate the best width, but only up
       to 20 bytes wide.</dd>
 
@@ -798,7 +820,7 @@ indexing</description>
       directive, the module usually includes the contents of the file
       after a standard HTML preamble (<code>&lt;html&gt;</code>,
       <code>&lt;head&gt;</code>, <em>et cetera</em>). The
-      <code>SuppressHTMLPreamble</code> option disables this behaviour,
+      <code>SuppressHTMLPreamble</code> option disables this behavior,
       causing the module to start the display with the header file
       contents. The header file must contain appropriate HTML instructions
       in this case. If there is no header file, the preamble is generated
@@ -935,6 +957,17 @@ indexing</description>
       ><code>FancyIndexing</code></a> is also enabled.</strong>
       </dd>
 
+      <dt><a name="indexoptions.none"
+               id="indexoptions.none">None</a></dt>
+
+      <dd>The <code>None</code> keyword disables all indexing options
+      for the directory. No fancy indexing features will be enabled.
+      <note><code>None</code> cannot be prefixed with <code>+</code>
+      or <code>-</code>, and it cannot be combined with any other
+      <directive>IndexOptions</directive> keyword. If <code>None</code>
+      is specified, it must be the only option given.</note>
+      </dd>
+
     </dl>
 
 
@@ -974,7 +1007,12 @@ indexing</description>
      settings (which may have been inherited from an upper-level
      directory). However, whenever an unprefixed keyword is processed, it
      clears all inherited options and any incremental settings encountered
-     so far. Consider the following example:</p>
+     so far, except for options that take a value
+     (<code>Charset</code>, <code>Type</code>,
+     <code>DescriptionWidth</code>, <code>NameWidth</code>,
+     <code>IconWidth</code>, <code>IconHeight</code>),
+     which are inherited independently.
+     Consider the following example:</p>
 
      <highlight language="config">
 IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing
@@ -989,6 +1027,11 @@ IndexOptions +SuppressSize
      <p>To unconditionally set the <directive>IndexOptions</directive> for
      a particular directory, clearing the inherited settings, specify
      keywords without any <code>+</code> or <code>-</code> prefixes.</p>
+
+     <p>Note that the <code>+</code> and <code>-</code> prefixes cannot
+     be used with options that take a value, such as
+     <code>IconWidth</code>, <code>IconHeight</code>,
+     <code>NameWidth</code>, or <code>DescriptionWidth</code>.</p>
    </dd>
    </dl>
 </usage>

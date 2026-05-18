@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='EUC-KR' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
+<!-- English Revision: 1933438:1934111 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache mod_rewrite</title>
+
+<summary>
+
+    <p><module>mod_rewrite</module>는 <a href="intro.html#regex">정규
+    표현식</a> 규칙에 기반하여 들어오는 URL 요청을 동적으로
+    수정하는 방법을 제공합니다. 이를 통해 임의의 URL을
+    내부 URL 구조에 원하는 방식으로 매핑할 수 있습니다.</p>
+
+      <p>이것은 무제한의 규칙과 각 규칙에 대한 무제한의
+      첨부된 규칙 조건을 지원하여 정말로 유연하고 강력한
+      URL 조작 메커니즘을 제공합니다. URL 조작은 다양한
+      테스트에 의존할 수 있습니다: 서버 변수, 환경 변수,
+      HTTP 헤더, 타임스탬프, 외부 데이터베이스 조회 및
+      다양한 기타 외부 프로그램이나 핸들러를 사용하여
+      세밀한 URL 매칭을 달성할 수 있습니다.</p>
+
+      <p>재작성 규칙은 경로 정보 및 쿼리 문자열 부분을
+      포함한 전체 URL에 대해 작동할 수 있으며, 서버별
+      컨텍스트(<code>httpd.conf</code>), 가상호스트별
+      컨텍스트(<directive type="section"
+      module="core">VirtualHost</directive> 블록) 또는
+      디렉토리별 컨텍스트(<code>.htaccess</code> 파일 및
+      <directive type="section"
+      module="core">Directory</directive> 블록)에서
+      사용할 수 있습니다. 재작성된 결과는 규칙에 첨부하는
+      <a href="flags.html">플래그</a>에 따라 추가 규칙,
+      내부 하위 처리, 외부 요청 리다이렉션 또는 프록시
+      패스스루로 이어질 수 있습니다.</p>
+
+      <p><module>mod_rewrite</module>는 매우 강력하므로
+      상당히 복잡할 수 있습니다. 이 문서는
+      <a href="../mod/mod_rewrite.html">참조 문서</a>를
+      보충하며, 이러한 복잡성을 완화하고
+      <module>mod_rewrite</module>로 처리할 수 있는 일반적인
+      시나리오의 주석이 풍부한 예제를 제공하고자 합니다.
+      하지만 <module>mod_rewrite</module>를 사용하지 말아야 할
+      때도 보여주며, 대신 다른 표준 Apache 기능을 사용하여
+      이러한 불필요한 복잡성을 피하도록 합니다.</p>
+
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite 참조
+문서</a></li>
+<li><a href="intro.html">정규 표현식과 mod_rewrite 소개</a></li>
+<li><a href="flags.html">RewriteRule 플래그</a></li>
+<li><a href="rewritemap.html">RewriteMap 사용하기</a></li>
+<li><a href="avoid.html">mod_rewrite를 사용하지 <strong>말아야 할</strong> 경우</a></li>
+<li><a href="remapping.html">URL 리다이렉션 및 재매핑을 위한 mod_rewrite 사용</a></li>
+<li><a href="access.html">접근 제어를 위한 mod_rewrite 사용</a></li>
+<li><a href="vhosts.html">mod_rewrite를 사용한 동적 가상 호스트</a></li>
+<li><a href="proxy.html">mod_rewrite를 사용한 동적 프록시</a></li>
+<li><a href="advanced.html">고급 기술</a></li>
+<li><a href="tech.html">기술적 세부 사항</a></li>
+</ul>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">mod_rewrite 참조
+문서</a></seealso>
+<seealso><a href="../urlmapping.html">파일 시스템에 URL 매핑</a></seealso>
+<seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
+위키</a></seealso>
+<seealso><a href="../glossary.html">용어집</a></seealso>
+
+
+</manualpage>

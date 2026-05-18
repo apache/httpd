@@ -26,27 +26,27 @@
   <title>apachectl - Apache HTTP Server Control Interface</title>
 
 <summary>
-     <p><code>apachectl</code> is a front end to the Apache HyperText
+     <p><program>apachectl</program> is a front end to the Apache HyperText
      Transfer Protocol (HTTP) server.  It is designed to help the
      administrator control the functioning of the Apache
      <program>httpd</program> daemon.</p>
 
-     <p>The <code>apachectl</code> script can operate in two modes.
+     <p>The <program>apachectl</program> script can operate in two modes.
      First, it can act as a simple front-end to the <program>httpd</program>
      command that simply sets any necessary environment variables and
      then invokes <program>httpd</program>, passing through any command line
-     arguments.  Second, <code>apachectl</code> can act as a SysV init
+     arguments.  Second, <program>apachectl</program> can act as a SysV init
      script, taking simple one-word arguments like <code>start</code>,
      <code>restart</code>, and <code>stop</code>, and translating them
      into appropriate signals to <program>httpd</program>.</p>
 
      <p>If your Apache installation uses non-standard paths, you will
-     need to edit the <code>apachectl</code> script to set the
+     need to edit the <program>apachectl</program> script to set the
      appropriate paths to the <program>httpd</program> binary.  You can also
      specify any necessary <program>httpd</program> command line arguments.
      See the comments in the script for details.</p>
 
-     <p>The <code>apachectl</code> script returns a 0 exit value on
+     <p>The <program>apachectl</program> script returns a 0 exit value on
      success, and &gt;0 if an error occurs.  For more details, view
      the comments in the script.</p>
 </summary>
@@ -58,13 +58,13 @@
 
 <section id="synopsis"><title>Synopsis</title>
 
-<p>When acting in pass-through mode, <code>apachectl</code> can take
+<p>When acting in pass-through mode, <program>apachectl</program> can take
 all the arguments available for the <program>httpd</program>
 binary.</p>
 
 <p><code><strong>apachectl</strong> [ <var>httpd-argument</var> ]</code></p>
 
-<p>When acting in SysV init mode, <code>apachectl</code> takes simple,
+<p>When acting in SysV init mode, <program>apachectl</program> takes simple,
 one-word commands, defined below.</p>
 
 <p><code><strong>apachectl</strong> <var>command</var></code></p>
@@ -151,6 +151,21 @@ equivalent to <code>apachectl -t</code>.</dd>
 your configuration file to include the relevant directives and then
 use the normal <code>apachectl start</code>.</dd>
 
+</dl>
+
+</section>
+
+<section id="files"><title>Files</title>
+
+<p>The default paths listed below may be changed at compile time.
+Consult your local installation for the actual locations.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/bin/envvars</code></dt>
+<dd>Environment variable settings sourced at startup.</dd>
+
+<dt><code>/usr/local/apache2/bin/httpd</code></dt>
+<dd>The httpd binary invoked by apachectl.</dd>
 </dl>
 
 </section>

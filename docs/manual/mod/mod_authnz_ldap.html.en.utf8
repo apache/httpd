@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_authnz_ldap</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authnz_ldap.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
@@ -44,17 +46,14 @@ for HTTP Basic authentication.</td></tr>
 
     <ul>
       <li>Known to support the <a href="http://www.openldap.org/">OpenLDAP SDK</a> (both 1.x
-      and 2.x), <a href="http://developer.novell.com/ndk/cldap.htm">
-      Novell LDAP SDK</a> and the <a href="http://www.iplanet.com/downloads/developer/">iPlanet
-      (Netscape)</a> SDK.</li>
+      and 2.x).</li>
 
       <li>Complex authorization policies can be implemented by
       representing the policy with LDAP filters.</li>
 
       <li>Uses extensive caching of LDAP operations via <a href="mod_ldap.html">mod_ldap</a>.</li>
 
-      <li>Support for LDAP over SSL (requires the Netscape SDK) or
-      TLS (requires the OpenLDAP 2.x SDK or Novell LDAP SDK).</li>
+      <li>Support for LDAP over SSL/TLS (requires the OpenLDAP 2.x SDK).</li>
     </ul>
 
     <p>When using <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, this module is invoked
@@ -102,7 +101,7 @@ for HTTP Basic authentication.</td></tr>
 <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
-<li><a href="#comments_section">Comments</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contents" id="contents">Contents</a> <a title="Permanent link" href="#contents" class="permalink">&para;</a></h2>
@@ -393,8 +392,8 @@ Require ldap-user "Joe Manager"</pre>
 
 
     <p>Because of the way that <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> handles this
-    directive, Barbara Jenson could sign on as <em>Barbara
-    Jenson</em>, <em>Babs Jenson</em> or any other <code>cn</code> that
+    directive, Barbara Jenson could sign on as <code>Barbara
+    Jenson</code>, <code>Babs Jenson</code> or any other <code>cn</code> that
     she has in her LDAP entry. Only the single <code>Require
     ldap-user</code> line is needed to support all values of the attribute
     in the user's entry.</p>
@@ -410,8 +409,13 @@ Require ldap-user "Joe Manager"</pre>
 
     <p>This directive specifies an LDAP group whose members are
     allowed access. It takes the distinguished name of the LDAP
-    group. Note: Do not surround the group name with quotes.
-    For example, assume that the following entry existed in
+    group.</p>
+
+    <div class="warning">Do not surround the group name with quotes.
+    Unlike <code>Require ldap-user</code>, the <code>ldap-group</code>
+    provider does not support quoted values.</div>
+
+    <p>For example, assume that the following entry existed in
     the LDAP directory:</p>
 <div class="example"><pre>dn: cn=Administrators, o=Example
 objectClass: groupOfUniqueNames
@@ -473,8 +477,11 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     that must match for access to be granted. If the distinguished
     name that was retrieved from the directory server matches the
     distinguished name in the <code>Require ldap-dn</code>, then
-    authorization is granted. Note: do not surround the distinguished
-    name with quotes.</p>
+    authorization is granted.</p>
+
+    <div class="warning">Do not surround the distinguished name with
+    quotes.  Unlike <code>Require ldap-user</code>, the
+    <code>ldap-dn</code> provider does not support quoted values.</div>
 
     <p>The following directive would grant access to a specific
     DN:</p>
@@ -653,13 +660,13 @@ Require valid-user</pre>
 
         <div class="example"><p><code>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=fuser))</code></p></div>
 
-        <p>The above search will only succeed if <em>fuser</em> has a
-        pager. When Joe Manager connects as <em>jmanager</em>, the
+        <p>The above search will only succeed if <code>fuser</code> has a
+        pager. When Joe Manager connects as <code>jmanager</code>, the
         filter looks like</p>
 
         <div class="example"><p><code>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=jmanager))</code></p></div>
 
-        <p>The above search will succeed whether <em>jmanager</em>
+        <p>The above search will succeed whether <code>jmanager</code>
         has a pager or not.</p>
       </li>
     </ul>
@@ -672,7 +679,7 @@ Require valid-user</pre>
     <p>An optional second parameter can be added to the
     <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> to override
     the default connection type set by <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></code>.
-    This will allow the connection established by an <em>ldap://</em> Url
+    This will allow the connection established by an <code>ldap://</code> Url
     to be upgraded to a secure connection on the same port.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -680,9 +687,9 @@ Require valid-user</pre>
 
     <p>To use SSL, see the <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> directives <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code>, <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></code> and <code class="directive"><a href="../mod/mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></code>.</p>
 
-    <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
+    <p>To specify a secure LDAP server, use <code>ldaps://</code> in the
     <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
-    directive, instead of <em>ldap://</em>.</p>
+    directive, instead of <code>ldap://</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="exposed" id="exposed">Exposing Login Information</a> <a title="Permanent link" href="#exposed" class="permalink">&para;</a></h2>
@@ -712,12 +719,12 @@ Require valid-user</pre>
     a User Principle Name (UPN) can be added to a user's entry in the
     directory. This UPN usually takes the form of the user's account
     name, followed by the domain components of the particular domain,
-    for example <em>somebody@nz.example.com</em>.</p>
+    for example <code>somebody@nz.example.com</code>.</p>
 
     <p>You may wish to configure the <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>
     module to authenticate users present in any of the domains making up
     the Active Directory forest. In this way both
-    <em>somebody@nz.example.com</em> and <em>someone@au.example.com</em>
+    <code>somebody@nz.example.com</code> and <code>someone@au.example.com</code>
     can be authenticated using the same query at the same time.</p>
 
     <p>To make this practical, Active Directory supports the concept of
@@ -729,7 +736,7 @@ Require valid-user</pre>
 
     <p>If enabled, the Global Catalog is an independent directory server
     that runs on port 3268 (3269 for SSL). To search for a user, do a
-    subtree search for the attribute <em>userPrincipalName</em>, with
+    subtree search for the attribute <code>userPrincipalName</code>, with
     an empty search root, like so:</p>
 
 <pre class="prettyprint lang-config">AuthLDAPBindDN apache@example.com
@@ -738,7 +745,7 @@ AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub</pre>
 
 
     <p>Users will need to enter their User Principal Name as a login, in
-    the form <em>somebody@nz.example.com</em>.</p>
+    the form <code>somebody@nz.example.com</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -824,7 +831,7 @@ Require group     "mygroupfile"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the prefix for environment variables set during
 authorization</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPAuthorizePrefix <em>prefix</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPAuthorizePrefix <var>prefix</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPAuthorizePrefix AUTHORIZE_</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -833,7 +840,7 @@ authorization</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.6 and later</td></tr>
 </table>
     <p>This directive allows you to override the prefix used for environment
-    variables set during LDAP authorization.  If <em>AUTHENTICATE_</em> is
+    variables set during LDAP authorization.  If <code>AUTHENTICATE_</code> is
     specified, consumers of these environment variables see the same information
     whether LDAP has performed authentication, authorization, or both.</p>
 
@@ -858,7 +865,7 @@ authorization</td></tr>
     user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
     password cannot be verified with an LDAP bind.
     If <code class="directive">AuthLDAPBindAuthoritative</code>
-    is set to <em>off</em>, other configured authentication modules will have
+    is set to <code>off</code>, other configured authentication modules will have
     a chance to validate the user if the LDAP bind (with the current user's credentials)
     fails for any reason.</p>
     <p> This allows users present in both LDAP and
@@ -876,7 +883,7 @@ authorization</td></tr>
 <div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a> <a title="Permanent link" href="#authldapbinddn" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Optional DN to use in binding to the LDAP server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindDN <em>distinguished-name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindDN <var>distinguished-name</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -891,12 +898,12 @@ authorization</td></tr>
 <div class="directive-section"><h2><a name="AuthLDAPBindPassword" id="AuthLDAPBindPassword">AuthLDAPBindPassword</a> <a name="authldapbindpassword" id="authldapbindpassword">Directive</a> <a title="Permanent link" href="#authldapbindpassword" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Password used in conjunction with the bind DN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindPassword <em>password</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindPassword <var>password</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><em>exec:</em> was added in 2.4.5.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td><code>exec:</code> was added in 2.4.5.</td></tr>
 </table>
     <p>A bind password to use in conjunction with the bind DN. Note
     that the bind password is probably sensitive data, and should be
@@ -922,7 +929,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
 <div class="directive-section"><h2><a name="AuthLDAPCharsetConfig" id="AuthLDAPCharsetConfig">AuthLDAPCharsetConfig</a> <a name="authldapcharsetconfig" id="authldapcharsetconfig">Directive</a> <a title="Permanent link" href="#authldapcharsetconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Language to charset conversion configuration file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCharsetConfig <em>file-path</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPCharsetConfig <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
@@ -961,7 +968,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
     and HTTP basic authentication password of the authenticated user instead of
     the servers configured credentials.</p>
 
-    <p> The <em>ldap-attribute</em>, <em>ldap-user</em>, and <em>ldap-group</em> (single-level only)
+    <p> The <code>ldap-attribute</code>, <code>ldap-user</code>, and <code>ldap-group</code> (single-level only)
     authorization checks use comparisons.</p>
 
     <p>This directive only has effect on the comparisons performed during
@@ -1023,7 +1030,7 @@ AuthLDAPBindPassword "exec:/path/to/otherProgram argument1"</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to identify the user members of
 groups.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <var>attribute</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPGroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -1107,7 +1114,7 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the transformation of the basic authentication username to be used when binding to the LDAP server
 to perform a DN lookup</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPInitialBindPattern <em><var>regex</var> <var>substitution</var></em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPInitialBindPattern <var>regex</var> <var>substitution</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPInitialBindPattern (.*) $1 (remote username used verbatim)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -1116,7 +1123,7 @@ to perform a DN lookup</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.6 and later</td></tr>
 </table>
     <p>If <code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code> is set to
-       <em>ON</em>, the basic authentication username will be transformed according to the
+       <code>ON</code>, the basic authentication username will be transformed according to the
        regular expression and substitution arguments.</p>
 
     <p> The regular expression argument is compared against the current basic authentication username.
@@ -1138,7 +1145,7 @@ to perform a DN lookup</td></tr>
     </div>
     <div class="note"><h3>debugging</h3>
         The substituted DN is recorded in the environment variable
-        <em>LDAP_BINDASUSER</em>.  If the regular expression does not match the input,
+        <code>LDAP_BINDASUSER</code>.  If the regular expression does not match the input,
         the verbatim username is used.
     </div>
 
@@ -1243,7 +1250,7 @@ environment variable</td></tr>
     and HTTP basic authentication password of the authenticated user instead of
     the servers configured credentials.</p>
 
-    <p> The <em>ldap-filter</em> and <em>ldap-dn</em> authorization
+    <p> The <code>ldap-filter</code> and <code>ldap-dn</code> authorization
     checks use searches.</p>
 
     <p>This directive only has effect on the comparisons performed during
@@ -1267,7 +1274,7 @@ environment variable</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the attribute labels, one value per
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribute</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupAttribute <var>attribute</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubGroupAttribute member uniqueMember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -1290,7 +1297,7 @@ are groups.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies which LDAP objectClass values identify directory
 objects that are groups during sub-group processing.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupClass <em>LdapObjectClass</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupClass <var>LdapObjectClass</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubGroupClass groupOfNames groupOfUniqueNames</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -1316,7 +1323,7 @@ objects that are groups during sub-group processing.</td></tr>
 <div class="directive-section"><h2><a name="AuthLDAPURL" id="AuthLDAPURL">AuthLDAPURL</a> <a name="authldapurl" id="authldapurl">Directive</a> <a title="Permanent link" href="#authldapurl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URL specifying the LDAP search parameters</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPURL <em>url</em> [NONE|SSL|TLS|STARTTLS]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPURL <var>url</var> [NONE|SSL|TLS|STARTTLS]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1328,9 +1335,11 @@ objects that are groups during sub-group processing.</td></tr>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
 <pre class="prettyprint lang-config">AuthLDAPURL "ldap://ldap1.example.com ldap2.example.com/dc=..."</pre>
 
-<p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes;
-otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em>
+<div class="warning"><h3>Caveat</h3>
+<p>If you specify multiple servers, you need to enclose the entire URL string in quotes;
+otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.."
 You can of course use search parameters on each of these.</p>
+</div>
 
 <dl>
 <dt>ldap</dt>
@@ -1407,7 +1416,7 @@ You can of course use search parameters on each of these.</p>
     <p>When doing searches, the attribute, filter and username passed
     by the HTTP client are combined to create a search filter that
     looks like
-    <code>(&amp;(<em>filter</em>)(<em>attribute</em>=<em>username</em>))</code>.</p>
+    <code>(&amp;(<var>filter</var>)(<var>attribute</var>=<var>username</var>))</code>.</p>
 
     <p>For example, consider an URL of
     <code>ldap://ldap.example.com/o=Example?cn?sub?(posixid=*)</code>. When
@@ -1420,7 +1429,7 @@ You can of course use search parameters on each of these.</p>
 
 <dl>
     <dt>NONE</dt>
-        <dd>Establish an unsecure connection on the default LDAP port. This
+        <dd>Establish an insecure connection on the default LDAP port. This
         is the same as <code>ldap://</code> on port 389.</dd>
     <dt>SSL</dt>
         <dd>Establish a secure connection on the default secure LDAP port.
@@ -1438,28 +1447,32 @@ You can of course use search parameters on each of these.</p>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authnz_ldap.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authnz_ldap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_authnz_ldap.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

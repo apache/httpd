@@ -24,6 +24,11 @@
  *   */
 #define AP_CTIME_USEC_LENGTH      7
 
+/* Number of characters needed to format the millisecond part of a timestamp.
+ * Milliseconds have 3 digits plus one separator character makes 4.
+ *   */
+#define AP_CTIME_MSEC_LENGTH      4
+
 /* Length of ISO 8601 date/time (including trailing '\0') */
 #define AP_CTIME_COMPACT_LEN      20
 
@@ -184,6 +189,9 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
     if (option & AP_CTIME_OPTION_USEC) {
         needed += AP_CTIME_USEC_LENGTH;
     }
+    else if (option & AP_CTIME_OPTION_MSEC) {
+        needed += AP_CTIME_MSEC_LENGTH;
+    }
 
     if (option & AP_CTIME_OPTION_GMTOFF) {
         needed += AP_CTIME_GMTOFF_LEN;
@@ -244,11 +252,16 @@ AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
     *date_str++ = ':';
     *date_str++ = xt.tm_sec / 10 + '0';
     *date_str++ = xt.tm_sec % 10 + '0';
-    if (option & AP_CTIME_OPTION_USEC) {
+    if (option & (AP_CTIME_OPTION_USEC|AP_CTIME_OPTION_MSEC)) {
         int div;
         int usec = (int)xt.tm_usec;
         *date_str++ = '.';
-        for (div=100000; div>0; div=div/10) {
+        div = 100000;
+        if (!(option & AP_CTIME_OPTION_USEC)) {
+            usec = usec / 1000;
+            div = 100;
+        }
+        for (; div>0; div=div/10) {
             *date_str++ = usec / div + '0';
             usec = usec % div;
         }

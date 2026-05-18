@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,15 +17,22 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Introduction</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
@@ -41,7 +49,8 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite Conditions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="advanced.html">Advanced techniques</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -73,13 +82,15 @@ it will tell you exactly how each rule is processed.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="http://pcre.org/">Perl Compatible
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/">Perl Compatible
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://perldoc.perl.org/perlre.html">Perl regular
-expression man page</a>, and <a href="http://shop.oreilly.com/product/9780596528126.do">Mastering
-Regular Expressions, by Jeffrey Friedl</a>.</p>
+recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+<a href="https://perldoc.perl.org/perlre">Perl regular
+expression man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
+2006, but regular expression syntax is essentially unchanged, and this
+remains the definitive reference on the subject).</p>
 
 <p>In this document, we attempt to provide enough of a regex vocabulary
 to get you started, without being overwhelming, in the hope that
@@ -162,10 +173,21 @@ well as write your own.</p>
       not <code>c/t</code></td></tr>
 </table>
 
-<p>In <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> the <code>!</code> character can be
+<p>The <code>!</code> (Not) character can be
 used before a regular expression to negate it. This is, a string will
 be considered to have matched only if it does not match the rest of
 the expression.</p>
+
+<p>When using <code>!</code> to negate a pattern, note that
+<a href="#InternalBackRefs">backreferences</a> (e.g.
+<code>$1</code>, <code>$2</code>) are not available, since the
+pattern does not match.</p>
+
+<p>For example, the following will redirect any request that does
+<em>not</em> start with <code>/admin</code></p>
+
+<pre class="prettyprint lang-config">RewriteRule "!^/admin" "/xyz.html" [R,L]</pre>
+
 
 
 
@@ -213,14 +235,26 @@ of three arguments separated by spaces. The arguments are</p>
 </ol>
 
 <p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
-It is initially (for the first rewrite rule or until a substitution occurs)
-matched against the URL-path of the incoming request (the part after the
-hostname but before any question mark indicating the beginning of a query
-string) or, in per-directory context, against the request's path relative
-to the directory for which the rule is defined. Once a substitution has
-occurred, the rules that follow are matched against the substituted
-value.
+In server or virtualhost context, it is matched against the
+%-decoded <a href="../directive-dict.html#Syntax">URL-path</a>
+of the incoming request — the part after the hostname and port,
+and not including the query string (e.g., <code>/app/index.html</code>).
+In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+the pattern is matched against the request's path relative to the
+directory for which the rule is defined (with the directory prefix
+stripped — see <a href="htaccess.html#path-stripping">Per-directory
+Rewrites</a> for details).
 </p>
+
+<p>Once a substitution has occurred, any rules that follow are
+matched against the substituted value.</p>
+
+<p>The <var>Pattern</var> is matched only against the URL-path
+— not the hostname, port, or query string. To match against
+those, use a
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> with the
+<code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
+<code>%{QUERY_STRING}</code> variables respectively.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
@@ -354,47 +388,127 @@ rewriting for you. This is discussed in greater detail in the <a href="rewritema
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess files</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
-<p>Rewriting is typically configured in the main server configuration
-setting (outside any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section) or
-inside <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-containers. This is the easiest way to do rewriting and is
-recommended. It is possible, however, to do rewriting
-inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
-files</a> at the expense of some additional complexity. This technique
-is called per-directory rewrites.</p>
+<p>It is possible to use rewrite rules in
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context
+(<a href="../howto/htaccess.html"><code>.htaccess</code> files</a> and
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks),
+but the rules behave differently there — in particular, the directory
+prefix is stripped from the URL before matching. See the
+<a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
+document for full details.</p>
 
-<p>The main difference with per-server rewrites is that the path
-prefix of the directory containing the <code>.htaccess</code> file is
-stripped before matching in
-the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. In addition, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> should be used to assure the request is properly mapped.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a powerful URL manipulation tool, and
+with that power comes the potential for security mistakes. This section
+highlights the most common security pitfalls to watch for when writing
+rewrite rules.</p>
+
+<h3><a name="security-redirect" id="security-redirect">Open Redirects</a></h3>
+
+<p>If a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+constructs a redirect URL using unvalidated user input, an attacker
+can craft a link that redirects visitors to a malicious site while
+appearing to originate from your domain. This is known as an
+<em>open redirect</em> vulnerability.</p>
+
+<p>For example, this rule is dangerous:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - allows open redirect
+RewriteRule "^/redirect" "%{QUERY_STRING}" [R,L]</pre>
+
+
+<p>An attacker could use
+<code>https://yoursite.com/redirect?https://evil.com</code> to redirect
+users to a malicious site. Always validate or constrain redirect
+targets. If the destination must be on your own site, ensure the
+substitution begins with <code>/</code> (a relative path) rather than
+allowing a full URL from user input.</p>
+
+
+
+<h3><a name="security-ssrf" id="security-ssrf">Server-Side Request Forgery (SSRF)</a></h3>
+
+<p>When using the <a href="flags.html#flag_p">[P] (proxy) flag</a>,
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> causes the server to make an HTTP request
+to the substitution URL on behalf of the client. If any part of that
+URL is derived from user input - backreferences, query strings, or
+headers - an attacker may be able to cause your server to make requests
+to arbitrary internal services or external hosts.</p>
+
+<p>For example:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - user controls the proxy target
+RewriteCond "%{QUERY_STRING}" "target=(.+)"
+RewriteRule "^/fetch" "http://%1" [P]</pre>
+
+
+<p>An attacker could use this to probe internal network services that
+are not otherwise accessible from the internet. Always use a fixed
+hostname in proxy targets, and limit backreferences to the path
+component only.</p>
+
+
+
+<h3><a name="security-path" id="security-path">Path Traversal</a></h3>
+
+<p>Rewrite rules that map user-supplied path components directly to
+the filesystem can allow path traversal attacks if the input is not
+properly constrained. For example:</p>
+
+<pre class="prettyprint lang-config"># DANGEROUS - allows path traversal
+RewriteRule "^/files/(.+)" "/var/data/$1" [L]</pre>
+
+
+<p>A request for <code>/files/../../etc/passwd</code> could potentially
+access files outside the intended directory. Use restrictive patterns
+in your <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> (for
+example, <code>[a-zA-Z0-9_-]+</code> instead of <code>.+</code>), and
+rely on Apache's built-in protections
+(<code class="directive"><a href="../mod/core.html#options">Options</a></code> and
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+restrictions) as defense in depth.</p>
+
+
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/rewrite/intro.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p><span>Available Languages: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

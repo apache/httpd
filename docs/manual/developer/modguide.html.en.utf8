@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Developing modules for the Apache HTTP Server 2.4</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -37,7 +39,7 @@ Server 2.4</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#context">Context aware configurations</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#summary">Summing up</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#snippets">Some useful snippets of code</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li><li><a href="#comments_section">Comments</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -105,7 +107,8 @@ that defines a module as <em>a separate entity within Apache</em>:</p>
     create_svr_conf, /* Per-server configuration handler */
     merge_svr_conf,  /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -198,7 +201,8 @@ definition will look like this:</p>
     NULL,
     NULL,
     NULL,
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -296,7 +300,7 @@ In C code, our example handler will now look like this:
 <p>
 Now, we put all we have learned together and end up with a program that
 looks like
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_1.c">mod_example_1.c</a>
+<a href="mod_example_1.c">mod_example_1.c</a>
 . The functions used in this example will be explained later in the section
 <a href="#functions">"Some useful functions you should know"</a>.
 </p>
@@ -706,7 +710,7 @@ out the MD5 or SHA1 digest of files:
 
 <p>
 This version in its entirety can be found here:
-<a href="http://people.apache.org/~humbedooh/mods/examples/mod_example_2.c">mod_example_2.c</a>.
+<a href="mod_example_2.c">mod_example_2.c</a>.
 </p>
 
 
@@ -795,7 +799,8 @@ AP_DECLARE_MODULE(example) =
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     NULL,            /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -832,7 +837,8 @@ reference to the configuration directives we want to register with the server:
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -851,7 +857,7 @@ will add a structure with three directives and a NULL at the end:
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };</pre>
 
 
@@ -998,7 +1004,7 @@ static const command_rec        example_directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, RSRC_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, RSRC_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, RSRC_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 /*
  ==============================================================================
@@ -1040,7 +1046,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     example_directives, /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };</pre>
 
 
@@ -1198,7 +1205,8 @@ per-directory creator and merger function reference in our tag:</p>
     NULL,            /* Per-server configuration handler */
     NULL,            /* Merge handler for per-server configurations */
     directives,      /* Any directives we may have for httpd */
-    register_hooks   /* Our hook registering function */
+    register_hooks,  /* Our hook registering function */
+    AP_MODULE_FLAG_NONE /* Flags */
 };</pre>
 
 
@@ -1374,7 +1382,7 @@ static const command_rec    directives[] =
     AP_INIT_TAKE1("exampleEnabled", example_set_enabled, NULL, ACCESS_CONF, "Enable or disable mod_example"),
     AP_INIT_TAKE1("examplePath", example_set_path, NULL, ACCESS_CONF, "The path to whatever"),
     AP_INIT_TAKE2("exampleAction", example_set_action, NULL, ACCESS_CONF, "Special action value!"),
-    { NULL }
+    { }
 };
 
 /*$1
@@ -1391,7 +1399,8 @@ AP_DECLARE_MODULE(example) =
     NULL,               /* Per-server configuration handler */
     NULL,               /* Merge handler for per-server configurations */
     directives,         /* Any directives we may have for httpd */
-    register_hooks      /* Our hook registering function */
+    register_hooks,     /* Our hook registering function */
+    AP_MODULE_FLAG_NONE  /* Flags */
 };
 
 /*
@@ -1713,28 +1722,32 @@ static int example_handler(request_rec *r)
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/modguide.html" title="English">&nbsp;en&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Comments</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/developer/modguide.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

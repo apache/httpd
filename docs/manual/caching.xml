@@ -49,8 +49,7 @@
             in the cache, and mod_cache aims to honor all of the various HTTP
             headers and options that control the cacheability of content
             as described in
-            <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">Section
-            13 of RFC2616</a>.
+            <rfc section="13">2616</rfc>.
             <module>mod_cache</module>
             is aimed at both simple and complex caching configurations, where
             you are dealing with proxied content, dynamic local content or
@@ -105,8 +104,7 @@
 
     <p>The HTTP protocol contains built in support for an in-line caching
     mechanism
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
-    described by section 13 of RFC2616</a>, and the
+    <rfc section="13">2616</rfc>, and the
     <module>mod_cache</module> module can be used to take advantage of
     this.</p>
 
@@ -159,8 +157,7 @@
     </dl>
 
     <p>Full details of how HTTP caching works can be found in
-    <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html">
-    Section 13 of RFC2616</a>.</p>
+    <rfc section="13">2616</rfc>.</p>
 
     <section>
       <title>Interaction with the Server</title>
@@ -324,8 +321,7 @@
 
       <p>The full definition of which responses can be cached by an HTTP
       cache is defined in
-      <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec13.html#sec13.4">
-      RFC2616 Section 13.4 Response Cacheability</a>, and can be summed up as
+      <rfc section="13.4">2616</rfc> (Response Cacheability), and can be summed up as
       follows:</p>
 
       <ol>
@@ -860,7 +856,7 @@ sys     0m0.000s</pre>
       <code>.htaccess</code> files would be a very expensive operation,
       partially defeating the point of caching (to speed up requests),
       <module>mod_cache</module> makes no decision about whether a cached
-      entity is authorised for serving. In other words; if
+      entity is authorized for serving. In other words; if
       <module>mod_cache</module> has cached some content, it will be served
       from the cache as long as that content has not expired.</p>
 
@@ -916,7 +912,7 @@ sys     0m0.000s</pre>
       Another example is so-called HTTP request-smuggling attacks.</p>
 
       <p>This document is not the correct place for an in-depth discussion
-      of HTTP request smuggling (instead, try your favourite search engine)
+      of HTTP request smuggling (instead, try your favorite search engine)
       however it is important to be aware that it is possible to make
       a series of requests, and to exploit a vulnerability on an origin
       webserver such that the attacker can entirely control the content

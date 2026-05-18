@@ -26,7 +26,7 @@
   <title>configure - Configure the source tree</title>
 
 <summary>
-    <p>The <code>configure</code> script configures the source tree
+    <p>The <program>configure</program> script configures the source tree
     for compiling and installing the Apache HTTP Server on your
     particular platform. Various options allow the compilation of a
     server corresponding to your personal requirements.</p>
@@ -40,7 +40,7 @@
 <seealso><a href="../install.html">Compiling and Installing</a></seealso>
 
 <section id="synopsis"><title>Synopsis</title>
-    <p>You should call the <code>configure</code> script from within the
+    <p>You should call the <program>configure</program> script from within the
     root directory of the distribution.</p>
 
     <p><code><strong>./configure</strong> [<var>OPTION</var>]...
@@ -64,7 +64,7 @@
   <section id="configurationoptions"><title>Configuration options</title>
 
     <p>The following options influence the behavior of
-    <code>configure</code> itself.</p>
+    <program>configure</program> itself.</p>
 
     <dl>
       <dt><code>-C</code></dt>
@@ -84,7 +84,7 @@
 
       <dt><code>-n</code></dt>
       <dt><code>--no-create</code></dt>
-      <dd>The <code>configure</code> script is run normally but does
+      <dd>The <program>configure</program> script is run normally but does
         not create output files. This is useful to check the test results
         before generating makefiles for compilation.</dd>
 
@@ -95,7 +95,7 @@
 
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Defines directory <var>DIR</var> to be the source file directory.
-        Default is the directory where <code>configure</code> is located, or
+        Default is the directory where <program>configure</program> is located, or
         the parent directory.</dd>
 
       <dt><code>--silent</code></dt>
@@ -214,7 +214,8 @@
           <program>apachectl</program>, <program>suexec</program>, etc. which
           are necessary to run the Apache HTTP Server. By default
           <code>sbindir</code> is set to
-          <code><var>EPREFIX</var>/sbin</code>.</dd>
+          <code><var>EPREFIX</var>/bin</code> (the same as
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Install modifiable architecture-independent data in <var>DIR</var>.
@@ -282,7 +283,7 @@
       </dl>
 
       <note><title>Note</title>
-        <code>configure</code> will not complain about
+        <program>configure</program> will not complain about
         <code>--enable-<var>foo</var></code> even if <var>foo</var> doesn't
         exist, so you need to type carefully.
       </note>
@@ -370,7 +371,7 @@
             modules. The module source file <code><var>module-file</var></code>
             will be searched in the <code>modules/<var>module-type</var></code>
             subdirectory of your Apache HTTP server source tree. If it is not found
-            there <code>configure</code> is considering <var>module-file</var> to be
+            there <program>configure</program> is considering <var>module-file</var> to be
             an absolute file path and tries to copy the source file into the
             <var>module-type</var> subdirectory. If the subdirectory doesn't
             exist it will be created and populated with a standard
@@ -487,7 +488,7 @@
           is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
-          have to tell <code>configure</code> the path to the
+          have to tell <program>configure</program> the path to the
           <code>apr-config</code> script. You may set the absolute path and name
           or the directory to the installed APR. <code>apr-config</code> must
           exist within this directory or the subdirectory
@@ -497,19 +498,19 @@
         <dd>The Apache Portable Runtime Utilities (APU) are part of the
           httpd source distribution and will automatically be build
           together with the HTTP server. If you want to use an already installed
-          APU instead you have to tell <code>configure</code> the path to the
+          APU instead you have to tell <program>configure</program> the path to the
           <code>apu-config</code> script. You may set the absolute path and name
           or the directory to the installed APU. <code>apu-config</code> must
           exist within this directory or the subdirectory
           <code>bin</code>.</dd>
 
         <dt><code>--with-ssl=<var>DIR</var></code></dt>
-        <dd>If <module>mod_ssl</module> has been enabled <code>configure</code>
+        <dd>If <module>mod_ssl</module> has been enabled <program>configure</program>
           searches for an installed OpenSSL. You can set the directory path
           to the SSL/TLS toolkit instead.</dd>
 
         <dt><code>--with-z=<var>DIR</var></code></dt>
-        <dd><code>configure</code> searches automatically for an installed
+        <dd><program>configure</program> searches automatically for an installed
           <code>zlib</code> library if your source configuration requires one
           (e.g., when <module>mod_deflate</module> is enabled). You can set the
           directory path to the compression library instead.</dd>
@@ -525,10 +526,10 @@
 
       <dl>
         <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
-        <dd>If no <var>path</var> is specified, <code>configure</code> will
+        <dd>If no <var>path</var> is specified, <program>configure</program> will
           search for the include files and libraries of a GNU DBM
           installation in the usual search paths. An explicit
-          <var>path</var> will cause <code>configure</code> to look in
+          <var>path</var> will cause <program>configure</program> to look in
           <code><var>path</var>/lib</code> and
           <code><var>path</var>/include</code> for the relevant files.
           Finally, the <var>path</var> may specify specific include and
@@ -606,7 +607,7 @@
     </dl>
 
     <section id="suexec">
-      <title><code>suexec</code> configuration options</title>
+      <title><program>suexec</program> configuration options</title>
       <p>The following options are used to fine tune the behavior of <program>
         suexec</program>. See <a
         href="suexec.html#install">Configuring and installing suEXEC</a>
@@ -664,7 +665,7 @@
 
 <section id="env"><title>Environment variables</title>
   <p>There are some useful environment variables to override the choices made by
-    <code>configure</code> or to help it to find libraries and programs with
+    <program>configure</program> or to help it to find libraries and programs with
     nonstandard names or locations.</p>
 
   <!-- are these all useful variables? -->

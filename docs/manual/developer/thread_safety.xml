@@ -123,7 +123,6 @@
       libz.so.1 => /usr/lib/libz.so.1 (0x403e2000)<br />
       libpng.so.2 => /usr/lib/libpng.so.2 (0x403f0000)<br />
       libmysqlclient.so.11 => /usr/lib/libmysqlclient.so.11 (0x40411000)<br />
-      libming.so => /usr/lib/libming.so (0x40449000)<br />
       libm.so.6 => /lib/libm.so.6 (0x40487000)<br />
       libfreetype.so.6 => /usr/lib/libfreetype.so.6 (0x404a8000)<br />
       libjpeg.so.62 => /usr/lib/libjpeg.so.62 (0x404e7000)<br />
@@ -153,11 +152,11 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.sleepycat.com/">Berkeley DB</a></td>
+    <tr><td><a href="https://www.oracle.com/database/technologies/related/berkeleydb.html">Berkeley DB</a></td>
         <td>3.x, 4.x</td>
         <td>Yes</td>
         <td>Be careful about sharing a connection across threads.</td></tr>
-    <tr><td><a href="http://sources.redhat.com/bzip2/index.html">bzip2</a></td>
+    <tr><td><a href="https://sourceware.org/bzip2/">bzip2</a></td>
         <td> </td>
         <td>Yes</td>
         <td>Both low-level and high-level APIs are thread-safe. However,
@@ -166,7 +165,7 @@
         <td> </td>
         <td>?</td>
         <td> </td></tr>
-    <tr><td><a href="http://www.washington.edu/imap/">C-Client</a></td>
+    <tr><td><a href="https://github.com/uw-imap/imap">C-Client</a></td>
         <td> </td>
         <td>Perhaps</td>
         <td>c-client uses <code>strtok()</code> and
@@ -211,7 +210,7 @@
         href="http://www.imagemagick.com/www/changelog.html"
         >Change log</a>).
         </td></tr>
-    <tr><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en"
+    <tr><td><a href="https://www.enlightenment.org/about-efl"
         >Imlib2</a></td>
         <td> </td>
         <td>?</td>
@@ -225,12 +224,8 @@
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
             more information, please read <a
-            href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html"
-            >http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
-    <tr><td><a href="http://www.opaque.net/ming/">Ming</a></td>
-        <td>0.2a</td>
-        <td>?</td>
-        <td> </td></tr>
+            href="https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html"
+            >https://dev.mysql.com/doc/c-api/8.0/en/c-api-threaded-clients.html</a>.</td></tr>
     <tr><td><a href="http://net-snmp.sourceforge.net/">Net-SNMP</a></td>
         <td>5.0.x</td>
         <td>?</td>
@@ -266,17 +261,12 @@
         <td>?</td>
         <td> </td></tr>
     <tr><td><a
-        href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html"
+        href="https://www.postgresql.org/docs/8.4/libpq-threading.html"
         >libpq (PostgreSQL)</a></td>
         <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>
-    <tr><td><a href="http://www.gingerall.com/charlie/ga/xml/p_sab.xml"
-        >Sablotron</a></td>
-        <td>0.95</td>
-        <td>?</td>
-        <td></td></tr>
     <tr><td><a href="http://www.gzip.org/zlib/">zlib</a></td>
         <td>1.1.4</td>
         <td>Yes</td>

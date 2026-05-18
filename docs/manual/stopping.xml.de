@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 239255:1174747 (outdated) -->
+<!-- English Revision: 239255:1933179 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,7 +28,7 @@
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
     Apache auf Unix-&#228;hnlichen Systemen. Anwender von Windows NT, 2000
     und XP sollten <a href="platform/windows.html#winsvc">Betreiben
-    des Apache als Dienst</a> lesen, w&auml;hrend hingegen Anwender von
+    des Apache als Dienst</a> lesen, während hingegen Anwender von
     Windows 9x sowie ME <a href="platform/windows.html#wincons">Betreiben
     des Apache als Konsolenanwendung</a> lesen sollten, um mehr Informationen
     zur Handhabung des Apache auf diesen Systemen zu erhalten.</p>
@@ -207,7 +207,7 @@
 
     <p>Vor der Version 1.2b9 des Apache existierten verschiedene
     <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
-    die Signale beeinflu&#223;t haben. (Einfach erkl&auml;rt ist eine
+    die Signale beeinflu&#223;t haben. (Einfach erklärt ist eine
     Wettkampfsituation ein zeitabh&#228;ngiges Problem - wenn
     etwas zum falschen Zeitpunkt erfolgt oder Dinge in der falschen
     Reihenfolge passieren, ist unerwartetes Verhalten die Folge. Wenn die

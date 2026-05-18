@@ -444,17 +444,17 @@ Require ip 127.0.0.1
         </li>
 
         <li><module>mod_charset_lite</module>: The <code>DebugLevel</code>
-        option has been removed in favour of per-module <directive
+        option has been removed in favor of per-module <directive
         module="core">LogLevel</directive> configuration.
         </li>
 
         <li><module>mod_ext_filter</module>: The <code>DebugLevel</code>
-        option has been removed in favour of per-module <directive
+        option has been removed in favor of per-module <directive
         module="core">LogLevel</directive> configuration.
         </li>
 
         <li><module>mod_proxy_scgi</module>: The default setting for
-        <code>PATH_INFO</code> has changed from httpd 2.2, and
+        <glossary ref="pathinfo">PATH_INFO</glossary> has changed from httpd 2.2, and
         some web applications will no longer operate properly with
         the new <code>PATH_INFO</code> setting.  The previous setting
         can be restored by configuring the <code>proxy-scgi-pathinfo</code>
@@ -481,7 +481,7 @@ Require ip 127.0.0.1
         <directive module="mod_log_config">CustomLog</directive> were invoked using
         <code>/bin/sh -c</code> in 2.2 and earlier.  In 2.4 and later,
         piped logging commands are executed directly.  To restore the
-        old behaviour, see the <a href="logs.html#piped">piped logging
+        old behavior, see the <a href="logs.html#piped">piped logging
         documentation</a>.</li>
 
       </ul>
@@ -539,6 +539,8 @@ Require ip 127.0.0.1
       CGIDScriptTImeout</directive>.
       </li>
 
+      <li><module>mod_include</module>'s <code>&lt;set&gt;</code> tag no 
+      longer performs entity decoding on the value being set.</li>
     </ul>
 
   </section>

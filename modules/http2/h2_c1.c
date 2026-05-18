@@ -47,7 +47,10 @@
 
 static struct h2_workers *workers;
 
-static int async_mpm, mpm_can_waitio;
+static int async_mpm;
+#ifdef AP_MPMQ_CAN_WAITIO
+static int mpm_can_waitio;
+#endif
 
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_in) *h2_c_logio_add_bytes_in;
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *h2_c_logio_add_bytes_out;

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1915685 -->
+<!-- English Revision: 1932739 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -18,7 +18,7 @@
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
+See the License for the specific language governing permissions and
  limitations under the License.
 -->
 
@@ -56,29 +56,31 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     compilé dans le serveur ou chargé au démarrage à l'aide de la
     directive <directive module="mod_so">LoadModule</directive>.</p>
 
-    <p>Si vous souhaitez limiter l'accès aux répertoires où DAV est
-    activé, vous pouvez ajouter une clause <directive module="core"
-    type="section">Limit</directive> dans la section <directive
-    module="core" type="section">Location</directive> considérée. Pour
-    définir la quantité maximale de données en octets qu'un client
-    DAV peut envoyer par requête, vous devez utiliser la directive
-    <directive module="core">LimitXMLRequestBody</directive>, car La
-    directive <directive module="core">LimitRequestBody</directive>
-    "habituelle" n'a aucune incidence sur les requêtes DAV.</p>
+    <p>Dans l’exemple ci-après, la directive <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> permet de s’assurer que les méthodes
+    spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
+    <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
+    authentifiés.</p>
+
+    <p>Pour définir la quantité maximale de données en octets qu'un client DAV
+    peut envoyer par requête, vous devez utiliser la directive <directive
+    module="core">LimitXMLRequestBody</directive>, car La directive <directive
+    module="core">LimitRequestBody</directive> "habituelle" n'a aucune incidence
+    sur les requêtes DAV.</p>
 
     <example><title>Exemple complet</title>
       <highlight language="config">
 &lt;Directory "/usr/local/apache2/htdocs/foo"&gt;
-    Require all granted
     Dav On
 
     AuthType Basic
     AuthName "DAV"
     AuthUserFile "user.passwd"
 
-    &lt;LimitExcept GET POST OPTIONS&gt;
+    &lt;RequireAny&gt;
+        Require method GET POST OPTIONS
         Require user admin
-    &lt;/LimitExcept&gt;
+    &lt;/RequireAny&gt;
 &lt;/Directory&gt;
       </highlight>
     </example>
@@ -289,7 +291,7 @@ Infinity</description>
 
 <usage>
     <p>La directive <directive>DavMSext</directive> permet d'activer la prise en
-    charge des extensions de Microsoft. Ses valeurs possibles sont :</p>
+    charge des extensions de Microsoft. Ses valeurs possibles sont&nbsp;:</p>
         <ul>
             <li><code>None</code> Aucune extension de Microsoft n'est prise en
 	    charge.</li>

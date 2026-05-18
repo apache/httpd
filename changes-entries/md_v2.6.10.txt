@@ -1,0 +1,4 @@
+  *) mod_md: update to version 2.6.10
+     - Fix issue #420 <https://github.com/icing/mod_md/issues/420> by ignoring
+       job.json files that claim to have completely finished a certificate
+       renewal, but have not produced the necessary result files.

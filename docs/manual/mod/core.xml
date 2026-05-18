@@ -137,7 +137,7 @@ AcceptFilter https connect
     pathname information that follows an actual filename (or
     non-existent file in an existing directory) will be accepted or
     rejected.  The trailing pathname information can be made
-    available to scripts in the <code>PATH_INFO</code> environment
+    available to scripts in the <glossary ref="pathinfo">PATH_INFO</glossary> environment
     variable.</p>
 
     <p>For example, assume the location <code>/test/</code> points to
@@ -200,27 +200,38 @@ AcceptFilter https connect
 </contextlist>
 
 <usage>
-    <p>While processing a request, the server looks for
-    the first existing configuration file from this list of names in
-    every directory of the path to the document, if distributed
+    <p>The AccessFileName directive allows you to change the name of the file
+    that will be considered for per-directory configuration overrides, in the
+    event that <directive module="core">AllowOverride</directive> is enabled
+    for that directory.</p>
+
+    <note type="warning">We do not recommend that you change this value, and
+    especially that you do not list multiple possible file names, as it makes
+    troubleshooting more difficult for anyone not familiar with your local
+    settings.</note>
+
+    <p>While processing a request, the server looks for files with the name
+    (or names) defined in <code>AccessFileName</code>
+    in every directory of the path to the document, if distributed
     configuration files are <a href="#allowoverride">enabled for that
-    directory</a>. For example:</p>
-
-    <highlight language="config">
-AccessFileName .acl
-    </highlight>
-
-    <p>Before returning the document
+    directory</a>. For example Before returning the document
     <code>/usr/local/web/index.html</code>, the server will read
-    <code>/.acl</code>, <code>/usr/.acl</code>,
-    <code>/usr/local/.acl</code> and <code>/usr/local/web/.acl</code>
-    for directives unless they have been disabled with:</p>
+    <code>/.htaccess</code>, <code>/usr/.htaccess</code>,
+    <code>/usr/local/.htaccess</code> and <code>/usr/local/web/.htaccess</code>
+    for directives.</p>
+
+    <p>For this reason, the default configuration file contains the following stanza:</p>
 
     <highlight language="config">
 &lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;
     </highlight>
+
+    <p>This configuration block helps prevent unnecessary file accesses in directories
+    outside of your <directive module="core">DocumentRoot</directive>. See also the note
+    about this in the <code>AllowOverride</code> directive documentation.</p>
+
 </usage>
 <seealso><directive module="core">AllowOverride</directive></seealso>
 <seealso><a href="../configuring.html">Configuration Files</a></seealso>
@@ -315,14 +326,14 @@ NoDecode option available in 2.3.12 and later.</compatibility>
 <code>.htaccess</code> files</description>
 <syntax>AllowOverride All|None|<var>directive-type</var>
 [<var>directive-type</var>] ...</syntax>
-<default>AllowOverride None (2.3.9 and later), AllowOverride All (2.3.8 and earlier)</default>
+<default>AllowOverride None</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p>When the server finds an <code>.htaccess</code> file (as
-    specified by <directive module="core">AccessFileName</directive>),
-    it needs to know which directives declared in that file can override
-    earlier configuration directives.</p>
+    <p>When the server finds a distributed configuration file (Usually called
+    <code>.htaccess</code> - configurable by the <directive 
+    module="core">AccessFileName</directive>), it needs to know which directives
+    declared in that file can override earlier configuration directives.</p>
 
     <note><title>Only available in &lt;Directory&gt; sections</title>
     <directive>AllowOverride</directive> is valid only in
@@ -422,12 +433,15 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
-      Allow use of the directives controlling host access (<directive
+      Allow use of the legacy host access control directives (<directive
       module="mod_access_compat">Allow</directive>, <directive
       module="mod_access_compat">Deny</directive> and <directive
-      module="mod_access_compat">Order</directive>).</dd>
-
-<!-- TODO - Update this for 2.4 syntax -->
+      module="mod_access_compat">Order</directive>). For the modern
+      equivalent, see the <directive module="mod_authz_core">Require</directive>
+      directive, which is controlled by <code>AuthConfig</code>.
+      Also includes <directive module="mod_include">SSIETag</directive>,
+      <directive module="mod_include">SSILastModified</directive>, and
+      <directive module="mod_include">SSILegacyExprParser</directive>.</dd>
 
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
@@ -436,7 +450,7 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       Allow use of AllowOverride option to treat invalid (unrecognized
       or disallowed) directives in
       .htaccess as nonfatal. Instead of causing an Internal Server
-      Error, disallowed or unrecognised directives will be ignored
+      Error, disallowed or unrecognized directives will be ignored
       and a warning logged:
       <ul>
           <li><strong>Nonfatal=Override</strong> treats directives
@@ -461,9 +475,9 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       Allow use of the directives controlling specific directory
       features (<directive module="core">Options</directive> and
       <directive module="mod_include">XBitHack</directive>).
-      An equal sign may be given followed by a comma-separated list, without
-      spaces, of options that may be set using the <directive
-      module="core">Options</directive> command.
+      To restrict which options may be overridden, specify an equal sign
+      followed by a comma-separated list, without spaces, of options that
+      may be set using the <directive module="core">Options</directive> directive.
 
       <note><title>Implicit disabling of Options</title>
       <p>Even though the list of options that may be used in .htaccess files
@@ -510,7 +524,7 @@ AllowOverride AuthConfig Indexes
 <description>Individual directives that are allowed in
 <code>.htaccess</code> files</description>
 <syntax>AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</syntax>
+[<var>directive</var>] ...</syntax>
 <default>AllowOverrideList None</default>
 <contextlist><context>directory</context></contextlist>
 
@@ -535,6 +549,11 @@ AllowOverride AuthConfig Indexes
     ignored.  In this case, the server will not even attempt to read
     <code>.htaccess</code> files in the filesystem.</p>
 
+    <note>
+    <p>A value of <code>None</code> cannot be combined with other values. 
+    Doing so will result in an error that aborts config parsing.</p>
+    </note>
+
     <p>Example:</p>
 
     <highlight language="config">
@@ -557,7 +576,15 @@ AllowOverrideList CookieTracking CookieName
     grants permission to the <code>AuthConfig</code>
     directive grouping and <directive>AllowOverrideList</directive> grants
     permission to only two directives from the <code>FileInfo</code> directive
-    grouping. All others will cause an Internal Server Error.</p>
+    grouping. The effective set of permitted directives is the union of
+    both. All others will cause an Internal Server Error.</p>
+
+    <p>In addition, certain directives are always permitted in
+    <code>.htaccess</code> files whenever the override mechanism is
+    enabled (i.e., <directive module="core">AllowOverride</directive>
+    is not <code>None</code>). These are listed in the
+    <a href="overrides.html#override-all">All</a> section of the
+    <a href="overrides.html">override class index</a>.</p>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
@@ -665,6 +692,13 @@ variables</description>
     which may be different than the original request from the client
     due to internal redirects or subrequests.</dd>
   </dl>
+
+  <note><title>Note</title>
+  <p>The CGI environment variable <code>REQUEST_URI</code> contains the
+      full original URI from the request line, including the query string.
+      This differs from the server variable <code>%{REQUEST_URI}</code>
+      used in <module>mod_rewrite</module> and <a href="../expr.html">
+      ap_expr</a>, which contains only the path component.</p></note>
 </usage>
 </directivesynopsis>
 
@@ -836,7 +870,7 @@ named file-system directory, sub-directories, and their contents.</description>
     in a directory context may be used. <var>Directory-path</var> is
     either the full path to a directory, or a wild-card string using
     Unix shell-style matching. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. You may also use <code>[]</code> character ranges. None
     of the wildcards match a `/' character, so <code>&lt;Directory
     "/*/public_html"&gt;</code> will not match
@@ -926,11 +960,12 @@ named file-system directory, sub-directories, and their contents.</description>
     the corresponding <directive type="section">Directory</directive> will
     be applied.</p>
 
-   <p><strong>Note that the default access for
+    <note type="warning">
+    <p>The default access for
     <code>&lt;Directory "/"&gt;</code> is to permit all access.
     This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
-    as</strong></p>
+    as</p>
 
     <highlight language="config">
 &lt;Directory "/"&gt;
@@ -938,10 +973,11 @@ named file-system directory, sub-directories, and their contents.</description>
 &lt;/Directory&gt;
     </highlight>
 
-    <p><strong>and then override this for directories you
+    <p>Then override this for directories you
     <em>want</em> accessible. See the <a
     href="../misc/security_tips.html">Security Tips</a> page for more
-    details.</strong></p>
+    details.</p>
+    </note>
 
     <p>The directory sections occur in the <code>httpd.conf</code> file.
     <directive type="section">Directory</directive> directives
@@ -967,10 +1003,15 @@ the contents of file-system directories matching a regular expression.</descript
 <usage>
     <p><directive type="section">DirectoryMatch</directive> and
     <code>&lt;/DirectoryMatch&gt;</code> are used to enclose a group
-    of directives which will apply only to the named directory (and the files within),
-    the same as <directive module="core" type="section">Directory</directive>.
-    However, it takes as an argument a
-    <glossary ref="regex">regular expression</glossary>.  For example:</p>
+    of directives which will apply to directories (and the files
+    within) whose filesystem path matches the given
+    <glossary ref="regex">regular expression</glossary>.
+    Unlike <directive module="core" type="section">Directory</directive>,
+    it does not automatically apply to subdirectories unless the
+    pattern also matches them.  It takes as an argument a
+    regular expression that is matched as a substring — it is not
+    anchored at the start or end unless you explicitly include
+    <code>^</code> or <code>$</code> in the pattern.  For example:</p>
 
     <highlight language="config">
 &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
@@ -991,8 +1032,9 @@ the contents of file-system directories matching a regular expression.</descript
 
     <note><title>Trailing Slash</title>
       This directive applies to requests for directories that may or may
-      not end in a trailing slash, so expressions that are anchored to the
-      end of line ($) must be written with care.
+      not end in a trailing slash. If you anchor your pattern with
+      <code>$</code>, you may need to match both forms, e.g.,
+      <code>&lt;DirectoryMatch "^/var/www/?$"&gt;</code>.
     </note>
 
     <p>From 2.4.8 onwards, named groups and backreferences are captured and
@@ -1276,10 +1318,8 @@ EnableSendfile On
 
 <usage>
     <p>This directive changes the rules applied to the HTTP Request Line
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1"
-      >RFC 7230 &sect;3.1.1</a>) and the HTTP Request Header Fields
-    (<a href="https://tools.ietf.org/html/rfc7230#section-3.2"
-      >RFC 7230 &sect;3.2</a>), which are now applied by default or using
+    (<rfc section="3.1.1">7230</rfc>) and the HTTP Request Header Fields
+    (<rfc section="3.2">7230</rfc>), which are now applied by default or using
     the <code>Strict</code> option. Due to legacy modules, applications or
     custom user-agents which must be deprecated the <code>Unsafe</code>
     option has been added to revert to the legacy behaviors.</p>
@@ -1298,13 +1338,10 @@ EnableSendfile On
       <p>Prior to the introduction of this directive, the Apache HTTP Server
       request message parsers were tolerant of a number of forms of input
       which did not conform to the protocol.
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.4"
-        >RFC 7230 &sect;9.4 Request Splitting</a> and
-      <a href="https://tools.ietf.org/html/rfc7230#section-9.5"
-        >&sect;9.5 Response Smuggling</a> call out only two of the potential
+      <rfc section="9.4">7230</rfc> (Request Splitting) and
+      <rfc section="9.5">7230</rfc> (Response Smuggling) call out only two of the potential
       risks of accepting non-conformant request messages, while
-      <a href="https://tools.ietf.org/html/rfc7230#section-3.5"
-           >RFC 7230 &sect;3.5</a> "Message Parsing Robustness" identify the
+      <rfc section="3.5">7230</rfc> "Message Parsing Robustness" identify the
       risks of accepting obscure whitespace and request message formatting. 
       As of the introduction of this directive, all grammar rules of the
       specification are enforced in the default <code>Strict</code> operating
@@ -1337,8 +1374,7 @@ EnableSendfile On
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
-      <p><a href="https://tools.ietf.org/html/rfc7231#section-4.1"
-           >RFC 7231 &sect;4.1</a> "Request Methods" "Overview" requires that
+      <p><rfc section="4.1">7231</rfc> "Request Methods" "Overview" requires that
       origin servers shall respond with a HTTP 501 status code when an
       unsupported method is encountered in the request line.
       This already happens when the <code>LenientMethods</code> option is used,
@@ -1364,13 +1400,11 @@ EnableSendfile On
       </dd>
       <dt>Allow0.9|Require1.0</dt>
       <dd>
-      <p><a href="https://tools.ietf.org/html/rfc2616#section-19.6"
-           >RFC 2616 &sect;19.6</a> "Compatibility With Previous Versions" had
+      <p><rfc section="19.6">2616</rfc> "Compatibility With Previous Versions" had
       encouraged HTTP servers to support legacy HTTP/0.9 requests. RFC 7230
       supersedes this with "The expectation to support HTTP/0.9 requests has
-      been removed" and offers additional comments in 
-      <a href="https://tools.ietf.org/html/rfc7230#appendix-A"
-        >RFC 7230 Appendix A</a>. The <code>Require1.0</code> option allows
+      been removed" and offers additional comments in
+      <rfc anchor="appendix-A">7230</rfc> Appendix A. The <code>Require1.0</code> option allows
       the user to remove support of the default <code>Allow0.9</code> option's
       behavior.</p>
 
@@ -1428,7 +1462,7 @@ EnableSendfile On
 
     <note type="warning"><title>Note</title>
         <p> This directive is evaluated at configuration processing time, 
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
     </note>
@@ -1486,6 +1520,22 @@ ErrorDocument 403 Forbidden!
 ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}
     </highlight>
 
+    <p>When the argument is a text string (i.e., not a path or URL),
+    it is sent to the client with a content type of
+    <code>text/html</code>, so you may include HTML markup. You can
+    use the backslash line-continuation character to spread the
+    document across multiple lines:</p>
+
+    <highlight language="config">
+ErrorDocument 403 "\
+&lt;html&gt;&lt;head&gt;\
+&lt;title&gt;403 Forbidden&lt;/title&gt;\
+&lt;/head&gt;&lt;body&gt;\
+&lt;h1&gt;Forbidden&lt;/h1&gt;\
+&lt;p&gt;You do not have permission to access this resource.&lt;/p&gt;\
+&lt;/body&gt;&lt;/html&gt;"
+    </highlight>
+
     <p>Additionally, the special value <code>default</code> can be used
     to specify Apache httpd's simple hardcoded message.  While not required
     under normal circumstances, <code>default</code> will restore
@@ -1515,16 +1565,6 @@ ErrorDocument 404 /cgi-bin/bad_urls.pl
     receive the 401 status code. Therefore, <strong>if you use an
     <code>ErrorDocument 401</code> directive, then it must refer to a local
     document.</strong></p>
-
-    <p>Microsoft Internet Explorer (MSIE) will by default ignore
-    server-generated error messages when they are "too small" and substitute
-    its own "friendly" error messages. The size threshold varies depending on
-    the type of error, but in general, if you make your error document
-    greater than 512 bytes, then MSIE will show the server-generated
-    error rather than masking it.  More information is available in
-    Microsoft Knowledge Base article <a
-    href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807"
-    >Q294807</a>.</p>
 
     <p>Although most error messages can be overridden, there are certain
     circumstances where the internal messages are used regardless of the
@@ -1635,14 +1675,14 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     without causing any log message, the additional information is not logged
     either.</p>
 
-    <p>It can happen that some format string items do not produce output.  For
+    <p>It can happen that some format specifiers do not produce output.  For
     example, the Referer header is only present if the log message is
     associated to a request and the log message happens at a time when the
     Referer header has already been read from the client.  If no output is
     produced, the default behavior is to delete everything from the preceding
-    space character to the next space character.  This means the log line is
+    space character to the next space character.  This means the format string is
     implicitly divided into fields on non-whitespace to whitespace transitions.
-    If a format string item does not produce output, the whole field is
+    If a format specifier does not produce output, the whole field is
     omitted.  For example, if the remote address <code>%a</code> in the log
     format <code>[%t] [%l] [%a] %M&nbsp;</code> is not available, the surrounding
     brackets are not logged either.  Space characters can be escaped with a
@@ -1658,8 +1698,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     omitted.</p>
 
     <p>A number as modifier can be used to assign a log severity level to a
-    format item. The item will only be logged if the severity of the log
-    message is not higher than the specified log severity level. The number can
+    format item. The item will only be logged if the log message has a
+    severity level of the specified number or more severe (i.e., the
+    message's level number is less than or equal to the modifier). The number can
     range from 1 (alert) over 4 (warn) and 7 (debug) to 15 (trace8).</p>
 
     <p>For example, here's what would happen if you added modifiers to
@@ -1684,12 +1725,13 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     <tr>
     <td><code>%4{Referer}i</code></td>
     <td>Logs the <code>Referer</code> only if the log message severity
-    is higher than 4.</td>
+    is 4 (warn) or more severe (i.e., levels 1 through 4:
+    alert, crit, error, warn).</td>
     </tr>
 
     </table>
 
-    <p>Some format string items accept additional parameters in braces.</p>
+    <p>Some format specifiers accept additional parameters in braces.</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
@@ -1761,6 +1803,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
     <tr><td><code>%{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
 
+    <tr><td><code>%{m}t</code></td>
+        <td>The current time including milliseconds</td></tr>
+
     <tr><td><code>%{cu}t</code></td>
         <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
@@ -1806,7 +1851,7 @@ ErrorLogFormat "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M%&nbsp;
     <p>This would result in error messages such as:</p>
 
     <example>
-    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+    [Thu May 12 08:28:57.652118 2011] [core:error] [pid 8777:tid 4326490112] [client ::1:58619] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </example>
 
     <p>Notice that, as discussed above, some fields are omitted
@@ -1962,7 +2007,7 @@ filenames</description>
 
     <p>The <var>filename</var> argument should include a filename, or
     a wild-card string, where <code>?</code> matches any single character,
-    and <code>*</code> matches any sequences of characters.</p>
+    and <code>*</code> matches any sequence of characters.</p>
     <highlight language="config">
 &lt;Files "cat.html"&gt;
     # Insert stuff that applies to cat.html here
@@ -2779,7 +2824,14 @@ methods</description>
     used in preference to a <directive type="section">Limit</directive>
     section when restricting access, since a <directive type="section"
     module="core">LimitExcept</directive> section provides protection
-    against arbitrary methods.</note>
+    against arbitrary methods.  See also the
+    <a href="../sections.html#merging">configuration sections
+    merging documentation</a> for a warning about how
+    <directive type="section">Limit</directive> inside
+    <directive type="section" module="core">Location</directive>
+    can silently override
+    <directive type="section" module="core">Directory</directive>
+    restrictions.</note>
 
     <p>The <directive type="section">Limit</directive> and
     <directive type="section" module="core">LimitExcept</directive>
@@ -3163,12 +3215,19 @@ URLs</description>
     <p>For all origin (non-proxy) requests, the URL to be matched is a
     URL-path of the form <code>/path/</code>.  <em>No scheme, hostname,
     port, or query string may be included.</em>  For proxy requests, the
-    URL to be matched is of the form
+    URL to be matched depends on the type of proxy. With a
+    <strong>forward</strong> proxy (<directive
+    module="mod_proxy">ProxyRequests</directive>), the URL to be
+    matched is of the form
     <code>scheme://servername/path</code>, and you must include the
-    prefix.</p>
+    prefix. With a <strong>reverse</strong> proxy (configured via
+    <directive module="mod_proxy">ProxyPass</directive> or
+    <directive module="mod_proxy">RewriteRule ... [P]</directive>),
+    the request arrives as a local URL-path, so use <code>/path/</code>
+    just as you would for origin requests.</p>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
-    any single character, and <code>*</code> matches any sequences of
+    any single character, and <code>*</code> matches any sequence of
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><glossary ref="regex">Regular expressions</glossary>
@@ -3988,9 +4047,14 @@ directory</description>
       The server will follow symbolic links in this directory. This is
       the default setting.
       <note>
-      <p>Even though the server follows the symlink it does <em>not</em>
+      <p>When the server follows the symlink it does <em>not</em>
       change the pathname used to match against <directive type="section"
       module="core">Directory</directive> sections.</p>
+
+      <p>Disabling this option also prevents
+      <module>mod_rewrite</module> from operating in per-directory
+      context (<code>.htaccess</code> files and <directive type="section"
+      module="core">Directory</directive> sections).</p>
 
       <p>The <code>FollowSymLinks</code> and
       <code>SymLinksIfOwnerMatch</code> <directive
@@ -4116,6 +4180,10 @@ directory</description>
 
     <p>The default in the absence of any other settings is
     <code>FollowSymlinks</code>.</p>
+
+    <p>When using the <code>All</code> and <code>None</code>, they must
+    be the first option listed. The + and - modifiers cannot be used with
+    the <code>All</code> and <code>None</code> options.</p>
 </usage>
 </directivesynopsis>
 
@@ -4185,6 +4253,14 @@ Protocols h2 http/1.1
         <p>It is safe to specify protocols that are unavailable/disabled. Such
         protocol names will simply be ignored.</p>
         
+        <note><title>Note</title>
+        <p>The <code>http/1.1</code> protocol is always available and
+            cannot be excluded by omitting it from this directive.
+            This directive controls which additional protocols are
+            available for negotiation, and, when used with
+            <directive>ProtocolsHonorOrder</directive>, their preference
+            order.</p></note>
+
         <p>Protocols specified in base servers are inherited for virtual hosts 
             only if the virtual host has no own Protocols directive. Or, the other
             way around, Protocols directives in virtual hosts replace any
@@ -4234,7 +4310,7 @@ Protocols h2 http/1.1
     <p>This directive allows to configure the size (in bytes) of the memory
     buffer used to read data from the network or files.</p>
 
-    <p>A larger buffer can increase peformances with larger data, but consumes
+    <p>A larger buffer can increase performances with larger data, but consumes
     more memory per connection. The minimum configurable size is
     <var>1024</var>.</p>
 </usage>
@@ -4595,9 +4671,10 @@ itself</description>
     href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
 
     <p>Additionally, this is used when
-    creating self-referential redirection URLs when 
-    <directive module="core">UseCanonicalName</directive> is set to a non-default
-    value.</p>
+    creating self-referential redirection URLs when
+    <directive module="core">UseCanonicalName</directive> is set to
+    <code>On</code>. When <code>UseCanonicalName</code> is set to
+    <code>DNS</code>, a reverse DNS lookup is used instead.</p>
 
     <p>For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
@@ -4660,6 +4737,13 @@ ServerName www.example.com
     </example>
     </note>
 
+    <note type="warning">
+    <p>IPv6 addresses in <directive>ServerName</directive> are not
+        currently supported and will produce a startup error, even when
+        enclosed in square brackets. This is a
+        <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=52178"
+        >known issue</a>.</p></note>
+
 </usage>
 
 <seealso><a href="../dns-caveats.html">Issues Regarding DNS and
@@ -4681,9 +4765,17 @@ is accessed by an incompatible browser</description>
 <usage>
     <p>The <directive>ServerPath</directive> directive sets the legacy
     URL pathname for a host, for use with <a
-    href="../vhosts/">name-based virtual hosts</a>.</p>
+    href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+
+    <note><p>This is a legacy feature for providing compatibility with
+    HTTP/1.0 clients that do not send a <code>Host:</code> header. When
+    such a client requests a URL matching a vhost's
+    <directive>ServerPath</directive>, the request is served from that
+    vhost. In practice, all modern HTTP clients send the
+    <code>Host:</code> header, making this directive unnecessary.</p></note>
 </usage>
-<seealso><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></seealso>
+<seealso><a href="../vhosts/name-based.html">Name-based Virtual Host Support</a></seealso>
+<seealso><a href="../vhosts/examples.html#serverpath">ServerPath example</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -4881,10 +4973,13 @@ SetHandler imap-file
     <note><title>Note</title>
     <p>Because <directive>SetHandler</directive> overrides default handlers,
     normal behavior such as handling of URLs ending in a slash (/) as
-    directories or index files is suppressed.</p></note>
+    directories or index files is suppressed. It also overrides
+    <directive module="mod_dir">FallbackResource</directive>, since the
+    request already has an explicit handler assigned.</p></note>
 </usage>
 
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
+<seealso><directive module="mod_dir">FallbackResource</directive></seealso>
 
 </directivesynopsis>
 
@@ -4970,7 +5065,7 @@ certain events before failing a request</description>
       </li>
 
       <li>When writing data to the client, the length of time to wait
-      for an acknowledgement of a packet if the send buffer is
+      for an acknowledgment of a packet if the send buffer is
       full.</li>
 
       <li>In <module>mod_cgi</module> and <module>mod_cgid</module>,
@@ -5011,6 +5106,11 @@ certain events before failing a request</description>
     <code>Transfer-Encoding: chunked</code> is used).  The core will
     reflect the full headers and all chunk headers with the response
     body.  As a proxy server, the request body is not restricted to 64Kb.</p>
+
+    <p>The <code>TRACE</code> method cannot be restricted using
+    <directive type="section" module="core">Limit</directive> or
+    <directive type="section" module="core">LimitExcept</directive>.
+    Use <directive>TraceEnable</directive> instead.</p>
 
     <note><title>Note</title>
 
@@ -5088,7 +5188,7 @@ port</description>
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
     for <code>www.example.com</code> -- see <a
-    href="http://wiki.apache.org/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ#Why_does_Apache_ask_for_my_password_twice_before_serving_a_file.3F">
     the FAQ on this subject for more information</a>). But if
     <directive>UseCanonicalName</directive> is set <code>Off</code>, then
     Apache httpd will redirect to <code>http://www/splat/</code>.</p>
@@ -5323,7 +5423,7 @@ recognized methods to modules.</p>
 
     <note type="warning"><title>Note</title>
         <p> This directive is evaluated at configuration processing time,
-        not at runtime. As a result, this directive cannot be conditonally
+        not at runtime. As a result, this directive cannot be conditionally
         evaluated by enclosing it in an <directive type="section" module="core"
         >If</directive> section.</p>
     </note>
@@ -5356,7 +5456,7 @@ recognized methods to modules.</p>
         may be inadvertently derived from untrusted inputs. </p>
         <p> Windows systems should be isolated at the network layer from
         making outbound SMB/NTLM calls to unexpected destinations as a
-        more comprehensive and pre-emptive measure.</p>
+        more comprehensive and preemptive measure.</p>
     </note>
 
     <note type="warning"><title>Directive Ordering</title>

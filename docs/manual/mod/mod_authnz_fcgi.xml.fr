@@ -25,31 +25,31 @@
 <modulesynopsis metafile="mod_authnz_fcgi.xml.meta">
 
 <name>mod_authnz_fcgi</name>
-<description>Permet &agrave; une application d'autorisation FastCGI de g&eacute;rer
+<description>Permet à une application d'autorisation FastCGI de gérer
 l'authentification et l'autorisation httpd.</description>
 <status>Extension</status>
 <sourcefile>mod_authnz_fcgi.c</sourcefile>
 <identifier>authnz_fcgi_module</identifier>
-<compatibility>Disponible &agrave; partir de la version 2.4.10 du serveur HTTP
+<compatibility>Disponible à partir de la version 2.4.10 du serveur HTTP
 Apache</compatibility>
 
 <summary>
     <p>Ce module permet aux applications d'autorisation FastCGI
-    d'authentifier les utilisateurs et de contr&ocirc;ler leur acc&egrave;s aux
-    ressources. Il supporte les syst&egrave;mes d'autorisation FastCGI
-    g&eacute;n&eacute;riques qui participent en une seule phase &agrave; l'authentification
-    et &agrave; l'autorisation, ainsi que les processus d'authentification et
-    d'autorisation sp&eacute;cifiques &agrave; Apache httpd qui interviennent en une
+    d'authentifier les utilisateurs et de contrôler leur accès aux
+    ressources. Il supporte les systèmes d'autorisation FastCGI
+    génériques qui participent en une seule phase à l'authentification
+    et à l'autorisation, ainsi que les processus d'authentification et
+    d'autorisation spécifiques à Apache httpd qui interviennent en une
     ou plusieurs phases.</p>
 
     <p>Les processus d'autorisation FastCGI peuvent authentifier un
     utilisateur via son identificateur et son mot de passe comme dans le
-    processus d'authentification basique, ou via un m&eacute;canisme
+    processus d'authentification basique, ou via un mécanisme
     arbitraire.</p>
 </summary>
 
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
-contr&ocirc;le d'acc&egrave;s</a></seealso>
+contrôle d'accès</a></seealso>
 <seealso><module>mod_auth_basic</module></seealso>
 <seealso><program>fcgistarter</program></seealso>
 <seealso><module>mod_proxy_fcgi</module></seealso>
@@ -57,20 +57,20 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
 <section id="invocations"><title>Modes d'invocation</title>
 
     <p>Les modes d'invocation des processus d'autorisation FastCGI que
-    ce module supporte se distinguent par deux caract&eacute;ristiques : le
-    <em>type</em> et le <em>m&eacute;canisme</em> d'authentification.</p>
+    ce module supporte se distinguent par deux caractéristiques : le
+    <em>type</em> et le <em>mécanisme</em> d'authentification.</p>
 
     <p>Le <em>Type</em> est simplement <code>authn</code> pour
     l'authentification, <code>authz</code> pour l'autorisation et
     <code>authnz</code> l'authentification et l'autorisation.</p>
 
-    <p>Le <em>m&eacute;canisme</em> d'authentification fait r&eacute;f&eacute;rence aux
-    m&eacute;canismes d'authentification et aux phases de traitement de la
-    configuration de Apache httpd, et peut &ecirc;tre
+    <p>Le <em>mécanisme</em> d'authentification fait référence aux
+    mécanismes d'authentification et aux phases de traitement de la
+    configuration de Apache httpd, et peut être
     <code>AuthBasicProvider</code>, <code>Require</code>, ou
-    <code>check_user_id</code>. Les deux premiers m&eacute;canismes
-    correspondent aux directives utilis&eacute;es pour participer aux phases de
-    traitement appropri&eacute;es.</p>
+    <code>check_user_id</code>. Les deux premiers mécanismes
+    correspondent aux directives utilisées pour participer aux phases de
+    traitement appropriées.</p>
 
     <p>Description de chaque mode:</p>
 
@@ -78,15 +78,15 @@ contr&ocirc;le d'acc&egrave;s</a></seealso>
       <dt><em>Type</em> <code>authn</code>, <em>mechanism</em>
       <code>AuthBasicProvider</code></dt>
 
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&eacute;finie &agrave;
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est définie à
       <code>AUTHORIZER</code>, et la variable
-      <code>FCGI_APACHE_ROLE</code> &agrave; <code>AUTHENTICATOR</code>.
-      L'application doit &ecirc;tre sp&eacute;cifi&eacute;e en tant que fournisseur de type
+      <code>FCGI_APACHE_ROLE</code> à <code>AUTHENTICATOR</code>.
+      L'application doit être spécifiée en tant que fournisseur de type
       <em>authn</em> via la directive <directive
       module="mod_authnz_fcgi">AuthnzFcgiDefineProvider</directive>, et
-      activ&eacute;e via la directive <directive
+      activée via la directive <directive
       module="mod_auth_basic">AuthBasicProvider</directive>. Lorsqu'elle
-      est invoqu&eacute;e, l'application est cens&eacute;e authentifier le client &agrave;
+      est invoquée, l'application est censée authentifier le client à
       l'aide de l'identifiant et du mot de passe de l'utilisateur.
       Exemple d'application :
 
@@ -129,14 +129,14 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10102/
 
       <dt><em>Type</em> <code>authz</code>, <em>mechanism</em>
       <code>Require</code></dt>
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&eacute;finie &agrave;
-      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> &agrave;
-      <code>AUTHORIZER</code>. L'application doit &ecirc;tre sp&eacute;cifi&eacute;e en tant
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est définie à
+      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> à
+      <code>AUTHORIZER</code>. L'application doit être spécifiée en tant
       que fournisseur de type <em>authz</em> via la directive <directive
       module="mod_authnz_fcgi">AuthnzFcgiDefineProvider</directive>.
-      Lorsqu'elle est invoqu&eacute;e, l'application est cens&eacute;e contr&ocirc;ler les
-      acc&egrave;s du client &agrave; l'aide de l'identifiant utilisateur et d'autres
-      donn&eacute;es contenues dans la requ&ecirc;te. Exemple d'application :
+      Lorsqu'elle est invoquée, l'application est censée contrôler les
+      accès du client à l'aide de l'identifiant utilisateur et d'autres
+      données contenues dans la requête. Exemple d'application :
 <highlight language="perl">
 #!/usr/bin/perl
 use FCGI;
@@ -177,17 +177,17 @@ AuthnzFcgiDefineProvider authz FooAuthz fcgi://localhost:10103/
 
       <dd>Dans ce mode qui supporte le protocole d'autorisation web
       server-agnostic FastCGI, la variable <code>FCGI_ROLE</code> est
-      d&eacute;finie &agrave; <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code>
-      n'est pas d&eacute;finie. L'application doit &ecirc;tre sp&eacute;cifi&eacute;e en tant que
+      définie à <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code>
+      n'est pas définie. L'application doit être spécifiée en tant que
       fournisseur de type <em>authnz</em> via la directive <directive
       module="mod_authnz_fcgi">AuthnzFcgiDefineProvider</directive>.
-      L'application est cens&eacute;e assurer l'authentification et
-      l'autorisation au cours d'une m&ecirc;me invocation &agrave; l'aide de
+      L'application est censée assurer l'authentification et
+      l'autorisation au cours d'une même invocation à l'aide de
       l'identifiant et du mot de passe de l'utilisateur et d'autres
-      donn&eacute;es contenues dans la requ&ecirc;te. L'invocation de l'application
+      données contenues dans la requête. L'invocation de l'application
       intervient au cours de la phase d'authentification de l'API Apache
-      httpd. Si l'application renvoie le code 200, et si le m&ecirc;me
-      fournisseur est invoqu&eacute; au cours de la phase d'autorisation (via
+      httpd. Si l'application renvoie le code 200, et si le même
+      fournisseur est invoqué au cours de la phase d'autorisation (via
       une directive <directive>Require</directive>), mod_authnz_fcgi
       renverra un code de type success pour la phase d'autorisation sans
       invoquer l'application. Exemple d'application :
@@ -232,9 +232,9 @@ AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
       <dt><em>Type</em> <code>authn</code>, <em>mechanism</em>
       <code>check_user_id</code></dt>
 
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&eacute;finie &agrave;
-      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> &agrave;
-      <code>AUTHENTICATOR</code>. L'application doit &ecirc;tre sp&eacute;cifi&eacute;e en
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est définie à
+      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> à
+      <code>AUTHENTICATOR</code>. L'application doit être spécifiée en
       tant que fournisseur de type <em>authn</em> via une directive
       <directive
       module="mod_authnz_fcgi">AuthnzFcgiDefineProvider</directive>. La
@@ -290,20 +290,20 @@ AuthnzFcgiDefineProvider authn FooAuthn fcgi://localhost:10103/
 
 </section>
 
-<section id="examples"><title>Exemples suppl&eacute;mentaires</title>
+<section id="examples"><title>Exemples supplémentaires</title>
 
   <ol>
-    <li>Si votre application supporte s&eacute;par&eacute;ment les r&ocirc;les
+    <li>Si votre application supporte séparément les rôles
     d'authentification et d'autorisation (<code>AUTHENTICATOR</code> et
-    <code>AUTHORIZER</code>), vous pouvez d&eacute;finir des fournisseurs
-    s&eacute;par&eacute;s comme suit, m&ecirc;me s'ils correspondent &agrave; la m&ecirc;me application :
+    <code>AUTHORIZER</code>), vous pouvez définir des fournisseurs
+    séparés comme suit, même s'ils correspondent à la même application :
 
 <highlight language="config">
 AuthnzFcgiDefineProvider authn  FooAuthn  fcgi://localhost:10102/
 AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/
 </highlight>
 
-    Sp&eacute;cifie le fournisseur authn via la directive
+    Spécifie le fournisseur authn via la directive
     <directive module="mod_auth_basic">AuthBasicProvider</directive>
     et le fournisseur authz via la directive
     <directive module="mod_authz_core">Require</directive>:
@@ -316,16 +316,16 @@ Require FooAuthz
 </highlight>
     </li>
 
-    <li>Si votre application supporte le r&ocirc;le g&eacute;n&eacute;rique
+    <li>Si votre application supporte le rôle générique
     <code>AUTHORIZER</code> (authentification et autorisation en une
-    seule invocation), vous pouvez d&eacute;finir un fournisseur unique comme
+    seule invocation), vous pouvez définir un fournisseur unique comme
     suit :
 
 <highlight language="config">
 AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/
 </highlight>
 
-    Sp&eacute;cifie le fournisseur authnz via les directives
+    Spécifie le fournisseur authnz via les directives
     <directive>AuthBasicProvider</directive> et
     <directive>Require</directive> :
 
@@ -341,58 +341,58 @@ Require FooAuthnz
 
 <section id="limitations"><title>Limitations</title>
 
-    <p>Les fonctionnalit&eacute;s suivantes ne sont pas encore impl&eacute;ment&eacute;es :</p>
+    <p>Les fonctionnalités suivantes ne sont pas encore implémentées :</p>
 
     <dl>
-      <dt>V&eacute;rificateur d'acc&egrave;s d'Apache httpd</dt>
+      <dt>Vérificateur d'accès d'Apache httpd</dt>
       <dd>La phase <em>access check</em> de l'API Apache httpd est
       distincte des phases d'authentification et d'autorisation.
-      Certaines autres impl&eacute;mentations de FastCGI supportent cette phase
+      Certaines autres implémentations de FastCGI supportent cette phase
       et lorsque c'est le cas, la variable <code>FCGI_APACHE_ROLE</code>
-      est d&eacute;finie &agrave; <code>ACCESS_CHECKER</code>.</dd>
+      est définie à <code>ACCESS_CHECKER</code>.</dd>
 
       <dt>Redirections (pipes) ou sockets locaux (Unix)</dt>
-      <dd>Seuls les sockets TCP sont actuellement support&eacute;s.</dd>
+      <dd>Seuls les sockets TCP sont actuellement supportés.</dd>
 
       <dt>Support de mod_authn_socache</dt>
       <dd>Le support de l'interaction avec mod_authn_socache pour les
       applications qui interviennent dans le processus
       d'authentification d'Apache httpd serait souhaitable.</dd>
 
-      <dt>Support de l'authentification de type digest &agrave; l'aide de AuthDigestProvider</dt>
+      <dt>Support de l'authentification de type digest à l'aide de AuthDigestProvider</dt>
       <dd>Cette limitation ne sera probablement jamais franchie car il
-      n'existe aucun flux de donn&eacute;es d'autorisation capable de lire dans
-      un condens&eacute; de type hash.</dd>
+      n'existe aucun flux de données d'autorisation capable de lire dans
+      un condensé de type hash.</dd>
 
       <dt>Gestion des processus applicatifs</dt>
-      <dd>Cette fonctionnalit&eacute; restera probablement hors de port&eacute;e de ce
-      module. Il faudra donc g&eacute;rer les processus applicatifs d'une autre
-      mani&egrave;re ; par exemple, <program>fcgistarter</program> permet de
-      les d&eacute;marrer.</dd>
+      <dd>Cette fonctionnalité restera probablement hors de portée de ce
+      module. Il faudra donc gérer les processus applicatifs d'une autre
+      manière ; par exemple, <program>fcgistarter</program> permet de
+      les démarrer.</dd>
 
       <dt>AP_AUTH_INTERNAL_PER_URI</dt>
-      <dd>Tous les fournisseurs sont actuellement enregistr&eacute;s en tant
+      <dd>Tous les fournisseurs sont actuellement enregistrés en tant
       que AP_AUTH_INTERNAL_PER_CONF, ce qui signifie que les
-      v&eacute;rifications ne sont pas effectu&eacute;es pour les
-      sous-requ&ecirc;tes internes avec la m&ecirc;me configuration de contr&ocirc;le
-      d'acc&egrave;s que la requ&ecirc;te initiale.</dd>
+      vérifications ne sont pas effectuées pour les
+      sous-requêtes internes avec la même configuration de contrôle
+      d'accès que la requête initiale.</dd>
 
-      <dt>Conversion du jeu de caract&egrave;res des donn&eacute;es de protocole</dt>
-      <dd>Si mod_authnz_fcgi s'ex&eacute;cute dans un environnement de
-      compilation EBCDIC, toutes les donn&eacute;es de protocole FastCGI sont
-      &eacute;crites en EBCDIC et doivent &ecirc;tre disponibles en EBCDIC.</dd>
+      <dt>Conversion du jeu de caractères des données de protocole</dt>
+      <dd>Si mod_authnz_fcgi s'exécute dans un environnement de
+      compilation EBCDIC, toutes les données de protocole FastCGI sont
+      écrites en EBCDIC et doivent être disponibles en EBCDIC.</dd>
 
-      <dt>Plusieurs requ&ecirc;tes pour une connexion</dt>
+      <dt>Plusieurs requêtes pour une connexion</dt>
       <dd>Actuellement, la connexion au fournisseur d'autorisation
-      FastCGI est ferm&eacute;e apr&egrave;s chaque phase de traitement. Par exemple,
-      si le fournisseur d'autorisation g&egrave;re s&eacute;par&eacute;ment les phases
+      FastCGI est fermée après chaque phase de traitement. Par exemple,
+      si le fournisseur d'autorisation gère séparément les phases
       <em>authn</em> et <em>authz</em>, deux connexions seront
-      n&eacute;cessaires.</dd>
+      nécessaires.</dd>
 
       <dt>Redirection de certains URIs</dt>
-      <dd>Les URIs en provenance des clients ne peuvent pas &ecirc;tre
-      redirig&eacute;s selon une table de redirection, comme avec la directive
-      <directive>ProxyPass</directive> utilis&eacute;e avec les r&eacute;pondeurs
+      <dd>Les URIs en provenance des clients ne peuvent pas être
+      redirigés selon une table de redirection, comme avec la directive
+      <directive>ProxyPass</directive> utilisée avec les répondeurs
       FastCGI.</dd>
 
     </dl>
@@ -402,26 +402,26 @@ Require FooAuthnz
 <section id="logging"><title>Journalisation</title>
 
     <ol>
-        <li>Les erreurs de traitement sont journalis&eacute;es &agrave; un niveau
-	<code>error</code> ou sup&eacute;rieur.</li>
-        <li>Les messages envoy&eacute;s par l'application sont journalis&eacute;s au
+        <li>Les erreurs de traitement sont journalisées à un niveau
+	<code>error</code> ou supérieur.</li>
+        <li>Les messages envoyés par l'application sont journalisés au
 	niveau <code>warn</code>.</li>
-        <li>Les messages de deboguage &agrave; caract&egrave;re g&eacute;n&eacute;ral sont
-	journalis&eacute;s au niveau <code>debug</code>.</li>
-        <li>Les variables d'environnement transmises &agrave; l'application
-	sont journalis&eacute;es au niveau <code>trace2</code>. La valeur de la
-	variable <code>REMOTE_PASSWD</code> sera occult&eacute;e, mais
-	<strong>toute autre donn&eacute;e sensible sera visible dans le
+        <li>Les messages de deboguage à caractère général sont
+	journalisés au niveau <code>debug</code>.</li>
+        <li>Les variables d'environnement transmises à l'application
+	sont journalisées au niveau <code>trace2</code>. La valeur de la
+	variable <code>REMOTE_PASSWD</code> sera occultée, mais
+	<strong>toute autre donnée sensible sera visible dans le
 	journal</strong>.</li>
-        <li>Toutes les entr&eacute;es/sorties entre le module et l'application
+        <li>Toutes les entrées/sorties entre le module et l'application
 	FastCGI, y compris les variables d'environnement, seront
-	journalis&eacute;es au format imprimable et hexad&eacute;cimal au niveau
-	<code>trace5</code>. <strong>Toutes les donn&eacute;es sensibles seront
+	journalisées au format imprimable et hexadécimal au niveau
+	<code>trace5</code>. <strong>Toutes les données sensibles seront
 	visibles dans le journal.</strong></li>
     </ol>
 
     <p>La directive <directive module="core">LogLevel</directive> permet
-    de configurer un niveau de journalisation sp&eacute;cifique &agrave;
+    de configurer un niveau de journalisation spécifique à
     mod_authnz_fcgi. Par exemple :</p>
 
 <highlight language="config">
@@ -432,34 +432,34 @@ LogLevel info authnz_fcgi:trace8
 
 <directivesynopsis>
 <name>AuthnzFcgiDefineProvider</name>
-<description>D&eacute;finit une application FastCGI en tant que fournisseur
+<description>Définit une application FastCGI en tant que fournisseur
 d'authentification et/ou autorisation</description>
 <syntax>AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
 <em>backend-address</em></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
 <usage>
-    <p>Cette directive permet de d&eacute;finir une application FastCGI en tant
-    que fournisseur pour une phase particuli&egrave;re d'authentification ou
+    <p>Cette directive permet de définir une application FastCGI en tant
+    que fournisseur pour une phase particulière d'authentification ou
     d'autorisation.</p>
 
     <dl>
       <dt><em>type</em></dt>
-      <dd>Les valeurs de ce param&egrave;tre sont <em>authn</em> pour
+      <dd>Les valeurs de ce paramètre sont <em>authn</em> pour
       l'authentification, <em>authz</em> pour l'autorisation, ou
-      <em>authnz</em> pour un fournisseur d'autorisation g&eacute;n&eacute;rique
-      FastCGI qui effectue les deux v&eacute;rifications.</dd>
+      <em>authnz</em> pour un fournisseur d'autorisation générique
+      FastCGI qui effectue les deux vérifications.</dd>
 
       <dt><em>provider-name</em></dt>
-      <dd>Ce param&egrave;tre permet d'associer un nom au fournisseur ; ce nom
-      pourra &ecirc;tre utilis&eacute; dans des directives comme <directive
+      <dd>Ce paramètre permet d'associer un nom au fournisseur ; ce nom
+      pourra être utilisé dans des directives comme <directive
       module="mod_auth_basic">AuthBasicProvider</directive> et
       <directive module="mod_authz_core">Require</directive>.</dd>
 
       <dt><em>backend-address</em></dt>
-      <dd>Ce param&egrave;tre permet de sp&eacute;cifier l'adresse de l'application
+      <dd>Ce paramètre permet de spécifier l'adresse de l'application
       sous la forme <em>fcgi://hostname:port/</em>. Le ou les processus
-      de l'application doivent &ecirc;tre g&eacute;r&eacute;s ind&eacute;pendamment comme avec
+      de l'application doivent être gérés indépendamment comme avec
       <program>fcgistarter</program>.</dd>
     </dl>
 </usage>
@@ -467,7 +467,7 @@ d'authentification et/ou autorisation</description>
 
 <directivesynopsis>
 <name>AuthnzFcgiCheckAuthnProvider</name>
-<description>Permet &agrave; une application FastCGI de g&eacute;rer l'accroche
+<description>Permet à une application FastCGI de gérer l'accroche
 d'authentification check_authn.</description>
 <syntax>AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
 <em>option</em> ...</syntax>
@@ -475,81 +475,81 @@ d'authentification check_authn.</description>
 <contextlist><context>directory</context></contextlist>
 <override>FileInfo</override>
 <usage>
-    <p>Cette directive permet de confier &agrave; une application FastCGI la
-    gestion d'une phase sp&eacute;cifique du processus d'authentification ou
+    <p>Cette directive permet de confier à une application FastCGI la
+    gestion d'une phase spécifique du processus d'authentification ou
     d'autorisation.</p>
 
-    <p>Certaines fonctionnalit&eacute;s des fournisseurs d'autorisation FastCGI
-    n&eacute;cessitent cette directive en lieu et place de
-    <directive>AuthBasicProvider</directive> pour pouvoir &ecirc;tre activ&eacute;es :</p>
+    <p>Certaines fonctionnalités des fournisseurs d'autorisation FastCGI
+    nécessitent cette directive en lieu et place de
+    <directive>AuthBasicProvider</directive> pour pouvoir être activées :</p>
 
     <ul>
-      <li>L'authentification de type autre que basique ; en g&eacute;n&eacute;ral,
-      d&eacute;termination de l'identifiant utilisateur et renvoi de sa valeur
+      <li>L'authentification de type autre que basique ; en général,
+      détermination de l'identifiant utilisateur et renvoi de sa valeur
       depuis le fournisseur d'autorisation ; voir l'option
       <code>UserExpr</code> ci-dessous</li>
-      <li>S&eacute;lection d'un code de r&eacute;ponse personnalis&eacute; ; en cas de
-      code de r&eacute;ponse autre que 200 en provenance du fournisseur
-      d'autorisation, c'est ce code qui sera utilis&eacute; comme code d'&eacute;tat
-      de la r&eacute;ponse</li>
-      <li>D&eacute;finition du corps d'une r&eacute;ponse autre que 200 ; si le
-      fournisseur d'autorisation renvoie un corps de r&eacute;ponse avec un
-      code autre que 200, c'est ce corps de r&eacute;ponse qui sera renvoy&eacute; au
-      client ; la longueur du texte est limit&eacute;e &agrave; 8192 octets</li>
+      <li>Sélection d'un code de réponse personnalisé ; en cas de
+      code de réponse autre que 200 en provenance du fournisseur
+      d'autorisation, c'est ce code qui sera utilisé comme code d'état
+      de la réponse</li>
+      <li>Définition du corps d'une réponse autre que 200 ; si le
+      fournisseur d'autorisation renvoie un corps de réponse avec un
+      code autre que 200, c'est ce corps de réponse qui sera renvoyé au
+      client ; la longueur du texte est limitée à 8192 octets</li>
     </ul>
 
     <dl>
       <dt><em>provider-name</em></dt>
-      <dd>C'est le nom du fournisseur d&eacute;fini au pr&eacute;alable via la
+      <dd>C'est le nom du fournisseur défini au préalable via la
       directive <directive>AuthnzFcgiDefineProvider</directive>.</dd>
 
       <dt><code>None</code></dt>
-      <dd>Sp&eacute;cifiez <code>None</code> pour d&eacute;sactiver un fournisseur
-      activ&eacute; avec cette m&ecirc;me directive dans une autre port&eacute;e, par
-      exemple dans un r&eacute;pertoire parent.</dd>
+      <dd>Spécifiez <code>None</code> pour désactiver un fournisseur
+      activé avec cette même directive dans une autre portée, par
+      exemple dans un répertoire parent.</dd>
 
       <dt><em>option</em></dt>
-      <dd>Les options suivantes sont support&eacute;es :
+      <dd>Les options suivantes sont supportées :
 
       <dl>
-         <dt>Authoritative On|Off (par d&eacute;faut On)</dt>
-         <dd>Cette option permet de d&eacute;finir si l'appel &agrave; d'autres
-	 modules est autoris&eacute; lorsqu'un fournisseur d'autorisation FastCGI a
-	 &eacute;t&eacute; configur&eacute; et si la requ&ecirc;te &eacute;choue.</dd>
+         <dt>Authoritative On|Off (par défaut On)</dt>
+         <dd>Cette option permet de définir si l'appel à d'autres
+	 modules est autorisé lorsqu'un fournisseur d'autorisation FastCGI a
+	 été configuré et si la requête échoue.</dd>
 
          <dt>DefaultUser <em>id utilisateur</em></dt>
          <dd>Lorsque le fournisseur d'autorisation donne son accord, et
-	 si <code>UserExpr</code> est d&eacute;fini et correspond &agrave; une cha&icirc;ne
+	 si <code>UserExpr</code> est défini et correspond à une chaîne
 	 vide, (par exemple, si le fournisseur d'autorisation ne renvoie
-	 aucune variable), c'est cette valeur qui sera utilis&eacute;e comme id
-	 utilisateur par d&eacute;faut. Cela se produit souvent lorsqu'on se trouve dans
-	 un contexte d'invit&eacute;, ou d'utilisateur non authentifi&eacute; ;
-	 les utilisateurs et invit&eacute;s se voient alors attribu&eacute; un id
-	 utilisateur sp&eacute;cifique qui permettra de se connecter et
-	 d'acc&eacute;der &agrave; certaines ressources.</dd>
+	 aucune variable), c'est cette valeur qui sera utilisée comme id
+	 utilisateur par défaut. Cela se produit souvent lorsqu'on se trouve dans
+	 un contexte d'invité, ou d'utilisateur non authentifié ;
+	 les utilisateurs et invités se voient alors attribué un id
+	 utilisateur spécifique qui permettra de se connecter et
+	 d'accéder à certaines ressources.</dd>
 
-         <dt>RequireBasicAuth On|Off (par d&eacute;faut Off)</dt>
-         <dd>Cette option permet de d&eacute;finir si l'authentification
-	 basique est requise avant de transmettre la requ&ecirc;te au
+         <dt>RequireBasicAuth On|Off (par défaut Off)</dt>
+         <dd>Cette option permet de définir si l'authentification
+	 basique est requise avant de transmettre la requête au
 	 fournisseur d'autorisation. Dans l'affirmative, le fournisseur
-	 d'autorisation ne sera invoqu&eacute; qu'en pr&eacute;sence d'un id
-	 utilisateur et d'un mot de passe ; si ces deux &eacute;l&eacute;ments ne sont
-	 pas pr&eacute;sents, un code d'erreur 401 sera renvoy&eacute;</dd>
+	 d'autorisation ne sera invoqué qu'en présence d'un id
+	 utilisateur et d'un mot de passe ; si ces deux éléments ne sont
+	 pas présents, un code d'erreur 401 sera renvoyé</dd>
 
-         <dt>UserExpr <em>expr</em> (pas de valeur par d&eacute;faut)</dt>
+         <dt>UserExpr <em>expr</em> (pas de valeur par défaut)</dt>
          <dd>Lorsque le client ne fournit pas l'authentification basique
-	 et si le fournisseur d'autorisation d&eacute;termine l'id utilisateur,
-	 cette expression, &eacute;valu&eacute;e apr&egrave;s l'appel au fournisseur
-	 d'autorisation, permet de d&eacute;terminer l'id utilisateur. Cette
-	 expression se conforme &agrave; la <a href="../expr.html">syntaxe
-	 ap_expr</a> et doit correspondre &agrave; une cha&icirc;ne de caract&egrave;res.
-	 Une utilisation courante consiste &agrave; r&eacute;f&eacute;rencer la d&eacute;finition
-	 d'une <code>Variable-<em>XXX</em></code> renvoy&eacute;e par le
+	 et si le fournisseur d'autorisation détermine l'id utilisateur,
+	 cette expression, évaluée après l'appel au fournisseur
+	 d'autorisation, permet de déterminer l'id utilisateur. Cette
+	 expression se conforme à la <a href="../expr.html">syntaxe
+	 ap_expr</a> et doit correspondre à une chaîne de caractères.
+	 Une utilisation courante consiste à référencer la définition
+	 d'une <code>Variable-<em>XXX</em></code> renvoyée par le
 	 fournisseur d'autorisation via une option du style
 	 <code>UserExpr "%{reqenv:<em>XXX</em>}"</code>. Si cette option
-	 est sp&eacute;cifi&eacute;e, et si l'id utilisateur ne peut pas &ecirc;tre d&eacute;finie
-	 via l'expression apr&egrave;s une authentification r&eacute;ussie, la requ&ecirc;te
-	 sera rejet&eacute;e avec un code d'erreur 500.</dd>
+	 est spécifiée, et si l'id utilisateur ne peut pas être définie
+	 via l'expression après une authentification réussie, la requête
+	 sera rejetée avec un code d'erreur 500.</dd>
 
        </dl>
       </dd>

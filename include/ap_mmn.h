@@ -736,6 +736,7 @@
  * 20211221.28 (2.5.1-dev) Add dav_get_base_path() to mod_dav
  * 20211221.29 (2.5.1-dev) Add ap_set_time_process_request() to scoreboard.h
  * 20211221.30 (2.5.1-dev) Add ap_stat_check() to httpd.h
+ * 20211221.31 (2.5.1-dev) Add ap_*_timingsafe() to httpd.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503235UL /* "AP25" */
@@ -743,7 +744,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20211221
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 30             /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 31             /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -34,7 +34,7 @@
         <p>
         This module manages common properties of domains for one or more virtual hosts. 
         Its serves two main purposes: for one, supervise/renew TLS certificates via the 
-        ACME protocol (<a href="https://tools.ietf.org/html/rfc8555">RFC 8555</a>). 
+        ACME protocol (<rfc>8555</rfc>). 
         Certificates will be renewed by the module ahead of their expiration to account 
         for disruption in internet services. There are ways to monitor the status of all 
         certificates managed this way and configurations that will run your own 
@@ -1023,7 +1023,7 @@ MDRequireHttps permanent
         <usage>
             <p>
                 This command gets called when one of the following events happen for
-                a Managed Domain: "renewed", "installed", "expiring", "errored". The command may
+                a Managed Domain: "renewed", "installed", "expiring", "errored", "renewing", "challenge-setup:type:domain", "ocsp-renewed", "ocsp-errored". The command may
                 be invoked for more than these in the future and ignore events
                 it is not prepared to handle.
             </p><p>
@@ -1073,10 +1073,14 @@ MDMessageCmd /etc/apache/md-message
                 DNS name in a MDomain. Cluster setups may use this event to distribute
                 challenge files to all nodes in a cluster.
             </p><p>
-                ocsp-errored happens when <directive module="mod_md">MDStapling</directive>
+                'ocsp-errored' happens when <directive module="mod_md">MDStapling</directive>
                 is enabled for a domain, this indicates
                 that an error was encountered retrieving the OCSP response from the
                 Certificate Authority. mod_md will continue trying.
+            </p><p>
+                'ocsp-renewed' is triggered when a new OCSP response has been
+                successfully obtained for a domain's certificate. This event fires
+                at most once per day.
             </p>
         </usage>
     </directivesynopsis>
@@ -1460,7 +1464,7 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                The mode `all` is the behaviour as in all previous versions. Both ServerName
+                The mode `all` is the behavior as in all previous versions. Both ServerName
                 and ServerAlias are inspected to find the MDomain matching a VirtualHost.
                 This automatically detects coverage, even when you only have added
                 one of the names to an MDomain.
@@ -1515,18 +1519,18 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 This about a non-standard ACME extension by Let's Encrypt.
             </p><p>
-                Lets Encrypt announced they will add Certificate Profiles
-                support in their CA during 2025, beginning with their staging
-                servers. This, among some other details, let's you select the
-                lifetime of the certificates you get. The "default" profile
-                will keep the 90 days and a "tlsserver" profile will issue
-                certificates with only 6 days of validity.
+                Lets Encrypt supports Certificate Profiles in their CA. This,
+                among some other details, let's you select the lifetime of the
+                certificates you get. The "classic" profile is the default and
+                will keep the 90 days, the "tlsserver" profile is also 90 days
+                with a max of 25 Subject Alternative Names. The "shortlived"
+                profile will issue certificates with only 6 days of validity.
             </p><p>
                 If you do not change your mod_md configuration, you will
                 continue to get the 90 days certificates. Should you believe
                 that a shorter lifetime is beneficial for you (and take the
                 risk that the renewal time is way shorter),
-                you can configure the profile to use via 'MDProfile tlsserver'.
++                you can configure the profile to use via 'MDProfile shortlived'.
            </p><p>
                 The profile names are defined by the CA. If a profile you
                 configure is not available, no profile will be used and
@@ -1596,6 +1600,27 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 The amount of time to wait after the server start to check
                 renewals of certificates. By default this occurs right away.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDCACertificateFile</name>
+        <description>File containing x509 trust anchors to verify ACME servers.</description>
+        <syntax>MDCACertificateFile <var>file</var></syntax>
+        <default>MDCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <usage>
+            <p>
+                This is mainly used in test setups where the module needs to
+                connect to a test ACME server that has its own root certificate.
+                People who run an enterprise wide internal CA can use this when
+                they run their own ACME servers.
+            </p>
+            <p>
+                Use "none" as path to disable explicitly.
             </p>
         </usage>
     </directivesynopsis>

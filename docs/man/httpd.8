@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2025-08-29" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2026-05-08" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -42,7 +42,7 @@ On Windows systems, the following additional arguments are available:
 \fBhttpd\fR is the Apache HyperText Transfer Protocol (HTTP) server program\&. It is designed to be run as a standalone daemon process\&. When used like this it will create a pool of child processes or threads to handle requests\&.
  
 .PP
-In general, \fBhttpd\fR should not be invoked directly, but rather should be invoked via apachectl on Unix-based systems or as a service on Windows NT, 2000 and XP and as a console application on Windows 9x and ME\&.
+In general, \fBhttpd\fR should not be invoked directly, but rather should be invoked via \fB apachectl\fR on Unix-based systems or as a service on Windows NT, 2000 and XP and as a console application on Windows 9x and ME\&.
  
 
 .SH "OPTIONS"
@@ -135,4 +135,26 @@ print details of all loaded modules in a structured (TOML) format\&.
 .TP
 \fI-D DUMP_CERTS\fR
 If mod_ssl is loaded, print details of configured SSL/TLS certificates\&.  
+ 
+.SH "FILES"
+ 
+.PP
+The default paths listed below may be changed at compile time or with various command-line and configuration directives\&. Consult your local installation for the actual locations\&.
+ 
+ 
+.TP
+\fB/usr/local/apache2/conf/httpd\&.conf\fR
+Main server configuration file\&.  
+.TP
+\fB/usr/local/apache2/conf/mime\&.types\fR
+Default MIME type mappings\&.  
+.TP
+\fB/usr/local/apache2/logs/error_log\fR
+Error log file\&.  
+.TP
+\fB/usr/local/apache2/logs/access_log\fR
+Access log file\&.  
+.TP
+\fB/usr/local/apache2/logs/httpd\&.pid\fR
+File containing the process ID of the running daemon\&.  
  

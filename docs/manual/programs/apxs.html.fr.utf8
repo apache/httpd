@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>apxs - Utilitaire pour les extensions d'Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/apxs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/programs/apxs.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -29,7 +31,7 @@
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p><code>apxs</code> est un utilitaire permettant de compiler et
+    <p><code class="program"><a href="../programs/apxs.html">apxs</a></code> est un utilitaire permettant de compiler et
     d'installer des modules en tant qu'extensions du serveur HTTP
     Apache. A cet effet, un objet dynamique partagé (DSO) est compilé à
     partir d'un ou plusieurs <var>fichiers</var> sources ou objets et
@@ -41,36 +43,34 @@
     plate-forme doit supporter la fonctionnalité DSO, et votre binaire
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> Apache doit être compilé avec le module
     <code class="module"><a href="../mod/mod_so.html">mod_so</a></code>. Si ce n'est pas le cas, l'utilitaire
-    <code>apxs</code> vous le signalera. Vous pouvez aussi vérifier
+    <code class="program"><a href="../programs/apxs.html">apxs</a></code> vous le signalera. Vous pouvez aussi vérifier
     vous-même ces prérequis en exécutant manuellement la commande :</p>
 
-    <div class="example"><p><code>
-      $ httpd -l
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ httpd -l</pre>
+</div>
 
     <p>Le module <code class="module"><a href="../mod/mod_so.html">mod_so</a></code> doit faire partie de la liste
     des modules affichée. Si ces prérequis sont présents, vous pouvez
     facilement étendre les fonctionnalités de votre serveur Apache en
     installant vos propres modules à l'aide de l'utilitaire
-    <code>apxs</code>, via le mécanisme DSO :</p>
+    <code class="program"><a href="../programs/apxs.html">apxs</a></code>, via le mécanisme DSO :</p>
 
-    <div class="example"><p><code>
-      $ apxs -i -a -c mod_foo.c<br />
-      gcc -fpic -DSHARED_MODULE -I/chemin/vers/apache/include -c mod_foo.c<br />
-      ld -Bshareable -o mod_foo.so mod_foo.o<br />
-      cp mod_foo.so /chemin/vers/apache/modules/mod_foo.so<br />
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/etc/httpd.conf]<br />
-      $ apachectl restart<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd started<br />
-      $ _
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ apxs -i -a -c mod_foo.c
+gcc -fpic -DSHARED_MODULE -I/path/to/apache/include -c mod_foo.c
+ld -Bshareable -o mod_foo.so mod_foo.o
+cp mod_foo.so /path/to/apache/modules/mod_foo.so
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/etc/httpd.conf]
+$ apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _</pre>
+</div>
 
     <p>Les arguments <var>fichiers</var> peuvent correspondre à un
     fichier source C (.c), un fichier objet (.o) ou même une archive de
-    bibliothèques (.a). L'utilitaire <code>apxs</code> reconnaît
+    bibliothèques (.a). L'utilitaire <code class="program"><a href="../programs/apxs.html">apxs</a></code> reconnaît
     automatiquement ces extensions et utilise automatiquement les
     fichiers source C pour la compilation, et les fichiers objets et
     archives pour l'édition de liens. Cependant, si vous utilisez des
@@ -79,7 +79,7 @@
     un objet partagé chargé dynamiquement. Avec GCC, par exemple, il
     vous suffit de toujours utiliser l'option de compilation
     <code>-fpic</code>. Pour les autres compilateurs C, consultez leur
-    page de manuel, ou vérifiez les drapeaux qu'<code>apxs</code>
+    page de manuel, ou vérifiez les drapeaux qu'<code class="program"><a href="../programs/apxs.html">apxs</a></code>
     utilise pour compiler les fichiers objets.</p>
 
     <p>Pour plus de détails à propos du support DSO dans Apache, lire la
@@ -89,7 +89,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Syntaxe</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
@@ -137,7 +137,7 @@
       modèles). Utilisez cette option pour spécifier de manière
       explicite le nom du module. Pour l'option <code>-g</code>, cette
       option est nécessaire ; pour l'option <code>-i</code>,
-      l'utilitaire <code>apxs</code> tente de déterminer le nom du
+      l'utilitaire <code class="program"><a href="../programs/apxs.html">apxs</a></code> tente de déterminer le nom du
       module à partir des sources, ou (à défaut) en le déduisant du nom
       de fichier.</dd>
       </dl>
@@ -156,9 +156,8 @@
       <p>Utilisez cette option pour déterminer manuellement les options
       utilisées pour compiler le binaire <code>httpd</code> qui chargera
       votre module. Ajoutez par exemple</p>
-      <div class="example"><p><code>
-        INC=-I`apxs -q INCLUDEDIR`
-      </code></p></div>
+      <div class="example"><pre class="prettyprint lang-sh">INC=-I`apxs -q INCLUDEDIR`</pre>
+</div>
 
       <p>dans vos propres Makefiles si vous devez accéder manuellement
       aux fichiers d'en-têtes C d'Apache.</p></dd>
@@ -287,80 +286,74 @@
     source C en un objet partagé pouvant être chargé dans le serveur
     Apache à l'exécution, via la commande suivante :</p>
 
-    <div class="example"><p><code>
-      $ apxs -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      $ _
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+$ _</pre>
+</div>
 
     <p>Vous devez ensuite vérifier la configuration d'Apache en vous
     assurant qu'une directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> est bien présente pour
     charger cet objet partagé. Pour simplifier cette étape,
-    <code>apxs</code> propose une méthode automatique d'installation de
+    <code class="program"><a href="../programs/apxs.html">apxs</a></code> propose une méthode automatique d'installation de
     l'objet partagé dans son répertoire "modules", et de mise à jour du
     fichier <code>httpd.conf</code> en conséquence. Pour bénéficier de
     cette automatisation, utilisez la commande suivante :</p>
 
-    <div class="example"><p><code>
-      $ apxs -i -a mod_foo.la<br />
-      /chemin/vers/instdso.sh mod_foo.la /chemin/vers/apache/modules<br />
-      /chemin/vers/libtool --mode=install cp mod_foo.la /chemin/vers/apache/modules
-      ...
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/conf/httpd.conf]<br />
-      $ _
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ apxs -i -a mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+$ _</pre>
+</div>
 
     <p>Une ligne contenant</p>
 
-    <div class="example"><p><code>
-      LoadModule foo_module modules/mod_foo.so
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-config">LoadModule foo_module modules/mod_foo.so</pre>
+</div>
 
     <p>est alors ajoutée au fichier de configuration si ce n'est pas
     déjà fait. Si vous voulez que le module soit désactivé par défaut,
     utilisez l'option <code>-A</code> comme suit :</p>
 
-    <div class="example"><p><code>
-      $ apxs -i -A mod_foo.c
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ apxs -i -A mod_foo.c</pre>
+</div>
 
     <p>Pour un test rapide du mécanisme apxs, vous pouvez créer un
     exemple de modèle de module Apache, ainsi que le Makefile
     correspondant via :</p>
 
-    <div class="example"><p><code>
-      $ apxs -g -n foo<br />
-      Creating [DIR]  foo<br />
-      Creating [FILE] foo/Makefile<br />
-      Creating [FILE] foo/modules.mk<br />
-      Creating [FILE] foo/mod_foo.c<br />
-      Creating [FILE] foo/.deps<br />
-      $ _
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ apxs -g -n foo
+Creating [DIR]  foo
+Creating [FILE] foo/Makefile
+Creating [FILE] foo/modules.mk
+Creating [FILE] foo/mod_foo.c
+Creating [FILE] foo/.deps
+$ _</pre>
+</div>
 
     <p>Vous pouvez ensuite compiler immédiatement ce module exemple en
     objet partagé et le charger dans le serveur Apache :</p>
 
-    <div class="example"><p><code>
-      $ cd foo<br />
-      $ make all reload<br />
-      apxs -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=compile gcc ... -c mod_foo.c<br />
-      /chemin/vers/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
-      apxs -i -a -n "foo" mod_foo.la<br />
-      /chemin/vers/instdso.sh mod_foo.la /chemin/vers/apache/modules<br />
-      /chemin/vers/libtool --mode=install cp mod_foo.la /chemin/vers/apache/modules
-      ...
-      chmod 755 /chemin/vers/apache/modules/mod_foo.so<br />
-      [activation du module `foo' dans /chemin/vers/apache/conf/httpd.conf]<br />
-      apachectl restart<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd not running, trying to start<br />
-      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
-      /chemin/vers/apache/sbin/apachectl restart: httpd started<br />
-      $ _
-    </code></p></div>
+    <div class="example"><pre class="prettyprint lang-sh">$ cd foo
+$ make all reload
+apxs -c mod_foo.c
+/path/to/libtool --mode=compile gcc ... -c mod_foo.c
+/path/to/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo
+apxs -i -a -n "foo" mod_foo.la
+/path/to/instdso.sh mod_foo.la /path/to/apache/modules
+/path/to/libtool --mode=install cp mod_foo.la /path/to/apache/modules
+...
+chmod 755 /path/to/apache/modules/mod_foo.so
+[activating module `foo' in /path/to/apache/conf/httpd.conf]
+apachectl restart
+/path/to/apache/sbin/apachectl restart: httpd not running, trying to start
+[Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module
+/path/to/apache/sbin/apachectl restart: httpd started
+$ _</pre>
+</div>
 
 </div></div>
 <div class="bottomlang">
@@ -368,28 +361,32 @@
 <a href="../fr/programs/apxs.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/apxs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/programs/apxs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

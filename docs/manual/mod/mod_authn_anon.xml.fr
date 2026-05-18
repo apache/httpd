@@ -25,8 +25,8 @@
 <modulesynopsis metafile="mod_authn_anon.xml.meta">
 
 <name>mod_authn_anon</name>
-<description>Permet un acc&egrave;s "anonyme" &agrave; des zones
-authentifi&eacute;es</description>
+<description>Permet un accès "anonyme" à des zones
+authentifiées</description>
 <status>Extension</status>
 <sourcefile>mod_authn_anon.c</sourcefile>
 <identifier>authn_anon_module</identifier>
@@ -34,55 +34,55 @@ authentifi&eacute;es</description>
 <summary>
     <p>Ce module permet aux frontaux d'authentification comme
     <module>mod_auth_basic</module> d'authentifier les utilisateurs
-    &agrave; la mani&egrave;re des sites FTP anonymes, c'est &agrave; dire
-    en fournissant l'identifiant utilisateur sp&eacute;cial 'anonymous' et
-    l'adresse email comme mot de passe. Ces adresses email peuvent &ecirc;tre
-    journalis&eacute;es.</p>
+    à la manière des sites FTP anonymes, c'est à dire
+    en fournissant l'identifiant utilisateur spécial 'anonymous' et
+    l'adresse email comme mot de passe. Ces adresses email peuvent être
+    journalisées.</p>
 
-    <p>En combinaison avec d'autres m&eacute;thodes de contr&ocirc;le d'acc&egrave;s (base
-    de donn&eacute;es), ce module permet d'effectuer un v&eacute;ritable suivi des
-    utilisateurs et une personnalisation de leurs acc&egrave;s en fonction de
-    leur profil, tout en conservant l'accessibilit&eacute; du site aux
-    utilisateurs 'non enregistr&eacute;s'. Un avantage du suivi des
-    utilisateurs bas&eacute; sur l'authentification r&eacute;side dans le fait qu'il
-    est, &agrave; l'oppos&eacute; des cookies magiques et des dr&ocirc;les d'URLs avec
-    pr&eacute;fixes ou suffixes, enti&egrave;rement ind&eacute;pendant du navigateur et qu'il
+    <p>En combinaison avec d'autres méthodes de contrôle d'accès (base
+    de données), ce module permet d'effectuer un véritable suivi des
+    utilisateurs et une personnalisation de leurs accès en fonction de
+    leur profil, tout en conservant l'accessibilité du site aux
+    utilisateurs 'non enregistrés'. Un avantage du suivi des
+    utilisateurs basé sur l'authentification réside dans le fait qu'il
+    est, à l'opposé des cookies magiques et des drôles d'URLs avec
+    préfixes ou suffixes, entièrement indépendant du navigateur et qu'il
     permet de partager des URLs entre plusieurs utilisateurs.</p>
 
     <p>Si l'on utilise le module <module>mod_auth_basic</module>, le
-    module <module>mod_authn_anon</module> est invoqu&eacute; en affectant la
-    valeur <code>anon</code> &agrave; la directive <directive
+    module <module>mod_authn_anon</module> est invoqué en affectant la
+    valeur <code>anon</code> à la directive <directive
     module="mod_auth_basic">AuthBasicProvider</directive>.</p>
 </summary>
 
 <section id="example"><title>Exemple</title>
-    <p>L'exemple ci-dessous pr&eacute;sente un exemple de combinaison avec
-    l'authentification &agrave; base de fichier htpasswd "normale", et permet
-    la connexion d'utilisateurs en tant qu'invit&eacute;s avec les propri&eacute;t&eacute;s
+    <p>L'exemple ci-dessous présente un exemple de combinaison avec
+    l'authentification à base de fichier htpasswd "normale", et permet
+    la connexion d'utilisateurs en tant qu'invités avec les propriétés
     suivantes :</p>
 
     <ul>
-      <li>Il incite l'utilisateur &agrave; fournir un identifiant.
+      <li>Il incite l'utilisateur à fournir un identifiant.
       (<directive module="mod_authn_anon"
       >Anonymous_NoUserID</directive>)</li>
 
-      <li>Il incite l'utilisateur &agrave; fournir un mot de passe.
+      <li>Il incite l'utilisateur à fournir un mot de passe.
       (<directive module="mod_authn_anon"
       >Anonymous_MustGiveEmail</directive>)</li>
 
-      <li>Le mot de passe fourni doit &ecirc;tre une adresse email valide,
-      c'est &agrave; dire contenant au moins un '@' et un '.'.
+      <li>Le mot de passe fourni doit être une adresse email valide,
+      c'est à dire contenant au moins un '@' et un '.'.
       (<directive module="mod_authn_anon"
       >Anonymous_VerifyEmail</directive>)</li>
 
       <li>Les valeurs possibles pour l'identifiant utilisateur sont
       <code>anonymous, guest, www, test ou welcome</code>, et la
-      v&eacute;rification n'est <strong>pas</strong> sensible &agrave; la casse.
+      vérification n'est <strong>pas</strong> sensible à la casse.
       (<directive module="mod_authn_anon"
       >Anonymous</directive>)</li>
 
-      <li>Les adresses email entr&eacute;es dans le champ passwd sont
-      enregistr&eacute;es dans le fichier journal des erreurs.
+      <li>Les adresses email entrées dans le champ passwd sont
+      enregistrées dans le fichier journal des erreurs.
       (<directive module="mod_authn_anon"
       >Anonymous_LogEmail</directive>)</li>
     </ul>
@@ -109,8 +109,8 @@ authentifi&eacute;es</description>
 
 <directivesynopsis>
 <name>Anonymous</name>
-<description>D&eacute;finit la liste des identifiants utilisateur autoris&eacute;s &agrave;
-acc&eacute;der sans v&eacute;rification du mot de passe</description>
+<description>Définit la liste des identifiants utilisateur autorisés à
+accéder sans vérification du mot de passe</description>
 <syntax>Anonymous <var>utilisateur</var> [<var>utilisateur</var>]
 ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -118,15 +118,15 @@ acc&eacute;der sans v&eacute;rification du mot de passe</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Une liste d'un ou plusieurs identifiants utilisateur sp&eacute;ciaux
-    autoris&eacute;s &agrave; acc&eacute;der sans v&eacute;rification du mot de passe. Les
-    identifiants doivent &ecirc;tre s&eacute;par&eacute;s par un espace. Pour sp&eacute;cifier un
+    <p>Une liste d'un ou plusieurs identifiants utilisateur spéciaux
+    autorisés à accéder sans vérification du mot de passe. Les
+    identifiants doivent être séparés par un espace. Pour spécifier un
     identifiant contenant un espace, on peut utiliser les guillemets '
-    ou ", ou le caract&egrave;re d'&eacute;chappement \.</p>
+    ou ", ou le caractère d'échappement \.</p>
 
-    <p>Veuillez noter que la v&eacute;rification <strong>n'est pas sensible &agrave;
+    <p>Veuillez noter que la vérification <strong>n'est pas sensible à
     la casse</strong>.<br />
-    Il est fortement conseill&eacute; d'int&eacute;grer l'utilisateur sp&eacute;cial
+    Il est fortement conseillé d'intégrer l'utilisateur spécial
     '<code>anonymous</code>' dans la liste des identifiants.</p>
 
     <example><title>Exemple:</title>
@@ -135,20 +135,20 @@ acc&eacute;der sans v&eacute;rification du mot de passe</description>
       </highlight>
     </example>
 
-    <p>Dans cet exemple, l'utilisateur peut acc&eacute;der au site sans
-    v&eacute;rification du mot de passe en utilisant l'identifiant "anonymous",
+    <p>Dans cet exemple, l'utilisateur peut accéder au site sans
+    vérification du mot de passe en utilisant l'identifiant "anonymous",
     "Not Registered", "I Don't Know" ou encore "AnonyMous".</p>
 
     <p>Depuis Apache 2.1, il est possible de remplacer la liste des
-    identifiants autoris&eacute;s par le caract&egrave;re "<code>*</code>", ce qui
+    identifiants autorisés par le caractère "<code>*</code>", ce qui
     permet d'utiliser <em>n'importe quel</em> identifiant pour pouvoir
-    acc&eacute;der au site.</p>
+    accéder au site.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_LogEmail</name>
-<description>D&eacute;termine si le mot de passe fourni sera enregistr&eacute; dans le
+<description>Détermine si le mot de passe fourni sera enregistré dans le
 journal des erreurs</description>
 <syntax>Anonymous_LogEmail On|Off</syntax>
 <default>Anonymous_LogEmail On</default>
@@ -157,16 +157,16 @@ journal des erreurs</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Lorsque cette directive est d&eacute;finie &agrave; <code>On</code>, valeur
-    par d&eacute;faut, le 'mot de passe' fourni (cens&eacute; contenir une adresse
-    email valide) est enregistr&eacute; dans le journal des erreurs.</p>
+    <p>Lorsque cette directive est définie à <code>On</code>, valeur
+    par défaut, le 'mot de passe' fourni (censé contenir une adresse
+    email valide) est enregistré dans le journal des erreurs.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_MustGiveEmail</name>
-<description>D&eacute;termine si l'abscence de mot de passe est
-autoris&eacute;e</description>
+<description>Détermine si l'abscence de mot de passe est
+autorisée</description>
 <syntax>Anonymous_MustGiveEmail On|Off</syntax>
 <default>Anonymous_MustGiveEmail On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -174,15 +174,15 @@ autoris&eacute;e</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>D&eacute;termine si l'utilisateur doit sp&eacute;cifier une adresse email comme
-    mot de passe. Lorsque cette directive est d&eacute;finie &agrave; <code>On</code>,
+    <p>Détermine si l'utilisateur doit spécifier une adresse email comme
+    mot de passe. Lorsque cette directive est définie à <code>On</code>,
     fournir un mot de passe est obligatoire.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_NoUserID</name>
-<description>D&eacute;termine si le champ identifiant peut &ecirc;tre
+<description>Détermine si le champ identifiant peut être
 vide</description>
 <syntax>Anonymous_NoUserID On|Off</syntax>
 <default>Anonymous_NoUserID Off</default>
@@ -191,21 +191,21 @@ vide</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Lorsque cette directive est d&eacute;finie &agrave; <code>On</code>, les
-    utilisateurs peuvent laisser le champ identifiant vide (et peut-&ecirc;tre
-    aussi le champ mot de passe selon la d&eacute;finition de la directive
+    <p>Lorsque cette directive est définie à <code>On</code>, les
+    utilisateurs peuvent laisser le champ identifiant vide (et peut-être
+    aussi le champ mot de passe selon la définition de la directive
     <directive
     module="mod_authn_anon">Anonymous_MustGiveEmail</directive>). Ceci
-    peut s'av&eacute;rer tr&egrave;s utile pour les utilisateurs de MS-Explorer qui
-    ont pour seule possibilit&eacute; d'appuyer sur Entr&eacute;e ou de cliquer
-    directement sur le bouton OK, ce qui semble &ecirc;tre une r&eacute;action
+    peut s'avérer très utile pour les utilisateurs de MS-Explorer qui
+    ont pour seule possibilité d'appuyer sur Entrée ou de cliquer
+    directement sur le bouton OK, ce qui semble être une réaction
     naturelle.</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Anonymous_VerifyEmail</name>
-<description>D&eacute;termine s'il faut v&eacute;rifier que le format de l'adresse
+<description>Détermine s'il faut vérifier que le format de l'adresse
 email fournie comme mot de passe est correct</description>
 <syntax>Anonymous_VerifyEmail On|Off</syntax>
 <default>Anonymous_VerifyEmail Off</default>
@@ -214,9 +214,9 @@ email fournie comme mot de passe est correct</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Lorsque cette directive est d&eacute;finie &agrave; <code>On</code>, Apache
-    v&eacute;rifie que le 'mot de passe' entr&eacute; contient au moins un '@' et un
-    '.' afin d'inciter les utilisateurs &agrave; fournir des adresses email
+    <p>Lorsque cette directive est définie à <code>On</code>, Apache
+    vérifie que le 'mot de passe' entré contient au moins un '@' et un
+    '.' afin d'inciter les utilisateurs à fournir des adresses email
     valides (voir ci-dessus la directive <directive
     module="mod_authn_anon">Anonymous_LogEmail</directive>).</p>
 </usage>

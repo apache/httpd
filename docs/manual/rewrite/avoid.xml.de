@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
+<!-- English Revision: 1933071:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="avoid.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Wann man mod_rewrite nicht verwenden sollte</title>
+
+<summary>
+
+<p>Dieses Dokument ergänzt die <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">Referenzdokumentation</a>. Es beschreibt
+vielleicht eines der wichtigsten Konzepte bezüglich <module>mod_rewrite</module> -
+nämlich, wann man es vermeiden sollte.</p>
+
+<p><module>mod_rewrite</module> sollte als letzter Ausweg betrachtet werden, wenn andere
+Alternativen nicht ausreichen. Die Verwendung, wenn einfachere
+Alternativen existieren, führt zu Konfigurationen, die verwirrend, fragil und
+schwer zu warten sind. Das Verständnis der verfügbaren Alternativen ist
+ein sehr wichtiger Schritt zur Beherrschung von <module>mod_rewrite</module>.</p>
+
+<p>Beachten Sie, dass viele dieser Beispiele nicht unverändert in Ihrer
+speziellen Serverkonfiguration funktionieren werden. Es ist daher wichtig,
+dass Sie sie verstehen, anstatt die Beispiele einfach auszuschneiden und
+in Ihre Konfiguration einzufügen.</p>
+
+<p>Die häufigste Situation, in der <module>mod_rewrite</module> das
+richtige Werkzeug ist, ist wenn die allerbeste Lösung Zugriff auf die
+Serverkonfigurationsdateien erfordert und Sie diesen Zugriff nicht haben.
+Einige Konfigurationsdirektiven sind nur in der Serverkonfigurationsdatei
+verfügbar. Wenn Sie sich in einer Hosting-Situation befinden, in der Sie
+nur mit .htaccess-Dateien arbeiten können, müssen Sie möglicherweise auf
+<module>mod_rewrite</module> zurückgreifen.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Moduldokumentation</a></seealso>
+<seealso><a href="intro.html">Einführung in mod_rewrite</a></seealso>
+<seealso><a href="remapping.html">Umleitung und Neuzuordnung</a></seealso>
+<seealso><a href="access.html">Zugriffskontrolle</a></seealso>
+<seealso><a href="vhosts.html">Virtuelle Hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">Verwendung von RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Fortgeschrittene Techniken</a></seealso>
+<!--<seealso><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></seealso>-->
+
+<section id="redirect">
+<title>Einfache Umleitung</title>
+
+<p><module>mod_alias</module> stellt die Direktiven <directive
+module="mod_alias">Redirect</directive> und <directive
+module="mod_alias">RedirectMatch</directive> bereit, die eine Möglichkeit
+bieten, eine URL zu einer anderen umzuleiten. Diese Art der einfachen
+Umleitung einer URL oder einer Klasse von URLs an einen anderen Ort sollte
+mit diesen Direktiven und nicht mit <directive
+module="mod_rewrite">RewriteRule</directive> erfolgen. <code>RedirectMatch</code>
+ermöglicht es Ihnen, einen regulären Ausdruck in Ihre Umleitungskriterien
+einzubinden, was viele der Vorteile der Verwendung von
+<code>RewriteRule</code> bietet.</p>
+
+<p>Eine häufige Verwendung von <code>RewriteRule</code> ist die Umleitung
+einer ganzen Klasse von URLs. Beispielsweise müssen alle URLs im Verzeichnis
+<code>/one</code> nach <code>http://one.example.com/</code> umgeleitet werden,
+oder alle <code>http</code>-Anfragen müssen nach <code>https</code>
+umgeleitet werden.</p>
+
+<p>Diese Situationen werden besser mit der <code>Redirect</code>-Direktive
+behandelt. Denken Sie daran, dass <code>Redirect</code> Pfadinformationen
+beibehält. Das heißt, eine Umleitung für die URL <code>/one</code>
+wird auch alle darunter liegenden URLs umleiten, wie
+<code>/one/two.html</code> und <code>/one/three/four.html</code>.</p>
+
+<p>Um URLs unter <code>/one</code> nach
+<code>http://one.example.com</code> umzuleiten, tun Sie Folgendes:</p>
+
+<highlight language="config">
+Redirect "/one/" "http://one.example.com/"
+</highlight>
+
+<p>Um einen Hostnamen zu einem anderen umzuleiten, beispielsweise
+<code>example.com</code> zu <code>www.example.com</code>, siehe das
+Rezept für <a href="remapping.html#canonicalhost">kanonische Hostnamen</a>.</p>
+
+<p>Um <code>http</code>-URLs nach <code>https</code> umzuleiten, tun Sie
+Folgendes:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+    Redirect "/" "https://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:443&gt;
+    ServerName www.example.com
+    # ... SSL-Konfiguration hier
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>Die Verwendung von <code>RewriteRule</code> für diese Aufgabe kann
+angemessen sein, wenn andere <code>RewriteRule</code>-Direktiven im
+selben Geltungsbereich vorhanden sind. Dies liegt daran, dass bei
+<code>Redirect</code>- und <code>RewriteRule</code>-Direktiven im selben
+Geltungsbereich die <code>RewriteRule</code>-Direktiven immer zuerst
+ausgeführt werden, unabhängig von der Reihenfolge in der
+Konfigurationsdatei.</p>
+
+<p>Im Fall der <em>http-zu-https</em>-Umleitung wäre die Verwendung
+von <code>RewriteRule</code> angemessen, wenn Sie keinen Zugriff auf die
+Hauptserverkonfigurationsdatei haben und diese Aufgabe stattdessen in einer
+<code>.htaccess</code>-Datei erledigen müssen.</p>
+
+</section>
+
+<section id="alias"><title>URL-Aliasing</title>
+<p>Die <directive module="mod_alias">Alias</directive>-Direktive bietet
+eine Zuordnung von einem URI zu einem Verzeichnis - normalerweise einem
+Verzeichnis außerhalb Ihres <directive module="core">DocumentRoot</directive>.
+Obwohl es möglich ist, diese Zuordnung mit <module>mod_rewrite</module>
+durchzuführen, ist <directive module="mod_alias">Alias</directive> aus Gründen
+der Einfachheit und Leistung die bevorzugte Methode.</p>
+
+<example><title>Verwendung von Alias</title>
+<highlight language="config">
+Alias "/cats" "/var/www/virtualhosts/felines/htdocs"
+</highlight>
+</example>
+
+<p>
+Die Verwendung von <module>mod_rewrite</module> für diese Zuordnung kann
+angemessen sein, wenn Sie keinen Zugriff auf die Serverkonfigurationsdateien
+haben. Alias kann nur im Server- oder VirtualHost-Kontext verwendet werden
+und nicht in einer <code>.htaccess</code>-Datei.
+</p>
+
+<p>Symbolische Links wären eine weitere Möglichkeit, dasselbe zu erreichen,
+wenn Sie <code>Options FollowSymLinks</code> auf Ihrem Server aktiviert
+haben.</p>
+</section>
+
+<section id="vhosts"><title>Virtuelles Hosting</title>
+<p>Obwohl es möglich ist, <a href="vhosts.html">virtuelle Hosts
+mit mod_rewrite</a> zu verwalten, ist dies selten der richtige Weg. Das
+Erstellen einzelner <directive module="core" type="section">VirtualHost</directive>-Blöcke
+ist fast immer der richtige Ansatz. Falls Sie eine enorme Anzahl virtueller
+Hosts haben, erwägen Sie die Verwendung von
+<module>mod_vhost_alias</module>, um diese Hosts automatisch zu erstellen.</p>
+
+<p>Module wie <module>mod_macro</module> sind ebenfalls nützlich, um eine
+große Anzahl virtueller Hosts dynamisch zu erstellen.</p>
+
+<p>Die Verwendung von <module>mod_rewrite</module> für die Erstellung
+virtueller Hosts kann angemessen sein, wenn Sie einen Hosting-Dienst
+verwenden, der Ihnen keinen Zugriff auf die Serverkonfigurationsdateien
+gewährt und Sie daher auf die Konfiguration mittels
+<code>.htaccess</code>-Dateien beschränkt sind.</p>
+
+<p>Siehe das Dokument <a href="vhosts.html">Virtuelle Hosts mit mod_rewrite</a>
+für weitere Details, wie Sie dies erreichen können, wenn es Ihnen immer
+noch als der richtige Ansatz erscheint.</p>
+
+</section>
+
+<section id="proxy"><title>Einfaches Proxying</title>
+
+<p><directive module="mod_rewrite">RewriteRule</directive> bietet das <a
+href="flags.html#flag_p">[P]</a>-Flag, um umgeschriebene URIs über
+<module>mod_proxy</module> weiterzuleiten.</p>
+
+<highlight language="config">
+RewriteRule "^/?images(.*)" "http://imageserver.local/images$1" [P]
+</highlight>
+
+<p>In vielen Fällen jedoch, wenn kein tatsächlicher Musterabgleich
+erforderlich ist, wie im obigen Beispiel, ist die <directive
+module="mod_proxy">ProxyPass</directive>-Direktive die bessere Wahl.
+Das Beispiel hier könnte wie folgt dargestellt werden:</p>
+
+<highlight language="config">
+ProxyPass "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p>Beachten Sie, dass Sie unabhängig davon, ob Sie <directive
+module="mod_rewrite">RewriteRule</directive> oder <directive
+module="mod_proxy">ProxyPass</directive> verwenden, die
+<directive module="mod_proxy">ProxyPassReverse</directive>-Direktive
+benötigen, um Umleitungen vom Backend-Server korrekt weiterzuleiten:</p>
+
+<highlight language="config">
+ProxyPassReverse "/images/" "http://imageserver.local/images/"
+</highlight>
+
+<p>Sie müssen möglicherweise stattdessen <code>RewriteRule</code> verwenden,
+wenn andere <code>RewriteRule</code>s im selben Geltungsbereich aktiv sind,
+da eine <code>RewriteRule</code> in der Regel vor einem
+<code>ProxyPass</code> wirksam wird und somit das gewünschte Ergebnis
+vorwegnehmen kann.</p>
+
+</section>
+
+<section id="setenv"><title>Test von Umgebungsvariablen</title>
+
+<p><module>mod_rewrite</module> wird häufig verwendet, um eine bestimmte
+Aktion basierend auf dem Vorhandensein oder Fehlen einer bestimmten
+Umgebungsvariable oder eines Anfrage-Headers durchzuführen. Dies kann
+effizienter mit der <directive module="core" type="section">If</directive>-Direktive
+erreicht werden.</p>
+
+<p>Betrachten Sie beispielsweise das häufige Szenario, in dem
+<directive>RewriteRule</directive> verwendet wird, um einen kanonischen
+Hostnamen zu erzwingen, wie <code>www.example.com</code> anstelle von
+<code>example.com</code>. Dies kann mit der <directive
+module="core" type="section">If</directive>-Direktive wie hier gezeigt
+erreicht werden:</p>
+
+<highlight language="config">
+&lt;If "req('Host') != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>Diese Technik kann verwendet werden, um Aktionen basierend auf jedem
+beliebigen Anfrage-Header, Antwort-Header oder Umgebungsvariable
+durchzuführen und <module>mod_rewrite</module> in vielen gängigen
+Szenarien zu ersetzen.</p>
+
+<p>Siehe insbesondere die <a href="../expr.html">Dokumentation zur
+Ausdrucksauswertung</a> für einen Überblick darüber, welche Arten von
+Ausdrücken Sie in <directive module="core" type="section">If</directive>-Abschnitten
+und in bestimmten anderen Direktiven verwenden können.</p>
+
+</section>
+
+</manualpage>

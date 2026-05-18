@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Documentations diverses</a></div><div id="page-content"><div id="preamble"><h1>Amélioration des performances</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
@@ -29,16 +31,16 @@
 </div>
 
         
-        <p>Il est dit dans la documentation d'Apache 1.3
+        <p>Il est dit dans la documentation du serveur HTTP Apache 1.3
 	à propos de l'amélioration des performances : 
         </p>
         <blockquote><p>
-            "Apache est un serveur web à vocation générale, conçu pour
+            "httpd est un serveur web à vocation générale, conçu pour
 	    être non seulement efficace mais aussi rapide. Dans sa
 	    configuration de base, ses performances sont déjà
 	    relativement satisfaisantes. La plupart des sites possèdent
 	    une bande passante en sortie inférieure à 10 Mbits que le
-	    serveur Apache peut mettre pleinement à profit en utilisant un serveur à base
+	    serveur httpd peut mettre pleinement à profit en utilisant un serveur à base
 	    de processeur Pentium bas de gamme."</p>
         </blockquote>
         <p>Cette phrase ayant été écrite il y a plusieurs années,
@@ -70,7 +72,7 @@
         </a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#further-considerations">Pour aller plus loin
         </a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">Ce qui sera abordé et ce qui ne le sera pas</a> <a title="Lien permanent" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
@@ -84,7 +86,7 @@
 	que votre budget n'est pas illimité ; c'est pourquoi les
 	améliorations apportées le seront sans modifier l'infrastructure
 	matérielle existante. Vous ne souhaitez probablement pas
-	compiler vous-même votre serveur Apache, ni recompiler le noyau
+	compiler vous-même votre serveur httpd, ni recompiler le noyau
 	de votre système d'exploitation ; nous supposerons cependant que
 	vous possédez quelques notions à propos du fichier de
 	configuration du serveur HTTP Apache. 
@@ -295,7 +297,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 
                 <p>Le module mod_status donne un aperçu des performances
 		du serveur à un instant donné. Il génère une page HTML
-		comportant, entre autres, le nombre de processus Apache
+		comportant, entre autres, le nombre de processus httpd
 		en cours d'exécution avec la quantité de données qu'ils
 		ont servies, ainsi que la charge CPU induite par httpd
 		et le reste du système. L'Apache Software Foundation
@@ -382,7 +384,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		attendez-vous à voir de nombreuses tentatives
 		d'exploitation et attaques de vers dans le journal des
 		erreurs. La plupart d'entre elles ciblent des serveurs
-		autres qu'Apache, mais dans l'état actuel des choses,
+		autres que httpd, mais dans l'état actuel des choses,
 		les scripts se contentent d'envoyer leurs attaques vers
 		tout port ouvert, sans tenir compte du serveur web
 		effectivement en cours d'exécution ou du type
@@ -571,7 +573,7 @@ Swap:       3903784      12540  3891244</pre></div>
                         </td>
                         <td>
                             <p>Nom de l'utilisateur distant issu de
-			    l'authentification Apache</p>
+			    l'authentification httpd</p>
                         </td>
                     </tr>
                     <tr>
@@ -660,7 +662,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		avec moins de souplesse. Alors que le processus httpd de
 		votre serveur sous Windows continuera à écrire dans le
 		fichier journal une fois ce dernier renommé, le service
-		Windows qui exécute Apache n'est pas en mesure
+		Windows qui exécute httpd n'est pas en mesure
 		d'effectuer un redémarrage graceful. Sous Windows, le
 		redémarrage d'un service consiste simplement à l'arrêter
 		et à le démarrer à nouveau, alors qu'avec un redémarrage
@@ -690,9 +692,9 @@ Swap:       3903784      12540  3891244</pre></div>
                 </code></p></div>
                 
                 <p>Le programme cible de la redirection recevra alors les
-		données de journalisation d'Apache sur son entrée
+		données de journalisation de httpd sur son entrée
 		standard stdin, et pourra en faire ce qu'il voudra. Le
-		programme rotatelogs fourni avec Apache effectue une
+		programme rotatelogs fourni avec httpd effectue une
 		rotation des journaux de manière transparente en
 		fonction du temps ou de la quantité de données écrites,
 		et archive l'ancien fichier journal en ajoutant un
@@ -745,13 +747,13 @@ Swap:       3903784      12540  3891244</pre></div>
 		virtuel qui traite la requête ou l'erreur au début de
 		chaque entrée du journal. Un simple script Perl peut
 		alors éclater le journal en fichiers spécifiques à
-		chaque serveur virtuel après sa rotation ; Apache
+		chaque serveur virtuel après sa rotation ; httpd
 		fournit un tel script dans le répertoire
 		<code>support/split-logfile</code>.
                 </p>
                 <p>
                     Vous pouvez aussi utiliser la directive <code class="directive"><a href="../mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code>
-		    pour qu'Apache conserve en mémoire plusieurs entrées
+		    pour que httpd conserve en mémoire plusieurs entrées
 		    de journal avant de les écrire sur disque. Gardez
 		    cependant à l'esprit que si les performances peuvent
 		    s'en trouver améliorées, la chronologie des
@@ -773,7 +775,7 @@ Swap:       3903784      12540  3891244</pre></div>
 	    charge de test pour votre serveur web. 
             </p>
             <ul>
-                <li>Apache est fourni avec un programme de test nommé ab
+                <li>httpd est fourni avec un programme de test nommé ab
 		(initiales de Apache Bench). Ce dernier peut générer une
 		charge de serveur web consistant à demander le même
 		fichier de manière répétitive à un rythme rapide. Vous
@@ -798,7 +800,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 </li>
                 <li>
                     <p>Des projets externes à l'ASF et réputés
-		    relativement corrects : grinder, httperf, tsung, <a href="http://funkload.nuxeo.org/">FunkLoad</a>.
+		    relativement corrects : grinder, tsung.
                     </p>
                 </li>
             </ul>
@@ -830,11 +832,11 @@ Swap:       3903784      12540  3891244</pre></div>
 	    de module multi-process (MPM). Les développeurs purent alors
 	    écrire des MPMs qui pouvaient fonctionner avec l'architecture
 	    à base de processus ou de threads de leur système
-	    d'exploitation spécifique. Apache 2 est fourni avec des MPMs
+	    d'exploitation spécifique. httpd 2 est fourni avec des MPMs
 	    spécifiques pour Windows, OS/2, Netware et BeOS. Pour les
 	    plateformes de style unix, les deux MPMS les plus connus
 	    sont Prefork et Worker. Le MPM Prefork offre le même modèle
-	    de processus enfants prélancés que celui d'Apache 1.3. Le
+	    de processus enfants prélancés que celui de httpd 1.3. Le
 	    MPM Worker quant à lui, lance un nombre de processus enfants
 	    moins important, mais attribue à chacun d'entre eux un
 	    certain nombre de threads pour traiter les requêtes. Avec la
@@ -939,7 +941,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		partagée n'existe effectivement qu'une seule fois, et
 		est utilisé par le code et les bibliothèques chargées et
 		la concurrence inter-processus (ou tableau de résultat -
-		scoreboard) géré par Apache. La quantité de mémoire
+		scoreboard) géré par httpd. La quantité de mémoire
 		utilisée par chaque processus dépend fortement du nombre
 		et du type de modules utilisés. La meilleure façon d'en
 		déterminer les besoins consiste à générer une charge
@@ -1010,7 +1012,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		fortement sur des bibliothèques tierces, et il n'est pas
 		garanti que la totalité d'entre elles soient
 		"thread-safe". Bonne nouvelle cependant : si vous
-		exécutez Apache sous Linux, vous pouvez utiliser PHP
+		exécutez httpd sous Linux, vous pouvez utiliser PHP
 		avec le MPM prefork sans craindre une diminution de
 		performance trop importante par rapport à une option
 		threadée. 
@@ -1054,7 +1056,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 </p>
                 <p>Imaginez une équipe de football américain en attente
 		devant la ligne de remise en jeu. Si les joueurs se
-		comportaient comme des processus Apache, ils se
+		comportaient comme des processus httpd, ils se
 		précipiteraient tous à la fois pour récupérer la balle au
 		signal de la reprise. Un seul d'entre eux y
 		parviendrait, et tous les autres n'auraient plus qu'à se
@@ -1070,10 +1072,10 @@ Swap:       3903784      12540  3891244</pre></div>
 		possible, d'où l'idée de la porte tournante. Dans les
 		dernières années, de nombreux systèmes d'exploitation,
 		comme Linux et Solaris, ont développé du code pour
-		éviter le syndrome de l'"assaut de la foule". Apache
+		éviter le syndrome de l'"assaut de la foule". httpd
 		reconnaît ce code, et si vous n'effectuez qu'une seule
 		écoute du réseau, autrement dit si vous n'utilisez que
-		le serveur principal ou un seul serveur virtuel, Apache
+		le serveur principal ou un seul serveur virtuel, httpd
 		n'utilisera pas d'"accept mutex" ; par contre, si vous
 		effectuez plusieurs écoutes du réseau (par exemple si
 		un serveur virtuel sert les requêtes SSL), Apache
@@ -1094,7 +1096,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		utiliser avec précautions. 
                 </p>
                 <p>Il n'existe aucune raison particulière pour
-		désactiver l'"accept mutex". Apache détermine
+		désactiver l'"accept mutex". httpd détermine
 		automatiquement s'il doit utiliser ou non mutex sur
 		votre plateforme en fonction du nombre d'écoutes réseau
 		de votre serveur, comme décrit précédemment. 
@@ -1123,13 +1125,13 @@ Swap:       3903784      12540  3891244</pre></div>
 		plus haut, la mémoire inutilisée peut être
 		avantageusement utilisée comme cache du système de
 		fichiers. Plus vous chargez de modules, plus les processus
-		Apache grossissent, et ceci d'autant plus si vous
+		httpd grossissent, et ceci d'autant plus si vous
 		utilisez des modules qui génèrent des contenus
 		dynamiques comme PHP et mod_perl. Un gros fichier de
 		configuration - avec de nombreux serveurs virtuels - a
 		aussi tendance à augmenter l'empreinte mémoire des
 		processus. Une quantité de mémoire importante vous
-		permettra d'exécuter Apache avec plus de processus
+		permettra d'exécuter httpd avec plus de processus
 		enfants, et donc de traiter d'avantage de requêtes
 		simultanément. 
                 </p>
@@ -1188,7 +1190,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 <p>Supposons que vous disposiez d'une machine possédant
 		une énorme quantité de mémoire RAM et un processeur aux
 		performances astronomiques ; vous pourrez alors exécuter
-		des centaines de processus Apache selon vos besoins,
+		des centaines de processus httpd selon vos besoins,
 		mais tout en restant en deçà des limites imposées par le
 		noyau de votre système. 
                 </p>
@@ -1238,7 +1240,7 @@ Swap:       3903784      12540  3891244</pre></div>
                 </code></p></div>
                 
                 <p>Là encore, cette modification doit être effectuée
-		avant le démarrage du serveur Apache. 
+		avant le démarrage du serveur httpd. 
                 </p>
                 
                 
@@ -1320,11 +1322,11 @@ Swap:       3903784      12540  3891244</pre></div>
 		de lister les services activés et de désactiver ceux
 		dont vous n'avez pas besoin. 
                 </p>
-                <p>Vous devez aussi prêter attention aux modules Apache
+                <p>Vous devez aussi prêter attention aux modules httpd
 		chargés par défaut. La plupart des distributions binaires
 		d'Apache httpd et des versions préinstallées fournies
 		avec les distributions de Linux chargent les modules
-		Apache via la directive
+		httpd via la directive
 		<code class="directive">LoadModule</code>. 
                 </p>
                 <p>Les modules inutilisés peuvent être désactivés : si
@@ -1385,7 +1387,7 @@ Swap:       3903784      12540  3891244</pre></div>
 	    quant à elles traitées directement via une requête vers la
 	    base de données. Pour effectuer ces aiguillages de requêtes,
 	    vous disposez d'un outil particulièrement approprié fourni
-	    avec Apache : le module mod_rewrite. 
+	    avec httpd : le module mod_rewrite. 
             </p>
             
             
@@ -1417,16 +1419,16 @@ Swap:       3903784      12540  3891244</pre></div>
                 
                 <p>Vous pouvez exécuter ce script périodiquement via
 		cron, à chaque fois que vous ajoutez un nouveau contenu. Pour
-		faire en sorte qu'Apache substitue les pages
+		faire en sorte que httpd substitue les pages
 		statiques au contenu dynamique, nous
 		utiliserons mod_rewrite. Ce module est fourni avec le
-		code source d'Apache, mais n'est pas compilé par défaut.
-		Pour le compiler avec la distribution d'Apache, vous
+		code source de httpd, mais n'est pas compilé par défaut.
+		Pour le compiler avec la distribution de httpd, vous
 		pouvez utiliser l'option de la commande configure
 		<code>--enable-rewrite[=shared]</code>. De nombreuses
-		distributions binaires d'Apache sont fournies avec
+		distributions binaires de httpd sont fournies avec
 		<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> inclus. Dans l'exemple
-		suivant, un serveur virtuel Apache utilise les pages de
+		suivant, un serveur virtuel httpd utilise les pages de
 		blog générées à l'avance : 
                 </p>
                 
@@ -1539,7 +1541,7 @@ Swap:       3903784      12540  3891244</pre></div>
 		    particulièrement lorsque le Wiki est indexé par des
 		    moteurs de recherche comme Google. Pour alléger la
 		    charge de la machine, l'équipe d'infrastructure
-		    d'Apache s'est tournée vers mod_cache. Il s'est
+		    de httpd s'est tournée vers mod_cache. Il s'est
 		    avéré que <a href="/httpd/MoinMoin">MoinMoin</a>
 		    nécessitait un petit patch pour adopter un
 		    comportement approprié en aval du serveur de mise
@@ -1612,7 +1614,7 @@ CacheMaxExpire 21600</pre>
         <p>Armés du savoir-faire pour personnaliser un système afin
 	qu'il affiche les performances désirées, nous découvrirons vite
 	qu'<em>1</em> sytème à lui seul peut constituer un goulot
-	d'étranglement. A ce sujet, la page du Wiki <a href="http://wiki.apache.org/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
+	d'étranglement. A ce sujet, la page du Wiki <a href="https://cwiki.apache.org/confluence/display/httpd/PerformanceScalingOut">PerformanceScalingOut</a>
 	décrit comment adapter un système à mesure qu'il prend de
 	l'ampleur, ou comment personnaliser plusieurs systèmes dans leur
 	ensemble.
@@ -1622,28 +1624,32 @@ CacheMaxExpire 21600</pre>
 <p><span>Langues Disponibles: </span><a href="../en/misc/perf-scaling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/misc/perf-scaling.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/misc/perf-scaling.html" title="Français">&nbsp;fr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/misc/perf-scaling.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

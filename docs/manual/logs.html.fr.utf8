@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -16,12 +17,13 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Fichiers journaux</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/logs.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -47,7 +49,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#piped">Journaux redirigés</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#other">Autres fichiers journaux</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Vue d'ensemble</a> <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
@@ -97,7 +99,7 @@
 <h2><a name="errorlog" id="errorlog">Journal des erreurs</a> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>Le journal des erreurs du serveur, dont le nom et la localisation sont
     définis par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
@@ -117,27 +119,32 @@
     <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format par défaut du journal des erreurs est descriptif et de forme
-    relativement libre. Certaines informations apparaissent cependant dans la
-    plupart des entrées du journal. Voici un message typique
-    à titre d'exemple : </p>
+    <p>Le format du journal des erreurs est défini à l’aide de la directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> avec laquelle vous pouvez
+    choisir les valeurs à journaliser. Un format par défaut sera utilisé si vous
+    n’en spécifiez pas un. Un message de journalisation typique se présente
+    comme suit&nbsp;:</p>
 
     <div class="example"><p><code>
-      [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
-      client denied by server configuration:
-      /export/home/live/ap/htdocs/test
+      [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416]
+      [client 72.15.99.187] AH00124: Request exceeded the limit of 10 internal redirects due to probable configuration error
     </code></p></div>
 
     <p>Le premier champ de l'entrée du journal est la date et l'heure du
-    message. Le second champ indique la sévérité de l'erreur rapportée. La
-    directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet de
-    restreindre le type des erreurs qui doivent être enregistrées
-    dans le journal des erreurs en définissant leur niveau de sévérité. Le
-    troisième champ contient l'adresse IP du client qui a généré l'erreur.
-    Vient ensuite le message proprement dit, qui indique dans ce cas que le
-    serveur a été configuré pour interdire l'accès au client. Le serveur
-    indique le chemin système du document requis (et non
-    son chemin web).</p>
+    message. Le second champ indique le module qui produit le message (core,
+    dans ce cas) et le niveau de sévérité de ce message. Suivent l’ID du processus
+    et éventuellement l’ID du thread du processus qui a été soumis à cette
+    condition. Le
+    troisième champ contient l'adresse IP du client qui a effectué la requête.
+    Vient ensuite le message d’erreur détaillé.</p>
+
+    <div class="note"><p>Notez que certains messages qui étaient auparavant journalisés au
+    niveau <code>error</code> ont été rétrogradés au niveau <code>info</code>
+    dans httpd 2.4. Par exemple, les messages "File does not exist" pour les
+    réponses 404 sont journalisés au niveau <code>info</code> et n’apparaîtront
+    pas dans le journal des erreurs avec la valeur par défaut <code>warn</code>
+    de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>. Pour
+    restaurer le comportement précédent, spécifiez <code>LogLevel warn
+    core:info</code>.</p></div>
 
     <p>Une grande variété de messages différents peuvent apparaître dans le
     journal des erreurs. La plupart d'entre eux sont similaires à l'exemple
@@ -146,15 +153,11 @@
     écrit sur la sortie d'erreurs standard <code>stderr</code> sera recopiée
     telle quelle dans le journal des erreurs.</p>
 
-    <p>La directive <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code>
-    vous permet de personnaliser le format du journal des erreurs, et de
-    définir les informations à journaliser. Si
-    <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est présent, vous pouvez utiliser le
-    drapeau <code>%L</code> à la fois dans le journal des erreurs et
-    dans le
-    journal des accès, ce qui aura pour effet de générer un identifiant
-    d'entrée qui vous permettra de corréler les entrées du journal des
-    erreurs avec celles du journal des accès.</p>
+     <p>Mettre un symbole <code>%L</code> dans le journal des erreurs et le
+     journal des accès produit un ID d’entrée de journalisation grâce auquel
+     vous pourrez corréler l’entrée du journal des erreurs avec celle du journal
+     des accès. Si <code class="module"><a href="./mod/mod_unique_id.html">mod_unique_id</a></code> est chargé, son ID de requête
+     unique sera utilisé comme ID d’entrée de journalisation.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
     le journal des erreurs afin de détecter tout problème éventuel. Sur les
@@ -363,7 +366,8 @@ CustomLog "logs/access_log" common</pre>
 	redirection (codes commençant par 3), une erreur due au client (codes
 	commençant par 4), ou une erreur due au serveur (codes commençant
 	par 5). Vous trouverez la liste complète des codes de statut possibles
-	dans la <a href="http://www.w3.org/Protocols/rfc2616/  rfc2616.txt">specification HTTP</a> (RFC2616 section 10).</dd>
+	dans la spécification
+	HTTP (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
@@ -670,8 +674,8 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     journal, puis de séparer ultérieurement le journal en plusieurs journaux
     individuels. Considérons par exemple les directives suivantes :</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %l %u %t \"%r\" %&gt;s %b" comonvhost
-CustomLog "logs/access_log" comonvhost</pre>
+    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+CustomLog "logs/access_log" commonvhost</pre>
 
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
@@ -744,28 +748,32 @@ CustomLog "logs/access_log" comonvhost</pre>
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/logs.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

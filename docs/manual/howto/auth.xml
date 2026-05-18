@@ -475,7 +475,10 @@ Require valid-user
         access is granted.  See
         <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
         for an example of how they may be used to express complex
-        authorization logic.</p>
+        authorization logic.  Each authorization provider returns one
+        of three possible results; see
+        <a href="../mod/mod_authz_core.html#authzresults">Authorization Result States</a>
+        for details on how containers interpret these results.</p>
 
         <p>By default all
         <directive module="mod_authz_core">Require</directive>
@@ -564,7 +567,7 @@ Require host <var>domain_name</var>
 
     <section id="filesystem"><title>Access Control backwards compatibility</title>
         <p>One of the side effects of adopting a provider based mechanism for
-        authentication is that the previous access control directives
+        authorization is that the previous access control directives
         <directive module="mod_access_compat">Order</directive>,
         <directive module="mod_access_compat">Allow</directive>,
         <directive module="mod_access_compat">Deny</directive> and

@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -17,7 +18,7 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
@@ -25,6 +26,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_log_config</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_log_config.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -72,7 +74,7 @@ sécurité</a></li>
 <ul class="seealso">
 <li><a href="../logs.html">Les fichiers journaux
 d'Apache</a></li>
-<li><a href="#comments_section">Commentaires</a></li></ul></div>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="formats" id="formats">Formats de journaux personnalisés</a> <a title="Lien permanent" href="#formats" class="permalink">&para;</a></h2>
@@ -200,7 +202,9 @@ d'Apache</a></li>
         <td>La chaîne d'arguments (préfixée par un <code>?</code> si une
 	chaîne d'arguments existe, sinon une chaîne vide)</td></tr>
 <tr><td><code>%r</code></td>
-        <td>La première ligne de la requête</td></tr>
+        <td>La première ligne de la requête. Ne tient pas compte de la directive
+	<code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code> (autrement dit, pas de
+	fusion, même si cette dernière est à ON).</td></tr>
 <tr class="odd"><td><code>%R</code></td>
         <td>Le gestionnaire qui génère la réponse (s'il y en a un).</td></tr>
 <tr><td><code>%s</code></td>
@@ -261,7 +265,9 @@ d'Apache</a></li>
 	si le statut de retour (<code>%s</code>) est 401).</td></tr>
 <tr><td><code>%U</code></td>
         <td>Le chemin de la requête, à l'exclusion de toute chaîne
-	d'arguments.</td></tr>
+	d'arguments. Tient compte de la directive
+	<code class="directive"><a href="../mod/core.html#mergeslashes">MergeSlashes</a></code> (autrement dit, les
+	barres obliques sont fusionnées si cette dernière est à ON).</td></tr>
 <tr class="odd"><td><code>%v</code></td>
         <td>Le nom canonique du serveur qui a servi la requête, défini
 	par la directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>.</td></tr>
@@ -338,27 +344,68 @@ d'Apache</a></li>
 
     <h3><a name="format-notes" id="format-notes">Quelques Notes</a></h3>
 
-      <p>Pour des raisons de sécurité, à partir de la version 2.0.46,
-      les caractères non imprimables et autres caractères spéciaux dans
-      les directives <code>%r</code>, <code>%i</code> et <code>%o</code>
-      doivent être échappés à l'aide des séquences
-      <code>\x<var>hh</var></code>,
-      où <var>hh</var> est le code hexadécimal du caractère spécial.
-      Comme exceptions à cette règle, les caractères <code>"</code> et
-      <code>\</code> doivent être échappés par un anti-slash, et tous
-      les "blancs" doivent être écrits selon leur notation de style C
-      (<code>\n</code>, <code>\t</code>, etc...). Avant la version
-      2.0.46, aucun échappement n'était effectué sur ces chaînes, et il
-      fallait être très prudent lors de l'exploitation des journaux
-      bruts.</p>
+      <p>Pour des raisons de sécurité, à partir de la version 2.0.46, les
+      caractères non imprimables et autres caractères spéciaux dans une chaîne
+      de formatage qui peut contenir des données de chaîne arbitraires doivent
+      être échappés à l'aide des séquences <code>\x<var>hh</var></code>, où
+      <var>hh</var> est le code hexadécimal du caractère spécial.  Comme
+      exceptions à cette règle, les caractères <code>"</code> et <code>\</code>
+      doivent être échappés par un anti-slash, et tous les "blancs" doivent être
+      écrits selon leur notation de style C (<code>\n</code>, <code>\t</code>,
+      etc...). Avant la version 2.0.46, aucun échappement n'était effectué sur
+      ces chaînes, et il fallait être très prudent lors de l'exploitation des
+      journaux bruts.</p>
 
-      <p>A la différence de la version 1.3, depuis httpd 2.0, les chaînes
-      de format <code>%b</code> et <code>%B</code> ne représentent pas
-      le nombre d'octets envoyés au client, mais simplement la taille en
-      octets de la réponse HTTP (les deux étant différents, par exemple,
-      si la connexion est abandonnée, ou si SSL est utilisé). Le format
-      <code>%O</code> fourni par <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>,
-      enregistrera le nombre réel d'octets envoyés sur le réseau.</p>
+      <table>
+      
+      <tr><th>Format</th><th>Description</th><th>Échappé</th></tr>
+      <tr><td><code>%c</code></td><td>variable SSL (raccourci)</td><td>Oui</td></tr>
+      <tr><td><code>%C</code></td><td>Valeur de Cookie</td><td>Oui</td></tr>
+      <tr><td><code>%e</code></td><td>Variable d’environnement</td><td>Oui</td></tr>
+      <tr><td><code>%f</code></td><td>Nom de fichier de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%h</code></td><td>Nom hôte distant</td><td>Oui</td></tr>
+      <tr><td><code>%H</code></td><td>Protocole de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%i</code></td><td>En-tête de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%l</code></td><td>Nom de connexion distant</td><td>Oui</td></tr>
+      <tr><td><code>%m</code></td><td>Méthode de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%n</code></td><td>Note</td><td>Oui</td></tr>
+      <tr><td><code>%o</code></td><td>En-tête de la réponse</td><td>Oui</td></tr>
+      <tr><td><code>%q</code></td><td>Chaîne de paramètres</td><td>Oui</td></tr>
+      <tr><td><code>%r</code></td><td>Ligne de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%R</code></td><td>Gestionnaire</td><td>Oui</td></tr>
+      <tr><td><code>%u</code></td><td>Utilisateur distant</td><td>Oui</td></tr>
+      <tr><td><code>%U</code></td><td>URI de la requête</td><td>Oui</td></tr>
+      <tr><td><code>%v</code></td><td>Nom d’hôte du serveur</td><td>Oui</td></tr>
+      <tr><td><code>%V</code></td><td>Nom canonique du serveur</td><td>Oui</td></tr>
+      <tr><td><code>%x</code></td><td>Variable SSL</td><td>Oui</td></tr>
+      <tr><td><code>%^ti</code></td><td>Données en fin de requête</td><td>Oui</td></tr>
+      <tr><td><code>%^to</code></td><td>Données en fin de réponse</td><td>Oui</td></tr>
+      <tr><td><code>%a</code></td><td>Adresse IP distante</td><td>Non (adresse
+IP)</td></tr>
+      <tr><td><code>%A</code></td><td>Adresse IP locale</td><td>Non (adresse IP)</td></tr>
+      <tr><td><code>%b</code>, <code>%B</code></td><td>Nombre d’octets
+envoyés</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%D</code></td><td>Durée de la requête
+ (microsecondes)</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%F</code></td><td>Requête rejetée</td><td>Non (un seul caractère)</td></tr>
+      <tr><td><code>%k</code></td><td>Requêtes en cours</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%L</code></td><td>Identifiant de connexion</td><td>Non
+(généré en interne)</td></tr>
+      <tr><td><code>%p</code></td><td>Port du serveur</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%P</code></td><td>PID/TID</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%s</code></td><td>Code d’état</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%t</code></td><td>Moment de la requête</td><td>Non (temps
+formaté)</td></tr>
+      <tr><td><code>%T</code></td><td>Durée de la requête (secondes)</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%X</code></td><td>État de la connexion</td><td>Non (un seul caractère)</td></tr>
+      </table>
+
+      <p><code>%b</code> et <code>%B</code> ne représentent pas le nombre
+      d'octets envoyés au client, mais simplement la taille en octets de la
+      réponse HTTP (les deux étant différents, par exemple, si la connexion est
+      abandonnée, ou si SSL est utilisé). Le format <code>%O</code> fourni par
+      <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>, enregistrera le nombre réel d'octets envoyés
+      sur le réseau.</p>
 
       <p>Note : <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> est implémenté en tant que
       gestionnaire basique et non en tant que gestionnaire standard.
@@ -662,28 +709,32 @@ TransferLog "logs/access_log"</pre>
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div><div class="section"><h2><a id="comments_section" name="comments_section">Commentaires</a></h2><div class="warning"><strong>Notice:</strong><br />This is not a Q&amp;A section. Comments placed here should be pointed towards suggestions on improving the documentation or server, and may be removed by our moderators if they are either implemented or considered invalid/off-topic. Questions on how to manage the Apache HTTP Server should be directed at either our IRC channel, #httpd, on Libera.chat, or sent to our <a href="https://httpd.apache.org/lists.html">mailing lists</a>.</div>
-<script type="text/javascript"><!--//--><![CDATA[//><!--
-var comments_shortname = 'httpd';
-var comments_identifier = 'http://httpd.apache.org/docs/trunk/mod/mod_log_config.html';
-(function(w, d) {
-    if (w.location.hostname.toLowerCase() == "httpd.apache.org") {
-        d.write('<div id="comments_thread"><\/div>');
-        var s = d.createElement('script');
-        s.type = 'text/javascript';
-        s.async = true;
-        s.src = 'https://comments.apache.org/show_comments.lua?site=' + comments_shortname + '&page=' + comments_identifier;
-        (d.getElementsByTagName('head')[0] || d.getElementsByTagName('body')[0]).appendChild(s);
-    }
-    else {
-        d.write('<div id="comments_thread">Comments are disabled for this page at the moment.<\/div>');
-    }
-})(window, document);
-//--><!]]></script></div><div id="footer">
-<p class="apache">Copyright 2025 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="http://wiki.apache.org/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

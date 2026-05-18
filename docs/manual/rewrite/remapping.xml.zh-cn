@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.zh-cn.xsl"?>
+<!-- English Revision: 1933068:1934245 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="remapping.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>使用 mod_rewrite 进行重定向和重映射</title>
+
+<summary>
+
+<p>本文档是 <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">参考文档</a>的补充。它描述了如何使用
+<module>mod_rewrite</module> 来重定向和重映射请求。
+其中包括许多 <module>mod_rewrite</module> 的常见用法示例，
+以及每个示例工作原理的详细描述。</p>
+
+<note type="warning">请注意，这些示例中的许多不会在你的特定服务器配置中直接生效，
+因此理解它们非常重要，而不仅仅是将示例复制粘贴到你的配置中。</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">模块文档</a></seealso>
+<seealso><a href="intro.html">mod_rewrite 简介</a></seealso>
+<!--<seealso><a href="remapping.html">重定向和重映射</a></seealso>-->
+<seealso><a href="access.html">访问控制</a></seealso>
+<seealso><a href="vhosts.html">虚拟主机</a></seealso>
+<seealso><a href="proxy.html">代理</a></seealso>
+<seealso><a href="rewritemap.html">使用 RewriteMap</a></seealso>
+<seealso><a href="advanced.html">高级技术</a></seealso>
+<seealso><a href="avoid.html">何时不使用 mod_rewrite</a></seealso>
+
+<section id="old-to-new">
+
+  <title>从旧到新（内部）</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>假设我们最近将页面 <code>foo.html</code> 重命名为
+      <code>bar.html</code>，现在希望提供旧 URL 以实现向后兼容。
+      但是，我们希望旧 URL 的用户甚至不会注意到页面已被重命名——
+      也就是说，我们不希望浏览器中的地址发生变化。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们通过以下规则在内部将旧 URL 重写为新 URL：</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="old-to-new-extern">
+
+  <title>从旧到新的重写（外部）</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>再次假设我们最近将页面 <code>foo.html</code> 重命名为
+      <code>bar.html</code>，现在希望提供旧 URL 以实现向后兼容。
+      但这次我们希望旧 URL 的用户能看到新 URL 的提示，
+      即他们的浏览器地址栏也应该改变。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们强制进行 HTTP 重定向到新 URL，
+      这会导致浏览器以及用户视图的变化：</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<strong>R</strong>]
+</highlight>
+</dd>
+
+<dt>讨论</dt>
+
+    <dd>
+    <p>在本示例中，与上面的<a href="#old-to-new-intern">内部</a>示例不同，
+    我们可以简单地使用 Redirect 指令。在前面的示例中使用
+    <module>mod_rewrite</module> 是为了对客户端隐藏重定向：</p>
+
+    <highlight language="config">
+Redirect "/foo.html" "/bar.html"
+    </highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="movehomedirs">
+
+  <title>资源已移至另一台服务器</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>如果资源已移至另一台服务器，你可能希望 URL
+      在旧服务器上继续工作一段时间，以便人们更新书签。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>你可以使用 <module>mod_rewrite</module> 将这些 URL
+      重定向到新服务器，但也可以考虑使用 Redirect 或 RedirectMatch 指令。</p>
+
+<highlight language="config">
+#With mod_rewrite
+RewriteEngine on
+RewriteRule   "^/docs/(.+)"  "http://new.example.com/docs/$1"  [R,L]
+</highlight>
+
+<highlight language="config">
+#With RedirectMatch
+RedirectMatch "^/docs/(.*)" "http://new.example.com/docs/$1"
+</highlight>
+
+<highlight language="config">
+#With Redirect
+Redirect "/docs/" "http://new.example.com/docs/"
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="static-to-dynamic">
+
+  <title>从静态到动态</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>如何以无缝的方式（即浏览器/用户不会注意到）将静态页面
+      <code>foo.html</code> 转换为动态变体 <code>foo.cgi</code>。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们只需将 URL 重写为 CGI 脚本并强制处理程序为
+      <strong>cgi-script</strong>，使其作为 CGI 程序执行。
+      这样，对 <code>/~quux/foo.html</code> 的请求在内部会导致调用
+      <code>/~quux/foo.cgi</code>。</p>
+
+<highlight language="config">
+RewriteEngine  on
+RewriteBase    "/~quux/"
+RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="backward-compatibility">
+
+  <title>文件扩展名更改的向后兼容性</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>在将 <code>document.YYYY</code> 迁移到
+      <code>document.XXXX</code>（例如将一批 <code>.html</code>
+      文件翻译为 <code>.php</code>）之后，
+      如何使 URL 保持向后兼容（仍然虚拟存在）？</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>仅当具有新扩展名的目标文件存在而具有旧扩展名的原始文件不存在时，
+      才将 URL 从旧扩展名重写为新扩展名。否则，URL 保持不变。</p>
+
+<highlight language="config">
+#   backward compatibility ruleset for
+#   rewriting document.html to document.php
+#   when and only when document.php exists
+&lt;Directory "/var/www/htdocs"&gt;
+    RewriteEngine on
+    RewriteBase   "/var/www/htdocs"
+
+    RewriteCond   "$1.php"           -f
+    RewriteCond   "$1.html"          !-f
+    RewriteRule   "^(.*).html$"      "$1.php"
+&lt;/Directory&gt;
+</highlight>
+    </dd>
+
+    <dt>讨论</dt>
+    <dd>
+    <p>此示例使用了 <module>mod_rewrite</module> 的一个经常被忽视的特性，
+    利用了规则集的执行顺序。特别是，<module>mod_rewrite</module>
+    在求值 RewriteCond 指令之前先求值 RewriteRule 的左侧。
+    因此，在求值 RewriteCond 指令时 $1 已经被定义。
+    这使我们能够使用相同的基础文件名来测试原始文件
+    （<code>document.html</code>）和目标文件
+    （<code>document.php</code>）的存在性。</p>
+
+    <p>此规则集设计用于目录级上下文
+    （在 &lt;Directory&gt; 块或 .htaccess 文件中），
+    以便 <code>-f</code> 检查正确的目录路径。
+    你可能需要设置 <directive
+    module="mod_rewrite">RewriteBase</directive>
+    指令来指定你正在使用的目录基准。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalhost">
+
+<title>规范主机名</title>
+
+      <dl>
+        <dt>描述：</dt>
+
+        <dd>此规则的目标是强制使用特定的主机名，
+        而不是可能用来到达同一站点的其他主机名。
+        例如，如果你希望强制使用
+        <strong>www.example.com</strong> 而不是
+        <strong>example.com</strong>，你可以使用以下方案的变体。</dd>
+
+        <dt>解决方案：</dt>
+
+        <dd>
+
+<p>最佳方式根本不涉及 <module>mod_rewrite</module>，
+而是使用放置在非规范主机名虚拟主机中的
+<directive module="mod_alias">Redirect</directive> 指令。</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect "/" "http://www.example.com/"
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+  ServerName www.example.com
+&lt;/VirtualHost&gt;
+</highlight>
+
+<p>你也可以使用
+<directive module="core" type="section">If</directive>
+指令来完成（<strong>2.4 及更高版本</strong>）：</p>
+
+<highlight language="config">
+&lt;If "%{HTTP_HOST} != 'www.example.com'"&gt;
+    Redirect "/" "http://www.example.com/"
+&lt;/If&gt;
+</highlight>
+
+<p>或者，例如，要将站点的一部分重定向到 HTTPS，你可以执行以下操作：</p>
+
+<highlight language="config">
+&lt;If "%{SERVER_PROTOCOL} != 'HTTPS'"&gt;
+    Redirect "/admin/" "https://www.example.com/admin/"
+&lt;/If&gt;
+</highlight>
+
+<p>如果出于某种原因你仍然想使用 <module>mod_rewrite</module>——
+例如，你需要它与一组更大的 RewriteRule 一起使用——
+你可以使用以下方案之一。</p>
+
+<p>对于运行在非 80 端口上的站点：</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com" [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteCond "%{SERVER_PORT}" "!^80$"
+RewriteRule "^/?(.*)"        "http://www.example.com:%{SERVER_PORT}/$1" [L,R,NE]
+</highlight>
+
+<p>对于运行在 80 端口上的站点：</p>
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}"   "!^www\.example\.com"       [NC]
+RewriteCond "%{HTTP_HOST}"   "!^$"
+RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
+</highlight>
+
+        <p>
+        如果你希望对所有域名通用地执行此操作——也就是说，
+        如果你想将 <strong>example.com</strong> 重定向到
+        <strong>www.example.com</strong>，其中
+        <strong>example.com</strong> 可以是任何值，
+        你可以使用以下方案：</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
+RewriteCond "%{HTTP_HOST}" "!^$"
+RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
+</highlight>
+
+    <p>这些规则集可以在主服务器配置文件中使用，
+    也可以在放置于服务器 <directive
+    module="core">DocumentRoot</directive> 中的
+    <code>.htaccess</code> 文件中使用。</p>
+        </dd>
+      </dl>
+
+</section>
+
+<section id="multipledirs">
+
+  <title>在多个目录中搜索页面</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+      <p>某个特定资源可能存在于多个位置，
+      我们希望在请求时在这些位置中查找该资源。
+      也许我们最近重新整理了目录结构，将内容分散到多个位置。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>以下规则集在两个目录中搜索资源，
+      如果在两个位置都找不到，则尝试从请求的位置直接提供。</p>
+
+<highlight language="config">
+RewriteEngine on
+
+#   first try to find it in dir1/...
+#   ...and if found stop and be happy:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir1</strong>/$1"  [L]
+
+#   second try to find it in dir2/...
+#   ...and if found stop and be happy:
+RewriteCond         "%{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}"  -f
+RewriteRule "^(.+)" "%{DOCUMENT_ROOT}/<strong>dir2</strong>/$1"  [L]
+
+#   else go on for other Alias or ScriptAlias directives,
+#   etc.
+RewriteRule "^"     "-"                                          [PT]
+</highlight>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="archive-access-multiplexer">
+
+  <title>重定向到地理分布式服务器</title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+    <p>我们的网站有多个镜像，
+    希望将用户重定向到距其所在国家最近的镜像。</p>
+    </dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+    <p>查看请求客户端的主机名，确定他们来自哪个国家。
+    如果无法查找其 IP 地址，则回退到默认服务器。</p>
+    <p>我们将使用 <directive module="mod_rewrite">RewriteMap</directive>
+    指令来构建我们希望使用的服务器列表。</p>
+
+<highlight language="config">
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         "txt:/path/to/map.mirrors"
+RewriteCond  "%{REMOTE_HOST}"   "([a-z]+)$"                [NC]
+RewriteRule  "^/(.*)$"          "${multiplex:<strong>%1</strong>|http://www.example.com/}$1"  [R,L]
+</highlight>
+
+<example>
+##  map.mirrors -- 多路复用映射<br />
+<br />
+de        http://www.example.de/<br />
+uk        http://www.example.uk/<br />
+com       http://www.example.com/<br />
+##EOF##
+</example>
+    </dd>
+
+    <dt>讨论</dt>
+    <dd>
+    <note type="warning">此规则集依赖于
+    <directive module="core">HostNameLookups</directive>
+    设置为 <code>on</code>，这可能会对性能产生显著影响。</note>
+
+    <p><directive module="mod_rewrite">RewriteCond</directive>
+    捕获请求客户端主机名的最后部分——国家代码——后续的 RewriteRule
+    使用该值在映射文件中查找适当的镜像主机。</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="canonicalurl">
+
+<title>规范 URL</title>
+
+<dl>
+ <dt>描述：</dt>
+
+   <dd>
+     <p>在某些 Web 服务器上，一个资源可能有多个 URL。
+     通常有规范 URL（即实际使用和分发的 URL）
+     和只是快捷方式、内部 URL 等的 URL。
+     无论用户在请求中提供的是哪个 URL，
+     他们最终应在浏览器地址栏中看到规范 URL。</p>
+   </dd>
+
+   <dt>解决方案：</dt>
+
+     <dd>
+       <p>我们对所有非规范 URL 执行外部 HTTP 重定向，
+       以在浏览器的地址视图中修正它们，并用于所有后续请求。
+       在下面的示例规则集中，我们将 <code>/puppies</code> 和
+       <code>/canines</code> 替换为规范的 <code>/dogs</code>。</p>
+
+<highlight language="config">
+RewriteRule   "^/(puppies|canines)/(.*)"    "/dogs/$2"  [R]
+</highlight>
+        </dd>
+
+     <dt>讨论：</dt>
+     <dd>
+     这实际上应该使用 Redirect 或 RedirectMatch 指令来完成：
+
+     <highlight language="config">
+RedirectMatch "^/(puppies|canines)/(.*)" "/dogs/$2"
+     </highlight>
+     </dd>
+      </dl>
+
+</section>
+
+<section id="moveddocroot">
+
+  <title>移动的 <code>DocumentRoot</code></title>
+
+  <dl>
+    <dt>描述：</dt>
+
+    <dd>
+<p>通常 Web 服务器的 <directive module="core">DocumentRoot</directive>
+直接对应 URL "<code>/</code>"。
+但这些数据通常不是最高优先级的内容。例如，
+你可能希望访客在首次进入站点时转到特定子目录 <code>/about/</code>。
+这可以使用以下规则集来实现：</p>
+</dd>
+
+    <dt>解决方案：</dt>
+
+    <dd>
+      <p>我们将 URL <code>/</code> 重定向到 <code>/about/</code>：
+      </p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]
+</highlight>
+
+<p>请注意，这也可以使用
+<directive module="mod_alias">RedirectMatch</directive> 指令来处理：</p>
+
+<highlight language="config">
+RedirectMatch "^/$" "http://example.com/about/"
+</highlight>
+
+<p>还要注意，此示例仅重写根 URL。也就是说，
+它重写对 <code>http://example.com/</code> 的请求，
+但不会重写对 <code>http://example.com/page.html</code> 的请求。
+如果你确实更改了文档根目录——也就是说，如果你的<strong>所有</strong>内容
+实际上都在该子目录中，那么最好直接更改
+<directive module="core">DocumentRoot</directive> 指令，
+或将所有内容向上移动一个目录，而不是重写 URL。</p>
+</dd>
+</dl>
+
+</section>
+
+<section id="fallback-resource">
+<title>回退资源</title>
+
+<dl>
+<dt>描述：</dt>
+<dd>你希望单个资源（例如某个文件，如 index.php）处理所有进入特定目录的请求，
+但已存在的资源（如图片或 CSS 文件）除外。</dd>
+
+<dt>解决方案：</dt>
+<dd>
+<p>从 2.2.16 版本开始，你应该使用
+<directive module="mod_dir">FallbackResource</directive> 指令来完成：</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;
+</highlight>
+
+<p>但是，在早期版本的 Apache 中，或者如果你的需求比这更复杂，
+你可以使用以下重写集的变体来实现相同的目的：</p>
+
+<highlight language="config">
+&lt;Directory "/var/www/my_blog"&gt;
+  RewriteBase "/my_blog"
+
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
+  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
+  RewriteRule "^"                                    "index.php" [PT]
+&lt;/Directory&gt;
+</highlight>
+
+<p>另一方面，如果你希望将请求的 URI 作为查询字符串参数传递给 index.php，
+你可以将该 RewriteRule 替换为：</p>
+
+<highlight language="config">
+RewriteRule "(.*)" "index.php?$1" [PT,QSA]
+</highlight>
+
+<p>请注意，这些规则集可以在 <code>.htaccess</code> 文件中使用，
+也可以在 &lt;Directory&gt; 块中使用。</p>
+
+</dd>
+
+</dl>
+
+</section>
+
+<section id="rewrite-query">
+<title>重写查询字符串</title>
+
+<dl>
+<dt>描述：</dt>
+<dd>你想从查询字符串中捕获特定值，并替换它或将其合并到 URL 的另一个组件中。</dd>
+
+<dt>解决方案：</dt>
+<dd>
+<p>本节中的许多解决方案都使用相同的条件，
+该条件将匹配的值留在 %2 反向引用中。%1 是查询字符串的开头
+（直到感兴趣的键），%3 是剩余部分。
+此条件稍微复杂是为了灵活性和避免替换中出现双 '&amp;&amp;'。</p>
+<ul>
+  <li>此解决方案移除匹配的键和值：
+
+<highlight language="config">
+# Remove mykey=???
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1?%1%3"
+</highlight>
+  </li>
+
+  <li>此解决方案在 URL 替换中使用捕获的值，
+  通过附加 '?' 来丢弃其余的原始查询：
+
+<highlight language="config">
+# Copy from query string to PATH_INFO
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteRule "(.*)"            "$1/products/%2/?" [PT]
+</highlight>
+  </li>
+
+  <li>此解决方案在后续条件中检查捕获的值：
+
+<highlight language="config">
+# Capture the value of mykey in the query string
+RewriteCond "%{QUERY_STRING}" "(.*(?:^|&amp;))mykey=([^&amp;]*)&amp;?(.*)&amp;?$"
+RewriteCond "%2"              !=not-so-secret-value
+RewriteRule "(.*)"            "-" [F]
+</highlight>
+  </li>
+
+  <li>此解决方案展示了前面方案的逆操作，
+      将路径组件（可能是 PATH_INFO）从 URL 复制到查询字符串中。
+<highlight language="config">
+# The desired URL might be /products/kitchen-sink, and the script expects
+# /path?products=kitchen-sink.
+RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]
+</highlight>
+  </li>
+</ul>
+
+</dd>
+
+</dl>
+</section>
+
+
+</manualpage>

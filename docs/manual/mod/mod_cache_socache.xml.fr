@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1788719 -->
+<!-- English Revision: 1933457 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -164,11 +164,11 @@ cache</description>
 Apache</compatibility>
 
 <usage>
-    <p>La directive <directive>CacheSocacheMaxSize</directive>
-    définit la taille maximale, en octets, de la somme des en-têtes et
-    du corps d'un document pouvant être stocké dans le cache. Bien
-    entendu, plus la taille des en-têtes sera grande, plus la taille
-    maximale du corps du document s'en trouvera réduite.</p>
+    <p>La directive <directive>CacheSocacheMaxSize</directive> définit la taille
+    maximale, en octets, de la somme des en-têtes et du corps d'un document
+    pouvant être stocké dans le cache. La valeur minimale est 1024 octets. Bien
+    entendu, plus la taille des en-têtes sera grande, plus la taille maximale du
+    corps du document s'en trouvera réduite.</p>
 
     <p>Le module <module>mod_cache_socache</module> ne tentera de mettre
     en cache que des réponses qui possèdent une taille de contenu

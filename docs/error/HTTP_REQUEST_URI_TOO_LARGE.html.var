@@ -15,12 +15,12 @@ Content-language: de
 Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
---><!--#set var="TITLE" value="&Uuml;bergebener URI zu gro&szlig;!"
+--><!--#set var="TITLE" value="Übergebener URI zu groß!"
 --><!--#include virtual="include/top.html" -->
 
-    Der bei der Anfrage &uuml;bermittelte URI &uuml;berschreitet
-    die maximale L&auml;nge.
-    Die Anfrage kann nicht ausgef&uuml;hrt werden.
+    Der bei der Anfrage übermittelte URI überschreitet
+    die maximale Länge.
+    Die Anfrage kann nicht ausgeführt werden.
     
 <!--#include virtual="include/bottom.html" -->
 ----------de--
@@ -40,10 +40,10 @@ Body:----------en--
 Content-language: es
 Content-type: text/html
 Body:----------es--
-<!--#set var="TITLE" value="&iexcl;El URI enviado es demasiado largo!" -->
+<!--#set var="TITLE" value="¡El URI enviado es demasiado largo!" -->
 <!--#include virtual="include/top.html" -->
 
-   La longitud de la URL solicitada excede el l&iacute;mite de
+   La longitud de la URL solicitada excede el límite de
    capacidad para este servidor. No se puede procesar la solicitud.
 
 <!--#include virtual="include/bottom.html" -->
@@ -56,9 +56,9 @@ Body:----------fr--
 --><!--#set var="TITLE" value="L'URI demandee est trop longue!"
 --><!--#include virtual="include/top.html" -->
 
-    La longueur de l'URL demand&eacute;e exc&egrave;de la limite de
-    capacit&egrave; pour ce serveur. Nous ne pouvons donner suite
-    &agrave; votre requ&ecirc;te.
+    La longueur de l'URL demandée excède la limite de
+    capacitè pour ce serveur. Nous ne pouvons donner suite
+    à votre requête.
 
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
@@ -66,12 +66,12 @@ Body:----------fr--
 Content-language: ga
 Content-type: text/html; charset=UTF-8
 Body:----------ga--
-<!--#set var="TITLE" value="URI r&oacute;mh&oacute;r cuirthe isteach!"
+<!--#set var="TITLE" value="URI rómhór cuirthe isteach!"
 --><!--#include virtual="include/top.html" -->
 
-    T&aacute; faid an URL iarraithe breis ar an teorainn cumas don 
-    freastala&iacute; seo. N&iacute; f&eacute;idir an iarratas a
-    phr&oacute;ise&aacute;il.
+    Tá faid an URL iarraithe breis ar an teorainn cumas don 
+    freastalaí seo. Ní féidir an iarratas a
+    phróiseáil.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ga--
@@ -85,7 +85,7 @@ Body:----------it--
 
     La lunghezza dell'indirizzo (URL) trasmesso supera il
     limite massimo imposto da questo server.
-    La richiesta non pu&ograve; essere soddisfatta.
+    La richiesta non può essere soddisfatta.
 
 <!--#include virtual="include/bottom.html" -->
 ----------it--
@@ -162,8 +162,8 @@ Body:-------pt-br--
 --><!--#set var="TITLE" value="URL excede limite!"
 --><!--#include virtual="include/top.html" -->
 
-   O tamanho do endere&ccedil;o (URL) excede a capacidade limite
-   desse servidor. A requisi&ccedil;&atilde;o n&atilde;o pode ser
+   O tamanho do endereço (URL) excede a capacidade limite
+   desse servidor. A requisição não pode ser
    processada.
 
 <!--#include virtual="include/bottom.html" -->
@@ -176,7 +176,7 @@ Body:----------pt--
 --><!--#include virtual="include/top.html" -->
 
 	O tamanho do URL pedido excede o limite da capacidade deste
-	servidor. O pedido n&atilde;o pode ser processado.
+	servidor. O pedido não pode ser processado.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pt--
@@ -223,12 +223,12 @@ Content-language: sv
 Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
---><!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!"
+--><!--#set var="TITLE" value="Efterfrågad URI för stor!"
 --><!--#include virtual="include/top.html" -->
 
-    L&auml;ngden p&aring; adressen som efterfr&aring;gas &ouml;verskrider
-    kapacitetsgr&auml;nsen f&ouml;r denna server. F&ouml;rfr&aring;gan kan
-    inte verkst&auml;llas.
+    Längden på adressen som efterfrågas överskrider
+    kapacitetsgränsen för denna server. Förfrågan kan
+    inte verkställas.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sv--

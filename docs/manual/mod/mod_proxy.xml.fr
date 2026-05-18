@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1926185 -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,7 +58,7 @@
 
       <li><module>mod_proxy_balancer</module> et un ou plusieurs modules
       de répartition, si la répartition de charge doit être mise en
-      oeuvre (Voir la documentation de
+      oeuvre(Voir la documentation de
       <module>mod_proxy_balancer</module> pour plus de détails).</li>
 
       <li>un ou plusieurs modules de types de mandataire, ou protocoles
@@ -390,6 +390,15 @@ ProxyPass "/apps"     "http://127"
 &lt;/Proxy&gt;
       </highlight>
 
+      <note><title>Requêtes HTTPS/CONNECT</title>
+      <p>L’instruction générique <code>&lt;Proxy "*"&gt;</code> ci-dessus
+      correspond à toutes les requêtes, y compris les requêtes HTTPS sous tunnel
+      via la méthode CONNECT. Notez que le contrôle d’accès pour les tunnels
+      CONNECT ne peut fonctionner qu’avec l’hôte et le port — le contrôle avec
+      le chemin (par exemple <code>&lt;Proxy
+      "https://example.com/path/"&gt;</code>) ne fonctionnera pas, car les
+      requêtes CONNECT ne comportent pas de chemin.</p></note>
+
       <p>Pour plus de détails sur les directives de contrôle d'accès,
       voir la documentation du module
       <module>mod_authz_host</module>.</p>
@@ -469,7 +478,13 @@ ProxyPass "/apps"     "http://127"
   SetEnv force-proxy-request-1.0 1
   SetEnv proxy-nokeepalive 1
 &lt;/Location&gt;
-        </highlight>
+      </highlight>
+
+      <p>Notez que <code>force-proxy-request-1.0</code> implique aussi
+      <code>proxy-sendcl</code>, car HTTP/1.0 ne prend pas en charge l’encodage
+      de transfert fractionné. La redirection des corps de requête fractionnés
+      (via <code>proxy-sendchunked</code>) est désactivée si cette option est
+      définie.</p>
 
       <p>A partir de la version 2.4.26 du serveur HTTP Apache, la définition de
       la variable d'environnement "no-proxy" permet de désactiver
@@ -484,7 +499,7 @@ ProxyPass "/apps"     "http://127"
 
     <p>Certaines méthodes de requêtes comme POST comportent un corps de
     requête. Le protocole HTTP stipule que les requêtes qui comportent
-    un corps doivent soit utiliser un codage de transmission
+    un corps doivent soit utiliser un encodage de transmission
     fractionnée (chunked transfer encoding), soit envoyer un en-tête de requête
     <code>Content-Length</code>. Lorsqu'il fait suivre ce genre de
     requête vers le serveur demandé, <module>mod_proxy_http</module>
@@ -841,11 +856,10 @@ après la configuration initiale</description>
 <compatibility>BalancerGrowth est disponible depuis la version 2.3.13 du
 serveur HTTP Apache</compatibility>
 <usage>
-    <p>Cette directive permet de définir le nombre de
-    répartiteurs de charge pouvant
-    être ajoutés à ceux déjà configurés pour un
-    serveur virtuel. Elle n'est active que si au minimum un répartiteur
-    a été préconfiguré.</p>
+    <p>Cette directive permet de définir le nombre de répartiteurs de charge
+    pouvant être ajoutés à ceux déjà configurés pour un serveur virtuel. Elle
+    n'est active que si au minimum un répartiteur a été préconfiguré.</p>
+    <p>La valeur doit être entre 0 et 1000.</p>
 </usage>
 </directivesynopsis>
 
@@ -922,7 +936,7 @@ charge</description>
 <syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
   >clé=valeur [clé=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
-</contextlist>
+    </contextlist>
 <usage>
     <p>Cette directive permet d'ajouter un membre à un groupe de
     répartition de charge. Elle peut se trouver dans un conteneur
@@ -1047,25 +1061,27 @@ de la version 2.4.7 du serveur HTTP Apache</compatibility>
     <code>localhost</code>) peut être sujet à discussion, mais il est
     transmis dans l'en-tête Host: de la requête.</p>
 
-    <note><strong>Note :</strong>Le chemin associé à l'URL
+    <note>Le chemin associé à l'URL
     <code>unix:</code> tient compte de la directive
     <directive>DefaultRuntimeDir</directive>.</note>
 
-    <note><strong>Note :</strong>Afin d'éviter l'échappement du
+    <note>Afin d'éviter l'échappement du
     caractère <code>'|'</code>, la directive
     <directive>RewriteRule</directive> doit posséder l'option
     <code>[P,NE]</code>.</note>
 
-    <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une
-    section <directive type="section" module="core"
+    <p>Lorsque la directive ProxyPass est utilisée à l'intérieur d'une section
+    <directive type="section" module="core"
     >Location</directive>, le premier argument est omis et le répertoire
     local est obtenu à partir de la section <directive type="section"
-    module="core">Location</directive>. Il en sera de même dans une
-    section <directive type="section"
-    module="core">LocationMatch</directive> ; cependant, ProxyPass
-    n'interprète pas les expressions rationnelles, et il sera ici
-    nécessaire d'utiliser la directive
-    <directive>ProxyPassMatch</directive> à la place.</p>
+    module="core">Location</directive>. Lorsque cette directive est utilisée en
+    dehors d’une section <directive type="section"
+    module="core">Location</directive> ou <directive type="section"
+    module="core">LocationMatch</directive>, l’argument <var>chemin</var> est
+    requis. Il en sera de même dans une section <directive type="section"
+    module="core">LocationMatch</directive> ; cependant, ProxyPass n'interprète
+    pas les expressions rationnelles, et il sera ici nécessaire d'utiliser la
+    directive <directive>ProxyPassMatch</directive> à la place.</p>
     
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors la ligne</p>
@@ -1157,11 +1173,16 @@ ProxyPass "/mirror/foo/i" "!"
       </note>
     <note type="warning"><title>Chronologie de prise en compte des directives
     ProxyPass au sein des sections Locations</title>
-      <p>On ne peut placer
-      qu'une seule directive <directive
-      module="mod_proxy">ProxyPass</directive> dans une section
-      <directive module="core">Location</directive>, et c'est la section
-      la plus spécifique qui l'emportera.</p>
+      <p>On ne peut placer qu'une seule directive <directive
+      module="mod_proxy">ProxyPass</directive> dans une section <directive
+      module="core">Location</directive>, et c'est la  dernière section
+      <directive module="core">Location</directive> correspondante qui
+      l'emportera, suivant en cela les règles standards de <a
+      href="../sections.html#merging">fusion des sections</a>. Placez les
+      sections <directive module="core">Location</directive> les plus
+      spécifiques <em>après</em> les moins spécifiques afin de s’assurer que la
+      directive <directive module="mod_proxy">ProxyPass</directive> attendue
+      s’applique.</p>
      </note>
      <note type="warning"><title>Exclusions et variable d'environnement no-proxy</title>
       <p>Les exclusions doivent se situer <em>avant</em>
@@ -1198,6 +1219,15 @@ ProxyPass "/mirror/foo/i" "!"
     autres réglages n'étant pas coordonnés entre ces différents processus, sauf
     bien entendu lorsqu'un seul processus enfant n'est autorisé par la
     configuration ou le MPM utilisé.</p> </note>
+
+    <note><title>Mise en commun des connexions avec le MPM prefork</title>
+    <p>Avec le MPM prefork, les connexions avec les serveurs dorsaux ne sont pas
+    mises en commun (chaque processus enfant gère une connexion à la fois). Les
+    paramètres <code>acquire</code> et <code>ttl</code> qui contrôlent le
+    comportement des pools de connexions n’ont aucun effet si on utilise
+    prefork. Les paramètres de dimensionnement <code>min</code>,
+    <code>smax</code> et <code>hmax</code> sont eux aussi ignorés.</p>
+    </note>
     
     <p>Le paramètre <code>ttl</code>, quant à lui, permet de définir une durée
     de vie optionnelle ; les connexions qui n'ont pas été utilisées pendant au
@@ -1463,13 +1493,11 @@ ProxyPass "/mirror/foo/i" "!"
     </td></tr>
     <tr><td><a id="upgrade" name="upgrade">upgrade</a></td>
         <td>-</td>
-        <td><p>Protocole pris en charge par <module>mod_proxy_http</module> ou
+	<td><p>Protocole pris en charge par <module>mod_proxy_http</module> ou
 	<module>mod_proxy_wstunnel</module> pour le mécanisme de promotion de
 	protocole HTTP lors d'une négociation du client/navigateur HTTP (en
-	accord avec <a
-	href="https://www.ietf.org/rfc/rfc9110.html#name-upgrade">RFC 9110 -
-	Upgrade</a>). Voir la note <a href="#protoupgrade">Promotion de
-	protocole</a> ci-dessous</p>	
+	accord avec <rfc anchor="name-upgrade">9110</rfc> - Upgrade). Voir la
+	note <a href="#protoupgrade">Promotion de protocole</a> ci-dessous</p>	
     </td></tr>
     <tr><td>mapping</td>
         <td>-</td>
@@ -1483,7 +1511,7 @@ ProxyPass "/mirror/foo/i" "!"
 	recherche de correspondance en utilisant le même mappage.</p>
         <p><code>mapping=encoded</code> empêche le décodage des caractères %
 	contenus dans le <var>chemin de l'uri</var> de façon à ce que l'on
-	puisse par exemple utiliser des configurations telles que :</p>
+	puisse par exemple utiliser des configurations telles que&nbsp;:</p>
         <highlight language="config">ProxyPass "/special%3Fsegment" "https://example.com/special%3Fsegment" mapping=encoded</highlight>
         <highlight language="config">&lt;Location "/special%3Fsegment"&gt;
   Require ip 172.17.2.0/24
@@ -1494,7 +1522,7 @@ ProxyPass "/mirror/foo/i" "!"
 	chemin sont ignorés pour le mappage). Un <var>chemin d'uri</var> comme
 	<code>/some;foo/path</code> sera alors mappé comme
 	<code>/some/path</code> et correspondra donc à tout ce qui suit sans
-	tenir compte des paramètres du chemin demandé :</p>
+	tenir compte des paramètres du chemin demandé&nbsp;:</p>
         <highlight language="config">ProxyPass "/some/path" "https://servlet.example.com/some/path" mapping=servlet</highlight>
         <highlight language="config">&lt;Location "/some/path"&gt;
   Require valid-user
@@ -1702,15 +1730,15 @@ ProxyPass "/" "balancer://hotcluster/ "
 
     <p><strong>Mot-clés supplémentaires de ProxyPass</strong></p>
 
-    <p>Normalement, mod_proxy va mettre sous leur forme canonique les
-    URLs traitées par ProxyPass. Mais ceci peut être incompatible avec
-    certains serveurs d'arrière-plan, et en particulier avec ceux qui
-    utilisent <var>PATH_INFO</var>. Le mot-clé optionnel
-    <var>nocanon</var> modifie ce comportement et permet de transmettre
-    le chemin d'URL sous sa forme brute au serveur d'arrière-plan. Notez
-    que ce mot-clé peut affecter la sécurité de votre serveur d'arrière-plan,
-    car la protection limitée contre les attaques à base d'URL que
-    fournit le mandataire est alors supprimée.</p>
+    <p>Normalement, mod_proxy va mettre sous leur forme canonique les URLs
+    traitées par ProxyPass. Mais ceci peut être incompatible avec certains
+    serveurs d'arrière-plan, et en particulier avec ceux qui utilisent
+    <var><glossary ref="pathinfo">PATH_INFO</glossary></var>. Le mot-clé
+    optionnel <var>nocanon</var> modifie ce comportement et permet de
+    transmettre le chemin d'URL sous sa forme brute au serveur d'arrière-plan.
+    Notez que ce mot-clé peut affecter la sécurité de votre serveur
+    d'arrière-plan, car la protection limitée contre les attaques à base d'URL
+    que fournit le mandataire est alors supprimée.</p>
 
     <p>Par défaut, mod_proxy inclut la chaîne de paramètres lors de la
     génération de la variable d'environnement
@@ -1755,7 +1783,7 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"
       <p>Bout à bout signifie que la requête de promotion de protocole en
       provenance du client/navigateur est tout d'abord transmise par
       <module>mod_proxy_http</module> au serveur origine et que le protocole de
-      la connexion ne sera modifié (et « tunnelisé » par
+      la connexion ne sera modifié (et «&nbsp;tunnelisé&nbsp;» par
       <module>mod_proxy_http</module>) que si le serveur origine accepte/initie
       la promotion (réponse HTTP <code>101 Switching Protocols</code>). Si le
       serveur origine renvoie une réponse différente,
@@ -1799,8 +1827,29 @@ arrières (voir note ci-dessous).
     toute correspondance entre parenthèses dans la chaîne donnée et
     l'utiliser comme nouvelle <var>url</var>.</p>
 
-    <note><strong>Note : </strong>Cette directive ne peut pas être
+    <note>Cette directive ne peut pas être
     utilisée dans un contexte de niveau répertoire.</note>
+
+    <note type="warning"><title>Correspondance de worker avec les références
+    arrières</title>
+    <p>Quand <directive>ProxyPassMatch</directive> contient des références
+    arrières (par exemple <code>$1</code>) dans l’URL cible, chaque requête
+    produit un URL résolu différent. Comme la recherche de correspondance des <a
+    href="#workers">workers</a> s’effectue par URL, ces requêtes ne
+    correspondront pas au worker créé par cette directive et utiliseront à la
+    place le worker du mandataire inverse par défaut, qui ne réutilise pas les
+    connexions, ni ne met en cache les recherches DNS. Pour activer la mise en
+    commun des connexions, définissez un worker explicite pour le serveur dorsal
+    séparément :</p>
+    <highlight language="config">
+ProxyPass        "/notused" "http://backend.example.com/" connectiontimeout=5 timeout=30
+ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"
+    </highlight>
+    <p>La définition explicite du worker <directive>ProxyPass</directive> permet
+    de s’assurer que le jeu de connexions d’arrière-plan est disponible pour les
+    requêtes <directive>ProxyPassMatch</directive>.</p>
+    </note>
+
 
     <p>Supposons que le serveur local a pour adresse
     <code>http://example.com/</code> ; alors</p>
@@ -1817,9 +1866,12 @@ arrières (voir note ci-dessous).
     sous-répertoire donné.</p>
 
     <p>Dans une section <directive type="section"
-    module="core">LocationMatch</directive>, le premier argument est
-    omis et l'expression rationnelle est obtenue à partir de la directive
-    <directive type="section" module="core">LocationMatch</directive>.</p>
+    module="core">LocationMatch</directive>, le premier argument est omis et
+    l'expression rationnelle est obtenue à partir de la directive <directive
+    type="section" module="core">LocationMatch</directive>. En dehors d’une
+    section <directive type="section" module="core">Location</directive> ou
+    <directive type="section" module="core">LocationMatch</directive>,
+    l’argument <var>regex</var> est requis.</p>
 
     <p>Si vous avez besoin d'une configuration du mandataire inverse
     plus flexible, voyez la directive <directive
@@ -1956,16 +2008,18 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"
     dans la partie protocole d'une URL.  </p>
 
     <p>Lorsque cette directive est utilisée dans une section <directive
-    type="section" module="core">Location</directive>, le premier
-    argument est omis et le répertoire local est obtenu à partir de
-    l'argument de la directive <directive type="section"
-    module="core">Location</directive>. Il en est de même à l'intérieur
-    d'une section <directive type="section"
-    module="core">LocationMatch</directive>, mais le résultat ne sera
-    probablement pas celui attendu car ProxyPassReverse va interpréter
-    l'expression rationnelle littéralement comme un chemin ; si besoin
-    est dans ce cas, définissez la directive ProxyPassReverse en dehors
-    de la section, ou dans une section <directive type="section"
+    type="section" module="core">Location</directive>, le premier argument est
+    omis et le répertoire local est obtenu à partir de l'argument de la
+    directive <directive type="section" module="core">Location</directive>. En
+    dehors d’une section <directive type="section"
+    module="core">Location</directive> ou <directive type="section"
+    module="core">LocationMatch</directive>, l’argument <var>chemin</var> est
+    requis. Il en est de même à l'intérieur d'une section <directive
+    type="section" module="core">LocationMatch</directive>, mais le résultat ne
+    sera probablement pas celui attendu car ProxyPassReverse va interpréter
+    l'expression rationnelle littéralement comme un chemin ; si besoin est dans
+    ce cas, définissez la directive ProxyPassReverse en dehors de la section, ou
+    dans une section <directive type="section"
     module="core">Location</directive> séparée.</p>
 
     <p>Cette directive ne peut pas être placée dans une section
@@ -2126,7 +2180,8 @@ données</description>
     <p>La directive <directive>ProxyIOBufferSize</directive> permet
     d'ajuster la taille du tampon interne utilisé comme bloc-note pour
     les transferts de données entre entrée et sortie. La taille minimale
-    est de <code>512</code> octets.</p>
+    est de <code>512</code> octets, ou définie à <code>0</code> pour indiquer
+    que la taille de tampon par défaut du système doit être utilisée.</p>
 
     <p>Dans la plupart des cas, il n'y a aucune raison de modifier cette
     valeur.</p>
@@ -2360,11 +2415,11 @@ mandatées</description>
 <usage>
     <p>Cette directive n'a d'utilité que pour les serveurs mandataires
     Apache httpd au sein d'un Intranet. La directive
-    <directive>ProxyDomain</directive> permet de spécifier le domaine
-    par défaut auquel le serveur mandataire apache appartient. Si le
-    serveur reçoit une requête pour un hôte sans nom de domaine, il va
-    générer une réponse de redirection vers le même hôte suffixé par le
-    <var>Domaine</var> spécifié.</p>
+    <directive>ProxyDomain</directive> permet de spécifier le domaine par défaut
+    auquel le serveur mandataire apache appartient. Si le serveur reçoit une
+    requête pour un hôte sans nom de domaine, il va générer une réponse de
+    redirection vers le même hôte suffixé par le <var>Domaine</var> spécifié. Le
+    nom du domaine doit commencer par un point.</p>
 
     <example><title>Exemple</title>
     <highlight language="config">
@@ -2389,8 +2444,7 @@ ProxyDomain       ".example.com"
     <p>Cette directive permet de contrôler l'utilisation de l'en-tête
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
     contrôler le flux des requêtes mandatées tout au long d'une chaîne
-    de serveurs mandataires. Voir <a
-    href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> (HTTP/1.1),
+    de serveurs mandataires. Voir la <rfc>2616</rfc> (HTTP/1.1),
     section 14.45 pour une description des lignes d'en-tête
     <code>Via:</code>.</p>
 
@@ -2470,7 +2524,8 @@ mandatés</description>
 les configurations de mandataires inverses</description>
 <syntax>ProxyPassInterpolateEnv On|Off</syntax>
 <default>ProxyPassInterpolateEnv Off</default>
-<contextlist><context>server config</context> <context>virtual host</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
 <context>directory</context>
 </contextlist>
 

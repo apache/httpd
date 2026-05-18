@@ -820,7 +820,7 @@ static request_rec *make_fake_req(conn_rec *c, request_rec *r)
 static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
                                  const char *key, const char *value)
 {
-    static const char *date_hdrs[]
+    static const char *const date_hdrs[]
         = { "Date", "Expires", "Last-Modified", NULL };
     static const struct {
         const char *name;
@@ -1086,7 +1086,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
     int pread_len = 0;
     apr_table_t *save_table;
     int backend_broke = 0;
-    static const char *hop_by_hop_hdrs[] =
+    static const char *const hop_by_hop_hdrs[] =
         {"Keep-Alive", "Proxy-Authenticate", "TE", "Trailer", "Upgrade", NULL};
     int i;
     const char *te = NULL;

@@ -435,6 +435,12 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
     sei_cfg_rec *sconf;
     sei_entry *new;
     const char *err;
+    unsigned int flags = 0;
+
+    /* Use restricted ap_expr() parser in htaccess context. */
+    if (cmd->pool == cmd->temp_pool) {
+        flags |= AP_EXPR_FLAG_RESTRICTED;
+    }
 
     /*
      * Determine from our context into which record to put the entry.
@@ -458,7 +464,7 @@ static const char *add_setenvifexpr(cmd_parms *cmd, void *mconfig,
     new->regex = NULL;
     new->pattern = NULL;
     new->preg = NULL;
-    new->expr = ap_expr_parse_cmd(cmd, expr, 0, &err, NULL);
+    new->expr = ap_expr_parse_cmd(cmd, expr, flags, &err, NULL);
     if (err)
         return apr_psprintf(cmd->pool, "Could not parse expression \"%s\": %s",
                             expr, err);

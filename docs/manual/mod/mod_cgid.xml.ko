@@ -72,8 +72,7 @@
 <description>cgi 데몬과 통신을 위해 사용할 소켓의 이름</description>
 <syntax>ScriptSock <var>file-path</var></syntax>
 <default>ScriptSock logs/cgisock</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>이 지시어는 CGI 데몬과 통신을 위해 사용할 소켓의 이름을

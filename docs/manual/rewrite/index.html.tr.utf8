@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
@@ -14,79 +15,116 @@
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>Mevcut Diller: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/rewrite/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü gelen URL isteklerinde değişiklik
-      yapabilmek için <a href="intro.html#regex">düzenli ifade</a> kurallarına
-      dayalı, devingen bir yol sunar. Böylece, keyfi URL'leri dahili URL
-      yapınızla kolayca eşleyebilirsiniz.</p>
 
-    <p>Gerçekten esnek ve güçlü bir URL kurgulama mekanizması oluşturmak için
-      sınısız sayıda kural ve her kural için de sınırsız sayıda koşul destekler.
-      URL değişiklikleri çeşitli sınamalara dayanır; sunucu değişkenleri, HTTP
-      başlıkları, ortam değişkenleri, zaman damgaları hatta çeşitli biçimlerde
-      harici veritabanı sorguları bile bu amaçla kullanılabilir.</p>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, gelen URL isteklerini <a href="intro.html#regex">düzenli ifade</a> kurallarına dayalı olarak
+    devingen bir şekilde değiştirmek için bir yol sunar. Böylece, keyfi
+    URL'leri istediğiniz şekilde dahili URL yapınıza
+    eşleyebilirsiniz.</p>
 
-    <p>Yeniden yazma kuralları URL’lerin tamamında (path-info kısmı ve sorgu
-      dizgesi dahil) hem sunucu bağlamında (<code>httpd.conf</code>) hem sanal
-      konaklar bağlamında (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümleri), hem de dizin bağlamında
-      (<code>.htaccess</code> dosyaları ve <code>&lt;Directory&gt;</code>
-      bölümleri) çalışır ve URL üzerinde sorgu dizgesi bölümleri bile
-      oluşturabilir. Kurallara atadığınız <a href="flags.html">seçeneklere</a>
-      bağlı olarak, yeniden yazılan URL sonuçta dahili işlemlerde, harici
-      yönlendirmelerde ve vekalet işlemlerinde kullanılabilir.</p>
+      <p>Gerçekten esnek ve güçlü bir URL değiştirme mekanizması
+      sağlamak üzere sınırsız sayıda kural ve her kural için sınırsız
+      sayıda ilişkili kural koşulunu destekler. URL değişiklikleri
+      çeşitli sınamalara bağlı olabilir: sunucu değişkenleri, ortam
+      değişkenleri, HTTP başlıkları, zaman damgaları, harici veritabanı
+      sorguları ve çeşitli diğer harici programlar veya işleyiciler,
+      ayrıntılı URL eşleştirme sağlamak için kullanılabilir.</p>
 
-    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü çok güçlü olduğundan, gerçekten çok
-      karmaşık olabilir. Bu belge, <a href="../mod/mod_rewrite.html">başvuru
-      belgeleri</a>nin tamamlayıcısı olup karmaşıklığı biraz azaltmaya çalışır
-      ve <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile elde edilebilen ortak senaryoların
-      oldukça açıklamalı örneklerini sağlar. Fakat ayrıca,
-      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünü kullanmamanız, yerine standart
-      Apache özelliklerini kullanmanız gereken durumları da göstermeye,
-      böylece gereksiz karmaşıklıktan kurtulmanızı sağlamaya çalıştık.</p>
+      <p>Yeniden yazma kuralları, yol bilgisi ve sorgu dizgesi
+      bölümleri dahil olmak üzere URL'lerin tamamı üzerinde işlem
+      yapabilir ve sunucu bağlamında (<code>httpd.conf</code>), sanal
+      konak bağlamında (<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blokları) veya dizin
+      bağlamında (<code>.htaccess</code> dosyaları ve <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blokları)
+      kullanılabilir. Yeniden yazılmış sonuç, kurallara eklediğiniz
+      <a href="flags.html">bayraklara</a> bağlı olarak başka
+      kurallara, dahili alt işlemeye, harici istek yönlendirmesine veya
+      vekil geçişine yol açabilir.</p>
+
+      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> çok güçlü olduğundan, gerçekten
+      oldukça karmaşık olabilir. Bu belge, <a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar
+      ve bu karmaşıklığın bir kısmını gidermeye çalışır,
+      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile ele alabileceğiniz yaygın
+      senaryoların ayrıntılı açıklamalı örneklerini sunar. Ancak aynı
+      zamanda, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> kullanmamanız gereken
+      durumları da göstermeye çalışıyoruz; bunun yerine diğer standart
+      Apache özelliklerini kullanarak bu gereksiz karmaşıklıktan
+      kaçınabilirsiniz.</p>
+
 
 <ul>
-<li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a></li>
-<li><a href="intro.html">mod_rewrite ve düzenli ifadelere giriş</a></li>
-<li><a href="remapping.html">URL yönlendirme ve yeniden eşlemede mod_rewrite kullanımı</a></li>
-<li><a href="access.html">Erişimi denetlemekte mod_rewrite kullanımı</a></li>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru
+belgeleri</a></li>
+<li><a href="intro.html">Düzenli ifadelere ve mod_rewrite'a giriş</a></li>
+<li><a href="flags.html">RewriteRule Bayrakları</a></li>
+<li><a href="rewritemap.html">RewriteMap Kullanımı</a></li>
+<li><a href="avoid.html">mod_rewrite <strong>Kullanılmaması</strong> Gereken Durumlar</a></li>
+<li><a href="remapping.html">URL yeniden yönlendirme ve yeniden eşleme için mod_rewrite kullanımı</a></li>
+<li><a href="access.html">Erişim denetimi için mod_rewrite kullanımı</a></li>
 <li><a href="vhosts.html">mod_rewrite ile devingen sanal konaklar</a></li>
-<li><a href="proxy.html">mod_rewrite ile devingen vekalet</a></li>
-<li><a href="rewritemap.html">RewriteMap kullanımı</a></li>
+<li><a href="proxy.html">mod_rewrite ile devingen vekil kullanımı</a></li>
 <li><a href="advanced.html">İleri teknikler</a></li>
-<li><a href="avoid.html">mod_rewrite ne zaman kullanıl<strong>maMA</strong>lı</a></li>
-<li><a href="flags.html">RewriteRule seçenekleri</a></li>
 <li><a href="tech.html">Teknik ayrıntılar</a></li>
 </ul>
 </div>
-<div id="quickview"><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
-</li><li><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite wiki</a>
-</li><li><a href="../glossary.html">Terimler</a></li></ul></div>
+<div id="quickview"><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite başvuru
+belgeleri</a></li><li><a href="../urlmapping.html">URL'lerin Dosya Sistemine Eşlenmesi</a></li><li><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite
+wiki</a></li><li><a href="../glossary.html">Terimler</a></li></ul></div>
 </div>
 <div class="bottomlang">
-<p><span>Mevcut Diller: </span><a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../de/rewrite/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/rewrite/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/rewrite/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/rewrite/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/rewrite/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/rewrite/" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2023 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="http://wiki.apache.org/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
 }
 //--><!]]></script>
 </body></html>

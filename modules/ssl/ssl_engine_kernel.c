@@ -1130,8 +1130,10 @@ int ssl_hook_Access(request_rec *r)
     if ((dc->nOptions & SSL_OPT_FAKEBASICAUTH) == 0 && dc->szUserName) {
         const char *val = ssl_var_lookup(r->pool, r->server, r->connection,
                                          r, dc->szUserName);
-        if (val && val[0])
+        if (val && val[0]) {
             r->user = apr_pstrdup(r->pool, val);
+            r->ap_auth_type = "ClientCert";
+        }
         else
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02227)
                           "Failed to set r->user to '%s'", dc->szUserName);
@@ -1263,7 +1265,7 @@ int ssl_hook_UserCheck(request_rec *r)
     }
 
     if (!sslconn->client_dn) {
-        X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
+        const X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
         sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
         OPENSSL_free(cp);
@@ -1817,7 +1819,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = myDirConfigFromConn(c);
-    X509_NAME *ca_name, *issuer, *ca_issuer;
+    const X509_NAME *ca_name, *issuer, *ca_issuer;
     X509_INFO *info;
     X509 *ca_cert;
     STACK_OF(X509_NAME) *ca_list;
@@ -1965,10 +1967,17 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     idlen = session->session_id_length;
 #endif
 
+#if OPENSSL_VERSION_NUMBER >= 0x30300000
+    rc = ssl_scache_store(s, id, idlen,
+                          apr_time_from_sec(SSL_SESSION_get_time_ex(session)
+                                            + timeout),
+                          session, conn->pool);
+#else
     rc = ssl_scache_store(s, id, idlen,
                           apr_time_from_sec(SSL_SESSION_get_time(session)
                                           + timeout),
                           session, conn->pool);
+#endif
 
     ssl_session_log(s, "SET", id, idlen,
                     rc == TRUE ? "OK" : "BAD",

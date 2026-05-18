@@ -292,8 +292,7 @@
                     </ul>
                     <!-- The seealso section shows links to related documents
                          explicitly set in .xml docs or simply the comments. -->
-                    <xsl:if test="seealso or not($is-chm or $is-zip or
-                                                $metafile/basename = 'index')">
+                    <xsl:if test="seealso">
                         <h3>
                             <xsl:value-of select="$message
                                                   [@id='seealso']" />
@@ -305,11 +304,6 @@
                                 <xsl:apply-templates />
                             </li>&lf;
                         </xsl:for-each>
-                        <xsl:if test="not($is-chm or $is-zip or $metafile/basename = 'index')">
-                            <li><a href="#comments_section"><xsl:value-of
-                                    select="$message[@id='comments']" /></a>
-                            </li>
-                        </xsl:if>
                         </ul>
                     </xsl:if>
                 </div> <!-- /#quickview -->

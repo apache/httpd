@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 1932819:1934233 (outdated) -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewritemap.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+  <title>RewriteMap の使用</title>
+  <summary>
+
+    <p>このドキュメントは <module>mod_rewrite</module>
+<a href="../mod/mod_rewrite.html">リファレンスドキュメント</a>を補足するものです。
+<directive module="mod_rewrite">RewriteMap</directive> ディレクティブの使用方法を
+説明し、さまざまな <directive module="mod_rewrite">RewriteMap</directive>
+タイプの例を提供します。</p>
+
+    <note type="warning">これらの例の多くは、特定のサーバ設定ではそのまま
+動作しないことに注意してください。そのため、単にコピー＆ペーストするのではなく、
+内容を理解することが重要です。</note>
+
+  </summary>
+  <seealso><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></seealso>
+  <seealso><a href="intro.html">mod_rewrite 入門</a></seealso>
+  <seealso><a href="remapping.html">リダイレクトとリマッピング</a></seealso>
+  <seealso><a href="access.html">アクセス制御</a></seealso>
+  <seealso><a href="vhosts.html">バーチャルホスト</a></seealso>
+  <seealso><a href="proxy.html">プロキシ</a></seealso>
+  <seealso><a href="advanced.html">高度なテクニック</a></seealso>
+  <seealso><a href="avoid.html">mod_rewrite を使わない場合</a></seealso>
+
+  <section id="introduction">
+    <title>はじめに</title>
+
+   <p>
+   <directive module="mod_rewrite">RewriteMap</directive> ディレクティブは、
+   <directive module="mod_rewrite">RewriteRule</directive> または
+   <directive module="mod_rewrite">RewriteCond</directive> ディレクティブの
+   コンテキストで呼び出せる外部関数を定義し、正規表現だけでは実行が
+   複雑すぎたり特殊すぎたりする書き換えを行います。この検索のソースは、
+   以下のセクションに記載されているタイプのいずれかで、
+   <directive module="mod_rewrite">RewriteMap</directive> リファレンス
+   ドキュメントに列挙されています。</p>
+
+   <p><directive module="mod_rewrite">RewriteMap</directive>
+   ディレクティブの構文は以下の通りです:</p>
+
+<highlight language="config">
+RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</highlight>
+
+    <p><a id="mapfunc" name="mapfunc"><em>MapName</em></a> は、
+    マップに割り当てる任意の名前で、後のディレクティブで使用します。
+    引数は以下の構文でマップに渡されます:</p>
+
+    <p class="indent">
+      <strong>
+        <code>${</code> <em>MapName</em> <code>:</code> <em>LookupKey</em>
+        <code>}</code> <br/> <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em> <code>}</code>
+      </strong>
+    </p>
+
+    <p>このような構文が出現すると、マップ <em>MapName</em> が参照され、
+      キー <em>LookupKey</em> が検索されます。キーが見つかった場合、
+      マップ関数の構文は <em>SubstValue</em> で置換されます。キーが
+      見つからなかった場合は、<em>DefaultValue</em> で置換されるか、
+      <em>DefaultValue</em> が指定されていない場合は空文字列で
+      置換されます。</p>
+
+    <p>例えば、<directive module="mod_rewrite">RewriteMap</directive> を
+      以下のように定義できます:</p>
+    <highlight language="config">
+RewriteMap examplemap "txt:/path/to/file/map.txt"
+    </highlight>
+    <p>その後、このマップを <directive module="mod_rewrite">RewriteRule</directive>
+      で以下のように使用できます:</p>
+      <highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1}"
+      </highlight>
+
+<p>マップで何も見つからなかった場合に備えて、デフォルト値を指定
+できます:</p>
+
+<highlight language="config">
+RewriteRule "^/ex/(.*)" "${examplemap:$1|/not_found.html}"
+</highlight>
+
+<note><title>ディレクトリ単位および .htaccess コンテキスト</title>
+<p>
+<directive module="mod_rewrite">RewriteMap</directive> ディレクティブは
+<directive module="core" type="section">Directory</directive> セクションや
+<code>.htaccess</code> ファイルでは使用できません。マップはサーバまたは
+バーチャルホストのコンテキストで宣言する必要があります。作成したマップは、
+それらのスコープ内の <directive module="mod_rewrite">RewriteRule</directive>
+および <directive module="mod_rewrite">RewriteCond</directive>
+ディレクティブで使用できます。それらのスコープでマップを
+<strong>宣言</strong>することはできません。</p>
+</note>
+
+<p>以下のセクションでは、使用可能なさまざまな <em>MapType</em> を
+説明し、それぞれの例を示します。</p>
+  </section>
+
+  <section id="int">
+    <title>int: 内部関数</title>
+
+    <p>MapType に <code>int</code> を使用すると、MapSource は利用可能な
+    内部 <directive module="mod_rewrite">RewriteMap</directive> 関数の
+    いずれかになります。モジュール作成者は、
+    <code>ap_register_rewrite_mapfunc</code> API を使用して追加の内部
+    関数を登録できます。
+    デフォルトで提供される関数は以下の通りです:
+    </p>
+
+    <ul>
+      <li><strong>toupper</strong>:<br/>
+             キーをすべて大文字に変換します。</li>
+      <li><strong>tolower</strong>:<br/>
+             キーをすべて小文字に変換します。</li>
+      <li><strong>escape</strong>:<br/>
+             キー内の特殊文字を 16 進エンコーディングに変換します。</li>
+      <li><strong>unescape</strong>:<br/>
+             キー内の 16 進エンコーディングを特殊文字に戻します。</li>
+    </ul>
+
+    <p>
+    これらの関数のいずれかを使用するには、int 関数を参照する
+    <directive module="mod_rewrite">RewriteMap</directive> を作成し、
+    <directive module="mod_rewrite">RewriteRule</directive> で使用します:
+    </p>
+
+   <p><strong>URI をすべて小文字のバージョンにリダイレクト</strong></p>
+    <highlight language="config">
+RewriteMap lc int:tolower
+RewriteRule "(.*)" "${lc:$1}" [R]
+    </highlight>
+
+    <note>
+    <p>ここで提供されている例は説明目的のみであり、推奨ではありません。
+    URL を大文字小文字を区別しないようにしたい場合は、代わりに
+    <module>mod_speling</module> の使用を検討してください。
+    </p>
+    </note>
+
+  </section>
+
+  <section id="txt">
+    <title>txt: プレーンテキストマップ</title>
+
+    <p>MapType に <code>txt</code> を使用すると、MapSource はプレーンテキストの
+    マッピングファイルへのファイルシステムパスで、1 行に 1 つのスペース区切りの
+    キー/値ペアが含まれます。オプションで、'#' 文字で始まるコメント行を
+    含めることができます。</p>
+
+    <p>有効なテキスト書き換えマップファイルの構文は以下の通りです:</p>
+
+    <example>
+      # コメント行<br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # コメント<br />
+    </example>
+
+    <p><directive module="mod_rewrite">RewriteMap</directive> が呼び出されると、
+    引数が各行の最初の引数から検索され、見つかった場合は置換値が
+    返されます。</p>
+
+    <p>例えば、マップファイルを使用して製品名を製品 ID に変換し、
+    覚えやすい URL を実現するには、以下のレシピを使用できます:</p>
+<p><strong>製品から ID への設定</strong></p>
+    <highlight language="config">
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"
+RewriteRule "^/product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+
+    <p>ここでは、<code>prods.php</code> スクリプトが
+    <code>id=NOTFOUND</code> という引数を受け取った場合の処理を
+    理解していると仮定しています (検索マップで製品が見つからなかった場合)。</p>
+
+    <p>ファイル <code>/etc/apache2/productmap.txt</code> には
+    以下が含まれます:</p>
+
+    <example><title>製品から ID へのマップ</title>
+##<br />
+##  productmap.txt - 製品から ID へのマップファイル<br />
+##<br />
+<br />
+television 993<br />
+stereo     198<br />
+fishingrod 043<br />
+basketball 418<br />
+telephone  328
+    </example>
+
+    <p>したがって、<code>http://example.com/product/television</code> が
+    リクエストされると、<directive module="mod_rewrite">RewriteRule</directive>
+    が適用され、リクエストは内部的に <code>/prods.php?id=993</code>
+    にマッピングされます。</p>
+
+    <note><title>注: .htaccess ファイル</title>
+    この例はサーバまたはバーチャルホストのスコープで使用するよう
+    作成されています。<code>.htaccess</code> ファイルで使用する場合は、
+    何かにマッチするように書き換えパターンから先頭のスラッシュを
+    削除する必要があります:
+    <highlight language="config">
+RewriteRule "^product/(.*)" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]
+    </highlight>
+    </note>
+
+    <note><title>キャッシュされた検索</title>
+    <p>
+    検索されたキーは、マップファイルの <code>mtime</code> (変更時刻) が
+    変更されるか、httpd サーバが再起動されるまで httpd にキャッシュ
+    されます。これにより、多くのリクエストで呼び出されるマップの
+    パフォーマンスが向上します。
+    </p>
+    </note>
+
+  </section>
+  <section id="rnd">
+    <title>rnd: ランダム化プレーンテキスト</title>
+
+    <p>MapType に <code>rnd</code> を使用すると、MapSource はプレーンテキストの
+    マッピングファイルへのファイルシステムパスで、各行にはキーと
+    <code>|</code> で区切られた 1 つ以上の値が含まれます。キーが
+    マッチすると、これらの値の 1 つがランダムに選択されます。</p>
+
+    <p>例えば、以下のマップファイルとディレクティブを使用して、
+    リバースプロキシ経由で複数のバックエンドサーバ間のランダムな
+    ロードバランシングを提供できます。画像は 'static' プール内の
+    サーバの 1 つに送信され、それ以外は 'dynamic' プールの 1 つに
+    送信されます。</p>
+
+    <example><title>書き換えマップファイル</title>
+##<br />
+##  map.txt -- 書き換えマップ<br />
+##<br />
+<br />
+static   www1|www2|www3|www4<br />
+dynamic  www5|www6
+    </example>
+<p><strong>設定ディレクティブ</strong></p>
+    <highlight language="config">
+RewriteMap servers "rnd:/path/to/file/map.txt"
+
+RewriteRule "^/(.*\.(png|gif|jpg))" "http://${servers:static}/$1"  [NC,P,L]
+RewriteRule "^/(.*)"                "http://${servers:dynamic}/$1" [P,L]
+    </highlight>
+
+    <p>画像がリクエストされ、最初のルールがマッチすると、
+    <directive module="mod_rewrite">RewriteMap</directive> はマップファイルで
+    文字列 <code>static</code> を検索し、指定されたホスト名の 1 つを
+    ランダムに返します。それが <directive module="mod_rewrite">RewriteRule</directive>
+    のターゲットで使用されます。</p>
+
+    <p>サーバの 1 つがより多く選択されるようにしたい場合
+    (例えば、サーバの 1 つがより多くのメモリを持ち、より多くの
+    リクエストを処理できる場合)、マップファイルにそのサーバを
+    複数回記述してください。</p>
+
+    <example>
+static   www1|www1|www2|www3|www4
+    </example>
+
+  </section>
+
+  <section id="dbm">
+    <title>dbm: DBM ハッシュファイル</title>
+
+    <p>MapType に <code>dbm</code> を使用すると、MapSource はマッピングで
+    使用されるキー/値ペアを含む DBM データベースファイルへの
+    ファイルシステムパスです。これは <code>txt</code> マップと
+    まったく同じように動作しますが、DBM はインデックス化されており
+    テキストファイルはそうではないため、はるかに高速です。これにより、
+    目的のキーへのアクセスが高速になります。</p>
+
+    <p>特定の dbm タイプをオプションで指定できます:</p>
+
+ <highlight language="config">
+RewriteMap examplemap "dbm=sdbm:/etc/apache/mapfile.dbm"
+ </highlight>
+
+    <p>タイプは <code>sdbm</code>、<code>gdbm</code>、<code>ndbm</code>、
+    または <code>db</code> です。
+    ただし、Apache HTTP Server に付属の <a
+    href="../programs/httxt2dbm.html">httxt2dbm</a> ユーティリティを
+    使用することを推奨します。httpd 自体のビルド時に使用されたものと
+    マッチする正しい DBM ライブラリを使用するためです。</p>
+
+    <p>dbm ファイルを作成するには、まず <a href="#txt">txt</a> セクションで
+    説明されているテキストマップファイルを作成し、次に
+    <code>httxt2dbm</code> を実行します:</p>
+
+<example>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</example>
+
+<p>その後、<directive module="mod_rewrite">RewriteMap</directive>
+ディレクティブで結果のファイルを参照できます:</p>
+
+<highlight language="config">
+RewriteMap mapname "dbm:/etc/apache/mapfile.map"
+</highlight>
+
+<note>
+<p>dbm タイプによっては、共通のベース名で複数のファイルが生成される
+ことがあることに注意してください。例えば、<code>mapfile.map.dir</code>
+と <code>mapfile.map.pag</code> という 2 つのファイルが存在する
+場合があります。これは正常であり、<directive module="mod_rewrite">RewriteMap</directive>
+ディレクティブではベース名 <code>mapfile.map</code> のみを使用
+してください。</p>
+</note>
+
+<note><title>キャッシュされた検索</title>
+<p>
+検索されたキーは、マップファイルの <code>mtime</code> (変更時刻) が
+変更されるか、httpd サーバが再起動されるまで httpd にキャッシュ
+されます。これにより、多くのリクエストで呼び出されるマップの
+パフォーマンスが向上します。
+</p>
+</note>
+
+  </section>
+
+  <section id="prg"><title>prg: 外部書き換えプログラム</title>
+
+    <p>MapType に <code>prg</code> を使用すると、MapSource はマッピング動作を
+    提供する実行可能プログラムへのファイルシステムパスです。これは
+    コンパイル済みバイナリファイル、または Python や Perl などの
+    インタプリタ言語のプログラムです。</p>
+
+    <p>このプログラムは Apache HTTP Server の起動時に一度起動され、
+    <code>STDIN</code> と <code>STDOUT</code> を通じて書き換えエンジンと
+    通信します。各マップ関数の検索では、キーがプログラムの
+    <code>STDIN</code> に書き込まれ、その後に改行文字が続きます。
+    プログラムは <code>STDIN</code> から 1 行 (改行を含む) を読み取り、
+    応答を改行で終わる 1 行として <code>STDOUT</code> に書き込む
+    必要があります。キーに改行文字が含まれることはありません。
+    改行を含むキーが検出された場合、検索は失敗します。</p>
+
+    <p>対応する検索値がない場合、マッププログラムは 4 文字の
+    文字列 "<code>NULL</code>" を返して、これを示す必要があります。
+    この比較は大文字小文字を区別しないため、"null"、"Null" 等も
+    検索失敗として扱われます。その結果、マッピングプログラムが
+    リテラル文字列 "NULL" をマップされた値として返すことは
+    できません。</p>
+
+    <p>プログラムの <code>STDERR</code> は httpd 親プロセスから
+    継承されるため、プログラムが <code>STDERR</code> に書き込む内容は
+    httpd 自体のエラー出力 (通常は <directive
+    module="core">ErrorLog</directive>) と同じ場所に記録されます。</p>
+
+    <p>外部書き換えプログラムは、<directive
+    module="mod_rewrite">RewriteEngine</directive> が <code>on</code> に
+    設定されていないコンテキストで定義されている場合は起動されません。</p>
+
+    <p>デフォルトでは、外部書き換えプログラムは httpd を起動した
+    ユーザ:グループとして実行されます。これは UNIX システムでは
+    <directive module="mod_rewrite">RewriteMap</directive> の 3 番目の
+    引数として <code>username:groupname</code> 形式でユーザ名と
+    グループ名を渡すことで変更できます。</p>
+
+    <p>この機能は <code>rewrite-map</code> ミューテックスを使用しており、
+    プログラムとの信頼性のある通信に必要です。ミューテックスの
+    メカニズムとロックファイルは <directive module="core">Mutex</directive>
+    ディレクティブで設定できます。</p>
+
+    <p>リクエスト URI 内のすべてのダッシュをアンダースコアに置き換える
+    シンプルな例を以下に示します。</p>
+
+    <p><strong>書き換え設定</strong></p>
+    <highlight language="config">
+RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
+RewriteRule "-" "${d2u:%{REQUEST_URI}}"
+    </highlight>
+
+    <p><strong>dash2under.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+import sys
+
+for line in sys.stdin:
+    print(line.strip().replace('-', '_'), flush=True)
+    </highlight>
+
+<note><title>注意!</title>
+<ul>
+<li>書き換えマッププログラムはできるだけシンプルに保ってください。
+プログラムがハングすると、httpd はマップからのレスポンスを
+無期限に待つことになり、その結果 httpd がリクエストへの応答を
+停止します。</li>
+<li>プログラムでバッファリングを必ずオフにしてください。上記の
+Python の例では、<code>print()</code> に <code>flush=True</code> を
+渡すことでこれを行っています。バッファされた I/O は httpd が
+出力を待つ原因となり、ハングします。</li>
+<li>プログラムは 1 コピーのみで、サーバ起動時に開始されることを
+忘れないでください。すべてのリクエストはこの 1 つのボトルネックを
+通過する必要があります。多くのリクエストがこのプロセスを通過する
+必要がある場合や、スクリプト自体が非常に遅い場合、これは
+著しい速度低下を引き起こす可能性があります。</li>
+<li>マッピングプログラムが終了しても、自動的に再起動されません。
+以降の検索はサーバが再起動されるまで失敗します。</li>
+<li>マッピングプログラムは、関連する設定ディレクティブが変更されたか
+どうかに関係なく、サーバの再起動 (graceful またはそれ以外) 時に
+常に kill され再起動されます。シャットダウン時にプログラムには
+<code>SIGTERM</code> が送信されます。3 秒以内に終了しない場合は
+<code>SIGKILL</code> が送信されます。</li>
+</ul>
+</note>
+
+</section>
+
+
+  <section id="dbd">
+    <title>dbd または fastdbd: SQL クエリ</title>
+
+    <p>MapType に <code>dbd</code> または <code>fastdbd</code> を使用すると、
+    MapSource は単一の引数を取り、単一の値を返す SQL SELECT 文です。</p>
+
+    <p>この文を実行するために、<module>mod_dbd</module> を正しい
+    データベースを指すように設定する必要があります。</p>
+
+    <p>この MapType には 2 つの形式があります。
+    MapType に <code>dbd</code> を使用すると、各マップリクエストで
+    クエリが実行されますが、<code>fastdbd</code> を使用すると
+    データベース検索が内部的にキャッシュされます。したがって、
+    <code>fastdbd</code> はより効率的で高速ですが、サーバが
+    再起動されるまでデータベースの変更を検出しません。</p>
+
+    <p>クエリが複数の行を返す場合、結果セットからランダムな行が
+    使用されます。</p>
+
+    <example><title>例</title>
+    <highlight language="config">
+RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+    </highlight>
+    </example>
+
+    <note><title>注</title>
+    <p>クエリ名は SQL プリペアドステートメントのラベルとして
+    データベースドライバに渡されるため、データベースで必要な
+    ルール (大文字小文字の区別など) に従う必要があります。</p></note>
+
+  </section>
+  <section id="summary">
+    <title>まとめ</title>
+
+    <p><directive module="mod_rewrite">RewriteMap</directive> ディレクティブは
+    複数回使用できます。各マッピング関数に対して 1 つの
+    <directive module="mod_rewrite">RewriteMap</directive> ディレクティブを
+    使用して書き換えマップファイルを宣言してください。</p>
+
+    <p>ディレクトリ単位のコンテキスト (<code>.htaccess</code> ファイルや
+    <directive module="core" type="section">Directory</directive> ブロック)
+    ではマップを<strong>宣言</strong>できませんが、ディレクトリ単位の
+    コンテキストでこのマップを<strong>使用</strong>することは可能です。</p>
+
+  </section>
+</manualpage>

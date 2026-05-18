@@ -449,6 +449,12 @@ check/bin/apxs:
 	sed -e 's#$(prefix)#$(top_builddir)/check#g' support/apxs > $@
 	chmod +x $@
 
+# A version of apachectl with the PREFIX overridden to point inside the install root
+check/bin/apachectl:
+	mkdir -p check
+	sed -e 's#$(prefix)#$(top_builddir)/check#g' support/apachectl > $@
+	chmod +x $@
+
 # A version of config_vars.mk with PREFIX and SBINDIR and BINDIR overridden.
 check/build/config_vars.mk: build/config_vars.out
 	mkdir -p check/build
@@ -468,16 +474,29 @@ $(TEST_SUITE_LOCATION)/Makefile: $(TEST_SUITE_LOCATION)/Makefile.PL $(INSTALL_HE
 
 check-make: $(TEST_SUITE_LOCATION)/Makefile
 
-check-no:
-	@echo 'Re-run configure with the --with-test-suite option to enable in-tree tests.'
-	@false
+check-tree: check-include check-dirs check-conf check/build/config_vars.mk \
+	check-binaries
 
-check-yes: check-include check-dirs check-conf check/build/config_vars.mk \
-	check-binaries $(TEST_SUITE_LOCATION)/Makefile
+# Run the Apache::Test Perl framework
+check-test-framework: check-tree $(TEST_SUITE_LOCATION)/Makefile
 	cd $(TEST_SUITE_LOCATION) && $(MAKE) && ./t/TEST $(TEST_CONFIG) $(TESTS)
 
-# Run the Apache::Test suite if it has been configured with --with-test-suite.
-check: check-$(WITH_TEST_SUITE)
+# Generate config.ini suitable for running against the check/ install prefix
+check/config.ini: test/pyhttpd/config.ini
+	sed -e 's#$(prefix)#$(top_builddir)/check#g' test/pyhttpd/config.ini > $@
+
+check/modules/stamp: build/config_vars.mk
+	mkdir -p check/modules
+	rm -f check/modules/*.so
+	find modules -name \*.so -exec ln -s $(top_builddir)/{} check/modules/ \;
+	find server/mpm -name \*.so -exec ln -s $(top_builddir)/{} check/modules/ \;
+	date > $@
+
+check-pytest: check-tree check/bin/apachectl check/config.ini check/modules/stamp
+	PYHTTPD_CONFIG=$(top_builddir)/check/config.ini $(PYTEST3) $(PYTEST_DIRS)
+
+# Runs all configured/available test targets.
+check: $(CHECK_TARGETS)
 
 #
 # Unit Test Suite
@@ -513,3 +532,6 @@ httpdunit_OBJECTS := test/httpdunit.lo $(testcase_OBJECTS)
 $(httpdunit_OBJECTS): override LTCFLAGS += $(UNITTEST_CFLAGS)
 test/httpdunit: $(httpdunit_OBJECTS) $(PROGRAM_DEPENDENCIES) $(PROGRAM_OBJECTS)
 	$(LINK) $(httpdunit_OBJECTS) $(PROGRAM_OBJECTS) $(UNITTEST_LIBS) $(PROGRAM_LDADD)
+
+check-unittests: test/httpdunit
+	test/httpdunit
