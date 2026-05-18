@@ -27,8 +27,9 @@ Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
 If an issue is reported against an aspect of the security model which
 is not documented here, it MUST be accompanied by a clear description
 of that aspect the model, showing why a trust boundary exists and how
-it is violated. It is helpful to use references to documentation
-and/or demonstrate common usage patterns.
+it is violated. It is helpful to use references to vulnerabilities
+previously disclosed by this project, the httpd documentation
+(see docs/manual), and to demonstrate common usage patterns.
 
 Any security vulnerability SHOULD be reproducible:
 
@@ -114,13 +115,20 @@ authors have equivalent privileges to the less-privileged server user.
 Many configurations depend on backend servers or services which are
 trusted entities.
 
-* Backend servers accessed in a proxy configuration should not be able
-  to influence HTTP protocol framing logic in the frontend (client)
-  ("response splitting" attacks).
+Services used for authentication or caching privileged/protected data
+are trusted not to attack the web server. Examples of trusted services
+include, but are not limited to:
 
-* Services used for authentication or caching privileged/protected
-  data (Redis/Valkey caches, database or LDAP servers) are trusted not
-  to attack the web server.
+* Database or LDAP servers used for authentication via `mod_ldap` or `mod_dbd`
+* Redis/Valkey, or Memcache servers used for the `mod_ssl` session cache
+* OCSP servers used for client certificate verification, or server certificate "stapling"
+
+Backend servers are those accessed in a reverse proxy (or gateway)
+configuration, typically via HTTP or AJP (see
+https://httpd.apache.org/docs/current/mod/mod_proxy.html#forwardreverse).
+Backend servers are trusted to provide content but SHOULD NOT be able
+to influence HTTP protocol framing logic in the frontend (client)
+communication (so called "response splitting" attacks).
 
 Example vulnerabilities which violated the model: CVE-2026-33523,
 CVE-2024-42516.
