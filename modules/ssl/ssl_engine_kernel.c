@@ -721,6 +721,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
         if (renegotiate_quick) {
             STACK_OF(X509) *cert_stack;
             X509 *cert;
+            X509 *peer_cert;
 
             /* perform just a manual re-verification of the peer */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02258)
@@ -729,7 +730,12 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
 
             cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
 
-            cert = SSL_get_peer_certificate(ssl);
+            /* SSL_get_peer_certificate() increments the X509 refcount; the
+             * reference is owned here and must be released with X509_free()
+             * unless ownership is transferred into a stack we then pop_free.
+             */
+            peer_cert = SSL_get_peer_certificate(ssl);
+            cert = peer_cert;
 
             if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
                 if (!cert) {
@@ -746,6 +752,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
                  */
                 cert_stack = sk_X509_new_null();
                 sk_X509_push(cert_stack, cert);
+                peer_cert = NULL; /* ownership transferred to cert_stack */
             }
 
             if (!(cert_store ||
@@ -754,6 +761,10 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02223)
                               "Cannot find certificate storage");
 
+                if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
+                    sk_X509_pop_free(cert_stack, X509_free);
+                }
+                if (peer_cert) X509_free(peer_cert);
                 return HTTP_FORBIDDEN;
             }
 
@@ -764,6 +775,10 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
             cert_store_ctx = X509_STORE_CTX_new();
             if (!X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack)) {
                 X509_STORE_CTX_free(cert_store_ctx);
+                if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
+                    sk_X509_pop_free(cert_stack, X509_free);
+                }
+                if (peer_cert) X509_free(peer_cert);
                 return HTTP_FORBIDDEN;
             }
             depth = SSL_get_verify_depth(ssl);
@@ -790,6 +805,7 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
                 /* we created this ourselves, so free it */
                 sk_X509_pop_free(cert_stack, X509_free);
             }
+            if (peer_cert) X509_free(peer_cert);
         }
         else {
             char peekbuf[1];
