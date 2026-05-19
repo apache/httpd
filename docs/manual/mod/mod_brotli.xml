@@ -75,7 +75,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <directive module="mod_filter"
       >AddOutputFilterByType</directive> directive. Here is an example of
-      enabling compression only for the html files of the Apache
+      enabling compression only for the html files of the httpd
       documentation:</p>
 
       <highlight language="config">
@@ -104,14 +104,14 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli
     <p>The <module>mod_brotli</module> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
     a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
+    appropriate <code>Accept-Encoding</code> request header. This
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
+    to alert proxies of the additional restrictions. For example,
     in a typical configuration where the addition of the <code>BROTLI_COMPRESS</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
@@ -176,6 +176,7 @@ content</title>
 <name>BrotliFilterNote</name>
 <description>Places the compression ratio in a note for logging</description>
 <syntax>BrotliFilterNote [<var>type</var>] <var>notename</var></syntax>
+<default>None</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -286,7 +287,7 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliAlterETag</directive> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
+    how the ETag header should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
@@ -303,7 +304,7 @@ CustomLog "logs/brotli_log" brotli
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
         some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
+        shortcomings of the preceding options.</p></dd>
     </dl>
 </usage>
 </directivesynopsis>
