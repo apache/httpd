@@ -234,9 +234,23 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliCompressionQuality</directive> directive specifies
-    the compression quality (a value between 0 and 11). Higher quality values
-    result in better, but also slower compression.
-  </p>
+    the compression quality (a value between 0 and 11). Higher values
+    result in better but slower compression. The default of 5 is a
+    reasonable balance for dynamic content.</p>
+
+    <example><title>Fast compression for dynamic content</title>
+    <highlight language="config">
+# Quality 4 is roughly equivalent to gzip level 6
+BrotliCompressionQuality 4
+    </highlight>
+    </example>
+
+    <example><title>Maximum compression for static assets</title>
+    <highlight language="config">
+# Best ratio but very slow — only suitable with caching
+BrotliCompressionQuality 11
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -250,8 +264,25 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliCompressionWindow</directive> directive specifies the
-    brotli sliding compression window size (a value between 10 and 24). Larger
-    window sizes can improve compression quality, but require more memory.</p>
+    brotli sliding compression window size (a value between 10 and 24,
+    representing a window of 2<sup><var>value</var></sup> bytes). For
+    example, 18 (the default) gives a 256 KB window, while 24 gives
+    16 MB. Larger window sizes can improve compression quality, but
+    require more memory per connection.</p>
+
+    <example><title>Moderate window for balanced memory use</title>
+    <highlight language="config">
+# 1 MB window (2^20 bytes)
+BrotliCompressionWindow 20
+    </highlight>
+    </example>
+
+    <example><title>Maximum window for best compression</title>
+    <highlight language="config">
+# 16 MB window (2^24 bytes) — requires significant memory per connection
+BrotliCompressionWindow 24
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -266,8 +297,18 @@ CustomLog "logs/brotli_log" brotli
 
 <usage>
     <p>The <directive>BrotliCompressionMaxInputBlock</directive> directive specifies
-    the maximum input block size between 16 and 24, with the caveat that
-    larger block sizes require more memory.</p>
+    the maximum input block size as a power of two, between 16 and 24
+    (representing blocks of 2<sup><var>value</var></sup> bytes, i.e.,
+    64 KB to 16 MB). Larger block sizes can improve compression but
+    require more memory. When not set, the block size is automatically
+    selected based on the quality setting.</p>
+
+    <example><title>Explicit 1 MB input blocks</title>
+    <highlight language="config">
+# 2^20 = 1 MB blocks
+BrotliCompressionMaxInputBlock 20
+    </highlight>
+    </example>
 </usage>
 </directivesynopsis>
 
