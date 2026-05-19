@@ -86,9 +86,12 @@ run as a less-privileged user and group which is configurable via the
 
 The less-privileged user:
 
-* cannot obtain root privileges, 
-* cannot read or truncate log files,
-* retains access to e.g. any private TLS key data loaded in memory.
+* MUST be restricted from gaining root privileges, and
+* SHOULD NOT have read or truncate access to log files
+
+but otherwise has full control over network communication with
+clients, and, for example, retains access to SSL private key data in a
+typical configuration.
 
 Use of platform-specific sandboxing or security features (such as use
 of containers, chroot, SELinux) are out of scope for this security
@@ -122,6 +125,7 @@ include, but are not limited to:
 * Database or LDAP servers used for authentication via `mod_ldap` or `mod_dbd`
 * Redis/Valkey, or Memcache servers used for the `mod_ssl` session cache
 * OCSP servers used for client certificate verification, or server certificate "stapling"
+* ACME servers used for issuing certificate in `mod_md`.
 
 Backend servers are those accessed in a reverse proxy (or gateway)
 configuration, typically via HTTP or AJP (see
