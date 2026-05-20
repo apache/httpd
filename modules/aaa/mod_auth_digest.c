@@ -595,12 +595,6 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
     return NULL;
 }
 
-static const char *set_nonce_format(cmd_parms *cmd, void *config,
-                                    const char *fmt)
-{
-    return "AuthDigestNonceFormat is not implemented";
-}
-
 static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 {
 #if !APR_HAS_SHARED_MEMORY
@@ -693,8 +687,6 @@ static const command_rec digest_cmds[] =
      "A list of quality-of-protection options"),
     AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG,
      "Maximum lifetime of the server nonce (seconds)"),
-    AP_INIT_TAKE1("AuthDigestNonceFormat", set_nonce_format, NULL, OR_AUTHCFG,
-     "The format to use when generating the server nonce"),
     AP_INIT_FLAG("AuthDigestNcCheck", set_nc_check, NULL, OR_AUTHCFG,
      "Whether or not to check the nonce-count sent by the client"),
     AP_INIT_TAKE1("AuthDigestAlgorithm", set_algorithm, NULL, OR_AUTHCFG,
