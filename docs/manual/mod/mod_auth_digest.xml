@@ -178,21 +178,6 @@ authentication</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthDigestNonceFormat</name>
-<description>Determines how the nonce is generated</description>
-<syntax>AuthDigestNonceFormat <var>format</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <note>Not implemented yet.</note>
-    <!-- The AuthDigestNonceFormat directive determines how the nonce is
-    generated. -->
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>AuthDigestNcCheck</name>
 <description>Enables or disables checking of the nonce-count sent by the
 server</description>
