@@ -286,6 +286,51 @@ a DAV resource</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>DavHonorMtimeHeader</name>
+<description>Allow clients to set resource modification times via the
+X-OC-Mtime request header</description>
+<syntax>DavHonorMtimeHeader on|off</syntax>
+<default>DavHonorMtimeHeader off</default>
+<contextlist><context>directory</context></contextlist>
+
+<usage>
+    <p>The <directive>DavHonorMtimeHeader</directive> directive controls
+    whether <module>mod_dav</module> will honor the
+    <code>X-OC-Mtime</code> request header when processing
+    <code>PUT</code> and <code>MKCOL</code> requests. This header
+    is used by some WebDAV sync clients to preserve the
+    original modification time of uploaded files.</p>
+
+    <p>When enabled, if a client sends a <code>PUT</code> or
+    <code>MKCOL</code> request with an <code>X-OC-Mtime</code>
+    header, the server will set the resource's modification time to
+    the value specified in that header. The header value must be a
+    Unix timestamp (seconds since epoch), expressed as a decimal
+    integer.</p>
+
+    <p>If the header is present but malformed (contains non-digit
+    characters), the server will respond with a 400 Bad Request
+    error.</p>
+
+    <note type="warning">
+    <p>Enabling this directive allows clients to manipulate file
+    modification times on the server. Only enable it in locations
+    where clients are trusted, and always protect access with
+    authentication.</p>
+    </note>
+
+    <example><title>Example</title>
+    <highlight language="config">
+&lt;Directory "/var/www/dav/sync"&gt;
+    Dav On
+    DavHonorMtimeHeader on
+&lt;/Directory&gt;
+    </highlight>
+    </example>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
 
 
