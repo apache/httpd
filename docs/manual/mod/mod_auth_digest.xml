@@ -180,27 +180,29 @@ authentication</description>
 <directivesynopsis>
 <name>AuthDigestNcCheck</name>
 <description>Enables or disables checking of the nonce-count sent by the
-server</description>
+client</description>
 <syntax>AuthDigestNcCheck On|Off</syntax>
 <default>AuthDigestNcCheck Off</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
 
 <usage>
-    <note>
-      Not implemented yet.
-    </note>
-    <!--
-    <p>The AuthDigestNcCheck directive enables or disables the checking of the
-    nonce-count sent by the server.</p>
+    <p>The <directive>AuthDigestNcCheck</directive> directive enables or
+    disables the verification of the nonce-count value sent by the client.
+    The nonce-count is a sequential counter that the client increments with
+    each request using the same nonce. Checking it helps detect replay
+    attacks.</p>
 
-    <p>While recommended from a security standpoint, turning this directive
-    On has one important performance implication. To check the nonce-count
-    *all* requests (which have an Authorization header, irrespective of
-    whether they require digest authentication) must be serialized through
-    a critical section. If the server is handling a large number of
-    requests which contain the Authorization header then this may noticeably
-    impact performance.</p>
-     -->
+    <p>This feature requires shared memory support on the platform.
+    If shared memory is not available and this directive is set to
+    <code>On</code>, the server will return an error at startup.</p>
+
+    <p>While recommended from a security standpoint, enabling this
+    directive has a performance implication: all requests carrying an
+    <code>Authorization</code> header must be serialized through a
+    critical section in order to safely compare nonce-count values.
+    On high-traffic servers this may be noticeable.</p>
 </usage>
 </directivesynopsis>
 
