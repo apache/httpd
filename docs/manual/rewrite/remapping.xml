@@ -166,6 +166,70 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
 
 </section>
 
+<section id="acme-exemption">
+
+  <title>Exempting ACME challenge requests from HTTPS redirect</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You have forced all traffic to HTTPS (as above), but your
+      ACME client (Let's Encrypt, Certbot, etc.) needs plain HTTP
+      access to <code>/.well-known/acme-challenge/</code> to complete
+      domain validation.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Place an exception <em>before</em> your HTTPS redirect
+      rule:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>The dash (<code>-</code>) substitution means "do not rewrite."
+      Combined with <code>[L]</code>, it stops rule processing for any
+      request matching the ACME challenge path, allowing it to be
+      served over plain HTTP. All other requests continue to the
+      next rule and are redirected to HTTPS as usual.</p>
+
+      <p>If you are using the <directive
+      module="mod_alias">Redirect</directive> approach in a dedicated
+      port-80 VirtualHost, use an
+      <directive module="mod_alias">Alias</directive> and
+      <directive module="mod_alias">RedirectMatch</directive>
+      instead:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+
+    # Allow ACME challenges over HTTP
+    Alias "/.well-known/acme-challenge/" "/var/www/acme/.well-known/acme-challenge/"
+    &lt;Directory "/var/www/acme/.well-known/acme-challenge"&gt;
+        Require all granted
+    &lt;/Directory&gt;
+
+    # Everything else goes to HTTPS
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$0"
+&lt;/VirtualHost&gt;
+</highlight>
+
+    </dd>
+  </dl>
+
+</section>
+
 <section id="trailing-slash">
 
   <title>Trailing Slash Normalization</title>
