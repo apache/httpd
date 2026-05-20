@@ -31,6 +31,7 @@
 <p><span>: </span><a href="../en/mod/mod_brotli.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_brotli.html" title="">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate" />
 <table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Compression du contenu via Brotli avant sa livraison au client</td></tr>
 <tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>brotli_module</td></tr>

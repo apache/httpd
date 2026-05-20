@@ -34,6 +34,7 @@
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate" />
 <table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Exécution des scripts CGI en fonction du
 type de média ou de la méthode de requête.</td></tr>
 <tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>

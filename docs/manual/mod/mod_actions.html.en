@@ -69,15 +69,15 @@ content-type</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The <code>virtual</code> modifier and handler passing were
-introduced in Apache 2.1</td></tr>
+introduced in Apache httpd 2.1</td></tr>
 </table>
     <p>This directive adds an action, which will activate
     <var>cgi-script</var> when <var>action-type</var> is triggered by
-    the request.  The <var>cgi-script</var> is the URL-path to a
+    the request. The <var>cgi-script</var> is the URL-path to a
     resource that has been designated as a CGI script using <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>.  The
     <var>action-type</var> can be either a <a href="../handler.html">handler</a> or a <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME content type</a>. It sends the URL and
     file path of the requested document using the standard CGI
-    <code>PATH_INFO</code> and <code>PATH_TRANSLATED</code>
+    <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a> and <code>PATH_TRANSLATED</code>
     environment variables. The handler used for the particular request
     is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
@@ -87,14 +87,14 @@ Action image/gif /cgi-bin/images.cgi</pre>
 
     <p>In this example, requests for files with a MIME content
     type of <code>image/gif</code> will be handled by the
-    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+    specified CGI script <code>/cgi-bin/images.cgi</code>.</p>
 
     <div class="example"><h3>Example: File extension</h3><pre class="prettyprint lang-config"># Files of a particular file extension
 AddHandler my-file-type .xyz
 Action my-file-type "/cgi-bin/program.cgi"</pre>
 </div>
     <p>In this example, requests for files with a file extension of
-    <code>.xyz</code> are handled by the specified cgi script
+    <code>.xyz</code> are handled by the specified CGI script
     <code>/cgi-bin/program.cgi</code>.</p>
 
     <p>The optional <code>virtual</code> modifier turns off the check

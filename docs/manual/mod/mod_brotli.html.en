@@ -98,7 +98,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
 
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
-      enabling compression only for the html files of the Apache
+      enabling compression only for the html files of the httpd
       documentation:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
@@ -126,14 +126,14 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
     <p>The <code class="module"><a href="../mod/mod_brotli.html">mod_brotli</a></code> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
     a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
+    appropriate <code>Accept-Encoding</code> request header. This
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
+    to alert proxies of the additional restrictions. For example,
     in a typical configuration where the addition of the <code>BROTLI_COMPRESS</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
@@ -199,7 +199,7 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliAlterETag</code> directive specifies
-    how the ETag hader should be altered when a response is compressed.</p>
+    how the ETag header should be altered when a response is compressed.</p>
     <dl>
     <dt>AddSuffix</dt>
     <dd><p>Append the compression method onto the end of the ETag, causing
@@ -216,7 +216,7 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
     <dt>Remove</dt>
     <dd><p>Remove the ETag header from compressed responses. This prevents
         some conditional requests from being possible, but avoids the
-        shortcomings of the preceding options.  </p></dd>
+        shortcomings of the preceding options.</p></dd>
     </dl>
 
 </div>
@@ -231,8 +231,15 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliCompressionMaxInputBlock</code> directive specifies
-    the maximum input block size between 16 and 24, with the caveat that
-    larger block sizes require more memory.</p>
+    the maximum input block size as a power of two, between 16 and 24
+    (representing blocks of 2^<var>value</var> bytes, i.e.,
+    64 KB to 16 MB). Larger block sizes can improve compression but
+    require more memory. When not set, the block size is automatically
+    selected based on the quality setting.</p>
+
+    <div class="example"><h3>Explicit 1 MB input blocks</h3><pre class="prettyprint lang-config"># 2^20 = 1 MB blocks
+BrotliCompressionMaxInputBlock 20</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -246,9 +253,17 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliCompressionQuality</code> directive specifies
-    the compression quality (a value between 0 and 11). Higher quality values
-    result in better, but also slower compression.
-  </p>
+    the compression quality (a value between 0 and 11). Higher values
+    result in better but slower compression. The default of 5 is a
+    reasonable balance for dynamic content.</p>
+
+    <div class="example"><h3>Fast compression for dynamic content</h3><pre class="prettyprint lang-config"># Quality 4 is roughly equivalent to gzip level 6
+BrotliCompressionQuality 4</pre>
+</div>
+
+    <div class="example"><h3>Maximum compression for static assets</h3><pre class="prettyprint lang-config"># Best ratio but very slow — only suitable with caching
+BrotliCompressionQuality 11</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -262,8 +277,19 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>The <code class="directive">BrotliCompressionWindow</code> directive specifies the
-    brotli sliding compression window size (a value between 10 and 24). Larger
-    window sizes can improve compression quality, but require more memory.</p>
+    brotli sliding compression window size (a value between 10 and 24,
+    representing a window of 2^<var>value</var> bytes). For
+    example, 18 (the default) gives a 256 KB window, while 24 gives
+    16 MB. Larger window sizes can improve compression quality, but
+    require more memory per connection.</p>
+
+    <div class="example"><h3>Moderate window for balanced memory use</h3><pre class="prettyprint lang-config"># 1 MB window (2^20 bytes)
+BrotliCompressionWindow 20</pre>
+</div>
+
+    <div class="example"><h3>Maximum window for best compression</h3><pre class="prettyprint lang-config"># 16 MB window (2^24 bytes) — requires significant memory per connection
+BrotliCompressionWindow 24</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -271,6 +297,7 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Places the compression ratio in a note for logging</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BrotliFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
