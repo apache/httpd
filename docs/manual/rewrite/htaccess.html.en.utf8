@@ -22,7 +22,7 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Per-directory Rewrites</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Per-directory Rewrites</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -57,6 +57,7 @@ declared in .htaccess</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#context-restrictions">Which contexts support rewrite rules?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#inheritance">Rule inheritance with RewriteOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#debugging">Debugging .htaccess rewrite rules</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#caching">Browser caching of 301 redirects</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="tech.html">Technical details</a></li><li><a href="../mod/mod_rewrite.html#what_is_matched">What is matched?</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -142,12 +143,16 @@ mechanism is also why rules can loop — see
 <a href="#loops">below</a>.</p>
 
 
+<div class="warning"><h3>Do not start .htaccess patterns with /</h3>
 <p>Because the directory prefix (including the trailing
 slash) is stripped before matching, patterns in
 <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>
 will <em>never</em> match a leading slash. A pattern
 beginning with <code>^/</code> will never match in this
-context.</p>
+context. A rule like <code>RewriteRule "^/foo" ...</code> will
+silently fail to match anything when placed in a
+<code>.htaccess</code> file.</p>
+</div>
 
 <p>If you need to match against the full original
 URL-path (including the directory prefix), use
@@ -383,6 +388,29 @@ visible in these log entries.</p>
 production. It generates a large volume of output and will affect
 performance.</div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="caching" id="caching">Browser caching of 301 redirects</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+
+<p>When you issue a <code>301 Moved Permanently</code> redirect
+(via <code>[R=301]</code> or <code class="directive"><a href="../mod/mod_alias.html#redirect permanent">Redirect permanent</a></code>), the browser is allowed to cache
+that response indefinitely. This means that even after you fix an
+incorrect redirect rule in your configuration, returning visitors
+may continue to be sent to the old (wrong) destination without
+ever contacting your server again.</p>
+
+<p>While debugging redirect rules, use <code>[R=302]</code>
+(temporary redirect) instead of <code>[R=301]</code>. Switch to 301
+only after you have confirmed the rule is correct. If you have
+already issued an incorrect 301, affected users will need to clear
+their browser cache (or use a private/incognito window) to see
+the corrected behavior.</p>
+
+<div class="note">Search engines also cache 301 redirects. An incorrect 301
+may take days or weeks to be re-crawled, even after the
+configuration is fixed. This is another reason to test with 302
+first.</div>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/htaccess.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -394,7 +422,7 @@ performance.</div>
 <a href="../tr/rewrite/htaccess.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/htaccess.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
