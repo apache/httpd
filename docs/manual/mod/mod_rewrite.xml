@@ -49,8 +49,8 @@ URLs on the fly</description>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <glossary
-      ref="perdirectory">per-directory</glossary> context. The path generated
-      by a rewrite rule can include a query string, or can lead to internal
+      ref="perdirectory">per-directory</glossary> context. The substitution
+      string of a rewrite rule can include a query string, and a rule can lead to internal
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 
