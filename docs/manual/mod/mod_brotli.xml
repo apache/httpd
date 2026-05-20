@@ -271,7 +271,7 @@ BrotliCompressionQuality 11
 <usage>
     <p>The <directive>BrotliCompressionWindow</directive> directive specifies the
     brotli sliding compression window size (a value between 10 and 24,
-    representing a window of 2<sup><var>value</var></sup> bytes). For
+    representing a window of 2^<var>value</var> bytes). For
     example, 18 (the default) gives a 256 KB window, while 24 gives
     16 MB. Larger window sizes can improve compression quality, but
     require more memory per connection.</p>
@@ -304,7 +304,7 @@ BrotliCompressionWindow 24
 <usage>
     <p>The <directive>BrotliCompressionMaxInputBlock</directive> directive specifies
     the maximum input block size as a power of two, between 16 and 24
-    (representing blocks of 2<sup><var>value</var></sup> bytes, i.e.,
+    (representing blocks of 2^<var>value</var> bytes, i.e.,
     64 KB to 16 MB). Larger block sizes can improve compression but
     require more memory. When not set, the block size is automatically
     selected based on the quality setting.</p>
