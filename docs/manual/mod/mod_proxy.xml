@@ -2329,4 +2329,81 @@ header for proxied requests</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ProxyAsyncDelay</name>
+<description>Time to poll synchronously before handing a connection to the
+MPM for asynchronous processing</description>
+<syntax>ProxyAsyncDelay <var>time</var>[s]</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in Apache HTTP Server 2.5 and later</compatibility>
+
+<usage>
+    <p>When an event-capable MPM is in use, this directive enables
+    asynchronous handling of proxy connections. After writing the
+    request to the backend, the proxy worker thread will poll for a
+    response for the duration specified by this directive. If the
+    backend responds within that time, the response is handled
+    synchronously within the same thread. If the backend has not
+    responded, the connection is handed off to the MPM's asynchronous
+    event loop, freeing the worker thread to serve other requests.</p>
+
+    <p>Setting this directive to <code>0</code> causes the connection
+    to be handed to the event loop immediately. Setting it to
+    <code>-1</code> disables asynchronous handling entirely (all proxy
+    connections remain synchronous).</p>
+
+    <p>This directive has no effect unless the MPM supports polling
+    (e.g., <module>event</module>).</p>
+
+    <note><title>When to use this</title>
+    <p>Async proxy handling is most useful for slow backends or
+    long-lived streaming responses, where tying up a worker thread
+    waiting for data would limit concurrency. For fast backends that
+    respond within milliseconds, the synchronous path is more
+    efficient.</p>
+    </note>
+</usage>
+
+<seealso><directive module="mod_proxy">ProxyAsyncIdleTimeout</directive></seealso>
+<seealso><directive module="mod_proxy">ProxyTimeout</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyAsyncIdleTimeout</name>
+<description>Inactivity timeout for asynchronous proxy connections</description>
+<syntax>ProxyAsyncIdleTimeout <var>time</var>[s]</syntax>
+<default>Value of <directive module="mod_proxy">ProxyTimeout</directive></default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in Apache HTTP Server 2.5 and later</compatibility>
+
+<usage>
+    <p>Once a proxy connection has been handed off to the MPM's
+    asynchronous event loop (see
+    <directive module="mod_proxy">ProxyAsyncDelay</directive>), this
+    directive sets the maximum time the connection may remain idle
+    (no data received from the backend) before it is closed.</p>
+
+    <p>If not explicitly set, the value falls back to the worker's
+    <code>timeout</code> parameter (if set via
+    <directive module="mod_proxy">ProxyPass</directive> or
+    <directive module="mod_proxy">ProxySet</directive>), then to
+    <directive module="mod_proxy">ProxyTimeout</directive>, and
+    finally to the server's
+    <directive module="core">Timeout</directive>.</p>
+
+    <p>This directive has no effect unless
+    <directive module="mod_proxy">ProxyAsyncDelay</directive> is also
+    set to enable asynchronous handling.</p>
+</usage>
+
+<seealso><directive module="mod_proxy">ProxyAsyncDelay</directive></seealso>
+<seealso><directive module="mod_proxy">ProxyTimeout</directive></seealso>
+</directivesynopsis>
+
 </modulesynopsis>
