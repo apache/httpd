@@ -317,6 +317,23 @@ unsupported and should never be necessary. Relative
 substitutions, in particular, are likely to break in
 these contexts.</p>
 
+<note type="warning"><title>These containers silently change rewrite
+behavior</title>
+<p>Placing a <directive module="mod_rewrite">RewriteRule</directive>
+inside a <directive module="core" type="section">Directory</directive>,
+<directive module="core" type="section">If</directive>, or
+<directive module="core" type="section">Location</directive> block
+&mdash; even inside a
+<directive module="core" type="section">VirtualHost</directive> in the
+main server config &mdash; silently switches to
+<glossary ref="perdirectory">per-directory context</glossary> behavior.
+This means the leading slash is stripped from the URL before pattern
+matching, substitutions trigger an internal redirect (with loop risk),
+and the <a href="../rewrite/flags.html#flag_l">[L]</a> flag no longer
+truly stops processing &mdash; use
+<a href="../rewrite/flags.html#flag_end">[END]</a> instead.</p>
+</note>
+
 </section>
 
 <section id="inheritance"><title>Rule inheritance with RewriteOptions</title>

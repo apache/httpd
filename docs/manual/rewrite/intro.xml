@@ -409,7 +409,11 @@ href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 but the rules behave differently there — in particular, the directory
 prefix is stripped from the URL before matching. See the
 <a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
-document for full details.</p>
+document for full details. Note that
+<directive module="core" type="section">If</directive> and
+<directive module="core" type="section">Location</directive> blocks
+also trigger per-directory behavior &mdash; see
+<a href="htaccess.html#context-restrictions">Which contexts support rewrite rules?</a>.</p>
 
 </section>
 
