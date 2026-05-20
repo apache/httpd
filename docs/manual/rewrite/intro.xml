@@ -391,7 +391,12 @@ recommended. It is possible, however, to do rewriting
 inside <directive type="section" module="core">Directory</directive>
 sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
 files</a> at the expense of some additional complexity. This technique
-is called <glossary ref="perdirectory">per-directory</glossary> rewrites.</p>
+is called <glossary ref="perdirectory">per-directory</glossary> rewrites.
+Note that
+<directive module="core" type="section">If</directive> and
+<directive module="core" type="section">Location</directive> blocks
+also trigger per-directory behavior &mdash; see
+<a href="htaccess.html#context-restrictions">Which contexts support rewrite rules?</a>.</p>
 
 <p>The main difference from per-server rewrites is that the path
 prefix of the directory containing the <code>.htaccess</code> file is

@@ -340,4 +340,39 @@ performance.</note>
 
 </section>
 
+<section id="context-restrictions"><title>Which contexts support rewrite rules?</title>
+
+<p>Rewrite rules are supported in
+<glossary ref="perdirectory">per-directory context</glossary>
+(<a href="../howto/htaccess.html">.htaccess</a> files,
+<directive module="core" type="section">Directory</directive>, and
+<directive module="core" type="section">If</directive> blocks).</p>
+
+<p>Although rewrite rules are syntactically permitted in
+<directive module="core" type="section">Location</directive>
+and <directive module="core" type="section">Files</directive>
+sections (including their regex counterparts), this is
+unsupported and should never be necessary. Relative
+substitutions, in particular, are likely to break in
+these contexts.</p>
+
+<note type="warning"><title>These containers silently change rewrite
+behavior</title>
+<p>Placing a <directive module="mod_rewrite">RewriteRule</directive>
+inside a <directive module="core" type="section">Directory</directive>,
+<directive module="core" type="section">If</directive>, or
+<directive module="core" type="section">Location</directive> block
+&mdash; even inside a
+<directive module="core" type="section">VirtualHost</directive> in the
+main server config &mdash; silently switches to
+<glossary ref="perdirectory">per-directory context</glossary> behavior.
+This means the leading slash is stripped from the URL before pattern
+matching, substitutions trigger an internal redirect (with loop risk),
+and the <a href="../rewrite/flags.html#flag_l">[L]</a> flag no longer
+truly stops processing &mdash; use
+<a href="../rewrite/flags.html#flag_end">[END]</a> instead.</p>
+</note>
+
+</section>
+
 </manualpage>
