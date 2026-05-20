@@ -65,9 +65,10 @@
 
       <dt><em>URL-path</em></dt>
 
-      <dd>The part of a <em>url</em> which follows the scheme and
-      hostname as in <code>/path/to/file.html</code>. The
-      <em>url-path</em> represents a web-view of a resource, as
+      <dd>The part of a URL which follows the scheme, hostname,
+      and optional port, but precedes any query string — for
+      example, <code>/path/to/file.html</code>. The
+      <em>URL-path</em> represents a web-view of a resource, as
       opposed to a file-system view.</dd>
 
       <dt><em>file-path</em></dt>
