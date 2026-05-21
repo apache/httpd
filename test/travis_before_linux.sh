@@ -148,16 +148,6 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
 
     # Cache the perl -V output for future verification.
     mv perlver ~/perl5/.perlver
-
-    # Make a shallow clone of httpd-tests git repo.
-    git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
-
-    # For OpenSSL 3.2+ testing, Apache::Test r1916067 is required, so
-    # use a checkout of trunk until there is an updated CPAN release
-    # with that revision.
-    if test -v TEST_OPENSSL3; then
-       run_svn_export https://svn.apache.org/repos/asf/perl/Apache-Test/trunk HEAD test/perl-framework/Apache-Test 5
-    fi
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the

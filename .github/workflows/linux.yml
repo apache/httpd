@@ -356,6 +356,12 @@ jobs:
                     libnghttp2-dev libjansson-dev libpcre2-dev gdb
                     perl-doc libsasl2-dev ${{ matrix.pkgs }} check
     - uses: actions/checkout@v6
+    - uses: actions/checkout@v6
+      with:
+        repository: apache/httpd-tests
+        path: test/perl-framework
+        submodules: true
+      if: ${{ ! ( env.SKIP_TESTING || env.NO_TEST_FRAMEWORK )) }}
     - name: Cache installed libraries
       uses: actions/cache@v5
       with:
