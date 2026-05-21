@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Compilando e Instalando - Servidor HTTP Apache Versão 2.4</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<script src="./style/scripts/prettify.min.js" type="text/javascript">
+</script>
+
+<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Versão 2.4</p>
+<img alt="" src="./images/feather.png" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.4</a></div><div id="page-content"><div id="preamble"><h1>Compilando e Instalando</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div class="toplang">
+<p><span>Línguas Disponíveis: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/install.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+</div>
+
+
+    <p>Este documento cobre a compilação e a instalação do Servidor HTTP Apache
+    somente em sistemas Unix e similares. Para compilação e
+    instalação no Windows, consulte <a href="platform/windows.html">Usando o Servidor HTTP Apache com o Microsoft
+    Windows</a> e <a href="platform/win_compiling.html">Compilando o Apache para o Microsoft Windows</a>.
+    Para outras plataformas, consulte a documentação da <a href="platform/">platforma</a>.</p>
+
+    <p>O Apache httpd usa <code>libtool</code> e <code>autoconf</code>
+    para criar um ambiente de compilação semelhante a muitos
+    outros projetos de código aberto.</p>
+
+    <p>Se você estiver atualizando de uma versão secundária para a próxima (por
+    exemplo, de 2.4.8 para 2.4.9), pule para a seção de <a href="#upgrading">atualização</a>.</p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Visão geral para o
+    ansioso</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#requirements">Requisitos</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#download">Baixando o Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#extract">Extraindo</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configure">Configurando a estrutura do código</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#compile">Compilando</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">Instalando</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#customize">Personalizando</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#test">Teste</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Atualizando</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#thirdp">Pacotes de terceiros</a></li>
+</ul><h3>Veja também</h3><ul class="seealso"><li><a href="programs/configure.html">Configurar a árvore do código-fonte</a></li><li><a href="invoking.html">Iniciando o httpd Apache</a></li><li><a href="stopping.html">Parando e Reinicializando</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="overview" id="overview">Visão geral para o
+    ansioso</a> <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
+
+    <dl>
+    <dt>Instalando no Linux Fedora/CentOS/Red Hat Enterprise</dt>
+    <dd>
+    <pre class="prettyprint lang-">sudo yum install httpd
+sudo systemctl enable httpd
+sudo systemctl start httpd</pre>
+
+
+    <div class="warning">Versões mais recentes dessas distribuições usam
+    <code>dnf</code> em vez de <code>yum</code>. Consulte a <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentação
+    do projeto Fedora</a> para observações específicas dessa plataforma.</div>
+    </dd>
+
+    <dt>Instalando no Ubuntu/Debian</dt>
+    <dd>
+<pre class="prettyprint lang-">sudo apt install apache2
+sudo service apache2 start</pre>
+
+
+    <div class="warning">Consulte a <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">documentação do Ubuntu</a> para observações específicas dessa plataforma.</div>
+
+    </dd>
+
+    <dt>Instalando a partir do código-fonte</dt>
+    <dd>
+    <table>
+      
+      <tr>
+        <td><a href="#download">Download</a></td>
+
+        <td>Baixe a última versão em <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#extract">Extração</a></td>
+
+        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-<em>NN</em>.tar<br />
+         $ cd httpd-<em>NN</em></code></td>
+      </tr>
+
+      <tr>
+        <td><a href="#configure">Configuração</a></td>
+
+        <td><code>$ ./configure --prefix=<em>PREFIX</em></code>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="#compile">Compilação</a></td>
+
+        <td><code>$ make</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#install">Instalação</a></td>
+
+        <td><code>$ make install</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#customize">Personalização</a></td>
+
+        <td><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code> </td>
+      </tr>
+
+      <tr>
+        <td><a href="#test">Teste</a></td>
+
+        <td><code>$ <em>PREFIX</em>/bin/apachectl -k start</code>
+        </td>
+      </tr>
+    </table>
+
+        <p><em>NN</em> deve ser substituído pelo número da versão atual
+        e <em>PREFIX</em> deve ser substituído pelo
+        caminho do sistema de arquivos no qual o servidor deve ser instalado. Se
+        <em>PREFIX</em> não for especificado, o padrão será
+        <code>/usr/local/apache2</code>.</p>
+
+        <p>Cada seção do processo de compilação e instalação é
+        descrita com mais detalhes abaixo, começando com os requisitos
+        para compilar e instalar o httpd Apache.</p>
+    </dd>
+    </dl>
+
+    <div class="warning">Não encontrou sua plataforma favorita mencionada
+    aqui? <a href="http://http://httpd.apache.org/docs-project/">Ajude-nos
+    a melhorar esta documentação.</a></div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">Requisitos</a> <a title="Link permanente" href="#requirements" class="permalink">&para;</a></h2>
+
+    <p>Os seguintes requisitos existem para a compilação do httpd Apache:</p>
+
+    <dl>
+      <dt>APR e APR-Util</dt>
+      <dd>Certifique-se de que o APR e o APR-Util já estejam instalados em seu sistema.
+      Caso contrário, ou se preferir não usar as versões fornecidas pelo sistema,
+      baixe as versões mais recentes do APR e do APR-Util
+      em <a href="http://apr.apache.org/">Apache APR</a>, descompacte-as
+      em <code>/httpd_source_tree_root/srclib/apr</code> e <code>/httpd_source_tree_root/srclib/apr-util</code>
+      (certifique-se de que os nomes dos diretórios não contenham números de versão; por exemplo,
+      a distribuição do APR deve estar em /httpd_source_tree_root/srclib/apr/) e use a
+      opção <code>--with-included-apr</code> do <code>./configure</code>.
+      Em algumas plataformas, pode ser necessário instalar os
+      pacotes <code>-dev</code> correspondentes para permitir que o httpd seja compilado
+      com sua cópia instalada do APR e do APR-Util.</dd>
+
+      <dt>Biblioteca de Expressões Regulares Compatível com Perl (PCRE)</dt>
+      <dd>Esta biblioteca é necessária, mas não é mais fornecida com o httpd.
+      Baixe o código-fonte em <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      ou instale um pacote. Se o seu sistema de compilação não encontrar
+      o script pcre-config instalado pela compilação do PCRE, indique-o
+      usando o parâmetro <code>--with-pcre</code>. Em algumas plataformas,
+      pode ser necessário instalar o pacote <code>-dev</code> correspondente
+      para permitir que o httpd seja compilado com a sua cópia instalada
+      do PCRE.</dd>
+
+      <dt>Espaço em Disco</dt>
+      <dd>Certifique-se de ter pelo menos 50 MB de espaço livre temporário em disco.
+      Após a instalação, o servidor ocupa aproximadamente 10 MB de espaço em disco.
+      Os requisitos reais de espaço em disco variam
+      consideravelmente dependendo das opções de configuração
+      escolhidas, dos módulos de terceiros e, claro,
+      do tamanho do(s) site(s) que você tem no servidor.</dd>
+
+      <dt>Compilador e sistema de construção ANSI-C</dt>
+      <dd>Certifique-se de ter um compilador ANSI-C instalado. O <a href="http://gcc.gnu.org/">compilador
+      C GNU (GCC)</a> da <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      é recomendado. Se você não tiver o GCC,
+      certifique-se de que o compilador do seu fornecedor seja compatível com
+      ANSI. Além disso, seu <code>PATH</code> precisa conter
+      ferramentas básicas de compilação, como <code>make</code>.</dd>
+
+      <dt>Manutenção precisa do horário</dt>
+      <dd>Os elementos do protocolo HTTP são expressos como o horário do
+      dia. Portanto, é hora de configurar algum recurso de
+      sincronização de horário em seu sistema. Normalmente, os
+      programas <code>ntpdate</code> ou <code>xntpd</code> são usados ​​para
+      esse propósito e são baseados no Network Time Protocol (NTP).
+      Consulte a <a href="http://www.ntp.org">página inicial do NTP</a>
+      para obter mais detalhes sobre o software NTP e servidores
+      públicos de horário.</dd>
+
+      <dt><a href="http://www.perl.org/">Perl 5</a>
+      [OPCIONAL]</dt>
+      <dd>Para alguns dos scripts de suporte, como <code class="program"><a href="./programs/apxs.html">apxs</a></code> ou <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> (que são
+      escritos em Perl), o interpretador Perl 5 é necessário (versões
+      5.003 ou mais recentes são suficientes). Se nenhum interpretador Perl 5 for encontrado pelo
+      script <code class="program"><a href="./programs/configure.html">configure</a></code>, você não poderá usar
+      os scripts de suporte afetados. É claro que você ainda poderá
+      compilar e usar o httpd Apache.</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="download" id="download">Baixando o Apache</a> <a title="Link permanente" href="#download" class="permalink">&para;</a></h2>
+
+    <p>O Servidor HTTP Apache pode ser baixado do <a href="http://httpd.apache.org/download.cgi">site de download
+    do Servidor HTTP Apache</a>, que lista vários espelhos. A maioria dos usuários
+    do Apache em sistemas do tipo Unix se beneficiará mais baixando e
+    compilando uma versão do código-fonte. O processo de compilação (descrito abaixo) é
+    fácil e permite personalizar o servidor de acordo com suas necessidades.
+    Além disso, as versões binárias geralmente não estão atualizadas com as versões
+    de código-fonte mais recentes. Se você baixar um binário, siga as instruções
+    no arquivo <code>INSTALL.bindist</code> dentro da distribuição.</p>
+
+    <p>Após baixar, é importante verificar se você possui uma
+    versão completa e não modificada do Servidor HTTP Apache. Isso
+    pode ser feito testando o arquivo .tar baixado em relação à
+    assinatura PGP. Detalhes sobre como fazer isso estão disponíveis na <a href="http://http://httpd.apache.org/download.cgi#verify">página de download</a>
+    e um exemplo detalhado está disponível descrevendo o <a href="http://http://httpd.apache.org/dev/verification.html">uso do
+    PGP</a>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="extract" id="extract">Extraindo</a> <a title="Link permanente" href="#extract" class="permalink">&para;</a></h2>
+
+    <p>Extrair o código-fonte do arquivo tar do servidor HTTP Apache é uma
+    questão simples de descompactar e, em seguida, extrair o arquivo tar:</p>
+
+<div class="example"><pre class="prettyprint lang-sh">$ gzip -d httpd-<em>NN</em>.tar.gz
+$ tar xvf httpd-<em>NN</em>.tar</pre>
+</div>
+
+    <p>Isso criará um novo diretório no diretório atual
+    contendo o código-fonte da distribuição. Você deve
+    mudar para este diretório (<code>cd</code>) antes de prosseguir com
+    a compilação do servidor.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configure" id="configure">Configurando a estrutura do código</a> <a title="Link permanente" href="#configure" class="permalink">&para;</a></h2>
+
+    <p>O próximo passo é configurar a estrutura do código-fonte do Apache para sua
+    plataforma específica e requisitos pessoais. Isso é feito usando
+    o script <code class="program"><a href="./programs/configure.html">configure</a></code> incluído no
+    diretório raiz da distribuição. (Desenvolvedores que baixarem
+    uma versão não lançada da estrutura de código-fonte do Apache precisarão ter
+    o <code>autoconf</code> e o <code>libtool</code> instalados e
+    precisarão executar o <code>buildconf</code> antes de prosseguir com os próximos
+    passos. Isso não é necessário para versões oficiais.)</p>
+
+    <p>Para configurar a estrutura do código usando todas as opções padrão,
+    basta digitar <code>./configure</code>. Para alterar as opções padrão,
+    o <code class="program"><a href="./programs/configure.html">configure</a></code> aceita uma variedade de variáveis
+    e opções de linha de comando.</p>
+
+    <p>A opção mais importante é o local <code>--prefix</code>
+    onde o Apache será instalado posteriormente, pois o Apache precisa ser
+    configurado para funcionar corretamente nesse local. Um controle mais preciso
+    da localização dos arquivos é possível com <a href="programs/configure.html#installationdirectories">opções de
+    adicionais do configure</a>.</p>
+
+    <p>Neste ponto, você também pode especificar quais
+    <a href="programs/configure.html#optionalfeatures">recursos</a> você
+    deseja incluir no Apache, habilitando e desabilitando <a href="mod/">módulos</a>. O Apache vem com uma ampla gama de módulos
+    incluídos por padrão. Eles serão compilados como
+    <a href="dso.html">objetos compartilhados (DSOs)</a> que podem ser carregados
+    ou descarregados no momento da execução.
+    Você também pode optar por compilar módulos estaticamente usando a opção
+    <code>--enable-<var>module</var>=static</code>.</p>
+
+    <p>Módulos adicionais são habilitados usando a opção
+    <code>--enable-<var>module</var></code>, onde
+    <var>module</var> é o nome do módulo com a
+    string <code>mod_</code> removida e com qualquer sublinhado convertido
+    em um hífen. Da mesma forma, você pode desabilitar módulos com a opção
+    <code>--disable-<var>module</var></code>. Tenha cuidado ao
+    usar essas opções, pois o <code class="program"><a href="./programs/configure.html">configure</a></code> não pode avisá-lo
+    se o módulo especificado não existir; ele simplesmente ignorará a
+    opção.</p>
+
+    <p>Além disso, às vezes é necessário fornecer ao script
+    <code class="program"><a href="./programs/configure.html">configure</a></code> informações adicionais sobre a
+    localização do seu compilador, bibliotecas ou arquivos de cabeçalho. Isso é
+    feito passando variáveis ​​de ambiente ou opções de linha de comando
+    para <code class="program"><a href="./programs/configure.html">configure</a></code>. Para obter mais informações, consulte a
+    página de manual do <code class="program"><a href="./programs/configure.html">configure</a></code>. Ou execute
+    <code class="program"><a href="./programs/configure.html">configure</a></code> usando a opção <code>--help</code>.</p>
+
+    <p>Para uma prévia das possibilidades disponíveis, aqui
+    está um exemplo típico que compila o Apache no caminho
+    <code>/sw/pkg/apache</code> com um compilador e opções específicos
+    mais os dois módulos adicionais <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> e
+    <code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code>:</p>
+
+<div class="example"><pre class="prettyprint lang-sh">$ CC="pgcc" CFLAGS="-O2" \
+  ./configure --prefix=/sw/pkg/apache \
+  --enable-ldap=shared \
+  --enable-lua=shared</pre>
+</div>
+
+    <p>Quando o programa <code class="program"><a href="./programs/configure.html">configure</a></code> for executado, levará alguns minutos para
+    testar a disponibilidade de recursos em seu sistema e gerar
+    arquivos make que serão usados ​​posteriormente para compilar o servidor.</p>
+
+    <p>Detalhes sobre todas as diferentes opções de <code class="program"><a href="./programs/configure.html">configure</a></code> estão
+    disponíveis na página do manual de <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile" id="compile">Compilando</a> <a title="Link permanente" href="#compile" class="permalink">&para;</a></h2>
+
+    <p>Agora você pode compilar as várias partes que formam o pacote Apache
+    simplesmente executando o comando:</p>
+
+<div class="example"><p><code>$ make</code></p></div>
+
+    <p>Por favor, tenha paciência, pois uma configuração básica leva
+    vários minutos para compilar e o tempo pode variar bastante
+    dependendo do seu equipamento e do número de módulos que você
+    habilitou.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="install" id="install">Instalando</a> <a title="Link permanente" href="#install" class="permalink">&para;</a></h2>
+
+    <p>Agora é hora de instalar o pacote no diretório de instalação configurado
+    <em>PREFIX</em> (consulte a opção <code>--prefix</code>
+    acima) executando:</p>
+
+<div class="example"><p><code>$ make install</code></p></div>
+
+    <p>Normalmente, esta etapa exigirá privilégios de root, já que
+    <em>PREFIX</em> geralmente é um diretório com permissões de
+    escrita restritas.</p>
+
+    <p>Se você estiver atualizando, a instalação não sobrescreverá
+    seus arquivos ou documentos de configuração.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="customize" id="customize">Personalizando</a> <a title="Link permanente" href="#customize" class="permalink">&para;</a></h2>
+
+    <p>Em seguida, você pode personalizar seu Servidor HTTP Apache editando
+    os <a href="configuring.html">arquivos de configuração</a> em
+    <code><em>PREFIX</em>/conf/</code>.</p>
+
+<div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
+
+    <p>Consulte o manual do Apache em
+    <code><em>PREFIX</em>/docs/manual/</code> ou consulte <a href="http://httpd.apache.org/docs/2.4/">http://httpd.apache.org/docs/2.4/</a> para obter a versão mais recente
+    deste manual e uma referência completa das <a href="mod/directives.html">diretivas de configuração</a> disponíveis.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="test" id="test">Teste</a> <a title="Link permanente" href="#test" class="permalink">&para;</a></h2>
+
+    <p>Agora você pode <a href="invoking.html">iniciar</a> seu servidor Apache
+    HTTP executando imediatamente:</p>
+
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
+
+    <p>Você deverá então conseguir solicitar seu primeiro documento
+    através da URL <code>http://localhost/</code>. A página web que você vê está localizada
+    em <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>,
+    que geralmente será <code><em>PREFIX</em>/htdocs/</code>.
+    Em seguida, <a href="stopping.html">interrompa</a> o servidor novamente
+    executando:</p>
+
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="upgrading" id="upgrading">Atualizando</a> <a title="Link permanente" href="#upgrading" class="permalink">&para;</a></h2>
+
+    <p>O primeiro passo para a atualização é ler o anúncio de lançamento
+    e o arquivo <code>CHANGES</code> na distribuição do código-fonte para
+    encontrar quaisquer alterações que possam afetar seu site. Ao mudar entre
+    versões principais (por exemplo, de 2.0 para 2.2 ou de 2.2 para 2.4),
+    provavelmente haverá grandes diferenças na configuração de tempo de compilação e
+    tempo de execução que exigirão ajustes manuais. Todos os
+    módulos também precisarão ser atualizados para acomodar as alterações na
+    API do módulo.</p>
+
+    <p>A atualização de uma versão secundária para a seguinte (por exemplo, de
+    2.2.55 para 2.2.57) é mais fácil. O processo <code>make install</code>
+    não sobrescreverá nenhum dos seus documentos, arquivos de registro ou arquivos
+    de configuração existentes. Além disso, os desenvolvedores fazem
+    todos os esforços para evitar alterações incompatíveis nas
+    opções do <code class="program"><a href="./programs/configure.html">configure</a></code>, na configuração de tempo de execução ou na
+    API do módulo entre versões secundárias. Na maioria dos casos, você poderá
+    usar uma linha de comando <code class="program"><a href="./programs/configure.html">configure</a></code> idêntica, um arquivo de
+    configuração idêntico e todos os seus módulos continuarão
+    funcionando.</p>
+
+    <p>Para atualizar entre versões secundárias, comece encontrando o
+    arquivo <code>config.nice</code> no diretório <code>build</code> do
+    seu servidor instalado ou na raiz da árvore de origem da sua instalação
+    antiga. Este arquivo conterá a linha de comando exata do
+    <code class="program"><a href="./programs/configure.html">configure</a></code> que você usou para configurar a árvore de
+    origem. Em seguida, para atualizar de uma versão para a próxima, basta
+    copiar o arquivo <code>config.nice</code> para a árvore de origem da nova
+    versão, editá-lo para fazer as alterações desejadas e, em seguida,
+    executar:</p>
+
+    <div class="example"><pre class="prettyprint lang-sh">$ ./config.nice
+$ make
+$ make install
+$ <em>PREFIX</em>/bin/apachectl -k graceful-stop
+$ <em>PREFIX</em>/bin/apachectl -k start</pre>
+</div>
+
+    <div class="warning">Você deve sempre testar qualquer nova versão em seu
+    ambiente antes de colocá-la em produção. Por exemplo, você
+    pode instalar e executar a nova versão junto com a antiga
+    usando um <code>--prefix</code> diferente e uma
+    porta diferente (ajustando a diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>) para testar quaisquer
+    incompatibilidades antes de fazer a atualização final.</div>
+
+    <p>Você pode passar argumentos adicionais para <code>config.nice</code>,
+    que serão anexados às suas opções originais de
+    <code class="program"><a href="./programs/configure.html">configure</a></code>:</p>
+
+    <div class="example"><p><code>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="thirdp" id="thirdp">Pacotes de terceiros</a> <a title="Link permanente" href="#thirdp" class="permalink">&para;</a></h2>
+
+    <p>Um grande número de terceiros fornece suas próprias distribuições
+    empacotadas do Servidor HTTP Apache para instalação em
+    plataformas específicas. Isso inclui as várias distribuições Linux,
+    vários pacotes de terceiros para Windows, Mac OS X, Solaris e muitas
+    outras.</p>
+
+    <p>Nossa licença de software não apenas permite mas também incentiva esse tipo de
+    redistribuição. No entanto, isso resulta em uma situação em que o
+    layout de configuração e os valores padrão da sua instalação do servidor
+    podem diferir do que está descrito na documentação. Embora
+    lamentável, essa situação provavelmente não mudará
+    tão cedo.</p>
+
+    <p>Uma <a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">descrição
+    dessas distribuições de terceiros</a> é mantida no wiki
+    do Servidor HTTP e deve refletir o estado atual dessas
+    distribuições de terceiros. No entanto, você precisará se familiarizar
+    com o gerenciamento de pacotes e os procedimentos de instalação da
+    sua plataforma específica.</p>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Línguas Disponíveis: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./pt-br/install.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>
