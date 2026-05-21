@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.pt-br.xsl"?>
+<!-- English Revision: 1934245 -->
+<!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Atualizando da versão 2.2 para 2.4</title>
+
+<summary>
+  <p>Para auxiliar os usuários na atualização, mantemos um documento
+  que descreve informações essenciais para usuários existentes do Servidor HTTP
+  Apache. Estas notas são breves e você poderá encontrar
+  mais informações no documento <a
+  href="new_features_2_4.html">Novas Funcionalidades</a> ou no
+  arquivo <code>src/CHANGES</code>. Desenvolvedores de aplicações e módulos
+  podem encontrar um resumo das alterações da API na <a
+  href="developer/new_api_2_4.html">Visão geral de atualizações da API</a>.</p>
+
+  <p>Este documento descreve alterações no comportamento do servidor que podem
+   exigir que você altere sua configuração ou a forma como usa o servidor
+   para continuar usando a versão 2.4 da mesma forma que usa a versão 2.2.
+   Para aproveitar os novos recursos da versão 2.4, consulte o documento sobre Novas
+   Funcionalidades.</p>
+
+  <p>Este documento descreve apenas as alterações da versão 2.2 para a 2.4. Se você
+  estiver atualizando da versão 2.0, também deverá consultar o <a
+  href="http://http://httpd.apache.org/docs/2.2/upgrading.html">Documento de Atualização
+  da versão 2.0 para 2.2</a>.</p>
+
+</summary>
+<seealso><a href="new_features_2_4.html">Visão geral das novas funcionalidades
+  no Servidor HTTP Apache 2.4</a></seealso>
+
+  <section id="compile-time">
+    <title>Alterações na Configuração no Momento da Compilação</title>
+
+    <p>O processo de compilação é muito semelhante ao usado na
+    versão 2.2. Sua antiga linha de comando <code>configure</code>
+    (encontrada em <code>build/config.nice</code> no diretório do servidor
+    instalado) pode ser usada na maioria dos casos. Há algumas alterações nas
+    configurações padrão. Alguns detalhes das alterações:</p>
+
+    <ul>
+      <li>Estes módulos foram removidos: mod_authn_default,
+      mod_authz_default, mod_mem_cache. Se você estava usando
+      mod_mem_cache na versão 2.2, consulte <module>mod_cache_disk</module>
+      na versão 2.4.</li>
+
+      <li>Todas as implementações de balanceamento de carga foram movidas para
+      submódulos individuais e independentes do mod_proxy, por exemplo:
+      <module>mod_lbmethod_bybusyness</module>. Você pode precisar
+      compilar e carregar qualquer um desses que sua configuração
+      utiliza.</li>
+
+      <li>O suporte à plataforma foi removido para BeOS, TPF e
+      até mesmo plataformas mais antigas, como A/UX, Next e Tandem. Acredita-se
+      que estas já não estivessem funcionando corretamente.</li>
+
+      <li>configure: módulos dinâmicos (DSO) são compilados por padrão.</li>
+
+      <li>configure: por padrão, apenas um conjunto básico de módulos é carregado. As
+      outras diretivas <directive>LoadModule</directive> estão comentadas
+      no arquivo de configuração.</li>
+
+      <li>configure: o conjunto de módulos "most" ("maioria") é compilado por padrão</li>
+
+      <li>configure: o conjunto de módutos "reallyall" ("realmente todos") adiciona os módulos de desenvolvedor
+      ao conjunto "all" ("todos")</li>
+    </ul>
+
+  </section>
+
+  <section id="run-time">
+    <title>Alterações na Configuração no Momento da Execução</title>
+    <p>Houve mudanças significativas na configuração de autorização e outras
+    pequenas alterações de configuração que podem exigir alterações em seus arquivos
+    de configuração da versão 2.2 antes de usá-los na versão 2.4.</p>
+
+    <section id="authz">
+      <title>Autorização</title>
+
+      <p>Qualquer arquivo de configuração que utilize autorização provavelmente
+      precisará de alterações.</p>
+
+    <p>Você deve revisar a seção <a href="howto/auth.html">Como Fazer: Autenticação,
+    Autorização e Controle de Acesso</a>, especialmente a parte
+    <a href="howto/auth.html#beyond">Além da simples autorização</a>
+    que explica os novos mecanismos para controlar a ordem
+    em que as diretivas de autorização são aplicadas.</p>
+
+    <p>As diretivas que controlam como os módulos de autorização respondem quando
+    não correspondem ao usuário autenticado foram removidas: Isso inclui
+    AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative,
+    AuthzGroupFileAuthoritative, AuthzUserAuthoritative,
+    e AuthzOwnerAuthoritative. Essas diretivas foram substituídas pelas
+    diretivas mais expressivas <directive module="mod_authz_core">RequireAny</directive>,
+    <directive module="mod_authz_core">RequireNone</directive> e
+    <directive module="mod_authz_core">RequireAll</directive>.</p>
+
+    <p>Se você usa <module>mod_authz_dbm</module>, você deve migrar sua
+    configuração para usar <code>Require dbm-group ...</code> em vez de
+    <code>Require group ...</code>.</p>
+
+    <section id="access">
+      <title>Controle de acesso</title>
+
+      <p>Na versão 2.2, o controle de acesso baseado no nome do host do cliente, no endereço IP,
+      e em outras características das solicitações do cliente era feito usando as
+      diretivas <directive
+      module="mod_access_compat">Order</directive>, <directive
+      module="mod_access_compat">Allow</directive>, <directive
+      module="mod_access_compat">Deny</directive> e <directive
+      module="mod_access_compat">Satisfy</directive>.</p>
+
+      <p>Na versão 2.4, esse controle de acesso é feito da mesma forma que outras
+      verificações de autorização, usando o novo módulo
+      <module>mod_authz_host</module>. Os antigos padrões de controle de acesso
+      devem ser substituídos pelos novos mecanismos de autenticação,
+      embora, para compatibilidade com configurações antigas, o novo
+      módulo <module>mod_access_compat</module> seja fornecido.</p>
+
+      <note><title>Misturando diretivas antigas com novas</title>
+      <p>Misturar diretivas antigas como <directive
+      module="mod_access_compat">Order</directive>, <directive
+      module="mod_access_compat">Allow</directive> ou <directive
+      module="mod_access_compat">Deny</directive> com novas como
+      <directive
+      module="mod_authz_core">Require</directive> é possível tecnicamente porém
+      não é recomendado. <module>mod_access_compat</module> foi criado para suportar
+      configurações que contêm somente diretivas antigas para facilitar a migração para a versão 2.4.
+      Favor verificar os exemplos abaixo para ter uma ideia melhor sobre os problemas que podem surgir.
+      </p>
+      </note>
+
+      <p>Aqui estão alguns exemplos de maneiras antigas e novas de fazer o mesmo
+      controle de acesso.</p>
+
+      <p>Neste exemplo, não há autenticação e todas as solicitações são negadas.</p>
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+Order deny,allow
+Deny from all
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+Require all denied
+        </highlight>
+      </example>
+
+      <p>Neste exemplo, não há autenticação e todas as solicitações são permitidas.</p>
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+Order allow,deny
+Allow from all
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+Require all granted
+        </highlight>
+      </example>
+
+      <p>No exemplo a seguir, não há autenticação e todos os hosts no domínio example.org
+      têm acesso permitido; todos os outros têm acesso negado.</p>
+
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+Order Deny,Allow
+Deny from all
+Allow from example.org
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+Require host example.org
+        </highlight>
+      </example>
+
+      <p>No exemplo a seguir, misturar diretivas antigas e novas leva a
+      resultados inesperados.</p>
+
+      <example>
+        <title>Misturando diretivas antigas e novas: NÃO FUNCIONA COMO ESPERADO</title>
+          <highlight language="config">
+DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Order deny,allow
+    Deny from all
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Require local
+&lt;/Location&gt;
+
+access.log - GET /server-status 403 127.0.0.1
+error.log - AH01797: client denied by server configuration: /var/www/html/server-status
+          </highlight>
+      </example>
+      <p>Por que o httpd nega acesso a server-status mesmo quando a configuração parece permitir?
+        Porque as diretivas <module>mod_access_compat</module> tem precedência
+        sobre as <module>mod_authz_host</module> neste cenário de
+        <a href="sections.html#merging">mesclagem</a> de configurações.</p>
+
+      <p>Este exemplo, por outro lado, funciona como esperado:</p>
+
+      <example>
+        <title>Misturando diretivas antigas e novas: FUNCIONA COMO ESPERADO</title>
+        <highlight language="config">
+DocumentRoot "/var/www/html"
+
+&lt;Directory "/"&gt;
+    AllowOverride None
+    Require all denied
+&lt;/Directory&gt;
+
+&lt;Location "/server-status"&gt;
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow From 127.0.0.1
+&lt;/Location&gt;
+
+access.log - GET /server-status 200 127.0.0.1
+        </highlight>
+      </example>
+      <p>Portanto, mesmo se a mistura de configurações ainda seja
+        possível, tente evitar na atualizaçao: mantenha diretivas antigas e somente
+        migre para as novas em um estágio posterior ou migre tudo de uma vez.
+      </p>
+    </section>
+
+     <p>Em muitas configurações com autenticação, onde o valor de
+     <directive>Satisfy</directive> tinha o padrão de <em>ALL</em>, trechos
+     que simplesmente desligavam o controle de acesso baseado em host são omitidos:</p>
+
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+# configuração na versão 2.2 que desliga o controle de acesso baseado em host e usa somente autenticação
+Order Deny,Allow
+Allow from all
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+# Não é necessário substituir o controle de acesso baseado em host
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+
+     <p>Em configurações onde a autenticação e o controle de acesso eram adequadamente combinados, as
+        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicitações atendam a <em>ambos</em> os critérios:</p>
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+Order allow,deny
+Deny from all
+# Satisfy ALL is the default
+Satisfy ALL
+Allow from 127.0.0.1
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+&lt;RequireAll&gt;
+  Require valid-user
+  Require ip 127.0.0.1
+&lt;/RequireAll&gt;
+        </highlight>
+      </example>
+
+     <p>Em configurações onde a autenticação e o controle de acesso eram adequadamente combinados, as
+        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicitações atendam a <em>qualquer</em> um dos critérios:</p>
+      <example>
+        <title>Configuração na versão 2.2:</title>
+        <highlight language="config">
+Order allow,deny
+Deny from all
+Satisfy any
+Allow from 127.0.0.1
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+Require valid-user
+        </highlight>
+      </example>
+      <example>
+        <title>Configuração na versão 2.4:</title>
+        <highlight language="config">
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile /example.com/conf/users.passwd
+AuthName secure
+# &lt;RequireAny&gt; (implícito)
+Require valid-user
+Require ip 127.0.0.1
+        </highlight>
+      </example>
+
+    </section>
+
+    <section id="config">
+      <title>Outras mudanças na configuração</title>
+
+      <p>Alguns outros pequenos ajustes podem ser necessários para configurações
+      em particular como discutido abaixo.</p>
+
+      <ul>
+        <li><directive>MaxRequestsPerChild</directive> foi renomeada para
+        <directive module="mpm_common">MaxConnectionsPerChild</directive>,
+        descrevendo com maior precisão o que ela faz. O nome antigo ainda
+        é suportado.</li>
+
+        <li><directive>MaxClients</directive> foi renomeada para
+        <directive module="mpm_common">MaxRequestWorkers</directive>,
+        que descreve melhor o que ela faz. Para MPMs assíncronos, como
+        <module>event</module>, o número máximo de clientes não é
+        equivalente ao número de threads. O nome antigo ainda
+        é suportado.</li>
+
+        <li>A diretiva <directive module="core">DefaultType</directive>
+        não tem mais nenhum efeito além de emitir um
+        alerta se for usada com algum valor diferente de
+        <code>none</code>. É necessário usar outras configurações
+        para substituí-la na versão 2.4.
+        </li>
+
+        <li>O padrão para <directive module="core">AllowOverride</directive>
+        agora é <code>None</code>.</li>
+
+        <li>O padrão para <directive module="core">EnableSendfile</directive>
+        agora é Off.</li>
+
+        <li>O padrão para <directive module="core">FileETag</directive>
+        agora é "MTime Size" (sem INode).</li>
+
+        <li><module>mod_dav_fs</module>: O formato do arquivo de <directive
+        module="mod_dav_fs">DavLockDB</directive> foi alterado para
+        sistemas com inodes. o arquivos antigo de <directive
+        module="mod_dav_fs">DavLockDB</directive> precisa ser apagado na
+        atualização.
+        </li>
+
+        <li><directive module="core">KeepAlive</directive> somente
+        aceita valores de <code>On</code> ou <code>Off</code>.
+        Anteriormente, qualquer valor diferente de "Off" ou "0" era tratado como
+        "On".</li>
+
+        <li>As diretivas AcceptMutex, LockFile, RewriteLock, SSLMutex,
+        SSLStaplingMutex e WatchdogMutexPath foram substituídas
+        por uma única diretiva <directive module="core">Mutex</directive>.
+        É necessário avaliar o uso dessas diretivas
+        removidas na configuração 2.2 para determinar se elas podem
+        ser apenas removidas ou se precisam ser substituídas usando <directive
+        module="core">Mutex</directive>.</li>
+
+        <li><module>mod_cache</module>: <directive
+        module="mod_cache">CacheIgnoreURLSessionIdentifiers</directive>
+        agora faz uma correspondência exata com a string de consulta em vez de
+        um correspondência parcial. Se a configuração estava usando strings
+        parciais, por exemplo, usando <code>sessionid</code> para corresponder a
+        <code>/someapplication/image.gif;jsessionid=123456789</code>,
+        então será necessário alterar para a string completa
+        <code>jsessionid</code>.
+        </li>
+
+        <li><module>mod_cache</module>: O segundo parâmetro para
+        <directive module="mod_cache">CacheEnable</directive> somente
+        corresponde ao conteúdo do proxy direto se ele começar com o protocolo
+        correto. Na versão 2.2 e anteriores, um parâmetro de '/' correspondia a todo o
+        conteúdo.</li>
+
+        <li><module>mod_ldap</module>: <directive
+        module="mod_ldap">LDAPTrustedClientCert</directive> agora é,
+        consistentemente, uma configuração apenas por diretório. Se esta diretiva
+        for usada, revise a configuração para garantir que ela está
+        presente em todos os contextos de diretório necessários.</li>
+
+        <li><module>mod_filter</module>: a sintaxe de <directive
+        module="mod_filter">FilterProvider</directive> foi alterada e
+        agora usa uma expressão booleana para determinar se um filtro está aplicado.
+        </li>
+
+        <li><module>mod_include</module>:
+            <ul>
+            <li>O elemento <code>#if expr</code> agora usa o novo <a
+            href="expr.html">analisador de expressões</a>. A sintaxe antiga pode ser
+            restaurada com a nova diretiva <directive module="mod_include"
+            >SSILegacyExprParser</directive>.
+            </li>
+            <li>Uma diretiva de configuração SSI* em escopo de diretório não faz mais
+            com que todas as outras diretivas SSI* por diretório sejam redefinidas para seus
+            valores padrão.</li>
+            </ul>
+        </li>
+
+        <li><module>mod_charset_lite</module>: A opção <code>DebugLevel</code>
+        foi removida em favor da configuração <directive
+        module="core">LogLevel</directive> por módulo.
+        </li>
+
+        <li><module>mod_ext_filter</module>: A opção <code>DebugLevel</code>
+        foi removida em favor da configuração <directive
+        module="core">LogLevel</directive> por módulo.
+        </li>
+
+        <li><module>mod_proxy_scgi</module>: A configuração padrão para
+        <glossary ref="pathinfo">PATH_INFO</glossary> foi alterada em relação à versão 2.2 e
+        algumas aplicações web não irão mais operar adequadamente com a
+        nova configuração de <code>PATH_INFO</code>. A configuração anterior
+        pode ser restaurada através da configuração da variável
+        <code>proxy-scgi-pathinfo</code>.</li>
+
+        <li><module>mod_ssl</module>: A verificação de revogação baseada em CRL
+        agora precisa ser configurada explicitamente através de <directive
+        module="mod_ssl">SSLCARevocationCheck</directive>.
+        </li>
+
+        <li><module>mod_substitute</module>: O comprimento máximo de linha agora
+        é limitado a 1MB.
+        </li>
+
+        <li><module>mod_reqtimeout</module>: Se o módulo for carregado, ele
+        agora definirá alguns limites de tempo padrões.</li>
+
+        <li><module>mod_dumpio</module>: <directive>DumpIOLogLevel</directive>
+        não é mais suportado. Os dados são sempre registrados com <directive
+        module="core">LogLevel</directive> no nível <code>trace7</code>.</li>
+
+        <li>Em plataformas Unix, comandos de registro encadeados configurados com
+        <directive module="core">ErrorLog</directive> ou
+        <directive module="mod_log_config">CustomLog</directive> eram chamados usando
+        <code>/bin/sh -c</code> na versão 2.2 e anteriores.  Na versão 2.4 e posteriores,
+        comandos de registro encadeados são executados diretamente. Para restaurar o
+        comportamento antigo, consulte a <a href="logs.html#piped">documentação sobre
+        registros encadeados</a>.</li>
+
+      </ul>
+    </section>
+  </section>
+
+  <section id="misc">
+    <title>Alterações Miscelâneas</title>
+
+    <ul>
+      <li><module>mod_autoindex</module>: agora extrai títulos e
+      exibe descrições para arquivos .xhtml, que antes eram
+      ignorados.</li>
+
+      <li><module>mod_ssl</module>: O formato padrão das variáveis ​​<code>*_DN</code>
+      foi alterado. O formato antigo ainda pode ser usado com o novo argumento
+      <code>LegacyDNStringFormat</code> da diretiva <directive
+      module="mod_ssl">SSLOptions</directive>. O protocolo SSLv2
+      não é mais suportado. <directive module="mod_ssl">SSLProxyCheckPeerCN
+      </directive> e <directive module="mod_ssl">SSLProxyCheckPeerExpire
+      </directive> agora são ativadas por padrão, fazendo com que as solicitações de proxy para hosts HTTPS
+      com certificados inválidos ou desatualizados falhem com código de status 502 (Bad
+      gateway)</li>
+
+      <li><program>htpasswd</program> agora usa hash MD5 por padrão em
+      todas as plataformas.</li>
+
+      <li>A diretiva <directive module="core">NameVirtualHost</directive>
+      não tem mais efeito, além de emitir um
+      alerta. Qualquer combinação de endereço/porta que apareça em vários
+      hosts virtuais é implicitamente tratada como um host virtual baseado em nome.
+      </li>
+
+      <li><module>mod_deflate</module> agora irá ignorar a compressão se souber
+      que a sobrecarga de tamanho adicionada pela compressão será maior que os dados
+      a serem comprimidos.
+      </li>
+
+      <li>Documentos de erro multilíngues da versão 2.2.x podem não funcionar a menos que
+      sejam ajustados à nova sintaxe do elemento <code>#if expr=</code> do módulo <module>mod_include</module>
+      ou que a diretiva <directive module="mod_include">SSILegacyExprParser</directive> esteja
+      habilitada para o diretório que contém os documentos de erro.
+      </li>
+
+      <li>A funcionalidade fornecida por <code>mod_authn_alias</code>
+      em versões anteriores (ou seja, a diretiva <directive
+      module="mod_authn_core">AuthnProviderAlias</directive>)
+      foi movida para <module>mod_authn_core</module>.
+      </li>
+
+      <li><module>mod_cgid</module> usa a diretiva <directive module="core"
+      >Timeout</directive> do servidor para limitar o tempo de espera pela saída CGI.
+      Esse tempo limite pode ser alterado com <directive module="mod_cgid">
+      CGIDScriptTimeout</directive>.
+      </li>
+
+      <li>A etiqueta <code>&lt;set&gt;</code> do módulo <module>mod_include</module> não
+      realiza mais a decodificação de entidades no valor que está sendo definido.</li>
+    </ul>
+
+  </section>
+
+  <section id="third-party">
+    <title>Módulos de Terceiros</title>
+    <p>Todos os módulos devem ser recompilados para a versão 2.4 antes de serem carregados.</p>
+
+    <p>Muitos módulos de terceiros projetados para a versão 2.2
+    funcionarão sem alterações com a versão 2.4 do Apache HTTP Server.
+    Alguns exigirão alterações; consulte a <a href="developer/new_api_2_4.html">Visão geral da
+    atualização da API</a>.</p>
+  </section>
+
+  <section id="commonproblems">
+    <title>Problemas comuns ao atualizar</title>
+    <ul><li>Erros na inicialização:
+    <ul>
+      <li><code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</code> - carregue o módulo <module>mod_unixd</module></li>
+      <li><code>Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration</code>, ou
+<code>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</code>
+ - carregue o módulo <module>mod_access_compat</module> ou atualize a configuração para as diretivas de autorização da versão 2.4.</li>
+      <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remova a diretiva <directive module="core">DefaultType</directive>
+      e substitua por outra configuração.</li>
+      <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled
+      or defined by a module not included in the server configuration
+      </code> - <directive module="mod_filter">AddOutputFilterByType</directive>
+      foi movida do núcleo para o módulo mod_filter, que precisa ser carregado.</li>
+    </ul></li>
+    <li>Erros ao servir requisições:
+    <ul>
+      <li><code>configuration error:  couldn't check user: /path</code> -
+      carregue o módulo <module>mod_authn_core</module>.</li>
+      <li>arquivos <code>.htaccess</code> são estão sendo processados - Verifique uma
+      diretiva <directive module="core">AllowOverride</directive> apropriada;
+      o padrão mudou para <code>None</code> na versão 2.4.</li>
+    </ul>
+    </li>
+</ul>
+  </section>
+</manualpage>

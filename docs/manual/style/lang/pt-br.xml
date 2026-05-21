@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English Revision: 1919773 -->
+<!-- English Revision: 1919560 -->
 <!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -73,10 +73,11 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NOME</message>
         <message id="hyphenation"></message>
-        <message id="foundabug">Lista de verificação de bugs</message>
+        <message id="foundabug">Lista de verificação de problemas</message>
         <message id="httpdchangelog">registro de alterações do httpd</message>
         <message id="httpdknownissues">Problemas conhecidos</message>
         <message id="httpdreportabug">Relate um problema</message>
+        <message id="permalink">Link permanente</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxe</message>
@@ -126,8 +127,8 @@
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[DOCUMENTAÇÃO APACHE]</message>
         <message id="search">Busca Google</message> <!-- search button -->
-        <message id="index">índice</message> <!-- deprecated -->
-        <message id="home">InÍcio</message> <!-- deprecated -->
+        <message id="index">Índice</message> <!-- deprecated -->
+        <message id="home">Início</message> <!-- deprecated -->
         <message id="comments">Comentários</message>
 
         <!-- breadcrumb links -->
@@ -149,7 +150,7 @@
 
         <!-- not up to date -->
         <message id="outofdate">Esta tradução pode estar desatualizada.
-        Confira a versão em inglês para mudanças recentes.</message>
+        Verifique a versão em inglês para alterações recentes.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">A documentação para esta diretiva ainda
             não foi traduzida. Por favor consulte a versão
