@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English Revision: 1919773 -->
+<!-- English Revision: 1934321 -->
 <!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -60,10 +60,10 @@
         <message id="seealso">Veja também</message>
         <message id="topics">Tópicos</message>
         <message id="status">Status</message>
-        <message id="moduleidentifier">Identificador de Módulo</message>
-        <message id="sourcefile">Arquivo Fonte</message>
+        <message id="moduleidentifier">Identificador&nbsp;de&nbsp;Módulo</message>
+        <message id="sourcefile">Arquivo&nbsp;Fonte</message>
         <message id="compatibility">Compatibilidade</message>
-        <message id="before-since">Disponível no Servidor Apache HTTP </message>
+        <message id="before-since">Disponível no Servidor HTTP Apache </message>
         <message id="after-since"> e posteriores.</message>
 
         <!-- Used in manualpage -->
@@ -73,7 +73,7 @@
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
         <message id="name-section">NOME</message>
         <message id="hyphenation"></message>
-        <message id="foundabug">Lista de verificação de bugs</message>
+        <message id="foundabug">Lista de verificação de problemas</message>
         <message id="httpdchangelog">registro de alterações do httpd</message>
         <message id="httpdknownissues">Problemas conhecidos</message>
         <message id="httpdreportabug">Relate um problema</message>
@@ -126,8 +126,8 @@
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[DOCUMENTAÇÃO APACHE]</message>
         <message id="search">Busca Google</message> <!-- search button -->
-        <message id="index">índice</message> <!-- deprecated -->
-        <message id="home">InÍcio</message> <!-- deprecated -->
+        <message id="index">Índice</message> <!-- deprecated -->
+        <message id="home">Início</message> <!-- deprecated -->
         <message id="comments">Comentários</message>
 
         <!-- breadcrumb links -->
@@ -149,7 +149,7 @@
 
         <!-- not up to date -->
         <message id="outofdate">Esta tradução pode estar desatualizada.
-        Confira a versão em inglês para mudanças recentes.</message>
+        Verifique a versão em inglês para alterações recentes.</message>
         <!-- directive not translated yet -->
         <message id="nottranslated">A documentação para esta diretiva ainda
             não foi traduzida. Por favor consulte a versão
@@ -163,7 +163,7 @@
         <message id="retired.current">Versão atual da documentação do Servidor HTTP Apache</message>
         <message id="retired.document">Siga <link>este atalho</link> para a versão atual deste documento.</message>
 
-        <message id="permalink">Permanent link</message>
+        <message id="permalink">Link permanente</message>
 
     </messages>
 </language>

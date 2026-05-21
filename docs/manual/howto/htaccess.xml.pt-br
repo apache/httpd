@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.pt-br.xsl"?>
-<!-- English Revision: 1933863:1934320 (outdated) -->
+<!-- English Revision: 1934320 -->
 <!-- Portuguese(BR) translation: leonardolara --><!-- Reviewed by: leonardolara -->
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -95,6 +95,11 @@ AccessFileName ".config"
     especificando que valor precisa estar em <directive
     module="core">AllowOverride</directive> para que essa diretiva
     seja permitida.</p>
+
+    <note>O valor padrão de <directive
+    module="core">AllowOverride</directive> é <code>None</code>.
+    Isto significa que arquivos <code>.htaccess</code> são completamente ignorados
+    a menos que sejam explicitamente habilitados para um diretório.</note>
 
     <p>Por exemplo, ao procurar na documentação pela diretiva <directive
     module="core">AddDefaultCharset</directive>,
