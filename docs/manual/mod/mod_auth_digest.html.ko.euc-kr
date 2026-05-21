@@ -52,7 +52,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnccheck">AuthDigestNcCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestprovider">AuthDigestProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
@@ -198,20 +197,6 @@ URI들</td></tr>
     <div class="note">
       아직 구현되지 않았다.
     </div>
-    
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthDigestNonceFormat" id="AuthDigestNonceFormat">AuthDigestNonceFormat</a> <a name="authdigestnonceformat" id="authdigestnonceformat">지시어</a> <a title="Permanent link" href="#authdigestnonceformat" class="permalink">&para;</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">설명:</a></th><td>nonce를 만드는 방법을 결정한다</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AuthDigestNonceFormat <var>format</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">사용장소:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override 옵션:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">상태:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">모듈:</a></th><td>mod_auth_digest</td></tr>
-</table>
-    <div class="note">아직 구현되지 않았다.</div>
     
 
 </div>

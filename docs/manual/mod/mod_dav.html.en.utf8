@@ -56,6 +56,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#dav">Dav</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davbasepath">DavBasePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davdepthinfinity">DavDepthInfinity</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#davhonormtimeheader">DavHonorMtimeHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmintimeout">DavMinTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#davmsext">DavMSext</a></li>
 </ul>
@@ -238,6 +239,49 @@ Alias "/php-source" "/home/gstein/php_files"
     allow the processing of <code>PROPFIND</code> requests containing the
     header 'Depth: Infinity'. Because this type of request could constitute
     a denial-of-service attack, by default it is not allowed.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavHonorMtimeHeader" id="DavHonorMtimeHeader">DavHonorMtimeHeader</a> <a name="davhonormtimeheader" id="davhonormtimeheader">Directive</a> <a title="Permanent link" href="#davhonormtimeheader" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow clients to set resource modification times via the
+X-OC-Mtime request header</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DavHonorMtimeHeader on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DavHonorMtimeHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
+</table>
+    <p>The <code class="directive">DavHonorMtimeHeader</code> directive controls
+    whether <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> will honor the
+    <code>X-OC-Mtime</code> request header when processing
+    <code>PUT</code> and <code>MKCOL</code> requests. This header
+    is used by some WebDAV sync clients to preserve the
+    original modification time of uploaded files.</p>
+
+    <p>When enabled, if a client sends a <code>PUT</code> or
+    <code>MKCOL</code> request with an <code>X-OC-Mtime</code>
+    header, the server will set the resource's modification time to
+    the value specified in that header. The header value must be a
+    Unix timestamp (seconds since epoch), expressed as a decimal
+    integer.</p>
+
+    <p>If the header is present but malformed (contains non-digit
+    characters), the server will respond with a 400 Bad Request
+    error.</p>
+
+    <div class="warning">
+    <p>Enabling this directive allows clients to manipulate file
+    modification times on the server. Only enable it in locations
+    where clients are trusted, and always protect access with
+    authentication.</p>
+    </div>
+
+    <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">&lt;Directory "/var/www/dav/sync"&gt;
+    Dav On
+    DavHonorMtimeHeader on
+&lt;/Directory&gt;</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -91,6 +91,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy100continue">Proxy100Continue</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyaddheaders">ProxyAddHeaders</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyasyncdelay">ProxyAsyncDelay</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li>
@@ -560,6 +562,42 @@
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyAsyncDelay" id="ProxyAsyncDelay">ProxyAsyncDelay</a> <a name="proxyasyncdelay" id="proxyasyncdelay">ディレクティブ</a> <a title="Permanent link" href="#proxyasyncdelay" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Time to poll synchronously before handing a connection to the
+MPM for asynchronous processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyAsyncDelay <var>time</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache HTTP Server 2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p><h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></code></li>
+<li><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyAsyncIdleTimeout" id="ProxyAsyncIdleTimeout">ProxyAsyncIdleTimeout</a> <a name="proxyasyncidletimeout" id="proxyasyncidletimeout">ディレクティブ</a> <a title="Permanent link" href="#proxyasyncidletimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Inactivity timeout for asynchronous proxy connections</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ProxyAsyncIdleTimeout <var>time</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>Value of <code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Available in Apache HTTP Server 2.5 and later</td></tr>
+</table><p>このディレクティブの解説文書は
+            まだ翻訳されていません。英語版をご覧ください。
+            </p><h3>参照</h3>
+<ul>
+<li><code class="directive"><a href="#proxyasyncdelay">ProxyAsyncDelay</a></code></li>
+<li><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></li>
+</ul>
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">ディレクティブ</a> <a title="Permanent link" href="#proxybadheader" class="permalink">&para;</a></h2>
 <table class="directive">

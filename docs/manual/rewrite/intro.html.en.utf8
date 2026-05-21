@@ -401,7 +401,11 @@ rewriting for you. This is discussed in greater detail in the <a href="rewritema
 but the rules behave differently there — in particular, the directory
 prefix is stripped from the URL before matching. See the
 <a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
-document for full details.</p>
+document for full details. Note that
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> and
+<code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> blocks
+also trigger per-directory behavior — see
+<a href="htaccess.html#context-restrictions">Which contexts support rewrite rules?</a>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

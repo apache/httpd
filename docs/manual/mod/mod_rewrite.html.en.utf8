@@ -55,8 +55,8 @@ URLs on the fly</td></tr>
       <a href="../expr.html#vars">query string</a>.</p>
 
       <p>A rewrite rule
-      can be invoked in the server configuration files, or in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. The path generated
-      by a rewrite rule can include a query string, or can lead to internal
+      can be invoked in the server configuration files, or in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. The substitution
+      string of a rewrite rule can include a query string, and a rule can lead to internal
       sub-processing, external request redirection, or internal proxy
       throughput.</p>
 

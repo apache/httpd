@@ -284,8 +284,9 @@ response hashes in digest authentication</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
 <tr><td colspan="2" class="descr">URIs that are in the same protection space for digest
 authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
-<tr class="odd"><td colspan="2" class="descr">Determines how the nonce is generated</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
+<tr class="odd"><td colspan="2" class="descr">Enables or disables checking of the nonce-count sent by the
+client</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>
 <tr><td colspan="2" class="descr">How long the server nonce is valid</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></td><td class="module"><a href="mod_auth_digest.html">mod_auth_digest</a></td></tr>

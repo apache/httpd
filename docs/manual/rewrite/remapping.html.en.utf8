@@ -45,6 +45,7 @@ including detailed descriptions of how each works.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#https-redirect">Forcing HTTPS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#front-controller">Front Controller / Application Routing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
@@ -175,6 +176,67 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
       balancer can reach the backend, or use
       <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> to validate the source.</p>
       </div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="acme-exemption" id="acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a> <a title="Permanent link" href="#acme-exemption" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You have forced all traffic to HTTPS (as above), but your
+      ACME client (Let's Encrypt, Certbot, etc.) needs plain HTTP
+      access to <code>/.well-known/acme-challenge/</code> to complete
+      domain validation.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Place an exception <em>before</em> your HTTPS redirect
+      rule:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>The dash (<code>-</code>) substitution means "do not rewrite."
+      Combined with <code>[L]</code>, it stops rule processing for any
+      request matching the ACME challenge path, allowing it to be
+      served over plain HTTP. All other requests continue to the
+      next rule and are redirected to HTTPS as usual.</p>
+
+      <p>If you are using the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> approach in a dedicated
+      port-80 VirtualHost, use an
+      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> and
+      <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>
+      instead:</p>
+
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+
+    # Allow ACME challenges over HTTP
+    Alias "/.well-known/acme-challenge/" "/var/www/acme/.well-known/acme-challenge/"
+    &lt;Directory "/var/www/acme/.well-known/acme-challenge"&gt;
+        Require all granted
+    &lt;/Directory&gt;
+
+    # Everything else goes to HTTPS
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$0"
+&lt;/VirtualHost&gt;</pre>
+
 
     </dd>
   </dl>
