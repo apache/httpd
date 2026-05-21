@@ -465,7 +465,11 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       the current state of the URI matches its pattern, <strong
       >and</strong> if these conditions are met.</p>
 
-      <p><em>TestString</em> is a string which can contain the
+      <p>If the <em>CondPattern</em> is prefixed with a <code>!</code> the
+      condition is determined to be true only if the the
+      <em>CondPattern</em> does not match.</p>
+
+        <p><em>TestString</em> is a string which can contain the
       following expanded constructs in addition to plain text:</p>
 
       <ul>
@@ -477,6 +481,10 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
           <code>RewriteRule</code> which is subject to the current
           set of <code>RewriteCond</code> conditions. $0 provides
           access to the whole string matched by that pattern.
+
+          <note>Backreferences are only defined if the pattern 
+          matches. Thus, if the pattern is prefixed with 
+          <code>!<.code>, no backreferences are ever defined.</note>
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
@@ -486,6 +494,10 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
           <code>RewriteCond</code> in the current set
           of conditions. %0 provides access to the whole string matched by
           that pattern.
+
+          <note>Backreferences are only defined if the pattern 
+          matches. Thus, if the pattern is prefixed with 
+          <code>!<.code>, no backreferences are ever defined.</note>
         </li>
         <li>
           <strong>RewriteMap expansions</strong>: These are
@@ -1081,7 +1093,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
 <name>RewriteRule</name>
 <description>Defines rules for the rewriting engine</description>
 <syntax>RewriteRule
-      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</syntax>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -1097,6 +1109,10 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       a <a id="regexp" name="regexp"><glossary ref="regex">regular
       expression</glossary></a>.  What this pattern is compared against varies depending
       on where the <directive>RewriteRule</directive> directive is defined. </p>
+
+      <p>If the pattern is prefixed with a <code>!</code> the
+      substitution will be performed only if the the
+      <em>pattern</em> does not match.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
 
