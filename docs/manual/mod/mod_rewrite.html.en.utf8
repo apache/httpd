@@ -169,7 +169,11 @@ URLs on the fly</td></tr>
       directive. The following rule is then only used if both
       the current state of the URI matches its pattern, <strong>and</strong> if these conditions are met.</p>
 
-      <p><em>TestString</em> is a string which can contain the
+      <p>If the <em>CondPattern</em> is prefixed with a <code>!</code> the
+      condition is determined to be true only if the the
+      <em>CondPattern</em> does not match.</p>
+
+        <p><em>TestString</em> is a string which can contain the
       following expanded constructs in addition to plain text:</p>
 
       <ul>
@@ -181,6 +185,10 @@ URLs on the fly</td></tr>
           <code>RewriteRule</code> which is subject to the current
           set of <code>RewriteCond</code> conditions. $0 provides
           access to the whole string matched by that pattern.
+
+          <div class="note">Backreferences are only defined if the pattern
+          matches. Thus, if the pattern is prefixed with
+          <code>!</code>, no backreferences are ever defined.</div>
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
@@ -190,6 +198,10 @@ URLs on the fly</td></tr>
           <code>RewriteCond</code> in the current set
           of conditions. %0 provides access to the whole string matched by
           that pattern.
+
+          <div class="note">Backreferences are only defined if the pattern
+          matches. Thus, if the pattern is prefixed with
+          <code>!</code>, no backreferences are ever defined.</div>
         </li>
         <li>
           <strong>RewriteMap expansions</strong>: These are
@@ -815,8 +827,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The 3rd parameter, MapTypeOptions, in only available from Apache
-2.4.29 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The 3rd parameter, MapTypeOptions, is only available in Apache httpd
+2.4.29 and later.</td></tr>
 </table>
       <p>The <code class="directive">RewriteMap</code> directive defines a
       <em>Rewriting Map</em> which can be used inside rule
@@ -1075,7 +1087,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines rules for the rewriting engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteRule
-      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</code></td></tr>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1091,6 +1103,10 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       a <a id="regexp" name="regexp"><a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
       expression</a></a>.  What this pattern is compared against varies depending
       on where the <code class="directive">RewriteRule</code> directive is defined. </p>
+
+      <p>If the pattern is prefixed with a <code>!</code> the
+      substitution will be performed only if the the
+      <em>pattern</em> does not match.</p>
 
 <div class="note"><h3><a id="what_is_matched" name="what_is_matched">What is matched?</a></h3>
 

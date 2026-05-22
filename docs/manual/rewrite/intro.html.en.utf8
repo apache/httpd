@@ -82,12 +82,12 @@ it will tell you exactly how each rule is processed.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/">Perl Compatible
-Regular Expression</a> vocabulary. In this document, we do not attempt
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">Perl Compatible
+Regular Expressions</a> vocabulary, via the PCRE2 library. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+recommend the <a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">PCRE2 documentation</a>, the
 <a href="https://perldoc.perl.org/perlre">Perl regular
-expression man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+expressions man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
 Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
 2006, but regular expression syntax is essentially unchanged, and this
 remains the definitive reference on the subject).</p>
