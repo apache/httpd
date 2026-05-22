@@ -217,7 +217,7 @@ que le message d'erreur puisse être lu.</dd>
  
 <section id="dumpconf"><title>Affichage des options de configuration</title>
 
-<p>Les options suivantes peuvent être combinées avec l’option <var>-t</var> pour
+<p>Les options suivantes peuvent être combinées avec l'option <var>-t</var> pour
 afficher des informations à propos de la configuration :</p>
 
 <dl>

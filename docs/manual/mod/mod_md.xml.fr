@@ -1278,7 +1278,7 @@ MDMessageCmd /etc/apache/md-message
 		certification. mod_md essaiera à nouveau d'obtenir cette
 		réponse.		
             </p><p>
-                Un évènement de type "ocsp-renewed" est déclenché lorsqu’une
+                Un évènement de type "ocsp-renewed" est déclenché lorsqu'une
 		nouvelle réponse OCSP a été obtenu avec succès pour un
 		certificat de domaine. Cet évènement de produit au plus une fois
 		par jour.
@@ -1508,7 +1508,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDCertificateCheck</name>
-        <description>Définit le motif de nom et d’URL pour un site de
+        <description>Définit le motif de nom et d'URL pour un site de
 	vérification de certificat</description>
         <syntax>MDCertificateCheck <var>name</var> <var>url</var></syntax>
         <contextlist>
@@ -1524,7 +1524,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDActivationDelay</name>
-        <description>Délai d’activation des nouveaux certificays</description>
+        <description>Délai d'activation des nouveaux certificays</description>
         <syntax>MDActivationDelay <var>duration</var></syntax>
         <contextlist>
             <context>server config</context>
@@ -1638,7 +1638,7 @@ MDMessageCmd /etc/apache/md-message
 		pas les renouvellements des autres domaines.
             </p>
 	    <p>
-		 Avec la version 2.6.1 de mod_md, le temps d’attente a été
+		 Avec la version 2.6.1 de mod_md, le temps d'attente a été
 		 augmenté de&nbsp;5 à 30&nbsp;secondes.
             </p>
         </usage>
@@ -1776,17 +1776,17 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
 	    <p>
-	    Cette option permet de définir l’intervalle entre deux
+	    Cette option permet de définir l'intervalle entre deux
 	    vérifications de certificat. Par défaut, la validité et le besoin de
 	    renouvellement sont vérifiés deux fois par jour. Cet intervalle
-	    n’est cependant pas appliqué avec précision. En effet, le module lui
+	    n'est cependant pas appliqué avec précision. En effet, le module lui
 	    applique une plage de variation aléatoire de +/- 50%. Avec
-	    l’intervalle par défaut de 12&nbsp;heures, cela signifie que l’intervalle
+	    l'intervalle par défaut de 12&nbsp;heures, cela signifie que l'intervalle
 	    réel entre deux vérifications varie entre 6&nbsp;et 18&nbsp;heures, la
-	    variation s’appliquant à nouveau à chaque vérification. Cela permet
-	    d’atténuer les pics de trafic sur les serveurs ACME.
+	    variation s'appliquant à nouveau à chaque vérification. Cela permet
+	    d'atténuer les pics de trafic sur les serveurs ACME.
             </p><p>
-	    La valeur minimale pouvant être définie pour l’intervalle est de
+	    La valeur minimale pouvant être définie pour l'intervalle est de
 	    1&nbsp;seconde. Il est cependant déconseillé de définir un intervalle
 	    aussi court sur un serveur en production.
             </p>
@@ -1804,7 +1804,7 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Il s’agit d’une extension non standard d’ACME par Let's Encrypt.
+                Il s'agit d'une extension non standard d'ACME par Let's Encrypt.
             </p><p>
 		Lets Encrypt prend en charge les profiles de certificat dans
 		leurs CA. Cette fonctionnalité, entre autres détails, vous
@@ -1816,11 +1816,11 @@ MDMessageCmd /etc/apache/md-message
 		validité est de 6&nbsp;jours seulement.
             </p><p>
                 Si vous ne modifiez pas la configuration de votre module mod_md,
-		vous continuerez à recevoir des certificats d’une durée de
-		validité de 90&nbsp;jours. Si vous pensez qu’une durée de validité
+		vous continuerez à recevoir des certificats d'une durée de
+		validité de 90&nbsp;jours. Si vous pensez qu'une durée de validité
 		plus courte convient mieux à votre situation (et acceptez le
 		risque que le temps de renouvellement soit beaucoup plus court),
-		vous pouvez définir le profile à utiliser à l’aide de
+		vous pouvez définir le profile à utiliser à l'aide de
 		«&nbsp;MDProfile shortlived ».
            </p><p>
                 Les noms de profile sont définis par le CA. Si vous tentez de
@@ -1846,11 +1846,11 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 Cette directive permet de contrôler si un <directive
 		module="mod_md">MDProfile</directive> que vous définissez est
-		obligatoire ou non. S’il est obligatoire et si le CA ne propose
+		obligatoire ou non. S'il est obligatoire et si le CA ne propose
 		pas de profile configuré, le renouvellement du certificat
 		échouera.
            </p><p>
-                S’il n’est pas obligatoire et si le CA ne propose
+                S'il n'est pas obligatoire et si le CA ne propose
 		pas de profile, les renouvellements seront effectués sans
 		profile particulier et le CA délivrera les certificats avec les
 		valeurs par défaut.
@@ -1860,7 +1860,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDRenewViaARI</name>
-        <description>Utilisation de l’extension ACME ARI (rfc9773).</description>
+        <description>Utilisation de l'extension ACME ARI (rfc9773).</description>
         <syntax>MDRenewViaARI on|off</syntax>
         <default>MDRenewViaARI on</default>
         <contextlist>
@@ -1868,16 +1868,16 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                Cette directive permet d’activer ou de désactiver le
-		déclenchement du renouvellement des certificats à l’aide de
-		l’extension ACME ARI (rfc9773). Ces renouvellements s’ajoutent à
-		ceux déclenchés par le mécanisme contrôlé à l’aide de la
+                Cette directive permet d'activer ou de désactiver le
+		déclenchement du renouvellement des certificats à l'aide de
+		l'extension ACME ARI (rfc9773). Ces renouvellements s'ajoutent à
+		ceux déclenchés par le mécanisme contrôlé à l'aide de la
 		directive <directive>MDRenewWindow</directive>.
            </p><p>
                 ACME ARI permet en quelque sorte à une CA ACME de façonner le
 		trafic entrant des renouvellements. Plus important cependant,
-		cette extension peut informer les clients de l’urgence d’un
-		renouvellement, par exemple lorsqu’un certificat ou une partie
+		cette extension peut informer les clients de l'urgence d'un
+		renouvellement, par exemple lorsqu'un certificat ou une partie
 		de sa chaîne de certification a été révoqué(e).
             </p>
         </usage>
@@ -1895,7 +1895,7 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-                Le temps d’attente, après le démarrage du serveur, avant de
+                Le temps d'attente, après le démarrage du serveur, avant de
 		vérifier si des certificats doivent être renouvelés. Par défaut,
 		cette vérification est immédiate.
             </p>
@@ -1918,7 +1918,7 @@ MDMessageCmd /etc/apache/md-message
 		serveur ACME de test qui possède son propre certificat racine.
 		Les administrateurs qui possèdent une autorité de certification
 		interne propre à une entreprise peuvent utiliser cette directive
-		lorsqu’ils utilisent leurs propres serveurs ACME.
+		lorsqu'ils utilisent leurs propres serveurs ACME.
             </p>
             <p>
                 Définissez cette directive à «&nbsp;none&nbsp;» pour la désactiver

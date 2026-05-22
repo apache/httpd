@@ -577,8 +577,8 @@ All pour les versions antérieures</default>
     <code>.htaccess</code> dans le système de fichiers.</p>
 
     <note>
-    <p>La valeur <code>None</code> ne peut pas être combinée avec d’autres
-    valeurs. Si c’est le cas, une erreur sera produite qui interrompra la
+    <p>La valeur <code>None</code> ne peut pas être combinée avec d'autres
+    valeurs. Si c'est le cas, une erreur sera produite qui interrompra la
     lecture de la configuration.</p>
     </note>
 
@@ -5730,7 +5730,7 @@ Apache.</compatibility>
 
 <directivesynopsis>
 <name>UNCList</name>
-<description>Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
+<description>Définit quels sont les noms d'hôte UNC auxquels le serveur peut accéder
 </description>
 <syntax>UNCList <var>hostname</var> [<var>hostname</var>...]</syntax>
 <default>unset</default>
@@ -5742,8 +5742,8 @@ serveur HTTP Apache.</compatibility>
 <usage>
     <p>Au cours de leur traitement, les requêtes pour accéder à un chemin du
     système de fichiers qui aboutissent à un chemin UNC échoueront si le nom
-    d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
-    est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
+    d'hôte dans le chemin UNC n'a pas été spécifié par cette directive. Le but
+    est de limiter l'accès aux chemins dérivés d'entrées non fiables.</p>
 
     <highlight language="config">
     UNCList example.com other.example.com
@@ -5751,8 +5751,8 @@ serveur HTTP Apache.</compatibility>
 
     <note type="warning"><title>Sécurité</title>
         <p>Les valeurs spécifiées par cette directive ne sont vérifiées que par
-	certaines composantes du serveur, avant d’accéder à des chemins du
-	système de fichiers qui peuvent dériver par inadvertance d’entrées non
+	certaines composantes du serveur, avant d'accéder à des chemins du
+	système de fichiers qui peuvent dériver par inadvertance d'entrées non
 	fiables. </p>
         <p> Les systèmes Windows doivent être isolés au niveau de la couche
 	réseau pour éviter les appels SMB/NTLM sortants vers des destinations

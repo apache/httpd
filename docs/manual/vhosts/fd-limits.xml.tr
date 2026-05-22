@@ -53,7 +53,7 @@
 
       <li>Sisteminiz dosya tanıtıcı sayısını başka sınırlara bağlı kılmıştır:
         örneğin stdio akımları ile ilgili sınır, dosya tanıtıcı sayısının
-        256’nın altında ollmasını gerektiriyordur (Solaris 2).</li>
+        256'nın altında ollmasını gerektiriyordur (Solaris 2).</li>
     </ol>
 
     <p>Böyle sorunlar karşısında yapabilecekleriniz:</p>
@@ -65,7 +65,7 @@
       ayrıştırılması</a> bölümüne bakınız.)</li>
 
       <li>Sisteminizde serbest dosya tanıtıcı sayısı 1-2 civarına düşerse
-        Apache’yi aşağıdaki gibi bir betikle yeniden çalıştırarak dosya
+        Apache'yi aşağıdaki gibi bir betikle yeniden çalıştırarak dosya
         tanıtıcı sayısını arttırabilirsiniz:
 
         <example>

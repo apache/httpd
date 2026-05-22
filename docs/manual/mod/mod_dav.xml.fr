@@ -56,8 +56,8 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     compilé dans le serveur ou chargé au démarrage à l'aide de la
     directive <directive module="mod_so">LoadModule</directive>.</p>
 
-    <p>Dans l’exemple ci-après, la directive <directive module="mod_authz_core" 
-    type="section">RequireAny</directive> permet de s’assurer que les méthodes
+    <p>Dans l'exemple ci-après, la directive <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> permet de s'assurer que les méthodes
     spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
     <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
     authentifiés.</p>

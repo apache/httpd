@@ -562,9 +562,9 @@ bien que <code>.JPG</code> seront acceptés.</p>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
-<p>Par défaut, lorsqu’une directive <directive
+<p>Par défaut, lorsqu'une directive <directive
 module="mod_rewrite">RewriteRule</directive> résulte en une redirection externe,
-tout caractère dans la sortie qui ne fait pas partie de l’ensemble sûr suivant
+tout caractère dans la sortie qui ne fait pas partie de l'ensemble sûr suivant
 est converti en son code hexa (encodage avec caractère pourcentage) :</p>
 
 <ul>
@@ -579,7 +579,7 @@ est converti en son code hexa (encodage avec caractère pourcentage) :</p>
 pourcentage déjà présent dans la substitution sera doublement encodé.</p>
 
 <p>Utiliser le drapeau [NE] empêche cet échappement, ce qui permet de
-transmettre sans modification vers l’URL de redirection des caractères comme
+transmettre sans modification vers l'URL de redirection des caractères comme
 <code>#</code> et <code>?</code>.</p>
 
 <highlight language="config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</highlight>
@@ -820,9 +820,9 @@ dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
 avertissements 'Invalid URI in request'.
 </p>
 
-<p>Remarque&nbsp;: httpd ne prend en charge que les codes d’état inclus dans la
-spécification de HTTP. Utiliser un code d’état non reconnu provoquera une erreur
-500 et l’enregistrement d’un message dans le journal des erreurs.</p>
+<p>Remarque&nbsp;: httpd ne prend en charge que les codes d'état inclus dans la
+spécification de HTTP. Utiliser un code d'état non reconnu provoquera une erreur
+500 et l'enregistrement d'un message dans le journal des erreurs.</p>
 
 </section>
 
@@ -929,16 +929,16 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
 
 <section id="flag_unsafe_allow_3f"><title>UnsafeAllow3F</title>
     <p>Il est nécessaire de définir ce drapeau pour permettre à une réécriture
-    de continuer si la requête HTTP en cours d’écriture possède un point d'interrogation encodé, «&nbsp;%3f&nbsp;», et si le résultat réécrit contient un «&nbsp;?&nbsp;» dans
-    la substitution. Cela protège d’une URL malveillante tirant avantage d’une
-    capture et d’une resubstitution du point d'interrogation encodé.</p>
+    de continuer si la requête HTTP en cours d'écriture possède un point d'interrogation encodé, «&nbsp;%3f&nbsp;», et si le résultat réécrit contient un «&nbsp;?&nbsp;» dans
+    la substitution. Cela protège d'une URL malveillante tirant avantage d'une
+    capture et d'une resubstitution du point d'interrogation encodé.</p>
 </section>
 <section id="flag_unsafe_prefix_stat"><title>UnsafePrefixStat</title>
     <p>La définition de ce drapeau est requise dans les substitutions à
     l'échelle du serveur qui commencent par une variable ou une référence
     arrière et se résolvent en un chemin du système de fichiers. Ces
     substitutions ne sont pas préfixées par la racine des documents. Cela protège
-    d’une URL malveillante faisant correspondre la substitution expansée à un
+    d'une URL malveillante faisant correspondre la substitution expansée à un
     emplacement non souhaité du système de fichiers.</p>
 
     <p><since>2.5.1</since></p>
@@ -946,7 +946,7 @@ utiliser le drapeau <code>L</code> pour terminer la séquence
 
  <section id="flag_unc"><title>UNC</title>
     <p>Définir ce drapeau empêche la fusion des slashes de début multiples tels
-    que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n’est pas
+    que ceux utilisés dans les chemins UNC de Windows. Ce drapeau n'est pas
     nécessaire lorsque la substitution de la règle commence par des slashes
     multiples littéraux.</p>
 

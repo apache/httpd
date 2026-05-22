@@ -76,9 +76,9 @@
         önemlisi, küçülmüş bir yapılandırmanın bakımı da kolaylaşacağı için
         hatalar da azalacaktır.</li>
 
-      <li>Yeni sanal konakların eklenmesi, DNS’de yeni girdiler oluşturmak ve
+      <li>Yeni sanal konakların eklenmesi, DNS'de yeni girdiler oluşturmak ve
         dosya sisteminde bununla ilgili dizinleri açmak dışında biraz daha
-        basit olacaktır; en azından Apache’yi yeniden yapılandırmak ve yeniden
+        basit olacaktır; en azından Apache'yi yeniden yapılandırmak ve yeniden
         başlatmak zorunda kalmayacaksınız.</li>
     </ol>
 
@@ -109,9 +109,9 @@
 
     <p>Devingen sanal konağı normal bir sanal konak gibi göstermek için
       bazı bilgileri istekten saptamak gerekir. Bunlardan en önemlisi,
-      httpd tarafından göreli URL’lerden normal URL’leri ve benzerlerini
+      httpd tarafından göreli URL'lerden normal URL'leri ve benzerlerini
       üretmek için kullanılan sunucu ismidir. Sunucu ismi
-      <code>ServerName</code> yönergesi ile yapılandırılır ve CGI’ler
+      <code>ServerName</code> yönergesi ile yapılandırılır ve CGI'ler
       tarafından <code>SERVER_NAME</code> ortam değişkeni üzerinden
       kullanılır. Çalışma anındaki asıl değer <directive module="core"
       >UseCanonicalName</directive> yönergesi tarafından denetlenir.
@@ -119,17 +119,17 @@
       <code>Host:</code> başlık alanından elde edilir. <code>UseCanonicalName
       DNS</code> belirtilmişse, sunucu ismi, sanal konağın IP adresinden
       tersine DNS sorgusu yapılarak elde edilir. Birincisi isme dayalı sanal
-      konaklar tarafından ikincisi ise IP’ye dayalı sanal konaklar tarafından
+      konaklar tarafından ikincisi ise IP'ye dayalı sanal konaklar tarafından
       kullanılır. Eğer httpd, istekte <code>Host:</code> başlığının olmayışı
       veya DNS sorgusunun başarısız olması sebebiyle sunucu ismini elde
       edemezse son çare olarak <code>ServerName</code> yönergesinde yazılı
       değeri kullanır.</p>
 
     <p>Saptanan bilgilerden biri de <code>DocumentRoot</code>
-      yönergesi ile yapılandırılan belge kök dizini olup CGI’ler tarafından
+      yönergesi ile yapılandırılan belge kök dizini olup CGI'ler tarafından
       <code>DOCUMENT_ROOT</code> ortam değişkeni üzerinden kullanılır. Normal
       yapılandırmada <module>core</module> modülü tarafından dosya isimlerini
-      URI’lere eşlerken kullanılır. Fakat sunucu devingen sanal konakları
+      URI'lere eşlerken kullanılır. Fakat sunucu devingen sanal konakları
       kullanmak üzere yapılandırıldığında, eşleştirmeyi farklı yollardan yapan
       başka bir modül devreye girer (<module>mod_vhost_alias</module> veya
       <module>mod_rewrite</module>). <code>DOCUMENT_ROOT</code> ortam
@@ -159,7 +159,7 @@ VirtualDocumentRoot /siteler/%0/belgeler<br />
 VirtualScriptAlias  /siteler/%0/cgi-bin
 </example>
 
-    <p>Bu yapılandırmayı IP’ye dayalı sanal konaklar için kullanmak isterseniz
+    <p>Bu yapılandırmayı IP'ye dayalı sanal konaklar için kullanmak isterseniz
       <code>UseCanonicalName Off</code> yerine <code>UseCanonicalName
       DNS</code> yazmanız yeterlidir. Böylece dosya ismine eklenecek konak
       ismi sanal konağın IP adresinden türetilir. <code>%0</code> değişkeni,
@@ -173,7 +173,7 @@ VirtualScriptAlias  /siteler/%0/cgi-bin
 
 <section id="homepages"><title>Basitleştirilmiş Kitlesel Sanal Konaklar</title>
 
-    <p>Bu sistem, yukarıdaki yapılandırmanın bir ISS’nin sunucusuna
+    <p>Bu sistem, yukarıdaki yapılandırmanın bir ISS'nin sunucusuna
       uyarlanmasından başka bir şey değildir. <code>%2</code> değişkenini
       kullanarak, dosya isminde kullanmak üzere sunucu isminin alt dizgelerini
       seçebiliriz, böylece, örneğin <code>www.user.example.com</code> belgeleri
@@ -201,7 +201,7 @@ VirtualScriptAlias  /siteler/%0/cgi-bin
 
 <section id="combinations"><title>Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</title>
 
-    <p>Daha karmaşık ayarlamalar yaparak httpd’nin normal
+    <p>Daha karmaşık ayarlamalar yaparak httpd'nin normal
       <code>&lt;VirtualHost&gt;</code> bölümlerini farklı kitlesel sanal konak
       yapılandırmaları için kullanabilirsiniz. Örneğin, bireysel
       müşterileriniz için bir IP adresiniz, kurumsal müşterileriniz için de
@@ -262,9 +262,9 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 </section>
 
 <section id="ipbased">
-    <title>IP’ye dayalı sanal konakları daha verimli kılmak</title>
+    <title>IP'ye dayalı sanal konakları daha verimli kılmak</title>
 
-    <p><a href="#simple">İlk örnekte</a> IP’ye dayalı sanal konaklar için
+    <p><a href="#simple">İlk örnekte</a> IP'ye dayalı sanal konaklar için
       kullanılmak istenirse yapılandırmada neyin nasıl değiştirileceği
       belirtilmişti. Her istek için ayrı bir DNS sorgusu gerekeceğinden bu
       başarım düşmesine yol açar. DNS sorgusu ihtiyacını ortadan kaldırmak

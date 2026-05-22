@@ -312,7 +312,7 @@ passe</title>
 
     <example>
       htdbm -cbp passwords.dbm bogus bogus
-      awk ‘BEGIN { FS=”:” }; {system (“htdbm -bp passwords.dbm ” $1 ” ” $2)}’ passwords
+      awk 'BEGIN { FS=":" }; {system ("htdbm -bp passwords.dbm " $1 " " $2)}' passwords
       htdbm -x bogus
     </example>
 

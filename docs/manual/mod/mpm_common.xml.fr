@@ -306,9 +306,9 @@ Listen 192.170.2.5:8000
       compilé en désactivant les adresses IPv4, il s'agit du comportement par
       défaut et cette option n'a alors aucun effet).</li>
 
-      <li><code>multipathtcp</code> : active l’utilisation de <a
+      <li><code>multipathtcp</code> : active l'utilisation de <a
       href="https://mptcp.dev">Multipath TCP (MPTCP)</a> pour les sockets. Notez
-      que cette option n’est actuellement prise en charge que par Linux.
+      que cette option n'est actuellement prise en charge que par Linux.
       </li>
     </ul>
 
@@ -446,7 +446,7 @@ connexions</description>
 
 <directivesynopsis>
 <name>ListenTCPDeferAccept</name>
-<description>Valeur de l’option de socket TCP_DEFER_ACCEPT si elle est
+<description>Valeur de l'option de socket TCP_DEFER_ACCEPT si elle est
 définie</description>
 <syntax>ListenTCPDeferAccept <var>integer</var></syntax>
 <default>ListenTCPDeferAccept 30</default>
@@ -457,9 +457,9 @@ définie</description>
 <compatibility>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</compatibility>
 
 <usage>
-    <p>La valeur spécifiée ici est définie comme valeur de l’option de socket
+    <p>La valeur spécifiée ici est définie comme valeur de l'option de socket
     <code>TCP_DEFER_ACCEPT</code> si cette dernière est définie sur le socket
-    d’écoute. Cela se produit sous Linux lorsque la directive <directive
+    d'écoute. Cela se produit sous Linux lorsque la directive <directive
     module="core">AcceptFilter</directive> est définie à toute autre valeur que
     <code>none</code>. Dans tous les autres cas, ce réglage est ignoré. Pour
     plus de détails, voir la page de manuel de <a

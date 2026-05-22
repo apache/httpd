@@ -622,12 +622,12 @@ Modified.</description>
     module="mod_cache">CacheDefaultExpire</directive> servira à générer une date
     d'expiration. </p>
 
-    <note>Plus précisément, une réponse 200 OK n’est mise en cache que si elle
+    <note>Plus précisément, une réponse 200 OK n'est mise en cache que si elle
     contient au moins un des en-têtes <code>Last-Modified</code>,
     <code>ETag</code> ou <code>Expires</code>, ou une directive
     <code>Cache-Control: max-age</code> ou <code>s-maxage</code>. Cette
-    directive permet de s’affranchir entièrement de cette condition préalable.
-    Si un de ces en-têtes est déjà présent, cette directive n’a aucun
+    directive permet de s'affranchir entièrement de cette condition préalable.
+    Si un de ces en-têtes est déjà présent, cette directive n'a aucun
     effet.</note>
 
     <highlight language="config">

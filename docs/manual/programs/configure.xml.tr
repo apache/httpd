@@ -147,7 +147,7 @@
           oluşturabilirsiniz. Bu dosyada örneğin <code>FOO</code> isimli
           yerleşim <code>&lt;Layout FOO&gt;...&lt;/Layout&gt;</code> bölümü
           içinde düzenlenmiştir ve her yerleşim için böyle ayrı bir bölüm
-          vardır. Öntanımlı yerleşim <code>Apache</code>’dir.</dd>
+          vardır. Öntanımlı yerleşim <code>Apache</code>'dir.</dd>
       </dl>
     </section>
 
@@ -257,12 +257,12 @@
 
       <dt><code>--host=<var>çalışma-ortamı</var></code></dt>
       <dd>Sunucunun çalışacağı sistemin sistem türünü tanımlar. Öntanımlı
-        sistem türü <code><var>derleme-ortamı</var></code>’dır.</dd>
+        sistem türü <code><var>derleme-ortamı</var></code>'dır.</dd>
 
       <dt><code>--target=<var>hedef-ortam</var></code></dt>
       <dd>Derleyicileri <code><var>hedef-ortam</var></code> sistem türü için
         yapılandırır. Öntanımlı sistem türü
-        <code><var>çalışma-ortamı</var></code>’dır. Bu seçenek
+        <code><var>çalışma-ortamı</var></code>'dır. Bu seçenek
         <code>autoconf</code> tarafından atanır ve Apache HTTP Sunucusu için
         gerekli değildir.</dd>
     </dl>
@@ -520,11 +520,11 @@
       <dl>
         <dt><code>--with-<var>paket</var>[=<var>değer</var>]</code></dt>
         <dd><code><var>paket</var></code> paketi kullanılır. Öntanımlı
-          <code><var>değer</var></code> <code>yes</code>’tir.</dd>
+          <code><var>değer</var></code> <code>yes</code>'tir.</dd>
 
         <dt><code>--without-<var>paket</var></code></dt>
         <dd><code><var>paket</var></code> paketi kullanılmaz. Öntanımlı
-          <code><var>değer</var></code> <code>no</code>’dur. Bu seçenek
+          <code><var>değer</var></code> <code>no</code>'dur. Bu seçenek
           <code>autoconf</code> tarafından sağlanmıştır ve Apache HTTP
           Sunucusu için pek yararlı değildir.</dd>
       </dl>
@@ -538,7 +538,7 @@
         <dt><code>--with-apr=<var>dizin</var>|<var>dosya</var></code></dt>
         <dd><glossary ref="apr">Apache Taşınabilir Arayüzü</glossary> (APR)
           httpd kaynak paketinin bir parçası olup HTTP Sunucu ile birlikte
-          derlenir. Eğer kendi kurulu APR’nizi kullanmak isterseniz bunu
+          derlenir. Eğer kendi kurulu APR'nizi kullanmak isterseniz bunu
           <code>configure</code> betiğine <code>apr-config</code> betiğinin
           yolunu belirterek ifade edebilirsiniz. Kurulu APR için bid dizin,
           dosya ismi veya mutlak dosya yolu belirtebilirsiniz.
@@ -548,7 +548,7 @@
         <dt><code>--with-apr-util=<var>dizin</var>|<var>dosya</var></code></dt>
         <dd>Apache Taşınabilir Arayüzü Araçları (APU) httpd kaynak paketinin
           bir parçası olup HTTP Sunucu ile birlikte derlenir. Eğer kendi
-          kurulu APU’nuzu kullanmak isterseniz bunu <code>configure</code>
+          kurulu APU'nuzu kullanmak isterseniz bunu <code>configure</code>
           betiğine <code>apu-config</code> betiğinin yolunu belirterek ifade
           edebilirsiniz. Kurulu APR için bir dizin, dosya ismi veya mutlak
           dosya yolu belirtebilirsiniz. <code>apr-config</code> ya
@@ -678,7 +678,7 @@
           ince ayar</a> konusuna bakınız).</dd>
 
         <dt><code>--with-suexec-caller</code></dt>
-        <dd>Bu seçenek ile <program>suexec</program>’i çalıştırabilecek
+        <dd>Bu seçenek ile <program>suexec</program>'i çalıştırabilecek
           kullanıcı belirtilir. Normalde <program>httpd</program> programını
           çalıştıran kullanıcı olmalıdır.</dd>
 

@@ -38,7 +38,7 @@
 <syntax>Group <var>unix-grubu</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Apache 2.0’dan itibaren sadece sunucu geneli için geçerlidir.</compatibility>
+<compatibility>Apache 2.0'dan itibaren sadece sunucu geneli için geçerlidir.</compatibility>
 
 <usage>
     <p><directive>Group</directive> yönergesi, sunucunun hangi grup altında
@@ -83,7 +83,7 @@
 <syntax>User <var>unix-kullanıcısı</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Apache 2.0’dan itibaren sadece sunucu geneli için
+<compatibility>Apache 2.0'dan itibaren sadece sunucu geneli için
   geçerlidir.</compatibility>
 
 <usage>

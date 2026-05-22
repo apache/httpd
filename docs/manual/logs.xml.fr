@@ -119,10 +119,10 @@
     <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un
     tube de communication (pipe).</p>
 
-    <p>Le format du journal des erreurs est défini à l’aide de la directive <directive
+    <p>Le format du journal des erreurs est défini à l'aide de la directive <directive
     module="core">ErrorLogFormat</directive> avec laquelle vous pouvez
     choisir les valeurs à journaliser. Un format par défaut sera utilisé si vous
-    n’en spécifiez pas un. Un message de journalisation typique se présente
+    n'en spécifiez pas un. Un message de journalisation typique se présente
     comme suit&nbsp;:</p>
 
     <example>
@@ -132,16 +132,16 @@
 
     <p>Le premier champ de l'entrée du journal est la date et l'heure du
     message. Le second champ indique le module qui produit le message (core,
-    dans ce cas) et le niveau de sévérité de ce message. Suivent l’ID du processus
-    et éventuellement l’ID du thread du processus qui a été soumis à cette
+    dans ce cas) et le niveau de sévérité de ce message. Suivent l'ID du processus
+    et éventuellement l'ID du thread du processus qui a été soumis à cette
     condition. Le
     troisième champ contient l'adresse IP du client qui a effectué la requête.
-    Vient ensuite le message d’erreur détaillé.</p>
+    Vient ensuite le message d'erreur détaillé.</p>
 
     <note><p>Notez que certains messages qui étaient auparavant journalisés au
     niveau <code>error</code> ont été rétrogradés au niveau <code>info</code>
     dans httpd 2.4. Par exemple, les messages "File does not exist" pour les
-    réponses 404 sont journalisés au niveau <code>info</code> et n’apparaîtront
+    réponses 404 sont journalisés au niveau <code>info</code> et n'apparaîtront
     pas dans le journal des erreurs avec la valeur par défaut <code>warn</code>
     de la directive <directive module="core">LogLevel</directive>. Pour
     restaurer le comportement précédent, spécifiez <code>LogLevel warn
@@ -155,10 +155,10 @@
     telle quelle dans le journal des erreurs.</p>
 
      <p>Mettre un symbole <code>%L</code> dans le journal des erreurs et le
-     journal des accès produit un ID d’entrée de journalisation grâce auquel
-     vous pourrez corréler l’entrée du journal des erreurs avec celle du journal
+     journal des accès produit un ID d'entrée de journalisation grâce auquel
+     vous pourrez corréler l'entrée du journal des erreurs avec celle du journal
      des accès. Si <module>mod_unique_id</module> est chargé, son ID de requête
-     unique sera utilisé comme ID d’entrée de journalisation.</p>
+     unique sera utilisé comme ID d'entrée de journalisation.</p>
 
     <p>Pendant la phase de test, il est souvent utile de visualiser en continu
     le journal des erreurs afin de détecter tout problème éventuel. Sur les

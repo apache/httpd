@@ -27,7 +27,7 @@
 <manualpage metafile="perf-tuning.xml.meta">
   <parentdocument href="./">Çeşitli Belgeler</parentdocument>
 
-  <title>Apache’de Başarımın Arttırılması</title>
+  <title>Apache'de Başarımın Arttırılması</title>
 
   <summary>
 
@@ -44,7 +44,7 @@
       etkileyebilen yapılandırma seçenekleri de mevcuttur. Bu belgede, bir
       Apache 2.x kurulumunda sunucu yöneticisinin sunucunun başarımını
       arttırmak amacıyla yapılandırma sırasında neler yapabileceğinden
-      bahsedilmiştir. Bu yapılandırma seçeneklerinden bazıları, httpd’nin
+      bahsedilmiştir. Bu yapılandırma seçeneklerinden bazıları, httpd'nin
       donanımın ve işletim sisteminin olanaklarından daha iyi
       yararlanabilmesini sağlarken bir kısmı da  daha hızlı bir sunum için
       yöneticinin işlevsellikten ödün verebilmesini olanaklı kılar.</p>
@@ -90,7 +90,7 @@
         <p>İşletim sisteminiz <code>sendfile</code>(2) sistem çağrısını
           destekliyorsa bunun etkinleştirilebildiği sürümün kurulu olması
           önemlidir. (Örneğin, Linux için bu, Linux 2.4 ve sonraki sürümler
-          anlamına gelirken, Solaris için Solaris 8’den önceki sürümlerin
+          anlamına gelirken, Solaris için Solaris 8'den önceki sürümlerin
           yamanması gerektirdiği anlamına gelmektedir.)
           <code>sendfile</code> işlevinin desteklendiği sistemlerde Apache 2
           duruk içeriği daha hızlı teslim etmek ve işlemci kullanımını
@@ -132,7 +132,7 @@
         >HostnameLookups</directive> yönergesinin öntanımlı değeri
         <code>On</code> idi. İstek yerine getirilmeden önce bir DNS sorgusu
         yapılmasını gerektirmesi sebebiyle bu ayarlama her istekte bir
-        miktar gecikmeye sebep olurdu. Apache 1.3’ten itibaren yönergenin
+        miktar gecikmeye sebep olurdu. Apache 1.3'ten itibaren yönergenin
         öntanımlı değeri <code>Off</code> yapılmıştır. Eğer günlük
         dosyalarınızda konak isimlerinin bulunmasını isterseniz, Apache ile
         birlikte gelen <program>logresolve</program> programını
@@ -168,7 +168,7 @@
         &lt;/Files&gt;
       </example>
 
-      <p>Yine de bazı CGI’lerin DNS isimlerine ihtiyacı olursa bu CGI’lerin
+      <p>Yine de bazı CGI'lerin DNS isimlerine ihtiyacı olursa bu CGI'lerin
         bu ihtiyaçlarına yönelik olarak <code>gethostbyname</code> çağrıları
         yapabileceğini gözardı etmeyiniz.</p>
 
@@ -300,7 +300,7 @@
 
       <title>Bellek Eşlemleri</title>
 
-      <p>Apache’nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
+      <p>Apache'nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
         içeriğine bakma gereği duyduğu durumlarda, eğer işletim sistemi
         <code>mmap</code>(2) ve benzerlerini destekliyorsa çekirdek normal
         olarak dosyayı belleğe kopyalayacaktır.</p>
@@ -339,7 +339,7 @@
 
       <title><code>sendfile</code></title>
 
-      <p>Apache’nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
+      <p>Apache'nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
         içeriğine bakmadığı durumlarda, eğer işletim sistemi
         <code>sendfile</code>(2) desteğine sahipse çekirdek normal olarak bu
         desteği kullanacaktır.</p>
@@ -382,7 +382,7 @@
         >StartServers</directive> ayarları, başka sunucularla kıyaslama
         denemelerinde olağanüstü kötü sonuçlar alınmasına sebep olmaktaydı.
         Özellikle uygulanan yükü karşılamaya yetecek sayıda çocuk süreç
-        oluşturulması aşamasında Apache’nin elde ettiği ivme bunlardan
+        oluşturulması aşamasında Apache'nin elde ettiği ivme bunlardan
         biriydi. Başlangıçta <directive module="mpm_common"
         >StartServers</directive> yönergesiyle belli sayıda süreç
         oluşturulduktan sonra her saniyede bir tane olmak üzere <directive
@@ -399,8 +399,8 @@
       <p>Saniyede bir kuralı, sunucunun yeni çocukları oluşturması sırasında
         sistemin aşırı meşgul duruma düşmemesi için alınmış bir önlemdi.
         Makine çocuk süreç oluşturmakla meşgul edildiği sürece isteklere
-        yanıt veremeyecektir. Böylesi bir durum Apache’nin başarımını
-        kötüleştirmekten başka işe yaramayacaktır. Apache 1.3’te saniyede
+        yanıt veremeyecektir. Böylesi bir durum Apache'nin başarımını
+        kötüleştirmekten başka işe yaramayacaktır. Apache 1.3'te saniyede
         bir kuralı biraz esnetildi. Yeni gerçeklenimde artık bir süreç
         oluşturduktan bir saniye sonra iki süreç, bir saniye sonra dört
         süreç oluşturulmakta ve işlem, saniyede 32 çocuk süreç oluşturulur
@@ -424,7 +424,7 @@
         başına istek sayısının sınırsız olduğu anlamına gelir. Eğer
         yapılandırmanızda bu değeri <code>30</code> gibi çok düşük bir
         değere ayarlarsanız bunu hemen kaldırmak zorunda kalabilirsiniz.
-        Sunucunuzu SunOS veya Solaris’in eski bir sürümü üzerinde
+        Sunucunuzu SunOS veya Solaris'in eski bir sürümü üzerinde
         çalıştırıyorsanız bellek kaçaklarına sebep olmamak için bu değeri
         <code>10000</code> ile sınırlayınız.</p>
 
@@ -450,12 +450,12 @@
 
       <p>Apache 2.x, <a href="../mpm.html">Çok Süreçlilik Modülleri</a>
         (MPM) adı verilen eklemlenebilir çok görevlilik modellerini
-        destekler. Apache’yi derlerken bu MPM’lerden birini seçmeniz
-        gerekir. MPM’lerden bazıları platformlara özeldir:
+        destekler. Apache'yi derlerken bu MPM'lerden birini seçmeniz
+        gerekir. MPM'lerden bazıları platformlara özeldir:
         <module>mpm_netware</module>, <module>mpmt_os2</module> ve
         <module>mpm_winnt</module>. Unix
         benzeri sistemler için ise seçebileceğiniz modül sayısı birden
-        fazladır. MPM seçiminin httpd’nin hızında ve ölçeklenebilirliğinde
+        fazladır. MPM seçiminin httpd'nin hızında ve ölçeklenebilirliğinde
         bazı etkileri olabilir:</p>
 
       <ul>

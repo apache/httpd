@@ -91,7 +91,7 @@ LogLevel alert rewrite:trace3
       <module>mod_rewrite</module> vont probablement rechercher en vain les
       directives <code>RewriteLog</code> et <code>RewriteLogLevel</code>. Depuis
       la sortie de httpd 2.4, ces directives ont en effet été remplacées par une
-      configuration de la journalisation par module à l’aide de la directive
+      configuration de la journalisation par module à l'aide de la directive
       <directive module="core">LogLevel</directive>.  </p>
 
       <p>Pour extraire les traces spécifiques à
@@ -479,7 +479,7 @@ répertoire</description>
 	  une directive telle qu'<directive
 	  module="mod_alias">Alias</directive>).</li>
 	  <li>Le chemin de répertoire auquel la <directive
-	  module="mod_rewrite">RewriteRule</directive> s’applique, suffixé par
+	  module="mod_rewrite">RewriteRule</directive> s'applique, suffixé par
 	  la substitution relative est aussi valable en tant que chemin d'URL
 	  sur le serveur (ce qui est rare).</li>
 	  <li>A partir de la version 2.4.16 du serveur HTTP Apache,
@@ -636,7 +636,7 @@ la réécriture soit effectuée
 		sont documentées dans la <a
 		href="../expr.html#vars">documentation des expressions</a>, dans
 		la <a href="../env.html">documentation des variables
-		d’environnement</a> ou dans la spécification de
+		d'environnement</a> ou dans la spécification de
 		CGI (<rfc>3875</rfc>).</p>
 
 		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
@@ -718,8 +718,8 @@ la réécriture soit effectuée
 		  recoder, passez-la à la <a href="#mapfunc">fonction de
 		  mappage</a> "escape".
 		  Notez que cette variable de serveur est distincte de la
-		  variable d’environnement CGI de même nom : dans un contexte
-		  CGI, <code>REQUEST_URI</code> contient l’URI original complet
+		  variable d'environnement CGI de même nom : dans un contexte
+		  CGI, <code>REQUEST_URI</code> contient l'URI original complet
 		  de la requête, y compris la chaîne de paramètres. Voir la
 		  directive <directive module="core">CGIVar</directive> pour les
 		  détails.
@@ -1206,12 +1206,12 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]
       "app1/index.html" ou "index.html" selon le chemin de répertoire où la
       directive <directive>RewriteRule</directive> est définie.</p>
 
-      <p>Le chemin de répertoire auquel la règle s’applique est supprimé du
+      <p>Le chemin de répertoire auquel la règle s'applique est supprimé du
       chemin correspondant du système de fichiers avant comparaison (jusqu'au
       slash final compris).  En conséquence de cette suppression, les règles
       définies dans ce contexte n'effectuent des comparaisons qu'avec la portion
       du chemin du système de fichiers "en dessous" du chemin de répertoire
-      auquel la règle s’applique.</p>
+      auquel la règle s'applique.</p>
 
       <p>Le chemin correspondant actuel du système de fichiers est déterminé par
       des directives telles que <directive module="core">DocumentRoot</directive> et
@@ -1343,7 +1343,7 @@ substitution !
 
 	<dd>Il indique alors la localisation dans le système de fichiers de la
 	ressource qui doit être envoyée au client. Une substitution commençant
-	par <code>/</code> n’est traitée comme un chemin du système de fichiers
+	par <code>/</code> n'est traitée comme un chemin du système de fichiers
 	que dans un contexte de serveur virtuel ou de serveur global, et
 	seulement si le premier composant du chemin existe dans le système de
 	fichiers. Dans un <glossary ref="perdirectory">contexte de
@@ -1356,7 +1356,7 @@ substitution !
 	doit être servie. Dans un contexte de serveur virtuel ou de serveur
 	global, si le premier composant du chemin existe à la racine du système
 	de fichiers, la substitution est traitée comme un chemin du système de
-	fichiers. Par exemple, <code>/www/file.html</code> est un chemin d’URL,
+	fichiers. Par exemple, <code>/www/file.html</code> est un chemin d'URL,
 	sauf si un répertoire nommé <code>www</code> existe à la racine du
 	système de fichiers. Si vous désirez que d'autres directives de
 	correspondance d'URL (comme la directive <directive
@@ -1390,25 +1390,25 @@ substitution !
       <note><title>Comment sont interprétées les substitutions de chemin</title>
       <p>En fonction du contexte et si elle commence ou non par un slash, une
       substitution sera traitée comme un chemin du système de fichiers ou comme
-      un chemin d’URL :</p>
+      un chemin d'URL :</p>
       <ul>
         <li><strong>Commence par un <code>/</code>, contexte de serveur virtuel
 	ou de serveur global :</strong>
         Traitée comme un chemin du système de fichiers si le premier composant du
-	chemin existe sur disque ; sinon, traitée comme un chemin d’URL.</li>
+	chemin existe sur disque ; sinon, traitée comme un chemin d'URL.</li>
         <li><strong>Commence par un <code>/</code>, <glossary
 	ref="perdirectory">contexte de répertoire</glossary> :</strong>
-        Toujours traitée comme un chemin d’URL. Pas de vérification sur le
+        Toujours traitée comme un chemin d'URL. Pas de vérification sur le
 	système de fichiers.</li>
         <li><strong>Ne commence pas par un <code>/</code> (chemin relatif), contexte de serveur virtuel
-	ou de serveur global :</strong> Traitée comme un chemin d’URL relatif à
-	l’URI de la requête actuelle.</li>
+	ou de serveur global :</strong> Traitée comme un chemin d'URL relatif à
+	l'URI de la requête actuelle.</li>
 	<li><strong>Ne commence pas par un <code>/</code> (chemin relatif),
 	<glossary ref="perdirectory">contexte de
-	répertoire</glossary> :</strong> Traitée comme un chemin d’URL relatif
+	répertoire</glossary> :</strong> Traitée comme un chemin d'URL relatif
 	au chemin de répertoire auquel la directive <directive
 	module="core">Directory</directive> ou le fichier <code>.htaccess</code>
-	s’appliquent. Voir <directive>RewriteBase</directive> pour le contrôle
+	s'appliquent. Voir <directive>RewriteBase</directive> pour le contrôle
 	du préfixe ajouté aux substitutions relatives.</li>
       </ul>
       </note>
@@ -1667,7 +1667,7 @@ substitution !
     </tr>
     <tr>
         <td>UnsafeAllow3F</td>
-        <td>Autorise les substitutions à partir d’URL potentiellement non
+        <td>Autorise les substitutions à partir d'URL potentiellement non
 	fiables.
         <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">détails ...</a></em>
         </td>
@@ -1675,7 +1675,7 @@ substitution !
     <tr>
         <td>UnsafePrefixStat</td>
         <td>Autorise les substitutions potentiellement non fiables à partir
-	d’une variable de tête ou d’une référence arrière vers un chemin du
+	d'une variable de tête ou d'une référence arrière vers un chemin du
 	système de fichiers.
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em><br />
         <since>2.5.1</since>

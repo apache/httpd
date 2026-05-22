@@ -26,7 +26,7 @@
 
 <manualpage metafile="ip-based.xml.meta">
 <parentdocument href="./">Sanal Konaklar</parentdocument>
-   <title>IP’ye Dayalı Sanal Konak Desteği</title>
+   <title>IP'ye Dayalı Sanal Konak Desteği</title>
 
 <seealso>
 <a href="name-based.html">İsme Dayalı Sanal Konak Desteği</a>
@@ -41,13 +41,13 @@
      <p>Çoğu durumda, <a href="name-based.html">isme dayalı sanal konaklar</a>
        birçok sanal konağın tek bir IP adresi/port çiftini paylaşmasını
        sağladığından daha kullanışlıdır. Neyi kullanacağınıza karar vermek için
-       <a href="name-based.html#namevip">İsme dayalı ve IP’ye dayalı Sanal
+       <a href="name-based.html#namevip">İsme dayalı ve IP'ye dayalı Sanal
        Konaklar</a> bölümüne bakınız.</p>
 </section>
 
 <section id="requirements"><title>Sistem gereksinimleri</title>
 
-    <p><cite>IP’ye dayalı</cite> deyince, sunucunun <strong>her IP’ye dayalı
+    <p><cite>IP'ye dayalı</cite> deyince, sunucunun <strong>her IP'ye dayalı
       sanal konak için ayrı bir IP adresi/port çifti</strong>ne sahip olduğunu
       anlıyoruz. Bunun olması için, makine ya çok sayıda ağ bağlantısına
       sahiptir ya da makinede, günümüzde çoğu işletim sistemi tarafından
@@ -71,8 +71,8 @@
     <p>Çok sayıda süreç kullanıyorsanız:</p>
 
     <ul>
-      <li>Güvenli bölgeler oluşturmanız gerekiyordur. Örneğin, şirket2’deki hiç
-        kimse dosya sistemi üzerinden şirket1’e ait verileri okuyamasın, sadece
+      <li>Güvenli bölgeler oluşturmanız gerekiyordur. Örneğin, şirket2'deki hiç
+        kimse dosya sistemi üzerinden şirket1'e ait verileri okuyamasın, sadece
         herkes gibi tarayıcı kullanarak okuyabilsin istenebilir.  Bu durumda,
         <directive module="mod_unixd">User</directive>,
         <directive module="mod_unixd">Group</directive>,
@@ -170,7 +170,7 @@
       Bir yönergenin <directive module="core">VirtualHost</directive>
       bölümlerinde kullanılıp kullanılmayacağını öğrenmek için <a
       href="../mod/directives.html">yönerge dizinini</a> kullanarak yönergenin
-      <a href="../mod/directive-dict.html#Context">Bağlam</a>’ına bakınız.</p>
+      <a href="../mod/directive-dict.html#Context">Bağlam</a>'ına bakınız.</p>
 
     <p><a href="../suexec.html">suEXEC sarmalayıcısı</a> kullanıldığı takdirde
       <directive module="mod_suexec">SuexecUserGroup</directive> yönergesi de
@@ -178,7 +178,7 @@
       kullanılabilir.</p>
 
     <p><em>GÜVENLİK:</em>Günlük dosyalarının yazılacağı yeri belirlerken,
-      Apache’yi başlatan kullanıcıdan başka kimsenin yazamayacağı bir yerin
+      Apache'yi başlatan kullanıcıdan başka kimsenin yazamayacağı bir yerin
       seçilmesi bazı güvenlik risklerini ortadan kaldırmak bakımından
       önemlidir. Ayrıntılar için <a href="../misc/security_tips.html">güvenlik
       ipuçları</a> belgesine bakınız.</p>

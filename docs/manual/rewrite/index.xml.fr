@@ -28,8 +28,8 @@
   <title>Guide pour le module Apache mod_rewrite</title>
 
 <summary>
-<p><em>Le point fort de mod_rewrite réside dans le fait qu’il possède toutes les
-capacités de configuration et la flexibilité de Sendmail ;mais c’est aussi son
+<p><em>Le point fort de mod_rewrite réside dans le fait qu'il possède toutes les
+capacités de configuration et la flexibilité de Sendmail ;mais c'est aussi son
 point faible.</em>
 -- Brian Behlendorf</p>
 
@@ -50,18 +50,18 @@ conseils pratiques. Il est organisé comme suit :</p>
 <dl>
 <dt><a href="intro.html">Introduction</a></dt>
 <dd>Concepts de base : syntaxe des expressions rationnelles, les bases des
-directives RewriteRule et RewriteCond et la manière dont mod_rewrite s’insère
+directives RewriteRule et RewriteCond et la manière dont mod_rewrite s'insère
 dans le cycle de vie du traitement des requêtes.</dd>
 
 <dt><a href="htaccess.html">Réécritures en fonction du répertoire</a></dt>
-<dd>Les principales différences entre l’utilisation des règles de réécriture au
+<dd>Les principales différences entre l'utilisation des règles de réécriture au
 niveau de la configuration globale du serveur et leur utilisation dans un
 contexte de <glossary ref="perdirectory">répertoire</glossary>, y compris la
 suppression du chemin, RewriteBase et la gestion du bouclage par le drapeau [L].</dd>
 
 <dt><a href="flags.html">Drapeaux des règles de réécriture</a></dt>
 <dd>Une référence complète de tous les drapeaux qui peuvent modifier le
-comportement d’une règle de réécriture avec des exemples pour chacun d’entre
+comportement d'une règle de réécriture avec des exemples pour chacun d'entre
 eux.</dd>
 
 <dt><a href="rewritemap.html">Utiliser RewriteMap</a></dt>
@@ -70,12 +70,12 @@ bases de données DBM, requêtes SQL et fonctions internes &mdash; pour piloter
 vos règles de réécriture.</dd>
 
 <dt><a href="remapping.html">Redirection et remappage</a></dt>
-<dd>Des recettes pour les tâches courantes : redirection HTTPS, noms d’hôte
+<dd>Des recettes pour les tâches courantes : redirection HTTPS, noms d'hôte
 canoniques, normalisation des barres obliques de fin, routage du contrôleur
 frontal, et plus encore.</dd>
 
 <dt><a href="vhosts.html">Serveurs virtuels dynamiques</a></dt>
-<dd>Utilisation de mod_rewrite pour associer dynamiquement les noms d’hôte aux
+<dd>Utilisation de mod_rewrite pour associer dynamiquement les noms d'hôte aux
 racines de document sans devoir créer des blocs VirtualHost individuels.</dd>
 
 <dt><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></dt>
@@ -84,8 +84,8 @@ avec des directives plus simples. Ce document vous propose des solutions de
 remplacement et vous indique quand il est préférable de les utiliser.</dd>
 
 <dt><a href="tech.html">Détails techniques</a></dt>
-<dd>Comment mod_rewrite s’insère dans les phases de traitement des requêtes par
-httpd et l’ordre dans lequel les règles et les conditions sont évaluées.</dd>
+<dd>Comment mod_rewrite s'insère dans les phases de traitement des requêtes par
+httpd et l'ordre dans lequel les règles et les conditions sont évaluées.</dd>
 </dl>
 </summary>
 

@@ -293,12 +293,12 @@ du type MIME</description>
 
 <usage>
     <p>La directive <directive>MimeMagicDecompression</directive> permet
-    d’indiquer si <module>mod_mime_magic</module> doit tenter de décompresser
+    d'indiquer si <module>mod_mime_magic</module> doit tenter de décompresser
     les fichiers qui semblent compressés (gzip, compress, etc.) de façon à
     déterminer le type MIME de leur contenu. Cette fonctionnalité est
     <strong>désactivée par défaut</strong> et ne doit être activée que si vous
-    en comprenez les inconvénients significatifs. Elle a pour raison d’exister
-    le maintien d’une compatibilité avec les versions précédentes de httpd, mais
+    en comprenez les inconvénients significatifs. Elle a pour raison d'exister
+    le maintien d'une compatibilité avec les versions précédentes de httpd, mais
     son utilisation est déconseillée.</p>
 
     <note type="warning"><title>Problèmes de sécurité et de compatibilité</title>
@@ -306,47 +306,47 @@ du type MIME</description>
     par défaut&nbsp;:</p>
     <ol>
     <li><strong>Non-conformité aux RFC&nbsp;:</strong> les documents des normes
-    insistent sur la nécessité de définir l’en-tête Content-Encoding pour les
+    insistent sur la nécessité de définir l'en-tête Content-Encoding pour les
     fichiers déjà compressés (comme les fichiers .zip ou .gz). Voir la <a
     href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-encoding">RFC
     9110</a>.</li>
 
-    <li><strong>Atteinte à l’intégrité du contenu&nbsp;:</strong> lorsque l’en-tête
+    <li><strong>Atteinte à l'intégrité du contenu&nbsp;:</strong> lorsque l'en-tête
     Content-Encoding est défini, la plupart des clients HTTP décompressent le
-    fichier avant de l’écrire sur disque. Cela a pour conséquence que le fichier
+    fichier avant de l'écrire sur disque. Cela a pour conséquence que le fichier
     téléchargé possède une taille et une somme de contrôle différentes de celles
-    de l’original, ce qui empêche la vérification de la signature et la
+    de l'original, ce qui empêche la vérification de la signature et la
     validation de la somme de contrôle. Les sites de distribution de logiciels
     trouvent cela particulièrement problématique.</li>
 
     <li><strong>Comportement imprévisible&nbsp;:</strong> cette fonctionnalité ne
-    s’applique qu’aux fichiers dont l’extension ne correspond à aucun type MIME.
-    Cela peut provoquer un comportement incohérent quand certains fichiers d’un
-    répertoire sont affectés et d’autres non, ce qui rend les problèmes
+    s'applique qu'aux fichiers dont l'extension ne correspond à aucun type MIME.
+    Cela peut provoquer un comportement incohérent quand certains fichiers d'un
+    répertoire sont affectés et d'autres non, ce qui rend les problèmes
     difficiles à diagnostiquer.</li>
 
     <li><strong>Impact sur les performances&nbsp;:</strong> la décompression
-    nécessite un fourchage (forking) et l’exécution d’un processus
+    nécessite un fourchage (forking) et l'exécution d'un processus
     <code>gzip</code> externe pour chaque fichier compressé, ce qui induit une
     surcharge significative.</li>
 
     <li><strong>Risque de sécurité&nbsp;:</strong> transmettre un fichier téléchargé
     non fiable à un binaire (<code>gzip</code>) externe peut exposer le serveur
     à des bombes de décompression, à un épuisement des ressources ou à des
-    vulnérabilités d’exécution de code à distance dans l’outil de décompression.</li>
+    vulnérabilités d'exécution de code à distance dans l'outil de décompression.</li>
     </ol>
     </note>
 
     <example><title>Exemple (non recommandé)</title>
     <highlight language="config">
-# N’activer que si vous comprenez parfaitement les risques
+# N'activer que si vous comprenez parfaitement les risques
 MimeMagicDecompression On
     </highlight>
     </example>
 
-    <p>Dans la plupart des cas, il vaut mieux s’assurer que les fichiers
+    <p>Dans la plupart des cas, il vaut mieux s'assurer que les fichiers
     possèdent une extension appropriée à la détection du type par
-    <module>mod_mime</module> que d’utiliser cette fonctionnalité.</p>
+    <module>mod_mime</module> que d'utiliser cette fonctionnalité.</p>
 </usage>
 </directivesynopsis>
 

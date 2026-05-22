@@ -48,7 +48,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       tamponlanana kadar sunucu sürecine bir soket tahsis etmemektir.
       Şimdilik sadece <a
   href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
-      >FreeBSD’nin Kabul Süzgeçleri</a> ve Linux’un soket seçeneklerinden
+      >FreeBSD'nin Kabul Süzgeçleri</a> ve Linux'un soket seçeneklerinden
       <code>TCP_DEFER_ACCEPT</code> ve Windows'un en iyilenmiş
       <code>AcceptEx()</code> işlevi desteklenmektedir.</p>
 
@@ -80,20 +80,20 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
       >accf_data(9)</a> süzgeci kullanılır.</p>
 
-    <p>Linux’taki öntanımlı değerler:</p>
+    <p>Linux'taki öntanımlı değerler:</p>
     <example>
         AcceptFilter http data <br/>
         AcceptFilter https data
     </example>
 
-    <p>Linux’un <code>TCP_DEFER_ACCEPT</code> soket seçeneği HTTP isteklerinin
+    <p>Linux'un <code>TCP_DEFER_ACCEPT</code> soket seçeneği HTTP isteklerinin
       tamponlanmasını desteklemez.  <code>none</code> dahil her değer
       dinleyici üzerinde <code>TCP_DEFER_ACCEPT</code> seçeneğini etkin kılar.
       Daha ayrıntılı bilgi edinmek için Linux
       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
       >tcp(7)</a> kılavuz sayfasına bakınız.</p>
 
-    <p>Windows’taki öntanımlı değerler::</p>
+    <p>Windows'taki öntanımlı değerler::</p>
 
     <example>
       AcceptFilter http data <br/>
@@ -174,7 +174,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
     <p><code>AcceptPathInfo</code> yönergesinin birincil amacı eylemcinin
       <code>PATH_INFO</code> istekleri hakkında verdiği kabul veya red
       kararını geçersiz kılabilmenizi sağlamaktır. Örneğin,
-      <code>PATH_INFO</code>’ya dayalı olarak içerik üretmek için <a
+      <code>PATH_INFO</code>'ya dayalı olarak içerik üretmek için <a
       href="mod_include.html"><code>INCLUDES</code></a> gibi bir <a
       href="../filter.html">süzgeç</a> kullandığınız takdirde bu
       geçersizleştirme zorunlu olur. Normal dosyalar için çekirdek eylemci
@@ -257,7 +257,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
       eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
       Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a
-      href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
+      href="http://www.iana.org/assignments/character-sets">IANA'da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
     <example>
@@ -272,8 +272,8 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
       eklenmesidir; böyle kaynaklar çıktıda kullanıcı tarafından sağlanmış
       veri içermeleri nedeniyle karşı siteden kaynaklanan betikli
       saldırılardan zarar görebilir. Bununla birlikte, bir öntanımlı karakter
-      kümesi belirtmek, tarayıcılarında “karakter kodlamasını kendiliğinden
-      sapta” özelliğini etkin kılmış kullanıcıları korumayacağından daha iyi
+      kümesi belirtmek, tarayıcılarında "karakter kodlamasını kendiliğinden
+      sapta" özelliğini etkin kılmış kullanıcıları korumayacağından daha iyi
       bir çözüm bu betikleri bu tür saldırılara karşı düzeltmek veya en iyisi
       silmektir.</p>
 </usage>
@@ -282,7 +282,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
 <directivesynopsis>
 <name>AllowEncodedSlashes</name>
-<description>Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
+<description>Kodlanmış dosya yolu ayracı içeren URL'lere izin verilip
   verilmeyeceğini belirler.</description>
 <syntax>AllowEncodedSlashes On|Off|NoDecode</syntax>
 <default>AllowEncodedSlashes Off</default>
@@ -293,17 +293,17 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p><directive>AllowEncodedSlashes</directive> yönergesi kodlanmış dosya
-      yolu ayracı içeren URL’lere izin verir (<code>/</code> yerine
+      yolu ayracı içeren URL'lere izin verir (<code>/</code> yerine
       <code>%2F</code> ve ek olarak <code>\</code> için ilgili sistemlerde
-      <code>%5C</code> kullanılmış URL’ler).</p>
+      <code>%5C</code> kullanılmış URL'ler).</p>
 
-    <p><code>Off</code> öntanımlı değeriyle, böyle URL’ler bir 404
+    <p><code>Off</code> öntanımlı değeriyle, böyle URL'ler bir 404
       (Nesne bulunamadı) hatasıyla reddedilirler.</p>
 
-    <p><code>On</code> değeriyle, böyle URL’ler kabul edilir ve kodlanmış
+    <p><code>On</code> değeriyle, böyle URL'ler kabul edilir ve kodlanmış
       dosya yolu ayraçları kodlanmış diğer karakterler gibi çözümlenir.</p>
 
-    <p><code>NoDecode</code> değeriyle, böyle URL’ler kabul edilir fakat
+    <p><code>NoDecode</code> değeriyle, böyle URL'ler kabul edilir fakat
       kodlanmış dosya yolu ayraçları çözümlenmeden kodlanmış halde
       bırakılır.</p>
 
@@ -570,10 +570,10 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Sadece NetWare’de geçerlidir.</compatibility>
+<compatibility>Sadece NetWare'de geçerlidir.</compatibility>
 
 <usage>
-    <p>Bu yönerge Apache httpd’nin CGI bekitlerini çalıştırmak için
+    <p>Bu yönerge Apache httpd'nin CGI bekitlerini çalıştırmak için
       kullanacağı yorumlayıcıyı nasıl bulacağını denetlemek için kullanılır.
       Örneğin, <code>CGIMapExtension sys:\foo.nlm .foo</code> satırı
       <code>.foo</code> uzantılı CGI betik dosyalarının FOO yorumlayıcıya
@@ -594,7 +594,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</compatibility>
 <status>Experimental</status>
 
 <usage>
-    <p>Bu yönerge RFC2616 ve RFC1864’te tanımlandığı gibi
+    <p>Bu yönerge RFC2616 ve RFC1864'te tanımlandığı gibi
       <code>Content-MD5</code> üretimini etkin kılar.</p>
 
     <p>MD5, verideki herhangi bir değişikliğin ileti özetinin değişmesi
@@ -698,7 +698,7 @@ için iptal edilmiştir.</compatibility>
 </contextlist>
 
 <usage>
-    <p>Tek değiştirgeli biçemi <program>httpd</program>’yi <code>-D</code>
+    <p>Tek değiştirgeli biçemi <program>httpd</program>'yi <code>-D</code>
       seçeneğiyle çalıştırmaya eşdeğerdir. Bu yönerge, başlatma betiğinde
       <code>-D</code> seçeneğinin argümanlarını değiştirme gereği duymaksızın
       <directive module="core" type="section">IfDefine</directive> bölümlerini
@@ -745,7 +745,7 @@ için iptal edilmiştir.</compatibility>
       olabileceği gibi Unix kabuk tarzı bir dosya ismi eşleştirme kalıbı da
       olabilir. Kalıp dizgesinde, <code>?</code> herhangi bir tek karakterle,
       <code>*</code> herhangi bir karakter dizisiyle eşleşir. Ayrıca
-      <code>[]</code> karakter aralıkları da kullanılabilir. ‘/’ karakteri
+      <code>[]</code> karakter aralıkları da kullanılabilir. '/' karakteri
       ile hiçbir kalıp karakteri eşleşmez, bu bakımdan <code>&lt;Directory
       /*/public_html&gt;</code> ile <code>/home/user/public_html</code>
       değil, ama <code>&lt;Directory /home/*/public_html&gt;</code>
@@ -761,7 +761,7 @@ için iptal edilmiştir.</compatibility>
 
     <note>
       <p><var>dizin-yolu</var> argümanlarını belirtirken dikkatli
-        olmalısınız: Apache httpd’nin dosyalara erişmekte kullandığı dosya
+        olmalısınız: Apache httpd'nin dosyalara erişmekte kullandığı dosya
         sistemi yolu ile bire bir eşleşmelidir. Belli bir
         <code>&lt;Directory&gt;</code> dizinine uygulanan yönergeler, aynı
         dizine farklı bir yoldan, örneğin başka bir sembolik bağ üzerinden
@@ -922,7 +922,7 @@ için iptal edilmiştir.</compatibility>
 <usage>
     <p>Bu yönerge <program>httpd</program> tarafından dosyalarının sunulacağı
       dizini belirler. <directive module="mod_alias">Alias</directive>
-      benzeri bir yönerge ile eşleşmedikçe, sunucu istenen URL’deki yolu,
+      benzeri bir yönerge ile eşleşmedikçe, sunucu istenen URL'deki yolu,
       belge yolu haline getirmek için belge kök dizinine ekler. Örnek:</p>
 
     <example>
@@ -938,7 +938,7 @@ için iptal edilmiştir.</compatibility>
     <p><directive>DocumentRoot</directive> ile belirtilen dizin bir bölü
       çizgisi ile bitirilmemelidir.</p>
 </usage>
-<seealso><a href="../urlmapping.html#documentroot">URL’lerin Dosya Sistemi
+<seealso><a href="../urlmapping.html#documentroot">URL'lerin Dosya Sistemi
   ile Eşlenmesi</a></seealso>
 </directivesynopsis>
 
@@ -1056,7 +1056,7 @@ için iptal edilmiştir.</compatibility>
 
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
-      <program>httpd</program>’nin başarımını düşürebilmektedir.</li>
+      <program>httpd</program>'nin başarımını düşürebilmektedir.</li>
     <li><program>httpd</program> bellek eşlemli çalışırken bir dosyanın
       silinmesi veya boyutunun küçültülmesi <program>httpd</program>'nin
       parçalama arızası vererek çökmesine yol açabilir.</li>
@@ -1097,7 +1097,7 @@ için iptal edilmiştir.</compatibility>
 
 <usage>
     <p>Bu yönerge, dosya içeriğinin istemciye teslimi için
-      <program>httpd</program>’nin çekirdeğin dosya gönderme desteğini
+      <program>httpd</program>'nin çekirdeğin dosya gönderme desteğini
       kullanıp kullanmayacağını belirler. Öntanımlı olarak, bir isteğin
       yerine getirilmesi, bir durağan dosyanın teslimatı sırasında olduğu
       gibi, bir dosya içindeki veriye erişilmesini gerektirmediği takdirde
@@ -1116,10 +1116,10 @@ için iptal edilmiştir.</compatibility>
       gönderme desteğinde sorun olmayan bir makinede yapılıp çalıştırılabilir
       dosyaların sorunlu makineye kurulduğu durumda bu saptama
       yapılamayacaktır.</li>
-    <li>Linux’ta IPv6 kullanırken dosya gönderme desteği bazı ağ
+    <li>Linux'ta IPv6 kullanırken dosya gönderme desteği bazı ağ
       kartlarındaki TCP toplama sağlaması aktarım hatasını tetikler.</li>
-    <li>Itanium üzerinde çalışan Linux’ta dosya gönderme desteği
-      (<code>sendfile</code>) 2GB’tan büyük dosyalarla çalışamamaktadır.</li>
+    <li>Itanium üzerinde çalışan Linux'ta dosya gönderme desteği
+      (<code>sendfile</code>) 2GB'tan büyük dosyalarla çalışamamaktadır.</li>
     <li><directive module="core">DocumentRoot</directive> ağ dosya sistemi
       (NFS, SMB, CIFS, FUSE gibi) üzerinde olduğu durumda çekirdek ağ
       dosyalarını kendi arabelleği üzerinden sunamayabilir.</li>
@@ -1218,8 +1218,8 @@ için iptal edilmiştir.</compatibility>
       kodundan sonra bir URL veya hata iletisi) ile belirtilir. Apache httpd
       bazı durumlarda sorun/hata ile ilgili ek bilgi verecektir.</p>
 
-    <p>URL’ler yerel yollarda (<directive
-      module="core">DocumentRoot</directive>’a göre) bir bölü çizgisi (/) ile
+    <p>URL'ler yerel yollarda (<directive
+      module="core">DocumentRoot</directive>'a göre) bir bölü çizgisi (/) ile
       başlatılabileceği gibi istemci tarafından çözümlenecek tam bir URL
       şeklinde de belirtilebilir. Bunlar yerine, tarayıcıda gösterilmek üzere
       bir ileti de belirtilebilir. Örnekler:</p>
@@ -1232,11 +1232,11 @@ için iptal edilmiştir.</compatibility>
       ErrorDocument 403  Yasak!
     </example>
 
-    <p>Bunlardan başka, Apache httpd’nin kendi hata iletilerinin kullanılacağı
+    <p>Bunlardan başka, Apache httpd'nin kendi hata iletilerinin kullanılacağı
       özel <code>default</code> değeri ile belirtilebilir. Normal şartlar
       altında gerekmese de, bir şey belirtilmediği takdirde mevcut bir
       <directive>ErrorDocument</directive> yönergesini miras alan
-      yapılandırmalarda Apache httpd’nin kendi hata iletilerinin kullanımı
+      yapılandırmalarda Apache httpd'nin kendi hata iletilerinin kullanımı
       <code>default</code> değeri açıkça belirtilerek örnekteki gibi
       zorlanabilir:</p>
 
@@ -1254,7 +1254,7 @@ için iptal edilmiştir.</compatibility>
       olsa bile, Apache HTTP Sunucusunun istemciye belgeyi bulacağı yer için bir
       yönlendirme göndereceğine dikkat ediniz. Bunun bazı istenmeyen etkileri
       vardır; en önemlilerinden biri istemcinin hata kodu yerine bir
-      yönlendirme durum kodu alacak olmasıdır. Bu, bir URL’nin geçerliliğini
+      yönlendirme durum kodu alacak olmasıdır. Bu, bir URL'nin geçerliliğini
       durum koduna göre saptayan istemciler veya robotlar için yanıltıcı
       olacaktır. Buna ek olarak, <code>ErrorDocument 401</code> için bir uzak
       URL belirttiğiniz durumda istemci 401 durum kodunu almayacağı için
@@ -1649,7 +1649,7 @@ için iptal edilmiştir.</compatibility>
       <code>FileETag&nbsp;MTime&nbsp;Size</code> yapılandırmasına eşdeğer
       olacaktır.</p>
     <note type="warning"><title>Uyarı</title>
-      WebDAV’ın etkin olduğu yerlerde veya dizinlerde saklama alanı sağlayıcı
+      WebDAV'ın etkin olduğu yerlerde veya dizinlerde saklama alanı sağlayıcı
       olarak <module>mod_dav_fs</module> kullanılıyorsa öntanımlı ayarları
       değiştirmeyiniz. <module>mod_dav_fs</module>, koşullu isteklerde
       <code>ETag</code> karşılaştırmaları yapabilmek için
@@ -1685,7 +1685,7 @@ için iptal edilmiştir.</compatibility>
       ile karşılaştırılabilir. Bir <code>&lt;/Files&gt;</code> yönergesi ile
       sonlandırılması gerekir. Bu bölüm içinde belirtilen yönergeler,
       <directive type="section">Files</directive> yönergesinde belirtilen
-      <var>dosya-adı</var>’nın son bileşeniyle (dizinler atıldıktan sonda
+      <var>dosya-adı</var>'nın son bileşeniyle (dizinler atıldıktan sonda
       kalan dosya ismi) eşleşen nesnelere uygulanır. <directive
       type="section">Files</directive> bölümleri yapılandırma dosyasında,
       <directive module="core" type="section">Directory</directive> bölümleri
@@ -1762,7 +1762,7 @@ için iptal edilmiştir.</compatibility>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Apache httpd 2.0’da core modülüne taşındı.</compatibility>
+<compatibility>Apache httpd 2.0'da core modülüne taşındı.</compatibility>
 
 <usage>
     <p>Bu yönerge, bir <code>.htaccess</code> dosyası veya bir
@@ -1838,8 +1838,8 @@ için iptal edilmiştir.</compatibility>
 
 <usage>
     <p>Bu yönerge oturum açabilecek konak isimlerini tespit edebilmek için
-      DNS sorgularını etkin kılar (ve sonuç <code>REMOTE_HOST</code>’ta
-      belirtilerek CGI/SSI’lere aktarılır). <code>Double</code> değeri
+      DNS sorgularını etkin kılar (ve sonuç <code>REMOTE_HOST</code>'ta
+      belirtilerek CGI/SSI'lere aktarılır). <code>Double</code> değeri
       sorgunun çift yönlü yapılacağını belirtir. Yani, bir tersine sorgunun
       ardından bir normal sorgu yapılır. Normal sorguda elde edilen IP
       adreslerinden birinin istek yapan IP adresi ile eşleşmesi gerekir.
@@ -1853,7 +1853,7 @@ için iptal edilmiştir.</compatibility>
       Double</code> belirtilmedikçe genellikle çift yönlü sorgulama yapılmaz.
       Örneğin, sadece  <code>HostnameLookups On</code> belirtilmiş ve konak
       ismi kısıtlamalarıyla korunmuş bir nesne için bir istek yapılmışsa çift
-      yönlü sorgunun başarısına bakılmaksızın CGI’lere
+      yönlü sorgunun başarısına bakılmaksızın CGI'lere
       <code>REMOTE_HOST</code> olarak tek yönlü sorgu sonucu aktarılır.</p>
 
     <p>Gerçekte ters yönlü sorguya gerek duyulmayan sitelerde ağ trafiğini
@@ -2157,7 +2157,7 @@ yönergeleri sarmalar.</description>
       HTTP/1.1 protokolünün kalıcı bağlantı özelliği aynı TCP bağlantısı
       üzerinden çok sayıda isteğin gönderilmesini mümkün kılan uzun süreli HTTP
       oturumları açılmasını sağlar. Bunun, çok sayıda resim içeren HTML
-      belgelerin yanıt zamanlarında bazı durumlarda %50’lik bir hızlanmayla
+      belgelerin yanıt zamanlarında bazı durumlarda %50'lik bir hızlanmayla
       sonuçlandığı gösterilmiştir. Kalıcı bağlantıları etkin kılmak için
       yönerge <code>KeepAlive On</code> şeklinde kullanılır.</p>
 
@@ -2340,8 +2340,8 @@ belirler.</description>
     <p>Örneğin, özgün istekleri dahili olarak bir CGI betiğine yönlendiren
       <directive module="mod_actions">Action</directive> yönergesi
       kullanıldığında bir dahili yönlendirme oluşur. İstek içi istekler ise
-      bazı URI’ler için istek yapıldığında ne olacağını bulmak için Apache
-      httpd’nin kullandığı bir mekanizmadır. Örneğin,
+      bazı URI'ler için istek yapıldığında ne olacağını bulmak için Apache
+      httpd'nin kullandığı bir mekanizmadır. Örneğin,
       <module>mod_dir</module>, <directive module="mod_dir"
       >DirectoryIndex</directive> yönergesinde listelenen dosyalara bakmak
       için istek içi istekler kullanır.</p>
@@ -2424,14 +2424,14 @@ sınırlar.</description>
     <p><var>sayı</var>, en küçük 0 (sınırsız anlamında), en büyük 32767
       olabilir. Öntanımlı değer bir derleme zamanı sabiti olan
       <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> ile belirlenir (dağıtımla gelen
-      değeri 100’dür).</p>
+      değeri 100'dür).</p>
 
     <p><directive>LimitRequestFields</directive> yönergesi sunucu
       yöneticilerine bir HTTP isteğinde izin verilen istek başlık alanlarının
       sayısı üzerindeki sınırı değiştirebilme imkanı verir. Sunucu bu değerin,
       normal bir istemci isteğinin içerebileceği alan sayısından daha büyük
       olmasına ihtiyaç duyar. Bir istemci tarafından kullanılan istek başlık
-      alanlarının sayısı nadiren 20’yi geçer, fakat bu farklı istemci
+      alanlarının sayısı nadiren 20'yi geçer, fakat bu farklı istemci
       gerçeklenimleri için değişiklik gösterir ve çoğunlukla kullanıcının
       tarayıcısını ayrıntılı içerik müzakeresini desteklemek için nasıl
       yapılandırdığıyla ilgilidir. İsteğe bağlı HTTP eklentileri çoğunlukla
@@ -2568,7 +2568,7 @@ sınırlar.</description>
 
 <directivesynopsis type="section">
 <name>Location</name>
-<description>İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
+<description>İçerdiği yönergeler sadece eşleşen URL'lere uygulanır.
 </description>
 <syntax>&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
 &lt;/Location&gt;</syntax>
@@ -2577,7 +2577,7 @@ sınırlar.</description>
 
 <usage>
     <p><directive type="section">Location</directive> bölüm yönergesi kapsadığı
-      yönergelerin etki alanını belirtilen URL’lerle sınırlar. Bu yönerge,
+      yönergelerin etki alanını belirtilen URL'lerle sınırlar. Bu yönerge,
       <directive type="section" module="core">Directory</directive> yönergesine
       benzer ve <code>&lt;/Location&gt;</code> yönergesi ile biten bir alt
       bölüm başlatır. <directive type="section">Location</directive> bölümleri
@@ -2592,7 +2592,7 @@ sınırlar.</description>
       En önemlisi, <directive type="section">Location</directive>
       yönergelerinin dosya sistemi konumlarına erişimi denetim altına almak
       için kullanılmaması gerekliliğidir. Aynı dosya sistemi konumuna farklı
-      URL’lerle erişmek mümkün olduğundan bu tür erişim denetimleri hile ile
+      URL'lerle erişmek mümkün olduğundan bu tür erişim denetimleri hile ile
       atlatılabilir olacaktır.</p>
 
     <p>URL'nin yol bileşeni aşağıdaki koşullardan <em>herhangi birini</em>
@@ -2670,7 +2670,7 @@ sınırlar.</description>
     <p><directive type="section">Location</directive> işlevselliği özellikle
       <directive module="core">SetHandler</directive> yönergesi ile birlikte
       kullanışlı olur. Örneğin, durum isteklerini etkin kılmak ama sadece
-      <code>example.com</code>’dan gelen isteklere izin vermek için şöyle bir
+      <code>example.com</code>'dan gelen isteklere izin vermek için şöyle bir
       uygulama yapabilirsiniz:</p>
 
     <example>
@@ -2712,7 +2712,7 @@ sınırlar.</description>
 
 <directivesynopsis type="section">
 <name>LocationMatch</name>
-<description>İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
+<description>İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL'lere
 uygulanır.</description>
 <syntax>&lt;LocationMatch
     <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</syntax>
@@ -2722,7 +2722,7 @@ uygulanır.</description>
 <usage>
     <p><directive type="section">LocationMatch</directive> yönergesi içerdiği
       yönergelerin etki alanını <directive module="core" type="section"
-      >Location</directive> yönergesinin yaptığı gibi belirtilen URL’lerle
+      >Location</directive> yönergesinin yaptığı gibi belirtilen URL'lerle
       sınırlar. Ancak argüman olarak basit bir dizge değil bir <glossary
       ref="regex">düzenli ifade</glossary> alır. Örneğin,</p>
 
@@ -3345,7 +3345,7 @@ uygulanır.</description>
       <dt><code>IncludesNOEXEC</code></dt>
       <dd>Sunucu taraflı içeriklere izin verilir fakat <code>#exec cmd</code>
         ve <code>#exec cgi</code> iptal edilir. Ancak, <directive
-        module="mod_alias">ScriptAlias</directive>’lı dizinlerdeki CGI
+        module="mod_alias">ScriptAlias</directive>'lı dizinlerdeki CGI
         betikleri için <code>#include virtual</code> hala mümkün olacaktır.</dd>
 
       <dt><code>Indexes</code></dt>
@@ -3497,7 +3497,7 @@ uygulanır.</description>
       <code>root</code> olarak veya sistem açılışı sırasında çalıştırılması
       gerekir.</p>
 
-    <p>Bu sınırlar Apache httpd’nin kendi alt süreçlerine değil, isteklere
+    <p>Bu sınırlar Apache httpd'nin kendi alt süreçlerine değil, isteklere
       yanıt verirken Apache httpd alt süreçlerinin çatalladıkları süreçlere
       uygulanır. Bunlar CGI betikleri ve SSI çalıştırma komutları olabilir
       fakat borulu günlük kaydı gibi ana Apache httpd süreci tarafından
@@ -3530,7 +3530,7 @@ uygulanır.</description>
       <code>root</code> olarak veya sistem açılışı sırasında çalıştırılması
       gerekir.</p>
 
-    <p>Bu sınırlar Apache httpd’nin kendi alt süreçlerine değil, isteklere
+    <p>Bu sınırlar Apache httpd'nin kendi alt süreçlerine değil, isteklere
       yanıt verirken Apache httpd alt süreçlerinin çatalladıkları süreçlere
       uygulanır. Bunlar CGI betikleri ve SSI çalıştırma komutları olabilir
       fakat borulu günlük kaydı gibi ana Apache httpd süreci tarafından
@@ -3563,7 +3563,7 @@ uygulanır.</description>
       <code>root</code> olarak veya sistem açılışı sırasında çalıştırılması
       gerekir.</p>
 
-    <p>Bu sınırlar Apache httpd’nin kendi alt süreçlerine değil, isteklere
+    <p>Bu sınırlar Apache httpd'nin kendi alt süreçlerine değil, isteklere
       yanıt verirken Apache httpd alt süreçlerinin çatalladıkları süreçlere
       uygulanır. Bunlar CGI betikleri ve SSI çalıştırma komutları olabilir
       fakat borulu günlük kaydı gibi ana Apache httpd süreci tarafından
@@ -3575,7 +3575,7 @@ uygulanır.</description>
     <note><title>Ek Bilgi</title>
       <p>CGI süreçleri sunucu kullanıcı kimliğinden farklı bir kullanıcı
         kimliği altında çalışmıyorsa bu yönerge sunucunun kendi oluşturduğu
-        süreç sayısını sınırlayacaktır. Bunun kanıtı <code>error_log</code>’da
+        süreç sayısını sınırlayacaktır. Bunun kanıtı <code>error_log</code>'da
         iletilerin çatallanamamasıdır.</p>
     </note>
 </usage>
@@ -3595,9 +3595,9 @@ uygulanır.</description>
 HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</compatibility>
 
 <usage>
-    <p>Bu yönerge Apache httpd’nin CGI betiklerini çalıştıracak yorumlayıcıyı
+    <p>Bu yönerge Apache httpd'nin CGI betiklerini çalıştıracak yorumlayıcıyı
       nasıl tespit edeceğini belirler. <code>Script</code> öntanımlı olup
-      Apache httpd’nin yorumlayıcı olarak betiğin diyezli ünlem satırında
+      Apache httpd'nin yorumlayıcı olarak betiğin diyezli ünlem satırında
       (<code>#!</code> ile başlayan ilk satır) belirtilen yorumlayıcıyı
       kullanacağını belirtir. Win32 sistemlerinde bu satır genellikle
       şöyledir:</p>
@@ -3623,13 +3623,13 @@ HTTP Sunucusunun 2.0 ve sonraki sürümleri için geçerlidir.</compatibility>
       dönülür.</p>
 
     <note type="warning"><title>Güvenlik</title>
-    <p><directive module="mod_alias">ScriptAlias</directive>’lı dizinlerde
+    <p><directive module="mod_alias">ScriptAlias</directive>'lı dizinlerde
       Apache httpd bulduğu <strong>her</strong> dosyayı çalıştırmayı deneyeceğinden
       <code>ScriptInterpreterSource Registry</code> yapılandırmasını
       kullanırken dikkatli olun. <code>Registry</code> seçeneği genellikle
       çalıştırılmayacak dosyalar için istenmeyen program çağrılarına sebep
       olabilir. Örneğin, çoğu Windows sisteminde <code>.htm</code> dosyaları
-      için ön tanımlı "open" komutu Microsoft Internet Explorer’ın
+      için ön tanımlı "open" komutu Microsoft Internet Explorer'ın
       çalıştırılmasına sebep olur; bu bakımdan, betik dizininde bulunan bir
       <code>.htm</code> dosyası için yapılan bir HTTP isteği tarayıcının sunucu
       artalanında çalıştırılmasına sebep olacaktır. Bu, sistemi bir kaç dakika
@@ -3762,7 +3762,7 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 <usage>
     <p><directive>ServerName</directive> yönergesi, sunucunun kendini
       betimlemekte kullanacağı şema, konak adı ve port değerlerini belirler.
-      Bu, yönlendirme URL’leri oluşturulurken kullanılır.</p>
+      Bu, yönlendirme URL'leri oluşturulurken kullanılır.</p>
 
     <p>Ek olarak, <a href="../vhosts/name-based.html">isme dayalı sanal
       konaklar</a> kullanılırken bir sanal konağı eşsiz bir şekilde betimlemek
@@ -3799,11 +3799,11 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 
     <p>Bazen sunucu, bir ters vekil, yük dengeleyici veya SSL yük aktarım
       uygulaması gibi bir aygıtın arkasında çalışır. Böyle durumlarda sunucunun
-      kendine yönelik URL’leri doğru üretebildiğinden emin olmak için
+      kendine yönelik URL'leri doğru üretebildiğinden emin olmak için
       <directive>ServerName</directive> yönergesinde istemcinin bağlanacağı
       <code>https://</code> şeması ve port numarası belirtilir.</p>
 
-    <p>Sunucunun kendine yönelik URL’lerin belirtilen portu içerip içermediğini
+    <p>Sunucunun kendine yönelik URL'lerin belirtilen portu içerip içermediğini
       veya istemcinin yaptığı istekte belirtilen port numarasının verilip
       verilmediğinin saptamasını sağlayan (örneğin, <module>mod_dir</module>
       modülü tarafından) ayarlar için <directive
@@ -3982,7 +3982,7 @@ sebep olur.</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>Apache httpd 2.0’da core modülüne taşındı.</compatibility>
+<compatibility>Apache httpd 2.0'da core modülüne taşındı.</compatibility>
 
 <usage>
     <p>Bir <code>.htaccess</code> dosyasına veya bir <directive type="section"
@@ -4017,7 +4017,7 @@ sebep olur.</description>
     <note><title>Bilgi</title>
     <p><directive>SetHandler</directive> yönergesi,
       öntanımlı eylemcileri geçersiz kıldığından, index dosyaları ve dizinleri
-      belirtmek için URL’nin sonuna bölü çizgisi (/) getirmek şeklindeki
+      belirtmek için URL'nin sonuna bölü çizgisi (/) getirmek şeklindeki
       normal davranış baskılanır.</p>
     </note>
 </usage>
@@ -4092,7 +4092,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><directive>TimeOut</directive> yönergesi Apache httpd’nin aşağıdaki
+    <p><directive>TimeOut</directive> yönergesi Apache httpd'nin aşağıdaki
       durumlarda G/Ç için bekleyeceği süreyi belirler:</p>
 
     <ol>
@@ -4129,7 +4129,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <usage>
     <p>Bu yönerge çekirdek ve vekil (<module>mod_proxy</module>) sunucuların
       her ikisi için öntanımlı <code>TRACE</code> davranışını değiştirir.
-      Öntanımlı olan <code>TraceEnable on</code> ile RFC 2616’dan kaynaklanan
+      Öntanımlı olan <code>TraceEnable on</code> ile RFC 2616'dan kaynaklanan
       ve isteğe herhangi bir istek gövdesinin eşlik etmesine izin vermeyen
       <code>TRACE</code> isteklerine izin verilir. <code>TraceEnable off</code>
       ile çekirdek ve vekil (<module>mod_proxy</module>) sunucuların her ikisi
@@ -4141,7 +4141,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       istek gövdesini 64k ile sınırlar (<code>Transfer-Encoding: chunked</code>
       kullanılmışsa bölüm başlıkları için 8k daha). Asıl sunucu yanıt
       gövdesinde tüm başlıkları ve bölüm başlıklarının tamamını yansıtacaktır.
-      Vekil sunucuda ise istek gövdesi için 64k’lık sınır yoktur.</p>
+      Vekil sunucuda ise istek gövdesi için 64k'lık sınır yoktur.</p>
 
     <note><title>Bilgi</title>
     <p>Aksine iddialara rağmen, <code>TRACE</code> bir güvenlik açığı değildir
@@ -4180,16 +4180,16 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <context>directory</context></contextlist>
 
 <usage>
-    <p>Apache httpd‘nin çoğu durumda özüne yönelik URL‘ler (isteğin tekrar
+    <p>Apache httpd'nin çoğu durumda özüne yönelik URL'ler (isteğin tekrar
       aynı sunucuya yapıldığı bir URL türü) oluşturması gerekir.
       <code>UseCanonicalName On</code> ile Apache httpd, sunucu için meşru
       ismi ve portu oluşturmak için
       <directive module="core">ServerName</directive>
       yönergesinde belirtilen ismi ve portu kullanır. Bu isim  CGI'lerde
       <code>SERVER_NAME</code> ve <code>SERVER_PORT</code> değerlerinde ve tüm
-      özüne yönelik URL’lerde kullanılır.</p>
+      özüne yönelik URL'lerde kullanılır.</p>
 
-    <p><code>UseCanonicalName Off</code> ile Apache httpd, özüne yönelik URL’leri
+    <p><code>UseCanonicalName Off</code> ile Apache httpd, özüne yönelik URL'leri
       varsa istemci tarafından sağlanan konak ismini ve portu kullanarak
       oluşturur; bunlar istemci tarafından sağlanmamışsa yukarıda tanımlanan
       işleme başvurulur. Bu değerler, <a href="../vhosts/name-based.html">isme
@@ -4208,22 +4208,22 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
       doğrulamasına sokulmasına sebep olacaktır (bir kere <code>www</code>
       için bir kere de <code>www.example.com</code> için; daha fazla bilgi için
       <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice"
-      >SSS</a>’ye bakınız). Fakat <directive>UseCanonicalName Off</directive>
+      >SSS</a>'ye bakınız). Fakat <directive>UseCanonicalName Off</directive>
       olsaydı Apache httpd isteği <code>http://www/splat/</code> adresine
       yönlendirecekti.</p>
 
     <p><code>UseCanonicalName DNS</code> diye üçüncü bir seçenek daha vardır ve
       istek yaparken <code>Host:</code> başlığını kullanmayan eski istemcileri
-      desteklemek amacıyla IP’ye dayalı sanal konaklarla kullanmak için
+      desteklemek amacıyla IP'ye dayalı sanal konaklarla kullanmak için
       tasarlanmıştır. Bu seçenek etkin olduğunda Apache httpd, istemciyi özüne
-      yönelik URL’lerle doğru yere bağlamak için sunucu IP adresi üzerinde bir
+      yönelik URL'lerle doğru yere bağlamak için sunucu IP adresi üzerinde bir
       ters DNS sorgusu yapar.</p>
 
     <note type="warning"><title>Uyarı</title>
-    <p>Eğer CGI’ler <code>SERVER_NAME</code> değerleri için önkabuller
+    <p>Eğer CGI'ler <code>SERVER_NAME</code> değerleri için önkabuller
       yapıyorlarsa bu seçenek işlerinin bozulmasına yol açabilir. Aslında
       istemciler konak ismi olarak istedikleri değeri vermekte özgürdürler.
-      Fakat eğer CGI, özüne yönelik URL’leri oluştururken sadece
+      Fakat eğer CGI, özüne yönelik URL'leri oluştururken sadece
       <code>SERVER_NAME</code> değerini kullanıyorsa bu istendiği gibi
       çalışacaktır.</p>
     </note>
@@ -4243,7 +4243,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 <context>directory</context></contextlist>
 
 <usage>
-    <p>Apache httpd‘nin çoğu durumda özüne yönelik URL‘ler (isteğin tekrar
+    <p>Apache httpd'nin çoğu durumda özüne yönelik URL'ler (isteğin tekrar
       aynı sunucuya yapıldığı bir URL türü) oluşturması gerekir. Apache httpd
       <directive module="core">UseCanonicalName</directive> yönergesine bağlı
       olarak sunucu için meşru portu oluştururken
@@ -4357,8 +4357,8 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 
     <note><title>Ek Bilgi</title>
     <p><directive type="section">VirtualHost</directive> kullanımı Apache
-      httpd’nin dinleyeceği adresler üzerinde belirleyici değildir. Apache
-      httpd’nin doğru adresi dinlediğinden emin olmak için <directive
+      httpd'nin dinleyeceği adresler üzerinde belirleyici değildir. Apache
+      httpd'nin doğru adresi dinlediğinden emin olmak için <directive
       module="mpm_common">Listen</directive> kullanmanız gerekebilir.</p>
     </note>
 

@@ -82,7 +82,7 @@
     </dl>
 
     <p>Bu belgeden azami yararı sağlayabilmek için temel bir HTTP bilginizin
-      olması ve <a href="urlmapping.html">URL’lerin Dosya Sistemine
+      olması ve <a href="urlmapping.html">URL'lerin Dosya Sistemine
       Eşlenmesi</a> ile <a href="content-negotiation.html">İçerik Uzlaşımı</a>
       belgelerini okumuş olmanız gerekir.</p>
 
@@ -265,7 +265,7 @@
       <title>Şartlı İstekler için Özlü Kılavuz</title>
 
       <p>Önbellekteki içeriğin zaman aşımına uğrayıp bayat hale gelmesi,
-        httpd’nin özgün isteği aktarmak yerine isteği değişikliğe uğratarak
+        httpd'nin özgün isteği aktarmak yerine isteği değişikliğe uğratarak
         şartlı bir istek yapması sonucunu doğurur.</p>
 
       <p>Özgün önbellekli yanıtta bir <code>ETag</code> başlığı mevcutsa,
@@ -330,7 +330,7 @@
           önbelleklenmez.</li>
 
         <li>Eğer URL (GET yöntemi kullanan bir HTML formunun yaptığı gibi) bir
-          sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9. bölümünde
+          sorgu dizgesi içeriyorsa  yanıt, RFC2616'nın 13.9. bölümünde
           açıklandığı gibi bir "Expires:" başlığı içermedikçe veya
           "Cache-Control:" başlığının max-age veya max-age yönergesini
           içermedikçe yanıt içeriği önbelleğe alınmayacaktır.</li>
@@ -431,14 +431,14 @@ CacheDirLength 1
       <title>Önbellekte Saklamanın Anlamı</title>
 
       <p><module>mod_cache_disk</module> öğeleri önbellekte saklamak için
-        istek yapılan URL’nin 22 karakterlik özetini oluşturur. Bu özet, çok
-        sayıda URL’nin aynı özeti oluşturmaması için konak ismi, protokol,
+        istek yapılan URL'nin 22 karakterlik özetini oluşturur. Bu özet, çok
+        sayıda URL'nin aynı özeti oluşturmaması için konak ismi, protokol,
         port ve varsa CGI argümanlarından başka <code>Vary</code> başlığında
         tanımlı elemanlardan oluşur.</p>
 
       <p>Özeti oluşturan karakterler 64 karakterlik bir karakter kümesinden
-        seçildiğinden oluşturulması olası farklı özet sayısı 64^22’dir.
-        Örneğin, bir URL’nin <code>xyTGxSMO2b68mBCykqkp1w</code> gibi bir
+        seçildiğinden oluşturulması olası farklı özet sayısı 64^22'dir.
+        Örneğin, bir URL'nin <code>xyTGxSMO2b68mBCykqkp1w</code> gibi bir
         özeti olabilir. Bu özet, bu URL ile erişilen dosyalar önbellek içinde
         saklanırken dosya ismi öneki olarak kullanılır. Ancak bununla
         yetinilmez ve içerik <directive
@@ -461,7 +461,7 @@ CacheDirLength 1
         <directive module="mod_cache_disk">CacheDirLength</directive>
         yönergesi "1" değeriyle kullanıldığında her dizin altında en fazla 64
         alt dizin veya dosya açılabilir. "2" değeriyle kullanıldığında ise bu
-        sayı 64^2’ye yükselir ve böyle artarak gider. İyi bir sebebiniz
+        sayı 64^2'ye yükselir ve böyle artarak gider. İyi bir sebebiniz
         olmadıkça <directive
         module="mod_cache_disk">CacheDirLength</directive> için değer olarak
         "1" belirtmenizi öneririz.</p>
@@ -492,17 +492,17 @@ CacheDirLength 1
       <p>Bunun yerine httpd önbellek içeriğini düzenli aralıklarla
         temizleyebilmeniz için <program>htcacheclean</program> adında bir araç
         içerir.  Önbellek için azami ne kadar yer kullanılacağının ve bunun
-        üzerinde <program>htcacheclean</program>’i hangi sıklıkta
+        üzerinde <program>htcacheclean</program>'i hangi sıklıkta
         çalıştırılacağının tespiti biraz karmaşık bir işlem olup uygun değerler
         genellikle deneme yanılma yoluyla bulunur.</p>
 
       <p><program>htcacheclean</program> iki işlem kipine sahiptir. Kalıcı bir
         artalan süreci olarak çalışabileceği gibi cron üzerinden belli
         aralıklarla da çalıştırılabilir. Çok büyük (onlarca GB) önbelleklerde
-        <program>htcacheclean</program>’in işini bitirmesi 1 saatten fazla
+        <program>htcacheclean</program>'in işini bitirmesi 1 saatten fazla
         sürebileceğinden, cron ile çalıştırma durumunda aynı anda birden fazla
         kopyanın çalışıyor durumda olmaması için
-        <program>htcacheclean</program>’in çalıştırılma aralığını iyi
+        <program>htcacheclean</program>'in çalıştırılma aralığını iyi
         belirlemek gerekir.</p>
 
       <p>Ayrıca, <program>htcacheclean</program> için uygun bir "nice" seviyesi
@@ -623,13 +623,13 @@ CacheDirLength 1
       <p>Bir dosyanın açılması işlemi, özellikle de ağ dosya sistemlerinde
         bulunan dosyalar için önemli bir gecikme kaynağı olabilir. Önbellekte,
         çok sunulan dosyaların kendilerinin değil, açık dosya tanıtıcılarının
-        saklanması httpd’yi bu tür gecikmelerden koruyabilir. httpd’de tek
+        saklanması httpd'yi bu tür gecikmelerden koruyabilir. httpd'de tek
         türde dosya tanıtıcı önbelleklemesi yapılabilmektedir.</p>
 
       <section>
         <title><code>CacheFile</code> yönergesi ile</title>
 
-        <p>httpd’de mevcut önbelleklemenin en temel şekli
+        <p>httpd'de mevcut önbelleklemenin en temel şekli
           <module>mod_file_cache</module> tarafından sağlanan dosya tanıtıcı
           önbelleklemesidir. Bu önbellek türü dosyaların kendilerini değil açık
           dosya tanıtıcılarının bir listesini saklar. Dosyaların bu anlamda
@@ -680,7 +680,7 @@ CacheDirLength 1
       şekilde kullanımı önemlidir. Dosyaları sistem belleğinde saklamakla
       sistemin kullanabileceği bellek miktarını azaltmış olursunuz. İşletim
       sistemi önbelleklemesinde göreceğiniz gibi bu öyle basit bir konu
-      değildir. httpd’nin kendi kullandığı belleğin bir kısmını önbellek
+      değildir. httpd'nin kendi kullandığı belleğin bir kısmını önbellek
       olarak ayırırken çok fazla bellek kullanmamak önemlidir. Aksi takdirde
       işletim sistemi belleğin yetmediği noktada belleği diske
       takaslayacağından istenen başarım artışı sağlanamayacaktır.</p>
@@ -691,7 +691,7 @@ CacheDirLength 1
         <p>Günümüz iştetim sistemlerinin hemen hemen tamamında bellek içi
         dosya/veri saklama işlemlerini çekirdek yönetir. Bu güçlü bir
         özelliktir ve işletim sistemlerinin büyük çoğunluğu bunu böyle yapar.
-        Örneğin, Linux’ta bir dosyanın ilk defa okunduğunda ve ikinci kez
+        Örneğin, Linux'ta bir dosyanın ilk defa okunduğunda ve ikinci kez
         okunduğunda işlemcinin ne kadar meşgul edildiğine bakalım:</p>
 
         <example>
@@ -712,14 +712,14 @@ CacheDirLength 1
         <p>Sisteminizde yeterince yedek bellek olduğundan eminseniz, bu
           önbellekte daha fazla dosya saklanacağından emin olabilirsiniz.
           Bundan, önbelleğin sistem belleğinde verimli biçimde tutulması için
-          httpd’de ek bir yapılandırmaya gidilmesinin gerekmediği sonucu
+          httpd'de ek bir yapılandırmaya gidilmesinin gerekmediği sonucu
           çıkarılabilir.</p>
 
         <p>Bundan başka, işletim sistemi dosyaların değiştiği ve silindiği
           zamanları bildiğinden bu tür dosyaların içerikleri gerektiğinde
           önbellekten kendiliğinden silinmiş olur. Bellek içinde dosya
           saklarken dosyaların değiştirilme zamanlarını bilme olanağı
-          olmadığından bu durum httpd’ye büyük yarar sağlar.</p>
+          olmadığından bu durum httpd'ye büyük yarar sağlar.</p>
       </section>
 
       <p>İşletim sisteminin dosyaların önbelleklenmesi için sağladığı bunca
@@ -743,11 +743,11 @@ CacheDirLength 1
 
         <p><directive module="mod_file_cache">CacheFile</directive>
           yönergesinde olduğu gibi bu dosyalarda httpd başlatıldıktan sonra
-          yapılacak bir değişiklikten httpd’nin haberi olmayacaktır.</p>
+          yapılacak bir değişiklikten httpd'nin haberi olmayacaktır.</p>
 
         <p><directive module="mod_file_cache">MMapFile</directive> yönergesi
           ayırdığı belleğin toplam miktarı ile ilgilenmez, dolayısıyla
-          yönergenin aşırı kullanımından kaçınmalısınız. httpd’nin çocuk
+          yönergenin aşırı kullanımından kaçınmalısınız. httpd'nin çocuk
           süreçlerinin her biri bu belleğin kendilerine ait birer kopyasını
           yapacağından belleğe eşlenen dosyaların çok yer kaplamaması büyük
           önem taşımaktadır; aksi takdirde işletim sistemi belleği diske
@@ -799,7 +799,7 @@ CacheDirLength 1
 
       <p>Son kullanıcılarıın isteklerine önbellekten hizmet sunulduğundan
         önbelleğin kendisi içerikle etkileşime geçmek isteyenlerin veya
-        içeriği tahrif etmek isteyenlerin hedefi haline gelebilir. httpd’yi
+        içeriği tahrif etmek isteyenlerin hedefi haline gelebilir. httpd'yi
         çalıştıran kullanıcı tarafından her zaman önbelleğe yazılabileceğini
         akıldan çıkarmamak önemlidir. Bu durumda alışılmışın tersine tüm
         içeriğin Apache kullanıcısı tarafından yazılamamasının sağlanması
@@ -828,9 +828,9 @@ CacheDirLength 1
         genellikle istenmeyen) içerik almasına sebep olan bir saldırı türünü
         betimlemek için yaygın olarak kullanılan bir terimdir.</p>
 
-      <p>Örneğin httpd’nin çalıştığı sistemin kullandığı DNS sunucuları DNS
+      <p>Örneğin httpd'nin çalıştığı sistemin kullandığı DNS sunucuları DNS
         önbellek zehirlenmesinden etkilenebilecek durumdaysa, bir saldırgan
-        httpd’nin istekleri almak için başvuracağı kaynak sunucunun yerini
+        httpd'nin istekleri almak için başvuracağı kaynak sunucunun yerini
         değiştirebilir. Diğer bir örnek, HTTP istek kaçakçılığı adı verilen
         bir saldırı türüdür.</p>
 

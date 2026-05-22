@@ -82,12 +82,12 @@ correspondance</a></seealso>
     nom de fichier.</p>
 
     <p>Dans un <glossary ref="perdirectory">contexte de répertoire</glossary>,
-    les règles sont appliquées durant la phase "Fixup" après que l’URL a été
+    les règles sont appliquées durant la phase "Fixup" après que l'URL a été
     traduite en nom de fichier. Cela modifie ce à quoi correspond le motif et la
     manière dont les substitutions sont gérées. Voir le document <a
     href="htaccess.html#path-stripping">Réécritures en fonction du
     répertoire</a> pour des détails pratiques à propos de la suppression du
-    chemin, de RewriteBase et de la manière d’éviter un bouclage.</p>
+    chemin, de RewriteBase et de la manière d'éviter un bouclage.</p>
 
 </section>
 

@@ -177,31 +177,31 @@ certificat serveur, sous la forme SRVName (OID 1.3.6.1.5.5.7.8.7, RFC 4985)</td>
 <td>Contenu de l'extension SNI TLS (si supporté par ClientHello)</td></tr>
 <tr><td><code>SSL_HANDSHAKE_RTT</code></td>             <td>nombre</td>
 <td>Temps d'aller-retour de la négociation TLS en microsecondes, y compris le
-traitement de l’étape finale (cette variable est définie à vide si la version d’OpenSSL est
+traitement de l'étape finale (cette variable est définie à vide si la version d'OpenSSL est
 antérieure à 3.2 ou si le temps d'aller-retour ne peut pas être déterminé.</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_VERSION</code></td>       <td>chaîne</td>
 <td>Champ de version (patrimonial) de ClientHello sous la forme de quatre
 caractères hexadécimaux</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_CIPHERS</code></td>       <td>chaîne</td>
-<td>Suites d’algorithmes de chiffrement de ClientHello sous la forme de quatre
+<td>Suites d'algorithmes de chiffrement de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_EXTENSIONS</code></td>    <td>chaîne</td>
-<td>Identifiants d’extension de ClientHello sous la forme de quatre
+<td>Identifiants d'extension de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_GROUPS</code></td>        <td>chaîne</td>
-<td>Valeur de l’extension Supported Groups (10) de ClientHello sous la forme de quatre
+<td>Valeur de l'extension Supported Groups (10) de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_EC_FORMATS</code></td>    <td>chaîne</td>
-<td>Valeur de l’extension EC Point Formats (11) de ClientHello sous la forme de
+<td>Valeur de l'extension EC Point Formats (11) de ClientHello sous la forme de
 deux caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_SIG_ALGOS</code></td>     <td>chaîne</td>
-<td>Valeur de l’extension Signature Algorithms (13) de ClientHello sous la forme de quatre
+<td>Valeur de l'extension Signature Algorithms (13) de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_ALPN</code></td>          <td>chaîne</td>
-<td>Valeur de l’extension ALPN (16) de ClientHello sous la forme d’une chaîne
+<td>Valeur de l'extension ALPN (16) de ClientHello sous la forme d'une chaîne
 hexadécimale avec la longueur de la chaîne au début</td></tr>
 <tr><td><code>SSL_CLIENTHELLO_VERSIONS</code></td>      <td>chaîne</td>
-<td>Valeur de l’extension Supported Versions (43) de ClientHello sous la forme de quatre
+<td>Valeur de l'extension Supported Versions (43) de ClientHello sous la forme de quatre
 caractères hexadécimaux par item</td></tr>
 <tr><td><code>SSL_ECH_STATUS</code></td>                <td>chaîne</td>
 <td><code>success</code> signifie que les autres pensent aussi ce qu'ils
@@ -377,7 +377,7 @@ disponibles avec Require</title>
     <p>Le fournisseur <code>ssl</code> refuse l'accès si une connexion
     n'est pas chiffrée avec SSL. À la différence de la directive
     <directive>SSLRequireSSL</directive>, cette directive peut être utilisée
-    conjointement avec d’autres directives <directive>Require</directive> dans
+    conjointement avec d'autres directives <directive>Require</directive> dans
     les blocs <directive module="mod_authz_core">RequireAny</directive> ou
     <directive module="mod_authz_core">RequireAll</directive>.</p>
 
@@ -728,7 +728,7 @@ SSLSessionCacheTimeout 600
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>
-La prise en charge de l’argument "optional" a été supprimée avec la version
+La prise en charge de l'argument "optional" a été supprimée avec la version
 2.4.64. Cet argument activait la prise en charge de la RFC 2817 (mise à niveau de TLS).
 </compatibility>
 
@@ -1153,7 +1153,7 @@ l'entité finale au fichier de certificat, ce qui permet de se passer
 d'une directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> séparée.</p>
 
-<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+<note type="warning"><title>N'enregistrez pas clé et certificat dans le même
 fichier</title>
 <p>Cette pratique est fortement déconseillée pour les raisons suivantes :</p>
 <ul>
@@ -1163,7 +1163,7 @@ certificat peut être lisible par tous (ce sont des données publiques), alors q
 le fichier de clé ne doit être lisible que par le superutilisateur. Combiner
 les deux dans un même fichier implique que toute vulnérabilité ou mauvaise
 configuration qui expose le fichier du certificat exposera aussi la clé privée.</li>
-<li><strong>Contrainte d’ordre</strong> : si un fichier combiné est utilisé,
+<li><strong>Contrainte d'ordre</strong> : si un fichier combiné est utilisé,
 toute directive <directive>SSLCertificateFile</directive> référençant un tel
 fichier doit apparaître <em>après</em> toute directive
 <directive>SSLCertificateFile</directive> qui utilise un fichier de clé séparé.
@@ -1241,10 +1241,10 @@ SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1273,12 +1273,12 @@ pour l'authentification du serveur. A chaque directive <directive
 module="mod_ssl">SSLCertificateKeyFile</directive> doit être associée
 une directive <directive>SSLCertificateFile</directive> correspondante.</p>
 
-<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+<note type="warning"><title>N'enregistrez pas clé et certificat dans le même
 fichier</title>
 <p>La clé privée peut aussi être combinée avec le certificat dans le fichier
 spécifié par la directive <directive
 module="mod_ssl">SSLCertificateFile</directive>, mais cette pratique est
-fortement déconseillée. Voir l’avertissement dans la documentation de la
+fortement déconseillée. Voir l'avertissement dans la documentation de la
 directive <directive>SSLCertificateFile</directive> pour une explication
 complète des risques et contraintes.</p></note>
 
@@ -1297,10 +1297,10 @@ SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier, car il contient la clé privée. Le fichier n’est pas relu en
+par ce dernier, car il contient la clé privée. Le fichier n'est pas relu en
 fonctionnement normal ; un redémarrage du serveur est requis pour que les
 changements prennent effet.</p>
 </usage>
@@ -1358,10 +1358,10 @@ SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1394,10 +1394,10 @@ SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </highlight>
 </example>
 
-<p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce dernier s’exécute
+<p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1427,10 +1427,10 @@ SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1481,10 +1481,10 @@ SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1518,9 +1518,9 @@ SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </example>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1555,9 +1555,9 @@ SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </example>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1588,9 +1588,9 @@ SSLCARevocationFile "/usr/local/apache2/conf/ssl.crl/ca-bundle-client.crl"
 </example>
 
 <p>Ce fichier est lu au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1906,14 +1906,14 @@ Les <var>option</var>s disponibles sont :</p>
     <p>
     Cette option <em>force</em> l'interdiction d'accès lorsque <directive
     module="mod_ssl">SSLRequireSSL</directive> ou <directive
-    module="mod_ssl">SSLRequire</directive> a décidé que l’accès doit être
-    interdit. Sans l’option <code>StrictRequire</code>, il est possible pour
-    d’autres directives d’autorisation (comme <directive module="mod_authz_core"
-    type="section">RequireAny</directive>) d’outrepasser l’interdiction d’accès
-    de SSL et d’accorder tout de même l’accès. Avec <code>SSLOptions
-    +StrictRequire</code>, l’interdiction de <code>SSLRequireSSL</code> ou
-    <code>SSLRequire</code> s’applique de manière inconditionnelle, sans tenir
-    compte d’autres directives d’autorisation éventuelles.</p>
+    module="mod_ssl">SSLRequire</directive> a décidé que l'accès doit être
+    interdit. Sans l'option <code>StrictRequire</code>, il est possible pour
+    d'autres directives d'autorisation (comme <directive module="mod_authz_core"
+    type="section">RequireAny</directive>) d'outrepasser l'interdiction d'accès
+    de SSL et d'accorder tout de même l'accès. Avec <code>SSLOptions
+    +StrictRequire</code>, l'interdiction de <code>SSLRequireSSL</code> ou
+    <code>SSLRequire</code> s'applique de manière inconditionnelle, sans tenir
+    compte d'autres directives d'autorisation éventuelles.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2189,9 +2189,9 @@ serveur.
 Si cette directive est à <code>on</code> dans un contexte de serveur
 (globalement, en dehors de tout bloc <directive module="core"
 type="section">VirtualHost</directive>), tous les serveurs virtuels qui ne
-l’outrepassent pas héritent de la configuration. Cela a le même effet que la
+l'outrepassent pas héritent de la configuration. Cela a le même effet que la
 définir à <code>on</code> dans tous les serveurs virtuels par défaut à base de
-nom&nbsp;: les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
+nom&nbsp;: les clients non-SNI se verront refuser l'accès à tout serveur virtuel à
 base de nom.
 </p>
 
@@ -2211,7 +2211,7 @@ SSLStrictSNIVHostCheck on
 
 <directivesynopsis>
 <name>SSLVHostSNIPolicy</name>
-<description>Définir la politique de compatibilité pour l’accès des clients SNI
+<description>Définir la politique de compatibilité pour l'accès des clients SNI
 aux serveurs virtuels.</description>
 <syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
 <default>SSLVHostSNIPolicy secure</default>
@@ -2220,18 +2220,18 @@ aux serveurs virtuels.</description>
 
 <usage><p>Cette directive permet de définir la politique à appliquer lors de la
 vérification de la compatibilité du <directive module="core"
-type="section">serveur virtuel</directive> identifié par l’en-tête
-<code>Host</code> d’une requête HTTP avec le <directive module="core"
-type="section">serveur virtuel</directive> identifié depuis l’extension SNI
+type="section">serveur virtuel</directive> identifié par l'en-tête
+<code>Host</code> d'une requête HTTP avec le <directive module="core"
+type="section">serveur virtuel</directive> identifié depuis l'extension SNI
 envoyée au cours de la négociation de la connexion TLS initiale. Si une requête
 HTTP est associée à un serveur virtuel comportant une configuration SSL/TLS
-incompatible selon la politique utilisée, un message d’erreur HTTP avec code
-d’état 421 ("Misdirected Request") sera envoyé.</p>
+incompatible selon la politique utilisée, un message d'erreur HTTP avec code
+d'état 421 ("Misdirected Request") sera envoyé.</p>
 
-<p>La politique s’applique aussi aux connexions TLS pour lesquelles une
-extension SNI n’est pas envoyée lors de la négociation de connexion, et
+<p>La politique s'applique aussi aux connexions TLS pour lesquelles une
+extension SNI n'est pas envoyée lors de la négociation de connexion, et
 utilisant la première définition de serveur virtuel ou la définition par défaut.
-Si l’en-tête Host d’une requête HTTP sur une telle connexion identifie un
+Si l'en-tête Host d'une requête HTTP sur une telle connexion identifie un
 serveur virtuel autre que celui par défaut, la politique de compatibilité sera
 testée.</p>
 
@@ -2251,13 +2251,13 @@ virtuels, qui sont regroupés en deux catégories&nbsp;:</p>
   de chiffrement</strong>&nbsp;: directives qui déterminent le certificat ou la clé
   du serveur (<directive
   module="mod_ssl">SSLCertificateKeyFile</directive>, etc.), restrictions de
-  protocole ou d’algorithme
+  protocole ou d'algorithme
   de chiffrement (<directive
   module="mod_ssl">SSLProtocol</directive> et <directive
   module="mod_ssl">SSLCipherSuite</directive>)</li>
   
-  <li><strong>configuration de la certification et de l’authentification du
-  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
+  <li><strong>configuration de la certification et de l'authentification du
+  client</strong>&nbsp;: directives qui affectent l'authentification du client et la
   vérification de son certificat via TLS, telles que <directive
   module="mod_ssl">SSLVerifyClient</directive>, <directive
   module="mod_ssl">SSLVerifyMode</directive>, <directive
@@ -2278,7 +2278,7 @@ décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
   <th>Toute incohérence dans les serveurs virtuels</th>
   <th>Certificat/clé du serveur, <br />ou restrictions de protocole/algorithme
   de chiffrement</th>
-  <th>Certification client/<br />configuration de l’authentification</th>
+  <th>Certification client/<br />configuration de l'authentification</th>
 </tr>
 <tr>
   <td><code>strict</code></td><td>bloquée</td><td>bloquée</td><td>bloquée</td>
@@ -2929,12 +2929,12 @@ définition de la variable d'environnement <code>REMOTE_USER</code>.
 La valeur de l'argument <var>nom-var</var> peut correspondre à toute <a
 href="#envvars">variable d'environnement SSL</a>.</p>
 
-<p>Lorsque l’option <code>FakeBasicAuth</code> (voir <a
+<p>Lorsque l'option <code>FakeBasicAuth</code> (voir <a
 href="#ssloptions">SSLOptions</a>) ou la directive <directive
 module="mod_ssl">AuthBasicFake</directive> sont activées, cette directive permet
 de contrôler quelle partie du certificat client est utilisée comme nom
-d’utilisateur. Sans la directive <directive>SSLUserName</directive>,
-<code>REMOTE_USER</code> peut ne pas être définie pour d’autres modules ou
+d'utilisateur. Sans la directive <directive>SSLUserName</directive>,
+<code>REMOTE_USER</code> peut ne pas être définie pour d'autres modules ou
 scripts CGI.</p>
 
 <example><title>Exemple</title>
@@ -3037,10 +3037,10 @@ module="mod_ssl">SSLOCSPOverrideResponder</directive>.</p>
 <ul>
 <li><code>no_ocsp_for_cert_ok</code>
     <p>Normalement, Si la validation OCSP est activée, un certificat qui ne
-    contient pas d’URL de réponse OCSP provoquera un échec de validation.
+    contient pas d'URL de réponse OCSP provoquera un échec de validation.
     Ajouter ce drapeau permet à un tel certificat de passer la validation. Cela
-    s’avère utile dans les environnements où certains certificats de la chaîne
-    ne contiennent pas d’information de réponse OCSP.</p>
+    s'avère utile dans les environnements où certains certificats de la chaîne
+    ne contiennent pas d'information de réponse OCSP.</p>
 </li>
 </ul>
 
@@ -3484,14 +3484,14 @@ requiert OpenSSL version 1.1.1 ou ultérieure</compatibility>
 <usage>
 <p>Cette directive permet la collecte des données de ClientHello pendant la
 négociation qui sont conservées pendant toute la durée de la connexion, de façon
-qu’elles soient disponibles sous la forme de variables d’environnement
+qu'elles soient disponibles sous la forme de variables d'environnement
 <code>SSL_CLIENTHELLO_*</code> pour les requêtes qui dépendent de la définition
 de <code>StdEnvVars</code>. Les variables sont formatées comme les tampons bruts
 codés en hexadécimal observés dans le protocole réseau brut et tels que fournis
 par OpenSSL. Les valeurs de GREASE (RFC 8701) sont filtrées par OpenSSL lors de
-l’énumération des identifiants d’extension, mais sont transmises telles quelles
-pour les autres variables. Si cette directive n’est pas activée, ou si la
-version d’OpenSSL est antérieure à 1.1.1, ces variables ne seront pas
+l'énumération des identifiants d'extension, mais sont transmises telles quelles
+pour les autres variables. Si cette directive n'est pas activée, ou si la
+version d'OpenSSL est antérieure à 1.1.1, ces variables ne seront pas
 renseignées.</p>
 </usage> 
 </directivesynopsis>
@@ -3647,12 +3647,12 @@ répertoire spécifié</description>
 
 <p>
 ECH est décrit dans la <rfc>9849</rfc>
-; httpd prend en charge ECH «&nbsp;shared-mode&nbsp;» où l’instance de httpd effectue le
+; httpd prend en charge ECH «&nbsp;shared-mode&nbsp;» où l'instance de httpd effectue le
 déchiffrement ECH et héberge les sites web ECH «&nbsp;public-name&nbsp;» et «&nbsp;backend&nbsp;».  
 </p>
 
 <p>La directive <code>SSLECHKeyDir</code> permet de définir le répertoire où les
-fichiers PEM ECH (nommés <code>*.ech</code>) sont stockés. Lorsqu’un fichier PEM
+fichiers PEM ECH (nommés <code>*.ech</code>) sont stockés. Lorsqu'un fichier PEM
 ECH a été chargé avec succès, httpd va effectuer un déchiffrement ECH et, si ce
 dernier réussit, va ouvrir la session TLS correspondante en utilisant le SNI
 depuis le ClientHello interne.
@@ -3690,10 +3690,10 @@ Dans ce qui précède, nous décrivons une configuration qui utilise
 ECH, les deux étant hébergés par la même instance de httpd.
 </p>
 <p>
-L’utilisation d’ECH nécessite le chargement par httpd d’une paire de clés ECH
+L'utilisation d'ECH nécessite le chargement par httpd d'une paire de clés ECH
 avec une composante privée pour le déchiffrement ECH. Pour les navigateurs, il
 sera nécessaire que la composante publique de cette paire de clés soit publiée
-dans le DNS. À l’aide d’OpenSSL, nous générons et stockons cette paire de clés
+dans le DNS. À l'aide d'OpenSSL, nous générons et stockons cette paire de clés
 dans un fichier formaté PEM ECH comme indiqué ci-après.
 </p>
 <p>
@@ -3703,7 +3703,7 @@ aussi fournir le <code>«&nbsp;nom publique&nbsp;»</code> (<code>public-name</c
 par le protocole ECH.
 </p>
 <p>
-Les opérations de génération des clés doivent être effectuées sous n’importe
+Les opérations de génération des clés doivent être effectuées sous n'importe
 quel compte local utilisé pour la configuration de httpd.
 </p>
 <example><title>Exemple : Génération de clés ECH</title>
@@ -3724,7 +3724,7 @@ AQALZXhhbXBsZS5vcmcAAA==
 </highlight>
 </example>
 <p>
-La valeur ECHConfig doit ensuite être publiée dans le DNS sous forme d’un
+La valeur ECHConfig doit ensuite être publiée dans le DNS sous forme d'un
 enregistrement ressource HTTPS de façon à être accessible comme indiqué
 ci-après :
 </p>
@@ -3738,7 +3738,7 @@ $ dig +short HTTPS foo.example.com
 Divers autres champs peuvent être inclus dans un enregistrement ressource HTTPS.
 Les méthodes existantes pour publier des enregistrements DNS peuvent être
 utilisées pour effectuer ce qui précède pour de nombreux déploiements de httpd.
-Dans certains cas, il pourra être intéressant d’utiliser 
+Dans certains cas, il pourra être intéressant d'utiliser 
 <a href="https://datatracker.ietf.org/doc/html/draft-ietf-tls-wkech">
 un URI connu pour les paramètres du service de publication</a> conçu pour
 assister les serveurs web , par exemple dans la gestion des rotations fréquentes
@@ -3749,7 +3749,7 @@ de clés ECH.
 <note><title>Rechargement des clés ECH</title>
 
 <p>
-Invoquer httpd avec l’argument de ligne de commande <code>-k graceful</code>
+Invoquer httpd avec l'argument de ligne de commande <code>-k graceful</code>
 provoque un rechargement «&nbsp;en douceur&nbsp;» de la configuration sans fermer les
 connexions existantes.
 </p>

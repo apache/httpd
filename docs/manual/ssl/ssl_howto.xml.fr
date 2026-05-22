@@ -337,8 +337,8 @@ chaîne de certification.</p>
 </section>
 
 <section>
-<title>Réglage de l’agrafage OCSP pour la production</title>
-<p>La configuration par défaut de l’agrafage OCSP est conservatrice et peut
+<title>Réglage de l'agrafage OCSP pour la production</title>
+<p>La configuration par défaut de l'agrafage OCSP est conservatrice et peut
 induire des requêtes excessives vers les répondeurs OCSP, des délais dépassés ou
 des réponses en erreur mis en cache trop longtemps. Les réglages suivants sont
 recommandés pour un serveur en production :</p>
@@ -361,7 +361,7 @@ SSLStaplingErrorCacheTimeout 60
     </highlight>
 
 <p>Ces réglages traitent les problèmes courants survenant quand les réglages par
-défaut de l’agrafage OCSP produisent des erreurs en charge — en particulier
+défaut de l'agrafage OCSP produisent des erreurs en charge — en particulier
 quand les répondeurs OCSP sont lents ou peu fiables. Voir la documentation
 individuelle des directives <directive
 module="mod_ssl">SSLStaplingReturnResponderErrors</directive>, <directive
