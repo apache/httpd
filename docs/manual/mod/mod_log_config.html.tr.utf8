@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_log_config  </title>
+<title>mod_log_config - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,29 +18,29 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_log_config</h1>
+<div id="preamble"><h1>Apache Modülü mod_log_config</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>log_config_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_log_config.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>log_config_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_log_config.c</td></tr></table>
+<h3>Özet</h3>
 
     <p>Bu modül istemci isteklerinin esnek şekilde günlüklenmesi ile
       ilgilidir. Günlükler kişiselleştirilebilir biçemdedir ve doğrudan bir
@@ -56,11 +56,11 @@
       her sunucu için birden fazla  <code class="directive">TransferLog</code> ve
       <code class="directive">CustomLog</code> yönergesi belirtilebilir.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Konular</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#formats">Günlük Girdilerinin Kişiselleştirilmesi</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Güvenlik Kaygıları</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#bufferedlogs">BufferedLogs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#customlog">CustomLog</a></li>
@@ -68,13 +68,13 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#logformat">LogFormat</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#transferlog">TransferLog</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config" /></li></ul><h3 />
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_log_config">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_log_config">Hata bildir</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><a href="../logs.html">Apache Günlük Dosyaları</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">Günlük Girdilerinin Kişiselleştirilmesi</a> <a title="" href="#formats" class="permalink">&para;</a></h2>
+<h2><a name="formats" id="formats">Günlük Girdilerinin Kişiselleştirilmesi</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p><code class="directive"><a href="#logformat">LogFormat</a></code> ve <code class="directive"><a href="#customlog">CustomLog</a></code> yönergelerinin biçem
       argümanı bir dizgedir. Bu dizge her isteği günlük dosyasına günlüklemek
@@ -350,23 +350,23 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Güvenlik Kaygıları</a> <a title="" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Güvenlik Kaygıları</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>Günlük dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
       dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
       güvenliğinizden nasıl feragat etmiş olacağınız <a href="../misc/security_tips.html#serverroot">güvenlik ipuçları</a>
       belgesinde açıklanmıştır.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs" /> <a title="" href="#bufferedlogs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Yönergesi</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Günlük girdilerini diske yazmadan önce bellekte tamponlar
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük girdilerini diske yazmadan önce bellekte tamponlar
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>BufferedLogs Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>2.0.41 ve sonrasında mevcuttur.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>BufferedLogs On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>BufferedLogs Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.0.41 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p><code class="directive">BufferedLogs</code> yönergesi,
       <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> modülünün çeşitli günlük girdilerini her
@@ -381,16 +381,16 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog" /> <a title="" href="#customlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Yönergesi</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük dosyasın ismini ve girdi biçemini belirler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>CustomLog  <var>dosya</var>|<var>borulu-süreç</var>
 <var>biçem</var>|<var>takma-ad</var>
 [env=[!]<var>ortam-değişkeni</var>]|
 expr=<var>ifade</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
 </table>
     <p><code class="directive">CustomLog</code> yönergesi istekleri günlüğe kaydetmek
       için kullanılır. Yönerge ile bir günlük biçemi belirtilebilir ve günlük
@@ -467,17 +467,17 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog" /> <a title="" href="#globallog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Yönergesi</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Günlük dosyasının ismini ve biçemini belirler</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Günlük dosyasının ismini ve biçemini belirler</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>GlobalLog  <var>dosya</var>|<var>boru</var>|<var>sağlayıcı</var>
 <var>biçem</var>|<var>takma_ad</var>
 [env=[!]<var>ortam_değişkeni</var>|
 expr=<var>ifade</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_log_config</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Apache HTTP Sunucusunun 2.4.19 ve sonraki sürümlerinde kullanılabilir.</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.4.19 ve sonraki sürümlerinde kullanılabilir.</td></tr>
 </table>
 
     <p><code class="directive">GlobalLog</code> yönergesi ana sunucu yapılandırması ve
@@ -496,16 +496,16 @@ expr=<var>ifade</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat" /> <a title="" href="#logformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Yönergesi</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LogFormat <var>biçem</var>|<var>takma-ad</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LogFormat <var>biçem</var>|<var>takma-ad</var>
 [<var>takma-ad</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>LogFormat "%h %l %u %t \"%r\" %&gt;s %b"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
 </table>
     <p>Bu yönerge erişim günlüğü dosyasının girdi biçemini belirler.</p>
 
@@ -535,14 +535,14 @@ expr=<var>ifade</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog" /> <a title="" href="#transferlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Yönergesi</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir günlük dosyasının yerini belirtir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>TransferLog <var>dosya</var>|<var>borulu-süreç</var>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir günlük dosyasının yerini belirtir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>TransferLog <var>dosya</var>|<var>borulu-süreç</var>
 [<var>takma-ad</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_log_config</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_log_config</td></tr>
 </table>
     <p>Bir günlük biçemi tanımlanmasını ve şarta bağlı günlük kaydını mümkün
       kılmaması haricinde <code class="directive"><a href="#customlog">CustomLog</a></code> yönergesi gibidir. Günlük biçemi yerine kendinden
@@ -557,14 +557,14 @@ TransferLog "logs/access_log"</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_log_config.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_log_config.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_log_config.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_log_config.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

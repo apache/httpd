@@ -31,9 +31,9 @@
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Core Apache HTTP Server features that are always
 available</td></tr>
@@ -729,26 +729,42 @@ variables</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.4.21 and later</td></tr>
 </table>
-  <p>This directive controls how some CGI variables are set.</p>
+  <p>This directive controls how certain CGI environment variables are
+  set when requests are passed to CGI scripts or other handlers that
+  receive a CGI environment. Currently, the only variable supported is
+  <code>REQUEST_URI</code>.</p>
 
-  <p><strong>REQUEST_URI</strong> rules:</p>
+  <p>By default, the CGI environment variable <code>REQUEST_URI</code>
+  is set to the original URI from the client's request line. This means
+  that even if <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> or an internal redirect
+  changes which resource is actually being served, the CGI script still
+  sees the original URI that the client sent.</p>
+
+  <p>With <code>CGIVar REQUEST_URI current-uri</code>, the value is
+  instead set to the current URI after any rewrites or internal
+  redirects have been applied.</p>
+
+  <p><strong>Allowed values:</strong></p>
   <dl>
     <dt><code>original-uri</code> (default)</dt>
-    <dd>The value is taken from the original request line, and will not
-    reflect internal redirects or subrequests which change the requested
-    resource.</dd>
+    <dd>Set <code>REQUEST_URI</code> to the URI from the original client
+    request, regardless of any internal redirects or rewrites.</dd>
     <dt><code>current-uri</code></dt>
-    <dd>The value reflects the resource currently being processed,
-    which may be different than the original request from the client
-    due to internal redirects or subrequests.</dd>
+    <dd>Set <code>REQUEST_URI</code> to the URI of the resource
+    currently being processed, which may differ from the original
+    request due to internal redirects or rewrites.</dd>
   </dl>
 
+  <pre class="prettyprint lang-config"># Show CGI scripts the rewritten URI rather than the original
+CGIVar REQUEST_URI current-uri</pre>
+
+
   <div class="note"><h3>Note</h3>
-  <p>The CGI environment variable <code>REQUEST_URI</code> contains the
-      full original URI from the request line, including the query string.
-      This differs from the server variable <code>%{REQUEST_URI}</code>
-      used in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <a href="../expr.html">
-      ap_expr</a>, which contains only the path component.</p></div>
+  <p>The CGI environment variable <code>REQUEST_URI</code> (in either
+  mode) contains the full URI including the query string. This differs
+  from the server variable <code>%{REQUEST_URI}</code> used in
+  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <a href="../expr.html">ap_expr</a>,
+  which contains only the path component (no query string).</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -5406,9 +5422,9 @@ hostname or IP address</td></tr>
 <p><span>Available Languages: </span><a href="../de/mod/core.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/core.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/core.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--

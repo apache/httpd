@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_lua  </title>
+<title>mod_lua - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,26 +18,26 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_lua</h1>
+<div id="preamble"><h1>Module Apache mod_lua</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lua.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entrée Lua dans différentes parties du
 traitement des requêtes httpd</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>lua_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_lua.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>versions 2.3 et supérieures</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>lua_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_lua.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>versions 2.3 et supérieures</td></tr></table>
+<h3>Sommaire</h3>
 
 <p>Ce module permet d'ajouter au serveur des extensions sous forme de
 scripts écrits dans le langage de programmation Lua.
@@ -61,7 +61,7 @@ fonctionnement interne de httpd.</p>
 </div>
 
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Configuration de base</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Ecrire des gestionnaires</a></li>
@@ -74,7 +74,7 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#apache2">Paquet apache2</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#modifying_buckets">Modification de contenu avec les filtres lua</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#databases">Connectivité aux bases de données</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#luaauthzprovider">LuaAuthzProvider</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
@@ -98,10 +98,10 @@ fonctionnement interne de httpd.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luascope">LuaScope</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lua" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lua" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_lua">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_lua">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicconf" id="basicconf">Configuration de base</a> <a title="" href="#basicconf" class="permalink">&para;</a></h2>
+<h2><a name="basicconf" id="basicconf">Configuration de base</a> <a title="Lien permanent" href="#basicconf" class="permalink">&para;</a></h2>
 
 <p>La directive de base pour le chargement du module est</p>
 
@@ -129,7 +129,7 @@ invoquant cette fonction de <code>gestion</code> de fichier.
  </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writinghandlers" id="writinghandlers">Ecrire des gestionnaires</a> <a title="" href="#writinghandlers" class="permalink">&para;</a></h2>
+<h2><a name="writinghandlers" id="writinghandlers">Ecrire des gestionnaires</a> <a title="Lien permanent" href="#writinghandlers" class="permalink">&para;</a></h2>
 <p>Dans l'API du serveur HTTP Apache, un gestionnaire est une sorte de
 point d'accroche (hook) spécifique responsable de la génération de la
 réponse. <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> et
@@ -191,7 +191,7 @@ gestionnaires (ou points d'entrée, ou filtres) dans le même script.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="writingauthzproviders" id="writingauthzproviders">Ecriture de fournisseurs d'autorisation</a> <a title="" href="#writingauthzproviders" class="permalink">&para;</a></h2>
+<h2><a name="writingauthzproviders" id="writingauthzproviders">Ecriture de fournisseurs d'autorisation</a> <a title="Lien permanent" href="#writingauthzproviders" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> fournit une interface d'autorisation
@@ -244,7 +244,7 @@ fournisseur <code>foo</code>, et la configure por l'URL <code>/</code> :</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="writinghooks" id="writinghooks">Ecriture de fonctions d'accroche
-(hooks)</a> <a title="" href="#writinghooks" class="permalink">&para;</a></h2>
+(hooks)</a> <a title="Lien permanent" href="#writinghooks" class="permalink">&para;</a></h2>
 
 <p>Les fonctions d'accroche déterminent la manière dont les modules (et
 les scripts Lua) participent au traitement des requêtes. Chaque type
@@ -389,7 +389,7 @@ end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="datastructures" id="datastructures">Structures de données</a> <a title="" href="#datastructures" class="permalink">&para;</a></h2>
+<h2><a name="datastructures" id="datastructures">Structures de données</a> <a title="Lien permanent" href="#datastructures" class="permalink">&para;</a></h2>
 
 <dl>
 <dt>request_rec</dt>
@@ -717,7 +717,7 @@ end</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="functions" id="functions">Méthodes de l'objet request_rec</a> <a title="" href="#functions" class="permalink">&para;</a></h2>
+<h2><a name="functions" id="functions">Méthodes de l'objet request_rec</a> <a title="Lien permanent" href="#functions" class="permalink">&para;</a></h2>
 
 <p>L'objet request_rec possède (au minimum) les méthodes suivantes :</p>
 
@@ -1083,7 +1083,7 @@ end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Fonctions de journalisation</a> <a title="" href="#logging" class="permalink">&para;</a></h2>
+<h2><a name="logging" id="logging">Fonctions de journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
 <pre class="prettyprint lang-lua">	-- exemples de messages de journalisation
 	r:trace1("Ceci est un message de journalisation de niveau
@@ -1100,7 +1100,7 @@ end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="apache2" id="apache2">Paquet apache2</a> <a title="" href="#apache2" class="permalink">&para;</a></h2>
+<h2><a name="apache2" id="apache2">Paquet apache2</a> <a title="Lien permanent" href="#apache2" class="permalink">&para;</a></h2>
 <p>Le paquet nommé <code>apache2</code> est fourni avec (au minimum) le
 contenu suivant :</p>
 <dl>
@@ -1125,7 +1125,7 @@ contenu suivant :</p>
 <p>Les autres codes d'état HTTP ne sont pas encore implémentés.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="modifying_buckets" id="modifying_buckets">Modification de contenu avec les filtres lua</a> <a title="" href="#modifying_buckets" class="permalink">&para;</a></h2>
+<h2><a name="modifying_buckets" id="modifying_buckets">Modification de contenu avec les filtres lua</a> <a title="Lien permanent" href="#modifying_buckets" class="permalink">&para;</a></h2>
     
     <p>
     Les fonctions de filtrage implémentées via les directives <code class="directive"><a href="#luainputfilter">LuaInputFilter</a></code> ou <code class="directive"><a href="#luaoutputfilter">LuaOutputFilter</a></code> sont conçues comme des
@@ -1168,7 +1168,7 @@ end</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="databases" id="databases">Connectivité aux bases de données</a> <a title="" href="#databases" class="permalink">&para;</a></h2>
+<h2><a name="databases" id="databases">Connectivité aux bases de données</a> <a title="Lien permanent" href="#databases" class="permalink">&para;</a></h2>
     
     <p>Mod_lua implémente une fonctionnalité basique de connexion aux
 bases de données permettant d'envoyer des requêtes ou d'exécuter des
@@ -1347,15 +1347,15 @@ le cas des requêtes dynamiques, utilisez <code>db:prepare</code> ou
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a name="luaauthzprovider" id="luaauthzprovider" /> <a title="" href="#luaauthzprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luaauthzprovider" id="luaauthzprovider">Directive</a> <a name="LuaAuthzProvider" id="LuaAuthzProvider">LuaAuthzProvider</a> <a title="Lien permanent" href="#luaauthzprovider" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Branche une fonction fournisseur d'autorisation dans <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaAuthzProvider provider_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.3 du serveur HTTP Apache</td></tr>
 </table>
 <p>Lorsqu'une fonction lua a été enregistrée en tant que fournisseur
 d'autorisation, elle peut être appelée via la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> :</p>
@@ -1377,15 +1377,15 @@ end</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache" /> <a title="" href="#luacodecache" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luacodecache" id="luacodecache">Directive</a> <a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a title="Lien permanent" href="#luacodecache" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configure le cache de code compilé.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LuaCodeCache stat</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le cache de code compilé.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaCodeCache stat</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
     Cette directive permet de définir le comportement du cache de code
     en mémoire. La valeur par défaut est stat ; dans ce cas, le script
@@ -1408,16 +1408,16 @@ LuaCodeCache never</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a> <a name="luahookaccesschecker" id="luahookaccesschecker" /> <a title="" href="#luahookaccesschecker" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookaccesschecker" id="luahookaccesschecker">Directive</a> <a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a> <a title="Lien permanent" href="#luahookaccesschecker" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase access_checker du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase access_checker du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument optionnel est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAccessChecker  /chemin/vers/lua/script.lua  hook_function_name [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</td></tr>
 </table>
 <p>Ajoute votre fonction d'accroche à la phase access_checker. Une
@@ -1429,16 +1429,16 @@ HTTP_FORBIDDEN.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker" /> <a title="" href="#luahookauthchecker" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookauthchecker" id="luahookauthchecker">Directive</a> <a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a title="Lien permanent" href="#luahookauthchecker" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase auth_checker du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase auth_checker du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument optionnel est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookAuthChecker  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</td></tr>
 </table>
 <p>Invoque une fonction lua au cours de la phase auth_checker du
@@ -1485,16 +1485,16 @@ end</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a name="luahookcheckuserid" id="luahookcheckuserid" /> <a title="" href="#luahookcheckuserid" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a> <a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a title="Lien permanent" href="#luahookcheckuserid" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase check_user_id du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase check_user_id du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument optionnel est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookCheckUserID  /chemin/vers/lua/script.lua hook_function_name [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</td></tr>
 </table><p>...</p>
    <div class="note"><h3>Ordonnancement</h3><p>Les arguments optionnels
@@ -1503,15 +1503,15 @@ version 2.3.15 du serveur HTTP Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a> <a name="luahookfixups" id="luahookfixups" /> <a title="" href="#luahookfixups" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookfixups" id="luahookfixups">Directive</a> <a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a> <a title="Lien permanent" href="#luahookfixups" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase de correction du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase de correction du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookFixups  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
     Idem LuaHookTranslateName, mais s'exécute durant la phase de
@@ -1520,27 +1520,27 @@ traitement de la requête</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a name="luahookinsertfilter" id="luahookinsertfilter" /> <a title="" href="#luahookinsertfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a> <a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a title="Lien permanent" href="#luahookinsertfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase insert_filter du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase insert_filter du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookInsertFilter  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Non encore implémenté</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a> <a name="luahooklog" id="luahooklog" /> <a title="" href="#luahooklog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahooklog" id="luahooklog">Directive</a> <a name="LuaHookLog" id="LuaHookLog">LuaHookLog</a> <a title="Lien permanent" href="#luahooklog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Permet une insertion dans la phase de journalisation du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet une insertion dans la phase de journalisation du
 traitement d'une requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookLog  /path/to/lua/script.lua log_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
     Ce dispositif d'insertion simple permet d'exécuter une fonction
@@ -1584,15 +1584,15 @@ end</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage" /> <a title="" href="#luahookmaptostorage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a> <a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a title="Lien permanent" href="#luahookmaptostorage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase map_to_storage du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase map_to_storage du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookMapToStorage  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Identique à la directive
     <code class="directive">LuaHookTranslateName</code>, mais s'exécute à la phase
@@ -1635,15 +1635,15 @@ end</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookPreTranslate" id="LuaHookPreTranslate">LuaHookPreTranslate</a> <a name="luahookpretranslate" id="luahookpretranslate" /> <a title="" href="#luahookpretranslate" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahookpretranslate" id="luahookpretranslate">Directive</a> <a name="LuaHookPreTranslate" id="LuaHookPreTranslate">LuaHookPreTranslate</a> <a title="Lien permanent" href="#luahookpretranslate" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase de pré-traduction du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase de pré-traduction du
 traitement d'une requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookPreTranslate  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 <p>
     Identique à LuaHookTranslateName, mais s'exécute au cours de la phase de
@@ -1653,16 +1653,16 @@ traitement d'une requête</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename" /> <a title="" href="#luahooktranslatename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahooktranslatename" id="luahooktranslatename">Directive</a> <a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a title="Lien permanent" href="#luahooktranslatename" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée à la phase du nom de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée à la phase du nom de
 traduction du traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument optionnel est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTranslateName  /chemin/vers/lua/script.lua  nom_fonction_hook [early|late]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument optionnel est disponible depuis la
 version 2.3.15 du serveur HTTP Apache.</td></tr>
 </table><p>
     Cette directive permet d'ajouter un point d'entrée (à
@@ -1706,15 +1706,15 @@ end</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a name="luahooktypechecker" id="luahooktypechecker" /> <a title="" href="#luahooktypechecker" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luahooktypechecker" id="luahooktypechecker">Directive</a> <a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a title="Lien permanent" href="#luahooktypechecker" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la phase type_checker du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la phase type_checker du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaHookTypeChecker  /chemin/vers/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>
     Cette directive fournit un point d'entrée pour la phase
     type_checker du traitement de la requête. Cette phase
@@ -1738,17 +1738,17 @@ traitement de la requête</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaInherit" id="LuaInherit">LuaInherit</a> <a name="luainherit" id="luainherit" /> <a title="" href="#luainherit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luainherit" id="luainherit">Directive</a> <a name="LuaInherit" id="LuaInherit">LuaInherit</a> <a title="Lien permanent" href="#luainherit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle la manière dont les sections de configuration
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la manière dont les sections de configuration
 parentes sont fusionnées dans les enfants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaInherit none|parent-first|parent-last</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LuaInherit parent-first</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Versions 2.4.0 et supérieures</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInherit none|parent-first|parent-last</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaInherit parent-first</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Versions 2.4.0 et supérieures</td></tr>
 </table><p>Par défaut, si des directives LuaHook* se trouvent dans
     des sections de configuration Directory ou Location qui se
     chevauchent, les scripts
@@ -1762,14 +1762,14 @@ parentes sont fusionnées dans les enfants</td></tr>
     configuration parentes.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a name="luainputfilter" id="luainputfilter" /> <a title="" href="#luainputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luainputfilter" id="luainputfilter">Directive</a> <a name="LuaInputFilter" id="LuaInputFilter">LuaInputFilter</a> <a title="Lien permanent" href="#luainputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit une fonction Lua pour le filtrage en entrée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage en entrée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaInputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
 <p>Cette directive permet d'ajouter un filtre en entrée sous la forme
@@ -1821,15 +1821,15 @@ filtres Lua</a>" pour plus de détails.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler" /> <a title="" href="#luamaphandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luamaphandler" id="luamaphandler">Directive</a> <a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a title="Lien permanent" href="#luamaphandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Met en correspondance un chemin avec un gestionnaire lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaMapHandler modele-uri /chemin/vers/lua/script.lua
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance un chemin avec un gestionnaire lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaMapHandler modele-uri /chemin/vers/lua/script.lua
 [nom-fonction]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette directive permet de faire correspondre un modèle d'uri avec
     une fonction de gestionnaire située dans un fichier spécifique. Elle
@@ -1853,15 +1853,15 @@ filtres Lua</a>" pour plus de détails.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a name="luaoutputfilter" id="luaoutputfilter" /> <a title="" href="#luaoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luaoutputfilter" id="luaoutputfilter">Directive</a> <a name="LuaOutputFilter" id="LuaOutputFilter">LuaOutputFilter</a> <a title="Lien permanent" href="#luaoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit une fonction Lua pour le filtrage de contenu en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit une fonction Lua pour le filtrage de contenu en
 sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaOutputFilter filter_name /path/to/lua/script.lua function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
 <p>&gt;Cette directive permet d'ajouter un filtre en sortie sous la forme
@@ -1920,14 +1920,14 @@ filtres Lua</a>" pour plus de détails.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath" /> <a title="" href="#luapackagecpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luapackagecpath" id="luapackagecpath">Directive</a> <a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a title="Lien permanent" href="#luapackagecpath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un répertoire au package.cpath de lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaPackageCPath /chemin/vers/include/?.soa</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un répertoire au package.cpath de lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackageCPath /chemin/vers/include/?.soa</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette directive permet d'ajouter un chemin à la liste des chemins
     de recherche des bibliothèques partagées de lua. Ceci modifie le
@@ -1936,14 +1936,14 @@ filtres Lua</a>" pour plus de détails.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a name="luapackagepath" id="luapackagepath" /> <a title="" href="#luapackagepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luapackagepath" id="luapackagepath">Directive</a> <a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a title="Lien permanent" href="#luapackagepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un répertoire au package.path de lua</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaPackagePath /chemin/vers/include/?.lua</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un répertoire au package.path de lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaPackagePath /chemin/vers/include/?.lua</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Cette directive permet d'ajouter un chemin à la liste des
     chemins de recherche du module lua. Elle suit les mêmes conventions
     que lua. Ceci modifie le package.path dans les vms lua.</p>
@@ -1954,15 +1954,15 @@ LuaPackagePath "/scripts/lib/?/init.lua"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a> <a name="luaquickhandler" id="luaquickhandler" /> <a title="" href="#luaquickhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luaquickhandler" id="luaquickhandler">Directive</a> <a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a> <a title="Lien permanent" href="#luaquickhandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un point d'entrée pour la gestion rapide du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un point d'entrée pour la gestion rapide du
 traitement de la requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaQuickHandler /path/to/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette phase s'exécute juste après l'attribution de la requête à
     un serveur virtuel, et permet d'effectuer certains traitements avant
@@ -1979,15 +1979,15 @@ traitement de la requête</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot" /> <a title="" href="#luaroot" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luaroot" id="luaroot">Directive</a> <a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a title="Lien permanent" href="#luaroot" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie le chemin de base pour la résolution des chemins
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le chemin de base pour la résolution des chemins
 relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaRoot /chemin/vers/un/répertoire</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaRoot /chemin/vers/un/répertoire</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette directive permet de spécifier le chemin de base qui sera
     utilisé pour évaluer tous les chemins relatifs dans <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code>. En
@@ -1997,15 +1997,15 @@ relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.htm
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope" /> <a title="" href="#luascope" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="luascope" id="luascope">Directive</a> <a name="LuaScope" id="LuaScope">LuaScope</a> <a title="Lien permanent" href="#luascope" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LuaScope once</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_lua</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Une valeur parmi once, request, conn, thread -- la valeur par défaut est once</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LuaScope once|request|conn|thread|server [min] [max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LuaScope once</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
     <p>Cette directive permet de spécifier la durée de vie de
     l'interpréteur Lua qui sera utilisé dans ce "répertoire". La valeur
@@ -2050,11 +2050,11 @@ relatifs dans les directives de <code class="module"><a href="../mod/mod_lua.htm
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_lua.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_lua.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

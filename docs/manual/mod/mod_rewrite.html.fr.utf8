@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_rewrite  </title>
+<title>mod_rewrite - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,27 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_rewrite</h1>
+<div id="preamble"><h1>Module Apache mod_rewrite</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_rewrite.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Ce module fournit un moteur de réécriture à base de
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module fournit un moteur de réécriture à base de
 règles permettant de réécrire les URLs des requêtes
 à la volée</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>rewrite_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_rewrite.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>rewrite_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_rewrite.c</td></tr></table>
+<h3>Sommaire</h3>
 
       <p>Le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> utilise un moteur de
       réécriture à base de règles, basé sur un interpréteur
@@ -70,10 +71,10 @@ règles permettant de réécrire les URLs des requêtes
       <a href="../rewrite/">documentation détaillée
       sur mod_rewrite</a>.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li>
@@ -82,10 +83,10 @@ règles permettant de réécrire les URLs des requêtes
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriteoptions">RewriteOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a> <a title="" href="#logging" class="permalink">&para;</a></h2>
+<h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offre une journalisation détaillée
     de ses actions aux niveaux de journalisation <code>trace1</code> à
@@ -124,16 +125,16 @@ règles permettant de réécrire les URLs des requêtes
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase" /> <a title="" href="#rewritebase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewritebase" id="rewritebase">Directive</a> <a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a title="Lien permanent" href="#rewritebase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'URL de base pour les réécritures au niveau
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URL de base pour les réécritures au niveau
 répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RewriteBase <em>chemin_URL</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Pas de valeur par défaut</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteBase <em>chemin_URL</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Pas de valeur par défaut</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteBase</code> permet de
       spécifier le préfixe d'URL à utiliser dans un contexte de
@@ -180,17 +181,17 @@ AliasMatch "^/myapp" "/opt/myapp-1.2.3"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteCond" id="RewriteCond">RewriteCond</a> <a name="rewritecond" id="rewritecond" /> <a title="" href="#rewritecond" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewritecond" id="rewritecond">Directive</a> <a name="RewriteCond" id="RewriteCond">RewriteCond</a> <a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une condition qui devra être satisfaite pour que
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une condition qui devra être satisfaite pour que
 la réécriture soit effectuée
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code> RewriteCond
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> RewriteCond
       <em>chaîne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteCond</code> permet de définir une
       condition d'exécution d'une règle. Une ou plusieurs conditions
@@ -827,16 +828,16 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a> <a name="rewriteengine" id="rewriteengine" /> <a title="" href="#rewriteengine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewriteengine" id="rewriteengine">Directive</a> <a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a> <a title="Lien permanent" href="#rewriteengine" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active ou désactive l'exécution du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive l'exécution du
 moteur de réécriture</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RewriteEngine on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>RewriteEngine off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteEngine on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RewriteEngine off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
 
       <p>La directive <code class="directive">RewriteEngine</code> active ou
@@ -864,16 +865,16 @@ moteur de réécriture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteMap" id="RewriteMap">RewriteMap</a> <a name="rewritemap" id="rewritemap" /> <a title="" href="#rewritemap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewritemap" id="rewritemap">Directive</a> <a name="RewriteMap" id="RewriteMap">RewriteMap</a> <a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une fonction de mise en correspondance pour la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une fonction de mise en correspondance pour la
 recherche de mots-clés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em> [<em>MapTypeOptions</em>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième paramètre, MapTypeOptions, est disponible à partir
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième paramètre, MapTypeOptions, est disponible à partir
 de la version 2.4.29 du serveur HTTP Apache</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteMap</code> définit une
@@ -962,15 +963,15 @@ de la version 2.4.29 du serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions" id="rewriteoptions" /> <a title="" href="#rewriteoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewriteoptions" id="rewriteoptions">Directive</a> <a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a title="Lien permanent" href="#rewriteoptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configure certaines options spéciales
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure certaines options spéciales
 pour le moteur de réécriture</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
 
       <p>La directive <code class="directive">RewriteOptions</code> définit
@@ -1142,15 +1143,15 @@ pour le moteur de réécriture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteRule" id="RewriteRule">RewriteRule</a> <a name="rewriterule" id="rewriterule" /> <a title="" href="#rewriterule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="rewriterule" id="rewriterule">Directive</a> <a name="RewriteRule" id="RewriteRule">RewriteRule</a> <a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit les règles pour le moteur de réécriture</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RewriteRule
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les règles pour le moteur de réécriture</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteRule
       <em>Modèle</em> <em>Substitution</em> [<em>drapeaux</em>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_rewrite</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>La directive <code class="directive">RewriteRule</code> est le
       véritable cheval de trait de la réécriture. La directive peut
@@ -1267,7 +1268,7 @@ la dernière.</li>
 </div>
 </div>
 
-	<p>Pour quelques conseils à propos des <a class="glossarylink" href="../glossary.html#regex" title="">expressions rationnelles</a>, voir le
+	<p>Pour quelques conseils à propos des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, voir le
 	document <a href="../rewrite/intro.html#regex">Introduction à
 	mod_rewrite</a>.</p>
 
@@ -1565,7 +1566,7 @@ substitution !
     </tr>
 <tr>
         <td>type|T=<em>MIME-type</em></td>
-        <td>Force l'attribution du <a class="glossarylink" href="../glossary.html#type-mime" title="">Type-MIME</a>
+        <td>Force l'attribution du <a class="glossarylink" href="../glossary.html#type-mime" title="voir glossaire">Type-MIME</a>
 	spécifié au fichier cible. <em><a href="../rewrite/flags.html#flag_t">détails ...</a></em></td>
     </tr>
 <tr class="odd">
@@ -1581,7 +1582,7 @@ substitution !
 	d’une variable de tête ou d’une référence arrière vers un chemin du
 	système de fichiers.
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em><br />
-        2.4.60
+        Disponible à partir de la version 2.4.60 du serveur HTTP Apache.
         </td>
     </tr>
 <tr class="odd">
@@ -1590,7 +1591,7 @@ substitution !
 	Empêche la fusion des slashes de début multiples tels que ceux utilisés
 	dans les chemins UNC de Windows.
         <em><a href="../rewrite/flags.html#flag_unc">détails ...</a></em><br />
-        2.4.62
+        Disponible à partir de la version 2.4.62 du serveur HTTP Apache.
         </td>
     </tr>
 </table>
@@ -1737,11 +1738,11 @@ externe</td>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_rewrite.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_rewrite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_rewrite.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

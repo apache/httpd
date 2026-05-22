@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_alias  </title>
+<title>mod_alias - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,30 +18,31 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_alias</h1>
+<div id="preamble"><h1>Module Apache mod_alias</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_alias.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Permet d'atteindre différentes parties du système de
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet d'atteindre différentes parties du système de
 fichiers depuis l'arborescence des documents du site web, ainsi que la
 redirection d'URL</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>alias_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_alias.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_alias.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Les directives fournies par ce module permettent de manipuler et
     de contrôler les URLs à l'arrivée des requêtes sur le serveur. Les
@@ -71,10 +72,10 @@ redirection d'URL</td></tr>
     plutôt les outils fournis par le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></p>
 
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#order">Chronologie du traitement</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
@@ -87,7 +88,7 @@ redirection d'URL</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_alias" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_alias" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_alias">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_alias">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
 <li><a href="../urlmapping.html">Mise en correspondance des URLs avec le
@@ -95,7 +96,7 @@ système de fichiers</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="order" id="order">Chronologie du traitement</a> <a title="" href="#order" class="permalink">&para;</a></h2>
+<h2><a name="order" id="order">Chronologie du traitement</a> <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
 
     <p>Les alias et redirections apparaissant dans différents contextes
     sont traités comme les autres directives en respectant les <a href="../sections.html#mergin">règles de fusion</a> standards. Par
@@ -134,15 +135,15 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias" /> <a title="" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="alias" id="alias">Directive</a> <a name="Alias" id="Alias">Alias</a> <a title="Lien permanent" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Met en correspondance des URLs avec des chemins du système
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec des chemins du système
 de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Alias [<var>chemin URL</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Alias [<var>chemin URL</var>]
 <var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
 
     <p>La directive <code class="directive">Alias</code> permet de stocker des
@@ -235,17 +236,17 @@ de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch" /> <a title="" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directive</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a title="Lien permanent" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Met en correspondance des URLs avec le système de fichiers
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Met en correspondance des URLs avec le système de fichiers
 en faisant intervenir les expressions rationnelles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AliasMatch <var>regex</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>Cette directive est identique à la directive <code class="directive"><a href="#alias">Alias</a></code>, mais fait appel aux <a class="glossarylink" href="../glossary.html#regex" title="">expressions rationnelles</a>, à la place d'une
+    <p>Cette directive est identique à la directive <code class="directive"><a href="#alias">Alias</a></code>, mais fait appel aux <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la place d'une
     simple mise en correspondance de préfixe. L'expression rationnelle
     fournie est mise en correspondance avec le chemin URL, et si elle
     correspond, le serveur va substituer toute partie de chemin
@@ -257,7 +258,7 @@ en faisant intervenir les expressions rationnelles</td></tr>
     <pre class="prettyprint lang-config">AliasMatch "^/icons(.*)" "/usr/local/apache/icons$1$2"</pre>
 
 
-    <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="">expressions
+    <p>Toute la puissance des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions
     rationnelles</a> peut être mise à contribution. Par exemple,
     il est possible de construire un alias avec un modèle de chemin URL
     insensible à la casse :</p>
@@ -315,15 +316,15 @@ en faisant intervenir les expressions rationnelles</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath" /> <a title="" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="aliaspreservepath" id="aliaspreservepath">Directive</a> <a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a title="Lien permanent" href="#aliaspreservepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associer le chemin entier à l'alias dans une section location.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AliasPreservePath OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associer le chemin entier à l'alias dans une section location.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AliasPreservePath OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Lorsqu'on utilise la version à deux paramètres de la directive
     <code class="directive">Alias</code>, le chemin complet après l'alias est préservé.
@@ -339,16 +340,16 @@ en faisant intervenir les expressions rationnelles</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect" /> <a title="" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirect" id="redirect">Directive</a> <a name="Redirect" id="Redirect">Redirect</a> <a title="Lien permanent" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Envoie une redirection externe demandant au client
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe demandant au client
 d'effectuer une autre requête avec une URL différente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Redirect [<var>état</var>] [<var>URL-path</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Redirect [<var>état</var>] [<var>URL-path</var>]
 <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>La directive <code class="directive">Redirect</code> permet de faire correspondre
     une ancienne URL à une nouvelle en demandant au client d'aller chercher la
@@ -466,20 +467,20 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch" /> <a title="" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirectmatch" id="redirectmatch">Directive</a> <a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a title="Lien permanent" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Envoie une redirection externe faisant appel aux
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe faisant appel aux
 expressions rationnelles pour la mise en correspondance de l'URL
 courante</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RedirectMatch [<var>état</var>] <var>regex</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectMatch [<var>état</var>] <var>regex</var>
 <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive est identique à la directive <code class="directive"><a href="#redirect">Redirect</a></code>, mais fait appel aux
-    <a class="glossarylink" href="../glossary.html#regex" title="">expressions rationnelles</a>, à la
+    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la
     place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
@@ -499,16 +500,16 @@ courante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent" /> <a title="" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directive</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a title="Lien permanent" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Envoie une redirection externe permanente demandant au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe permanente demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RedirectPermanent <var>chemin URL</var> <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectPermanent <var>chemin URL</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection est
     permanente (code 301). Son comportement est exactement le même
@@ -516,15 +517,15 @@ différente</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative" /> <a title="" href="#redirectrelative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirectrelative" id="redirectrelative">Directive</a> <a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a title="Lien permanent" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Redirection relative de cibles.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>RedirectRelative Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirection relative de cibles.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RedirectRelative Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP Apache</td></tr>
 </table>
     <p>Par défaut, si l'URL cible d'une directive <code class="directive"><a href="#redirect">Redirect</a></code> est une URL relative commençant par
     un caractère '/', le serveur convertit cette dernière en URL absolue avant
@@ -535,16 +536,16 @@ différente</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp" /> <a title="" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directive</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a title="Lien permanent" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Envoie une redirection externe temporaire demandant au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie une redirection externe temporaire demandant au
 client d'effectuer une nouvelle requête avec une URL
 différente</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RedirectTemp <var>chemin URL</var> <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RedirectTemp <var>chemin URL</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive informe le client que la redirection n'est
     que temporaire (code 302). Son comportement est exactement le même
@@ -552,15 +553,15 @@ différente</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias" /> <a title="" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directive</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a title="Lien permanent" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
 et désigne la cible comme script CGI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ScriptAlias [<var>chemin URL</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptAlias [<var>chemin URL</var>]
 <var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>La directive <code class="directive">ScriptAlias</code> présente le même
     comportement que la directive <code class="directive"><a href="#alias">Alias</a></code>, mais désigne en plus le
@@ -634,25 +635,25 @@ et désigne la cible comme script CGI</td></tr>
 
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../howto/cgi.html">Tutoriel CGI</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch" /> <a title="" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a title="Lien permanent" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre une URL à une zone du système de fichiers
 en faisant appel aux expressions rationnelles et en désignant la cible
 comme un script CGI</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ScriptAliasMatch <var>regex</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptAliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_alias</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_alias</td></tr>
 </table>
     <p>Cette directive est équivalente à la directive <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>, mais fait appel aux
-    <a class="glossarylink" href="../glossary.html#regex" title="">expressions rationnelles</a>, à la
+    <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, à la
     place d'une simple mise en correspondance de préfixe. L'expression
     rationnelle fournie est mise en correspondance avec le chemin URL,
     et si elle correspond, le serveur va substituer toute partie de
@@ -663,7 +664,7 @@ comme un script CGI</td></tr>
     <pre class="prettyprint lang-config">ScriptAliasMatch "^/cgi-bin(.*)" "/usr/local/apache/cgi-bin$1"</pre>
 
 
-    <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="">expressions rationnelles</a> peut être mise à
+    <p>Comme dans le cas d'AliasMatch, toute la puissance des <a class="glossarylink" href="../glossary.html#rexex" title="voir glossaire">expressions rationnelles</a> peut être mise à
     contribution. Par exemple, il est possible de construire un alias
     avec une comparaison du modèle du chemin URL insensible à la casse :</p>
 
@@ -679,14 +680,14 @@ comme un script CGI</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_alias.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_alias.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

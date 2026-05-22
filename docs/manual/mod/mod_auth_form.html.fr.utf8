@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_auth_form  </title>
+<title>mod_auth_form - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,25 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_auth_form</h1>
+<div id="preamble"><h1>Module Apache mod_auth_form</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_form.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>auth_form_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_auth_form.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible à partir d'Apache 2.3</td></tr></table>
-<h3 />
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification à l'aide d'un formulaire</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_form_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_auth_form.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir d'Apache 2.3</td></tr></table>
+<h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>L'authentification à base de formulaire dépend des modules
@@ -69,7 +69,7 @@
     </p>
 
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#basicconfig">Configuration de base</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#standalone">Page de connexion dédiée</a></li>
@@ -79,7 +79,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#loggingout">Déconnexion</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#urlencoding">Noms d'utilisateurs et mots de
     passe</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authformauthoritative">AuthFormAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authformbody">AuthFormBody</a></li>
@@ -97,7 +97,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authformsize">AuthFormSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authformusername">AuthFormUsername</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_form" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_form" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_form">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_form">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
@@ -108,7 +108,7 @@ l'authentification</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicconfig" id="basicconfig">Configuration de base</a> <a title="" href="#basicconfig" class="permalink">&para;</a></h2>
+<h2><a name="basicconfig" id="basicconfig">Configuration de base</a> <a title="Lien permanent" href="#basicconfig" class="permalink">&para;</a></h2>
 
       <p>Pour protéger une URL particulière avec le module
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>, vous devez déterminer l'endroit où
@@ -160,7 +160,7 @@ l'authentification</a></li>
       courante.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="standalone" id="standalone">Page de connexion dédiée</a> <a title="" href="#standalone" class="permalink">&para;</a></h2>
+<h2><a name="standalone" id="standalone">Page de connexion dédiée</a> <a title="Lien permanent" href="#standalone" class="permalink">&para;</a></h2>
 
       <p>Le formulaire de connexion peut être contenu dans une page
       indépendante, ou être inclus dans la page courante. </p>
@@ -225,7 +225,7 @@ l'authentification</a></li>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="inline" id="inline">Connexion à la volée</a> <a title="" href="#inline" class="permalink">&para;</a></h2>
+<h2><a name="inline" id="inline">Connexion à la volée</a> <a title="Lien permanent" href="#inline" class="permalink">&para;</a></h2>
 
       <div class="warning"><h3>Avertissement</h3>
         <p>Il existe un risque, dans certaines circonstances, que le
@@ -293,7 +293,7 @@ SessionCookieName session path=/</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="inlinepreservebody" id="inlinepreservebody">Connexion à la volée avec
-    conservation du contenu</a> <a title="" href="#inlinepreservebody" class="permalink">&para;</a></h2>
+    conservation du contenu</a> <a title="Lien permanent" href="#inlinepreservebody" class="permalink">&para;</a></h2>
 
       <p>Il existe une limite à la technique de connexion à la volée
       décrite ci-dessus ; si un formulaire HTML POST entraîne une
@@ -346,7 +346,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="loggingout" id="loggingout">Déconnexion</a> <a title="" href="#loggingout" class="permalink">&para;</a></h2>
+<h2><a name="loggingout" id="loggingout">Déconnexion</a> <a title="Lien permanent" href="#loggingout" class="permalink">&para;</a></h2>
 
       <p>Pour permettre à un utilisateur de se déconnecter d'une session
       particulière, vous devez configurer une page pour qu'elle soit
@@ -390,7 +390,7 @@ SessionCookieName session path=/</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="urlencoding" id="urlencoding">Noms d'utilisateurs et mots de
-    passe</a> <a title="" href="#urlencoding" class="permalink">&para;</a></h2>
+    passe</a> <a title="Lien permanent" href="#urlencoding" class="permalink">&para;</a></h2>
     <p>Notez que la soumission d'un formulaire implique l'encodage URL
     (URLEncoding) des données du formulaire, ici le nom d'utilisateur et
     le mot de passe. Vous devez donc choisir des noms d'utilisateurs et
@@ -399,16 +399,16 @@ SessionCookieName session path=/</pre>
     d'obtenir des résultats inattendus.</p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a name="authformauthoritative" id="authformauthoritative" /> <a title="" href="#authformauthoritative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformauthoritative" id="authformauthoritative">Directive</a> <a name="AuthFormAuthoritative" id="AuthFormAuthoritative">AuthFormAuthoritative</a> <a title="Lien permanent" href="#authformauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si l'autorisation et l'authentification sont confiés à
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'autorisation et l'authentification sont confiés à
 des modules de plus bas niveau</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 </table>
     <p>Normalement, chacun des modules d'autorisation spécifiés par la
     directive <code class="directive"><a href="#authformprovider">AuthFormProvider</a></code> va tenter de
@@ -428,16 +428,16 @@ des modules de plus bas niveau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a> <a name="authformbody" id="authformbody" /> <a title="" href="#authformbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformbody" id="authformbody">Directive</a> <a name="AuthFormBody" id="AuthFormBody">AuthFormBody</a> <a title="Lien permanent" href="#authformbody" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire contenant le corps de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le corps de la
 requête à effectuer en cas de connexion réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormBody <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormBody httpd_body</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormBody <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormBody httpd_body</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormBody</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le corps
@@ -450,16 +450,16 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a name="authformdisablenostore" id="authformdisablenostore" /> <a title="" href="#authformdisablenostore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformdisablenostore" id="authformdisablenostore">Directive</a> <a name="AuthFormDisableNoStore" id="AuthFormDisableNoStore">AuthFormDisableNoStore</a> <a title="Lien permanent" href="#authformdisablenostore" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive l'en-tête CacheControl no-store sur la page de
 connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormDisableNoStore On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormDisableNoStore On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormDisableNoStore Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>Le drapeau <code class="directive">AuthFormDisableNoStore</code> supprime
     l'envoi d'un en-tête <code>Cache-Control no-store</code> lorsqu'une
@@ -473,15 +473,15 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a name="authformfakebasicauth" id="authformfakebasicauth" /> <a title="" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformfakebasicauth" id="authformfakebasicauth">Directive</a> <a name="AuthFormFakeBasicAuth" id="AuthFormFakeBasicAuth">AuthFormFakeBasicAuth</a> <a title="Lien permanent" href="#authformfakebasicauth" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormFakeBasicAuth On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Simule une en-tête d'authentification de base</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormFakeBasicAuth On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormFakeBasicAuth Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>Le drapeau <code class="directive">AuthFormFakeBasicAuth</code>
     détermine si une en-tête d'<code>Authentification de base</code>
@@ -494,17 +494,17 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a> <a name="authformlocation" id="authformlocation" /> <a title="" href="#authformlocation" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformlocation" id="authformlocation">Directive</a> <a name="AuthFormLocation" id="AuthFormLocation">AuthFormLocation</a> <a title="Lien permanent" href="#authformlocation" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire qui contiendra l'URL vers
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contiendra l'URL vers
 laquelle l'utilisateur sera redirigé en cas de connexion
 réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormLocation <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormLocation httpd_location</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLocation <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormLocation httpd_location</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormLocation</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra l'URL
@@ -513,16 +513,16 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a> <a name="authformloginrequiredlocation" id="authformloginrequiredlocation" /> <a title="" href="#authformloginrequiredlocation" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformloginrequiredlocation" id="authformloginrequiredlocation">Directive</a> <a name="AuthFormLoginRequiredLocation" id="AuthFormLoginRequiredLocation">AuthFormLoginRequiredLocation</a> <a title="Lien permanent" href="#authformloginrequiredlocation" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>L'URL de la page vers laquelle on doit être redirigé si une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé si une
 authentification est requise</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormLoginRequiredLocation <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLoginRequiredLocation <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
@@ -542,16 +542,16 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a> <a name="authformloginsuccesslocation" id="authformloginsuccesslocation" /> <a title="" href="#authformloginsuccesslocation" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformloginsuccesslocation" id="authformloginsuccesslocation">Directive</a> <a name="AuthFormLoginSuccessLocation" id="AuthFormLoginSuccessLocation">AuthFormLoginSuccessLocation</a> <a title="Lien permanent" href="#authformloginsuccesslocation" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>L'URL de la page vers laquelle on doit être redirigé en cas
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL de la page vers laquelle on doit être redirigé en cas
 de connexion réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormLoginSuccessLocation <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLoginSuccessLocation <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
@@ -570,16 +570,16 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a> <a name="authformlogoutlocation" id="authformlogoutlocation" /> <a title="" href="#authformlogoutlocation" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformlogoutlocation" id="authformlogoutlocation">Directive</a> <a name="AuthFormLogoutLocation" id="AuthFormLogoutLocation">AuthFormLogoutLocation</a> <a title="Lien permanent" href="#authformlogoutlocation" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>L'URL vers laquelle un utilisateur devra être redirigé
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL vers laquelle un utilisateur devra être redirigé
 après s'être déconnecté</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormLogoutLocation <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormLogoutLocation <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP
 Apache. L'interprétation des expressions rationnelles est supportée
 depuis la version 2.4.4.</td></tr>
 </table>
@@ -610,16 +610,16 @@ depuis la version 2.4.4.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a> <a name="authformmethod" id="authformmethod" /> <a title="" href="#authformmethod" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformmethod" id="authformmethod">Directive</a> <a name="AuthFormMethod" id="AuthFormMethod">AuthFormMethod</a> <a title="Lien permanent" href="#authformmethod" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant la méthode de la
 requête à effectuer en cas de connexion réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormMethod <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormMethod httpd_method</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMethod <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormMethod httpd_method</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormMethod</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le type
@@ -632,17 +632,17 @@ requête à effectuer en cas de connexion réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a> <a name="authformmimetype" id="authformmimetype" /> <a title="" href="#authformmimetype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformmimetype" id="authformmimetype">Directive</a> <a name="AuthFormMimetype" id="AuthFormMimetype">AuthFormMimetype</a> <a title="Lien permanent" href="#authformmimetype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire contenant le type MIME du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire contenant le type MIME du
 corps de la requête à effectuer en cas de connexion
 réussie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormMimetype <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormMimetype httpd_mimetype</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormMimetype <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormMimetype httpd_mimetype</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormMimetype</code>
     spécifie le nom du champ HTML qui, s'il existe, contiendra le type
@@ -655,16 +655,16 @@ réussie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a> <a name="authformpassword" id="authformpassword" /> <a title="" href="#authformpassword" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformpassword" id="authformpassword">Directive</a> <a name="AuthFormPassword" id="AuthFormPassword">AuthFormPassword</a> <a title="Lien permanent" href="#authformpassword" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le mot de passe
 de connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormPassword <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormPassword httpd_password</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormPassword <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormPassword httpd_password</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormPassword</code> permet de
     spécifier le nom du champ HTML qui, s'il existe, contiendra le mot
@@ -672,17 +672,17 @@ de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a> <a name="authformprovider" id="authformprovider" /> <a title="" href="#authformprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformprovider" id="authformprovider">Directive</a> <a name="AuthFormProvider" id="AuthFormProvider">AuthFormProvider</a> <a title="Lien permanent" href="#authformprovider" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le(s) fournisseur(s) d'authentification pour la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseur(s) d'authentification pour la
 zone concernée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormProvider <var>nom fournisseur</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormProvider file</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormProvider file</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormProvider</code> permet de
     définir quel fournisseur sera utilisé pour authentifier les
@@ -709,16 +709,16 @@ zone concernée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a> <a name="authformsitepassphrase" id="authformsitepassphrase" /> <a title="" href="#authformsitepassphrase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformsitepassphrase" id="authformsitepassphrase">Directive</a> <a name="AuthFormSitePassphrase" id="AuthFormSitePassphrase">AuthFormSitePassphrase</a> <a title="Lien permanent" href="#authformsitepassphrase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Court-circuite l'authentification pour les sites à fort
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Court-circuite l'authentification pour les sites à fort
 trafic</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormSitePassphrase <var>secret</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormSitePassphrase <var>secret</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormSitePassphrase</code>
     spécifie un mot de passe qui, s'il est présent dans la session
@@ -749,16 +749,16 @@ trafic</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a name="authformsize" id="authformsize" /> <a title="" href="#authformsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformsize" id="authformsize">Directive</a> <a name="AuthFormSize" id="AuthFormSize">AuthFormSize</a> <a title="Lien permanent" href="#authformsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>La taille maximale en octets du formulaire dont seront
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale en octets du formulaire dont seront
 extraites les informations de connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormSize <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormSize 8192</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormSize <var>taille</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.0 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormSize</code> spécifie
     la taille maximale du corps de la requête qui sera utilisée pour
@@ -775,16 +775,16 @@ extraites les informations de connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a> <a name="authformusername" id="authformusername" /> <a title="" href="#authformusername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authformusername" id="authformusername">Directive</a> <a name="AuthFormUsername" id="AuthFormUsername">AuthFormUsername</a> <a title="Lien permanent" href="#authformusername" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nom du champ de formulaire qui contient le nom de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du champ de formulaire qui contient le nom de
 connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthFormUsername <var>nom du champ</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthFormUsername httpd_username</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthFormUsername <var>nom du champ</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthFormUsername httpd_username</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.3 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">AuthFormUsername</code> permet de
     spécifier le nom du champ HTML qui, s'il existe, contiendra le nom
@@ -793,11 +793,11 @@ connexion</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_auth_form.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_form.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_form.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

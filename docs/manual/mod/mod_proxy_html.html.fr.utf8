@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_proxy_html  </title>
+<title>mod_proxy_html - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,27 +18,27 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_proxy_html</h1>
+<div id="preamble"><h1>Module Apache mod_proxy_html</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_html.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_html.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Réécrit les liens HTML afin de s'assurer qu'ils soient bien
 adressables depuis les réseaux des clients dans un contexte de
 mandataire.</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>proxy_html_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_proxy_html.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_html_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_html.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module fournit un filtre en sortie permettant de réécrire les liens
     HTML dans un contexte de mandataire, afin de s'assurer que ces liens
@@ -64,7 +64,7 @@ l'extérieur.</p>
 <p>mod_proxy_html a été développé à l'origine à WebÞing, dont la <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a>
 détaillée pourra s'avérer utile aux utilisateurs.</p>
 </div>
-<div id="quickview"><h3 class="directives" />
+<div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
@@ -79,20 +79,20 @@ détaillée pourra s'avérer utile aux utilisateurs.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_html" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_html" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_html">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_html">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize" /> <a title="" href="#proxyhtmlbufsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a> <a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a title="Lien permanent" href="#proxyhtmlbufsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'incrément de la taille du tampon, ainsi que sa
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'incrément de la taille du tampon, ainsi que sa
 taille initiale, pour la mise en
 tampon des scripts en ligne et des feuilles de style.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLBufSize <var>nb-octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLBufSize 8192</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLBufSize <var>nb-octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLBufSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Pour pouvoir interpréter du contenu non HTML (feuilles de style et
@@ -113,16 +113,16 @@ dynamiquement au cours du traitement d'une requête.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLCharsetOut" id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</a> <a name="proxyhtmlcharsetout" id="proxyhtmlcharsetout" /> <a title="" href="#proxyhtmlcharsetout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlcharsetout" id="proxyhtmlcharsetout">Directive</a> <a name="ProxyHTMLCharsetOut" id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</a> <a title="Lien permanent" href="#proxyhtmlcharsetout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie un jeu de caractères pour la sortie de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un jeu de caractères pour la sortie de
 mod_proxy_html.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLCharsetOut UTF-8</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLCharsetOut <var>jeu-de-caractères | *</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLCharsetOut UTF-8</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Cette directive permet de spécifier un jeu de caractères pour la
@@ -137,15 +137,15 @@ l'entrée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a> <a name="proxyhtmldoctype" id="proxyhtmldoctype" /> <a title="" href="#proxyhtmldoctype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmldoctype" id="proxyhtmldoctype">Directive</a> <a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a> <a title="Lien permanent" href="#proxyhtmldoctype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une déclaration de type de document HTML ou XHTML.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une déclaration de type de document HTML ou XHTML.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
 <br />ProxyHTMLDocType <var>fpi</var> [SGML|XML]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Avec la première syntaxe, les documents seront déclarés de type HTML
@@ -173,15 +173,15 @@ Debug.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a> <a name="proxyhtmlenable" id="proxyhtmlenable" /> <a title="" href="#proxyhtmlenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlenable" id="proxyhtmlenable">Directive</a> <a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a> <a title="Lien permanent" href="#proxyhtmlenable" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Permet d'activer/désactiver le filtre proxy_html.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLEnable On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLEnable Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'activer/désactiver le filtre proxy_html.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLEnable On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLEnable Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
     <p>Cette directive est un simple commutateur permettant
@@ -196,15 +196,15 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEvents" id="ProxyHTMLEvents">ProxyHTMLEvents</a> <a name="proxyhtmlevents" id="proxyhtmlevents" /> <a title="" href="#proxyhtmlevents" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlevents" id="proxyhtmlevents">Directive</a> <a name="ProxyHTMLEvents" id="ProxyHTMLEvents">ProxyHTMLEvents</a> <a title="Lien permanent" href="#proxyhtmlevents" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie les attributs à traiter comme des évènements de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie les attributs à traiter comme des évènements de
 type scripting.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLEvents <var>attribut [attribut ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLEvents <var>attribut [attribut ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Cette directive permet de spécifier un ou plusieurs attributs à
@@ -230,16 +230,16 @@ HTML 4 et XHTML 1.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLExtended" id="ProxyHTMLExtended">ProxyHTMLExtended</a> <a name="proxyhtmlextended" id="proxyhtmlextended" /> <a title="" href="#proxyhtmlextended" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlextended" id="proxyhtmlextended">Directive</a> <a name="ProxyHTMLExtended" id="ProxyHTMLExtended">ProxyHTMLExtended</a> <a title="Lien permanent" href="#proxyhtmlextended" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si l'on doit corriger les liens dans les scripts
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si l'on doit corriger les liens dans les scripts
 en ligne, les feuilles de style et les évènements de type scripting.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLExtended On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLExtended Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLExtended On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLExtended Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Si cette directive est définie à <code>Off</code>, les liens HTML
@@ -262,15 +262,15 @@ correspondances erronées.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a> <a name="proxyhtmlfixups" id="proxyhtmlfixups" /> <a title="" href="#proxyhtmlfixups" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlfixups" id="proxyhtmlfixups">Directive</a> <a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a> <a title="Lien permanent" href="#proxyhtmlfixups" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Corrige les erreurs HTML simples.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLFixups none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Corrige les erreurs HTML simples.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLFixups none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Cette directive accepte un à trois arguments parmi les suivants :</p>
@@ -288,16 +288,16 @@ d'arrière-plan est déficient.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLInterp" id="ProxyHTMLInterp">ProxyHTMLInterp</a> <a name="proxyhtmlinterp" id="proxyhtmlinterp" /> <a title="" href="#proxyhtmlinterp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlinterp" id="proxyhtmlinterp">Directive</a> <a name="ProxyHTMLInterp" id="ProxyHTMLInterp">ProxyHTMLInterp</a> <a title="Lien permanent" href="#proxyhtmlinterp" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la réinterprétation des règles
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la réinterprétation des règles
 <code class="directive">ProxyHTMLURLMap</code> pour chaque requête.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLInterp On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLInterp Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLInterp On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLInterp Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
     <p>Cette directive permet d'activer le réinterprétation pour chaque
@@ -311,15 +311,15 @@ Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLLinks" id="ProxyHTMLLinks">ProxyHTMLLinks</a> <a name="proxyhtmllinks" id="proxyhtmllinks" /> <a title="" href="#proxyhtmllinks" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmllinks" id="proxyhtmllinks">Directive</a> <a name="ProxyHTMLLinks" id="ProxyHTMLLinks">ProxyHTMLLinks</a> <a title="Lien permanent" href="#proxyhtmllinks" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie les éléments HTML dont les attributs d'URL doivent
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie les éléments HTML dont les attributs d'URL doivent
 être réécrits.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLLinks <var>élément attribut [attribut2 ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLLinks <var>élément attribut [attribut2 ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Cette directive permet de spécifier les éléments dont les attributs d'URL
@@ -349,16 +349,16 @@ ProxyHTMLLinks  script     src for</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a name="proxyhtmlmeta" id="proxyhtmlmeta" /> <a title="" href="#proxyhtmlmeta" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlmeta" id="proxyhtmlmeta">Directive</a> <a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a title="Lien permanent" href="#proxyhtmlmeta" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active ou désactive une préinterprétation supplémentaire
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive une préinterprétation supplémentaire
 des métadonnées dans les sections HTML <code>&lt;head&gt;</code>.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLMeta On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLMeta Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLMeta On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLMeta Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4 du serveur HTTP
 Apache ; proposé en tant que module tiers dans les versions 2.x
 précédentes.</td></tr>
 </table>
@@ -401,15 +401,15 @@ précédentes.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments" /> <a title="" href="#proxyhtmlstripcomments" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a> <a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a title="Lien permanent" href="#proxyhtmlstripcomments" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine si les commentaires HTML doivent être supprimés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLStripComments On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyHTMLStripComments Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les commentaires HTML doivent être supprimés.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLStripComments On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyHTMLStripComments Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Si cette directive est définie à <code>On</code>, mod_proxy_html
@@ -423,14 +423,14 @@ dans la chaîne de filtrage si vous supprimez les commentaires !</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLURLMap" id="ProxyHTMLURLMap">ProxyHTMLURLMap</a> <a name="proxyhtmlurlmap" id="proxyhtmlurlmap" /> <a title="" href="#proxyhtmlurlmap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyhtmlurlmap" id="proxyhtmlurlmap">Directive</a> <a name="ProxyHTMLURLMap" id="ProxyHTMLURLMap">ProxyHTMLURLMap</a> <a title="Lien permanent" href="#proxyhtmlurlmap" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une règle de réécriture des liens HTML</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyHTMLURLMap <var>modèle-source modèle-cible [drapeaux] [cond]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy_html</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une règle de réécriture des liens HTML</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyHTMLURLMap <var>modèle-source modèle-cible [drapeaux] [cond]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4 du serveur HTTP Apache.
 Disponible en tant que module tiers dans les versions 2.x antérieures.</td></tr>
 </table>
 <p>Il s'agit de la directive la plus importante pour la réécriture des
@@ -534,11 +534,11 @@ supportée.</p>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_html.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_html.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

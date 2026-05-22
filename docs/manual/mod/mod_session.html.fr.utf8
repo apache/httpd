@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_session  </title>
+<title>mod_session - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,25 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_session</h1>
+<div id="preamble"><h1>Module Apache mod_session</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_session.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_session.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_session.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Support des sessions</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>session_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_session.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
-<h3 />
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support des sessions</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>session_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_session.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3 d'Apache</td></tr></table>
+<h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>Le module session fait usage des cookies HTTP, et peut à ce
@@ -68,7 +68,7 @@
     besoins.</p>
 
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#whatisasession">Qu'est-ce qu'une session ?</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#whocanuseasession">Qui peut utiliser une session
@@ -85,7 +85,7 @@
     l'authentification</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#integration">Intégration des sessions avec les
     applications externes</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#session">Session</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessionenv">SessionEnv</a></li>
@@ -95,7 +95,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioninclude">SessionInclude</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessionmaxage">SessionMaxAge</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_session">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_session">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
 <li><code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code></li>
@@ -103,7 +103,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="whatisasession" id="whatisasession">Qu'est-ce qu'une session ?</a> <a title="" href="#whatisasession" class="permalink">&para;</a></h2>
+<h2><a name="whatisasession" id="whatisasession">Qu'est-ce qu'une session ?</a> <a title="Lien permanent" href="#whatisasession" class="permalink">&para;</a></h2>
       <p>Au coeur de l'interface de session se trouve une table de
       paires clé/valeur qui sont accessibles d'une requête du navigateur
       à l'autre. Les valeurs de clés peuvent se voir affecter toute chaîne
@@ -121,7 +121,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="whocanuseasession" id="whocanuseasession">Qui peut utiliser une session
-    ?</a> <a title="" href="#whocanuseasession" class="permalink">&para;</a></h2>
+    ?</a> <a title="Lien permanent" href="#whocanuseasession" class="permalink">&para;</a></h2>
       <p>L'interface de session a été conçue à l'origine pour être
       utilisée par d'autres modules du serveur comme
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> ; les applications à base de
@@ -134,7 +134,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="serversession" id="serversession">Stockage des sessions sur le
-    serveur</a> <a title="" href="#serversession" class="permalink">&para;</a></h2>
+    serveur</a> <a title="Lien permanent" href="#serversession" class="permalink">&para;</a></h2>
       <p>Apache peut être configuré pour stocker les sessions
       utilisateurs sur un serveur particulier ou un groupe de serveurs.
       Cette fonctionnalité est similaire aux sessions disponibles sur
@@ -159,7 +159,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="browsersession" id="browsersession">Stockage des sessions au niveau
-    du navigateur</a> <a title="" href="#browsersession" class="permalink">&para;</a></h2>
+    du navigateur</a> <a title="Lien permanent" href="#browsersession" class="permalink">&para;</a></h2>
       <p>Dans les environnements à haut trafic où le stockage d'une
       session sur un serveur consomme trop
       de ressources, il est possible de stocker le contenu de la session
@@ -181,7 +181,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Exemples simples</a> <a title="" href="#basicexamples" class="permalink">&para;</a></h2>
+<h2><a name="basicexamples" id="basicexamples">Exemples simples</a> <a title="Lien permanent" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>La création d'une session consiste simplement à ouvrir la
       session, et à décider de l'endroit où elle doit être stockée. Dans
@@ -233,7 +233,7 @@ SessionHeader X-Replace-Session</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sessionprivacy" id="sessionprivacy">Confidentialité des
-    sessions</a> <a title="" href="#sessionprivacy" class="permalink">&para;</a></h2>
+    sessions</a> <a title="Lien permanent" href="#sessionprivacy" class="permalink">&para;</a></h2>
 
       <p>En utilisant la fonctionnalité de votre navigateur "Afficher
       les cookies", vous pouvez voir une réprésentation de la session
@@ -266,7 +266,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cookieprivacy" id="cookieprivacy">Confidentialité du cookie</a> <a title="" href="#cookieprivacy" class="permalink">&para;</a></h2>
+<h2><a name="cookieprivacy" id="cookieprivacy">Confidentialité du cookie</a> <a title="Lien permanent" href="#cookieprivacy" class="permalink">&para;</a></h2>
 
       <p>Le mécanisme de cookie HTTP offre aussi des fonctionnalités
       quant à la confidentialité, comme la possibilité de
@@ -306,7 +306,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authentication" id="authentication">Support des sessions pour
-    l'authentification</a> <a title="" href="#authentication" class="permalink">&para;</a></h2>
+    l'authentification</a> <a title="Lien permanent" href="#authentication" class="permalink">&para;</a></h2>
 
       <p>Comme il est possible de le faire avec de nombreux serveurs
       d'applications, les modules d'authentification peuvent utiliser
@@ -331,7 +331,7 @@ AuthName "realm"
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="integration" id="integration">Intégration des sessions avec les
-    applications externes</a> <a title="" href="#integration" class="permalink">&para;</a></h2>
+    applications externes</a> <a title="Lien permanent" href="#integration" class="permalink">&para;</a></h2>
 
       <p>Pour que les sessions soient utiles, leur contenu doit être
       accessible aux applications externes, et ces dernières doivent
@@ -399,15 +399,15 @@ AuthName "realm"
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Session" id="Session">Session</a> <a name="session" id="session" /> <a title="" href="#session" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="session" id="session">Directive</a> <a name="Session" id="Session">Session</a> <a title="Lien permanent" href="#session" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ouvre une session pour le contexte courant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Session On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Session Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ouvre une session pour le contexte courant</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Session On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Session Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>La directive <code class="directive">Session</code> permet d'ouvrir une
     session pour le contexte ou conteneur courant. Les directives
@@ -416,16 +416,16 @@ AuthName "realm"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a name="sessionenv" id="sessionenv" /> <a title="" href="#sessionenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessionenv" id="sessionenv">Directive</a> <a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a title="Lien permanent" href="#sessionenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si le contenu de la session doit être enregistré
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si le contenu de la session doit être enregistré
 dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionEnv On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionEnv Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionEnv On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionEnv Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>Lorsque la directive <code class="directive">SessionEnv</code> est
     définie à <var>On</var>, le contenu de la session est enregistré
@@ -442,15 +442,15 @@ dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a name="sessionexclude" id="sessionexclude" /> <a title="" href="#sessionexclude" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessionexclude" id="sessionexclude">Directive</a> <a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a title="Lien permanent" href="#sessionexclude" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit les préfixes d'URLs pour lesquels une session sera
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les préfixes d'URLs pour lesquels une session sera
 ignorée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionExclude <var>chemin</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionExclude <var>chemin</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>La directive <code class="directive">SessionExclude</code> permet de
     définir les préfixes d'URLs pour lesquels la session sera
@@ -470,16 +470,16 @@ ignorée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval" /> <a title="" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval">Directive</a> <a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a title="Lien permanent" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le nombre de secondes dont la durée d'expiration d'une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre de secondes dont la durée d'expiration d'une
 session peut changer sans que cette session soit mise à jour</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionExpiryUpdateInterval <var>interval</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionExpiryUpdateInterval 0 (mise à jour systématique)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionExpiryUpdateInterval <var>interval</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionExpiryUpdateInterval 0 (mise à jour systématique)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.41 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">SessionExpiryUpdateInterval</code>
     permet d'éviter le coût de l'écriture d'une session pour chaque
@@ -510,16 +510,16 @@ session peut changer sans que cette session soit mise à jour</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a name="sessionheader" id="sessionheader" /> <a title="" href="#sessionheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessionheader" id="sessionheader">Directive</a> <a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a title="Lien permanent" href="#sessionheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Importation des mises à jour de session depuis l'en-tête de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Importation des mises à jour de session depuis l'en-tête de
 réponse HTTP spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionHeader <var>en-tête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionHeader <var>en-tête</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>La directive <code class="directive">SessionHeader</code> permet de
     définir le nom d'un en-tête de réponse HTTP qui, s'il est présent,
@@ -539,16 +539,16 @@ réponse HTTP spécifié</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a name="sessioninclude" id="sessioninclude" /> <a title="" href="#sessioninclude" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessioninclude" id="sessioninclude">Directive</a> <a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a title="Lien permanent" href="#sessioninclude" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit les préfixes d'URL pour lesquels une session est
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les préfixes d'URL pour lesquels une session est
 valide</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionInclude <var>chemin</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>toutes URLs</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionInclude <var>chemin</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>toutes URLs</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>La directive <code class="directive">SessionInclude</code> permet de
     définir les préfixes d'URL spécifiques pour lesquels une session
@@ -565,16 +565,16 @@ valide</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a name="sessionmaxage" id="sessionmaxage" /> <a title="" href="#sessionmaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sessionmaxage" id="sessionmaxage">Directive</a> <a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a title="Lien permanent" href="#sessionmaxage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une durée de vie maximale pour la session en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une durée de vie maximale pour la session en
 secondes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SessionMaxAge <var>durée de vie maximale</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SessionMaxAge 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SessionMaxAge <var>durée de vie maximale</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SessionMaxAge 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session</td></tr>
 </table>
     <p>La directive <code class="directive">SessionMaxAge</code> permet de
     définir la durée maximale pendant laquelle une session restera
@@ -592,11 +592,11 @@ secondes</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_session.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_session.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_session.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_session.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

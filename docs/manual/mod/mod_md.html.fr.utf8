@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_md  </title>
+<title>mod_md - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,28 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_md</h1>
+<div id="preamble"><h1>Module Apache mod_md</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_md.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_md.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
     de certificats via le protocole ACME
     </td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>md_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_md.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>md_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_md.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.30 du serveur HTTP
     Apache</td></tr></table>
-<h3 />
+<h3>Sommaire</h3>
 
         <p>
 	Ce module permet de gérer les propriétés courantes des domaines pour un
@@ -331,7 +331,7 @@
         </div>
 
     </div>
-<div id="quickview"><h3 class="directives" />
+<div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
@@ -380,17 +380,17 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#mdstorelocks">MDStoreLocks</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mdwarnwindow">MDWarnWindow</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a name="mdactivationdelay" id="mdactivationdelay" /> <a title="" href="#mdactivationdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Délai d’activation des nouveaux certificays</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d’activation des nouveaux certificays</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -398,15 +398,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a name="mdbaseserver" id="mdbaseserver" /> <a title="" href="#mdbaseserver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdbaseserver" id="mdbaseserver">Directive</a> <a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a title="Lien permanent" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si le serveur global peut être géré ou seulement
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si le serveur global peut être géré ou seulement
 	les serveurs virtuels.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDBaseServer on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDBaseServer off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDBaseServer on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDBaseServer off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
             Cette directive permet de définir si le serveur global, autrement
@@ -420,15 +420,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCACertificateFile" id="MDCACertificateFile">MDCACertificateFile</a> <a name="mdcacertificatefile" id="mdcacertificatefile" /> <a title="" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcacertificatefile" id="mdcacertificatefile">Directive</a> <a name="MDCACertificateFile" id="MDCACertificateFile">MDCACertificateFile</a> <a title="Lien permanent" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant des certificats de confiance x509 pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant des certificats de confiance x509 pour
 	vérifier les serveurs ACME.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCACertificateFile <var>file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCACertificateFile none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCACertificateFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCACertificateFile none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive est principalement utilisée dans les
@@ -445,15 +445,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges" /> <a title="" href="#mdcachallenges" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcachallenges" id="mdcachallenges">Directive</a> <a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a title="Lien permanent" href="#mdcachallenges" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Type de négociation ACME utilisée pour prouver l'appartenance
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de négociation ACME utilisée pour prouver l'appartenance
 	du domaine.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCAChallenges <var>name</var> [ <var>name</var> ... ]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCAChallenges tls-alpn-01 http-01 dns-01</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCAChallenges <var>name</var> [ <var>name</var> ... ]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCAChallenges tls-alpn-01 http-01 dns-01</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		Cette directive permet de définir les types de négociation
@@ -488,14 +488,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a name="mdcertificateagreement" id="mdcertificateagreement" /> <a title="" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificateagreement" id="mdcertificateagreement">Directive</a> <a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a title="Lien permanent" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Acceptation des conditions d'utilisation de l'autorité de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Acceptation des conditions d'utilisation de l'autorité de
 	certification.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateAgreement accepted</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateAgreement accepted</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
 	    <p>Lorsque vous utilisez mod_md pour obtenir un certificat, vous
 	    devenez un client de l'autorité de certification (par exemple Let's
@@ -507,14 +507,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a name="mdcertificateauthority" id="mdcertificateauthority" /> <a title="" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a> <a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a title="Lien permanent" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Les URLs du service ACME de l'autorité de certification.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCertificateAuthority letsencrypt</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URLs du service ACME de l'autorité de certification.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateAuthority letsencrypt</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Les URLs auxquelles l'autorité de certication offre son service.
@@ -544,15 +544,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a name="mdcertificatecheck" id="mdcertificatecheck" /> <a title="" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le motif de nom et d’URL pour un site de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le motif de nom et d’URL pour un site de
 	vérification de certificat</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateCheck <var>name</var> <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -560,13 +560,13 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateFile" id="MDCertificateFile">MDCertificateFile</a> <a name="mdcertificatefile" id="mdcertificatefile" /> <a title="" href="#mdcertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificatefile" id="mdcertificatefile">Directive</a> <a name="MDCertificateFile" id="MDCertificateFile">MDCertificateFile</a> <a title="Lien permanent" href="#mdcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit un fichier de certificat statique pour le domaine géré.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateFile <var>path-to-pem-file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit un fichier de certificat statique pour le domaine géré.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateFile <var>path-to-pem-file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive s'utilise dans une section <code class="directive"><a href="#mdomainset">MDomainSet</a></code> et permet de spécifier le
@@ -608,14 +608,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateKeyFile" id="MDCertificateKeyFile">MDCertificateKeyFile</a> <a name="mdcertificatekeyfile" id="mdcertificatekeyfile" /> <a title="" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificatekeyfile" id="mdcertificatekeyfile">Directive</a> <a name="MDCertificateKeyFile" id="MDCertificateKeyFile">MDCertificateKeyFile</a> <a title="Lien permanent" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une clé privée statique pour le certificat
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une clé privée statique pour le certificat
 	statique.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateKeyFile <var>path-to-file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateKeyFile <var>path-to-file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive s'utilise dans une section <code class="directive"><a href="#mdomainset">MDomainSet</a></code> et permet de spécifier le
@@ -628,14 +628,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateMonitor" id="MDCertificateMonitor">MDCertificateMonitor</a> <a name="mdcertificatemonitor" id="mdcertificatemonitor" /> <a title="" href="#mdcertificatemonitor" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificatemonitor" id="mdcertificatemonitor">Directive</a> <a name="MDCertificateMonitor" id="MDCertificateMonitor">MDCertificateMonitor</a> <a title="Lien permanent" href="#mdcertificatemonitor" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateMonitor name url</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCertificateMonitor crt.sh https://crt.sh?q=</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateMonitor name url</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateMonitor crt.sh https://crt.sh?q=</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive impacte l'interface utilisateur HTML 'server-status' et
@@ -660,29 +660,29 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a name="mdcertificateprotocol" id="mdcertificateprotocol" /> <a title="" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificateprotocol" id="mdcertificateprotocol">Directive</a> <a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a title="Lien permanent" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le protocole à utiliser avec l'autorité de certification.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateProtocol <var>protocol</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCertificateProtocol ACME</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le protocole à utiliser avec l'autorité de certification.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateProtocol <var>protocol</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateProtocol ACME</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>Cette directive permet de spécifier le protocole à utiliser.
 	    Pour l'heure, seul le protocole <code>ACME</code> est supporté.</p>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCertificateStatus" id="MDCertificateStatus">MDCertificateStatus</a> <a name="mdcertificatestatus" id="mdcertificatestatus" /> <a title="" href="#mdcertificatestatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcertificatestatus" id="mdcertificatestatus">Directive</a> <a name="MDCertificateStatus" id="MDCertificateStatus">MDCertificateStatus</a> <a title="Lien permanent" href="#mdcertificatestatus" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Extrait les informations publiques du certificat au format
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Extrait les informations publiques du certificat au format
 	JSON.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCertificateStatus on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCertificateStatus on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateStatus on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCertificateStatus on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		Lorsque cette directive est à "on", vous disposez d'une
@@ -703,14 +703,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a name="mdchallengedns01" id="mdchallengedns01" /> <a title="" href="#mdchallengedns01" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a title="Lien permanent" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la commande d'activation/désactivation des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la commande d'activation/désactivation des
 	vérifications dns-01</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01 <var>path-to-command</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		Cette directive permet de définir le programme à appeler
@@ -741,16 +741,16 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a name="mdchallengedns01version" id="mdchallengedns01version" /> <a title="" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a title="Lien permanent" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le type des arguments avec lesquels appeler
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type des arguments avec lesquels appeler
 	MDChallengeDns01</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDChallengeDns01Version 1|2</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDChallengeDns01Version 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -764,15 +764,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a name="mdcheckinterval" id="mdcheckinterval" /> <a title="" href="#mdcheckinterval" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a title="Lien permanent" href="#mdcheckinterval" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine la périodicité de la vérification des certificats</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDCheckInterval 12h</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.60 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la périodicité de la vérification des certificats</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDCheckInterval 12h</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.60 du serveur HTTP
 	Apache</td></tr>
 </table>
 	    <p>
@@ -793,14 +793,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a name="mdcontactemail" id="mdcontactemail" /> <a title="" href="#mdcontactemail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a title="Lien permanent" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Adresse Email pour l'enregistrement du compte</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse Email pour l'enregistrement du compte</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -818,14 +818,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a name="mddrivemode" id="mddrivemode" /> <a title="" href="#mddrivemode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mddrivemode" id="mddrivemode">Directive</a> <a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a title="Lien permanent" href="#mddrivemode" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ancien nom de MDRenewMode.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDDriveMode always|auto|manual</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDDriveMode auto</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ancien nom de MDRenewMode.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDDriveMode always|auto|manual</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDDriveMode auto</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
              <p>Cette directive est l'ancien nom de la directive <code class="directive"><a href="#mdrenewmode">MDRenewMode</a></code>, et n'est encore supportée
 	     qu'à titre de compatibilité ascendante.
@@ -833,16 +833,16 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a name="mdexternalaccountbinding" id="mdexternalaccountbinding" /> <a title="" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit les valeurs keyid et hmac de liaison avec les
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les valeurs keyid et hmac de liaison avec les
 	comptes externes à utiliser dans les CA</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.52 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDExternalAccountBinding <var>key-id</var> <var>hmac-64</var> | none | <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDExternalAccountBinding none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.52 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -882,14 +882,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a name="mdhttpproxy" id="mdhttpproxy" /> <a title="" href="#mdhttpproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdhttpproxy" id="mdhttpproxy">Directive</a> <a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a title="Lien permanent" href="#mdhttpproxy" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie un serveur mandataire pour les connexions
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un serveur mandataire pour les connexions
 	sortantes.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDHttpProxy <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDHttpProxy <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
 	    <p>Cette directive permet de spécifier un serveur http mandataire
 	    pour se connecter à l'autorité de certification spécifiée via
@@ -900,15 +900,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a name="mdinitialdelay" id="mdinitialdelay" /> <a title="" href="#mdinitialdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdinitialdelay" id="mdinitialdelay">Directive</a> <a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a title="Lien permanent" href="#mdinitialdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le délai avant la première vérification de certificat.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDInitialDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDInitialDelay 0s</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.66 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le délai avant la première vérification de certificat.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDInitialDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDInitialDelay 0s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.66 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -919,15 +919,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a name="mdmatchnames" id="mdmatchnames" /> <a title="" href="#mdmatchnames" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdmatchnames" id="mdmatchnames">Directive</a> <a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a title="Lien permanent" href="#mdmatchnames" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit comment les noms DNS sont comparés aux vhosts</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDMatchNames all</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit comment les noms DNS sont comparés aux vhosts</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMatchNames all</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -953,13 +953,13 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMember" id="MDMember">MDMember</a> <a name="mdmember" id="mdmember" /> <a title="" href="#mdmember" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdmember" id="mdmember">Directive</a> <a name="MDMember" id="MDMember">MDMember</a> <a title="Lien permanent" href="#mdmember" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nom d'hôte additionnel pour le domaine géré.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDMember <var>hostname</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom d'hôte additionnel pour le domaine géré.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMember <var>hostname</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 	    Plutôt que de lister tous les noms DNS sur la même ligne, vous
@@ -982,15 +982,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMembers" id="MDMembers">MDMembers</a> <a name="mdmembers" id="mdmembers" /> <a title="" href="#mdmembers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdmembers" id="mdmembers">Directive</a> <a name="MDMembers" id="MDMembers">MDMembers</a> <a title="Lien permanent" href="#mdmembers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si les alias de noms de domaines sont
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les alias de noms de domaines sont
 	automatiquement ajoutés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDMembers auto|manual</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDMembers auto</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMembers auto|manual</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMembers auto</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>Cette directive permet de définir si les valeurs de <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> sont automatiquement ajoutées
 	    en tant que membres d'un domaine géré.
@@ -998,13 +998,13 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMessageCmd" id="MDMessageCmd">MDMessageCmd</a> <a name="mdmessagecmd" id="mdmessagecmd" /> <a title="" href="#mdmessagecmd" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdmessagecmd" id="mdmessagecmd">Directive</a> <a name="MDMessageCmd" id="MDMessageCmd">MDMessageCmd</a> <a title="Lien permanent" href="#mdmessagecmd" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Gère les évènements pour les domaines gérés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Gère les évènements pour les domaines gérés</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		Cette directive permet de définir la commande à appeler
@@ -1085,15 +1085,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a name="mdmuststaple" id="mdmuststaple" /> <a title="" href="#mdmuststaple" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdmuststaple" id="mdmuststaple">Directive</a> <a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a title="Lien permanent" href="#mdmuststaple" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si les nouveaux certificats doivent avoir le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les nouveaux certificats doivent avoir le
 	drapeau OCSP Must Staple activé.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDMustStaple on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDMustStaple off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMustStaple on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDMustStaple off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>Cette directive permet de définir si les nouveaux certificats
 	    doivent avoir le drapeau OCSP Must Staple activé ou non. Si un
@@ -1106,13 +1106,13 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd" /> <a title="" href="#mdnotifycmd" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdnotifycmd" id="mdnotifycmd">Directive</a> <a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a title="Lien permanent" href="#mdnotifycmd" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Lance un programme lorsqu'un domaine géré est opérationnel.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDNotifyCmd <var>path</var> [ <var>args</var> ]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Lance un programme lorsqu'un domaine géré est opérationnel.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDNotifyCmd <var>path</var> [ <var>args</var> ]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>Cette directive permet de définir un programme à lancer lorsqu'un
 	    domaine géré a obtenu ou renouvelé son certificat. Ce
@@ -1124,14 +1124,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDomain" id="MDomain">MDomain</a> <a name="mdomain" id="mdomain" /> <a title="" href="#mdomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdomain" id="mdomain">Directive</a> <a name="MDomain" id="MDomain">MDomain</a> <a title="Lien permanent" href="#mdomain" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une liste de noms de domaines qui appartiennent à
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une liste de noms de domaines qui appartiennent à
 	un groupe.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDomain <var>dns-name</var> [ <var>other-dns-name</var>... ] [auto|manual]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Tous les domaines de la liste seront gérés par
@@ -1215,14 +1215,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a name="mdomainsetsection" id="mdomainsetsection" /> <a title="" href="#mdomainsetsection" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdomainsetsection" id="mdomainsetsection">Directive</a> <a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a title="Lien permanent" href="#mdomainsetsection" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Conteneur de directives à appliquer à un ou plusieurs
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives à appliquer à un ou plusieurs
 	domaines gérés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;MDomainSet <var>dns-name</var> [ <var>other-dns-name</var>... ]&gt;...&lt;/MDomainSet&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		Cette directive est équivalente à la directive <code class="directive"><a href="#mdomain">MDomain</a></code> avec la possibilité
@@ -1250,15 +1250,15 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a name="mdportmap" id="mdportmap" /> <a title="" href="#mdportmap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdportmap" id="mdportmap">Directive</a> <a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a title="Lien permanent" href="#mdportmap" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Mappage des ports externes avec les ports internes pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mappage des ports externes avec les ports internes pour
 	vérifier à qui appartient le domaine.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDPortMap <var>map1</var> [ <var>map2</var> ]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDPortMap http:80 https:443</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDPortMap <var>map1</var> [ <var>map2</var> ]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDPortMap http:80 https:443</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Le protocole ACME propose deux méthodes pour vérifier à qui
@@ -1302,14 +1302,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a name="mdprivatekeys" id="mdprivatekeys" /> <a title="" href="#mdprivatekeys" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdprivatekeys" id="mdprivatekeys">Directive</a> <a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a title="Lien permanent" href="#mdprivatekeys" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le type et la taille des clés privées générées.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDPrivateKeys <var>type</var> [ <var>params</var>... ]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDPrivateKeys RSA 2048</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le type et la taille des clés privées générées.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDPrivateKeys <var>type</var> [ <var>params</var>... ]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDPrivateKeys RSA 2048</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive permet de définir les paramètres de construction
@@ -1359,14 +1359,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDProfile" id="MDProfile">MDProfile</a> <a name="mdprofile" id="mdprofile" /> <a title="" href="#mdprofile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdprofile" id="mdprofile">Directive</a> <a name="MDProfile" id="MDProfile">MDProfile</a> <a title="Lien permanent" href="#mdprofile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Utiliser un profile ACME spécifique depuis le CA</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDProfile name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser un profile ACME spécifique depuis le CA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfile name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1399,14 +1399,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a> <a name="mdprofilemandatory" id="mdprofilemandatory" /> <a title="" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdprofilemandatory" id="mdprofilemandatory">Directive</a> <a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a> <a title="Lien permanent" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôler si un MDProfile est obligatoire.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDProfileMandatory on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDProfileMandatory off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôler si un MDProfile est obligatoire.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfileMandatory on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDProfileMandatory off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive permet de contrôler si un <code class="directive"><a href="#mdprofile">MDProfile</a></code> que vous définissez est
@@ -1422,14 +1422,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRenewMode" id="MDRenewMode">MDRenewMode</a> <a name="mdrenewmode" id="mdrenewmode" /> <a title="" href="#mdrenewmode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdrenewmode" id="mdrenewmode">Directive</a> <a name="MDRenewMode" id="MDRenewMode">MDRenewMode</a> <a title="Lien permanent" href="#mdrenewmode" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle le renouvellement des certificats.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRenewMode always|auto|manual</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRenewMode auto</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle le renouvellement des certificats.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewMode always|auto|manual</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRenewMode auto</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
 		En mode "auto" (mode par défaut), le module va agir de la
@@ -1457,14 +1457,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a name="mdrenewviaari" id="mdrenewviaari" /> <a title="" href="#mdrenewviaari" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdrenewviaari" id="mdrenewviaari">Directive</a> <a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a title="Lien permanent" href="#mdrenewviaari" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Utilisation de l’extension ACME ARI (rfc9773).</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRenewViaARI on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation de l’extension ACME ARI (rfc9773).</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRenewViaARI on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive permet d’activer ou de désactiver le
@@ -1482,14 +1482,14 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a name="mdrenewwindow" id="mdrenewwindow" /> <a title="" href="#mdrenewwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdrenewwindow" id="mdrenewwindow">Directive</a> <a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a title="Lien permanent" href="#mdrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le moment auquel un certificat doit être renouvelé.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRenewWindow <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRenewWindow 33%</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le moment auquel un certificat doit être renouvelé.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewWindow <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRenewWindow 33%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
             Lorsqu'un certificat arrive à expiration, mod_md va
@@ -1518,15 +1518,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a name="mdrequirehttps" id="mdrequirehttps" /> <a title="" href="#mdrequirehttps" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdrequirehttps" id="mdrequirehttps">Directive</a> <a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a title="Lien permanent" href="#mdrequirehttps" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Redirige le trafic http: vers https: pour les domaines
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirige le trafic http: vers https: pour les domaines
 	gérés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRequireHttps off|temporary|permanent</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRequireHttps off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRequireHttps off|temporary|permanent</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRequireHttps off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>Cette directive facilite la migration de vos domaines gérés de
 	    http: vers https:. Dans l'exemple suivant,
@@ -1584,16 +1584,16 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a name="mdretrydelay" id="mdretrydelay" /> <a title="" href="#mdretrydelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdretrydelay" id="mdretrydelay">Directive</a> <a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de réessayer, doublé à chaque erreur
 	consécutive</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRetryDelay 30s</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryDelay <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryDelay 30s</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1613,15 +1613,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a name="mdretryfailover" id="mdretryfailover" /> <a title="" href="#mdretryfailover" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdretryfailover" id="mdretryfailover">Directive</a> <a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDRetryFailover 13</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDRetryFailover 13</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.54 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1634,15 +1634,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDServerStatus" id="MDServerStatus">MDServerStatus</a> <a name="mdserverstatus" id="mdserverstatus" /> <a title="" href="#mdserverstatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdserverstatus" id="mdserverstatus">Directive</a> <a name="MDServerStatus" id="MDServerStatus">MDServerStatus</a> <a title="Lien permanent" href="#mdserverstatus" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si les informations à propos des domaines gérés
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les informations à propos des domaines gérés
 	sont ajoutés ou non à server-status.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDServerStatus on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDServerStatus on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDServerStatus on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDServerStatus on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Le gestionnaire d'Apache "server-status" vous permet de
@@ -1657,16 +1657,16 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStapleOthers" id="MDStapleOthers">MDStapleOthers</a> <a name="mdstapleothers" id="mdstapleothers" /> <a title="" href="#mdstapleothers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstapleothers" id="mdstapleothers">Directive</a> <a name="MDStapleOthers" id="MDStapleOthers">MDStapleOthers</a> <a title="Lien permanent" href="#mdstapleothers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active l'agrafage pour les certificats non gérés par
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour les certificats non gérés par
 	mod_md.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStapleOthers on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStapleOthers on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapleOthers on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStapleOthers on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1679,15 +1679,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStapling" id="MDStapling">MDStapling</a> <a name="mdstapling" id="mdstapling" /> <a title="" href="#mdstapling" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstapling" id="mdstapling">Directive</a> <a name="MDStapling" id="MDStapling">MDStapling</a> <a title="Lien permanent" href="#mdstapling" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active l'agrafage pour un ou plusieurs domaines.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStapling on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStapling off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour un ou plusieurs domaines.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapling on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStapling off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1712,16 +1712,16 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStaplingKeepResponse" id="MDStaplingKeepResponse">MDStaplingKeepResponse</a> <a name="mdstaplingkeepresponse" id="mdstaplingkeepresponse" /> <a title="" href="#mdstaplingkeepresponse" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstaplingkeepresponse" id="mdstaplingkeepresponse">Directive</a> <a name="MDStaplingKeepResponse" id="MDStaplingKeepResponse">MDStaplingKeepResponse</a> <a title="Lien permanent" href="#mdstaplingkeepresponse" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle la durée au bout de laquelle les anciennes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la durée au bout de laquelle les anciennes
 	réponses doivent être supprimées.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStaplingKeepResponse <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStaplingKeepResponse 7d</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingKeepResponse <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStaplingKeepResponse 7d</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1737,16 +1737,16 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStaplingRenewWindow" id="MDStaplingRenewWindow">MDStaplingRenewWindow</a> <a name="mdstaplingrenewwindow" id="mdstaplingrenewwindow" /> <a title="" href="#mdstaplingrenewwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstaplingrenewwindow" id="mdstaplingrenewwindow">Directive</a> <a name="MDStaplingRenewWindow" id="MDStaplingRenewWindow">MDStaplingRenewWindow</a> <a title="Lien permanent" href="#mdstaplingrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle l'ancienneté des réponses OCSP au dela de laquelle
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle l'ancienneté des réponses OCSP au dela de laquelle
 	ces dernières seront renouvelées.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStaplingRenewWindow <var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStaplingRenewWindow 33%</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStaplingRenewWindow <var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStaplingRenewWindow 33%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.42 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1791,15 +1791,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a name="mdstoredir" id="mdstoredir" /> <a title="" href="#mdstoredir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstoredir" id="mdstoredir">Directive</a> <a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a title="Lien permanent" href="#mdstoredir" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Chemin dans le système de fichiers local du répertoire où
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin dans le système de fichiers local du répertoire où
 	seront stockées les données à propos des domaines gérés.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStoreDir <var>path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStoreDir md</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreDir <var>path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreDir md</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Cette directive permet de définir le répertoire dans le système
@@ -1819,15 +1819,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a name="mdstorelocks" id="mdstorelocks" /> <a title="" href="#mdstorelocks" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configure le verrouillage du magasin pour les mises à jour</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDStoreLocks off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le verrouillage du magasin pour les mises à jour</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDStoreLocks off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1860,15 +1860,15 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MDWarnWindow" id="MDWarnWindow">MDWarnWindow</a> <a name="mdwarnwindow" id="mdwarnwindow" /> <a title="" href="#mdwarnwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="mdwarnwindow" id="mdwarnwindow">Directive</a> <a name="MDWarnWindow" id="MDWarnWindow">MDWarnWindow</a> <a title="Lien permanent" href="#mdwarnwindow" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la fenêtre de temps pendant laquelle vous serez
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la fenêtre de temps pendant laquelle vous serez
 	informé de l'expiration prochaine d'un certificat.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MDWarnWindow duration</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MDWarnWindow 10%</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDWarnWindow duration</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MDWarnWindow 10%</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Expérimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
                 Voir la directive <code class="directive"><a href="#mdrenewwindow">MDRenewWindow</a></code> pour une description
@@ -1888,11 +1888,11 @@ MDRenewWindow 10%</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_md.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_md.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

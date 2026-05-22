@@ -29,7 +29,7 @@
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_sed.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_sed.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_sed.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filter Input (request) and Output (response) content using <code>sed</code> syntax</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -148,7 +148,7 @@ page</a>.
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_sed.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_sed.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_sed.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--

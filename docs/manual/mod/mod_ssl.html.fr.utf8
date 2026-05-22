@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_ssl  </title>
+<title>mod_ssl - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,25 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_ssl</h1>
+<div id="preamble"><h1>Module Apache mod_ssl</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Chiffrement de haut niveau basé sur les protocoles Secure
 Sockets Layer (SSL) et Transport Layer Security (TLS)</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>ssl_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_ssl.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ssl_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_ssl.c</td></tr></table>
+<h3>Sommaire</h3>
 
 <p>Ce module fournit le support SSL v3 et TLS v1 au serveur HTTP
 Apache. SSL v2 n'est plus supporté.</p>
@@ -46,7 +46,7 @@ pour fournir le moteur de chiffrement.</p>
 
 <p>D'autres détails, discussions et exemples sont fournis dans la <a href="../ssl/">documentation SSL</a>.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#envvars">Variables d'environnement</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformats">Formats de journaux
@@ -56,7 +56,7 @@ personnalisés</a></li>
 des expressions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzproviders">Fournisseurs d'autorisation
 disponibles avec Require</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatefile">SSLCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcacertificatepath">SSLCACertificatePath</a></li>
@@ -131,10 +131,10 @@ disponibles avec Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslvhostsnipolicy">SSLVHostSNIPolicy</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="envvars" id="envvars">Variables d'environnement</a> <a title="" href="#envvars" class="permalink">&para;</a></h2>
+<h2><a name="envvars" id="envvars">Variables d'environnement</a> <a title="Lien permanent" href="#envvars" class="permalink">&para;</a></h2>
 
 <p>Ce module peut être configuré pour fournir aux espaces de nommage SSI
 et CGI de nombreux éléments d'informations concernant SSL par le biais
@@ -327,7 +327,7 @@ REQUEST_URI            REMOTE_USER</pre></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logformats" id="logformats">Formats de journaux
-personnalisés</a> <a title="" href="#logformats" class="permalink">&para;</a></h2>
+personnalisés</a> <a title="Lien permanent" href="#logformats" class="permalink">&para;</a></h2>
 
 <p>Lorsque <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est compilé dans le serveur Apache
 ou même chargé (en mode DSO), des fonctions supplémentaires sont
@@ -349,7 +349,7 @@ directive <code class="directive"><a href="#ssloptions">SSLOptions</a></code> n'
 définie.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Information à propos de la requête</a> <a title="" href="#notes" class="permalink">&para;</a></h2>
+<h2><a name="notes" id="notes">Information à propos de la requête</a> <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> enregistre des informations à propos de la
 requête que l'on peut restituer dans les journaux avec la chaîne de
@@ -380,7 +380,7 @@ format <code>%{<var>nom</var>}n</code> via le module
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="expressionparser" id="expressionparser">Extension pour l'interprétation
-des expressions</a> <a title="" href="#expressionparser" class="permalink">&para;</a></h2>
+des expressions</a> <a title="Lien permanent" href="#expressionparser" class="permalink">&para;</a></h2>
 
 <p>Lorsque <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> est compilé statiquement avec
 Apache, ou même chargé dynamiquement (en tant que module DSO), toute <a name="envvars">variable</a> en provenance de <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut
@@ -399,7 +399,7 @@ Header set X-SSL-CIPHER "expr=%{SSL:SSL_CIPHER}"</pre>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authzproviders" id="authzproviders">Fournisseurs d'autorisation
-disponibles avec Require</a> <a title="" href="#authzproviders" class="permalink">&para;</a></h2>
+disponibles avec Require</a> <a title="Lien permanent" href="#authzproviders" class="permalink">&para;</a></h2>
 
   <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> propose les fournisseurs
   d'autorisation suivants à utiliser avec la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> du module
@@ -439,14 +439,14 @@ Require valid-user</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile" id="sslcacertificatefile" /> <a title="" href="#sslcacertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcacertificatefile" id="sslcacertificatefile">Directive</a> <a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a title="Lien permanent" href="#sslcacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant une concaténation des certificats de CA
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant une concaténation des certificats de CA
 codés en PEM pour l'authentification des clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCACertificateFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCACertificateFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier <em>tout-en-un</em> où vous
@@ -467,14 +467,14 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCACertificatePath" id="SSLCACertificatePath">SSLCACertificatePath</a> <a name="sslcacertificatepath" id="sslcacertificatepath" /> <a title="" href="#sslcacertificatepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcacertificatepath" id="sslcacertificatepath">Directive</a> <a name="SSLCACertificatePath" id="SSLCACertificatePath">SSLCACertificatePath</a> <a title="Lien permanent" href="#sslcacertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire des certificats de CA codés en PEM pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire des certificats de CA codés en PEM pour
 l'authentification des clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCACertificatePath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCACertificatePath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir le répertoire où sont stockés les
@@ -500,14 +500,14 @@ effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCADNRequestFile" id="SSLCADNRequestFile">SSLCADNRequestFile</a> <a name="sslcadnrequestfile" id="sslcadnrequestfile" /> <a title="" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcadnrequestfile" id="sslcadnrequestfile">Directive</a> <a name="SSLCADNRequestFile" id="SSLCADNRequestFile">SSLCADNRequestFile</a> <a title="Lien permanent" href="#sslcadnrequestfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la concaténation des certificats de CA
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCADNRequestFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCADNRequestFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Lorsque mod_ssl demande un certificat client, une liste de <em>noms
 d'Autorités de Certification acceptables</em> est envoyée au client au
@@ -545,14 +545,14 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCADNRequestPath" id="SSLCADNRequestPath">SSLCADNRequestPath</a> <a name="sslcadnrequestpath" id="sslcadnrequestpath" /> <a title="" href="#sslcadnrequestpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcadnrequestpath" id="sslcadnrequestpath">Directive</a> <a name="SSLCADNRequestPath" id="SSLCADNRequestPath">SSLCADNRequestPath</a> <a title="Lien permanent" href="#sslcadnrequestpath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire contenant des fichiers de certificats de CA
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire contenant des fichiers de certificats de CA
 codés en PEM pour la définition de noms de CA acceptables</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCADNRequestPath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCADNRequestPath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 
 <p>Cette directive optionnelle permet de définir la liste de <em>noms de
@@ -578,15 +578,15 @@ effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a name="sslcarevocationcheck" id="sslcarevocationcheck" /> <a title="" href="#sslcarevocationcheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcarevocationcheck" id="sslcarevocationcheck">Directive</a> <a name="SSLCARevocationCheck" id="SSLCARevocationCheck">SSLCARevocationCheck</a> <a title="Lien permanent" href="#sslcarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la vérification des révocations basée sur les CRL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le drapeau optionnel <var>flag</var>s est disponible à partir de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la vérification des révocations basée sur les CRL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCARevocationCheck chain|leaf|none [<var>flag</var>s ...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLCARevocationCheck none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le drapeau optionnel <var>flag</var>s est disponible à partir de la
 version 2.4.21 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -621,14 +621,14 @@ retrouver le comportement précédent.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationFile" id="SSLCARevocationFile">SSLCARevocationFile</a> <a name="sslcarevocationfile" id="sslcarevocationfile" /> <a title="" href="#sslcarevocationfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcarevocationfile" id="sslcarevocationfile">Directive</a> <a name="SSLCARevocationFile" id="SSLCARevocationFile">SSLCARevocationFile</a> <a title="Lien permanent" href="#sslcarevocationfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la concaténation des CRLs des CA codés en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la concaténation des CRLs des CA codés en
 PEM pour l'authentification des clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCARevocationFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCARevocationFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir le fichier <em>tout-en-un</em> où sont
@@ -650,14 +650,14 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCARevocationPath" id="SSLCARevocationPath">SSLCARevocationPath</a> <a name="sslcarevocationpath" id="sslcarevocationpath" /> <a title="" href="#sslcarevocationpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcarevocationpath" id="sslcarevocationpath">Directive</a> <a name="SSLCARevocationPath" id="SSLCARevocationPath">SSLCARevocationPath</a> <a title="Lien permanent" href="#sslcarevocationpath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire des CRLs de CA codés en PEM pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire des CRLs de CA codés en PEM pour
 l'authentification des clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCARevocationPath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCARevocationPath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir le répertoire où sont stockées les
@@ -684,14 +684,14 @@ effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateChainFile" id="SSLCertificateChainFile">SSLCertificateChainFile</a> <a name="sslcertificatechainfile" id="sslcertificatechainfile" /> <a title="" href="#sslcertificatechainfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcertificatechainfile" id="sslcertificatechainfile">Directive</a> <a name="SSLCertificateChainFile" id="SSLCertificateChainFile">SSLCertificateChainFile</a> <a title="Lien permanent" href="#sslcertificatechainfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant les certificats de CA du serveur codés en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant les certificats de CA du serveur codés en
 PEM</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCertificateChainFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCertificateChainFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <div class="note"><h3>SSLCertificateChainFile est obsolète</h3>
 <p><code>SSLCertificateChainFile</code> est devenue obsolète avec la
@@ -739,15 +739,15 @@ redémarrage du serveur est requis pour que les changements prennent effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateFile" id="SSLCertificateFile">SSLCertificateFile</a> <a name="sslcertificatefile" id="sslcertificatefile" /> <a title="" href="#sslcertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcertificatefile" id="sslcertificatefile">Directive</a> <a name="SSLCertificateFile" id="SSLCertificateFile">SSLCertificateFile</a> <a title="Lien permanent" href="#sslcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier de données contenant les informations de certificat X.509 du serveur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier de données contenant les informations de certificat X.509 du serveur
 codées au format PEM ou identificateur de jeton</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCertificateFile <var>file-path</var>|<var>certid</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>L'option <var>certid</var> est disponible à partir de la version
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCertificateFile <var>file-path</var>|<var>certid</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'option <var>certid</var> est disponible à partir de la version
 2.4.42 du serveur HTTP Apache.</td></tr>
 </table>
 <p>Cette directive permet de définir le fichier de données contenant les
@@ -881,15 +881,15 @@ effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCertificateKeyFile" id="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a name="sslcertificatekeyfile" id="sslcertificatekeyfile" /> <a title="" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcertificatekeyfile" id="sslcertificatekeyfile">Directive</a> <a name="SSLCertificateKeyFile" id="SSLCertificateKeyFile">SSLCertificateKeyFile</a> <a title="Lien permanent" href="#sslcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la clé privée du serveur codée en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la clé privée du serveur codée en
 PEM</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td><var>keyid</var> est disponible à partir de la version 2.4.42 du
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCertificateKeyFile <var>file-path</var>|<var>keyid</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td><var>keyid</var> est disponible à partir de la version 2.4.42 du
 serveur HTTP Apache.</td></tr>
 </table>
 <p>
@@ -935,17 +935,17 @@ changements prennent effet.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCipherSuite" id="SSLCipherSuite">SSLCipherSuite</a> <a name="sslciphersuite" id="sslciphersuite" /> <a title="" href="#sslciphersuite" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslciphersuite" id="sslciphersuite">Directive</a> <a name="SSLCipherSuite" id="SSLCipherSuite">SSLCipherSuite</a> <a title="Lien permanent" href="#sslciphersuite" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Algorithmes de chiffrement disponibles pour la négociation
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Algorithmes de chiffrement disponibles pour la négociation
 au cours de l'initialisation de la connexion SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLCipherSuite DEFAULT (dépend de la version d'OpenSSL
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLCipherSuite DEFAULT (dépend de la version d'OpenSSL
 installée)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive complexe utilise la chaîne <var>cipher-spec</var>
@@ -1158,15 +1158,15 @@ spécifiques à SSL dans la <a href="#table2">Table 2</a>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a name="sslcompression" id="sslcompression" /> <a title="" href="#sslcompression" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcompression" id="sslcompression">Directive</a> <a name="SSLCompression" id="SSLCompression">SSLCompression</a> <a title="Lien permanent" href="#sslcompression" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Permet d'activer la compression au niveau SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCompression on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLCompression off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.3 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'activer la compression au niveau SSL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCompression on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLCompression off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.3 du serveur HTTP
 Apache, si on utilise une version d'OpenSSL 0.9.8 ou supérieure ;
 l'utilisation dans un contexte de serveur virtuel n'est disponible que
 si on utilise une version d'OpenSSL 1.0.0 ou supérieure. La valeur par
@@ -1180,15 +1180,15 @@ sécurité dans la plupart des configurations (l'attaque nommée CRIME).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLCryptoDevice" id="SSLCryptoDevice">SSLCryptoDevice</a> <a name="sslcryptodevice" id="sslcryptodevice" /> <a title="" href="#sslcryptodevice" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslcryptodevice" id="sslcryptodevice">Directive</a> <a name="SSLCryptoDevice" id="SSLCryptoDevice">SSLCryptoDevice</a> <a title="Lien permanent" href="#sslcryptodevice" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active l'utilisation d'un accélérateur matériel de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'utilisation d'un accélérateur matériel de
 chiffrement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLCryptoDevice <var>moteur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLCryptoDevice builtin</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLCryptoDevice <var>moteur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLCryptoDevice builtin</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet d'activer l'utilisation d'une carte accélératrice
@@ -1219,15 +1219,15 @@ pour les URIs PKCS#11 (<a href="https://www.rfc-editor.org/rfc/rfc7512">RFC 7512
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a name="sslengine" id="sslengine" /> <a title="" href="#sslengine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslengine" id="sslengine">Directive</a> <a name="SSLEngine" id="SSLEngine">SSLEngine</a> <a title="Lien permanent" href="#sslengine" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Interrupteur marche/arrêt du moteur SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLEngine on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLEngine off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interrupteur marche/arrêt du moteur SSL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLEngine on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLEngine off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>
 La prise en charge de l’argument "optional" a été supprimée avec la version
 2.4.64. Cet argument activait la prise en charge de la RFC 2817 (mise à niveau de TLS).
 </td></tr>
@@ -1246,14 +1246,14 @@ SSLEngine on
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLFIPS" id="SSLFIPS">SSLFIPS</a> <a name="sslfips" id="sslfips" /> <a title="" href="#sslfips" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslfips" id="sslfips">Directive</a> <a name="SSLFIPS" id="SSLFIPS">SSLFIPS</a> <a title="Lien permanent" href="#sslfips" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Coimmutateur du mode SSL FIPS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLFIPS on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLFIPS off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Coimmutateur du mode SSL FIPS</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLFIPS on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLFIPS off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet d'activer/désactiver l'utilisation du drapeau
@@ -1277,16 +1277,16 @@ applicable.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLHonorCipherOrder" id="SSLHonorCipherOrder">SSLHonorCipherOrder</a> <a name="sslhonorcipherorder" id="sslhonorcipherorder" /> <a title="" href="#sslhonorcipherorder" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslhonorcipherorder" id="sslhonorcipherorder">Directive</a> <a name="SSLHonorCipherOrder" id="SSLHonorCipherOrder">SSLHonorCipherOrder</a> <a title="Lien permanent" href="#sslhonorcipherorder" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Option permettant de classer les algorithmes de chiffrement
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant de classer les algorithmes de chiffrement
 du serveur par ordre de préférence</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLHonorCipherOrder on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLHonorCipherOrder off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.1 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLHonorCipherOrder on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLHonorCipherOrder off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.1 du serveur HTTP Apache</td></tr>
 </table>
 <p>Normalement, ce sont les préférences du client qui sont prises en
 compte lors du choix d'un algorithme de chiffrement au cours d'une
@@ -1297,16 +1297,16 @@ préférences du serveur qui seront prises en compte à la place.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation" /> <a title="" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a> <a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a title="Lien permanent" href="#sslinsecurerenegotiation" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Option permettant d'activer le support de la renégociation
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option permettant d'activer le support de la renégociation
 non sécurisée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis httpd 2.2.15, si une version 0.9.8m
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLInsecureRenegotiation on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis httpd 2.2.15, si une version 0.9.8m
 ou supérieure d'OpenSSL est utilisée</td></tr>
 </table>
 <p>Comme il a été spécifié, toutes les versions des protocoles SSL et
@@ -1339,14 +1339,14 @@ sécurisée est supportée pour une connexion SSL donnée.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPDefaultResponder" id="SSLOCSPDefaultResponder">SSLOCSPDefaultResponder</a> <a name="sslocspdefaultresponder" id="sslocspdefaultresponder" /> <a title="" href="#sslocspdefaultresponder" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspdefaultresponder" id="sslocspdefaultresponder">Directive</a> <a name="SSLOCSPDefaultResponder" id="SSLOCSPDefaultResponder">SSLOCSPDefaultResponder</a> <a title="Lien permanent" href="#sslocspdefaultresponder" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'URI du répondeur par défaut pour la validation
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'URI du répondeur par défaut pour la validation
 OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPDefaultResponder <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPDefaultResponder <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Cette directive permet de définir le répondeur OCSP par défaut. Si la
 directive <code class="directive"><a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></code> n'est pas activée,
@@ -1355,16 +1355,16 @@ spécifié dans le certificat en cours de vérification.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPEnable" id="SSLOCSPEnable">SSLOCSPEnable</a> <a name="sslocspenable" id="sslocspenable" /> <a title="" href="#sslocspenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspenable" id="sslocspenable">Directive</a> <a name="SSLOCSPEnable" id="SSLOCSPEnable">SSLOCSPEnable</a> <a title="Lien permanent" href="#sslocspenable" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la validation OCSP de la chaîne de certificats du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la validation OCSP de la chaîne de certificats du
 client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPEnable on|leaf|off [<var>flags</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le mode <em>leaf</em> est disponible à partir de la version
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPEnable on|leaf|off [<var>flags</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPEnable off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le mode <em>leaf</em> est disponible à partir de la version
 2.4.34 du serveur HTTP Apache. Le drapeau <em>no_ocsp_for_cert_ok</em> est
 disponible à partir de la version 2.4.29 du serveur HTTP Apache.</td></tr>
 </table>
@@ -1396,15 +1396,15 @@ SSLOCSPOverrideResponder on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a> <a name="sslocspnoverify" id="sslocspnoverify" /> <a title="" href="#sslocspnoverify" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspnoverify" id="sslocspnoverify">Directive</a> <a name="SSLOCSPNoverify" id="SSLOCSPNoverify">SSLOCSPNoverify</a> <a title="Lien permanent" href="#sslocspnoverify" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Evite la vérification des certificats des répondeurs OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Evite la vérification des certificats des répondeurs OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPNoverify on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPNoverify off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet d'éviter la vérification des certificats
@@ -1412,15 +1412,15 @@ des répondeurs OCSP, ce qui peut s'avérer utile lorsqu'on teste un serveur OCS
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPOverrideResponder" id="SSLOCSPOverrideResponder">SSLOCSPOverrideResponder</a> <a name="sslocspoverrideresponder" id="sslocspoverrideresponder" /> <a title="" href="#sslocspoverrideresponder" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspoverrideresponder" id="sslocspoverrideresponder">Directive</a> <a name="SSLOCSPOverrideResponder" id="SSLOCSPOverrideResponder">SSLOCSPOverrideResponder</a> <a title="Lien permanent" href="#sslocspoverrideresponder" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Force l'utilisation de l'URI du répondeur par défaut pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force l'utilisation de l'URI du répondeur par défaut pour
 la validation OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPOverrideResponder on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPOverrideResponder off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPOverrideResponder on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPOverrideResponder off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Force l'utilisation, au cours d'une validation OCSP de certificat, du
 répondeur OCSP par défaut spécifié dans la configuration, que le
@@ -1429,29 +1429,29 @@ non.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPProxyURL" id="SSLOCSPProxyURL">SSLOCSPProxyURL</a> <a name="sslocspproxyurl" id="sslocspproxyurl" /> <a title="" href="#sslocspproxyurl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspproxyurl" id="sslocspproxyurl">Directive</a> <a name="SSLOCSPProxyURL" id="SSLOCSPProxyURL">SSLOCSPProxyURL</a> <a title="Lien permanent" href="#sslocspproxyurl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPProxyURL <var>url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse de mandataire à utiliser pour les requêtes OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPProxyURL <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP Apache</td></tr>
 </table>
 <p>Cette directive permet de définir l'URL d'un mandataire HTTP qui devra être
 utilisé pour toutes les requêtes vers un répondeur OCSP.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponderCertificateFile" id="SSLOCSPResponderCertificateFile">SSLOCSPResponderCertificateFile</a> <a name="sslocsprespondercertificatefile" id="sslocsprespondercertificatefile" /> <a title="" href="#sslocsprespondercertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocsprespondercertificatefile" id="sslocsprespondercertificatefile">Directive</a> <a name="SSLOCSPResponderCertificateFile" id="SSLOCSPResponderCertificateFile">SSLOCSPResponderCertificateFile</a> <a title="Lien permanent" href="#sslocsprespondercertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fournit un jeu de certificats de confiance du répondeur OCSP avec
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fournit un jeu de certificats de confiance du répondeur OCSP avec
 encodage PEM</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPResponderCertificateFile <var>file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPResponderCertificateFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.26 du serveur HTTP Apache,
 sous réserve d'utiliser une version 0.9.7 ou supérieure d'OpenSSL</td></tr>
 </table>
 <p>Cette directive permet de définir un fichier contenant une liste de
@@ -1464,28 +1464,28 @@ de la réponse OCSP.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponderTimeout" id="SSLOCSPResponderTimeout">SSLOCSPResponderTimeout</a> <a name="sslocsprespondertimeout" id="sslocsprespondertimeout" /> <a title="" href="#sslocsprespondertimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocsprespondertimeout" id="sslocsprespondertimeout">Directive</a> <a name="SSLOCSPResponderTimeout" id="SSLOCSPResponderTimeout">SSLOCSPResponderTimeout</a> <a title="Lien permanent" href="#sslocsprespondertimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Délai d'attente pour les requêtes OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPResponderTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPResponderTimeout 10</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d'attente pour les requêtes OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPResponderTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPResponderTimeout 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Cette option permet de définir le délai d'attente pour les requêtes à
 destination des répondeurs OCSP, lorsque la directive <code class="directive"><a href="#sslocspenable">SSLOCSPEnable</a></code> est à on.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponseMaxAge" id="SSLOCSPResponseMaxAge">SSLOCSPResponseMaxAge</a> <a name="sslocspresponsemaxage" id="sslocspresponsemaxage" /> <a title="" href="#sslocspresponsemaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspresponsemaxage" id="sslocspresponsemaxage">Directive</a> <a name="SSLOCSPResponseMaxAge" id="SSLOCSPResponseMaxAge">SSLOCSPResponseMaxAge</a> <a title="Lien permanent" href="#sslocspresponsemaxage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Age maximum autorisé pour les réponses OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPResponseMaxAge <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPResponseMaxAge -1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximum autorisé pour les réponses OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPResponseMaxAge <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPResponseMaxAge -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Cette option permet de définir l'âge maximum autorisé (la
 "fraicheur") des réponses OCSP. La valeur par défault (<code>-1</code>)
@@ -1495,15 +1495,15 @@ champ <code>nextUpdate</code> se situe dans le futur.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPResponseTimeSkew" id="SSLOCSPResponseTimeSkew">SSLOCSPResponseTimeSkew</a> <a name="sslocspresponsetimeskew" id="sslocspresponsetimeskew" /> <a title="" href="#sslocspresponsetimeskew" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspresponsetimeskew" id="sslocspresponsetimeskew">Directive</a> <a name="SSLOCSPResponseTimeSkew" id="SSLOCSPResponseTimeSkew">SSLOCSPResponseTimeSkew</a> <a title="Lien permanent" href="#sslocspresponsetimeskew" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dérive temporelle maximale autorisée pour la validation des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dérive temporelle maximale autorisée pour la validation des
 réponses OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPResponseTimeSkew <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPResponseTimeSkew 300</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPResponseTimeSkew <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPResponseTimeSkew 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>Cette option permet de définir la dérive temporelle maximale
 autorisée pour les réponses OCSP (lors de la vérification des champs
@@ -1511,25 +1511,27 @@ autorisée pour les réponses OCSP (lors de la vérification des champs
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOCSPUseRequestNonce" id="SSLOCSPUseRequestNonce">SSLOCSPUseRequestNonce</a> <a name="sslocspuserequestnonce" id="sslocspuserequestnonce" /> <a title="" href="#sslocspuserequestnonce" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslocspuserequestnonce" id="sslocspuserequestnonce">Directive</a> <a name="SSLOCSPUseRequestNonce" id="SSLOCSPUseRequestNonce">SSLOCSPUseRequestNonce</a> <a title="Lien permanent" href="#sslocspuserequestnonce" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Use a nonce within OCSP queries</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOCSPUseRequestNonce on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLOCSPUseRequestNonce on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Available in httpd 2.4.10 and later</td></tr>
-</table><p /></div>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a nonce within OCSP queries</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOCSPUseRequestNonce on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLOCSPUseRequestNonce on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Available in httpd 2.4.10 and later</td></tr>
+</table><p>La documentation de cette directive
+	n'a pas encore t traduite. Veuillez vous reporter  la version
+	en langue anglaise.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOpenSSLConfCmd" id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</a> <a name="sslopensslconfcmd" id="sslopensslconfcmd" /> <a title="" href="#sslopensslconfcmd" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslopensslconfcmd" id="sslopensslconfcmd">Directive</a> <a name="SSLOpenSSLConfCmd" id="SSLOpenSSLConfCmd">SSLOpenSSLConfCmd</a> <a title="Lien permanent" href="#sslopensslconfcmd" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOpenSSLConfCmd <var>commande</var> <var>valeur</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration des paramètres d'OpenSSL via son API <em>SSL_CONF</em></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOpenSSLConfCmd <var>commande</var> <var>valeur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
 Apache avec OpenSSL 1.0.2 ou supérieur</td></tr>
 </table>
 <p>Cette directive permet à mod_ssl d'accéder à l'API <em>SSL_CONF</em>
@@ -1560,14 +1562,14 @@ SSLOpenSSLConfCmd SignatureAlgorithms RSA+SHA384:ECDSA+SHA256</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLOptions" id="SSLOptions">SSLOptions</a> <a name="ssloptions" id="ssloptions" /> <a title="" href="#ssloptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssloptions" id="ssloptions">Directive</a> <a name="SSLOptions" id="SSLOptions">SSLOptions</a> <a title="Lien permanent" href="#ssloptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configure différentes options d'exécution du moteur SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLOptions [+|-]<var>option</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure différentes options d'exécution du moteur SSL</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLOptions [+|-]<var>option</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de contrôler différentes options d'exécution du
@@ -1682,15 +1684,15 @@ Les <var>option</var>s disponibles sont :</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLPassPhraseDialog" id="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a name="sslpassphrasedialog" id="sslpassphrasedialog" /> <a title="" href="#sslpassphrasedialog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslpassphrasedialog" id="sslpassphrasedialog">Directive</a> <a name="SSLPassPhraseDialog" id="SSLPassPhraseDialog">SSLPassPhraseDialog</a> <a title="Lien permanent" href="#sslpassphrasedialog" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Méthode utilisée pour entrer le mot de passe pour les clés
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Méthode utilisée pour entrer le mot de passe pour les clés
 privées chiffrées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLPassPhraseDialog <var>type</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLPassPhraseDialog builtin</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLPassPhraseDialog <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLPassPhraseDialog builtin</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Lors de son démarrage, Apache doit lire les différents fichiers de
@@ -1778,15 +1780,15 @@ cette demande peut être formulée parmi les trois suivantes :</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a name="sslprotocol" id="sslprotocol" /> <a title="" href="#sslprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslprotocol" id="sslprotocol">Directive</a> <a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a title="Lien permanent" href="#sslprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Indique les versions du protocole SSL/TLS
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique les versions du protocole SSL/TLS
 disponibles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProtocol [+|-]<var>protocole</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProtocol all -SSLv3 (jusqu'à la version 2.4.16 : all)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProtocol [+|-]<var>protocole</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProtocol all -SSLv3 (jusqu'à la version 2.4.16 : all)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir quelles versions du protocole SSL/TLS
@@ -1861,15 +1863,15 @@ comportement logique que d'un souci de compatibilité).
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCACertificateFile" id="SSLProxyCACertificateFile">SSLProxyCACertificateFile</a> <a name="sslproxycacertificatefile" id="sslproxycacertificatefile" /> <a title="" href="#sslproxycacertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycacertificatefile" id="sslproxycacertificatefile">Directive</a> <a name="SSLProxyCACertificateFile" id="SSLProxyCACertificateFile">SSLProxyCACertificateFile</a> <a title="Lien permanent" href="#sslproxycacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la concaténation des certificats de CA
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la concaténation des certificats de CA
 codés en PEM pour l'authentification des serveurs distants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCACertificateFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCACertificateFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -1886,15 +1888,15 @@ la place et/ou en complément de la directive <code class="directive"><a href="#
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCACertificatePath" id="SSLProxyCACertificatePath">SSLProxyCACertificatePath</a> <a name="sslproxycacertificatepath" id="sslproxycacertificatepath" /> <a title="" href="#sslproxycacertificatepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycacertificatepath" id="sslproxycacertificatepath">Directive</a> <a name="SSLProxyCACertificatePath" id="SSLProxyCACertificatePath">SSLProxyCACertificatePath</a> <a title="Lien permanent" href="#sslproxycacertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire des certificats de CA codés en PEM pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire des certificats de CA codés en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCACertificatePath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCACertificatePath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -1915,16 +1917,16 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationCheck" id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</a> <a name="sslproxycarevocationcheck" id="sslproxycarevocationcheck" /> <a title="" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycarevocationcheck" id="sslproxycarevocationcheck">Directive</a> <a name="SSLProxyCARevocationCheck" id="SSLProxyCARevocationCheck">SSLProxyCARevocationCheck</a> <a title="Lien permanent" href="#sslproxycarevocationcheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la vérification des révocations basée sur les CRLs
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la vérification des révocations basée sur les CRLs
 pour l'authentification du serveur distant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCARevocationCheck chain|leaf|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyCARevocationCheck none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationCheck chain|leaf|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCARevocationCheck none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -1955,15 +1957,15 @@ erreur <code>"CRL introuvable"</code>.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationFile" id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a name="sslproxycarevocationfile" id="sslproxycarevocationfile" /> <a title="" href="#sslproxycarevocationfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycarevocationfile" id="sslproxycarevocationfile">Directive</a> <a name="SSLProxyCARevocationFile" id="SSLProxyCARevocationFile">SSLProxyCARevocationFile</a> <a title="Lien permanent" href="#sslproxycarevocationfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la concaténation des CRLs de CA codés en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la concaténation des CRLs de CA codés en
 PEM pour l'authentification des serveurs distants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCARevocationFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -1981,15 +1983,15 @@ directive <code class="directive"><a href="#sslproxycarevocationpath">SSLProxyCA
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCARevocationPath" id="SSLProxyCARevocationPath">SSLProxyCARevocationPath</a> <a name="sslproxycarevocationpath" id="sslproxycarevocationpath" /> <a title="" href="#sslproxycarevocationpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycarevocationpath" id="sslproxycarevocationpath">Directive</a> <a name="SSLProxyCARevocationPath" id="SSLProxyCARevocationPath">SSLProxyCARevocationPath</a> <a title="Lien permanent" href="#sslproxycarevocationpath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire des CRLs de CA codés en PEM pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire des CRLs de CA codés en PEM pour
 l'authentification des serveurs distants</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCARevocationPath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCARevocationPath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2010,17 +2012,17 @@ assurer que ce répertoire contient les liens symboliques appropriés.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerCN" id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</a> <a name="sslproxycheckpeercn" id="sslproxycheckpeercn" /> <a title="" href="#sslproxycheckpeercn" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycheckpeercn" id="sslproxycheckpeercn">Directive</a> <a name="SSLProxyCheckPeerCN" id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</a> <a title="Lien permanent" href="#sslproxycheckpeercn" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configuration de la vérification du champ CN du certificat
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration de la vérification du champ CN du certificat
 du serveur distant
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCheckPeerCN on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyCheckPeerCN on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerCN on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerCN on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2054,17 +2056,17 @@ SSLProxyCheckPeerName off</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerExpire" id="SSLProxyCheckPeerExpire">SSLProxyCheckPeerExpire</a> <a name="sslproxycheckpeerexpire" id="sslproxycheckpeerexpire" /> <a title="" href="#sslproxycheckpeerexpire" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycheckpeerexpire" id="sslproxycheckpeerexpire">Directive</a> <a name="SSLProxyCheckPeerExpire" id="SSLProxyCheckPeerExpire">SSLProxyCheckPeerExpire</a> <a title="Lien permanent" href="#sslproxycheckpeerexpire" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configuration de la vérification de l'expiration du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration de la vérification de l'expiration du
 certificat du serveur distant
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCheckPeerExpire on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyCheckPeerExpire on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerExpire on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerExpire on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2077,17 +2079,17 @@ code d'état 502 (Bad Gateway) est envoyé.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCheckPeerName" id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</a> <a name="sslproxycheckpeername" id="sslproxycheckpeername" /> <a title="" href="#sslproxycheckpeername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxycheckpeername" id="sslproxycheckpeername">Directive</a> <a name="SSLProxyCheckPeerName" id="SSLProxyCheckPeerName">SSLProxyCheckPeerName</a> <a title="Lien permanent" href="#sslproxycheckpeername" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configure la vérification du nom d'hôte dans les
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure la vérification du nom d'hôte dans les
 certificats serveur distants
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCheckPeerName on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyCheckPeerName on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCheckPeerName on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCheckPeerName on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
 Apache<br />
 Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
@@ -2122,16 +2124,16 @@ comportement original et des détails à propos de ces améliorations.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyCipherSuite" id="SSLProxyCipherSuite">SSLProxyCipherSuite</a> <a name="sslproxyciphersuite" id="sslproxyciphersuite" /> <a title="" href="#sslproxyciphersuite" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxyciphersuite" id="sslproxyciphersuite">Directive</a> <a name="SSLProxyCipherSuite" id="SSLProxyCipherSuite">SSLProxyCipherSuite</a> <a title="Lien permanent" href="#sslproxyciphersuite" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Algorithmes de chiffrement disponibles pour la négociation
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Algorithmes de chiffrement disponibles pour la négociation
 lors de l'initialisation d'une connexion SSL de mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyCipherSuite [<var>protocol</var>] <var>cipher-spec</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+EXP</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>Cette directive est équivalente à la directive <code class="directive"><a href="#sslciphersuite">SSLCipherSuite</a></code>, mais s'applique à une connexion de
@@ -2139,16 +2141,16 @@ mandataire. Veuillez vous reporter à la directive <code class="directive"><a hr
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyEngine" id="SSLProxyEngine">SSLProxyEngine</a> <a name="sslproxyengine" id="sslproxyengine" /> <a title="" href="#sslproxyengine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxyengine" id="sslproxyengine">Directive</a> <a name="SSLProxyEngine" id="SSLProxyEngine">SSLProxyEngine</a> <a title="Lien permanent" href="#sslproxyengine" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Interrupteur marche/arrêt du moteur de mandataire
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interrupteur marche/arrêt du moteur de mandataire
 SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyEngine on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyEngine off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyEngine on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyEngine off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2175,15 +2177,15 @@ serveur mandataire direct pour les requêtes SSL/TLS.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificateChainFile" id="SSLProxyMachineCertificateChainFile">SSLProxyMachineCertificateChainFile</a> <a name="sslproxymachinecertificatechainfile" id="sslproxymachinecertificatechainfile" /> <a title="" href="#sslproxymachinecertificatechainfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxymachinecertificatechainfile" id="sslproxymachinecertificatechainfile">Directive</a> <a name="SSLProxyMachineCertificateChainFile" id="SSLProxyMachineCertificateChainFile">SSLProxyMachineCertificateChainFile</a> <a title="Lien permanent" href="#sslproxymachinecertificatechainfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier de certificats de CA encodés PEM concaténés permettant au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier de certificats de CA encodés PEM concaténés permettant au
 mandataire de choisir un certificat</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyMachineCertificateChainFile <var>nom-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificateChainFile <var>nom-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2210,15 +2212,15 @@ fichier spécifié seront considérés comme étant de confiance, comme s'ils
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificateFile" id="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</a> <a name="sslproxymachinecertificatefile" id="sslproxymachinecertificatefile" /> <a title="" href="#sslproxymachinecertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxymachinecertificatefile" id="sslproxymachinecertificatefile">Directive</a> <a name="SSLProxyMachineCertificateFile" id="SSLProxyMachineCertificateFile">SSLProxyMachineCertificateFile</a> <a title="Lien permanent" href="#sslproxymachinecertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fichier contenant la concaténation des clés et certificats
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant la concaténation des clés et certificats
 clients codés en PEM que le mandataire doit utiliser</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyMachineCertificateFile <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est pris en charge à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificateFile <var>chemin-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est pris en charge à partir de la
 version 2.4.30 du serveur HTTP Apache<br />
 L'inclusion de certificats non-feuilles (CA) est prise en charge à partir de la
 version 2.4.59.</td></tr>
@@ -2275,15 +2277,15 @@ PRIVATE KEY-----</code>", doivent être converties via une commande du style
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyMachineCertificatePath" id="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</a> <a name="sslproxymachinecertificatepath" id="sslproxymachinecertificatepath" /> <a title="" href="#sslproxymachinecertificatepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxymachinecertificatepath" id="sslproxymachinecertificatepath">Directive</a> <a name="SSLProxyMachineCertificatePath" id="SSLProxyMachineCertificatePath">SSLProxyMachineCertificatePath</a> <a title="Lien permanent" href="#sslproxymachinecertificatepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Répertoire des clés et certificats clients codés en PEM que
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Répertoire des clés et certificats clients codés en PEM que
 le mandataire doit utiliser</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyMachineCertificatePath <var>chemin-répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyMachineCertificatePath <var>chemin-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2309,16 +2311,16 @@ PRIVATE KEY-----</code>", doivent être converties via une commande du style
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyProtocol" id="SSLProxyProtocol">SSLProxyProtocol</a> <a name="sslproxyprotocol" id="sslproxyprotocol" /> <a title="" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxyprotocol" id="sslproxyprotocol">Directive</a> <a name="SSLProxyProtocol" id="SSLProxyProtocol">SSLProxyProtocol</a> <a title="Lien permanent" href="#sslproxyprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit les protocoles SSL disponibles pour la fonction de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les protocoles SSL disponibles pour la fonction de
 mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyProtocol [+|-]<var>protocole</var> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyProtocol all -SSLv3 (jusqu'à la version 2.4.16: all)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyProtocol [+|-]<var>protocole</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyProtocol all -SSLv3 (jusqu'à la version 2.4.16: all)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 
@@ -2332,16 +2334,16 @@ des protocoles spécifiés.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyVerify" id="SSLProxyVerify">SSLProxyVerify</a> <a name="sslproxyverify" id="sslproxyverify" /> <a title="" href="#sslproxyverify" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxyverify" id="sslproxyverify">Directive</a> <a name="SSLProxyVerify" id="SSLProxyVerify">SSLProxyVerify</a> <a title="Lien permanent" href="#sslproxyverify" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Niveau de vérification du certificat du serveur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Niveau de vérification du certificat du serveur
 distant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyVerify <var>niveau</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyVerify none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyVerify <var>niveau</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyVerify none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 
@@ -2374,16 +2376,16 @@ même être utilisé pour établir des pages de test SSL, etc...).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLProxyVerifyDepth" id="SSLProxyVerifyDepth">SSLProxyVerifyDepth</a> <a name="sslproxyverifydepth" id="sslproxyverifydepth" /> <a title="" href="#sslproxyverifydepth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslproxyverifydepth" id="sslproxyverifydepth">Directive</a> <a name="SSLProxyVerifyDepth" id="SSLProxyVerifyDepth">SSLProxyVerifyDepth</a> <a title="Lien permanent" href="#sslproxyverifydepth" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Niveau de profondeur maximum dans les certificats de CA
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Niveau de profondeur maximum dans les certificats de CA
 lors de la vérification du certificat du serveur distant</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLProxyVerifyDepth <var>niveau</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLProxyVerifyDepth 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLProxyVerifyDepth <var>niveau</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLProxyVerifyDepth 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, section proxy</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le contexte d'une section proxy est supporté à partir de la
 version 2.4.30 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2407,15 +2409,15 @@ etc...</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRandomSeed" id="SSLRandomSeed">SSLRandomSeed</a> <a name="sslrandomseed" id="sslrandomseed" /> <a title="" href="#sslrandomseed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslrandomseed" id="sslrandomseed">Directive</a> <a name="SSLRandomSeed" id="SSLRandomSeed">SSLRandomSeed</a> <a title="Lien permanent" href="#sslrandomseed" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Source de déclenchement du Générateur de Nombres
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Source de déclenchement du Générateur de Nombres
 Pseudo-Aléatoires (PRNG)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLRandomSeed <var>contexte</var> <var>source</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLRandomSeed <var>contexte</var> <var>source</var>
 [<var>nombre</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir une ou plusieurs sources de
@@ -2503,16 +2505,16 @@ SSLRandomSeed connect "file:/dev/urandom" 1024</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRenegBufferSize" id="SSLRenegBufferSize">SSLRenegBufferSize</a> <a name="sslrenegbuffersize" id="sslrenegbuffersize" /> <a title="" href="#sslrenegbuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslrenegbuffersize" id="sslrenegbuffersize">Directive</a> <a name="SSLRenegBufferSize" id="SSLRenegBufferSize">SSLRenegBufferSize</a> <a title="Lien permanent" href="#sslrenegbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la taille du tampon de renégociation
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la taille du tampon de renégociation
 SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLRenegBufferSize <var>taille</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLRenegBufferSize 131072</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLRenegBufferSize <var>taille</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLRenegBufferSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 
 <p>Si une renégociation SSL est requise dans un contexte de répertoire,
@@ -2534,15 +2536,15 @@ type déni de service lorsqu'on modifie la valeur de cette directive.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRequire" id="SSLRequire">SSLRequire</a> <a name="sslrequire" id="sslrequire" /> <a title="" href="#sslrequire" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslrequire" id="sslrequire">Directive</a> <a name="SSLRequire" id="SSLRequire">SSLRequire</a> <a title="Lien permanent" href="#sslrequire" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>N'autorise l'accès que lorsqu'une expression booléenne
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'autorise l'accès que lorsqu'une expression booléenne
 complexe et arbitraire est vraie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLRequire <var>expression</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLRequire <var>expression</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <div class="note"><h3>SSLRequire est obsolète</h3>
 <p><code>SSLRequire</code> est obsolète et doit en général être
@@ -2657,7 +2659,7 @@ comparée avec la partie gauche de l'expression.</p></li>
 </div>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../env.html">Les variables d'environnement dans le
 serveur HTTP Apache</a>, pour d'autres exemples.
@@ -2669,15 +2671,15 @@ serveur HTTP Apache</a>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLRequireSSL" id="SSLRequireSSL">SSLRequireSSL</a> <a name="sslrequiressl" id="sslrequiressl" /> <a title="" href="#sslrequiressl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslrequiressl" id="sslrequiressl">Directive</a> <a name="SSLRequireSSL" id="SSLRequireSSL">SSLRequireSSL</a> <a title="Lien permanent" href="#sslrequiressl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Interdit l'accès lorsque la requête HTTP n'utilise pas
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interdit l'accès lorsque la requête HTTP n'utilise pas
 SSL</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLRequireSSL</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLRequireSSL</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive interdit l'accès si HTTP sur SSL (c'est à dire HTTPS)
@@ -2691,15 +2693,15 @@ requêtes qui n'utilisent pas SSL sont rejetées.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionCache" id="SSLSessionCache">SSLSessionCache</a> <a name="sslsessioncache" id="sslsessioncache" /> <a title="" href="#sslsessioncache" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsessioncache" id="sslsessioncache">Directive</a> <a name="SSLSessionCache" id="SSLSessionCache">SSLSessionCache</a> <a title="Lien permanent" href="#sslsessioncache" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Type du cache de session SSL global et
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type du cache de session SSL global et
 inter-processus</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSessionCache <var>type</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLSessionCache none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSessionCache <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLSessionCache none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de configurer le type de stockage du cache de
@@ -2774,16 +2776,16 @@ via la directive <code class="directive"><a href="../mod/core.html#mutex">Mutex<
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionCacheTimeout" id="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a name="sslsessioncachetimeout" id="sslsessioncachetimeout" /> <a title="" href="#sslsessioncachetimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsessioncachetimeout" id="sslsessioncachetimeout">Directive</a> <a name="SSLSessionCacheTimeout" id="SSLSessionCacheTimeout">SSLSessionCacheTimeout</a> <a title="Lien permanent" href="#sslsessioncachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre de secondes avant l'expiration d'une session SSL
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de secondes avant l'expiration d'une session SSL
 dans le cache de sessions</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSessionCacheTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLSessionCacheTimeout 300</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>S'applique aussi à la reprise de session TLS (RFC 5077) à
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSessionCacheTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLSessionCacheTimeout 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>S'applique aussi à la reprise de session TLS (RFC 5077) à
 partir de la version 2.4.10 du serveur HTTP Apache</td></tr>
 </table>
 <p>
@@ -2798,15 +2800,15 @@ valeur très supérieure comme 300 en production.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionTicketKeyFile" id="SSLSessionTicketKeyFile">SSLSessionTicketKeyFile</a> <a name="sslsessionticketkeyfile" id="sslsessionticketkeyfile" /> <a title="" href="#sslsessionticketkeyfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsessionticketkeyfile" id="sslsessionticketkeyfile">Directive</a> <a name="SSLSessionTicketKeyFile" id="SSLSessionTicketKeyFile">SSLSessionTicketKeyFile</a> <a title="Lien permanent" href="#sslsessionticketkeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Clé de chiffrement/déchiffrement permanente pour les
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Clé de chiffrement/déchiffrement permanente pour les
 tickets de session TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSessionTicketKeyFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSessionTicketKeyFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.0 du serveur HTTP
 Apache, sous réserve que l'on utilise une version 0.9.8h ou supérieure
 d'OpenSSL</td></tr>
 </table>
@@ -2841,15 +2843,15 @@ directive <code class="directive"><a href="#sslcertificatekeyfile">SSLCertificat
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSessionTickets" id="SSLSessionTickets">SSLSessionTickets</a> <a name="sslsessiontickets" id="sslsessiontickets" /> <a title="" href="#sslsessiontickets" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsessiontickets" id="sslsessiontickets">Directive</a> <a name="SSLSessionTickets" id="SSLSessionTickets">SSLSessionTickets</a> <a title="Lien permanent" href="#sslsessiontickets" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active ou désactive les tickets de session TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSessionTickets on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLSessionTickets on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive les tickets de session TLS</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSessionTickets on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLSessionTickets on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.11 du serveur HTTP
 Apache, sous réserve d'utiliser OpenSSL version 0.9.8f ou supérieure.
 </td></tr>
 </table>
@@ -2863,14 +2865,14 @@ quotidiennement) compromet cependant le niveau de confidentialité.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSRPUnknownUserSeed" id="SSLSRPUnknownUserSeed">SSLSRPUnknownUserSeed</a> <a name="sslsrpunknownuserseed" id="sslsrpunknownuserseed" /> <a title="" href="#sslsrpunknownuserseed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsrpunknownuserseed" id="sslsrpunknownuserseed">Directive</a> <a name="SSLSRPUnknownUserSeed" id="SSLSRPUnknownUserSeed">SSLSRPUnknownUserSeed</a> <a title="Lien permanent" href="#sslsrpunknownuserseed" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Source d'aléa pour utilisateur SRP inconnu</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSRPUnknownUserSeed <var>secret-string</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.4 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Source d'aléa pour utilisateur SRP inconnu</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSRPUnknownUserSeed <var>secret-string</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.4 du serveur HTTP
 Apache, si la version 1.0.1 ou supérieure d'OpenSSL est utilisée.</td></tr>
 </table>
 <p>
@@ -2887,14 +2889,14 @@ SSLSRPUnknownUserSeed "secret"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLSRPVerifierFile" id="SSLSRPVerifierFile">SSLSRPVerifierFile</a> <a name="sslsrpverifierfile" id="sslsrpverifierfile" /> <a title="" href="#sslsrpverifierfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslsrpverifierfile" id="sslsrpverifierfile">Directive</a> <a name="SSLSRPVerifierFile" id="SSLSRPVerifierFile">SSLSRPVerifierFile</a> <a title="Lien permanent" href="#sslsrpverifierfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Chemin du fichier de vérification SRP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLSRPVerifierFile <var>file-path</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.4 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier de vérification SRP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLSRPVerifierFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.4 du serveur HTTP
 Apache, si la version 1.0.1 ou supérieure d'OpenSSL est utilisée.</td></tr>
 </table>
 <p>
@@ -2918,14 +2920,14 @@ enregistrée dans la variable d'environnement
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingCache" id="SSLStaplingCache">SSLStaplingCache</a> <a name="sslstaplingcache" id="sslstaplingcache" /> <a title="" href="#sslstaplingcache" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingcache" id="sslstaplingcache">Directive</a> <a name="SSLStaplingCache" id="SSLStaplingCache">SSLStaplingCache</a> <a title="Lien permanent" href="#sslstaplingcache" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configuration du cache pour l'agrafage OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingCache <var>type</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration du cache pour l'agrafage OCSP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingCache <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Si <code class="directive"><a href="#sslusestapling">SSLUseStapling</a></code> est à "on",
 cette directive permet de configurer le cache destiné à stocker les
@@ -2938,16 +2940,16 @@ directive supporte les mêmes types de stockage que la directive
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingErrorCacheTimeout" id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</a> <a name="sslstaplingerrorcachetimeout" id="sslstaplingerrorcachetimeout" /> <a title="" href="#sslstaplingerrorcachetimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingerrorcachetimeout" id="sslstaplingerrorcachetimeout">Directive</a> <a name="SSLStaplingErrorCacheTimeout" id="SSLStaplingErrorCacheTimeout">SSLStaplingErrorCacheTimeout</a> <a title="Lien permanent" href="#sslstaplingerrorcachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée de vie des réponses invalides dans le cache pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des réponses invalides dans le cache pour
 agrafage OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingErrorCacheTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingErrorCacheTimeout 600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingErrorCacheTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingErrorCacheTimeout 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir la durée de vie des réponses
 <em>invalides</em> dans le cache pour agrafage OCSP configuré via la
@@ -2957,15 +2959,15 @@ définir la durée de vie des réponses valides, voir la directive
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingFakeTryLater" id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</a> <a name="sslstaplingfaketrylater" id="sslstaplingfaketrylater" /> <a title="" href="#sslstaplingfaketrylater" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingfaketrylater" id="sslstaplingfaketrylater">Directive</a> <a name="SSLStaplingFakeTryLater" id="SSLStaplingFakeTryLater">SSLStaplingFakeTryLater</a> <a title="Lien permanent" href="#sslstaplingfaketrylater" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Génère une réponse "tryLater" pour les requêtes OCSP échouées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingFakeTryLater on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingFakeTryLater on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Génère une réponse "tryLater" pour les requêtes OCSP échouées</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingFakeTryLater on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingFakeTryLater on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Lorsque cette directive est activée, et si une requête vers un
 serveur OCSP à des fins d'inclusion dans une négociation TLS échoue,
@@ -2974,15 +2976,15 @@ activée).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingForceURL" id="SSLStaplingForceURL">SSLStaplingForceURL</a> <a name="sslstaplingforceurl" id="sslstaplingforceurl" /> <a title="" href="#sslstaplingforceurl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingforceurl" id="sslstaplingforceurl">Directive</a> <a name="SSLStaplingForceURL" id="SSLStaplingForceURL">SSLStaplingForceURL</a> <a title="Lien permanent" href="#sslstaplingforceurl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Remplace l'URI du serveur OCSP spécifié dans l'extension
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remplace l'URI du serveur OCSP spécifié dans l'extension
 AIA du certificat</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingForceURL <var>uri</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingForceURL <var>uri</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de remplacer l'URI du serveur OCSP extraite de
 l'extension authorityInfoAccess (AIA) du certificat. Elle peut s'avérer
@@ -2990,16 +2992,16 @@ utile lorsqu'on passe par un mandataire</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponderTimeout" id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</a> <a name="sslstaplingrespondertimeout" id="sslstaplingrespondertimeout" /> <a title="" href="#sslstaplingrespondertimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingrespondertimeout" id="sslstaplingrespondertimeout">Directive</a> <a name="SSLStaplingResponderTimeout" id="SSLStaplingResponderTimeout">SSLStaplingResponderTimeout</a> <a title="Lien permanent" href="#sslstaplingrespondertimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Temps d'attente maximum pour les requêtes vers les serveurs
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour les requêtes vers les serveurs
 OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingResponderTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingResponderTimeout 10</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponderTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponderTimeout 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir le temps d'attente maximum lorsque
 mod_ssl envoie une requête vers un serveur OCSP afin d'obtenir une
@@ -3009,16 +3011,16 @@ avoir été activée au préalable).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponseMaxAge" id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</a> <a name="sslstaplingresponsemaxage" id="sslstaplingresponsemaxage" /> <a title="" href="#sslstaplingresponsemaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingresponsemaxage" id="sslstaplingresponsemaxage">Directive</a> <a name="SSLStaplingResponseMaxAge" id="SSLStaplingResponseMaxAge">SSLStaplingResponseMaxAge</a> <a title="Lien permanent" href="#sslstaplingresponsemaxage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Age maximum autorisé des réponses OCSP incluses dans la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximum autorisé des réponses OCSP incluses dans la
 négociation TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingResponseMaxAge <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingResponseMaxAge -1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseMaxAge <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponseMaxAge -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir l'âge maximum autorisé
 ("fraîcheur") des réponses OCSP incluses dans la négociation TLS
@@ -3030,16 +3032,16 @@ considérées comme valides à partir du moment où le contenu de leur champ
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingResponseTimeSkew" id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</a> <a name="sslstaplingresponsetimeskew" id="sslstaplingresponsetimeskew" /> <a title="" href="#sslstaplingresponsetimeskew" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingresponsetimeskew" id="sslstaplingresponsetimeskew">Directive</a> <a name="SSLStaplingResponseTimeSkew" id="SSLStaplingResponseTimeSkew">SSLStaplingResponseTimeSkew</a> <a title="Lien permanent" href="#sslstaplingresponsetimeskew" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée de vie maximale autorisée des réponses OCSP incluses dans la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie maximale autorisée des réponses OCSP incluses dans la
 négociation TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingResponseTimeSkew <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingResponseTimeSkew 300</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingResponseTimeSkew <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingResponseTimeSkew 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de spécifier l'intervalle de temps maximum que
 mod_ssl va calculer en faisant la différence entre les contenus des
@@ -3050,16 +3052,16 @@ directive, <code class="directive"><a href="#sslusestapling">SSLUseStapling</a><
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingReturnResponderErrors" id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</a> <a name="sslstaplingreturnrespondererrors" id="sslstaplingreturnrespondererrors" /> <a title="" href="#sslstaplingreturnrespondererrors" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingreturnrespondererrors" id="sslstaplingreturnrespondererrors">Directive</a> <a name="SSLStaplingReturnResponderErrors" id="SSLStaplingReturnResponderErrors">SSLStaplingReturnResponderErrors</a> <a title="Lien permanent" href="#sslstaplingreturnrespondererrors" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Transmet au client les erreurs survenues lors des requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Transmet au client les erreurs survenues lors des requêtes
 OCSP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingReturnResponderErrors on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingReturnResponderErrors on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingReturnResponderErrors on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingReturnResponderErrors on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Lorsque cette directive est activée, mod_ssl va transmettre au client les
 réponses concernant les requêtes OCSP échouées (comme les réponses avec un
@@ -3072,15 +3074,15 @@ supprimer une révocation connue constituerait un risque de sécurité.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStaplingStandardCacheTimeout" id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</a> <a name="sslstaplingstandardcachetimeout" id="sslstaplingstandardcachetimeout" /> <a title="" href="#sslstaplingstandardcachetimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstaplingstandardcachetimeout" id="sslstaplingstandardcachetimeout">Directive</a> <a name="SSLStaplingStandardCacheTimeout" id="SSLStaplingStandardCacheTimeout">SSLStaplingStandardCacheTimeout</a> <a title="Lien permanent" href="#sslstaplingstandardcachetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée de vie des réponses OCSP dans le cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStaplingStandardCacheTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStaplingStandardCacheTimeout 3600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de vie des réponses OCSP dans le cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStaplingStandardCacheTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStaplingStandardCacheTimeout 3600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet de définir la durée de vie des réponses OCSP
 dans le cache configuré via la directive <code class="directive"><a href="#sslstaplingcache">SSLStaplingCache</a></code>. Elle ne s'applique qu'aux
@@ -3090,17 +3092,17 @@ réponses invalides ou non disponibles.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck" /> <a title="" href="#sslstrictsnivhostcheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a> <a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a title="Lien permanent" href="#sslstrictsnivhostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle de l'accès des clients non-SNI à un serveur virtuel à
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle de l'accès des clients non-SNI à un serveur virtuel à
 base de nom.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLStrictSNIVHostCheck on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLStrictSNIVHostCheck off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.2.12 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLStrictSNIVHostCheck on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLStrictSNIVHostCheck off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.12 d'Apache</td></tr>
 </table>
 <p>
 Cette directive permet de contrôler l'accès des clients non-SNI à un serveur
@@ -3132,15 +3134,15 @@ version d'OpenSSL supportant SNI.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLUserName" id="SSLUserName">SSLUserName</a> <a name="sslusername" id="sslusername" /> <a title="" href="#sslusername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslusername" id="sslusername">Directive</a> <a name="SSLUserName" id="SSLUserName">SSLUserName</a> <a title="Lien permanent" href="#sslusername" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nom de la variable servant à déterminer le nom de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom de la variable servant à déterminer le nom de
 l'utilisateur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLUserName <var>nom-var</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLUserName <var>nom-var</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette variable permet de définir le champ "user" de l'objet de la
@@ -3161,15 +3163,15 @@ scripts CGI.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLUseStapling" id="SSLUseStapling">SSLUseStapling</a> <a name="sslusestapling" id="sslusestapling" /> <a title="" href="#sslusestapling" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslusestapling" id="sslusestapling">Directive</a> <a name="SSLUseStapling" id="SSLUseStapling">SSLUseStapling</a> <a title="Lien permanent" href="#sslusestapling" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active l'ajout des réponses OCSP à la négociation TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLUseStapling on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLUseStapling off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'ajout des réponses OCSP à la négociation TLS</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLUseStapling on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLUseStapling off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible si on utilise OpenSSL version 0.9.8h ou supérieure</td></tr>
 </table>
 <p>Cette directive permet d'activer l'"Agrafage OCSP" (OCSP stapling)
 selon la définition de l'extension TLS "Certificate Status Request"
@@ -3200,15 +3202,15 @@ réponses OCSP. Ces mutex peuvent être configurés via la directive
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLVerifyClient" id="SSLVerifyClient">SSLVerifyClient</a> <a name="sslverifyclient" id="sslverifyclient" /> <a title="" href="#sslverifyclient" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslverifyclient" id="sslverifyclient">Directive</a> <a name="SSLVerifyClient" id="SSLVerifyClient">SSLVerifyClient</a> <a title="Lien permanent" href="#sslverifyclient" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Niveau de vérification du certificat client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLVerifyClient <var>niveau</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLVerifyClient none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Niveau de vérification du certificat client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLVerifyClient <var>niveau</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLVerifyClient none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de définir le niveau de vérification du
@@ -3239,16 +3241,16 @@ Les valeurs de <var>niveau</var> disponibles sont les suivantes :</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLVerifyDepth" id="SSLVerifyDepth">SSLVerifyDepth</a> <a name="sslverifydepth" id="sslverifydepth" /> <a title="" href="#sslverifydepth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslverifydepth" id="sslverifydepth">Directive</a> <a name="SSLVerifyDepth" id="SSLVerifyDepth">SSLVerifyDepth</a> <a title="Lien permanent" href="#sslverifydepth" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Profondeur maximale des certificats de CA pour la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Profondeur maximale des certificats de CA pour la
 vérification des certificats clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLVerifyDepth <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLVerifyDepth 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLVerifyDepth <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLVerifyDepth 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
 Cette directive permet de spécifier la profondeur maximale à laquelle
@@ -3275,16 +3277,16 @@ certificat de la CA doit être référencé par la directive <code class="direct
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSLVHostSNIPolicy" id="SSLVHostSNIPolicy">SSLVHostSNIPolicy</a> <a name="sslvhostsnipolicy" id="sslvhostsnipolicy" /> <a title="" href="#sslvhostsnipolicy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="sslvhostsnipolicy" id="sslvhostsnipolicy">Directive</a> <a name="SSLVHostSNIPolicy" id="SSLVHostSNIPolicy">SSLVHostSNIPolicy</a> <a title="Lien permanent" href="#sslvhostsnipolicy" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définir la politique de compatibilité pour l’accès des clients SNI
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définir la politique de compatibilité pour l’accès des clients SNI
 aux serveurs virtuels.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSLVHostSNIPolicy strict|secure|authonly|insecure</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSLVHostSNIPolicy secure</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ssl</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.66 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSLVHostSNIPolicy strict|secure|authonly|insecure</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSLVHostSNIPolicy secure</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.66 du serveur HTTP Apache</td></tr>
 </table><p>Cette directive permet de définir la politique à appliquer lors de la
 vérification de la compatibilité du <code class="directive"><a href="../mod/core.html#serveur virtuel">&lt;serveur virtuel&gt;</a></code> identifié par l’en-tête
 <code>Host</code> d’une requête HTTP avec le <code class="directive"><a href="../mod/core.html#serveur virtuel">&lt;serveur virtuel&gt;</a></code> identifié depuis l’extension SNI
@@ -3353,11 +3355,11 @@ décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ssl.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_ssl.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_ssl.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

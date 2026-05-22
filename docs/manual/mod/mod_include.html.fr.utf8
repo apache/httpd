@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_include  </title>
+<title>mod_include - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,26 +18,26 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_include</h1>
+<div id="preamble"><h1>Module Apache mod_include</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_include.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Documents html interprétés par le serveur (Server Side
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Documents html interprétés par le serveur (Server Side
 Includes ou SSI)</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>include_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_include.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>include_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_include.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module fournit un filtre qui va traiter les fichiers avant
     de les envoyer au client. Le traitement est contrôlé via des
@@ -47,7 +47,7 @@ Includes ou SSI)</td></tr>
     programmes, ainsi que la définition et l'affichage de variables
     d'environnement.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enabling">Activation des SSI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pathinfo">PATH_INFO et SSI</a></li>
@@ -56,7 +56,7 @@ Includes ou SSI)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#substitution">Substitution de variable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">Eléments de contrôle d'inclusion conditionnelle</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#legacyexpr">Syntaxe des expressions héritée</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
@@ -68,7 +68,7 @@ Includes ou SSI)</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiundefinedecho">SSIUndefinedEcho</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#xbithack">XBitHack</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_include" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_include" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_include">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_include">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
@@ -77,7 +77,7 @@ Includes ou SSI)</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enabling" id="enabling">Activation des SSI</a> <a title="" href="#enabling" class="permalink">&para;</a></h2>
+<h2><a name="enabling" id="enabling">Activation des SSI</a> <a title="Lien permanent" href="#enabling" class="permalink">&para;</a></h2>
     
 
     <p>Les SSI sont implémentés par le <a href="../filter.html">filtre</a> <code>INCLUDES</code>. Si des
@@ -110,7 +110,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     <p>Pour plus d'informations, voyez notre <a href="../howto/ssi.html">Tutoriel SSI</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pathinfo" id="pathinfo">PATH_INFO et SSI</a> <a title="" href="#pathinfo" class="permalink">&para;</a></h2>
+<h2><a name="pathinfo" id="pathinfo">PATH_INFO et SSI</a> <a title="Lien permanent" href="#pathinfo" class="permalink">&para;</a></h2>
     
 
     <p>Les fichiers traités dans le cadre des SSI n'acceptent plus par
@@ -119,7 +119,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     serveur de façon à ce qu'il accepte ce genre de requête.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="elements" id="elements">Eléments disponibles</a> <a title="" href="#elements" class="permalink">&para;</a></h2>
+<h2><a name="elements" id="elements">Eléments disponibles</a> <a title="Lien permanent" href="#elements" class="permalink">&para;</a></h2>
     <p>Le document est interprété comme un document HTML, avec des
     commandes spéciales incluses sous forme de commentaires SGML. La
     syntaxe d'une commande est la suivante : </p>
@@ -437,7 +437,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       inclus est soumis au contrôle d'accès habituel. Si <a href="core.html#options">Options</a> <code>IncludesNOEXEC</code>
       est défini pour le répertoire contenant le fichier
       interprété, seuls les documents possèdant un
-      <a class="glossarylink" href="../glossary.html#type mime" title="">type MIME</a> de type texte
+      <a class="glossarylink" href="../glossary.html#type mime" title="voir glossaire">type MIME</a> de type texte
       (<code>text/plain</code>, <code>text/html</code>, etc...) seront
       inclus. Les scripts CGI, quant à eux, sont invoqués de manière
       habituelle en utilisant l'URL complète fournie avec la commande, y
@@ -579,7 +579,7 @@ AddOutputFilter INCLUDES .shtml</pre>
      
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="includevars" id="includevars">Variables include</a> <a title="" href="#includevars" class="permalink">&para;</a></h2>
+<h2><a name="includevars" id="includevars">Variables include</a> <a title="Lien permanent" href="#includevars" class="permalink">&para;</a></h2>
     
 
     <p>À l'instar des variables de l'environnement CGI standard, ces
@@ -638,7 +638,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="substitution" id="substitution">Substitution de variable</a> <a title="" href="#substitution" class="permalink">&para;</a></h2>
+<h2><a name="substitution" id="substitution">Substitution de variable</a> <a title="Lien permanent" href="#substitution" class="permalink">&para;</a></h2>
 
     <p>Une substitution de variable à l'intérieur d'une chaîne entre
     guillemets s'effectue dans la plupart des situations où cette
@@ -672,7 +672,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="flowctrl" id="flowctrl">Eléments de contrôle d'inclusion conditionnelle</a> <a title="" href="#flowctrl" class="permalink">&para;</a></h2>
+<h2><a name="flowctrl" id="flowctrl">Eléments de contrôle d'inclusion conditionnelle</a> <a title="Lien permanent" href="#flowctrl" class="permalink">&para;</a></h2>
     
 
     <p>Les éléments de base du contrôle d'inclusion conditionnelle sont
@@ -736,7 +736,7 @@ AddOutputFilter INCLUDES .shtml</pre>
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="legacyexpr" id="legacyexpr">Syntaxe des expressions héritée</a> <a title="" href="#legacyexpr" class="permalink">&para;</a></h2>
+<h2><a name="legacyexpr" id="legacyexpr">Syntaxe des expressions héritée</a> <a title="Lien permanent" href="#legacyexpr" class="permalink">&para;</a></h2>
     
 
     <p>Cette section décrit la syntaxe de l'élément <code>#if
@@ -888,14 +888,14 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag" /> <a title="" href="#ssiendtag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssiendtag" id="ssiendtag">Directive</a> <a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a title="Lien permanent" href="#ssiendtag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Chaîne qui termine l'élément include</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSIEndTag "--&gt;"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne qui termine l'élément include</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSIEndTag "--&gt;"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
     <p>Cette directive permet de modifier la chaîne que
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> interprète comme la fin d'un élément
@@ -909,23 +909,23 @@ AddOutputFilter INCLUDES .shtml</pre>
     </div>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg" /> <a title="" href="#ssierrormsg" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssierrormsg" id="ssierrormsg">Directive</a> <a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a title="Lien permanent" href="#ssierrormsg" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Message d'erreur affiché lorsqu'une erreur SSI
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Message d'erreur affiché lorsqu'une erreur SSI
 survient</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSIErrorMsg <var>message</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSIErrorMsg "[an error occurred while processing this
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIErrorMsg <var>message</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSIErrorMsg "[an error occurred while processing this
 directive]"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
     <p>La directive <code class="directive">SSIErrorMsg</code> permet de
     modifier le message d'erreur affiché lorsqu'une erreur SSI survient.
@@ -942,15 +942,15 @@ directive]"</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag" /> <a title="" href="#ssietag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssietag" id="ssietag">Directive</a> <a name="SSIETag" id="SSIETag">SSIETag</a> <a title="Lien permanent" href="#ssietag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si des en-têtes ETags sont générés par le serveur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSIETag on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSIETag off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.2.15 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si des en-têtes ETags sont générés par le serveur.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIETag on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSIETag off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.2.15 du serveur HTTP
 Apache.</td></tr>
 </table>
       <p>Dans le cas général, un fichier filtré par
@@ -989,16 +989,16 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified" /> <a title="" href="#ssilastmodified" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssilastmodified" id="ssilastmodified">Directive</a> <a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a title="Lien permanent" href="#ssilastmodified" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit si des en-têtes <code>Last-Modified</code> sont
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si des en-têtes <code>Last-Modified</code> sont
 générés par le serveur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSILastModified on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSILastModified off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.2.15 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSILastModified on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSILastModified off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.2.15 du serveur HTTP
 Apache.</td></tr>
 </table>
       <p>Dans le cas général, un fichier filtré par
@@ -1033,16 +1033,16 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser" /> <a title="" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a> <a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a title="Lien permanent" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active le mode de compatibilité pour les expressions
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le mode de compatibilité pour les expressions
 conditionnelles.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSILegacyExprParser on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSILegacyExprParser off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.3.13.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSILegacyExprParser on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSILegacyExprParser off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.13.</td></tr>
 </table>
     <p>Depuis la version 2.3.13, <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> a adopté
     la nouvelle syntaxe <a href="../expr.html">ap_expr</a> pour ses
@@ -1053,15 +1053,15 @@ conditionnelles.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag" /> <a title="" href="#ssistarttag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssistarttag" id="ssistarttag">Directive</a> <a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a title="Lien permanent" href="#ssistarttag" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Chaîne qui marque le début d'un élément
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne qui marque le début d'un élément
 include</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSIStartTag "&lt;!--#"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSIStartTag "&lt;!--#"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
     <p>Cette directive permet de modifier la chaîne que
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> interprète comme le début d'un élément
@@ -1088,21 +1088,21 @@ SSIEndTag   "%&gt;"</pre>
       &lt;%printenv %&gt;
     </code></p></div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat" /> <a title="" href="#ssitimeformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssitimeformat" id="ssitimeformat">Directive</a> <a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a title="Lien permanent" href="#ssitimeformat" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Configuration du format d'affichage des dates</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSITimeFormat <var>chaîne de formatage</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration du format d'affichage des dates</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSITimeFormat <var>chaîne de formatage</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
 <p>Cette directive permet de modifier le format d'affichage des
 variables d'environnement <code>DATE</code>. La <var>chaîne de
@@ -1121,16 +1121,16 @@ formatage</var> est identique à celle de la fonction
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho" /> <a title="" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a> <a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a title="Lien permanent" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Chaîne à afficher lorsqu'on tente d'extraire le contenu
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chaîne à afficher lorsqu'on tente d'extraire le contenu
 d'une variable non définie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SSIUndefinedEcho <var>chaîne</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>All</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SSIUndefinedEcho <var>chaîne</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SSIUndefinedEcho "(none)"</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
     <p>Cette directive permet de modifier la chaîne affichée par
     <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> lorsqu'on tente d'extraire le contenu
@@ -1141,20 +1141,20 @@ d'une variable non définie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack" /> <a title="" href="#xbithack" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="xbithack" id="xbithack">Directive</a> <a name="XBitHack" id="XBitHack">XBitHack</a> <a title="Lien permanent" href="#xbithack" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Interprète les directives SSI dans les fichiers dont le bit
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interprète les directives SSI dans les fichiers dont le bit
 d'exécution est positionné</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>XBitHack on|off|full</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>XBitHack off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_include</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>XBitHack on|off|full</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>XBitHack off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
     <p>La directive <code class="directive">XBitHack</code> permet de contrôler
     l'interprétation des documents html standards. Elle n'affecte que
-    les fichiers dont le <a class="glossarylink" href="../glossary.html#type mime" title="">type MIME</a> est
+    les fichiers dont le <a class="glossarylink" href="../glossary.html#type mime" title="voir glossaire">type MIME</a> est
     <code>text/html</code>. <code class="directive">XBitHack</code> peut prendre
     les valeurs suivantes :</p>
 
@@ -1196,12 +1196,12 @@ d'exécution est positionné</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_include.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

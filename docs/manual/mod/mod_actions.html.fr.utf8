@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_actions  </title>
+<title>mod_actions - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,43 +18,44 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_actions</h1>
+<div id="preamble"><h1>Module Apache mod_actions</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_actions.html" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_actions.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Exécution des scripts CGI en fonction du
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Exécution des scripts CGI en fonction du
 type de média ou de la méthode de requête.</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>actions_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_actions.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>actions_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_actions.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module possède deux directives. La directive <code class="directive"><a href="#action">Action</a></code> vous permet de lancer
     l'exécution de scripts CGI chaque fois qu'un fichier possédant un
-    certain <a class="glossarylink" href="../glossary.html#mime-type" title="">type de contenu MIME</a>
+    certain <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type de contenu MIME</a>
     fait l'objet d'une requête. La directive <code class="directive"><a href="#script">Script</a></code> vous permet de lancer
     l'exécution de scripts CGI chaque fois que la requête utilise une
     méthode particulière. Ceci facilite grandement l'exécution de
     scripts qui traitent des fichiers.</p> </div>
-<div id="quickview"><h3 class="directives" />
+<div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#action">Action</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#script">Script</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_actions">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_actions">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
 <li><a href="../howto/cgi.html">Contenu dynamique avec CGI</a></li>
@@ -63,17 +64,17 @@ d'Apache httpd</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Action" id="Action">Action</a> <a name="action" id="action" /> <a title="" href="#action" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="action" id="action">Directive</a> <a name="Action" id="Action">Action</a> <a title="Lien permanent" href="#action" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active un script CGI pour un gestionnaire ou un type de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un script CGI pour un gestionnaire ou un type de
 contenu particulier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Action <var>type d'action</var> <var>script cgi</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Action <var>type d'action</var> <var>script cgi</var>
 [virtual]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_actions</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le modificateur <code>virtual</code> et le passage de
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le modificateur <code>virtual</code> et le passage de
 gestionnaire ont été introduits dans Apache 2.1</td></tr>
 </table>
     <p>Cette directive ajoute une action qui va activer <var>script
@@ -82,7 +83,7 @@ gestionnaire ont été introduits dans Apache 2.1</td></tr>
     qui a été désignée comme script CGI à l'aide des directives
     <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>. <var>type d'action</var>
     peut être soit un <a href="../handler.html">gestionnaire</a>, soit
-    un <a class="glossarylink" href="../glossary.html#mime-type" title="">type de contenu MIME</a>. L'URL
+    un <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type de contenu MIME</a>. L'URL
     et le chemin du document correspondant sont envoyés en utilisant
     les variables d'environnement CGI standards <code>PATH_INFO</code>
     et <code>PATH_TRANSLATED</code>. Le gestionnaire utilisé pour cette
@@ -117,20 +118,20 @@ Action my-file-type "/cgi-bin/program.cgi"</pre>
 &lt;/Location&gt;</pre>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Script" id="Script">Script</a> <a name="script" id="script" /> <a title="" href="#script" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="script" id="script">Directive</a> <a name="Script" id="Script">Script</a> <a title="Lien permanent" href="#script" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active un script CGI dans le cas d'une méthode de requête
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un script CGI dans le cas d'une méthode de requête
 particulière.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Script <var>méthode</var> <var>script cgi</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_actions</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Script <var>méthode</var> <var>script cgi</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_actions</td></tr>
 </table>
     <p>Cette directive ajoute une action qui va activer <var>script
     cgi</var> lorsqu'un fichier est demandé en utilisant la méthode
@@ -167,14 +168,14 @@ Script PUT "/~bob/put.cgi"</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../de/mod/mod_actions.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/mod_actions.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_actions.html" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_actions.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_actions.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

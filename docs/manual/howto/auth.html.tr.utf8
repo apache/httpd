@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Kimlik Doğrulama ve Yetkilendirme  </title>
+<title>Kimlik Doğrulama ve Yetkilendirme - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,22 +17,22 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama ve Yetkilendirme</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kimlik Doğrulama ve Yetkilendirme</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
       Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
@@ -55,7 +55,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">İlgili modüller ve Yönergeler</a> <a title="" href="#related" class="permalink">&para;</a></h2>
+<h2><a name="related" id="related">İlgili modüller ve Yönergeler</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 
     <p>Kimlik Doğrulama ve yetkilendirme işlemi ile ilgili üç tür modül
     vardır. Genellikle her bir gruptan en az bir modül seçeceksiniz.</p>
@@ -112,7 +112,7 @@
     bahsetmektedir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>Sitenizde sadece küçük bir grup insana hitap eden ya da hassas
     bilgileriniz varsa, bu makaledeki teknikleri kullanarak dilediğiniz
     kişilerin sadece dilediğiniz sayfaları görüntülemesini
@@ -129,7 +129,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Ön gereksinimler</a> <a title="" href="#theprerequisites" class="permalink">&para;</a></h2>
+<h2><a name="theprerequisites" id="theprerequisites">Ön gereksinimler</a> <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     
     <p>Bu makalede bahsi geçen yönergeler ya ana sunucu yapılandırma
     dosyasında (genellikle <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümünde) ya da dizin içi
@@ -166,7 +166,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Çalışmaya Başlama</a> <a title="" href="#gettingitworking" class="permalink">&para;</a></h2>
+<h2><a name="gettingitworking" id="gettingitworking">Çalışmaya Başlama</a> <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Burada, sunucu üzerindeki bir dizini parolayla korumak için
     gereken temel bilgiler verilecektir.</p>
 
@@ -286,7 +286,7 @@ Require user umut</pre>
     çeşitli yoları üzerinde duracağız.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Birden çok kişiye izin vermek</a> <a title="" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
+<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Birden çok kişiye izin vermek</a> <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     
     <p>Yukarıdaki yönergelerle bir dizinde sadece bir kişiye
     (<code>umut</code> adlı kullanıcıya) izin verir. Çoğunlukla birden
@@ -349,7 +349,7 @@ Require group Grupismi</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Olası Sorunlar</a> <a title="" href="#possibleproblems" class="permalink">&para;</a></h2>
+<h2><a name="possibleproblems" id="possibleproblems">Olası Sorunlar</a> <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Temel kimlik doğrulama yolu belirtildiği için, sunucuya
     yaptığınız her belge istediğinde kullanıcı adınızın ve parolanızın
     doğrulanması gerekir. Hatta aynı sayfayı yeniden yüklerken ya da
@@ -368,7 +368,7 @@ Require group Grupismi</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Diğer parola depolama yöntemleri</a> <a title="" href="#dbmdbd" class="permalink">&para;</a></h2>
+<h2><a name="dbmdbd" id="dbmdbd">Diğer parola depolama yöntemleri</a> <a title="Permanent link" href="#dbmdbd" class="permalink">&para;</a></h2>
     
     <p>Parolaları basit bir metin dosyasında depolamak yukarıda
     bahsedilen sorunlara yol açtığından parolaları başka bir yerde
@@ -395,7 +395,7 @@ Require group Grupismi</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Birden çok tedarikçi kullanmak</a> <a title="" href="#multprovider" class="permalink">&para;</a></h2>
+<h2><a name="multprovider" id="multprovider">Birden çok tedarikçi kullanmak</a> <a title="Permanent link" href="#multprovider" class="permalink">&para;</a></h2>
     
     <p>Kimlik doğrulama ve yetkilendirme mimarisine dayalı yeni
     tedarikçiyi kullanarak tek bir yetkilendirme ya da kimlik doğrulama
@@ -447,7 +447,7 @@ Require group Grupismi</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Yetkilendirmenin biraz ötesi</a> <a title="" href="#beyond" class="permalink">&para;</a></h2>
+<h2><a name="beyond" id="beyond">Yetkilendirmenin biraz ötesi</a> <a title="Permanent link" href="#beyond" class="permalink">&para;</a></h2>
     <p>Tek bir veri deposundan yapılacak tek bir sınamadan çok daha
     esnek kimlik doğrulaması yapılabilir. Sıralama, mantık ve hangi
     kimlik doğrulamasının kullanılacağını seçmek mümkündür.</p>
@@ -586,7 +586,7 @@ Require group Grupismi</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a> <a title="" href="#socache" class="permalink">&para;</a></h2>
+<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a> <a title="Permanent link" href="#socache" class="permalink">&para;</a></h2>
     <p>Zaman zaman kimlik doğrulama ağınızda veya sağlayıcı(ları)nızda kabul
     edilemez yükler oluşturur. Bu çoğunlukla <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     (veya üçüncü parti/özel sağlayıcıların) kullanıcılarını etkiler. Bununla
@@ -596,7 +596,7 @@ Require group Grupismi</pre>
     <p>Bu, bazı kullanıcılar için önemli bir başarım artışı sağlayabilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a> <a title="" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a> <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p>Daha fazla bilgi için <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ve
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> modüllerinin belgelerine bakınız.
     <code class="directive"><a href="../mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>
@@ -609,15 +609,15 @@ Require group Grupismi</pre>
     bazı bilgiler edinebilirsiniz.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -28,10 +28,10 @@
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">Esta traducci&#243;n podr&#237;a estar
@@ -268,10 +268,10 @@ filter modules</dd>
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los t&#233;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

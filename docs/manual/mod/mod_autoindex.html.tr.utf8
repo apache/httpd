@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_autoindex  </title>
+<title>mod_autoindex - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,29 +18,29 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_autoindex</h1>
+<div id="preamble"><h1>Apache Modülü mod_autoindex</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>autoindex_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_autoindex.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>autoindex_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_autoindex.c</td></tr></table>
+<h3>Özet</h3>
 
       <p>Bir dizin içerik dosyası iki kaynaktan gelebilir:</p>
 
@@ -77,10 +77,10 @@ yaptığı gibi dizin içeriğini listeler.</td></tr>
       olanı küçükten büyüğe sıralamada 1011 baytlıktan önce
       gösterilecektir.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Konular</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#query">Sütun Sıralamada Sorgu Seçenekleri</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
@@ -99,10 +99,10 @@ yaptığı gibi dizin içeriğini listeler.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex" /></li></ul></div>
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Hata bildir</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="query" id="query">Sütun Sıralamada Sorgu Seçenekleri</a> <a title="" href="#query" class="permalink">&para;</a></h2>
+<h2><a name="query" id="query">Sütun Sıralamada Sorgu Seçenekleri</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
     
 
     <p>İstemciye, dizin içeriğini listelerken neleri hangi sırada
@@ -194,15 +194,15 @@ yaptığı gibi dizin içeriğini listeler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt" /> <a title="" href="#addalt" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Yönergesi</a> <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dosyaya göre seçilen simgenin yerinde gösterilecek metni belirler.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosyaya göre seçilen simgenin yerinde gösterilecek metni belirler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddAlt <var>metin</var> <var>dosya</var> [<var>dosya</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddAlt <var>metin</var> <var>dosya</var> [<var>dosya</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">AddAlt</code> yönergesi, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
@@ -220,16 +220,16 @@ AddAlt Compressed *.gz *.zip *.Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding" /> <a title="" href="#addaltbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Yönergesi</a> <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dosyanın MIME kodlamasına göre seçilen simgenin yerinde
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosyanın MIME kodlamasına göre seçilen simgenin yerinde
 gösterilecek metni belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddAltByEncoding <var>metin</var> <var>MIME-kodlaması</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddAltByEncoding <var>metin</var> <var>MIME-kodlaması</var>
 [<var>MIME-kodlaması</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">AddAltByEncoding</code> yönergesi, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
@@ -246,16 +246,16 @@ gösterilecek metni belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype" /> <a title="" href="#addaltbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Yönergesi</a> <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dosyanın MIME türüne göre seçilen simgenin yerinde gösterilecek
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dosyanın MIME türüne göre seçilen simgenin yerinde gösterilecek
 metni belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddAltByType <var>metin</var> <var>MIME-türü</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddAltByType <var>metin</var> <var>MIME-türü</var>
 [<var>MIME-türü</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">AddAltByType</code> yönergesi, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde bir dosya simgesinin yerinde gösterilecek
@@ -271,14 +271,14 @@ metni belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription" /> <a title="" href="#adddescription" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Yönergesi</a> <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dosya için gösterilecek açıklama belirtilir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddDescription <var>metin dosya</var> [<var>dosya</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya için gösterilecek açıklama belirtilir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddDescription <var>metin dosya</var> [<var>dosya</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
       dosya için gösterilecek açıklamayı belirler. <code><em>dosya</em></code>
@@ -329,16 +329,16 @@ AddDescription "Dostum Marshall" dostlar/mars.gif</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon" /> <a title="" href="#addicon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Yönergesi</a> <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dosya için gösterilecek simgeyi dosya adına göre belirler.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya için gösterilecek simgeyi dosya adına göre belirler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddIcon <var>simge</var> <var>isim</var> [<var>isim</var>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddIcon <var>simge</var> <var>isim</var> [<var>isim</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde adı
       <code><em>isim</em></code> ile biten bir dosya için gösterilecek simgeyi
@@ -370,16 +370,16 @@ AddIcon /icons/backup.png *~</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding" /> <a title="" href="#addiconbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Yönergesi</a> <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dosya için gösterilecek simgeyi dosyanın MIME kodlamasına
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya için gösterilecek simgeyi dosyanın MIME kodlamasına
 göre belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddIconByEncoding <var>simge</var> <var>MIME-kodlaması</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddIconByEncoding <var>simge</var> <var>MIME-kodlaması</var>
 [<var>MIME-kodlaması</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
       dosya için gösterilecek simgeyi belirler. <code><em>simge</em></code> ya
@@ -396,16 +396,16 @@ göre belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype" /> <a title="" href="#addiconbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Yönergesi</a> <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dosya için gösterilecek simgeyi dosyanın MIME türüne göre
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya için gösterilecek simgeyi dosyanın MIME türüne göre
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddIconByType <var>simge</var> <var>MIME-türü</var>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddIconByType <var>simge</var> <var>MIME-türü</var>
 [<var>MIME-türü</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde MIME
       türü <code><em>MIME-türü</em></code> olarak belirtilen bir dosya için
@@ -423,15 +423,15 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon" /> <a title="" href="#defaulticon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Yönergesi</a> <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DefaultIcon <var>URL-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultIcon <var>URL-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p>The <code class="directive">DefaultIcon</code> yönergesi  <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğiyle
       üretilen dizin listesinde özel bir simge atanmamış dosyalar için
@@ -444,15 +444,15 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername" /> <a title="" href="#headername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Yönergesi</a> <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin listesinin tepesine yerleştirilecek dosyanın ismini
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin listesinin tepesine yerleştirilecek dosyanın ismini
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>HeaderName <var>dosya-ismi</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>HeaderName <var>dosya-ismi</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">HeaderName</code> yönergesi, dizin listesinin tepesine
       yerleştirilecek dosyanın ismini belirler. Dosyanın ismi
@@ -497,20 +497,20 @@ belirler.</td></tr>
       istiyorsanız <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions +SuppressHTMLPreamble</code></a> ataması yapmanız
       gerekecektir.</p>
 
-<h3 />
+<h3>Ayrıca bakınız:</h3>
 <ul>
 <li><code class="directive"><a href="#readmename">ReadmeName</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert" /> <a title="" href="#indexheadinsert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Yönergesi</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexHeadInsert <var>"imlenim ..."</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexHeadInsert <var>"imlenim ..."</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexHeadInsert</code> yönergesi, dizin listesi için
     üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
@@ -520,16 +520,16 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore" /> <a title="" href="#indexignore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Yönergesi</a> <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>IndexIgnore "."</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>IndexIgnore "."</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexIgnore</code> yönergesi, dizin içerik listesinden
       gizlenecek dosyaların listesini belirtmek için kullanılır.
@@ -549,16 +549,16 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset" /> <a title="" href="#indexignorereset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">Yönergesi</a> <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir dizini listelerken gizlenecek dosyalar listesini boşaltır
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dizini listelerken gizlenecek dosyalar listesini boşaltır
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Apache HTTP Sunucusunun 2.3.10 ve sonraki sürümlerinde kullanılabilmektedir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexIgnoreReset ON|OFF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache HTTP Sunucusunun 2.3.10 ve sonraki sürümlerinde kullanılabilmektedir.</td></tr>
 </table>
     <p>Bu yönerge, diğer yapılandırma bölümlerince bir şekilde miras alınmayan
       ve <code class="directive"><a href="#indexignore">IndexIgnore</a></code> tarafından
@@ -579,17 +579,17 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions" /> <a title="" href="#indexoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Yönergesi</a> <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin içerik listesini yapılandıracak seçenekler belirtilir.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin içerik listesini yapılandıracak seçenekler belirtilir.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Öntanımlı olarak hiçbir seçenek etkin değildir.</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Öntanımlı olarak hiçbir seçenek etkin değildir.</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexOptions</code> yönergesi dizin içerik listesinin
       davranışını belirler. <code><em>seçenek</em></code> olarak şunlar
@@ -935,17 +935,17 @@ IndexOptions +SuppressSize</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault" /> <a title="" href="#indexorderdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Yönergesi</a> <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin içerik listesinin öntanımlı sıralamasını belirler.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin içerik listesinin öntanımlı sıralamasını belirler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexOrderDefault Ascending|Descending
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>IndexOrderDefault Ascending Name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexOrderDefault</code> yönergesi <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code> seçeneğinin
       etkin olduğu durumda işe yarar. Öntanımlı olarak süslü listelemede dizin
@@ -972,14 +972,14 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet" /> <a title="" href="#indexstylesheet" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">Yönergesi</a> <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin listesine bir biçembent ekler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>IndexStyleSheet <var>url-yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin listesine bir biçembent ekler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>IndexStyleSheet <var>url-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">IndexStyleSheet</code> yönergesi dizin listelemesi için
       kullanılacak biçembent dosyasının ismini belirtmek için kullanılır.</p>
@@ -1014,15 +1014,15 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename" /> <a title="" href="#readmename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Yönergesi</a> <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Dizin listesinin sonuna yerleştirilecek dosyanın ismini
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Dizin listesinin sonuna yerleştirilecek dosyanın ismini
 belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ReadmeName <var>dosya-ismi</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ReadmeName <var>dosya-ismi</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_autoindex</td></tr>
 </table>
     <p><code class="directive">ReadmeName</code> yönergesi dizin listesinin sonuna
       eklenecek dosyanın ismini belirler. <code><em>dosya-ismi</em></code> ile
@@ -1045,14 +1045,14 @@ ReadmeName /include/FOOTER.html</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

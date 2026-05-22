@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_charset_lite  </title>
+<title>mod_charset_lite - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,26 +18,26 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_charset_lite</h1>
+<div id="preamble"><h1>Module Apache mod_charset_lite</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_charset_lite.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_charset_lite.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_charset_lite.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Spécifie dans quel jeu de caractère doivent s'effectuer les
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Spécifie dans quel jeu de caractère doivent s'effectuer les
 traductions ou les réencodages</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>charset_lite_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_charset_lite.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>charset_lite_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_charset_lite.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Le module <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> permet au serveur de
     modifier le jeu de caractères des réponses avant de les envoyer aux
@@ -55,19 +55,19 @@ traductions ou les réencodages</td></tr>
     par Apache version russe, ainsi que son module
     <code>mod_charset</code> associé.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#problems">Problèmes courants</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetdefault">CharsetDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetoptions">CharsetOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charsetsourceenc">CharsetSourceEnc</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_charset_lite" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_charset_lite" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_charset_lite">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_charset_lite">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="problems" id="problems">Problèmes courants</a> <a title="" href="#problems" class="permalink">&para;</a></h2>
+<h2><a name="problems" id="problems">Problèmes courants</a> <a title="Lien permanent" href="#problems" class="permalink">&para;</a></h2>
 
     <h3>Noms de jeux de caractères non valides</h3>
 
@@ -75,7 +75,7 @@ traductions ou les réencodages</td></tr>
       directives  <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code> et
       <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code>
       doivent être reconnus par le mécanisme de traduction utilisé par
-      <a class="glossarylink" href="../glossary.html#apr" title="">APR</a> sur le système où
+      <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> sur le système où
       <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> est utilisé. Ces noms de jeux de
       caractères ne sont pas standardisés, et sont en général différents
       des valeurs qui leur correspondent dans les en-têtes HTTP.
@@ -107,15 +107,15 @@ traductions ou les réencodages</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a> <a name="charsetdefault" id="charsetdefault" /> <a title="" href="#charsetdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="charsetdefault" id="charsetdefault">Directive</a> <a name="CharsetDefault" id="CharsetDefault">CharsetDefault</a> <a title="Lien permanent" href="#charsetdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Jeu de caractère vers lequel la traduction doit
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Jeu de caractère vers lequel la traduction doit
 s'effectuer</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CharsetDefault <var>jeu de caractères</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetDefault <var>jeu de caractères</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>La directive <code class="directive">CharsetDefault</code> permet de
     spécifier le jeu de caractères vers lequel le contenu situé dans le
@@ -123,7 +123,7 @@ s'effectuer</td></tr>
 
     <p>La valeur de l'argument <var>jeu de caractères</var> doit être
     un nom de jeu de caractères valide du point de vue du support des
-    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="">APR</a>. En général, cela
+    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
@@ -143,16 +143,16 @@ s'effectuer</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a name="charsetoptions" id="charsetoptions" /> <a title="" href="#charsetoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="charsetoptions" id="charsetoptions">Directive</a> <a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a title="Lien permanent" href="#charsetoptions" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Précise les détails de la traduction du jeu de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Précise les détails de la traduction du jeu de
 caractères</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CharsetOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CharsetOptions ImplicitAdd</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetOptions <var>option</var> [<var>option</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CharsetOptions ImplicitAdd</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>La directive <code class="directive">CharsetOptions</code> permet de
     préciser certains détails du comportement du module
@@ -183,14 +183,14 @@ caractères</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CharsetSourceEnc" id="CharsetSourceEnc">CharsetSourceEnc</a> <a name="charsetsourceenc" id="charsetsourceenc" /> <a title="" href="#charsetsourceenc" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="charsetsourceenc" id="charsetsourceenc">Directive</a> <a name="CharsetSourceEnc" id="CharsetSourceEnc">CharsetSourceEnc</a> <a title="Lien permanent" href="#charsetsourceenc" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Jeu de caractères source des fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CharsetSourceEnc <var>jeu de caractères</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_charset_lite</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Jeu de caractères source des fichiers</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CharsetSourceEnc <var>jeu de caractères</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>La directive <code class="directive">CharsetSourceEnc</code> permet de
     spécifier un jeu de caractères source pour les fichiers situés dans
@@ -198,7 +198,7 @@ caractères</td></tr>
 
     <p>La valeur de l'argument <var>jeu de caractères</var> doit être
     un nom de jeu de caractères valide du point de vue du support des
-    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="">APR</a>. En général, cela
+    jeux de caractères dans <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. En général, cela
     implique qu'elle doit être reconnue par iconv.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/export/home/trawick/apacheinst/htdocs/convert"&gt;
@@ -222,12 +222,12 @@ caractères</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_charset_lite.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_charset_lite.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_charset_lite.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_charset_lite.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

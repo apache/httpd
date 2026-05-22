@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_dir  </title>
+<title>mod_dir - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,29 +18,29 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_dir</h1>
+<div id="preamble"><h1>Module Apache mod_dir</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dir.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_dir.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Permet la redirection des adresses se terminant par un
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet la redirection des adresses se terminant par un
 répertoire sans slash de fin et la mise à disposition des fichiers index
 de répertoire</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>dir_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_dir.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>dir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_dir.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>L'index d'un répertoire peut provenir de deux sources :</p>
 
@@ -64,7 +64,7 @@ de répertoire</td></tr>
     fin, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> effectue une redirection vers
     <code>http://nom-serveur/foo/nom-rep/</code>.</p>
 </div>
-<div id="quickview"><h3 class="directives" />
+<div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directorycheckhandler">DirectoryCheckHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
@@ -72,20 +72,20 @@ de répertoire</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dir" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dir" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dir">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dir">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a name="directorycheckhandler" id="directorycheckhandler" /> <a title="" href="#directorycheckhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a title="Lien permanent" href="#directorycheckhandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la réponse de ce module lorsqu'un autre
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la réponse de ce module lorsqu'un autre
 gestionnaire est utilisé</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryCheckHandler On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryCheckHandler Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.4.8 du serveur HTTP
 Apache. Les versions antérieures à 2.4 se comportaient implicitement
 comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
 </table>
@@ -112,17 +112,17 @@ comme si "DirectoryCheckHandler ON" avait été spécifié.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex" /> <a title="" href="#directoryindex" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryindex" id="directoryindex">Directive</a> <a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a title="Lien permanent" href="#directoryindex" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Liste des fichiers ressources à rechercher lorsque le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liste des fichiers ressources à rechercher lorsque le
 client envoie une requête pour un répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DirectoryIndex
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndex
     disabled | <var>url locale</var> [<var>url locale</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
 </table>
     <p>La directive <code class="directive">DirectoryIndex</code> permet de
     définir une liste de fichiers ressources à rechercher lorsqu'un
@@ -192,20 +192,20 @@ client envoie une requête pour un répertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a name="directoryindexredirect" id="directoryindexredirect" /> <a title="" href="#directoryindexredirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryindexredirect" id="directoryindexredirect">Directive</a> <a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a title="Lien permanent" href="#directoryindexredirect" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une redirection externe pour les index de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une redirection externe pour les index de
 répertoires.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectoryIndexRedirect on | off | permanent | temp | seeother |
 <var>3xx-code</var>
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.14</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectoryIndexRedirect off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.14</td></tr>
 </table>
     <p>Par défaut, c'est la page définie par la directive
     <code class="directive">DirectoryIndex</code> qui est sélectionnée et
@@ -236,17 +236,17 @@ répertoires.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash" /> <a title="" href="#directoryslash" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="directoryslash" id="directoryslash">Directive</a> <a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a title="Lien permanent" href="#directoryslash" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Activation/Désactivation de la redirection "slash de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation de la redirection "slash de
 fin"</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>DirectorySlash On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>L'argument NotFound est disponible à partir de la version 2.5.1
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>DirectorySlash On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument NotFound est disponible à partir de la version 2.5.1
 du serveur HTTP Apache</td></tr>
 </table>
     <p>La directive <code class="directive">DirectorySlash</code> permet de déterminer
@@ -304,17 +304,17 @@ du serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource" /> <a title="" href="#fallbackresource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
 aucun fichier ou gestionnaire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>FallbackResource disabled | <var>url-locale</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Désactivé - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_dir</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>L'argument <code>disabled</code> est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FallbackResource disabled | <var>url-locale</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Désactivé - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>disabled</code> est disponible depuis la
 version 2.4.4 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de définir un traitement pour toute URL
@@ -370,7 +370,7 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
     aux requêtes pour des fichiers qui n’existent pas ; la directive
     <code class="directive">FallbackResource</code> ne sera alors jamais invoquée.</p></div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
@@ -379,14 +379,14 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_dir.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_dir.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

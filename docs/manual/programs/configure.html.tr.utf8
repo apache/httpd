@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>configure - kaynak ağacını yapılandırır  </title>
+<title>configure - kaynak ağacını yapılandırır - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,20 +17,20 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>configure - kaynak ağacını yapılandırır</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>configure - kaynak ağacını yapılandırır</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -45,10 +45,10 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Komut Satırı</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#env">Ortam Değişkenleri</a></li>
-</ul><h3 /><ul class="seealso"><li><a href="../install.html">Derleme ve Kurulum</a></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../install.html">Derleme ve Kurulum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Komut Satırı</a> <a title="" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">Komut Satırı</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code>configure</code> betiğini kaynak paketinin kök dizininden başka
       bir yere kopyalayıp çalıştırmamalısınız.</p>
 
@@ -60,7 +60,7 @@
       kullanabilirsiniz. Kullanışlı değişkenlerin bazıları <a href="#env">aşağıda</a> açıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
   <ul>
     <li><a href="#configurationoptions">Yapılandırma seçenekleri</a></li>
     <li><a href="#installationdirectories">Kurulum dizinleri</a></li>
@@ -519,7 +519,7 @@
     <h4><a name="packageopt" id="packageopt">Özel paketler</a></h4>
       <dl>
         <dt><code>--with-apr=<var>dizin</var>|<var>dosya</var></code></dt>
-        <dd><a class="glossarylink" href="../glossary.html#apr" title="">Apache Taşınabilir Arayüzü</a> (APR)
+        <dd><a class="glossarylink" href="../glossary.html#apr" title="sözlüğe bakınız">Apache Taşınabilir Arayüzü</a> (APR)
           httpd kaynak paketinin bir parçası olup HTTP Sunucu ile birlikte
           derlenir. Eğer kendi kurulu APR’nizi kullanmak isterseniz bunu
           <code>configure</code> betiğine <code>apr-config</code> betiğinin
@@ -709,7 +709,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="env" id="env">Ortam Değişkenleri</a> <a title="" href="#env" class="permalink">&para;</a></h2>
+<h2><a name="env" id="env">Ortam Değişkenleri</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
   <p><code>configure</code> betiğinin yerleri ve isimleri standartlara uygun
     olmayan kütüphaneleri ve programları bulmasını yardımcı olan veya
     <code>configure</code> betiği tarafından yapılan bazı seçimleri
@@ -744,13 +744,13 @@
   </dl>
 </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/programs/configure.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/configure.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/configure.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

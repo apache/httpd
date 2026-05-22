@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_setenvif  </title>
+<title>mod_setenvif - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,28 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_setenvif</h1>
+<div id="preamble"><h1>Apache Modülü mod_setenvif</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_setenvif.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>setenvif_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_setenvif.c</td></tr></table>
-<h3 />
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_setenvif.c</td></tr></table>
+<h3>Özet</h3>
 
 
     <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü dahili ortam değişkenlerinin
@@ -60,7 +60,7 @@ BrowserMatch MSIE !netscape</pre>
 
     <p><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> ile dizin listesi oluşturulması
       veya bir <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
-      için yol aranması gibi bir dahili <a class="glossarylink" href="../glossary.html#subrequest" title="">alt
+      için yol aranması gibi bir dahili <a class="glossarylink" href="../glossary.html#subrequest" title="sözlüğe bakınız">alt
       istek</a> için sunucu yol araması yaparken isteklere özgü
       ortam değişkenleri alt istekler tarafından miras alınMAZ. Buna ek
       olarak, <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülünün devreye girdiği API
@@ -68,7 +68,7 @@ BrowserMatch MSIE !netscape</pre>
       <code class="directive"><a href="#setenvif">SetEnvIf</a></code> yönergeleri
       ayrı ayrı değerlendirilMEZ.</p>
 </div>
-<div id="quickview"><h3 class="directives" />
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
@@ -76,22 +76,22 @@ BrowserMatch MSIE !netscape</pre>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvifexpr">SetEnvIfExpr</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_setenvif" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_setenvif" /></li></ul><h3 />
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_setenvif">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_setenvif">Hata bildir</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch" /> <a title="" href="#browsermatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Yönergesi</a> <a title="Permanent link" href="#browsermatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzüne göre belirler.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzüne göre belirler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BrowserMatch <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>BrowserMatch <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
 [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
   <p><code class="directive">BrowserMatch</code> yönergesi <code class="directive"><a href="#setenvif">SetEnvIf</a></code> yönergesinin özel bir halidir
     ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
@@ -110,16 +110,16 @@ BrowserMatch MSIE !javascript</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase" /> <a title="" href="#browsermatchnocase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">Yönergesi</a> <a title="Permanent link" href="#browsermatchnocase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzünün harf büyüklüğüne
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzünün harf büyüklüğüne
 duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BrowserMatchNoCase <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>BrowserMatchNoCase <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
 [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
 
     <p><code class="directive">BrowserMatchNoCase</code> yönergesi sözdizimsel ve
@@ -140,17 +140,17 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif" /> <a title="" href="#setenvif" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">Yönergesi</a> <a title="Permanent link" href="#setenvif" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ortam değişkenlerini isteğin özniteliklerine göre atar.
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini isteğin özniteliklerine göre atar.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SetEnvIf <em>öznitelik
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIf <em>öznitelik
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p><code class="directive">SetEnvIf</code> yönergesi ortam değişkenlerini isteğin
       özniteliklerine göre tanımlar. İlk bileşen olarak belirtilen
@@ -199,7 +199,7 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
         olarak bir düzenli ifade belirtilmemiş olması gerekir.</li>
     </ol>
 
-    <p>İkinci bileşen (<code><em>düzifd</em></code>) bir <a class="glossarylink" href="../glossary.html#regex" title="">düzenli ifade</a>dir.  <code><em>düzifd</em></code>
+    <p>İkinci bileşen (<code><em>düzifd</em></code>) bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a>dir.  <code><em>düzifd</em></code>
       ile <code><em>öznitelik</em></code> eşleştiği takdirde yönergenin kalan
       bileşenleri değerlendirmeye alınır.</p>
 
@@ -245,23 +245,23 @@ SetEnvIf ^TS  ^[a-z]  TS_VAR</pre>
       karakterlerle devam eden bir başlık alanı varsa <code>TS_VAR</code>
       ortam değişkeni atanmaktadır.</p>
 
-<h3 />
+<h3>Ayrıca bakınız:</h3>
 <ul>
 <li><a href="../env.html">Apache HTTP Sunucusundaki Ortam Değişkenleri</a>
 belgesinde daha fazla örnek bulunabilir.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr" /> <a title="" href="#setenvifexpr" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="SetEnvIfExpr" id="SetEnvIfExpr">SetEnvIfExpr</a> <a name="setenvifexpr" id="setenvifexpr">Yönergesi</a> <a title="Permanent link" href="#setenvifexpr" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Bir ap_expr ifadesine dayanarak ortam değişkenlerine değer atar</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SetEnvIfExpr <em>ifade
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir ap_expr ifadesine dayanarak ortam değişkenlerine değer atar</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIfExpr <em>ifade
     [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p><code class="directive">SetEnvIfExpr</code> yönergesi bir <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> <code>ap_expr</code>
       ifadesine dayanarak ortam değişkenlerine değer atar. Bu ifadeler çalışma
@@ -280,7 +280,7 @@ belgesinde daha fazla örnek bulunabilir.</li>
     <pre class="prettyprint lang-config">SetEnvIfExpr "-R '10.0.0.0/8' || -R '172.16.0.0/12' || -R '192.168.0.0/16'" rfc1918</pre>
 
 
-<h3 />
+<h3>Ayrıca bakınız:</h3>
 <ul>
 <li>Eksiksiz bir kılavuz ve daha fazla örnek için
 <a href="../expr.html">Apache HTTP Sunucusundaki İfadeler</a> belgesine
@@ -290,17 +290,17 @@ bakınız.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase" /> <a title="" href="#setenvifnocase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">Yönergesi</a> <a title="Permanent link" href="#setenvifnocase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
 bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>SetEnvIfNoCase <em>öznitelik
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIfNoCase <em>öznitelik
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
     [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
 </table>
     <p><code class="directive">SetEnvIfNoCase</code> yönergesi sözdizimsel ve anlamsal
       olarak <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
@@ -318,14 +318,14 @@ bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_setenvif.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_setenvif.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_authz_core  </title>
+<title>mod_authz_core - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,27 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_authz_core</h1>
+<div id="preamble"><h1>Module Apache mod_authz_core</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_core.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Autorisation basique</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>authz_core_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_authz_core.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basique</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_core_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authz_core.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3
 d'Apache HTTPD</td></tr></table>
-<h3 />
+<h3>Sommaire</h3>
 
     <p>Ce module fournit des fonctionnalités d'autorisation basiques
     permettant d'accorder ou refuser l'accès à certaines zones du site
@@ -50,13 +51,13 @@ d'Apache HTTPD</td></tr></table>
     permet aussi l'application d'une logique élaborée au déroulement du
     processus d'autorisation.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#logic">Conteneurs d'autorisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">Les directives Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Création des alias du fournisseur
 d'autorisation</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authmerging">AuthMerging</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
@@ -66,10 +67,10 @@ d'autorisation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requireany">&lt;RequireAny&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirenone">&lt;RequireNone&gt;</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_core" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_core" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authz_core">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authz_core">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="logic" id="logic">Conteneurs d'autorisation</a> <a title="" href="#logic" class="permalink">&para;</a></h2>
+<h2><a name="logic" id="logic">Conteneurs d'autorisation</a> <a title="Lien permanent" href="#logic" class="permalink">&para;</a></h2>
 
     <p>Les directives de conteneur d'autorisation <code class="directive"><a href="#requireall">&lt;RequireAll&gt;</a></code>,
     <code class="directive"><a href="#requireany">&lt;RequireAny&gt;</a></code> et <code class="directive"><a href="#requirenone">&lt;RequireNone&gt;</a></code>
@@ -108,7 +109,7 @@ d'autorisation</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a> <a title="" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a> <a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
 
   <p>Le module <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> met à disposition des
   fournisseurs d'autorisation génériques utilisables avec la directive
@@ -139,7 +140,7 @@ d'autorisation</a></li>
     commence par <code>KnockKnock/2.0</code> se verront autoriser
     l'accès, alors que tous les autres seront rejetés.</p>
 
-    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="">sous-requête</a> interne (par exemple la
+    <p>Lorsque le serveur cherche un chemin via une <a class="glossarylink" href="../glossary.html#subrequest" title="voir glossaire">sous-requête</a> interne (par exemple la
    recherche d'un <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>), ou lorsqu'il génère un
    listing du contenu d'un répertoire via le module
    <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>, la sous-requête n'hérite pas des
@@ -221,7 +222,7 @@ d'autorisation</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="authzalias" id="authzalias">Création des alias du fournisseur
-d'autorisation</a> <a title="" href="#authzalias" class="permalink">&para;</a></h2>
+d'autorisation</a> <a title="Lien permanent" href="#authzalias" class="permalink">&para;</a></h2>
 
     <p>Il est possible de créer des fournisseurs d'autorisation étendus
     dans le fichier de configuration et de leur assigner un nom d'alias.
@@ -271,17 +272,17 @@ Alias "/secure" "/webpages/secure"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a name="authmerging" id="authmerging" /> <a title="" href="#authmerging" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authmerging" id="authmerging">Directive</a> <a name="AuthMerging" id="AuthMerging">AuthMerging</a> <a title="Lien permanent" href="#authmerging" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la manière dont chaque logique d'autorisation des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont chaque logique d'autorisation des
 sections de configuration se combine avec celles des sections de
 configuration précédentes.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthMerging Off | And | Or</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthMerging Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthMerging Off | And | Or</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthMerging Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Lorsque l'autorisation est activée, elle est normalement héritée
     par chaque <a href="../sections.html#merging">section de
@@ -340,18 +341,18 @@ configuration précédentes.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a> <a name="authzprovideralias" id="authzprovideralias" /> <a title="" href="#authzprovideralias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authzprovideralias" id="authzprovideralias">Directive</a> <a name="AuthzProviderAlias" id="AuthzProviderAlias">&lt;AuthzProviderAlias&gt;</a> <a title="Lien permanent" href="#authzprovideralias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Regroupe des directives représentant une extension d'un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives représentant une extension d'un
 fournisseur d'autorisation de base qui pourra être référencée à l'aide
 de l'alias spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
 Paramètres-Require</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;AuthzProviderAlias&gt;</code> et
     <code>&lt;/AuthzProviderAlias&gt;</code> permettent de regrouper des
@@ -377,17 +378,17 @@ Paramètres-Require</var>&gt;
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a> <a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure" /> <a title="" href="#authzsendforbiddenonfailure" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="authzsendforbiddenonfailure" id="authzsendforbiddenonfailure">Directive</a> <a name="AuthzSendForbiddenOnFailure" id="AuthzSendForbiddenOnFailure">AuthzSendForbiddenOnFailure</a> <a title="Lien permanent" href="#authzsendforbiddenonfailure" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Envoie '403 FORBIDDEN' au lieu de '401 UNAUTHORIZED' si
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Envoie '403 FORBIDDEN' au lieu de '401 UNAUTHORIZED' si
 l'authentification réussit et si l'autorisation a été refusée.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AuthzSendForbiddenOnFailure On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>AuthzSendForbiddenOnFailure Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.11 d'Apache HTTPD</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthzSendForbiddenOnFailure On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthzSendForbiddenOnFailure Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.11 d'Apache HTTPD</td></tr>
 </table>
     <p>Par défaut, si l'authentification réussit, alors que
     l'autorisation est refusée, Apache HTTPD renvoie un code de réponse
@@ -405,17 +406,17 @@ l'authentification réussit et si l'autorisation a été refusée.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require" /> <a title="" href="#require" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="require" id="require">Directive</a> <a name="Require" id="Require">Require</a> <a title="Lien permanent" href="#require" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Vérifie si un utilisateur authentifié a une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie si un utilisateur authentifié a une
 autorisation d'accès accordée par un fournisseur
 d'autorisation.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Require [not] <var>nom-entité</var> [<var>nom-entité</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Cette directive permet de vérifier si un utilisateur authentifié
     a l'autorisation d'accès accordée pour un certain fournisseur
@@ -545,7 +546,7 @@ Require group admin</pre>
     fusionnées au sein des sections précitées.</p>
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></li>
 <li><a href="#logic">Conteneurs d'autorisation</a></li>
@@ -554,17 +555,17 @@ Require group admin</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a> <a name="requireall" id="requireall" /> <a title="" href="#requireall" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="requireall" id="requireall">Directive</a> <a name="RequireAll" id="RequireAll">&lt;RequireAll&gt;</a> <a title="Lien permanent" href="#requireall" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Regroupe plusieurs directives d'autorisation dont aucune ne
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe plusieurs directives d'autorisation dont aucune ne
 doit échouer et dont au moins une doit retourner un résultat positif
 pour que la directive globale retourne elle-même un résultat
 positif.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;RequireAll&gt;</code> et
     <code>&lt;/RequireAll&gt;</code> permettent de regrouper des
@@ -579,7 +580,7 @@ positif.</td></tr>
     n'échoue, la directive globale retourne un résultat neutre. Dans
     tous les autres cas, elle échoue.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="#logic">Conteneurs d'autorisation</a></li>
 <li><a href="../howto/auth.html">Authentification, autorisation et
@@ -587,16 +588,16 @@ contrôle d'accès</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a> <a name="requireany" id="requireany" /> <a title="" href="#requireany" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="requireany" id="requireany">Directive</a> <a name="RequireAny" id="RequireAny">&lt;RequireAny&gt;</a> <a title="Lien permanent" href="#requireany" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Regroupe des directives d'autorisation dont au moins une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont au moins une
 doit retourner un résultat positif pour que la directive globale
 retourne elle-même un résultat positif.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;RequireAny&gt;</code> et
     <code>&lt;/RequireAny&gt;</code> permettent de regrouper des
@@ -620,7 +621,7 @@ retourne elle-même un résultat positif.</td></tr>
     C'est pourquoi il n'est pas permis d'utiliser les directives
     d'autorisation inversées dans une directive <code class="directive">&lt;RequireAny&gt;</code>.</div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="#logic">Conteneurs d'autorisation</a></li>
 <li><a href="../howto/auth.html">Authentification, autorisation et
@@ -628,16 +629,16 @@ contrôle d'accès</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a> <a name="requirenone" id="requirenone" /> <a title="" href="#requirenone" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="requirenone" id="requirenone">Directive</a> <a name="RequireNone" id="RequireNone">&lt;RequireNone&gt;</a> <a title="Lien permanent" href="#requirenone" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Regroupe des directives d'autorisation dont aucune ne doit
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives d'autorisation dont aucune ne doit
 retourner un résultat positif pour que la directive globale n'échoue
 pas.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_authz_core</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
 </table>
     <p>Les balises <code class="directive">&lt;RequireNone&gt;</code> et
     <code>&lt;/RequireNone&gt;</code> permettent de regrouper des
@@ -660,7 +661,7 @@ pas.</td></tr>
     C'est pourquoi il n'est pas permis d'utiliser les directives
     d'autorisation inversées dans une directive <code class="directive">&lt;RequireNone&gt;</code>.</div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="#logic">Conteneurs d'autorisation</a></li>
 <li><a href="../howto/auth.html">Authentification, autorisation et
@@ -669,11 +670,11 @@ contrôle d'accès</a></li>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authz_core.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authz_core.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

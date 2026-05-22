@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Prise en charge des objets dynamiques partagés (DSO)  </title>
+<title>Prise en charge des objets dynamiques partagés (DSO) - Serveur HTTP Apache Version 2.4</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -17,19 +17,19 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div><div id="page-content"><div id="preamble"><h1>Prise en charge des objets dynamiques partagés (DSO)</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Prise en charge des objets dynamiques partagés (DSO)</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dso.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/dso.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>La conception modulaire du serveur HTTP Apache permet à l'administrateur
@@ -55,9 +55,9 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Implémentation</a> <a title="" href="#implementation" class="permalink">&para;</a></h2>
+<h2><a name="implementation" id="implementation">Implémentation</a> <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
 
-<table class="related"><tr><th /><th /></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>La prise en charge de DSO pour le chargement de modules individuels d'Apache
     httpd est
@@ -93,7 +93,7 @@
     régler les drapeaux du compilateur et de l'éditeur de liens pour la prise en charge de DSO.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Mode d'emploi succinct</a> <a title="" href="#usage" class="permalink">&para;</a></h2>
+<h2><a name="usage" id="usage">Mode d'emploi succinct</a> <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Afin que vous puissiez vous faire une idée des fonctionnalités DSO
     du serveur HTTP Apache 2.x, en voici un résumé court et concis :</p>
@@ -160,7 +160,7 @@ $ apxs -cia mod_foo.c</pre>
     pour plus de détails.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a> <a title="" href="#background" class="permalink">&para;</a></h2>
+<h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a> <a title="Lien permanent" href="#background" class="permalink">&para;</a></h2>
 
     <p>Les clones modernes d'UNIX proposent un mécanisme
     appelé édition de liens et chargement dynamiques d'
@@ -257,7 +257,7 @@ $ apxs -cia mod_foo.c</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Avantages et inconvénients</a> <a title="" href="#advantages" class="permalink">&para;</a></h2>
+<h2><a name="advantages" id="advantages">Avantages et inconvénients</a> <a title="Lien permanent" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>Les fonctionnalités ci-dessus basées sur les DSO présentent les
     avantages suivants :</p>
@@ -322,14 +322,14 @@ $ apxs -cia mod_foo.c</pre>
 
 </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dso.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/dso.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

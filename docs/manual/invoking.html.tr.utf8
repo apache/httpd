@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache HTTPd’nin başlatılması  </title>
+<title>Apache HTTPd’nin başlatılması - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -17,24 +17,24 @@
 
 <link href="./images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="./" /></div><div id="page-content"><div id="preamble"><h1>Apache HTTPd’nin başlatılması</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTPd’nin başlatılması</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache normal olarak, Windows'ta bir hizmet olarak çalışır. Ayrıntılı
       bilgi için <a href="platform/windows.html#winsvc">Apache HTTPD’nin bir
@@ -48,10 +48,10 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Başlatma Sırasındaki Hatalar</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Sistem Açılışında Başlatma</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Ek Bilgiler</a></li>
-</ul><h3 /><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="stopping.html">Durdurma ve Yeniden Başlatma</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a> <a title="" href="#startup" class="permalink">&para;</a></h2>
+<h2><a name="startup" id="startup">Apache Nasıl Başlatılır?</a> <a title="Permanent link" href="#startup" class="permalink">&para;</a></h2>
 
     <p>Yapılandırma dosyasında <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi ile öntanımlı olan port
       80 (veya 1024’ten küçük herhangi bir port) belirtilmişse Apache HTTP
@@ -94,7 +94,7 @@
       görebilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">Başlatma Sırasındaki Hatalar</a> <a title="" href="#errors" class="permalink">&para;</a></h2>
+<h2><a name="errors" id="errors">Başlatma Sırasındaki Hatalar</a> <a title="Permanent link" href="#errors" class="permalink">&para;</a></h2>
 
     <p>Apache başlatma sırasında ölümcül bir sorunla karşılaşacak olursa
       çıkmadan önce sorunu açıklayan bir iletiyi konsola veya <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> yönergesi ile belirtilen hata
@@ -113,7 +113,7 @@
     <p>Bu ve diğer sorun çözme talimatları için Apache <a href="http://wiki.apache.org/httpd/FAQ">SSS</a>’sini inceleyiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">Sistem Açılışında Başlatma</a> <a title="" href="#boot" class="permalink">&para;</a></h2>
+<h2><a name="boot" id="boot">Sistem Açılışında Başlatma</a> <a title="Permanent link" href="#boot" class="permalink">&para;</a></h2>
 
     <p>Sunucunuzun sistem yeniden başlatıldıktan sonra çalışmasına devam
       etmesini istiyorsanız sistem başlatma betiklerinize (genellikle ya
@@ -133,7 +133,7 @@
       gereklerini yerine getirdiğinden emin olunuz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="info" id="info">Ek Bilgiler</a> <a title="" href="#info" class="permalink">&para;</a></h2>
+<h2><a name="info" id="info">Ek Bilgiler</a> <a title="Permanent link" href="#info" class="permalink">&para;</a></h2>
 
     <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>, <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> ve sunucuyla
       gelen diğer destek programlarının komut satırı seçenekleri hakkında ek
@@ -142,17 +142,17 @@
       vardır.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/invoking.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/invoking.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/" /> | <a href="./mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="./glossary.html" /> | <a href="./sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_http2  </title>
+<title>mod_http2 - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,26 +18,26 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_http2</h1>
+<div id="preamble"><h1>Module Apache mod_http2</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_http2.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Support de la couche transport HTTP/2</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>http2_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_http2.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la couche transport HTTP/2</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>http2_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_http2.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.17 du serveur
     HTTP Apache</td></tr></table>
-<h3 />
+<h3>Sommaire</h3>
 
 	<p>Ce module ajoute la prise en charge de HTTP/2 (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>) au serveur HTTP
 	Apache.</p>
@@ -79,10 +79,10 @@
 	
 
     </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment ça marche ?</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#h2copyfiles">H2CopyFiles</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2direct">H2Direct</a></li>
@@ -112,10 +112,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#h2websockets">H2WebSockets</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#h2windowsize">H2WindowSize</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_http2" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_http2" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_http2">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_http2">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment ça marche ?</a> <a title="" href="#how-it-works" class="permalink">&para;</a></h2>
+<h2><a name="how-it-works" id="how-it-works">Comment ça marche ?</a> <a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
     
     <h3><a name="dimensioning" id="dimensioning">Quantification des ressources
     supplémentaires nécessaires à HTTP/2</a></h3>
@@ -250,15 +250,15 @@
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2CopyFiles" id="H2CopyFiles">H2CopyFiles</a> <a name="h2copyfiles" id="h2copyfiles" /> <a title="" href="#h2copyfiles" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2copyfiles" id="h2copyfiles">Directive</a> <a name="H2CopyFiles" id="H2CopyFiles">H2CopyFiles</a> <a title="Lien permanent" href="#h2copyfiles" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle la gestion des fichiers dans les réponses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2CopyFiles on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2CopyFiles off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la gestion des fichiers dans les réponses</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2CopyFiles on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2CopyFiles off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -286,14 +286,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Direct" id="H2Direct">H2Direct</a> <a name="h2direct" id="h2direct" /> <a title="" href="#h2direct" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2direct" id="h2direct">Directive</a> <a name="H2Direct" id="H2Direct">H2Direct</a> <a title="Lien permanent" href="#h2direct" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Activation du protocole H2 Direct</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2Direct on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2Direct on pour h2c, off pour le protocole h2</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation du protocole H2 Direct</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Direct on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Direct on pour h2c, off pour le protocole h2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet d'activer/désactiver
@@ -338,15 +338,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2EarlyHint" id="H2EarlyHint">H2EarlyHint</a> <a name="h2earlyhint" id="h2earlyhint" /> <a title="" href="#h2earlyhint" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2earlyhint" id="h2earlyhint">Directive</a> <a name="H2EarlyHint" id="H2EarlyHint">H2EarlyHint</a> <a title="Lien permanent" href="#h2earlyhint" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un en-tête de réponse à consulter dans le code de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête de réponse à consulter dans le code de
 	retour 103 Early Hints</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2EarlyHint <var>name</var> <var>value</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2EarlyHint <var>name</var> <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -369,15 +369,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2EarlyHints" id="H2EarlyHints">H2EarlyHints</a> <a name="h2earlyhints" id="h2earlyhints" /> <a title="" href="#h2earlyhints" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2earlyhints" id="h2earlyhints">Directive</a> <a name="H2EarlyHints" id="H2EarlyHints">H2EarlyHints</a> <a title="Lien permanent" href="#h2earlyhints" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle l'envoi de codes d'état 103</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2EarlyHints on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2EarlyHints off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle l'envoi de codes d'état 103</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2EarlyHints on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2EarlyHints off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -397,15 +397,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxDataFrameLen" id="H2MaxDataFrameLen">H2MaxDataFrameLen</a> <a name="h2maxdataframelen" id="h2maxdataframelen" /> <a title="" href="#h2maxdataframelen" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxdataframelen" id="h2maxdataframelen">Directive</a> <a name="H2MaxDataFrameLen" id="H2MaxDataFrameLen">H2MaxDataFrameLen</a> <a title="Lien permanent" href="#h2maxdataframelen" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximal d'octets dans une trame HTTP/2 DATA</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxDataFrameLen <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2MaxDataFrameLen 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal d'octets dans une trame HTTP/2 DATA</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxDataFrameLen <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxDataFrameLen 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -423,15 +423,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxHeaderBlockLen" id="H2MaxHeaderBlockLen">H2MaxHeaderBlockLen</a> <a name="h2maxheaderblocklen" id="h2maxheaderblocklen" /> <a title="" href="#h2maxheaderblocklen" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxheaderblocklen" id="h2maxheaderblocklen">Directive</a> <a name="H2MaxHeaderBlockLen" id="H2MaxHeaderBlockLen">H2MaxHeaderBlockLen</a> <a title="Lien permanent" href="#h2maxheaderblocklen" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille maximale des en-têtes d’une réponse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxHeaderBlockLen <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2MaxHeaderBlockLen 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des en-têtes d’une réponse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxHeaderBlockLen <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxHeaderBlockLen 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.64 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -448,14 +448,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a name="h2maxsessionstreams" id="h2maxsessionstreams" /> <a title="" href="#h2maxsessionstreams" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxsessionstreams" id="h2maxsessionstreams">Directive</a> <a name="H2MaxSessionStreams" id="H2MaxSessionStreams">H2MaxSessionStreams</a> <a title="Lien permanent" href="#h2maxsessionstreams" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximal de flux actifs par session HTTP/2.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxSessionStreams <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2MaxSessionStreams 100</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de flux actifs par session HTTP/2.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxSessionStreams <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxSessionStreams 100</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir le nombre maximal de flux
@@ -468,15 +468,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxStreamErrors" id="H2MaxStreamErrors">H2MaxStreamErrors</a> <a name="h2maxstreamerrors" id="h2maxstreamerrors" /> <a title="" href="#h2maxstreamerrors" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxstreamerrors" id="h2maxstreamerrors">Directive</a> <a name="H2MaxStreamErrors" id="H2MaxStreamErrors">H2MaxStreamErrors</a> <a title="Lien permanent" href="#h2maxstreamerrors" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximal toléré d’erreurs dues au client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxStreamErrors <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2MaxStreamErrors 8</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal toléré d’erreurs dues au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxStreamErrors <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxStreamErrors 8</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -496,15 +496,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds" /> <a title="" href="#h2maxworkeridleseconds" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxworkeridleseconds" id="h2maxworkeridleseconds">Directive</a> <a name="H2MaxWorkerIdleSeconds" id="H2MaxWorkerIdleSeconds">H2MaxWorkerIdleSeconds</a> <a title="Lien permanent" href="#h2maxworkeridleseconds" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximal de secondes pendant lequel une unité de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de secondes pendant lequel une unité de
 	traitement h2 pourra rester inactive sans être arrêtée.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxWorkerIdleSeconds <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2MaxWorkerIdleSeconds 600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxWorkerIdleSeconds <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxWorkerIdleSeconds 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir le nombre maximal de secondes
@@ -518,14 +518,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a name="h2maxworkers" id="h2maxworkers" /> <a title="" href="#h2maxworkers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2maxworkers" id="h2maxworkers">Directive</a> <a name="H2MaxWorkers" id="H2MaxWorkers">H2MaxWorkers</a> <a title="Lien permanent" href="#h2maxworkers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximal de threads à utiliser pour chaque processus
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de threads à utiliser pour chaque processus
 	enfant.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MaxWorkers <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxWorkers <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir le nombre maximal de threads à
@@ -544,14 +544,14 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a name="h2minworkers" id="h2minworkers" /> <a title="" href="#h2minworkers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2minworkers" id="h2minworkers">Directive</a> <a name="H2MinWorkers" id="H2MinWorkers">H2MinWorkers</a> <a title="Lien permanent" href="#h2minworkers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre minimal de threads à utiliser pour chaque processus
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimal de threads à utiliser pour chaque processus
 	enfant.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2MinWorkers <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MinWorkers <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir le nombre minimal de threads à
@@ -565,16 +565,16 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2ModernTLSOnly" id="H2ModernTLSOnly">H2ModernTLSOnly</a> <a name="h2moderntlsonly" id="h2moderntlsonly" /> <a title="" href="#h2moderntlsonly" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2moderntlsonly" id="h2moderntlsonly">Directive</a> <a name="H2ModernTLSOnly" id="H2ModernTLSOnly">H2ModernTLSOnly</a> <a title="Lien permanent" href="#h2moderntlsonly" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Impose les connexions HTTP/2 en mode "TLS moderne"
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Impose les connexions HTTP/2 en mode "TLS moderne"
 	seulement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2ModernTLSOnly on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2ModernTLSOnly on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2ModernTLSOnly on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2ModernTLSOnly on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -613,15 +613,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a> <a name="h2outputbuffering" id="h2outputbuffering" /> <a title="" href="#h2outputbuffering" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2outputbuffering" id="h2outputbuffering">Directive</a> <a name="H2OutputBuffering" id="H2OutputBuffering">H2OutputBuffering</a> <a title="Lien permanent" href="#h2outputbuffering" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Contrôle la mise en tampon du flux de sortie</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2OutputBuffering on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2OutputBuffering on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.48 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la mise en tampon du flux de sortie</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2OutputBuffering on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2OutputBuffering on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.48 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -636,16 +636,16 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Padding" id="H2Padding">H2Padding</a> <a name="h2padding" id="h2padding" /> <a title="" href="#h2padding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2padding" id="h2padding">Directive</a> <a name="H2Padding" id="H2Padding">H2Padding</a> <a title="Lien permanent" href="#h2padding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie un intervalle de nombres d'octets de bourrage à
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie un intervalle de nombres d'octets de bourrage à
 	ajouter aux trames utiles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2Padding <var>numbits</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2Padding 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.39 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Padding <var>numbits</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Padding 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.39 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -679,15 +679,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2ProxyRequests" id="H2ProxyRequests">H2ProxyRequests</a> <a name="h2proxyrequests" id="h2proxyrequests" /> <a title="" href="#h2proxyrequests" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2proxyrequests" id="h2proxyrequests">Directive</a> <a name="H2ProxyRequests" id="H2ProxyRequests">H2ProxyRequests</a> <a title="Lien permanent" href="#h2proxyrequests" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active/Désactive les requêtes sous mandat direct via HTTP/2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2ProxyRequests  on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2ProxyRequests off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active/Désactive les requêtes sous mandat direct via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2ProxyRequests  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2ProxyRequests off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -703,15 +703,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Push" id="H2Push">H2Push</a> <a name="h2push" id="h2push" /> <a title="" href="#h2push" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2push" id="h2push">Directive</a> <a name="H2Push" id="H2Push">H2Push</a> <a title="Lien permanent" href="#h2push" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Activation/désactivation du server push H2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2Push on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2Push on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/désactivation du server push H2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Push on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Push on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -780,15 +780,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a name="h2pushdiarysize" id="h2pushdiarysize" /> <a title="" href="#h2pushdiarysize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2pushdiarysize" id="h2pushdiarysize">Directive</a> <a name="H2PushDiarySize" id="H2PushDiarySize">H2PushDiarySize</a> <a title="Lien permanent" href="#h2pushdiarysize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille du journal des Pushes H2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2PushDiarySize <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2PushDiarySize 256</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du journal des Pushes H2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushDiarySize <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2PushDiarySize 256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.19 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -816,15 +816,15 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a name="h2pushpriority" id="h2pushpriority" /> <a title="" href="#h2pushpriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2pushpriority" id="h2pushpriority">Directive</a> <a name="H2PushPriority" id="H2PushPriority">H2PushPriority</a> <a title="Lien permanent" href="#h2pushpriority" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Priorité des pushes H2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2PushPriority <var>mime-type</var> [after|before|interleaved] [<var>weight</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2PushPriority * After 16</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Priorité des pushes H2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushPriority <var>mime-type</var> [after|before|interleaved] [<var>weight</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2PushPriority * After 16</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache. Nécessite la bibliothèque nghttp2 version 1.5.0 ou supérieure.</td></tr>
 </table>
             <p>
@@ -948,14 +948,14 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
          
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a name="h2pushresource" id="h2pushresource" /> <a title="" href="#h2pushresource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2pushresource" id="h2pushresource">Directive</a> <a name="H2PushResource" id="H2PushResource">H2PushResource</a> <a title="Lien permanent" href="#h2pushresource" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Déclare des ressources à proposer ("pusher") au client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2PushResource [add] <var>path</var> [critical]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare des ressources à proposer ("pusher") au client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2PushResource [add] <var>path</var> [critical]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.24 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -986,15 +986,15 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2SerializeHeaders" id="H2SerializeHeaders">H2SerializeHeaders</a> <a name="h2serializeheaders" id="h2serializeheaders" /> <a title="" href="#h2serializeheaders" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2serializeheaders" id="h2serializeheaders">Directive</a> <a name="H2SerializeHeaders" id="H2SerializeHeaders">H2SerializeHeaders</a> <a title="Lien permanent" href="#h2serializeheaders" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active/désactive la sérialisation du traitement des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active/désactive la sérialisation du traitement des
 	requêtes/réponses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2SerializeHeaders on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2SerializeHeaders off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2SerializeHeaders on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2SerializeHeaders off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir si les requêtes HTTP/2 doivent
@@ -1012,15 +1012,15 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a name="h2streammaxmemsize" id="h2streammaxmemsize" /> <a title="" href="#h2streammaxmemsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2streammaxmemsize" id="h2streammaxmemsize">Directive</a> <a name="H2StreamMaxMemSize" id="H2StreamMaxMemSize">H2StreamMaxMemSize</a> <a title="Lien permanent" href="#h2streammaxmemsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Quantité maximale de données en sortie mises en tampon par
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Quantité maximale de données en sortie mises en tampon par
 	flux.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2StreamMaxMemSize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2StreamMaxMemSize 65536</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2StreamMaxMemSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2StreamMaxMemSize 65536</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir la quantité maximale de
@@ -1037,16 +1037,16 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2StreamTimeout" id="H2StreamTimeout">H2StreamTimeout</a> <a name="h2streamtimeout" id="h2streamtimeout" /> <a title="" href="#h2streamtimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2streamtimeout" id="h2streamtimeout">Directive</a> <a name="H2StreamTimeout" id="H2StreamTimeout">H2StreamTimeout</a> <a title="Lien permanent" href="#h2streamtimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Temps d'attente maximum lors de l'envoi/réception de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum lors de l'envoi/réception de
 	données pour le traitement d'un flux</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2StreamTimeout <var>time-interval</var>[s]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>La valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2StreamTimeout <var>time-interval</var>[s]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.55 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -1057,16 +1057,16 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2TLSCoolDownSecs" id="H2TLSCoolDownSecs">H2TLSCoolDownSecs</a> <a name="h2tlscooldownsecs" id="h2tlscooldownsecs" /> <a title="" href="#h2tlscooldownsecs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2tlscooldownsecs" id="h2tlscooldownsecs">Directive</a> <a name="H2TLSCoolDownSecs" id="H2TLSCoolDownSecs">H2TLSCoolDownSecs</a> <a title="Lien permanent" href="#h2tlscooldownsecs" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée d'inactivité d'une connexion TLS avant diminution de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée d'inactivité d'une connexion TLS avant diminution de
 	la taille des paquets</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2TLSCoolDownSecs <var>seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2TLSCoolDownSecs 1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2TLSCoolDownSecs <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2TLSCoolDownSecs 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -1104,16 +1104,16 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2TLSWarmUpSize" id="H2TLSWarmUpSize">H2TLSWarmUpSize</a> <a name="h2tlswarmupsize" id="h2tlswarmupsize" /> <a title="" href="#h2tlswarmupsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2tlswarmupsize" id="h2tlswarmupsize">Directive</a> <a name="H2TLSWarmUpSize" id="H2TLSWarmUpSize">H2TLSWarmUpSize</a> <a title="Lien permanent" href="#h2tlswarmupsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille des paquets durant la phase initiale de la connexion
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille des paquets durant la phase initiale de la connexion
 	TLS</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2TLSWarmUpSize <var>amount</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2TLSWarmUpSize 1048576</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2TLSWarmUpSize <var>amount</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2TLSWarmUpSize 1048576</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.18 du serveur HTTP
 	Apache.</td></tr>
 </table>
             <p>
@@ -1160,14 +1160,14 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2Upgrade" id="H2Upgrade">H2Upgrade</a> <a name="h2upgrade" id="h2upgrade" /> <a title="" href="#h2upgrade" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2upgrade" id="h2upgrade">Directive</a> <a name="H2Upgrade" id="H2Upgrade">H2Upgrade</a> <a title="Lien permanent" href="#h2upgrade" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Activation/Désactivation du protocole de mise à jour H2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2Upgrade on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2Upgrade on pour h2c, off pour h2</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/Désactivation du protocole de mise à jour H2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2Upgrade on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2Upgrade on pour h2c, off pour h2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet d'activer/désactiver l'utilisation de la
@@ -1203,15 +1203,15 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2WebSockets" id="H2WebSockets">H2WebSockets</a> <a name="h2websockets" id="h2websockets" /> <a title="" href="#h2websockets" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2websockets" id="h2websockets">Directive</a> <a name="H2WebSockets" id="H2WebSockets">H2WebSockets</a> <a title="Lien permanent" href="#h2websockets" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active/désactive les WebSockets via HTTP/2</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2WebSockets  on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2WebSockets off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active/désactive les WebSockets via HTTP/2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2WebSockets  on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2WebSockets off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.58 du serveur HTTP
 	Apache</td></tr>
 </table>
             <p>
@@ -1243,15 +1243,15 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a name="h2windowsize" id="h2windowsize" /> <a title="" href="#h2windowsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="h2windowsize" id="h2windowsize">Directive</a> <a name="H2WindowSize" id="H2WindowSize">H2WindowSize</a> <a title="Lien permanent" href="#h2windowsize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille maximale des paquets de données pour les transmissions client
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des paquets de données pour les transmissions client
 	vers serveur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>H2WindowSize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>H2WindowSize 65535</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_http2</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2WindowSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2WindowSize 65535</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_http2</td></tr>
 </table>
             <p>
                 Cette directive permet de définir la taille maximale des paquets
@@ -1273,11 +1273,11 @@ H2PushPriority text/css   interleaved      # poids de 256 par défaut</pre>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_http2.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

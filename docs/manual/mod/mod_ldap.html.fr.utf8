@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_ldap  </title>
+<title>mod_ldap - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,25 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_ldap</h1>
+<div id="preamble"><h1>Module Apache mod_ldap</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ldap.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Conservation des connexions LDAP et services de mise en
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Conservation des connexions LDAP et services de mise en
 cache du résultat à destination des autres modules LDAP</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>ldap_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>util_ldap.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>ldap_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>util_ldap.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module a été conçu dans le but d'améliorer les performances
     des sites web s'appuyant sur des connexions en arrière-plan vers des
@@ -50,21 +50,21 @@ cache du résultat à destination des autres modules LDAP</td></tr>
     Apache.</p>
 
     <p>Le support SSL/TLS est conditionné par le kit de développement
-    LDAP qui a été lié à <a class="glossarylink" href="../glossary.html#apr" title="">APR</a>. Au moment où ces
+    LDAP qui a été lié à <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. Au moment où ces
     lignes sont écrites, APR-util supporte <a href="http://www.openldap.org/">OpenLDAP SDK</a> (version 2.x ou
     supérieure), <a href="https://wiki.mozilla.org/LDAP_C_SDK">
     Mozilla LDAP SDK</a>, le SDK LDAP Solaris natif (basé sur Mozilla)
     ou le SDK LDAP Microsoft natif. Voir le site web <a href="http://apr.apache.org">APR</a> pour plus de détails.</p>
 
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#exampleconfig">Exemple de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pool">Conservation des connexions LDAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cache">Cache LDAP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usingssltls">Utiliser SSL/TLS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#settingcerts">Certificats SSL/TLS</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
@@ -85,10 +85,10 @@ cache du résultat à destination des autres modules LDAP</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapverifyservercert">LDAPVerifyServerCert</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ldap" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ldap" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ldap">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ldap">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exampleconfig" id="exampleconfig">Exemple de configuration</a> <a title="" href="#exampleconfig" class="permalink">&para;</a></h2>
+<h2><a name="exampleconfig" id="exampleconfig">Exemple de configuration</a> <a title="Lien permanent" href="#exampleconfig" class="permalink">&para;</a></h2>
     <p>Ce qui suit est un exemple de configuration qui utilise
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> pour améliorer les performances de
     l'authentification HTTP de base fournie par
@@ -121,7 +121,7 @@ LDAPOpCacheTTL 600
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="pool" id="pool">Conservation des connexions LDAP</a> <a title="" href="#pool" class="permalink">&para;</a></h2>
+<h2><a name="pool" id="pool">Conservation des connexions LDAP</a> <a title="Lien permanent" href="#pool" class="permalink">&para;</a></h2>
 
     <p>Les connexions LDAP sont conservées de requête en requête. Ceci
     permet de rester connecté et identifié au serveur LDAP, ce dernier
@@ -151,7 +151,7 @@ LDAPOpCacheTTL 600
     fonctionnalité est activée par défaut.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cache" id="cache">Cache LDAP</a> <a title="" href="#cache" class="permalink">&para;</a></h2>
+<h2><a name="cache" id="cache">Cache LDAP</a> <a title="Lien permanent" href="#cache" class="permalink">&para;</a></h2>
 
     <p>Pour améliorer les performances, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> met en oeuvre
     une stratégie de mise en cache agressive visant à minimiser le nombre de
@@ -238,7 +238,7 @@ LDAPOpCacheTTL 600
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usingssltls" id="usingssltls">Utiliser SSL/TLS</a> <a title="" href="#usingssltls" class="permalink">&para;</a></h2>
+<h2><a name="usingssltls" id="usingssltls">Utiliser SSL/TLS</a> <a title="Lien permanent" href="#usingssltls" class="permalink">&para;</a></h2>
 
     <p>La possibilité de créer des connexions SSL et TLS avec un serveur
     LDAP est définie par les directives <code class="directive"><a href="#ldaptrustedglobalcert">
@@ -283,7 +283,7 @@ LDAPTrustedGlobalCert CA_DER "/certs/certfile.der"
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="settingcerts" id="settingcerts">Certificats SSL/TLS</a> <a title="" href="#settingcerts" class="permalink">&para;</a></h2>
+<h2><a name="settingcerts" id="settingcerts">Certificats SSL/TLS</a> <a title="Lien permanent" href="#settingcerts" class="permalink">&para;</a></h2>
 
     <p>Les différents SDKs LDAP disposent de nombreuses méthodes pour
     définir et gérer les certificats des clients et des autorités de
@@ -399,15 +399,15 @@ LDAPTrustedGlobalCert CA_BASE64 "/certs/cacert2.pem"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a> <a name="ldapcacheentries" id="ldapcacheentries" /> <a title="" href="#ldapcacheentries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapcacheentries" id="ldapcacheentries">Directive</a> <a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a> <a title="Lien permanent" href="#ldapcacheentries" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximum d'entrées dans le cache LDAP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum d'entrées dans le cache LDAP
 primaire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPCacheEntries <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPCacheEntries 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheEntries <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPCacheEntries 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier la taille maximale du cache
     LDAP primaire. Ce cache contient les résultats de
@@ -417,15 +417,15 @@ primaire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPCacheTTL" id="LDAPCacheTTL">LDAPCacheTTL</a> <a name="ldapcachettl" id="ldapcachettl" /> <a title="" href="#ldapcachettl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapcachettl" id="ldapcachettl">Directive</a> <a name="LDAPCacheTTL" id="LDAPCacheTTL">LDAPCacheTTL</a> <a title="Lien permanent" href="#ldapcachettl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée pendant laquelle les entrées du cache restent
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle les entrées du cache restent
 valides.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPCacheTTL <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPCacheTTL 600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPCacheTTL <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPCacheTTL 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier la durée (en secondes)
     pendant laquelle une entrée du cache de recherche/identification
@@ -434,16 +434,16 @@ valides.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a> <a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl" /> <a title="" href="#ldapconnectionpoolttl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl">Directive</a> <a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a> <a title="Lien permanent" href="#ldapconnectionpoolttl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Désactive les connexions d'arrière-plan qui sont restées
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive les connexions d'arrière-plan qui sont restées
 inactives trop longtemps au sein du jeu de connexions.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPConnectionPoolTTL -1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.3.12 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPConnectionPoolTTL -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.12 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de spécifier la durée maximale, en
@@ -477,14 +477,14 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout" /> <a title="" href="#ldapconnectiontimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a> <a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a title="Lien permanent" href="#ldapconnectiontimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie le délai d'attente en secondes de la socket de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai d'attente en secondes de la socket de
 connexion</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPConnectionTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPConnectionTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive configure l'option LDAP_OPT_NETWORK_TIMEOUT (ou
     LDAP_OPT_CONNECT_TIMEOUT) dans la bibliothèque client LDAP
@@ -510,14 +510,14 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a> <a name="ldaplibrarydebug" id="ldaplibrarydebug" /> <a title="" href="#ldaplibrarydebug" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldaplibrarydebug" id="ldaplibrarydebug">Directive</a> <a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a> <a title="Lien permanent" href="#ldaplibrarydebug" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active le débogage dans le SDK LDAP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>disabled</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le débogage dans le SDK LDAP</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>disabled</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Active les options de débogage LDAP spécifiques au SDK, qui
     entraînent en général une journalisation d'informations verbeuses du
@@ -544,15 +544,15 @@ connexion</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a name="ldapopcacheentries" id="ldapopcacheentries" /> <a title="" href="#ldapopcacheentries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapopcacheentries" id="ldapopcacheentries">Directive</a> <a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a title="Lien permanent" href="#ldapopcacheentries" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre d'entrées utilisées pour mettre en cache les
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre d'entrées utilisées pour mettre en cache les
 opérations de comparaison LDAP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPOpCacheEntries <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPOpCacheEntries 1024</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheEntries <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPOpCacheEntries 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le nombre d'entrées que
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> va utiliser pour mettre en cache les
@@ -562,15 +562,15 @@ opérations de comparaison LDAP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPOpCacheTTL" id="LDAPOpCacheTTL">LDAPOpCacheTTL</a> <a name="ldapopcachettl" id="ldapopcachettl" /> <a title="" href="#ldapopcachettl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapopcachettl" id="ldapopcachettl">Directive</a> <a name="LDAPOpCacheTTL" id="LDAPOpCacheTTL">LDAPOpCacheTTL</a> <a title="Lien permanent" href="#ldapopcachettl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Durée pendant laquelle les entrées du cache d'opérations
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée pendant laquelle les entrées du cache d'opérations
 restent valides</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPOpCacheTTL <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPOpCacheTTL 600</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPOpCacheTTL <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPOpCacheTTL 600</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier la durée (en secondes)
     pendant laquelle les entrées du cache d'opérations restent valides.
@@ -578,17 +578,17 @@ restent valides</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPReferralHopLimit" id="LDAPReferralHopLimit">LDAPReferralHopLimit</a> <a name="ldapreferralhoplimit" id="ldapreferralhoplimit" /> <a title="" href="#ldapreferralhoplimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapreferralhoplimit" id="ldapreferralhoplimit">Directive</a> <a name="LDAPReferralHopLimit" id="LDAPReferralHopLimit">LDAPReferralHopLimit</a> <a title="Lien permanent" href="#ldapreferralhoplimit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le nombre maximum de redirections vers des serveurs
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre maximum de redirections vers des serveurs
 alternatifs (referrals) avant l'abandon de la requête
 LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPReferralHopLimit <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Dépend du SDK, en général entre 5 et 10</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferralHopLimit <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Dépend du SDK, en général entre 5 et 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Si elle est activée par la directive <code class="directive"><a href="#ldapreferrals">LDAPReferrals</a></code>, cette directive permet de
     définir le nombre maximum de sauts vers des serveurs alternatifs (referrals)
@@ -600,17 +600,17 @@ LDAP.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPReferrals" id="LDAPReferrals">LDAPReferrals</a> <a name="ldapreferrals" id="ldapreferrals" /> <a title="" href="#ldapreferrals" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapreferrals" id="ldapreferrals">Directive</a> <a name="LDAPReferrals" id="LDAPReferrals">LDAPReferrals</a> <a title="Lien permanent" href="#ldapreferrals" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la redirection vers des serveurs alternatifs au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la redirection vers des serveurs alternatifs au
 cours des requêtes vers le serveur LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPReferrals On|Off|default</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPReferrals On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le paramètre <var>default</var> est disponible depuis la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPReferrals On|Off|default</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPReferrals On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le paramètre <var>default</var> est disponible depuis la
 version 2.4.7 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Certains serveurs LDAP partagent leur annuaire en plusieurs
@@ -648,15 +648,15 @@ version 2.4.7 du serveur HTTP Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a name="ldapretries" id="ldapretries" /> <a title="" href="#ldapretries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapretries" id="ldapretries">Directive</a> <a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a title="Lien permanent" href="#ldapretries" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le nombre maximum de tentatives de connexions au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nombre maximum de tentatives de connexions au
 serveur LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPRetries <var>nombre d'essais</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPRetries 3</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetries <var>nombre d'essais</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetries 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Suite à des échecs de connexion au serveur LDAP, le serveur
     tentera de se connecter autant de fois qu'indiqué par la directive
@@ -667,15 +667,15 @@ serveur LDAP.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a name="ldapretrydelay" id="ldapretrydelay" /> <a title="" href="#ldapretrydelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapretrydelay" id="ldapretrydelay">Directive</a> <a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a title="Lien permanent" href="#ldapretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le temps d'attente avant un autre essai de connexion au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le temps d'attente avant un autre essai de connexion au
 serveur LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPRetryDelay <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPRetryDelay <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPRetryDelay 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Si la directive <code class="directive">LDAPRetryDelay</code> est définie
     à une valeur différente de 0, le serveur attendra pendant la durée
@@ -687,14 +687,14 @@ serveur LDAP.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a name="ldapsharedcachefile" id="ldapsharedcachefile" /> <a title="" href="#ldapsharedcachefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a> <a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a title="Lien permanent" href="#ldapsharedcachefile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le fichier du cache en mémoire
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le fichier du cache en mémoire
 partagée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPSharedCacheFile <var>directory-path/filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheFile <var>directory-path/filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le chemin et le nom du
     fichier du cache en mémoire partagée. Si elle n'est pas définie, la
@@ -703,14 +703,14 @@ partagée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPSharedCacheSize" id="LDAPSharedCacheSize">LDAPSharedCacheSize</a> <a name="ldapsharedcachesize" id="ldapsharedcachesize" /> <a title="" href="#ldapsharedcachesize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapsharedcachesize" id="ldapsharedcachesize">Directive</a> <a name="LDAPSharedCacheSize" id="LDAPSharedCacheSize">LDAPSharedCacheSize</a> <a title="Lien permanent" href="#ldapsharedcachesize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille en octets du cache en mémoire partagée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPSharedCacheSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPSharedCacheSize 500000</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille en octets du cache en mémoire partagée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPSharedCacheSize 500000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le nombre d'octets à allouer
     pour le cache en mémoire partagée. La valeur par
@@ -720,16 +720,16 @@ partagée</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a name="ldaptimeout" id="ldaptimeout" /> <a title="" href="#ldaptimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldaptimeout" id="ldaptimeout">Directive</a> <a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a title="Lien permanent" href="#ldaptimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie le délai d'attente pour les opérations de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le délai d'attente pour les opérations de
 recherche et d'identification LDAP en secondes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPTimeout 60</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.3.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPTimeout 60</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.5 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Cette directive permet de spécifier le délai d'attente pour les
@@ -751,17 +751,17 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a> <a name="ldaptrustedclientcert" id="ldaptrustedclientcert" /> <a title="" href="#ldaptrustedclientcert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldaptrustedclientcert" id="ldaptrustedclientcert">Directive</a> <a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a> <a title="Lien permanent" href="#ldaptrustedclientcert" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le nom de fichier contenant un certificat client ou
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier contenant un certificat client ou
 un alias renvoyant vers un certificat client spécifique à une connexion.
 Tous les SDK LDAP ne supportent pas les certificats clients par
 connexion.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPTrustedClientCert <var>type</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedClientCert <var>type</var>
 <var>chemin/nom-fichier/alias</var> <var>[mot de passe]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le chemin et le nom de fichier ou
     l'alias d'un certificat client par connexion utilisé lors de l'établissement
@@ -787,16 +787,16 @@ connexion.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedGlobalCert" id="LDAPTrustedGlobalCert">LDAPTrustedGlobalCert</a> <a name="ldaptrustedglobalcert" id="ldaptrustedglobalcert" /> <a title="" href="#ldaptrustedglobalcert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldaptrustedglobalcert" id="ldaptrustedglobalcert">Directive</a> <a name="LDAPTrustedGlobalCert" id="LDAPTrustedGlobalCert">LDAPTrustedGlobalCert</a> <a title="Lien permanent" href="#ldaptrustedglobalcert" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le nom de fichier ou la base de données contenant
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le nom de fichier ou la base de données contenant
 les Autorités de Certification de confiance globales ou les certificats
 clients globaux</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPTrustedGlobalCert <var>type</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedGlobalCert <var>type</var>
 <var>chemin/nom-fichier</var> <var>[mot de passe]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le chemin et le nom du fichier
     contenant les certificats des CA de confiance et/ou les certificats clients
@@ -832,14 +832,14 @@ clients globaux</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedMode" id="LDAPTrustedMode">LDAPTrustedMode</a> <a name="ldaptrustedmode" id="ldaptrustedmode" /> <a title="" href="#ldaptrustedmode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldaptrustedmode" id="ldaptrustedmode">Directive</a> <a name="LDAPTrustedMode" id="LDAPTrustedMode">LDAPTrustedMode</a> <a title="Lien permanent" href="#ldaptrustedmode" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Spécifie le mode (SSL ou TLS) à utiliser lors de la
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie le mode (SSL ou TLS) à utiliser lors de la
 connexion à un serveur LDAP.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Les modes suivants sont supportés :</p>
     <ul>
@@ -858,15 +858,15 @@ connexion à un serveur LDAP.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a> <a name="ldapverifyservercert" id="ldapverifyservercert" /> <a title="" href="#ldapverifyservercert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="ldapverifyservercert" id="ldapverifyservercert">Directive</a> <a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a> <a title="Lien permanent" href="#ldapverifyservercert" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Force la vérification du certificat du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force la vérification du certificat du
 serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>LDAPVerifyServerCert On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPVerifyServerCert On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPVerifyServerCert On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier s'il faut forcer la
     vérification d'un certificat de serveur lors de l'établissement
@@ -875,11 +875,11 @@ serveur</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_ldap.html" title="">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_ldap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_ldap.html" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

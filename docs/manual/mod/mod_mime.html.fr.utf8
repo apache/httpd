@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_mime  </title>
+<title>mod_mime - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,27 +18,27 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_mime</h1>
+<div id="preamble"><h1>Module Apache mod_mime</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_mime.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Associe les extensions des fichiers demandés avec l'action
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Associe les extensions des fichiers demandés avec l'action
 déclenchée par ces fichiers et avec leur contenu (type MIME, langage,
 jeu de caractère et codage)</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>mime_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_mime.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mime_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_mime.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module permet d'assigner des métadonnées aux contenus
     sélectionnés pour une réponse HTTP, en associant des modèles d'URI
@@ -57,7 +57,7 @@ jeu de caractère et codage)</td></tr>
     <p>Les directives <code class="directive"><a href="#addcharset">AddCharset</a></code>, <code class="directive"><a href="#addencoding">AddEncoding</a></code>, <code class="directive"><a href="#addlanguage">AddLanguage</a></code> et <code class="directive"><a href="#addtype">AddType</a></code> permettent d'associer des
     extensions de fichiers aux métadonnées de ces fichiers. Elles
     définissent respectivement le jeu de caractères, le codage du
-    contenu, le langage du contenu et le <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="">type de
+    contenu, le langage du contenu et le <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="voir glossaire">type de
     médium</a> (content-type) des documents. La directive
     <code class="directive"><a href="#typesconfig">TypesConfig</a></code> permet de
     spécifier un fichier qui contient lui-même des associations entre
@@ -88,13 +88,13 @@ jeu de caractère et codage)</td></tr>
     de dernière modification), pour être sûr que tous les visiteurs
     recevront le documents avec les en-têtes corrects. </p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#multipleext">Fichiers avec extensions
 multiples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentencoding">Codage du contenu</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#charset-lang">Jeux de caractères et langages</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#addcharset">AddCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#addencoding">AddEncoding</a></li>
@@ -115,7 +115,7 @@ multiples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#removetype">RemoveType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#typesconfig">TypesConfig</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li>
@@ -127,7 +127,7 @@ multiples</a></li>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multipleext" id="multipleext">Fichiers avec extensions
-multiples</a> <a title="" href="#multipleext" class="permalink">&para;</a></h2>
+multiples</a> <a title="Lien permanent" href="#multipleext" class="permalink">&para;</a></h2>
     <p>Les fichiers peuvent posséder plusieurs extensions dont l'ordre
     est <em>normalement</em> sans importance. Par exemple, si
     le fichier <code>welcome.html.fr</code> est associé au type de
@@ -137,7 +137,7 @@ multiples</a> <a title="" href="#multipleext" class="permalink">&para;</a></h2>
     au même type de métadonnée, c'est celle de ces extensions la plus à
     droite qui sera utilisée, excepté pour ce qui concerne les langages
     et les codages de contenu. Par exemple, si <code>.gif</code> est
-    associé au <a class="glossarylink" href="../glossary.html#type de médium" title="">type de médium</a>
+    associé au <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a>
     <code>image/gif</code>, et <code>.html</code> au type de médium
     <code>text/html</code>, le fichier <code>welcome.gif.html</code>
     sera associé au type de médium <code>text/html</code>.</p>
@@ -150,7 +150,7 @@ multiples</a> <a title="" href="#multipleext" class="permalink">&para;</a></h2>
     text/html</code>.</p>
 
     <p>Des précautions doivent être prises lorsqu'un fichier avec
-    extensions multiples est associé à la fois à un <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="">type de
+    extensions multiples est associé à la fois à un <a class="glossarylink" href="../glossary.html#type de&#10;    médium" title="voir glossaire">type de
     médium</a> et à un gestionnaire. En général, cela impliquera
     la gestion de la requête par le module associé au gestionnaire. Par
     exemple, si l'extension <code>.imap</code> est associée au
@@ -201,8 +201,8 @@ multiples</a> <a title="" href="#multipleext" class="permalink">&para;</a></h2>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a> <a title="" href="#contentencoding" class="permalink">&para;</a></h2>
-    <p>Un fichier d'un <a class="glossarylink" href="../glossary.html#type de médium" title="">type de médium</a> particulier
+<h2><a name="contentencoding" id="contentencoding">Codage du contenu</a> <a title="Lien permanent" href="#contentencoding" class="permalink">&para;</a></h2>
+    <p>Un fichier d'un <a class="glossarylink" href="../glossary.html#type de médium" title="voir glossaire">type de médium</a> particulier
     peut être aussi codé d'une certaine manière pour simplifier sa
     transmission sur Internet. Alors que cela concerne en général la
     compression, comme <code>gzip</code>, il peut aussi s'agir de
@@ -245,7 +245,7 @@ multiples</a> <a title="" href="#multipleext" class="permalink">&para;</a></h2>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langages</a> <a title="" href="#charset-lang" class="permalink">&para;</a></h2>
+<h2><a name="charset-lang" id="charset-lang">Jeux de caractères et langages</a> <a title="Lien permanent" href="#charset-lang" class="permalink">&para;</a></h2>
     <p>En plus du type de fichier et du codage, un autre élément
     important d'information est le langage dans lequel le document est
     écrit, et avec quel jeu de caractères le contenu du fichier doit
@@ -288,16 +288,16 @@ Content-Type: text/plain; charset=ISO-8859-1
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddCharset" id="AddCharset">AddCharset</a> <a name="addcharset" id="addcharset" /> <a title="" href="#addcharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addcharset" id="addcharset">Directive</a> <a name="AddCharset" id="AddCharset">AddCharset</a> <a title="Lien permanent" href="#addcharset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers spécifiées au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers spécifiées au
 jeu de caractères spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddCharset <var>jeu-car</var> <var>extension</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddCharset <var>jeu-car</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddCharset</code> permet d'associer
     les extensions de noms de fichiers spécifiées au jeu de caractères
@@ -332,23 +332,23 @@ AddCharset SHIFT_JIS .sjis</pre>
     elles.</p>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#adddefaultcharset">AddDefaultCharset</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a name="addencoding" id="addencoding" /> <a title="" href="#addencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addencoding" id="addencoding">Directive</a> <a name="AddEncoding" id="AddEncoding">AddEncoding</a> <a title="Lien permanent" href="#addencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers données au type
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au type
 de codage spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddEncoding <var>codage</var> <var>extension</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddEncoding <var>codage</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddEncoding</code> permet d'associer
     les extensions de noms de fichiers données au codage de contenu HTTP
@@ -390,16 +390,16 @@ AddEncoding x-compress .Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddHandler" id="AddHandler">AddHandler</a> <a name="addhandler" id="addhandler" /> <a title="" href="#addhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addhandler" id="addhandler">Directive</a> <a name="AddHandler" id="AddHandler">AddHandler</a> <a title="Lien permanent" href="#addhandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers données au
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers données au
 gestionnaire spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddHandler <var>nom-gestionnaire</var> <var>extension</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddHandler <var>nom-gestionnaire</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>Les fichiers dont le nom a pour extension <var>extension</var> seront
     servis par le <var><a href="../handler.html">nom-gestionnaire</a></var>
@@ -418,23 +418,23 @@ gestionnaire spécifié</td></tr>
     l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a name="addinputfilter" id="addinputfilter" /> <a title="" href="#addinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addinputfilter" id="addinputfilter">Directive</a> <a name="AddInputFilter" id="AddInputFilter">AddInputFilter</a> <a title="Lien permanent" href="#addinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers aux
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les requêtes clients</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddInputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddInputFilter</code> permet
     d'associer l'extension de nom de fichier <var>extension</var> aux <a href="../filter.html">filtres</a> spécifiésqui traiteront les
@@ -457,23 +457,23 @@ filtres spécifiés qui traiteront les requêtes clients</td></tr>
     elles.</p>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#removeinputfilter">RemoveInputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a name="addlanguage" id="addlanguage" /> <a title="" href="#addlanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addlanguage" id="addlanguage">Directive</a> <a name="AddLanguage" id="AddLanguage">AddLanguage</a> <a title="Lien permanent" href="#addlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe l'extension de nom de fichier donnée au langage
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe l'extension de nom de fichier donnée au langage
 spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddLanguage <var>symbole-langage</var> <var>extension</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddLanguage <var>symbole-langage</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddLanguage</code> permet d'associer
     l'extension de nom de fichier donnée au langage spécifié. Les
@@ -517,23 +517,23 @@ AddLanguage en-us .en</pre>
     l'argument <var>extension</var> sera comparé à chacune d'entre
     elles.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a name="addoutputfilter" id="addoutputfilter" /> <a title="" href="#addoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addoutputfilter" id="addoutputfilter">Directive</a> <a name="AddOutputFilter" id="AddOutputFilter">AddOutputFilter</a> <a title="Lien permanent" href="#addoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers aux
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers aux
 filtres spécifiés qui traiteront les réponses en provenance du
 serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddOutputFilter <var>filtre</var>[;<var>filtre</var>...]
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddOutputFilter</code> permet
     d'associer l'extension de nom de fichier définie par l'argument
@@ -587,27 +587,27 @@ AddOutputFilter DEFLATE shtml
 &lt;/Location&gt;</pre>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#removeoutputfilter">RemoveOutputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddType" id="AddType">AddType</a> <a name="addtype" id="addtype" /> <a title="" href="#addtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="addtype" id="addtype">Directive</a> <a name="AddType" id="AddType">AddType</a> <a title="Lien permanent" href="#addtype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Associe les extensions de noms de fichiers au type de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Associe les extensions de noms de fichiers au type de
 contenu spécifié</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>AddType <var>type-médium</var> <var>extension</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddType <var>type-médium</var> <var>extension</var>
 [<var>extension</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">AddType</code> permet d'associer les
     extensions de noms fichiers données au type de contenu spécifié.
-    <var>type-médium</var> est le <a class="glossarylink" href="../glossary.html#media-type" title="">Type
+    <var>type-médium</var> est le <a class="glossarylink" href="../glossary.html#media-type" title="voir glossaire">Type
     MIME</a> à utiliser pour les fichiers dont le nom possède
     l'extension <var>extension</var>. Cette association s'ajoute à toute
     autre association en vigueur, et l'emporte sur toute association
@@ -677,24 +677,24 @@ contenu spécifié</td></tr>
     </div>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code></li>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a name="defaultlanguage" id="defaultlanguage" /> <a title="" href="#defaultlanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="defaultlanguage" id="defaultlanguage">Directive</a> <a name="DefaultLanguage" id="DefaultLanguage">DefaultLanguage</a> <a title="Lien permanent" href="#defaultlanguage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Défini un symbole de langage par défaut à affecter au champ
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Défini un symbole de langage par défaut à affecter au champ
 d'en-tête Content-Language pour toutes les ressources dans le contexte
 courant auxquelles aucun symbole de langage n'a été
 associé.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>DefaultLanguage <var>symbole-langage</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultLanguage <var>symbole-langage</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">DefaultLanguage</code> permet
     d'indiquer à Apache que toutes les ressources du contexte courant
@@ -719,22 +719,22 @@ associé.</td></tr>
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">DefaultLanguage en</pre>
 </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a name="modmimeusepathinfo" id="modmimeusepathinfo" /> <a title="" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="modmimeusepathinfo" id="modmimeusepathinfo">Directive</a> <a name="ModMimeUsePathInfo" id="ModMimeUsePathInfo">ModMimeUsePathInfo</a> <a title="Lien permanent" href="#modmimeusepathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Indique à <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> de traiter les éléments
 de <code>path_info</code> en tant que parties du nom de
 fichier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">ModMimeUsePathInfo</code> permet de
     combiner le nom de fichier avec la partie <code>path_info</code> de
@@ -758,24 +758,24 @@ fichier</td></tr>
     sera identique dans le cas des chemins virtuels, tels que ceux
     définis par la directive <code class="directive">&lt;Location&gt;</code></p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a name="multiviewsmatch" id="multiviewsmatch" /> <a title="" href="#multiviewsmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="multiviewsmatch" id="multiviewsmatch">Directive</a> <a name="MultiviewsMatch" id="MultiviewsMatch">MultiviewsMatch</a> <a title="Lien permanent" href="#multiviewsmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Les types de fichiers qui seront inclus lors d'une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les types de fichiers qui seront inclus lors d'une
 recherche de correspondance de fichier avec les vues multiples
 (MultiViews)</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">MultiviewsMatch</code> permet trois
     comportements différents pour la fonctionnalité Multiviews du module
@@ -824,23 +824,23 @@ recherche de correspondance de fichier avec les vues multiples
     permise.</p>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
 <li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a name="removecharset" id="removecharset" /> <a title="" href="#removecharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removecharset" id="removecharset">Directive</a> <a name="RemoveCharset" id="RemoveCharset">RemoveCharset</a> <a title="Lien permanent" href="#removecharset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de jeu de caractères pour un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de jeu de caractères pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveCharset <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveCharset</code> permet de
     supprimer toute association de jeu de caractères pour les fichiers
@@ -857,16 +857,16 @@ ensemble d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a name="removeencoding" id="removeencoding" /> <a title="" href="#removeencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeencoding" id="removeencoding">Directive</a> <a name="RemoveEncoding" id="RemoveEncoding">RemoveEncoding</a> <a title="Lien permanent" href="#removeencoding" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de codage de contenu pour un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de codage de contenu pour un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveEncoding <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveEncoding <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveEncoding</code> permet de
     supprimer toute association de codage pour les fichiers dont les
@@ -899,16 +899,16 @@ AddType text/plain .asc
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a name="removehandler" id="removehandler" /> <a title="" href="#removehandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removehandler" id="removehandler">Directive</a> <a name="RemoveHandler" id="RemoveHandler">RemoveHandler</a> <a title="Lien permanent" href="#removehandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de gestionnaire à un ensemble
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de gestionnaire à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveHandler <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveHandler <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveHandler</code> permet de
     supprimer toute association de gestionnaire à des fichiers dont le
@@ -935,16 +935,16 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a name="removeinputfilter" id="removeinputfilter" /> <a title="" href="#removeinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeinputfilter" id="removeinputfilter">Directive</a> <a name="RemoveInputFilter" id="RemoveInputFilter">RemoveInputFilter</a> <a title="Lien permanent" href="#removeinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de filtre en entrée à un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en entrée à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveInputFilter</code> permet de
     supprimer toute association de <a href="../filter.html">filtre</a>
@@ -957,23 +957,23 @@ ensemble d'extensions de noms de fichiers</td></tr>
     <p>L'argument <var>extension</var> est insensible à la casse et peut
     être spécifié avec ou sans le point initial.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#addinputfilter">AddInputFilter</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a name="removelanguage" id="removelanguage" /> <a title="" href="#removelanguage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removelanguage" id="removelanguage">Directive</a> <a name="RemoveLanguage" id="RemoveLanguage">RemoveLanguage</a> <a title="Lien permanent" href="#removelanguage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de langage à un ensemble
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de langage à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveLanguage <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveLanguage</code> permet de
     supprimer toute association de langage à des fichiers dont le nom
@@ -987,16 +987,16 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a name="removeoutputfilter" id="removeoutputfilter" /> <a title="" href="#removeoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removeoutputfilter" id="removeoutputfilter">Directive</a> <a name="RemoveOutputFilter" id="RemoveOutputFilter">RemoveOutputFilter</a> <a title="Lien permanent" href="#removeoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de filtre en sortie à un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de filtre en sortie à un
 ensemble d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveOutputFilter</code> permet de
     supprimer toute association de <a href="../filter.html">filtre</a>
@@ -1011,25 +1011,25 @@ ensemble d'extensions de noms de fichiers</td></tr>
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">RemoveOutputFilter shtml</pre>
 </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#addoutputfilter">AddOutputFilter</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RemoveType" id="RemoveType">RemoveType</a> <a name="removetype" id="removetype" /> <a title="" href="#removetype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="removetype" id="removetype">Directive</a> <a name="RemoveType" id="RemoveType">RemoveType</a> <a title="Lien permanent" href="#removetype" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Supprime toute association de type de contenu à un ensemble
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Supprime toute association de type de contenu à un ensemble
 d'extensions de noms de fichiers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>RemoveType <var>extension</var> [<var>extension</var>]
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoveType <var>extension</var> [<var>extension</var>]
 ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">RemoveType</code> permet de
-    supprimer toute association de <a class="glossarylink" href="../glossary.html#media-type" title="">type de
+    supprimer toute association de <a class="glossarylink" href="../glossary.html#media-type" title="voir glossaire">type de
     médium</a> à des fichiers dont le nom possède l'extension
     donnée. Ceci permet, au
     sein des fichiers <code>.htaccess</code>, d'annuler toute
@@ -1059,17 +1059,17 @@ d'extensions de noms de fichiers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a name="typesconfig" id="typesconfig" /> <a title="" href="#typesconfig" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="typesconfig" id="typesconfig">Directive</a> <a name="TypesConfig" id="TypesConfig">TypesConfig</a> <a title="Lien permanent" href="#typesconfig" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le chemin du fichier <code>mime.types</code></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>TypesConfig <var>chemin-fichier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_mime</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le chemin du fichier <code>mime.types</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>TypesConfig <var>chemin-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime</td></tr>
 </table>
     <p>La directive <code class="directive">TypesConfig</code> permet de définir
-    le chemin du fichier de configuration des <a class="glossarylink" href="../glossary.html#media-type" title="">types de média</a>. L'argument
+    le chemin du fichier de configuration des <a class="glossarylink" href="../glossary.html#media-type" title="voir glossaire">types de média</a>. L'argument
     <var>chemin-fichier</var> est un chemin relatif au répertoire défini
     par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Ce
     fichier contient la liste des associations par défaut des extensions
@@ -1114,19 +1114,19 @@ d'extensions de noms de fichiers</td></tr>
       espaces de nommage des jeux de caractères.
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code></li>
 </ul>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_mime.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

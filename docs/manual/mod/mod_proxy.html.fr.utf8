@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_proxy  </title>
+<title>mod_proxy - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,25 +18,25 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_proxy</h1>
+<div id="preamble"><h1>Module Apache mod_proxy</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>proxy_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_proxy.c</td></tr></table>
-<h3 />
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>N'activez pas la fonctionnalité de mandataire avec la directive
@@ -97,7 +97,7 @@
     additionnels devront être chargés et configurés pour pouvoir
     disposer de ces fonctionnalités.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Mandataires directs et
     mandataires/passerelles inverses</a></li>
@@ -113,7 +113,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Corps de requêtes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#x-headers">En-têtes de requête du mandataire
     inverse</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#balancergrowth">BalancerGrowth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancerinherit">BalancerInherit</a></li>
@@ -148,7 +148,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code></li>
@@ -165,7 +165,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="forwardreverse" id="forwardreverse">Mandataires directs et
-    mandataires/passerelles inverses</a> <a title="" href="#forwardreverse" class="permalink">&para;</a></h2>
+    mandataires/passerelles inverses</a> <a title="Lien permanent" href="#forwardreverse" class="permalink">&para;</a></h2>
       <p>Le serveur HTTP Apache peut être configuré dans les deux modes mandataire
       <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nommé
       mode <dfn>passerelle</dfn>).</p>
@@ -218,7 +218,7 @@
       un mandataire inverse.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples simples</a> <a title="" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples simples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <p>Les exemples ci-dessous illustrent de manière très basique la
     mise en oeuvre de la fonctionnalité de mandataire et ne sont là que
@@ -244,7 +244,7 @@ ProxyVia On
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">Accès via un gestionnaire</a> <a title="" href="#handler" class="permalink">&para;</a></h2>
+<h2><a name="handler" id="handler">Accès via un gestionnaire</a> <a title="Lien permanent" href="#handler" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
     requête de mandataire inverse en créant un gestionnaire de transfert
@@ -265,7 +265,7 @@ ProxyVia On
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="workers" id="workers">Workers</a> <a title="" href="#workers" class="permalink">&para;</a></h2>
+<h2><a name="workers" id="workers">Workers</a> <a title="Lien permanent" href="#workers" class="permalink">&para;</a></h2>
       <p>Le mandataire gère la configuration et les paramètres de
       communication des serveurs originaux au sein d'objets nommés
       <dfn>workers</dfn>. Deux types de worker sont fournis : le worker
@@ -398,7 +398,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="access" id="access">Contrôler l'accès à votre
-    mandataire</a> <a title="" href="#access" class="permalink">&para;</a></h2>
+    mandataire</a> <a title="Lien permanent" href="#access" class="permalink">&para;</a></h2>
       <p>Vous pouvez restreindre l'accès à votre mandataire via le bloc
       de contrôle <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code> comme dans
       l'exemple suivant :</p>
@@ -437,7 +437,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Ralentissement au démarrage</a> <a title="" href="#startup" class="permalink">&para;</a></h2>
+<h2><a name="startup" id="startup">Ralentissement au démarrage</a> <a title="Lien permanent" href="#startup" class="permalink">&para;</a></h2>
       <p>Si vous utilisez la directive <code class="directive"><a href="#proxyblock">ProxyBlock</a></code>, les noms d'hôtes sont résolus en adresses
       IP puis ces dernières mises en cache au cours du démarrage
       à des fins de tests de comparaisons ultérieurs. Ce processus peut
@@ -445,7 +445,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
       à laquelle s'effectue la résolution des noms d'hôtes.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="intranet" id="intranet">Mandataire en Intranet</a> <a title="" href="#intranet" class="permalink">&para;</a></h2>
+<h2><a name="intranet" id="intranet">Mandataire en Intranet</a> <a title="Lien permanent" href="#intranet" class="permalink">&para;</a></h2>
       <p>Un serveur mandataire Apache httpd situé à l'intérieur d'un Intranet
       doit faire suivre les requêtes destinées à un serveur externe à
       travers le pare-feu de l'entreprise (pour ce faire, définissez la
@@ -474,7 +474,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="envsettings" id="envsettings">Ajustements relatifs au
-    protocole</a> <a title="" href="#envsettings" class="permalink">&para;</a></h2>
+    protocole</a> <a title="Lien permanent" href="#envsettings" class="permalink">&para;</a></h2>
       <p>Pour les cas où <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> envoie des requêtes
       vers un serveur qui n'implémente pas correctement les connexions
       persistantes ou le protocole HTTP/1.1, il existe deux variables
@@ -505,7 +505,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="request-bodies" id="request-bodies">Corps de requêtes</a> <a title="" href="#request-bodies" class="permalink">&para;</a></h2>
+<h2><a name="request-bodies" id="request-bodies">Corps de requêtes</a> <a title="Lien permanent" href="#request-bodies" class="permalink">&para;</a></h2>
 
     <p>Certaines méthodes de requêtes comme POST comportent un corps de
     requête. Le protocole HTTP stipule que les requêtes qui comportent
@@ -539,7 +539,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="x-headers" id="x-headers">En-têtes de requête du mandataire
-    inverse</a> <a title="" href="#x-headers" class="permalink">&para;</a></h2>
+    inverse</a> <a title="Lien permanent" href="#x-headers" class="permalink">&para;</a></h2>
 
     <p>Lorsqu'il est configuré en mode mandataire inverse (en utilisant
     par exemple la directive <code class="directive"><a href="#proxypass">ProxyPass</a></code>),
@@ -574,16 +574,16 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a name="balancergrowth" id="balancergrowth" /> <a title="" href="#balancergrowth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="balancergrowth" id="balancergrowth">Directive</a> <a name="BalancerGrowth" id="BalancerGrowth">BalancerGrowth</a> <a title="Lien permanent" href="#balancergrowth" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre de membres supplémentaires pouvant être ajoutés
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de membres supplémentaires pouvant être ajoutés
 après la configuration initiale</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BalancerGrowth <var>#</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>BalancerGrowth 5</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>BalancerGrowth est disponible depuis la version 2.3.13 du
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BalancerGrowth <var>#</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BalancerGrowth 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>BalancerGrowth est disponible depuis la version 2.3.13 du
 serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de définir le nombre de membres pouvant
@@ -594,16 +594,16 @@ serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a name="balancerinherit" id="balancerinherit" /> <a title="" href="#balancerinherit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="balancerinherit" id="balancerinherit">Directive</a> <a name="BalancerInherit" id="BalancerInherit">BalancerInherit</a> <a title="Lien permanent" href="#balancerinherit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Héritage des membres du groupes de répartition de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Héritage des membres du groupes de répartition de
     charge du mandataire définis au niveau du serveur principal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>BalancerInherit On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BalancerInherit On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BalancerInherit On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
     HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet d'attribuer au serveur virtuel courant
@@ -619,15 +619,15 @@ serveur HTTP Apache</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember" /> <a title="" href="#balancermember" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="balancermember" id="balancermember">Directive</a> <a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a title="Lien permanent" href="#balancermember" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un membre à un groupe de répartition de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un membre à un groupe de répartition de
 charge</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>clé=valeur [clé=valeur ...]]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.2 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>clé=valeur [clé=valeur ...]]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet d'ajouter un membre à un groupe de
     répartition de charge. Elle peut se trouver dans un conteneur
@@ -650,17 +650,17 @@ charge</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a name="balancerpersist" id="balancerpersist" /> <a title="" href="#balancerpersist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="balancerpersist" id="balancerpersist">Directive</a> <a name="BalancerPersist" id="BalancerPersist">BalancerPersist</a> <a title="Lien permanent" href="#balancerpersist" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Tente de conserver les changements effectués par le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de conserver les changements effectués par le
     gestionnaire de répartition de charge après un redémarrage du
     serveur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>BalancerPersist On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>BalancerPersist Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>BalancerPersist n'est disponible qu'à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BalancerPersist On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BalancerPersist Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>BalancerPersist n'est disponible qu'à partir de la
     version 2.4.4 du serveur HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet de conserver le contenu de l'espace
@@ -671,14 +671,14 @@ charge</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="NoProxy" id="NoProxy">NoProxy</a> <a name="noproxy" id="noproxy" /> <a title="" href="#noproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="noproxy" id="noproxy">Directive</a> <a name="NoProxy" id="NoProxy">NoProxy</a> <a title="Lien permanent" href="#noproxy" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Serveurs, domaines ou réseaux auquels on se connectera
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Serveurs, domaines ou réseaux auquels on se connectera
 directement</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>NoProxy <var>domaine</var> [<var>domaine</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>NoProxy <var>domaine</var> [<var>domaine</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive n'a d'utilité que pour les serveurs mandataires
     Apache httpd au sein d'Intranets. La directive
@@ -808,20 +808,20 @@ NoProxy         ".example.com" "192.168.112.0/21"</pre>
      </div></dd>
     </dl>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../dns-caveats.html">Problèmes liés au DNS</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a name="proxy" id="proxy" /> <a title="" href="#proxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxy" id="proxy">Directive</a> <a name="Proxy" id="Proxy">&lt;Proxy&gt;</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Conteneur de directives s'appliquant à des ressources
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives s'appliquant à des ressources
 mandatées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Les directives situées dans une section <code class="directive">&lt;Proxy&gt;</code> ne s'appliquent qu'au contenu
     mandaté concerné. Les jokers de style shell sont autorisés.</p>
@@ -861,21 +861,21 @@ mandatées</td></tr>
     </div>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#proxymatch">&lt;ProxyMatch&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Proxy100Continue" id="Proxy100Continue">Proxy100Continue</a> <a name="proxy100continue" id="proxy100continue" /> <a title="" href="#proxy100continue" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxy100continue" id="proxy100continue">Directive</a> <a name="Proxy100Continue" id="Proxy100Continue">Proxy100Continue</a> <a title="Lien permanent" href="#proxy100continue" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Transmission du message "100-continue" au serveur d'origine</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>Proxy100Continue Off|On</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Proxy100Continue On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.40 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Transmission du message "100-continue" au serveur d'origine</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Proxy100Continue Off|On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Proxy100Continue On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.40 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de contrôler le transfert par le mandataire du
     message "100-continue" (<em>Expect:</em>ation) vers le serveur d'origine. Si
@@ -890,16 +890,16 @@ mandatées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a name="proxyaddheaders" id="proxyaddheaders" /> <a title="" href="#proxyaddheaders" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyaddheaders" id="proxyaddheaders">Directive</a> <a name="ProxyAddHeaders" id="ProxyAddHeaders">ProxyAddHeaders</a> <a title="Lien permanent" href="#proxyaddheaders" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute des informations à propos du mandataire aux
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute des informations à propos du mandataire aux
 en-têtes X-Forwarded-*</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyAddHeaders Off|On</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyAddHeaders On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.10</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyAddHeaders Off|On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyAddHeaders On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.10</td></tr>
 </table>
     <p>Cette directive permet de passer au serveur d'arrière-plan des
     informations à propos du mandataire via les en-têtes HTTP
@@ -911,15 +911,15 @@ en-têtes X-Forwarded-*</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader" /> <a title="" href="#proxybadheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxybadheader" id="proxybadheader">Directive</a> <a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a title="Lien permanent" href="#proxybadheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine la manière de traiter les lignes d'en-tête
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la manière de traiter les lignes d'en-tête
 incorrectes d'une réponse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyBadHeader IsError|Ignore|StartBody</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyBadHeader IsError</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBadHeader IsError|Ignore|StartBody</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyBadHeader IsError</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyBadHeader</code> permet de
     déterminer le comportement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> lorsqu'il
@@ -946,15 +946,15 @@ incorrectes d'une réponse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a name="proxyblock" id="proxyblock" /> <a title="" href="#proxyblock" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyblock" id="proxyblock">Directive</a> <a name="ProxyBlock" id="ProxyBlock">ProxyBlock</a> <a title="Lien permanent" href="#proxyblock" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Termes, serveurs ou domaines bloqués par le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Termes, serveurs ou domaines bloqués par le
 mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyBlock *|<var>terme</var>|<var>serveur</var>|<var>domaine</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyBlock *|<var>terme</var>|<var>serveur</var>|<var>domaine</var>
 [<var>terme</var>|<var>serveur</var>|<var>domaine</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyBlock</code> permet de
     spécifier une liste de termes, serveurs et/ou domaines, séparés par
@@ -984,14 +984,14 @@ mandataire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a name="proxydomain" id="proxydomain" /> <a title="" href="#proxydomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxydomain" id="proxydomain">Directive</a> <a name="ProxyDomain" id="ProxyDomain">ProxyDomain</a> <a title="Lien permanent" href="#proxydomain" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nom de domaine par défaut pour les requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom de domaine par défaut pour les requêtes
 mandatées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyDomain <var>Domaine</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyDomain <var>Domaine</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive n'a d'utilité que pour les serveurs mandataires Apache
     httpd au sein d'un Intranet. La directive <code class="directive">ProxyDomain</code>
@@ -1008,16 +1008,16 @@ ProxyDomain     ".example.com"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a name="proxyerroroverride" id="proxyerroroverride" /> <a title="" href="#proxyerroroverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyerroroverride" id="proxyerroroverride">Directive</a> <a name="ProxyErrorOverride" id="ProxyErrorOverride">ProxyErrorOverride</a> <a title="Lien permanent" href="#proxyerroroverride" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Outrepasser les pages d'erreur pour les contenus
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Outrepasser les pages d'erreur pour les contenus
 mandatés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyErrorOverride Off|On [<var>code</var> ...]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyErrorOverride Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>La liste de codes d'états a été ajoutée à partir de la version
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyErrorOverride Off|On [<var>code</var> ...]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyErrorOverride Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La liste de codes d'états a été ajoutée à partir de la version
 2.4.47 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive est utile pour les configurations de mandataires
@@ -1050,15 +1050,15 @@ mandatés</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize" /> <a title="" href="#proxyiobuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a> <a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a title="Lien permanent" href="#proxyiobuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Détermine la taille du tampon interne de transfert de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la taille du tampon interne de transfert de
 données</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyIOBufferSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyIOBufferSize 8192</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyIOBufferSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyIOBufferSize 8192</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyIOBufferSize</code> permet
     d'ajuster la taille du tampon interne utilisé comme bloc-note pour
@@ -1085,18 +1085,18 @@ données</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a name="proxymatch" id="proxymatch" /> <a title="" href="#proxymatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxymatch" id="proxymatch">Directive</a> <a name="ProxyMatch" id="ProxyMatch">&lt;ProxyMatch&gt;</a> <a title="Lien permanent" href="#proxymatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Conteneur de directives s'appliquant à des ressources
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives s'appliquant à des ressources
 mandatées correspondant à une expression rationnelle</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>La directive <code class="directive">&lt;ProxyMatch&gt;</code> est
     identique à la directive <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code>, à l'exception qu'elle définit
-    les URLs auxquelles elle s'applique en utilisant une <a class="glossarylink" href="../glossary.html#regex" title="">expression rationnelle</a>.</p>
+    les URLs auxquelles elle s'applique en utilisant une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
 
     <p>A partir de la version 2.4.8, les groupes nommés et les
     références arrières sont extraits et enregistrés dans
@@ -1112,22 +1112,22 @@ mandatées correspondant à une expression rationnelle</td></tr>
 &lt;/ProxyMatch&gt;</pre>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards" /> <a title="" href="#proxymaxforwards" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxymaxforwards" id="proxymaxforwards">Directive</a> <a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a title="Lien permanent" href="#proxymaxforwards" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Nombre maximum de mandataires à travers lesquelles une
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de mandataires à travers lesquelles une
 requête peut être redirigée</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyMaxForwards <var>nombre</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyMaxForwards -1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Comportement par défaut
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyMaxForwards <var>nombre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyMaxForwards -1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Comportement par défaut
 modifié dans 2.2.7</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyMaxForwards</code> permet de
@@ -1152,16 +1152,16 @@ modifié dans 2.2.7</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass" /> <a title="" href="#proxypass" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypass" id="proxypass">Directive</a> <a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a title="Lien permanent" href="#proxypass" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Référencer des serveurs distants depuis
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Référencer des serveurs distants depuis
 l'espace d'URLs du serveur local</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPass [<var>chemin</var>] !|<var>url</var> [<var>clé=valeur</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPass [<var>chemin</var>] !|<var>url</var> [<var>clé=valeur</var>
   <var>[clé=valeur</var> ...]] [nocanon] [interpolate] [noquery]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Les sockets de style Unix (Unix Domain Socket - UDS)
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Les sockets de style Unix (Unix Domain Socket - UDS)
 sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de référencer des serveurs distants depuis
@@ -1905,16 +1905,16 @@ ProxyPassReverse  "/mirror/foo/" "https://backend.example.com/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a name="proxypassinherit" id="proxypassinherit" /> <a title="" href="#proxypassinherit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassinherit" id="proxypassinherit">Directive</a> <a name="ProxyPassInherit" id="ProxyPassInherit">ProxyPassInherit</a> <a title="Lien permanent" href="#proxypassinherit" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Héritage des directives ProxyPass définies au niveau du
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Héritage des directives ProxyPass définies au niveau du
 serveur principal</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyPassInherit On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassInherit On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyPassInherit On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur
 HTTP Apache.</td></tr>
 </table>
         <p>Cette directive permet à un serveur virtuel d'hériter des
@@ -1930,16 +1930,16 @@ HTTP Apache.</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv" /> <a title="" href="#proxypassinterpolateenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a> <a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a title="Lien permanent" href="#proxypassinterpolateenv" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active l'interpolation des variables d'environnement dans
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'interpolation des variables d'environnement dans
 les configurations de mandataires inverses</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassInterpolateEnv On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyPassInterpolateEnv Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.2.9 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassInterpolateEnv On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyPassInterpolateEnv Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.9 d'Apache</td></tr>
 </table>
     <p>Cette directive, ainsi que l'argument <code>interpolate</code> des
     directives <code class="directive">ProxyPass</code>,
@@ -1972,16 +1972,16 @@ les configurations de mandataires inverses</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a name="proxypassmatch" id="proxypassmatch" /> <a title="" href="#proxypassmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassmatch" id="proxypassmatch">Directive</a> <a name="ProxyPassMatch" id="ProxyPassMatch">ProxyPassMatch</a> <a title="Lien permanent" href="#proxypassmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Fait correspondre des serveurs distants dans l'espace d'URL
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fait correspondre des serveurs distants dans l'espace d'URL
 du serveur local en utilisant des expressions rationnelles</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
 	<var>[key=value</var> ...]]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Depuis la version 2.4.47, les paramètres <var>key=value</var>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Depuis la version 2.4.47, les paramètres <var>key=value</var>
 sont pris en compte lorsque le paramètre <var>url</var> contient des références
 arrières (voir note ci-dessous).
 </td></tr>
@@ -2076,15 +2076,15 @@ ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a name="proxypassreverse" id="proxypassreverse" /> <a title="" href="#proxypassreverse" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassreverse" id="proxypassreverse">Directive</a> <a name="ProxyPassReverse" id="ProxyPassReverse">ProxyPassReverse</a> <a title="Lien permanent" href="#proxypassreverse" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste l'URL dans les en-têtes de la réponse HTTP envoyée
 par un serveur mandaté en inverse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassReverse [<var>chemin</var>] <var>url</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverse [<var>chemin</var>] <var>url</var>
 [interpolate]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive permet de faire en sorte qu'Apache httpd ajuste l'URL
     dans les en-têtes <code>Location</code>,
@@ -2162,15 +2162,15 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain" /> <a title="" href="#proxypassreversecookiedomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassreversecookiedomain" id="proxypassreversecookiedomain">Directive</a> <a name="ProxyPassReverseCookieDomain" id="ProxyPassReverseCookieDomain">ProxyPassReverseCookieDomain</a> <a title="Lien permanent" href="#proxypassreversecookiedomain" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajuste la chaîne correspondant au domaine dans les en-têtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au domaine dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassReverseCookieDomain <var>domaine-interne</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverseCookieDomain <var>domaine-interne</var>
 <var>domaine-public</var> [interpolate]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
 <p>L'utilisation de cette directive est similaire à celle de la
 directive <code class="directive"><a href="#proxypassreverse">ProxyPassReverse</a></code>,
@@ -2180,15 +2180,15 @@ réécrit la chaîne correspondant au domaine dans les en-têtes
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a name="proxypassreversecookiepath" id="proxypassreversecookiepath" /> <a title="" href="#proxypassreversecookiepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypassreversecookiepath" id="proxypassreversecookiepath">Directive</a> <a name="ProxyPassReverseCookiePath" id="ProxyPassReverseCookiePath">ProxyPassReverseCookiePath</a> <a title="Lien permanent" href="#proxypassreversecookiepath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajuste la chaîne correspondant au chemin dans les en-têtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajuste la chaîne correspondant au chemin dans les en-têtes
 Set-Cookie en provenance d'un serveur mandaté</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPassReverseCookiePath <var>chemin-interne</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPassReverseCookiePath <var>chemin-interne</var>
 <var>chemin-public</var> [interpolate]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
 <p>
 Cette directive s'avère utile en conjonction avec la directive
@@ -2212,16 +2212,16 @@ en <code>/mirror/foo/</code>..
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a name="proxypreservehost" id="proxypreservehost" /> <a title="" href="#proxypreservehost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxypreservehost" id="proxypreservehost">Directive</a> <a name="ProxyPreserveHost" id="ProxyPreserveHost">ProxyPreserveHost</a> <a title="Lien permanent" href="#proxypreservehost" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Utilise l'en-tête de requête entrante Host pour la requête
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise l'en-tête de requête entrante Host pour la requête
 du mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyPreserveHost On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyPreserveHost Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Utilisable
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyPreserveHost On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyPreserveHost Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisable
 dans un contexte de répertoire depuis la version 2.3.3.</td></tr>
 </table>
     <p>Lorsqu'elle est activée, cette directive va transmettre l'en-tête
@@ -2236,15 +2236,15 @@ dans un contexte de répertoire depuis la version 2.3.3.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a name="proxyreceivebuffersize" id="proxyreceivebuffersize" /> <a title="" href="#proxyreceivebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyreceivebuffersize" id="proxyreceivebuffersize">Directive</a> <a name="ProxyReceiveBufferSize" id="ProxyReceiveBufferSize">ProxyReceiveBufferSize</a> <a title="Lien permanent" href="#proxyreceivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Taille du tampon réseau pour les connexions mandatées HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon réseau pour les connexions mandatées HTTP
 et FTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyReceiveBufferSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyReceiveBufferSize 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyReceiveBufferSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyReceiveBufferSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyReceiveBufferSize</code> permet
     de spécifier une taille de tampon réseau explicite (TCP/IP) pour les
@@ -2258,15 +2258,15 @@ et FTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a name="proxyremote" id="proxyremote" /> <a title="" href="#proxyremote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyremote" id="proxyremote">Directive</a> <a name="ProxyRemote" id="ProxyRemote">ProxyRemote</a> <a title="Lien permanent" href="#proxyremote" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Mandataire distant à utiliser pour traiter certaines
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mandataire distant à utiliser pour traiter certaines
 requêtes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument facultatif est disponible depuis la version
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemote <var>match</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument facultatif est disponible depuis la version
 2.4.59 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive permet de définir des mandataires distants pour
@@ -2311,34 +2311,34 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a name="proxyremotematch" id="proxyremotematch" /> <a title="" href="#proxyremotematch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyremotematch" id="proxyremotematch">Directive</a> <a name="ProxyRemoteMatch" id="ProxyRemoteMatch">ProxyRemoteMatch</a> <a title="Lien permanent" href="#proxyremotematch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le mandataire distant à utiliser pour traiter les requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le mandataire distant à utiliser pour traiter les requêtes
 correspondant à une expression rationnelle</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Le troisième argument facultatif est disponible à partir de la
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRemoteMatch <var>regex</var> <var>remote-server</var> [<var>username:password</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Le troisième argument facultatif est disponible à partir de la
 version 2.4.59 du serveur HTTP Apache.</td></tr>
 </table>
     <p>La directive <code class="directive">ProxyRemoteMatch</code> est
     identique à la directive <code class="directive"><a href="#proxyremote">ProxyRemote</a></code>, à l'exception du
-    premier argument qui est une <a class="glossarylink" href="../glossary.html#regex" title="">expression
+    premier argument qui est une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression
     rationnelle</a> à mettre en correspondance avec l'URL de la
     requête.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a name="proxyrequests" id="proxyrequests" /> <a title="" href="#proxyrequests" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyrequests" id="proxyrequests">Directive</a> <a name="ProxyRequests" id="ProxyRequests">ProxyRequests</a> <a title="Lien permanent" href="#proxyrequests" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la fonctionnalité (standard) de mandataire
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la fonctionnalité (standard) de mandataire
 direct</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyRequests On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyRequests Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyRequests On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyRequests Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive permet d'activer/désactiver la fonctionnalité de
     serveur mandataire direct d'Apache httpd. Définir ProxyRequests à
@@ -2365,23 +2365,23 @@ direct</td></tr>
       réseau, mais aussi pour l'Internet au sens large.</p>
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="#forwardreverse">Mandataires/Passerelles directs et
 inverses</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset" /> <a title="" href="#proxyset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyset" id="proxyset">Directive</a> <a name="ProxySet" id="ProxySet">ProxySet</a> <a title="Lien permanent" href="#proxyset" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit différents paramètres relatifs à la répartition de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit différents paramètres relatifs à la répartition de
 charge des mandataires et aux membres des groupes de répartition de
 charge</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxySet <var>url</var> <var>clé=valeur [clé=valeur ...]</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>ProxySet n'est disponible que depuis la version 2.2
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySet <var>url</var> <var>clé=valeur [clé=valeur ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>ProxySet n'est disponible que depuis la version 2.2
 du serveur HTTP Apache.</td></tr>
 </table>
     <p>Cette directive propose une méthode alternative pour définir tout
@@ -2421,15 +2421,15 @@ du serveur HTTP Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a name="proxysourceaddress" id="proxysourceaddress" /> <a title="" href="#proxysourceaddress" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxysourceaddress" id="proxysourceaddress">Directive</a> <a name="ProxySourceAddress" id="ProxySourceAddress">ProxySourceAddress</a> <a title="Lien permanent" href="#proxysourceaddress" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit l'adresse IP locale pour les connexions mandatées
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit l'adresse IP locale pour les connexions mandatées
 sortantes</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxySourceAddress <var>adresse</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.9</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxySourceAddress <var>adresse</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9</td></tr>
 </table>
     <p>Cette directive permet de définir une adresse IP locale
     spécifique à laquelle faire référence lors d'une connexion à un
@@ -2438,16 +2438,16 @@ sortantes</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a name="proxystatus" id="proxystatus" /> <a title="" href="#proxystatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxystatus" id="proxystatus">Directive</a> <a name="ProxyStatus" id="ProxyStatus">ProxyStatus</a> <a title="Lien permanent" href="#proxystatus" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Affiche l'état du répartiteur de charge du mandataire dans
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Affiche l'état du répartiteur de charge du mandataire dans
 mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyStatus Off|On|Full</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.2 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyStatus Off|On|Full</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyStatus Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2 d'Apache</td></tr>
 </table>
     <p>Cette directive permet de spécifier si les données d'état du
     répartiteur de charge du mandataire doivent être affichées via la
@@ -2460,15 +2460,15 @@ mod_status</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a name="proxytimeout" id="proxytimeout" /> <a title="" href="#proxytimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxytimeout" id="proxytimeout">Directive</a> <a name="ProxyTimeout" id="ProxyTimeout">ProxyTimeout</a> <a title="Lien permanent" href="#proxytimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Délai d'attente réseau pour les requêtes
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Délai d'attente réseau pour les requêtes
 mandatées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyTimeout <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyTimeout <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Valeur de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive permet à l'utilisateur de spécifier un délai pour
     les requêtes mandatées. Ceci s'avère utile dans le cas d'un serveur
@@ -2479,15 +2479,15 @@ mandatées</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a name="proxyvia" id="proxyvia" /> <a title="" href="#proxyvia" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="proxyvia" id="proxyvia">Directive</a> <a name="ProxyVia" id="ProxyVia">ProxyVia</a> <a title="Lien permanent" href="#proxyvia" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Information fournie dans l'en-tête de réponse HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Information fournie dans l'en-tête de réponse HTTP
 <code>Via</code> pour les requêtes mandatées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ProxyVia On|Off|Full|Block</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ProxyVia Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyVia On|Off|Full|Block</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyVia Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Cette directive permet de contrôler l'utilisation de l'en-tête
     HTTP <code>Via:</code> par le mandataire. Le but recherché est de
@@ -2518,12 +2518,12 @@ mandatées</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_proxy.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

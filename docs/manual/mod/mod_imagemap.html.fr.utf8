@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_imagemap  </title>
+<title>mod_imagemap - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,26 +18,26 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_imagemap</h1>
+<div id="preamble"><h1>Module Apache mod_imagemap</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_imagemap.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_imagemap.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Traitement des cartes des zones interactives d'une image
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Traitement des cartes des zones interactives d'une image
 (imagemaps) au niveau du serveur</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>imagemap_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_imagemap.c</td></tr></table>
-<h3 />
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>imagemap_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_imagemap.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <p>Ce module traite les fichiers <code>.map</code>, et remplace
     ainsi la fonctionnalité du programme CGI <code>imagemap</code>. Tout
@@ -61,23 +61,23 @@
     MIME magiques", et cette syntaxe est sur le point de devenir
     obsolète.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#features">Nouvelles fonctionnalités</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapfile">Fichier imagemap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Exemple de fichier imagemap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#referencing">Référencement de votre fichier
 imagemap</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#imapbase">ImapBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapdefault">ImapDefault</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#imapmenu">ImapMenu</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap" /></li></ul></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="features" id="features">Nouvelles fonctionnalités</a> <a title="" href="#features" class="permalink">&para;</a></h2>
+<h2><a name="features" id="features">Nouvelles fonctionnalités</a> <a title="Lien permanent" href="#features" class="permalink">&para;</a></h2>
 
     <p>Le module imagemap propose quelques nouvelles fonctionnalités qui
     n'étaient pas disponibles avec les programmes imagemap précédemment
@@ -98,7 +98,7 @@ imagemap</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="imapfile" id="imapfile">Fichier imagemap</a> <a title="" href="#imapfile" class="permalink">&para;</a></h2>
+<h2><a name="imapfile" id="imapfile">Fichier imagemap</a> <a title="Lien permanent" href="#imapfile" class="permalink">&para;</a></h2>
 
     <p>Les lignes d'un fichier imagemap peuvent se présenter sous
     plusieurs formats :</p>
@@ -275,7 +275,7 @@ imagemap</a></li>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Exemple de fichier imagemap</a> <a title="" href="#example" class="permalink">&para;</a></h2>
+<h2><a name="example" id="example">Exemple de fichier imagemap</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
       #Les commentaires sont affichés dans un menu 'formaté' ou
@@ -294,7 +294,7 @@ imagemap</a></li>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="referencing" id="referencing">Référencement de votre fichier
-imagemap</a> <a title="" href="#referencing" class="permalink">&para;</a></h2>
+imagemap</a> <a title="Lien permanent" href="#referencing" class="permalink">&para;</a></h2>
 
     <div class="example"><h3>Exemple HTML</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br />
@@ -314,16 +314,16 @@ imagemap</a> <a title="" href="#referencing" class="permalink">&para;</a></h2>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase" /> <a title="" href="#imapbase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapbase" id="imapbase">Directive</a> <a name="ImapBase" id="ImapBase">ImapBase</a> <a title="Lien permanent" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Valeur par défaut de la directive <code>base</code> des
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur par défaut de la directive <code>base</code> des
 fichiers imagemap</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ImapBase http://nom_serveur/</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapBase http://nom_serveur/</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapBase</code> permet de définir la
     valeur par défaut de la directive <code>base</code> des fichiers
@@ -333,23 +333,23 @@ fichiers imagemap</td></tr>
     <code>base</code> est
     <code>http://<var>nom_serveur</var>/</code>.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault" /> <a title="" href="#imapdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapdefault" id="imapdefault">Directive</a> <a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a title="Lien permanent" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre par défaut lorsqu'un fichier imagemap
 est invoqué avec des coordonnées qui ne correspondent à aucune
 cible</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ImapDefault nocontent</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapDefault error|nocontent|map|referer|<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapDefault nocontent</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapDefault</code> permet de définir
     la valeur par défaut de la directive <code>default</code> utilisée
@@ -362,16 +362,16 @@ cible</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu" /> <a title="" href="#imapmenu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="imapmenu" id="imapmenu">Directive</a> <a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a title="Lien permanent" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action à entreprendre si aucune coordonnée n'est fournie
 lorsqu'on invoque un fichier imagemap</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>ImapMenu formatted</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Override">:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_imagemap</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ImapMenu formatted</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_imagemap</td></tr>
 </table>
     <p>La directive <code class="directive">ImapMenu</code> permet de spécifier
     l'action à entreprendre lorsqu'un fichier imagemap est invoqué sans
@@ -410,12 +410,12 @@ lorsqu'on invoque un fichier imagemap</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_imagemap.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_imagemap.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

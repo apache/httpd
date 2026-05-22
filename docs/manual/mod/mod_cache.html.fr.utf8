@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_cache  </title>
+<title>mod_cache - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,27 +18,28 @@
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./" /></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
-<div id="preamble"><h1> mod_cache</h1>
+<div id="preamble"><h1>Module Apache mod_cache</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/mod/mod_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cache.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate" />
-<table class="module"><tr><th><a href="module-dict.html#Description">:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
-<tr><th><a href="module-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">:</a></th><td>cache_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">:</a></th><td>mod_cache.c</td></tr></table>
-<h3 />
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme à la RFC 2616</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_cache.c</td></tr></table>
+<h3>Sommaire</h3>
 
     <div class="warning">Ce module doit être utilisé avec précautions
     car lorsque la directive <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> est définie à sa
@@ -139,14 +140,14 @@
     reportez-vous au <a href="../caching.html">Guide de la mise en
     cache</a>.</p>
 </div>
-<div id="quickview"><h3 />
+<div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#related">Modules apparentés et directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Exemple de configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Eviter une tempête de requête</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Contrôle fin via le filtre CACHE</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#status">Etat du cache et journalisation</a></li>
-</ul><h3 class="directives" />
+</ul><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachedetailheader">CacheDetailHeader</a></li>
@@ -171,18 +172,18 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
-<h3 /><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4" /></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cache" /></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cache" /></li></ul><h3 />
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cache">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cache">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Guide de la mise en
 cache</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules apparentés et directives</a> <a title="" href="#related" class="permalink">&para;</a></h2>
-    <table class="related"><tr><th /><th /></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime</a></code></li></ul></td></tr></table>
+<h2><a name="related" id="related">Modules apparentés et directives</a> <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_cache_socache.html">mod_cache_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_disk.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxtime">CacheSocacheMaxTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemintime">CacheSocacheMinTime</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachemaxsize">CacheSocacheMaxSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadsize">CacheSocacheReadSize</a></code></li><li><code class="directive"><a href="../mod/mod_cache_socache.html#cachesocachereadtime">CacheSocacheReadTime</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a> <a title="" href="#sampleconf" class="permalink">&para;</a></h2>
+<h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a> <a title="Lien permanent" href="#sampleconf" class="permalink">&para;</a></h2>
     <div class="example"><h3>Extrait de httpd.conf</h3><pre class="prettyprint lang-config">#
 # Exemple de configuration du cache
 #
@@ -203,7 +204,7 @@ LoadModule cache_module modules/mod_cache.so
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="thunderingherd" id="thunderingherd">Eviter une tempête de requête</a> <a title="" href="#thunderingherd" class="permalink">&para;</a></h2>
+<h2><a name="thunderingherd" id="thunderingherd">Eviter une tempête de requête</a> <a title="Lien permanent" href="#thunderingherd" class="permalink">&para;</a></h2>
   <p>Lorsqu'une entrée du cache est périmée, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
   soumet une requête conditionnelle au processus d'arrière-plan, qui est
   censé confirmer la validité de l'entrée du cache, ou dans la négative
@@ -274,7 +275,7 @@ LoadModule cache_module modules/mod_cache.so
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="finecontrol" id="finecontrol">Contrôle fin via le filtre CACHE</a> <a title="" href="#finecontrol" class="permalink">&para;</a></h2>
+<h2><a name="finecontrol" id="finecontrol">Contrôle fin via le filtre CACHE</a> <a title="Lien permanent" href="#finecontrol" class="permalink">&para;</a></h2>
   <p>Dans son mode de fonctionnement par défaut, le cache s'exécute sous
   la forme d'un gestionnaire rapide, court-circuitant la majorité des
   traitements du serveur et fournissant ainsi une mise en cache
@@ -346,7 +347,7 @@ AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="status" id="status">Etat du cache et journalisation</a> <a title="" href="#status" class="permalink">&para;</a></h2>
+<h2><a name="status" id="status">Etat du cache et journalisation</a> <a title="Lien permanent" href="#status" class="permalink">&para;</a></h2>
   <p>Lorsque <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> a décidé s'il devait ou non
   servir une entité depuis le cache, les raisons précises de cette
   décision sont enregistrées dans l'environnement du sous-processus
@@ -387,15 +388,15 @@ CustomLog "invalidated-requests.log" common env=cache-invalidate</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire" /> <a title="" href="#cachedefaultexpire" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a> <a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a title="Lien permanent" href="#cachedefaultexpire" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>La durée par défaut de mise en cache d'un document
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée par défaut de mise en cache d'un document
 lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheDefaultExpire <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheDefaultExpire 3600 (une heure)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDefaultExpire <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDefaultExpire 3600 (une heure)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheDefaultExpire</code> permet de
     spécifier un temps par défaut, en secondes, pendant lequel sera conservé
@@ -409,15 +410,15 @@ lorsqu'aucune date d'expiration n'a été spécifiée.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDetailHeader" id="CacheDetailHeader">CacheDetailHeader</a> <a name="cachedetailheader" id="cachedetailheader" /> <a title="" href="#cachedetailheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachedetailheader" id="cachedetailheader">Directive</a> <a name="CacheDetailHeader" id="CacheDetailHeader">CacheDetailHeader</a> <a title="Lien permanent" href="#cachedetailheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un en-tête X-Cache-Detail à la réponse.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheDetailHeader off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête X-Cache-Detail à la réponse.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDetailHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDetailHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
 </table>
   <p>Lorsque la directive <code class="directive">CacheDetailHeader</code> est définie à
   on, un en-tête <strong>X-Cache-Detail</strong> est ajouté à la réponse et
@@ -448,14 +449,14 @@ CacheDetailHeader on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable" /> <a title="" href="#cachedisable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachedisable" id="cachedisable">Directive</a> <a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a title="Lien permanent" href="#cachedisable" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Désactive la mise en cache des URLs
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Désactive la mise en cache des URLs
 spécifiées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheDisable <var>chaîne-url</var> | <var>on</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDisable <var>chaîne-url</var> | <var>on</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheDisable</code> enjoint
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> de <em>ne pas</em> mettre en cache l'URL
@@ -479,23 +480,23 @@ spécifiées</td></tr>
     variable d'environnement <code>no-cache</code> pour une définition
     plus fine des ressources à mettre en cache.</p>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../env.html">Les variables d'environnement dans
 Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheEnable" id="CacheEnable">CacheEnable</a> <a name="cacheenable" id="cacheenable" /> <a title="" href="#cacheenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheenable" id="cacheenable">Directive</a> <a name="CacheEnable" id="CacheEnable">CacheEnable</a> <a title="Lien permanent" href="#cacheenable" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la mise en cache des URLs spécifiées en utilisant le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la mise en cache des URLs spécifiées en utilisant le
 gestionnaire de stockage précisé</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheEnable <var>type de cache</var> [<var>chaîne
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheEnable <var>type de cache</var> [<var>chaîne
 URL</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Une chaîne URL telle que '/' s'appliquait à tout contenu
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Une chaîne URL telle que '/' s'appliquait à tout contenu
 en mandat direct dans les versions 2.2 et antérieures.</td></tr>
 </table>
     <p>La directive <code class="directive">CacheEnable</code> enjoint
@@ -570,22 +571,22 @@ CacheEnable  disk  "http://.example.org/"</pre>
     des ressources à mettre en cache.</p>
 
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><a href="../env.html">Les variables d'environnement dans
 Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheHeader" id="CacheHeader">CacheHeader</a> <a name="cacheheader" id="cacheheader" /> <a title="" href="#cacheheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheheader" id="cacheheader">Directive</a> <a name="CacheHeader" id="CacheHeader">CacheHeader</a> <a title="Lien permanent" href="#cacheheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ajoute un en-tête X-Cache à la réponse.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheHeader off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un en-tête X-Cache à la réponse.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheHeader <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheHeader off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
 </table>
   <p>Lorsque la directive <code class="directive">CacheHeader</code> est définie à on, un
   en-tête <strong>X-Cache</strong> est ajouté à la réponse et contient
@@ -617,15 +618,15 @@ CacheHeader on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol" /> <a title="" href="#cacheignorecachecontrol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a> <a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a title="Lien permanent" href="#cacheignorecachecontrol" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ignore les en-têtes de requête enjoignant de ne pas servir
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore les en-têtes de requête enjoignant de ne pas servir
 le contenu au client depuis le cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreCacheControl On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreCacheControl Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Normalement, les requêtes contenant des en-têtes tels que
     <code>Cache-Control: no-cache</code> ou Pragma: no-cache ne sont pas 
@@ -646,22 +647,22 @@ le contenu au client depuis le cache</td></tr>
        contenu servi est ainsi susceptible d'être périmé.
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#cachestoreprivate">CacheStorePrivate</a></code></li>
 <li><code class="directive"><a href="#cachestorenostore">CacheStoreNoStore</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheIgnoreHeaders" id="CacheIgnoreHeaders">CacheIgnoreHeaders</a> <a name="cacheignoreheaders" id="cacheignoreheaders" /> <a title="" href="#cacheignoreheaders" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheignoreheaders" id="cacheignoreheaders">Directive</a> <a name="CacheIgnoreHeaders" id="CacheIgnoreHeaders">CacheIgnoreHeaders</a> <a title="Lien permanent" href="#cacheignoreheaders" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ne pas stocker le(s) en-tête(s) spécifié(s) dans le cache.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ne pas stocker le(s) en-tête(s) spécifié(s) dans le cache.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheIgnoreHeaders <var>en-tête</var> [<var>en-tête</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreHeaders <var>en-tête</var> [<var>en-tête</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreHeaders None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>En accord avec la RFC 2616, les en-têtes HTTP hop-by-hop ne sont
     pas stockés dans le cache. Les en-têtes HTTP suivant sont des
@@ -708,15 +709,15 @@ le contenu au client depuis le cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheIgnoreNoLastMod" id="CacheIgnoreNoLastMod">CacheIgnoreNoLastMod</a> <a name="cacheignorenolastmod" id="cacheignorenolastmod" /> <a title="" href="#cacheignorenolastmod" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheignorenolastmod" id="cacheignorenolastmod">Directive</a> <a name="CacheIgnoreNoLastMod" id="CacheIgnoreNoLastMod">CacheIgnoreNoLastMod</a> <a title="Lien permanent" href="#cacheignorenolastmod" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ignore le fait qu'une réponse ne possède pas d'en-tête Last
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore le fait qu'une réponse ne possède pas d'en-tête Last
 Modified.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreNoLastMod On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreNoLastMod Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Normalement, les documents qui ne possèdent pas de date de
     dernière modification ne sont pas mis en cache. Dans certaines
@@ -744,15 +745,15 @@ Modified.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheIgnoreQueryString" id="CacheIgnoreQueryString">CacheIgnoreQueryString</a> <a name="cacheignorequerystring" id="cacheignorequerystring" /> <a title="" href="#cacheignorequerystring" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheignorequerystring" id="cacheignorequerystring">Directive</a> <a name="CacheIgnoreQueryString" id="CacheIgnoreQueryString">CacheIgnoreQueryString</a> <a title="Lien permanent" href="#cacheignorequerystring" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ignore la chaîne de paramètres lors de la mise en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore la chaîne de paramètres lors de la mise en
 cache</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheIgnoreQueryString On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheIgnoreQueryString Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreQueryString On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreQueryString Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Normalement, les requêtes comportant une chaîne de paramètres
     sont mises en cache séparément si leurs chaînes de paramètres
@@ -772,17 +773,17 @@ cache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheIgnoreURLSessionIdentifiers" id="CacheIgnoreURLSessionIdentifiers">CacheIgnoreURLSessionIdentifiers</a> <a name="cacheignoreurlsessionidentifiers" id="cacheignoreurlsessionidentifiers" /> <a title="" href="#cacheignoreurlsessionidentifiers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheignoreurlsessionidentifiers" id="cacheignoreurlsessionidentifiers">Directive</a> <a name="CacheIgnoreURLSessionIdentifiers" id="CacheIgnoreURLSessionIdentifiers">CacheIgnoreURLSessionIdentifiers</a> <a title="Lien permanent" href="#cacheignoreurlsessionidentifiers" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Ignore les identifiants de session définis encodés dans
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ignore les identifiants de session définis encodés dans
 l'URL lors de la mise en cache
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheIgnoreURLSessionIdentifiers <var>identifiant</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheIgnoreURLSessionIdentifiers <var>identifiant</var>
 [<var>identifiant</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheIgnoreURLSessionIdentifiers None</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheIgnoreURLSessionIdentifiers None</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Certaines applications encodent l'identifiant de session dans
     l'URL comme dans l'exemple suivant :
@@ -812,15 +813,15 @@ l'URL lors de la mise en cache
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a name="cachekeybaseurl" id="cachekeybaseurl" /> <a title="" href="#cachekeybaseurl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachekeybaseurl" id="cachekeybaseurl">Directive</a> <a name="CacheKeyBaseURL" id="CacheKeyBaseURL">CacheKeyBaseURL</a> <a title="Lien permanent" href="#cachekeybaseurl" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Remplace l'URL de base des clés du cache mandatées en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Remplace l'URL de base des clés du cache mandatées en
 inverse</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheKeyBaseURL <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
 </table>
   <p>Lorsque la directive <code class="directive">CacheKeyBaseURL</code> est utilisée,
   l'URL spécifiée sera utilisée comme URL de base pour calculer l'URL des clés
@@ -842,15 +843,15 @@ CacheKeyBaseURL "http://www.example.com/"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor" /> <a title="" href="#cachelastmodifiedfactor" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">Directive</a> <a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a title="Lien permanent" href="#cachelastmodifiedfactor" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Le facteur utilisé pour générer une date d'expiration en
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le facteur utilisé pour générer une date d'expiration en
 fonction de la date de dernière modification.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheLastModifiedFactor <var>flottant</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLastModifiedFactor <var>flottant</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheLastModifiedFactor 0.1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Si un document ne possède pas de date d'expiration, elle peut
     être calculée en fonction de la date de dernière modification, si
@@ -878,15 +879,15 @@ fonction de la date de dernière modification.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheLock" id="CacheLock">CacheLock</a> <a name="cachelock" id="cachelock" /> <a title="" href="#cachelock" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachelock" id="cachelock">Directive</a> <a name="CacheLock" id="CacheLock">CacheLock</a> <a title="Lien permanent" href="#cachelock" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Active la protection contre les tempêtes de requêtes.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheLock <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheLock off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.2.15 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la protection contre les tempêtes de requêtes.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLock <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheLock off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.15 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">CacheLock</code> active la protection
   contre les tempêtes de requêtes pour l'espace d'adressage donné.</p>
@@ -902,14 +903,14 @@ CacheLock on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheLockMaxAge" id="CacheLockMaxAge">CacheLockMaxAge</a> <a name="cachelockmaxage" id="cachelockmaxage" /> <a title="" href="#cachelockmaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachelockmaxage" id="cachelockmaxage">Directive</a> <a name="CacheLockMaxAge" id="CacheLockMaxAge">CacheLockMaxAge</a> <a title="Lien permanent" href="#cachelockmaxage" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit la durée de vie maximale d'un verrou de cache.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheLockMaxAge <var>entier</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheLockMaxAge 5</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la durée de vie maximale d'un verrou de cache.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLockMaxAge <var>entier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheLockMaxAge 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
   <p>La directive <code class="directive">CacheLockMaxAge</code> permet de
   spécifier la durée de vie maximale d'un verrou de cache.</p>
@@ -922,14 +923,14 @@ CacheLock on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheLockPath" id="CacheLockPath">CacheLockPath</a> <a name="cachelockpath" id="cachelockpath" /> <a title="" href="#cachelockpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachelockpath" id="cachelockpath">Directive</a> <a name="CacheLockPath" id="CacheLockPath">CacheLockPath</a> <a title="Lien permanent" href="#cachelockpath" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Définit le répertoire des verrous.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheLockPath <var>répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheLockPath /tmp/mod_cache-lock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le répertoire des verrous.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheLockPath <var>répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheLockPath /tmp/mod_cache-lock</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
   <p>La directive <code class="directive">CacheLockPath</code> permet de
   spécifier le répertoire dans lequel les verrous sont créés. Par
@@ -941,15 +942,15 @@ CacheLock on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire" /> <a title="" href="#cachemaxexpire" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachemaxexpire" id="cachemaxexpire">Directive</a> <a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a title="Lien permanent" href="#cachemaxexpire" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>La durée maximale en secondes de mise en cache d'un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée maximale en secondes de mise en cache d'un
 document</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheMaxExpire <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheMaxExpire 86400 (une journée)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMaxExpire <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMaxExpire 86400 (une journée)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheMaxExpire</code> permet de
     spécifier le nombre maximum de secondes pendant lequel les documents
@@ -965,15 +966,15 @@ document</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheMinExpire" id="CacheMinExpire">CacheMinExpire</a> <a name="cacheminexpire" id="cacheminexpire" /> <a title="" href="#cacheminexpire" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cacheminexpire" id="cacheminexpire">Directive</a> <a name="CacheMinExpire" id="CacheMinExpire">CacheMinExpire</a> <a title="Lien permanent" href="#cacheminexpire" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>La durée minimale en secondes de mise en cache d'un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La durée minimale en secondes de mise en cache d'un
 document</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheMinExpire <var>secondes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheMinExpire 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMinExpire <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMinExpire 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheMinExpire</code> permet de
     spécifier le nombre minimum de secondes pendant lequel les documents
@@ -987,15 +988,15 @@ document</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheQuickHandler" id="CacheQuickHandler">CacheQuickHandler</a> <a name="cachequickhandler" id="cachequickhandler" /> <a title="" href="#cachequickhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachequickhandler" id="cachequickhandler">Directive</a> <a name="CacheQuickHandler" id="CacheQuickHandler">CacheQuickHandler</a> <a title="Lien permanent" href="#cachequickhandler" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Exécute le cache à partir d'un gestionnaire rapide.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheQuickHandler <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheQuickHandler on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible à partir de la version 2.3.3 du serveur HTTP
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Exécute le cache à partir d'un gestionnaire rapide.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheQuickHandler <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheQuickHandler on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.3.3 du serveur HTTP
   Apache</td></tr>
 </table>
     <p>La directive <code class="directive">CacheQuickHandler</code> permet de contrôler
@@ -1036,15 +1037,15 @@ AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html</pre>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a name="cachestaleonerror" id="cachestaleonerror" /> <a title="" href="#cachestaleonerror" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachestaleonerror" id="cachestaleonerror">Directive</a> <a name="CacheStaleOnError" id="CacheStaleOnError">CacheStaleOnError</a> <a title="Lien permanent" href="#cachestaleonerror" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Sert du contenu non à jour à la place de réponses 5xx.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheStaleOnError on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sert du contenu non à jour à la place de réponses 5xx.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStaleOnError <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStaleOnError on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.9 d'Apache</td></tr>
 </table>
   <p>Lorsque la directive <code class="directive">CacheStaleOnError</code> est définie à
   on, et si des données non mises à jour sont disponibles dans le cache, ce
@@ -1061,15 +1062,15 @@ CacheStaleOnError on</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a name="cachestoreexpired" id="cachestoreexpired" /> <a title="" href="#cachestoreexpired" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachestoreexpired" id="cachestoreexpired">Directive</a> <a name="CacheStoreExpired" id="CacheStoreExpired">CacheStoreExpired</a> <a title="Lien permanent" href="#cachestoreexpired" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Tente de mettre en cache les réponses que le serveur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de mettre en cache les réponses que le serveur
 considère comme arrivées à expiration</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreExpired On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStoreExpired Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Depuis la version 2.2.4, les réponses qui sont arrivées à
     expiration ne sont pas stockées dans le cache. La directive
@@ -1086,15 +1087,15 @@ considère comme arrivées à expiration</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore" /> <a title="" href="#cachestorenostore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachestorenostore" id="cachestorenostore">Directive</a> <a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a title="Lien permanent" href="#cachestorenostore" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Tente de mettre en cache les requêtes ou réponses dont
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de mettre en cache les requêtes ou réponses dont
 l'entête Cache-Control: a pour valeur no-store.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStoreNoStore On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStoreNoStore Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Normalement, les requêtes ou réponses dont l'en-tête
     <code>Cache-Control: no-store</code> ne sont pas stockées dans le
@@ -1121,22 +1122,22 @@ l'entête Cache-Control: a pour valeur no-store.</td></tr>
        été prévenus.
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></code></li>
 <li><code class="directive"><a href="#cachestoreprivate">CacheStorePrivate</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="CacheStorePrivate" id="CacheStorePrivate">CacheStorePrivate</a> <a name="cachestoreprivate" id="cachestoreprivate" /> <a title="" href="#cachestoreprivate" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2><a name="cachestoreprivate" id="cachestoreprivate">Directive</a> <a name="CacheStorePrivate" id="CacheStorePrivate">CacheStorePrivate</a> <a title="Lien permanent" href="#cachestoreprivate" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">:</a></th><td>Tente de mettre en cache des réponses que le serveur a
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Tente de mettre en cache des réponses que le serveur a
 marquées comme privées</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">:</a></th><td>, , , </td></tr>
-<tr><th><a href="directive-dict.html#Status">:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Module">:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheStorePrivate On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheStorePrivate Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
     <p>Normalement, les réponse comportant un en-tête <code>Cache-Control:
     private</code> ne seront pas stockées dans le cache. La directive
@@ -1159,7 +1160,7 @@ marquées comme privées</td></tr>
        'privé'.
     </div>
 
-<h3 />
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></code></li>
 <li><code class="directive"><a href="#cachestorenostore">CacheStoreNoStore</a></code></li>
@@ -1167,13 +1168,13 @@ marquées comme privées</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/mod/mod_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cache.html" title="">&nbsp;fr&nbsp;</a> |
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

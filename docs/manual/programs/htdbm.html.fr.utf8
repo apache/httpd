@@ -9,7 +9,7 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>htdbm - Manipuler des bases de données DBM de mots de
-passe  </title>
+passe - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -18,20 +18,21 @@ passe  </title>
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
+<p class="apache">Serveur HTTP Apache Version 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>htdbm - Manipuler des bases de données DBM de mots de
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Programmes</a></div><div id="page-content"><div id="preamble"><h1>htdbm - Manipuler des bases de données DBM de mots de
 passe</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/htdbm.html" title="">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/htdbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate" />
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
     <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permet de manipuler des fichiers au format DBM
     ou sont stockés des nom d'utilisateurs et mots de passe à des fins
@@ -47,10 +48,10 @@ passe</h1>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Considérations à propos de sécurité</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#restrictions">Restrictions</a></li>
-</ul><h3 /><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="" href="#synopsis" class="permalink">&para;</a></h2>
+<h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>DBTYPE</var> ]
     [ -<strong>i</strong> ]
@@ -139,7 +140,7 @@ passe</h1>
     </code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code>-b</code></dt>
     <dd>Utilise le mode batch ; en d'autres termes, le mot de passe est
@@ -247,7 +248,7 @@ passe</h1>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">Bugs</a> <a title="" href="#bugs" class="permalink">&para;</a></h2>
+<h2><a name="bugs" id="bugs">Bugs</a> <a title="Lien permanent" href="#bugs" class="permalink">&para;</a></h2>
     <p>Vous devez garder à l'esprit qu'il existe de nombreux formats de
     fichiers DBM différents, et que selon toute vraisemblance, des
     bibliothèques pour plus d'un format sont présentes sur votre
@@ -268,7 +269,7 @@ passe</h1>
     DBM.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Valeur renvoyée</a> <a title="" href="#exit" class="permalink">&para;</a></h2>
+<h2><a name="exit" id="exit">Valeur renvoyée</a> <a title="Lien permanent" href="#exit" class="permalink">&para;</a></h2>
     <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> renvoie 0 ("true") si les nom d'utilisateur et
     mot de passe ont été créés ou mis à jour avec succès dans le fichier
     DBM. <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> renvoie <code>1</code> s'il a rencontré un
@@ -283,7 +284,7 @@ passe</h1>
     fichier n'est pas un fichier de mots de passe DBM valide.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a> <a title="" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     <div class="example"><p><code>
       htdbm /usr/local/etc/apache/.utilisateurs-htdbm jsmith
     </code></p></div>
@@ -316,7 +317,7 @@ passe</h1>
     l'enregistre dans le fichier spécifié.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="security" id="security">Considérations à propos de sécurité</a> <a title="" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Considérations à propos de sécurité</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     <p>Les fichiers de mots de passe Web tels que ceux que gère
     <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> ne doivent <em>pas</em> être stockés dans
     l'espace d'URI du serveur Web -- en d'autres termes, il ne doit pas
@@ -343,7 +344,7 @@ passe</h1>
     non sûrs selon les standards actuels.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="restrictions" id="restrictions">Restrictions</a> <a title="" href="#restrictions" class="permalink">&para;</a></h2>
+<h2><a name="restrictions" id="restrictions">Restrictions</a> <a title="Lien permanent" href="#restrictions" class="permalink">&para;</a></h2>
     <p>Sur la plate-forme Windows, les mots de passe hachés avec
     <code class="program"><a href="../programs/htdbm.html">htdbm</a></code> ont une taille limitée à <code>255</code>
     caractères. Si le mot de passe fourni est plus long, il sera tronqué
@@ -357,12 +358,12 @@ passe</h1>
     octets et ne doivent pas contenir de caractère <code>:</code>.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/htdbm.html" title="">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/programs/htdbm.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>İsme Dayalı Sanal Konaklar  </title>
+<title>İsme Dayalı Sanal Konaklar - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -17,20 +17,20 @@
 
 <link href="../images/favicon.png" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p>
-<p class="apache" />
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/" /> &gt; <a href="https://httpd.apache.org/" /> &gt; <a href="https://httpd.apache.org/docs/" /> &gt; <a href="../" /> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>İsme Dayalı Sanal Konaklar</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>İsme Dayalı Sanal Konaklar</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
-<p><span>: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/name-based.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
@@ -39,13 +39,13 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">İsme dayalı ve IP’ye dayalı Sanal Konaklar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl seçer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">İsme Dayalı Sanal Konakların Kullanımı</a></li>
-</ul><h3 /><ul class="seealso"><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></li><li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></li><li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a>
 </li><li><a href="mass.html">Devingen olarak Yapılandırılan Kütlesel Sanal
 Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak yapılandırma
 örnekleri</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">İsme dayalı ve IP’ye dayalı Sanal Konaklar</a> <a title="" href="#namevip" class="permalink">&para;</a></h2>
+<h2><a name="namevip" id="namevip">İsme dayalı ve IP’ye dayalı Sanal Konaklar</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p><a href="ip-based.html">IP’ye dayalı sanal konaklar</a>da sunulacak
       sanal konağı doğru tespit edebilmek için bağlantının yapıldığı IP
@@ -72,7 +72,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="alg" id="alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl seçer</a> <a title="" href="#alg" class="permalink">&para;</a></h2>
+<h2><a name="alg" id="alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl seçer</a> <a title="Permanent link" href="#alg" class="permalink">&para;</a></h2>
   
 
     <p>İsme dayalı sanal konak çözümlemesinin ilk adımının IP'ye dayalı
@@ -104,9 +104,9 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="using" id="using">İsme Dayalı Sanal Konakların Kullanımı</a> <a title="" href="#using" class="permalink">&para;</a></h2>
+<h2><a name="using" id="using">İsme Dayalı Sanal Konakların Kullanımı</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
-<table class="related"><tr><th /><th /></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
     <p>İlk adım sunacağınız her konak için ayrı bir <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü oluşturmaktır. Her
       <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü
@@ -207,15 +207,15 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
 
 </div></div>
 <div class="bottomlang">
-<p><span>: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Mevcut Diller: </span><a href="../de/vhosts/name-based.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/vhosts/name-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/name-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/name-based.html" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/name-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/" /> | <a href="../mod/quickreference.html" /> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ" /> | <a href="../glossary.html" /> | <a href="../sitemap.html" /> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2" /></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
