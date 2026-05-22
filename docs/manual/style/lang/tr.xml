@@ -1,6 +1,4 @@
-
-        <message id="permalink">Permanent link</message>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- English Revision: 1824187  -->
 <!-- =====================================================
@@ -163,6 +161,8 @@
         </message>
         <message id="retired.current">Apache HTTP Sunucusu belgelerinin güncel sürümü</message>
         <message id="retired.document">Bu belgenin güncel sürümüne erişmek için <link>bu bağlantıyı</link> kullanabilirsiniz.</message>
+
+        <message id="permalink">Permanent link</message>
 
     </messages>
 </language>
