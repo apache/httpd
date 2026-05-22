@@ -482,9 +482,9 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
           set of <code>RewriteCond</code> conditions. $0 provides
           access to the whole string matched by that pattern.
 
-          <note>Backreferences are only defined if the pattern 
-          matches. Thus, if the pattern is prefixed with 
-          <code>!<.code>, no backreferences are ever defined.</note>
+          <note>Backreferences are only defined if the pattern
+          matches. Thus, if the pattern is prefixed with
+          <code>!</code>, no backreferences are ever defined.</note>
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
@@ -495,9 +495,9 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
           of conditions. %0 provides access to the whole string matched by
           that pattern.
 
-          <note>Backreferences are only defined if the pattern 
-          matches. Thus, if the pattern is prefixed with 
-          <code>!<.code>, no backreferences are ever defined.</note>
+          <note>Backreferences are only defined if the pattern
+          matches. Thus, if the pattern is prefixed with
+          <code>!</code>, no backreferences are ever defined.</note>
         </li>
         <li>
           <strong>RewriteMap expansions</strong>: These are
