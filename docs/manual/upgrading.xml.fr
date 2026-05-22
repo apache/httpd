@@ -608,7 +608,7 @@ Require ip 127.0.0.1
       mod_rewrite</a>.</li>
 
       <li>Le symbole <code>&lt;set&gt;</code> de <module>mod_include</module>
-      n’effectue plus le décodage d’entité sur la valeur définie.</li>
+      n'effectue plus le décodage d'entité sur la valeur définie.</li>
 
     </ul>
 

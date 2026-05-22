@@ -72,8 +72,8 @@ href="http://www.webdav.org/">WebDAV</a>)</description>
     les directives <directive module="mod_unixd">User</directive> et
     <directive module="mod_unixd">Group</directive>.</p>
 
-    <p>Dans l’exemple ci-après, la directive <directive module="mod_authz_core" 
-    type="section">RequireAny</directive> permet de s’assurer que les méthodes
+    <p>Dans l'exemple ci-après, la directive <directive module="mod_authz_core" 
+    type="section">RequireAny</directive> permet de s'assurer que les méthodes
     spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
     <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
     authentifiés.</p>

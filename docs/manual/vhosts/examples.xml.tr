@@ -33,7 +33,7 @@
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
       karşılaşılması olası tüm  senaryolara yer verilmeye çalışılmıştır.
       Buradaki senaryolar, tek bir  sunucu üzerinde  <a href="name-
-      based.html">isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a>
+      based.html">isme dayalı</a> veya <a href="ip-based.html">IP'ye dayalı</a>
       sanal konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
@@ -60,7 +60,7 @@
     </note>
 
     <highlight language="config">
-# Apache’nin 80. portu dinlediğinden emin olalım
+# Apache'nin 80. portu dinlediğinden emin olalım
 Listen 80
 &lt;VirtualHost *:80&gt;
   DocumentRoot "/siteler/ecom"
@@ -165,7 +165,7 @@ DocumentRoot "/siteler/anasunucu"
     <p>Sunucu makine iki IP adresine sahip olsun. Biri iç ağa
       (<code>192.168.1.1</code>) diğeri dış ağa (<code>172.20.30.40</code>)
       bakıyor olsun. <code>sunucu.example.com</code> ismi dış ağda dış ağa
-      bakan IP’ye, iç ağda ise iç ağa bakan IP’ye çözümleniyor olsun.</p>
+      bakan IP'ye, iç ağda ise iç ağa bakan IP'ye çözümleniyor olsun.</p>
 
     <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
       dolayısıyla aynı <directive type="section" module="core"
@@ -230,7 +230,7 @@ Listen 8080
 
   </section>
 
-  <section id="ip"><title>IP’ye dayalı sanal konaklar</title>
+  <section id="ip"><title>IP'ye dayalı sanal konaklar</title>
 
     <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
@@ -256,7 +256,7 @@ Listen 80
   </section>
 
   <section id="ipport">
-    <title>Hem IP’ye hem de porta dayalı sanal konaklar</title>
+    <title>Hem IP'ye hem de porta dayalı sanal konaklar</title>
 
     <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
@@ -293,7 +293,7 @@ Listen 172.20.30.50:8080
   </section>
 
   <section id="mixed">
-    <title>Hem isme hem de IP‘ye dayalı sanal konaklar</title>
+    <title>Hem isme hem de IP'ye dayalı sanal konaklar</title>
 
     <p>Bir <code>VirtualHost</code> yönergesinde belirtilen bir IP adresi başka
       bir sanal konakta görünmüyorsa bu sankon kesinlikle IP'ye dayalı bir
@@ -332,7 +332,7 @@ Listen 80
   </section>
 
     <section id="proxy"><title><code>Virtualhost</code> ve
-    <code>mod_proxy</code>’nin birlikte kullanımı</title>
+    <code>mod_proxy</code>'nin birlikte kullanımı</title>
 
     <p>Bu örnekte bir arabirimi dışarıya bakan bir makinede, başka bir
       makinede çalışan bir sunucuya sanal konak olarak, bir vekil sunucu
@@ -430,7 +430,7 @@ Listen 80
 
   </section>
 
-  <section id="migrate"><title>Bir isme dayalı sanal konağı bir IP’ye dayalı
+  <section id="migrate"><title>Bir isme dayalı sanal konağı bir IP'ye dayalı
     sanal konakla yansılamak</title>
 
     <p>İsme dayalı sanal konak örneklerinin <a href="#twoips">2. sinde</a> adı
@@ -463,7 +463,7 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;
     </highlight>
 
-    <p>Böylece sanal konağa hem yeni (bir IP’ye dayalı sanal konak olarak)
+    <p>Böylece sanal konağa hem yeni (bir IP'ye dayalı sanal konak olarak)
       hem de eski adresinden (bir isme dayalı sanal konak olarak)
       erişilebilecektir.</p>
 
@@ -511,18 +511,18 @@ DocumentRoot "/siteler/ecom"
 
     <p><directive module="core">ServerPath</directive> yönergesinden dolayı
       <code>http://bir.baska.tld/bir/</code> şeklinde yapılan isteklere
-      <em>daima</em> “bir” sanal konağı hizmet sunacaktır.</p>
+      <em>daima</em> "bir" sanal konağı hizmet sunacaktır.</p>
 
     <p><code>http://bir.baska.tld/</code> şeklinde yapılan isteklere ise
       istemcinin doğru <code>Host:</code> başlığı göndermesi şartıyla
-      “bir” sanal konağı hizmet sunacaktır. İstemci, bir
+      "bir" sanal konağı hizmet sunacaktır. İstemci, bir
       <code>Host:</code> başlığı göndermediği takdirde ilk konaktan bir
       bilgilendirme sayfası alacaktır.</p>
 
     <p>Yalnız buradaki bir tuhaflığa dikkat edin: Eğer istemci bir
       <code>Host:</code> başlığı göndermeden
       <code>http://iki.baska.tld/bir/</code> şeklinde bir istek yaparsa bu
-      isteğe de “bir” sanal konağı hizmet sunacaktır.</p>
+      isteğe de "bir" sanal konağı hizmet sunacaktır.</p>
 
     <p><directive module="mod_rewrite">RewriteRule</directive> yönergesi, bir
       istemcinin, bir URL öneki belirtsin ya da belirtmesin doğru

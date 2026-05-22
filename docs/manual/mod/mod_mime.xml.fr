@@ -163,7 +163,7 @@ multiples</title>
     <note><title>Files with no extension</title>
     <p>Les fichiers sans extension (comme <code>Makefile</code>) ne peuvent pas
     être reconnus par les directives de <module>mod_mime</module> basées sur
-    l’extension. Pour définir le type de contenu ou le jeu de caractères de tels
+    l'extension. Pour définir le type de contenu ou le jeu de caractères de tels
     fichiers, utilisez à la place une section <directive type="section"
     module="core">Files</directive> ou <directive type="section"
     module="core">FilesMatch</directive> :</p>

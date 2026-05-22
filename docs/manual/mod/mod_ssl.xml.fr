@@ -335,7 +335,7 @@ disponibles avec Require</title>
     <p>Le fournisseur <code>ssl</code> refuse l'accès si une connexion
     n'est pas chiffrée avec SSL. À la différence de la directive
     <directive>SSLRequireSSL</directive> directive, cette directive peut être
-    combinée avec d’autres directives <directive>Require</directive> dans les
+    combinée avec d'autres directives <directive>Require</directive> dans les
     blocs <directive module="mod_authz_core">RequireAny</directive> ou
     <directive module="mod_authz_core">RequireAll</directive>.</p>
 
@@ -686,7 +686,7 @@ SSLSessionCacheTimeout 600
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>
-La prise en charge de l’argument "optional" a été supprimée avec la version
+La prise en charge de l'argument "optional" a été supprimée avec la version
 2.4.64. Cet argument activait la prise en charge de la RFC 2817 (mise à niveau de TLS).
 </compatibility>
 
@@ -1106,7 +1106,7 @@ enregistrer des paramètres personnalisés, car ces derniers s'appliquent
 indépendamment de l'algorithme d'authentification utilisé.
 </p>
 
-<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+<note type="warning"><title>N'enregistrez pas clé et certificat dans le même
 fichier</title>
 <p>Cette pratique est fortement déconseillée pour les raisons suivantes :</p>
 <ul>
@@ -1116,7 +1116,7 @@ certificat peut être lisible par tous (ce sont des données publiques), alors q
 le fichier de clé ne doit être lisible que par le superutilisateur. Combiner
 les deux dans un même fichier implique que toute vulnérabilité ou mauvaise
 configuration qui expose le fichier du certificat exposera aussi la clé privée.</li>
-<li><strong>Contrainte d’ordre</strong> : si un fichier combiné est utilisé,
+<li><strong>Contrainte d'ordre</strong> : si un fichier combiné est utilisé,
 toute directive <directive>SSLCertificateFile</directive> référençant un tel
 fichier doit apparaître <em>après</em> toute directive
 <directive>SSLCertificateFile</directive> qui utilise un fichier de clé séparé.
@@ -1201,9 +1201,9 @@ SSLCertificateFile "pkcs11:token=My%20Token%20Name;id=45"
 </example>
 
 <p>Ce fichier est lu au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1234,12 +1234,12 @@ module="mod_ssl">SSLCertificateKeyFile</directive> doit être associée
 une directive <directive>SSLCertificateFile</directive> correspondante.
 </p>
 
-<note type="warning"><title>N’enregistrez pas clé et certificat dans le même
+<note type="warning"><title>N'enregistrez pas clé et certificat dans le même
 fichier</title>
 <p>La clé privée peut aussi être combinée avec le certificat dans le fichier
 spécifié par la directive <directive
 module="mod_ssl">SSLCertificateFile</directive>, mais cette pratique est
-fortement déconseillée. Voir l’avertissement dans la documentation de la
+fortement déconseillée. Voir l'avertissement dans la documentation de la
 directive <directive>SSLCertificateFile</directive> pour une explication
 complète des risques et contraintes.</p></note>
 
@@ -1259,10 +1259,10 @@ SSLCertificateKeyFile "pkcs11:token=My%20Token%20Name;id=45"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier, car il contient la clé privée. Le fichier n’est pas relu en
+par ce dernier, car il contient la clé privée. Le fichier n'est pas relu en
 fonctionnement normal ; un redémarrage du serveur est requis pour que les
 changements prennent effet.</p>
 </usage>
@@ -1319,10 +1319,10 @@ SSLCertificateChainFile "/usr/local/apache2/conf/ssl.crt/ca.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1355,9 +1355,9 @@ SSLCACertificatePath "/usr/local/apache2/conf/ssl.crt/"
 </example>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1387,10 +1387,10 @@ SSLCACertificateFile "/usr/local/apache2/conf/ssl.crt/ca-bundle-client.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1441,10 +1441,10 @@ SSLCADNRequestFile "/usr/local/apache2/conf/ca-names.crt"
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1478,9 +1478,9 @@ SSLCADNRequestPath "/usr/local/apache2/conf/ca-names.crt/"
 </example>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1515,9 +1515,9 @@ SSLCARevocationPath "/usr/local/apache2/conf/ssl.crl/"
 </example>
 
 <p>Les fichiers de ce répertoire sont lus au démarrage du serveur, alors que ce
-dernier s’exécute encore en tant que <code>root</code> (avant la restriction de
+dernier s'exécute encore en tant que <code>root</code> (avant la restriction de
 ses privilèges) ; il ne doit donc être la propriété que de <code>root</code> et
-lisible uniquement par ce dernier. Le fichier n’est pas relu en fonctionnement
+lisible uniquement par ce dernier. Le fichier n'est pas relu en fonctionnement
 normal ; un redémarrage du serveur est requis pour que les changements prennent
 effet.</p>
 </usage>
@@ -1548,10 +1548,10 @@ SSLCARevocationFile
 </highlight>
 </example>
 
-<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s’exécute
+<p>Ce fichier est lu au démarrage du serveur, alors que ce dernier s'exécute
 encore en tant que <code>root</code> (avant la restriction de ses privilèges) ;
 il ne doit donc être la propriété que de <code>root</code> et lisible uniquement
-par ce dernier. Le fichier n’est pas relu en fonctionnement normal ; un
+par ce dernier. Le fichier n'est pas relu en fonctionnement normal ; un
 redémarrage du serveur est requis pour que les changements prennent effet.</p>
 </usage>
 </directivesynopsis>
@@ -1828,14 +1828,14 @@ Les <var>option</var>s disponibles sont :</p>
     <p>
     Cette option <em>force</em> l'interdiction d'accès lorsque <directive
     module="mod_ssl">SSLRequireSSL</directive> ou <directive
-    module="mod_ssl">SSLRequire</directive> a décidé que l’accès doit être
-    interdit. Sans l’option <code>StrictRequire</code>, il est possible pour
-    d’autres directives d’autorisation (comme <directive module="mod_authz_core"
-    type="section">RequireAny</directive>) d’outrepasser l’interdiction d’accès
-    de SSL et d’accorder tout de même l’accès. Avec <code>SSLOptions
-    +StrictRequire</code>, l’interdiction de <code>SSLRequireSSL</code> ou
-    <code>SSLRequire</code> s’applique de manière inconditionnelle, sans tenir
-    compte d’autres directives d’autorisation éventuelles.</p>
+    module="mod_ssl">SSLRequire</directive> a décidé que l'accès doit être
+    interdit. Sans l'option <code>StrictRequire</code>, il est possible pour
+    d'autres directives d'autorisation (comme <directive module="mod_authz_core"
+    type="section">RequireAny</directive>) d'outrepasser l'interdiction d'accès
+    de SSL et d'accorder tout de même l'accès. Avec <code>SSLOptions
+    +StrictRequire</code>, l'interdiction de <code>SSLRequireSSL</code> ou
+    <code>SSLRequire</code> s'applique de manière inconditionnelle, sans tenir
+    compte d'autres directives d'autorisation éventuelles.</p>
 </li>
 <li><code>OptRenegotiate</code>
     <p>
@@ -2112,9 +2112,9 @@ serveur.
 Si cette directive est à <code>on</code> dans un contexte de serveur
 (globalement, en dehors de tout bloc <directive module="core"
 type="section">VirtualHost</directive>), tous les serveurs virtuels qui ne
-l’outrepassent pas héritent de la configuration. Cela a le même effet que la
+l'outrepassent pas héritent de la configuration. Cela a le même effet que la
 définir à <code>on</code> dans tous les serveurs virtuels par défaut à base de
-nom&nbsp;: les clients non-SNI se verront refuser l’accès à tout serveur virtuel à
+nom&nbsp;: les clients non-SNI se verront refuser l'accès à tout serveur virtuel à
 base de nom.
 </p>
 
@@ -2134,7 +2134,7 @@ SSLStrictSNIVHostCheck on
 
 <directivesynopsis>
 <name>SSLVHostSNIPolicy</name>
-<description>Définir la politique de compatibilité pour l’accès des clients SNI
+<description>Définir la politique de compatibilité pour l'accès des clients SNI
 aux serveurs virtuels.</description>
 <syntax>SSLVHostSNIPolicy strict|secure|authonly|insecure</syntax>
 <default>SSLVHostSNIPolicy secure</default>
@@ -2143,18 +2143,18 @@ aux serveurs virtuels.</description>
 
 <usage><p>Cette directive permet de définir la politique à appliquer lors de la
 vérification de la compatibilité du <directive module="core"
-type="section">serveur virtuel</directive> identifié par l’en-tête
-<code>Host</code> d’une requête HTTP avec le <directive module="core"
-type="section">serveur virtuel</directive> identifié depuis l’extension SNI
+type="section">serveur virtuel</directive> identifié par l'en-tête
+<code>Host</code> d'une requête HTTP avec le <directive module="core"
+type="section">serveur virtuel</directive> identifié depuis l'extension SNI
 envoyée au cours de la négociation de la connexion TLS initiale. Si une requête
 HTTP est associée à un serveur virtuel comportant une configuration SSL/TLS
-incompatible selon la politique utilisée, un message d’erreur HTTP avec code
-d’état 421 ("Misdirected Request") sera envoyé.</p>
+incompatible selon la politique utilisée, un message d'erreur HTTP avec code
+d'état 421 ("Misdirected Request") sera envoyé.</p>
 
-<p>La politique s’applique aussi aux connexions TLS pour lesquelles une
-extension SNI n’est pas envoyée lors de la négociation de connexion, et
+<p>La politique s'applique aussi aux connexions TLS pour lesquelles une
+extension SNI n'est pas envoyée lors de la négociation de connexion, et
 utilisant la première définition de serveur virtuel ou la définition par défaut.
-Si l’en-tête Host d’une requête HTTP sur une telle connexion identifie un
+Si l'en-tête Host d'une requête HTTP sur une telle connexion identifie un
 serveur virtuel autre que celui par défaut, la politique de compatibilité sera
 testée.</p>
 
@@ -2174,13 +2174,13 @@ virtuels, qui sont regroupés en deux catégories&nbsp;:</p>
   de chiffrement</strong>&nbsp;: directives qui déterminent le certificat ou la clé
   du serveur (<directive
   module="mod_ssl">SSLCertificateKeyFile</directive>, etc.), restrictions de
-  protocole ou d’algorithme
+  protocole ou d'algorithme
   de chiffrement (<directive
   module="mod_ssl">SSLProtocol</directive> et <directive
   module="mod_ssl">SSLCipherSuite</directive>)</li>
   
-  <li><strong>configuration de la certification et de l’authentification du
-  client</strong>&nbsp;: directives qui affectent l’authentification du client et la
+  <li><strong>configuration de la certification et de l'authentification du
+  client</strong>&nbsp;: directives qui affectent l'authentification du client et la
   vérification de son certificat via TLS, telles que <directive
   module="mod_ssl">SSLVerifyClient</directive>, <directive
   module="mod_ssl">SSLVerifyMode</directive>, <directive
@@ -2201,7 +2201,7 @@ décrite, et en fonction des différentes politiques utilisées&nbsp;:</p>
   <th>Toute incohérence dans les serveurs virtuels</th>
   <th>Certificat/clé du serveur, <br />ou restrictions de protocole/algorithme
   de chiffrement</th>
-  <th>Certification client/<br />configuration de l’authentification</th>
+  <th>Certification client/<br />configuration de l'authentification</th>
 </tr>
 <tr>
   <td><code>strict</code></td><td>bloquée</td><td>bloquée</td><td>bloquée</td>
@@ -2848,12 +2848,12 @@ définition de la variable d'environnement <code>REMOTE_USER</code>.
 La valeur de l'argument <var>nom-var</var> peut correspondre à toute <a
 href="#envvars">variable d'environnement SSL</a>.</p>
 
-<p>Lorsque l’option <code>FakeBasicAuth</code> (voir <a
+<p>Lorsque l'option <code>FakeBasicAuth</code> (voir <a
 href="#ssloptions">SSLOptions</a>) ou la directive <directive
 module="mod_ssl">AuthBasicFake</directive> sont activées, cette directive permet
 de contrôler quelle partie du certificat client est utilisée comme nom
-d’utilisateur. Sans la directive <directive>SSLUserName</directive>,
-<code>REMOTE_USER</code> peut ne pas être définie pour d’autres modules ou
+d'utilisateur. Sans la directive <directive>SSLUserName</directive>,
+<code>REMOTE_USER</code> peut ne pas être définie pour d'autres modules ou
 scripts CGI.</p>
 
 <example><title>Exemple</title>
@@ -2957,10 +2957,10 @@ module="mod_ssl">SSLOCSPOverrideResponder</directive>.</p>
 <ul>
 <li><code>no_ocsp_for_cert_ok</code>
     <p>Normalement, Si la validation OCSP est activée, un certificat qui ne
-    contient pas d’URL de réponse OCSP provoquera un échec de validation.
+    contient pas d'URL de réponse OCSP provoquera un échec de validation.
     Ajouter ce drapeau permet à un tel certificat de passer la validation. Cela
-    s’avère utile dans les environnements où certains certificats de la chaîne
-    ne contiennent pas d’information de réponse OCSP.</p>
+    s'avère utile dans les environnements où certains certificats de la chaîne
+    ne contiennent pas d'information de réponse OCSP.</p>
 </li>
 </ul>
 

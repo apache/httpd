@@ -86,7 +86,7 @@
 
 <section id="usage"><title>Kullanım Özeti</title>
 
-    <p>Apache HTTP Sunucusu 2.x’in DSO özelliklerine bir giriş olarak burada
+    <p>Apache HTTP Sunucusu 2.x'in DSO özelliklerine bir giriş olarak burada
       kısaca bir bilgi vermekle yetinilecektir:</p>
 
     <ol>
@@ -141,7 +141,7 @@ $ apxs -aci filanca mod_filanca.la
       </li>
     </ol>
 
-    <p>Tüm durumlarda derlenen paylaşımlı modülü Apache httpd’nin etkin
+    <p>Tüm durumlarda derlenen paylaşımlı modülü Apache httpd'nin etkin
       kılabilmesi  için <code>httpd.conf</code> dosyasında o modül için bir
       <directive module="mod_so">LoadModule</directive> yönergesi
       bulunmalıdır.</p>
@@ -165,7 +165,7 @@ $ apxs -aci filanca mod_filanca.la
       arayüzü sağlayan <code>dlopen()/dlsym()</code> sistem çağrılarının elle
       yapılması suretiyle.</p>
 
-    <p>İlk yöntemde kullanılan DSO’lara genelde <em>paylaşımlı
+    <p>İlk yöntemde kullanılan DSO'lara genelde <em>paylaşımlı
       kütüphaneler</em> veya <em>DSO kütüphaneleri</em> adı verilir ve
       bunların dosyaları <code>libfilanca.so</code> veya
       <code>libfilanca.so.1.2</code> biçiminde isimlendirilir. Belli bir
@@ -184,9 +184,9 @@ $ apxs -aci filanca mod_filanca.la
     <p>Çalıştırılabilir program içindeki simgelere normalde DSO içinden
       atıfta bulunulmaz (genel kod kütüphanesinin başka programlarca da
       kullanılması nedeniyle). Bu bakımdan DSO tarafında böyle bir çözümleme
-      yapılmaz. Çalıştırılabilir program da DSO’daki simgeleri kendisi
+      yapılmaz. Çalıştırılabilir program da DSO'daki simgeleri kendisi
       çözümlemeye uğraşmaz, bu işlemlerden tamamen Unix yükleyicisi
-      (<code>ld.so</code>) sorumludur. (Aslında, <code>ld.so</code>’yu
+      (<code>ld.so</code>) sorumludur. (Aslında, <code>ld.so</code>'yu
       çağıracak kod, her çalıştırılabilir programın içine ilintilenmiş
       (durağan değil) başlatma kodunun bir parçasıdır.) Programlar tarafından
       ortaklaşa kullanılan kütüphanelerin devingen olarak yüklenmesinin sebebi
@@ -194,25 +194,25 @@ $ apxs -aci filanca mod_filanca.la
       kütüphanesine bir kere kaydedilip disk alanından yer kazanılmış
       olur.</p>
 
-    <p>İkinci yöntemde kullanılan DSO’lara yine <em>paylaşımlı
+    <p>İkinci yöntemde kullanılan DSO'lara yine <em>paylaşımlı
       kütüphaneler</em> veya <em>DSO kütüphaneleri</em> adı verilir fakat
       bunların dosyaları geçerli kabule göre <code>filanca.so</code> gibi
       isimlendirilse de genelde keyfi olarak seçilen bir dosya uzantısı
       kullanılarak isimlendirilirler. Bu dosyalar genellikle programa özel bir
       dizinde dururlar ve bu dosyaları kullanacak olan çalıştırılabilir
       programla aralarında özdevimli olarak bağ kurulmamıştır. Bunun yerine,
-      çalıştırılabilir program DSO’yu çalışma anında <code>dlopen()</code>
+      çalıştırılabilir program DSO'yu çalışma anında <code>dlopen()</code>
       sayesinde kendi adres uzayına ekler. Çalıştırılabilir program için
-      DSO’daki simgeler bu sırada çözümlenmez. Özdevimli olarak devreye
+      DSO'daki simgeler bu sırada çözümlenmez. Özdevimli olarak devreye
       giren Unix yükleyicisi, (varsa) artakalan simgeleri, çalıştırılabilir
       ihraç edilen simge kümelerini (ve özellikle her yerde hazır ve nazır
       <code>libc.so</code> içindeki tüm simgeleri) kullanarak çözümler. Bu
       yolla DSO, çalıştırılabilir programın simge kümesi bilgilerini sanki
       kendisine baştan durağan olarak ilintilenmiş gibi ulaşabilir.</p>
 
-    <p>Son olarak, DSO’nun programlama arayüzünün getirilerinden yararlanmak
+    <p>Son olarak, DSO'nun programlama arayüzünün getirilerinden yararlanmak
       amacıyla çalıştırılabilir program, daha sonra dağıtım tabloları vb.
-      yerlerde kullanmak üzere <code>dlsym()</code> üzerinden DSO’daki belli
+      yerlerde kullanmak üzere <code>dlsym()</code> üzerinden DSO'daki belli
       simgeleri çözümlemek zorundadır. Başka bir deyişle: Çalıştırılabilir
       program ihtiyaç duyduğu her simgeyi kullanmak için kendisi çözümleme
       yapmak zorundadır. Böyle bir mekanizmanın getirisi, programın isteğe
@@ -243,7 +243,7 @@ $ apxs -aci filanca mod_filanca.la
 
 <section id="advantages"><title>Getiriler ve Götürüler</title>
 
-    <p>Yukarıda bahsedilen DSO’ya dayalı özelliklerin getirileri
+    <p>Yukarıda bahsedilen DSO'ya dayalı özelliklerin getirileri
       şunlardır:</p>
 
     <ul>

@@ -261,7 +261,7 @@ l'autorisation d'accès est accordée si le nom d'utilisateur
       <li>Avec la directive <a href="#reqsearch"><code>Require
       ldap-search</code></a>, l'autorisation d'accès
       est accordée si le filtre de recherche renvoie avec succès un objet
-      correspondant unique avec n’importe quel DN.</li>
+      correspondant unique avec n'importe quel DN.</li>
 
       <li>dans tous les autres cas, refus ou restriction de
       l'accès.</li>
@@ -428,12 +428,12 @@ Require ldap-user bjenson fuser jmanager
     membres auront l'autorisation d'accès. Elle prend comme argument le
     DN du groupe LDAP.</p>
 
-    <note type="warning">N’entourez pas de guillemets le nom du groupe. À la
+    <note type="warning">N'entourez pas de guillemets le nom du groupe. À la
     différence de <code>Require ldap-user</code>, le fournisseur
     <code>ldap-group</code> ne prend pas en charge les valeurs entre
     guillemets.</note>
 
-    <p>Supposons par exemple que l’entrée suivante existait dans l’annuaire
+    <p>Supposons par exemple que l'entrée suivante existait dans l'annuaire
     LDP :</p>
 <example><pre>
 dn: cn=Administrators, o=Example
@@ -514,7 +514,7 @@ AuthLDAPMaxSubGroupDepth 1
     l'annuaire correspond au DN spécifié par la directive <code>Require
     ldap-dn</code>, l'autorisation d'accès est accordée.</p>
 
-    <note type="warning">N’entourez pas de guillemets le DN. À la différence de
+    <note type="warning">N'entourez pas de guillemets le DN. À la différence de
     <code>Require ldap-user</code>, le fournisseur <code>ldap-dn</code> ne prend
     pas en charge les valeurs entre guillemets.</note>
 

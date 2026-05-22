@@ -1312,7 +1312,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
 
     <directivesynopsis>
         <name>H2MaxHeaderBlockLen</name>
-        <description>Taille maximale des en-têtes d’une réponse</description>
+        <description>Taille maximale des en-têtes d'une réponse</description>
         <syntax>H2MaxHeaderBlockLen <var>n</var></syntax>
         <default>H2MaxHeaderBlockLen 0</default>
         <contextlist>
@@ -1325,7 +1325,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         <usage>
             <p>
                 La directive <directive>H2MaxHeaderBlockLen</directive> permet
-		de définir la taille maximale globale des en-têtes d’une
+		de définir la taille maximale globale des en-têtes d'une
 		réponse. Définir cette directive à&nbsp;0 implique une taille maximale
 		de&nbsp;64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
             </p>
@@ -1339,7 +1339,7 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
 
         <directivesynopsis>
         <name>H2MaxStreamErrors</name>
-        <description>Nombre maximal toléré d’erreurs dues au client</description>
+        <description>Nombre maximal toléré d'erreurs dues au client</description>
         <syntax>H2MaxStreamErrors <var>n</var></syntax>
         <default>H2MaxStreamErrors 8</default>
         <contextlist>
@@ -1352,12 +1352,12 @@ H2EarlyHint Link "&lt;/my.css&gt;;rel=preload;as=style"
         <usage>
             <p>
 		La directive <directive>H2MaxStreamErrors</directive> permet de
-		définir le nombre maximal toléré d’erreurs de flux HTTP/2
+		définir le nombre maximal toléré d'erreurs de flux HTTP/2
 		causées par le client. Si cette limite est dépassée, la
 		connexion sera fermée. Les erreurs de flux sont des violations
 		du protocole sur un flux HTTP/2 individuel pour lesquelles la
-		spécification du protocole n’exige pas de fermeture de la
-		connexion, mais qui peuvent être un signe d’activité
+		spécification du protocole n'exige pas de fermeture de la
+		connexion, mais qui peuvent être un signe d'activité
 		malveillante de la part du client.
             </p>
             <p>

@@ -340,7 +340,7 @@ AddDescription "Dostum Marshall" dostlar/mars.gif
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde adı
       <code><em>isim</em></code> ile biten bir dosya için gösterilecek simgeyi
-      belirler. <code><em>simge</em></code> ya simgenin göreli URL’si (%
+      belirler. <code><em>simge</em></code> ya simgenin göreli URL'si (%
       öncelemeli), tam nitelenmiş bir uzak URL ya da
       <code>(<var>alt-metin</var>,<var>url</var>)</code>
       biçeminde olmalıdır; buradaki <code><em>alt-metin</em></code> simge
@@ -385,7 +385,7 @@ göre belirler.</description>
     <p>Yönerge, <code><a href="#indexoptions.fancyindexing"
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde bir
       dosya için gösterilecek simgeyi belirler. <code><em>simge</em></code> ya
-      simgenin göreli URL’si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
+      simgenin göreli URL'si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
       <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
       buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
       tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
@@ -415,7 +415,7 @@ belirler.</description>
       >FancyIndexing</a></code> seçeneğiyle üretilen dizin listesinde MIME
       türü <code><em>MIME-türü</em></code> olarak belirtilen bir dosya için
       gösterilecek simgeyi belirler. <code><em>simge</em></code> ya simgenin
-      göreli URL’si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
+      göreli URL'si (% öncelemeli), tam nitelenmiş uzak bir URL ya da
       <code>(<var>alt-metin</var>,<var>url</var>)</code> biçeminde olmalıdır;
       buradaki <code><em>alt-metin</em></code> simge gösterilemediği durumda
       tarayıcı tarafından simgenin yerinde gösterilecek metindir.</p>
@@ -617,7 +617,7 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
       <dd><code>Charset</code> seçeneği üretilen sayfa için bir karakter
         kümesi belirtebilmenizi sağlar. Dizinin bulunduğu dosya sisteminin
         karakter kodlamasına bağlı olarak öntanımlı değeri Windows ve Mac OS
-        X'te <var>UTF-8</var>, diğerlerinde <var>ISO-8859-1</var>’dir (İlgili
+        X'te <var>UTF-8</var>, diğerlerinde <var>ISO-8859-1</var>'dir (İlgili
         dosya sisteminin Unicode dosya isimleri kullanıp kullanmamasına
         bağlıdır).
 
@@ -719,12 +719,12 @@ IndexOptions Charset=UTF-8
       <dd>Bu seçenek etkin kılındığında isimler harf büyüklüğüne duyarsız
         sıralanır. Örneğin, isme göre artan sıralamada <code>IgnoreCase</code>
         etkinse Zeta dosyası alfa dosyasından sonra listelenir (Dikkat: GAMMA
-        daima gamma’dan önce listelenir.)</dd>
+        daima gamma'dan önce listelenir.)</dd>
 
       <dt><a name="indexoptions.ignoreclient" id="indexoptions.ignoreclient"
              ><code>IgnoreClient</code></a></dt>
 
-      <dd>Bu seçenek <module>mod_autoindex</module>’in listenin sıralanmasına
+      <dd>Bu seçenek <module>mod_autoindex</module>'in listenin sıralanmasına
         etki edenler dahil tüm sorgu değişkenlerini yoksaymasına sebep olur
         (örtük olarak <code><a href="#indexoptions.suppresscolumnsorting"
         >SuppressColumnSorting</a></code> uygulanır).</dd>
@@ -857,7 +857,7 @@ IndexOptions Charset=UTF-8
         <code>Last-Modified</code> ve <code>ETag</code> alanlarının dönmesini
         sağlar. Sadece işletim sistemi veya dosya sistemi uygun stat()
         sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri ve
-        OS/2'nin JFS'si ile Win32’nin NTFS’i böyledir. Ancak OS/2 ve Win32 FAT dosya
+        OS/2'nin JFS'si ile Win32'nin NTFS'i böyledir. Ancak OS/2 ve Win32 FAT dosya
         sistemleri böyle değildir. Bu özellik etkin kılındığında istemci veya
         vekil <code>HEAD</code> istekleriyle dosya listesindeki değişiklikleri
         izleyebilirler. Yalnız, bazı işletim sistemlerinin yeni ve silinmiş
@@ -922,8 +922,8 @@ IndexOptions Type=text/plain
       <dt><a name="indexoptions.xhtml"
                id="indexoptions.xhtml"><code>XHTML</code></a></dt>
 
-      <dd><code>XHTML</code> seçeneği <module>mod_autoindex</module>’in kodu
-        HTML 3.2’ye değil XHTML 1.0’a uygun üretmesini sağlar.
+      <dd><code>XHTML</code> seçeneği <module>mod_autoindex</module>'in kodu
+        HTML 3.2'ye değil XHTML 1.0'a uygun üretmesini sağlar.
         <strong>Bu seçenek sadece
         <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
         seçeneği etkinse etkili olacaktır.</strong></dd>
@@ -1088,7 +1088,7 @@ IndexStyleSheet "/css/style.css"
 
 <usage>
     <p><directive>IndexHeadInsert</directive> yönergesi, dizin listesi için
-    üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
+    üretilen HTML'nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
     dizge tanımlar.</p>
     <highlight language="config">
 IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
@@ -1111,7 +1111,7 @@ belirler.</description>
       eklenecek dosyanın ismini belirler. <code><em>dosya-ismi</em></code> ile
       listeye dahil edilecek dosyanın ismi listelenen dizine göreli olarak
       belirtilir. Eğer dosya ismi 2. örnekteki gibi bir bölü çizgisi ile
-      başlıyorsa <directive module="core">DocumentRoot</directive>’a göreli
+      başlıyorsa <directive module="core">DocumentRoot</directive>'a göreli
       belirtildiği varsayılır.</p>
 
     <highlight language="config">

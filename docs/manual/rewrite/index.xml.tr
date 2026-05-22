@@ -41,7 +41,7 @@
       başlıkları, ortam değişkenleri, zaman damgaları hatta çeşitli biçimlerde
       harici veritabanı sorguları bile bu amaçla kullanılabilir.</p>
 
-    <p>Yeniden yazma kuralları URL’lerin tamamında (path-info kısmı ve sorgu
+    <p>Yeniden yazma kuralları URL'lerin tamamında (path-info kısmı ve sorgu
       dizgesi dahil) hem sunucu bağlamında (<code>httpd.conf</code>) hem sanal
       konaklar bağlamında (<directive type="section" module="core"
       >VirtualHost</directive> bölümleri), hem de dizin bağlamında
@@ -76,7 +76,7 @@
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">mod_rewrite başvuru belgesi</a>
-</seealso><seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemine Eşlenmesi</a></seealso>
+</seealso><seealso><a href="../urlmapping.html">URL'lerin Dosya Sistemine Eşlenmesi</a></seealso>
 <seealso><a href="https://cwiki.apache.org/confluence/display/httpd/Rewrite">mod_rewrite wiki</a>
 </seealso><seealso><a href="../glossary.html">Terimler</a></seealso>
 

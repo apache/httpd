@@ -933,7 +933,7 @@ AddOutputFilter INCLUDES .shtml
     </highlight>
 
     <note type="warning">
-    La valeur ne doit pas contenir d’espace.
+    La valeur ne doit pas contenir d'espace.
     </note>
 
 </usage>
@@ -1013,7 +1013,7 @@ SSIEndTag   "%&gt;"
     </highlight>
 
     <note type="warning">
-    La valeur ne doit pas contenir d’espace.
+    La valeur ne doit pas contenir d'espace.
     </note>
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive

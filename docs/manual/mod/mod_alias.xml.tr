@@ -34,10 +34,10 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
 <identifier>alias_module</identifier>
 
   <summary>
-    <p>Bu modülde bulunan yönergeler sunucuya istek olarak gelen URL’lerin
+    <p>Bu modülde bulunan yönergeler sunucuya istek olarak gelen URL'lerin
       denetlenmesini ve değiştirilmesini mümkün kılar. <directive
       module="mod_alias" >Alias</directive> ve <directive module="mod_alias"
-      >ScriptAlias</directive> yönergeleri URL’lerin dosya sisteminin
+      >ScriptAlias</directive> yönergeleri URL'lerin dosya sisteminin
       dizinlerine eşlenmesini sağlar. Böylece, kök dizini <directive
       module="core">DocumentRoot</directive> ile belirtilen site belge ağacı
       altında bulunmayan içeriğe erişmek mümkün olur. <directive
@@ -66,7 +66,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
   </summary>
 
   <seealso><module>mod_rewrite</module></seealso> <seealso><a
-    href="../urlmapping.html">URL’lerin Dosya sistemi ile Eşlenmesi</a>
+    href="../urlmapping.html">URL'lerin Dosya sistemi ile Eşlenmesi</a>
   </seealso>
 
   <section id="order"><title>İşlem Sırası</title>
@@ -81,7 +81,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
       module="mod_alias">Redirect</directive> varsa bunlar belli bir
       sıraya göre işleme sokulurlar.</p>
 
-    <p>İlk adımda, <directive module="mod_alias">Alias</directive>’lardan önce
+    <p>İlk adımda, <directive module="mod_alias">Alias</directive>'lardan önce
       bütün <directive module="mod_alias">Redirect</directive> yönergeleri
       işleme sokulur. Bu bakımdan bir <directive module="mod_alias"
       >Redirect</directive> veya <directive module="mod_alias"
@@ -120,7 +120,7 @@ Alias "/foo" "/gaq"
 
 <directivesynopsis>
 <name>Alias</name>
-<description>URL’leri dosya sistemi konumlarıyla eşler.</description>
+<description>URL'leri dosya sistemi konumlarıyla eşler.</description>
 <syntax>Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
 <var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -132,7 +132,7 @@ Alias "/foo" "/gaq"
     <p><directive>Alias</directive> yönergesi, belgelerin <directive
       module="core">DocumentRoot</directive> dizininden farklı bir yerde
       saklanmasını mümkün kılar. <code><em>URL-yolu</em></code> ile başlayan
-      URL’ler (% imlemesi çözüldükten sonra) <code><em>dizin-yolu</em></code>
+      URL'ler (% imlemesi çözüldükten sonra) <code><em>dizin-yolu</em></code>
       ile başlayan yerel dosyalarla eşlenir. <code><em>URL-yolu</em></code>,
       harf büyüklüğüne duyarsız sistemlerde bile harf büyüklüğüne
       duyarlıdır.</p>
@@ -149,7 +149,7 @@ Alias "/image" "/ftp/pub/image"
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <directive
       module="mod_alias" >AliasMatch</directive> yönergesine bakınız.</p>
 
-    <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
+    <p><code><em>URL-yolu</em></code>'nu bir <code>/</code> ile
       sonlandırırsanız <directive>Alias</directive> yönergesini yorumlarken
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
       eğer</p>
@@ -159,7 +159,7 @@ Alias "/icons/" "/usr/local/apache/icons/"
     </highlight>
 
     <p>diye bir tanım yaparsanız sona bir / ekleme ihtiyacından dolayı
-      <code>/icons</code> URL’si için bir <directive>Alias</directive>
+      <code>/icons</code> URL'si için bir <directive>Alias</directive>
       kullanılmayacaktır.</p>
 
     <p><directive>Alias</directive> <em>hedefleri</em> için ek <directive
@@ -208,7 +208,7 @@ Alias "/image" "/ftp/pub/image"
 
 <directivesynopsis>
 <name>AliasMatch</name>
-<description>URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+<description>URL'leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</description>
 <syntax>AliasMatch "<var>düzenli-ifade</var>"
 "<var>dosya-yolu</var>|<var>dizin-yolu</var>"</syntax>
@@ -293,7 +293,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"
 
 <directivesynopsis>
 <name>Redirect</name>
-<description>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
+<description>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL'ye
 yönlendirir.</description>
 <syntax>Redirect [<var>durum</var>] [<var>URL-yolu</var>]
 <var>URL</var></syntax>
@@ -303,7 +303,7 @@ yönlendirir.</description>
 
   <usage>
     <p><directive>Redirect</directive> yönergesi istemciye bir yönlendirme
-      isteği döndürerek eski URL’yi yenisiyle eşler.</p>
+      isteği döndürerek eski URL'yi yenisiyle eşler.</p>
 
     <p>Eski <code><em>URL-yolu</em></code> bir bölü çizgisi ile başlar ve harf
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
@@ -316,8 +316,8 @@ yönlendirir.</description>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
-      dönecektir. <code><em>URL-yolu</em></code>’nun devamı niteliğindeki ek
-      yol hedef URL’ye eklenir.</p>
+      dönecektir. <code><em>URL-yolu</em></code>'nun devamı niteliğindeki ek
+      yol hedef URL'ye eklenir.</p>
 
     <highlight language="config">
 # Farklı bir konaktaki bir URL'ye yönlendirme
@@ -451,7 +451,7 @@ RedirectMatch "(.*)\.gif$" "http://baska.example.com$1.jpg"
 <directivesynopsis>
 <name>RedirectTemp</name>
 <description>İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</description>
+URL'ye yönlendirir.</description>
 <syntax>RedirectTemp <var>URL-yolu</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -466,7 +466,7 @@ URL’ye yönlendirir.</description>
 <directivesynopsis>
 <name>RedirectPermanent</name>
 <description>İstemciyi, kalıcı bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</description>
+URL'ye yönlendirir.</description>
 <syntax>RedirectPermanent <var>URL-yolu</var> <var>URL</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -480,7 +480,7 @@ URL’ye yönlendirir.</description>
 
 <directivesynopsis>
 <name>ScriptAlias</name>
-<description>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
+<description>Bir URL'yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
 <syntax>ScriptAlias [<var>URL-yolu</var>]
 <var>dosya-yolu</var>|<var>dizin-yolu</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -492,7 +492,7 @@ URL’ye yönlendirir.</description>
       yorumlayıcısı tarafından çalıştırılacak betikleri içeren dizin olarak
       imlemesi dışında <directive module="mod_alias">Alias</directive>
       yönergesinin yaptığı işi yapar. <code><em>URL-yolu</em></code> ile
-      başlayan harf büyüklüğüne duyarlı URL’ler (% imlemesi çözüldükten
+      başlayan harf büyüklüğüne duyarlı URL'ler (% imlemesi çözüldükten
       sonra), dosya sistemindeki bir tam yol olarak belirtilmiş
       <code><em>dizin-yolu</em></code> ile başlayan betiklerle eşlenir.</p>
 
@@ -519,7 +519,7 @@ Alias "/cgi-bin/" "/siteler/cgi-bin/"
 ScriptAlias "/cgi-bin/" "/siteler/cgi-handler.pl"
     </highlight>
 
-    <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
+    <p>Bu senaryoda <code>/cgi-bin/</code>'den istenen tüm dosyalar sizin
       belirttiğiniz dosya tarafından işleme sokulacaktır. Bu yöntemle kendi
       özel eylemcinizi kullanabilirsiniz. İsterseniz, bunu içerik eklemek
       ya da ısmarlama bir eylem için bir CGI sarmalayıcısı olarak da
@@ -528,7 +528,7 @@ ScriptAlias "/cgi-bin/" "/siteler/cgi-handler.pl"
     <note type="warning">Yapılandırma değiştiğinde kaynak kodlarının ister
       istemez açığa çıkmasını istemiyorsanız CGI betiklerinizi <directive
       module="core">DocumentRoot</directive> altına koymayınız.
-      <directive>ScriptAlias</directive> yönergesi URL’yi doğru yere
+      <directive>ScriptAlias</directive> yönergesi URL'yi doğru yere
       eşlemekten başka orayı bir CGI betikleri dizini olarak imler. CGI
       betiklerinizi <directive module="core">DocumentRoot</directive> altına
       koyarsanız çalıştırmak için <directive>ScriptAlias</directive> değil,
@@ -572,7 +572,7 @@ ScriptAlias "/cgi-bin/" "/siteler/cgi-handler.pl"
 
 <directivesynopsis>
 <name>ScriptAliasMatch</name>
-<description>Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+<description>Bir URL'yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
 <syntax>ScriptAliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></syntax>

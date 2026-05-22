@@ -442,8 +442,8 @@ directives <directive>ProxyHTMLEvents</directive>.</p>
 <note><title>Nécessite ProxyHTMLExtended</title>
 <p>Les évènements de type scripting  ne sont traités que si la directive
 <directive module="mod_proxy_html">ProxyHTMLExtended</directive> est définie à
-<var>On</var>. Dans le cas contraire, les attributs d’évènement sont transmis
-sans modification, même s’ils sont listés dans la directive
+<var>On</var>. Dans le cas contraire, les attributs d'évènement sont transmis
+sans modification, même s'ils sont listés dans la directive
 <directive>ProxyHTMLEvents</directive>.</p>
 </note>
 <p>Normalement, cette directive est définie globalement. Si vous

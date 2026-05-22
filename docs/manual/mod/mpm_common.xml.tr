@@ -42,7 +42,7 @@
 <module>prefork</module></modulelist>
 
 <usage>
-    <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache httpd’nin
+    <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache httpd'nin
       geçmeye çalışacağı dizini belirler. Eğer işletim sisteminiz, çöken bir
       sürecin olması durumunda <code>core</code> dosyasını çöken sürecin
       çalışma dizinine yazacak şekilde yapılandırılmışsa,
@@ -202,14 +202,14 @@ PidFile /var/run/apache.pid
     eklenmiştir.</compatibility>
 
 <usage>
-    <p><directive>Listen</directive> yönergesi Apache httpd’yi sadece belli IP
+    <p><directive>Listen</directive> yönergesi Apache httpd'yi sadece belli IP
       adreslerini ve portlarını dinlemeye sevkeder.
       <directive>Listen</directive> artık belirtilmesi zorunlu yönergelerden
       biridir. Yapılandırma dosyasında bulunmadığı takdirde sunucu
       başlatılırken başarısız olacaktır. Bu Apache HTTP Sunucusunun önceki
       sürümünde böyle değildi.</p>
 
-    <p><directive>Listen</directive> yönergesi Apache httpd’ye, sadece belli
+    <p><directive>Listen</directive> yönergesi Apache httpd'ye, sadece belli
       portlardan veya IP adresi ve port çiftlerinden gelen istekleri kabul
       etmesini söyler. Eğer sadece port numarası belirtilmişse sunucu
       belirtilen portu bütün ağ arabirimlerinde dinleyecektir. Eğer portla
@@ -221,7 +221,7 @@ PidFile /var/run/apache.pid
       durumda belirtilen bütün IP adreslerinden ve portlardan gelecek
       isteklere yanıt verecektir.</p>
 
-    <p>Örneğin sunucunun hem port 80 hem de port 8000’den istek kabul etmesini
+    <p>Örneğin sunucunun hem port 80 hem de port 8000'den istek kabul etmesini
       istiyorsanız bunu şöyle belirtebilirsiniz:</p>
 
     <highlight language="config">
@@ -407,7 +407,7 @@ açıklaması</a></seealso>
     <p>Çok evreli ve melez sunucularda (<module>event</module> veya
       <module>worker</module> gibi) <directive>MaxRequestWorkers</directive>
       yönergesi istemcilere hizmet verecek evre sayısını sınırlar. Öntanımlı
-      değer melez MPM’ler için 16'dır
+      değer melez MPM'ler için 16'dır
       (<directive module="mpm_common">ServerLimit</directive> ile <directive
       module="mpm_common">ThreadsPerChild</directive> çarpılır: <code>16 x
       25</code>). Bu bakımdan <directive>MaxRequestWorkers</directive> değerini
@@ -685,7 +685,7 @@ ScoreBoardFile /var/run/apache_status
       başlayamayacağı gibi sistemi kararsız hale de getirebilir.</p>
 
     <p>Bu yönergeyi <module>prefork</module> modülü ile sadece <directive
-      module="mpm_common">MaxRequestWorkers</directive> yönergesine 256’dan
+      module="mpm_common">MaxRequestWorkers</directive> yönergesine 256'dan
       (öntanımlı) daha büyük bir değer atayacaksanız kullanınız. Bu yönergeye
       <directive module="mpm_common">MaxRequestWorkers</directive> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
@@ -708,7 +708,7 @@ ScoreBoardFile /var/run/apache_status
      <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ServerLimit 20000</code>
         şeklinde bir zorlayıcı sınır vardır (<module>prefork</module> için
-        200000’dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
+        200000'dir). Bu önlem, yazım hatalarının istenmeyen sonuçlara yol
         açmasını engellemek için düşünülmüştür. Bu sınırı daha da arttırmak
         için mpm kaynak dosyasındaki MAX_SERVER_LIMIT değerini değiştirip
         sunucuyu yeniden derlemeniz gerekir.</p>
@@ -740,7 +740,7 @@ ScoreBoardFile /var/run/apache_status
       <directive module="prefork">MaxSpareServers</directive> yönergelerine
       bakınız.)</p>
 
-    <p>Öntanımlı değer MPM’den MPM’e fark eder. Öntanımlı değer
+    <p>Öntanımlı değer MPM'den MPM'e fark eder. Öntanımlı değer
       <module>worker</module> ve <module>event</module> için <code>3</code>
       iken <module>prefork</module> için <code>5</code>,
       <module>mpmt_os2</module> için <code>2</code>'dir.</p>
@@ -769,7 +769,7 @@ ScoreBoardFile /var/run/apache_status
 
     <p><module>mpm_netware</module> için <code>StartThreads 50</code>
       öntanımlı olup, sadece tek bir süreç olduğundan, sunucunun başlatılması
-      sırasında oluşturulan evrelerin toplam sayısı <code>50</code>’dir.</p>
+      sırasında oluşturulan evrelerin toplam sayısı <code>50</code>'dir.</p>
 </usage>
 </directivesynopsis>
 
@@ -805,7 +805,7 @@ ScoreBoardFile /var/run/apache_status
 
     <p><directive>ThreadLimit</directive> yönergesinin öntanımlı değeri
       <module>mpm_winnt</module> için <code>1920</code>, diğerleri için
-      <code>64</code>’tür.</p>
+      <code>64</code>'tür.</p>
 
     <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ThreadLimit 20000</code>
@@ -842,7 +842,7 @@ ScoreBoardFile /var/run/apache_status
 
     <p><directive>ThreadsPerChild</directive> için öntanımlı değer
       <module>mpm_winnt</module> kullanıldığında <code>64</code> diğerleri
-      için <code>25</code>’tir.</p>
+      için <code>25</code>'tir.</p>
     
     <p><directive>ThreadsPerChild</directive> değeri <directive 
       module="mpm_common">ThreadLimit</directive> değerini aşamaz. Eğer daha 
@@ -881,7 +881,7 @@ ScoreBoardFile /var/run/apache_status
         diğer platformlarda sorunsuz çalışabilir. Bu tür çökmeler
         <directive>ThreadStackSize</directive> yönergesine daha büyük yığıt
         boyu atanarak çözümlenir. Böyle bir ayarlamayı sadece üçüncü parti
-        modülün üreticisi bunun gerekliliğini belirtmişse veya Apache httpd’nin
+        modülün üreticisi bunun gerekliliğini belirtmişse veya Apache httpd'nin
         evre yığıt boyutunun küçüklüğünden dolayı çöktüğü teşhis edildiği
         takdirde yapınız.</li>
 

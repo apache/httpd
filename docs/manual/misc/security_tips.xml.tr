@@ -31,7 +31,7 @@
 
   <summary>
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
-    ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
+    ipuçları.  Öneriler kısmen Apache'ye özel kısmen de genel olacaktır.</p>
   </summary>
 
   <section id="uptodate"><title>Güncel Tutma</title>
@@ -41,7 +41,7 @@
       bir yazılımın dağıtılmasının ardından küçük ya da büyük bazı sorunların
       keşfedilmesi kaçınılmazdır. Bu sebeple, yazılım güncellemelerinden
       haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
-      Apache’den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
+      Apache'den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
       ile ilgili bilgileri tam zamanında alabilmek için <a
       href="http://httpd.apache.org/lists.html#http-announce">Apache
       HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
@@ -79,14 +79,14 @@
         yönergesi bir istemcinin isteği göndermek için harcadığı zamanı
         sınırlamayı sağlar.</li>
 
-      <li>HRS’ye maruz kalması olası sitelerde <directive module="core"
+      <li>HRS'ye maruz kalması olası sitelerde <directive module="core"
         >TimeOut</directive> yönergesinin değeri düşürülmelidir. Birkaç
         saniye gibi mümkün olduğunca düşük bir ayar uygun olabilir. Ancak
         <directive module="core">TimeOut</directive> başka işlemlerde de
         kullanıldığından çok düşük değerler, örneğin, uzun süre çalışan CGI
         betiklerinde sorunlar çıkmasına sebep olabilir.</li>
 
-      <li>HRS’ye maruz kalması olası sitelerde <directive module="core"
+      <li>HRS'ye maruz kalması olası sitelerde <directive module="core"
         >KeepAliveTimeout</directive> yönergesinin değeri de düşürülebilir.
         Hatta bazı siteler başarımı arttırmak amacıyla <directive
         module="core">KeepAlive</directive> yönergesi üzerinden kalıcı
@@ -116,12 +116,12 @@
         href="perf-tuning.html">başarım arttırma belgesine</a> de
         bakabilirsiniz.</li>
 
-      <li>HRS’lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
-        arttırabilecek evreli <a href="../mpm.html">MPM</a>’lerden birini
-        kullanmak iyi olabilir. Dahası, <module>event</module> MPM’i
+      <li>HRS'lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
+        arttırabilecek evreli <a href="../mpm.html">MPM</a>'lerden birini
+        kullanmak iyi olabilir. Dahası, <module>event</module> MPM'i
         her bağlantıya yeni bir evre atanmaması için eşzamansız işlem yapar.
         OpenSSL kütüphanesinin doğası nedeniyle
-        <module>event</module> MPM’i <module>mod_ssl</module> ve diğer girdi
+        <module>event</module> MPM'i <module>mod_ssl</module> ve diğer girdi
         süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
         <module>worker</module> MPM'inin davranışına geri döner.</li>
 
@@ -198,7 +198,7 @@
 
     <p>SSI sayfaları, CGI betikleriyle ilgili riskleri de taşır. <code>exec
       cmd</code> elemanı kullanılarak bir SSI sayfasından herhangi bir CGI
-      betiğini veya bir sistem programını Apache’nin aidiyetinde olduğu
+      betiğini veya bir sistem programını Apache'nin aidiyetinde olduğu
       kullanıcının yetkisiyle çalıştırmak mümkündür.</p>
 
     <p>SSI sayfalarının yararlı özelliklerinden yararlanırken güvenliğini de
@@ -206,7 +206,7 @@
 
     <p>Sunucu yöneticisi, bir başıbozuk SSI sayfasının sebep olabileceği
       zararları bertaraf etmek için <a href="#cgi">CGI Genelinde</a>
-      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>’i etkin
+      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>'i etkin
       kılabilir.</p>
 
     <p>SSI sayfalarını <code>.html</code> veya <code>.htm</code>
@@ -240,7 +240,7 @@
     <p>CGI betiklerinin hepsi aynı kullanıcının aidiyetinde çalışırsa diğer
       betiklerle aralarında çelişkilerin ortaya çıkması ister istemez
       kaçınılmazdır. Örneğin A kullanıcısının B kullanıcısına garezi varsa
-      bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
+      bir betik yazıp B'nin CGI veritabanını silebilir. Bu gibi durumların
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a
       href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
@@ -249,7 +249,7 @@
   </section>
 
   <section id="nsaliasedcgi">
-    <title><code>ScriptAlias</code>’sız CGI</title>
+    <title><code>ScriptAlias</code>'sız CGI</title>
 
     <p>Kullanıcıların sitenin her yerinde CGI betiklerini çalıştırmalarına
       izin vermek ancak şu koşullarda mümkün olabilir:</p>
@@ -266,17 +266,17 @@
   </section>
 
   <section id="saliasedcgi">
-    <title><code>ScriptAlias</code>’lı CGI</title>
+    <title><code>ScriptAlias</code>'lı CGI</title>
 
-    <p>CGI’yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
+    <p>CGI'yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
       denetim imkanı sağlar. Bu kaçınılmaz olarak <directive
-      module="mod_alias">ScriptAlias</directive>’sız CGI’den çok daha
+      module="mod_alias">ScriptAlias</directive>'sız CGI'den çok daha
       güvenlidir, ancak bu dizinlere yazma hakkı olan kullanıcılarınız
       güvenilir kişiler olması ve site yöneticisinin de olası güvenlik
       açıklarına karşı CGI betiklerini ve programlarını denemeye istekli
       olması şartıyla.</p>
 
-    <p>Çoğu site yöneticisi <code>ScriptAlias</code>’sız CGI yerine bu
+    <p>Çoğu site yöneticisi <code>ScriptAlias</code>'sız CGI yerine bu
       yaklaşımı seçer.</p>
 
   </section>
@@ -344,7 +344,7 @@
   <section id="protectserverfiles">
     <title>Sunucu dosyalarının öntanımlı olarak korunması</title>
 
-    <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
+    <p>Apache'nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
       erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal
       URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu
       istemciye sunacaktır.</p>

@@ -38,7 +38,7 @@
       çocuk süreç gelen bir isteğe yanıt verirken ebeveyn süreç çocuk süreç
       havuzunu yönetir. Evresiz kütüphanelerle uyumluluk için evrelemeden
       kaçınma ihtiyacında olan siteler için uygundur. Ayrıca istekleri
-      birbirlerinden yalıtmak için en iyi MPM’dir, dolayısıyla herhangi bir
+      birbirlerinden yalıtmak için en iyi MPM'dir, dolayısıyla herhangi bir
       istekle ilgili bir sorun diğerlerini etkilemez.</p>
 
     <p>Bu MPM kendi kendine her duruma çok iyi uyum sağladığından
@@ -69,7 +69,7 @@
       >MaxRequestWorkers</directive> yönergeleri ile düzenlenir. Apache httpd
       kendiliğinden her duruma çok iyi uyum sağladığından, genelde, çoğu
       sitenin bu yönergelerin öntanımlı değerlerini değiştirmesi gerekmez.
-      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <directive
+      Aynı anda 256'dan fazla isteğe hizmet sunacak sitelerin <directive
       module="mpm_common">MaxRequestWorkers</directive> değerini arttırmaları
       gerekebilir. Ancak, fiziksel belleği yeterli olmayan sitelerin de
       sunucunun belleği diske takaslamasını önlemek için bu değeri
@@ -80,7 +80,7 @@
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin
       <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
       süreçler Apache httpd tarafından daha az yetkili bir kullanıcının
-      aidiyetinde çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin
+      aidiyetinde çalıştırılırlar. Apache httpd'nin çocuk süreçlerinin
       kullanıcı ve gruplarını ayarlamak için <directive module="mod_unixd"
       >User</directive> ve <directive module="mod_unixd">Group</directive>
       yönergeleri kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya

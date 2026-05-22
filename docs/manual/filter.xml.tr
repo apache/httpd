@@ -29,10 +29,10 @@
   <title>Süzgeçler</title>
 
   <summary>
-    <p>Bu belge, Apache’de süzgeç kullanımı hakkındadır.</p>
+    <p>Bu belge, Apache'de süzgeç kullanımı hakkındadır.</p>
   </summary>
 
-  <section id="intro"> <title>Apache 2’de Süzme İşlemi</title>
+  <section id="intro"> <title>Apache 2'de Süzme İşlemi</title>
     <related>
       <modulelist>
         <module>mod_filter</module>
@@ -104,7 +104,7 @@
 
     <ul>
       <li>HTML ve XML belgelerin işlenmesi ve yazılması</li>
-      <li>XSLT dönüşümleri ve XInclude’lar</li>
+      <li>XSLT dönüşümleri ve XInclude'lar</li>
       <li>XML İsim-alanı desteği</li>
       <li>HTML Formlarının çözümlenmesi ve sunucuya dosya yükleme</li>
       <li>Resim işleme</li>
@@ -123,7 +123,7 @@
     <p><module>mod_filter</module>, Apache 2.1 ve sonrasında mevcut olup,
       süzgeç zincirinin çalışma anında devingen olarak yapılandırılabilmesini
       mümkün kılar. Böylece, örneğin, bir vekili, özgün sunucunun ne
-      göndereceğini bilmeden HTML’yi bir HTML süzgeciyle yazmaya ve JPEG
+      göndereceğini bilmeden HTML'yi bir HTML süzgeciyle yazmaya ve JPEG
       resimleri tamamen farklı bir süzgeçten geçirmeye ayarlayabilirsiniz. Bu,
       asıl içeriğe bağlı olarak çalışma anında içeriği farklı içerik
       sağlayıcılara dağıtan bir süzgeç düzeneği kullanılarak çalışır. Bir

@@ -572,13 +572,13 @@ de l'index d'un répertoire</description>
 
     <note><title>Différences avec les motifs à caractères génériques du shell</title>
       <p>La recherche de correspondance avec caractères génériques utilisée ici
-      n’est <em>pas</em> la même que la recherche de correspondance de motifs de
+      n'est <em>pas</em> la même que la recherche de correspondance de motifs de
       noms de fichier dans le style du shell (glob). En particulier&nbsp;:</p>
       <ul>
         <li>Les expressions entre crochets telles que <code>[abc]</code> ou
 	<code>[!.]</code> ne sont pas prises en charge&nbsp;; elles sont traitées
 	comme des caractères littéraux.</li>
-        <li>Un point en début de nom de fichier n’est pas traité de manière
+        <li>Un point en début de nom de fichier n'est pas traité de manière
 	particulière. Par exemple, <code>*~</code> correspondra avec
 	<code>.example~</code>, alors que ce ne sera pas le cas avec le shell.</li>
       </ul>
@@ -799,10 +799,10 @@ répertoire</description>
       <dd>Le mot-clé <code>NameWidth</code> vous permet de spécifier la
       largeur en octets de la colonne correspondant au nom du
       fichier. La valeur doit être supérieure à 5, ou <code>*</code> pour une
-      largeur automatique. S’il n’est pas défini ou préfixé par <code>-</code>,
+      largeur automatique. S'il n'est pas défini ou préfixé par <code>-</code>,
       la valeur par défaut de 20 octets est utilisée.</dd>
 
-      <dd>S’il n'est pas
+      <dd>S'il n'est pas
       défini, <module
       >mod_autoindex</module> va calculer la meilleure largeur
       possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
@@ -1030,13 +1030,13 @@ répertoire</description>
       <dt><a name="indexoptions.none"
                id="indexoptions.none">None</a></dt>
 
-      <dd>Le mot-clé <code>None</code> désactive toutes les options d’indexation
-      pour le répertoire. Aucune fonctionnalité d’indexation fantaisiste ne sera
+      <dd>Le mot-clé <code>None</code> désactive toutes les options d'indexation
+      pour le répertoire. Aucune fonctionnalité d'indexation fantaisiste ne sera
       activée.
       <note><code>None</code> ne peut pas être préfixé par <code>+</code> ou
       <code>-</code>, et il ne peut être combiné avec aucun autre mot-clé de la
       directive <directive>IndexOptions</directive>. Si <code>None</code> est
-      spécifié, il doit s’agir de la seule option présente.</note>
+      spécifié, il doit s'agir de la seule option présente.</note>
       </dd>
     </dl>
 

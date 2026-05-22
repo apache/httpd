@@ -374,24 +374,24 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
 
     <p>Ce programme est lancé une fois au démarrage du serveur HTTP Apache, puis
     communique avec le moteur de réécriture via <code>STDIN</code> et
-    <code>STDOUT</code>. Pour chaque recherche d’une fonction de correspondance,
-    la clé est écrite sur l’entrée standard du programme, suivie d’un caractère
+    <code>STDOUT</code>. Pour chaque recherche d'une fonction de correspondance,
+    la clé est écrite sur l'entrée standard du programme, suivie d'un caractère
     nouvelle ligne. Le programme doit lire une ligne sur son entrée standard
-    (jusqu’au caractère nouvelle ligne) et écrire sa réponse sous la forme d’une
+    (jusqu'au caractère nouvelle ligne) et écrire sa réponse sous la forme d'une
     seule ligne terminée par un caractère nouvelle ligne sur sa sortie standard.
     Les clés ne doivent pas contenir de caractère nouvelle ligne&nbsp;; dans le cas
     contraire, la recherche échouera.</p>
 
-    <p>S’il n’y a pas de valeur de recherche correspondante, le programme de
+    <p>S'il n'y a pas de valeur de recherche correspondante, le programme de
     correspondance renvoie la chaîne de quatre caractères "<code>NULL</code>".
     Notez que cette comparaison est insensible à la casse et que "null", "Null",
     etc. seront aussi interprétés comme des recherches ayant échoué. En
     conséquence, une programme de correspondance ne peut pas renvoyer la chaîne
     littérale "NULL" comme valeur correspondante.</p>
 
-    <p>La sortie d’erreur standard du programme est héritée du processus httpd
-    parent&nbsp;; tout ce que le programme écrit sur la sortie d’erreur standard
-    arrivera donc au même endroit que la sortie d’erreur de httpd (en général le
+    <p>La sortie d'erreur standard du programme est héritée du processus httpd
+    parent&nbsp;; tout ce que le programme écrit sur la sortie d'erreur standard
+    arrivera donc au même endroit que la sortie d'erreur de httpd (en général le
     journal indiqué par la directive <directive
     module="core">ErrorLog</directive>).</p>
 
@@ -438,7 +438,7 @@ simple possible. Si le programme se bloque, httpd va attendre
 indéfiniment une réponse de sa part, et par conséquent ne répondra plus
 aux requêtes.</li>
 <li>Assurez-vous de bien désactiver la mise en tampon dans votre
-programme. Dans l’exemple en Python ci-avant, cette opération s’effectue en
+programme. Dans l'exemple en Python ci-avant, cette opération s'effectue en
 passant <code>flush=True</code> à <code>print()</code>. Si les entrées/sorties sont mises en tampon, httpd va
 attendre une sortie, et va par conséquent se bloquer.</li>
 <li>Rappelez-vous qu'il n'existe qu'une copie du programme lancé au
@@ -447,12 +447,12 @@ ce goulot d'étranglement. Ceci peut provoquer des ralentissements
 significatifs si de nombreuses requêtes doivent être traitées, ou si le
 script lui-même est très lent.</li>
 <li>Si le programme de correspondance se termine, il ne sera pas redémarré
-automatiquement. Les recherches subséquentes échoueront jusqu’au prochain
+automatiquement. Les recherches subséquentes échoueront jusqu'au prochain
 redémarrage du serveur. </li>
 <li>Le programme de correspondance est toujours tué et redémarré à chaque
 redémarrage du serveur (graceful ou autre), que les directives de configuration
-concernées aient changé ou non. Lors d’un arrêt, le signal <code>SIGTERM</code>
-est envoyé au programme ; s’il ne s’arrête pas dans les 3 secondes, le signal
+concernées aient changé ou non. Lors d'un arrêt, le signal <code>SIGTERM</code>
+est envoyé au programme ; s'il ne s'arrête pas dans les 3 secondes, le signal
 <code>SIGKILL</code> lui est envoyé.</li>
 </ul>
 </note>

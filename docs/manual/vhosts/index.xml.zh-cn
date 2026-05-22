@@ -30,9 +30,9 @@
     <p>术语<cite>虚拟主机</cite>指的是在单一机器上运行多个网站
     (例如 <code>company1.example.com</code> 和
     <code>company2.example.com</code>) 。
-    虚拟主机可以“<a
-    href="ip-based.html">基于 IP</a>”，即每个 IP 一个站点；
-    或者“<a href="name-based.html">基于名称</a>”，
+    虚拟主机可以"<a
+    href="ip-based.html">基于 IP</a>"，即每个 IP 一个站点；
+    或者"<a href="name-based.html">基于名称</a>"，
     即每个 IP 多个站点。这些站点运行在同一物理服务器上的事实不会明显的透漏给最终用户。</p>
 
     <p>Apache 是第一个支持基于 IP 的虚拟主机的服务器。

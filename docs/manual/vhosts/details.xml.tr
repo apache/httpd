@@ -30,13 +30,13 @@
 
 <summary>
 
-    <p>Bu belgede, bir istek aldığında Apache’nin hangi sanal konak
+    <p>Bu belgede, bir istek aldığında Apache'nin hangi sanal konak
       ile hizmet sunacağına nasıl karar verdiği açıklanmaya çalışılmıştır.</p>
 
     <p>Çoğu kullanıcı hangi türü kullanacağına karar vermek için önce <a
-      href="name-based.html#namevip">İsme dayalı ve IP’ye dayalı Sanal
+      href="name-based.html#namevip">İsme dayalı ve IP'ye dayalı Sanal
       Konak</a> bölümünü, sonra <a href="name-based.html">İsme Dayalı Sanal
-      Konak Desteği</a> veya <a href="ip-based.html">IP’ye Dayalı Sanal Konak
+      Konak Desteği</a> veya <a href="ip-based.html">IP'ye Dayalı Sanal Konak
       Desteği</a> belgesini okumalı ve <a href="examples.html">bazı
       örneklere</a> göz atmalıdır.</p>
 
@@ -45,7 +45,7 @@
 
 </summary>
 
-<seealso><a href="ip-based.html">IP’ye Dayalı Sanal Konak Desteği</a></seealso>
+<seealso><a href="ip-based.html">IP'ye Dayalı Sanal Konak Desteği</a></seealso>
 <seealso><a href="name-based.html">İsme Dayalı Sanal Konak Desteği</a></seealso>
 <seealso><a href="examples.html">Çok Kullanılan Sanal Konak Örnekleri</a></seealso>
 <seealso><a href="mass.html">Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma</a></seealso>
@@ -166,12 +166,12 @@
     <p>Bir eşleşme bulunamazsa hizmet ana sunucudan sunulur.</p>
 
     <p>Arama sonucunda bu IP adresi için bulunmuş <code>VirtualHost</code>
-      tanımları varsa sonraki adım hizmetin bir IP’ye dayalı sankondan mı yoksa
+      tanımları varsa sonraki adım hizmetin bir IP'ye dayalı sankondan mı yoksa
       isme dayalı bir sankondan mı sunulacağına karar vermektir.</p>
 
     </section>
 
-    <section id="ipbased"><title>IP’ye dayalı sankon</title>
+    <section id="ipbased"><title>IP'ye dayalı sankon</title>
 
     <p>Eğer en iyi eşleşme olarak saptanmış IP adresi ve port çiftini içeren
       sadece bir <code>VirtualHost</code> yönergesi varsa artık karar vermek
@@ -225,7 +225,7 @@
       ismi ve port ana sunucuyla veya sankonlardan biriyle eşleşiyorsa,
       şema/konakadı/port öneki ayrılır ve elde edilen göreli URI ilgili
       sankondan veya ana sunucudan sunulur. Eğer bir eşleşme sağlanamazsa
-      URI’ye dokunulmaz ve istek bir vekil isteği olarak ele alınır.</p>
+      URI'ye dokunulmaz ve istek bir vekil isteği olarak ele alınır.</p>
 </section>
 
 <section id="observations"><title>İzlenimler</title>
@@ -238,7 +238,7 @@
         konaklarınızda adres olarak "*" kullanın, böylece yapılandırılmış
         sankonların hepsine isme dayalı sanal konak işlemleri uygulanır.</li>
 
-      <li>Bir IP’ye dayalı sankon için asla <code>ServerAlias</code> ve
+      <li>Bir IP'ye dayalı sankon için asla <code>ServerAlias</code> ve
         <code>ServerPath</code> değerine bakılmaz.</li>
 
       <li>Sıralama sadece aynı IP adresine sahip isme dayalı sankonlar arasında
@@ -250,7 +250,7 @@
         başlık alanında belirtilen port asla kullanılmaz. Apache httpd daima
         istemcinin isteği gönderdiği gerçek portu kullanır.</li>
 
-      <li>Eğer aynı IP adresine sahip IP’ye dayalı iki sankon varsa, bunlara
+      <li>Eğer aynı IP adresine sahip IP'ye dayalı iki sankon varsa, bunlara
         örtük olarak isme dayalı sanal konak işlemleri uygulanır. 2.3.11
         sürümünden beri yeni davranış şekli budur.</li>
 

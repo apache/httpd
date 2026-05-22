@@ -40,7 +40,7 @@
       sanal konak kullanımı kolaşlaşır.</p>
 
     <note><title>Bilginize</title>
-      <p>URI’leri dosya isimlerine dönüştürmek için <module>mod_alias</module>
+      <p>URI'leri dosya isimlerine dönüştürmek için <module>mod_alias</module>
         veya <module>mod_userdir</module> kullanılmışsa bunlar
         <module>mod_vhost_alias</module> yönergeleri tarafından aşağıda
         açıklandığı gibi geçersiz kılınırlar. Örneğin, aşağıdaki yapılandırma
@@ -62,11 +62,11 @@ Sanal Barındırma</a></seealso>
     <title>Dizin İsimlerinin Elde Edilmesi</title>
 
     <p>Bu modüldeki tüm yönergeler bir dizgeyi bir dosya yoluna dönüştürerek
-      çalışırlar. Dönüşüm dizgesi (bundan sonra “isim” diyeceğiz) ya sunucu
+      çalışırlar. Dönüşüm dizgesi (bundan sonra "isim" diyeceğiz) ya sunucu
       ismi olur (bunun nasıl belirlendiğini öğrenmek için <directive
       module="core" >UseCanonicalName</directive> yönergesine bakınız) ya da
       sunucu üzerindeki sanal konağın IP adresi olur. Dönüşümü,
-      <code>printf</code>’inkilerin benzeri birkaç biçem belirteci
+      <code>printf</code>'inkilerin benzeri birkaç biçem belirteci
       denetler:</p>
 
 <table>
@@ -87,7 +87,7 @@ Sanal Barındırma</a></seealso>
       seçim yaparken <code>M</code>, <code>N</code> ile seçilen parçadan
       karakter seçmekte kullanılır. <code>M</code> isteğe bağlı olup mevcut
       olmaması halinde öntanımlı olarak sıfırdır. Noktanın varlığı
-      <code>M</code>’nin varlığına bağlıdır. Dönüşüm şöyle uygulanır:</p>
+      <code>M</code>'nin varlığına bağlıdır. Dönüşüm şöyle uygulanır:</p>
 
     <table>
       <columnspec><column width=".1"/><column width=".4"/></columnspec>
@@ -191,7 +191,7 @@ VirtualDocumentRoot "/usr/local/apache/vhosts/%-2.0.%-1.0"
       bile <code>/usr/local/apache/vhosts/example.com</code> dizinine
       yönlendirilecektir.</p>
 
-    <p>IP’ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
+    <p>IP'ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
       olabilirdi:</p>
 
     <highlight language="config">
@@ -201,7 +201,7 @@ VirtualScriptAliasIP  "/usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin"
     </highlight>
 
     <p><code>http://falan.filan.example.com/dizin/dosya.html</code> için
-      yapılan bir istek eğer <code>falan.filan.example.com</code>’un IP adresi
+      yapılan bir istek eğer <code>falan.filan.example.com</code>'un IP adresi
       10.20.30.40 olsaydı,
       <code>/usr/local/apache/sankonlar/10/20/30/40/belgeler/dizin/dosya.html
       </code> dosyası ile karşılanırdı.
@@ -244,7 +244,7 @@ VirtualDocumentRoot "/usr/local/apache/sankonlar/%2.0.%3.0"
 
     <p><directive>VirtualDocumentRoot</directive> yönergesi sunucu ismine göre
       belgelerin bulunacağı yeri Apache HTTP Sunucusunun saptamasını sağlar.
-      <code><em>hesaplanan-dizin</em></code>’in dönüşüm sonucu <directive
+      <code><em>hesaplanan-dizin</em></code>'in dönüşüm sonucu <directive
       module="core" >DocumentRoot</directive> yönergesinin değeriymiş gibi
       belge ağacının kök dizini olarak kullanılır.
       <code><em>hesaplanan-dizin</em></code> yerine <code>none</code>
@@ -300,7 +300,7 @@ VirtualDocumentRoot "/usr/local/apache/sankonlar/%2.0.%3.0"
 <usage>
 
     <p><directive>VirtualScriptAlias</directive> yönergesi, CGI betiklerinin
-      bulunacağı yeri Apache httpd’nin saptamasını sağlamak bakımından
+      bulunacağı yeri Apache httpd'nin saptamasını sağlamak bakımından
       <directive module="mod_vhost_alias" >VirtualDocumentRoot</directive>
       yönergesinin yaptığını yapar. <code>/cgi-bin/</code> ile başlayan
       istekler için ise <directive module="mod_alias">ScriptAlias</directive>

@@ -73,13 +73,13 @@
       q=0.6, image/*; q=0.5, */*; q=0.1
     </example>
 
-    <p>httpd, HTTP/1.1 belirtiminde tanımlanan şekliyle ‘sunucu yönetiminde’
+    <p>httpd, HTTP/1.1 belirtiminde tanımlanan şekliyle 'sunucu yönetiminde'
       içerik uzlaşımını destekler. <code>Accept</code>,
       <code>Accept-Language</code>, <code>Accept-Charset</code> ve
       <code>Accept-Encoding</code> istek başlıklarını tamamen destekler.
-      httpd ayrıca, RFC 2295 ve RFC 2296’da tanımlanan bir deneysel uzlaşım
-      olarak ‘şeffaf’ içerik uzlaşımını da destekler. Fakat ‘özellik
-      uzlaşımını’ bu RFC’lerde tanımlandığı gibi desteklemez.</p>
+      httpd ayrıca, RFC 2295 ve RFC 2296'da tanımlanan bir deneysel uzlaşım
+      olarak 'şeffaf' içerik uzlaşımını da destekler. Fakat 'özellik
+      uzlaşımını' bu RFC'lerde tanımlandığı gibi desteklemez.</p>
 
     <p>Bir <strong>özkaynak</strong> bir URI (RFC 2396) tarafından betimlenen
       kavramsal bir öğedir. Apache gibi bir HTTP sunucusu, ortam türü,
@@ -93,7 +93,7 @@
       kaynaklandığından bahsedilebilir.</p>
 </section>
 
-<section id="negotiation"><title>httpd’de İçerik Uzlaşımı</title>
+<section id="negotiation"><title>httpd'de İçerik Uzlaşımı</title>
 
     <p>Bir özkaynak üzerinde uzlaşılırken gösterim çeşitlerinin her biri
       hakkında sunucuya bilgi verilmesi gerekir. Bu iki yolla yapılabilir:</p>
@@ -104,7 +104,7 @@
         gibi).</li>
 
       <li>Ya da sunucu örtük bir dosya ismi kalıbı eşleşmesinin ardından
-        sonuçlar arasından seçim yapar; buna ‘Çoklu Görünüm’ araması adı
+        sonuçlar arasından seçim yapar; buna 'Çoklu Görünüm' araması adı
         verilir.</li>
     </ul>
 
@@ -233,10 +233,10 @@
 
 <section id="methods"><title>Uzlaşım Yöntemleri</title>
 
-    <p>httpd’nin, bir türeşlem dosyası veya dizin içindeki bir dosya
+    <p>httpd'nin, bir türeşlem dosyası veya dizin içindeki bir dosya
       sayesinde belli bir özkaynağın gösterim çeşitlerinin bir listesini elde
-      ettikten sonra ‘en uygun’ gösterime karar vermek için kullanabileceği
-      iki yöntem vardır. httpd’nin içerik uzlaşım özelliklerinin kullanımı
+      ettikten sonra 'en uygun' gösterime karar vermek için kullanabileceği
+      iki yöntem vardır. httpd'nin içerik uzlaşım özelliklerinin kullanımı
       sırasında uzlaşımın nasıl yerine getirileceği ile ilgili ayrıntıları
       bilmek aslında gerekli değildir. Bununla birlikte belgenin kalanında bu
       konu açıklanmaya çalışılmıştır.</p>
@@ -247,18 +247,18 @@
       <li>Normal durumda <strong>sunucu yönetiminde httpd uzlaşım
         algoritması</strong> kullanılır. Bu algoritma aşağıda ayrıntılı olarak
         açıklanmıştır. Bu algoritma kullanıldığı zaman, httpd, en iyi sonuca
-        ulaşmak için bazen belli boyutların üstünlük katsayılarıyla ‘oynar’.
-        httpd’nin bu katsayılarla oynama işini nasıl yaptığı aşağıda daha
+        ulaşmak için bazen belli boyutların üstünlük katsayılarıyla 'oynar'.
+        httpd'nin bu katsayılarla oynama işini nasıl yaptığı aşağıda daha
         ayrıntılı açıklanmıştır.</li>
 
-      <li>İstemci bu işlem için özellikle RFC 2295’te tanımlanan mekanizmanın
+      <li>İstemci bu işlem için özellikle RFC 2295'te tanımlanan mekanizmanın
         kullanılmasını isterse <strong>şeffaf içerik uzlaşımı</strong>
         kullanılır. Bu uzlaşım yöntemi, en uygun gösterimin seçilmesi
         konusunda tarayıcıya tam denetim imkanı verir; dolayısıyla sonuç
         tarayıcının bu işlem için kullandığı algoritmanın başarısına bağlıdır.
-        Şeffaf uzlaşım sürecinin bir parçası olarak, tarayıcı, RFC 2296’da
-        tanımlanan ‘gösterim çeşidini uzaktan seçme algoritması’nın
-        çalıştırılmasını httpd’den isteyebilir.</li>
+        Şeffaf uzlaşım sürecinin bir parçası olarak, tarayıcı, RFC 2296'da
+        tanımlanan 'gösterim çeşidini uzaktan seçme algoritması'nın
+        çalıştırılmasını httpd'den isteyebilir.</li>
     </ol>
 
   <section id="dimensions"><title>Uzlaşımın Boyutları</title>
@@ -321,7 +321,7 @@
         uygulanabilir değilse bu boyut elenir ve sonuçta hiçbir gösterim
         çeşidi kalmasza 4. adıma atlanır.</li>
 
-      <li>‘En uygun’ gösterim çeşidi bir eleme süreciyle seçilir. Bu süreç
+      <li>'En uygun' gösterim çeşidi bir eleme süreciyle seçilir. Bu süreç
         sırasında aşağıdaki sınamalar sırayla uygulanır. Sınamalardan
         geçemeyen bir gösterim çeşidi elenir.  Sınamaların bir aşamasında tek
         bir gösterim çeşidi kalırsa bu en uygun eşleşme olarak seçilmiş olur
@@ -341,7 +341,7 @@
             sıralamasına bakılır, aksi takdirde <code>LanguagePriority</code>
             yönergesi ile atanmışsa oradaki dil sıralamasına bakılır.</li>
 
-          <li>En yüksek ‘seviyeden’ ortam parametresine (text/html ortam türü
+          <li>En yüksek 'seviyeden' ortam parametresine (text/html ortam türü
             sürümünü belirtmekte kullanılır) sahip gösterim çeşitleri
             seçilir.</li>
 
@@ -374,14 +374,14 @@
 
       <li>Algoritma, artık seçilmiş en uygun gösterim çeşidine sahipse bu
         artık yanıt olarak döndürülebilir. HTTP yanıt başlığı
-        <code>Vary</code>’ye uzlaşım boyutları atanır (tarayıcı ve
+        <code>Vary</code>'ye uzlaşım boyutları atanır (tarayıcı ve
         arabellekler özkaynağı kaydederken bu bilgiyi kullanırlar)
         ve algoritma sonlandırılır.</li>
 
       <li>Buraya gelinmişse hiçbir gösterim seçilmemiş demektir (hiçbiri
         tarayıcı tarafından kabul edilebilir bulunmadığından dolayı).
         Gövdesinde mevcut gösterim çeşitlerini listeleyen bir HTML belgesi 406
-        durum koduyla döndürülür (406: ‘kabul edilebilir bir gösterim yok’).
+        durum koduyla döndürülür (406: 'kabul edilebilir bir gösterim yok').
         Ayrıca HTTP <code>Vary</code> başlığında gösterim çeşitliliğinin
         boyutları belirtilir.</li>
     </ol>
@@ -441,14 +441,14 @@
 
   <section id="exceptions"><title>Dil Uzlaşımında İstisnalar</title>
 
-    <p>httpd 2.0’dan itibaren, uzlaşım algoritmasına, bir eşleşme bulmak
+    <p>httpd 2.0'dan itibaren, uzlaşım algoritmasına, bir eşleşme bulmak
       konusunda algoritma başarılı olamadığı takdirde hoş bir son çareye izin
       vermek için bazı istisnalar eklenmiştir.</p>
 
     <p>İstemci sunucudan bir sayfa istediğinde, sunucu, tarayıcı tarafından
       gönderilen <code>Accept-language</code> başlığıyla eşleşen tek bir sayfa
-      bulamadığı takdirde istemciye ya “Kabul edilebilir bir gösterim çeşidi
-      yok” ya da “Çok sayıda seçim belirtilmiş” yanıtını döndürür. Bu hata
+      bulamadığı takdirde istemciye ya "Kabul edilebilir bir gösterim çeşidi
+      yok" ya da "Çok sayıda seçim belirtilmiş" yanıtını döndürür. Bu hata
       iletilerinden kaçınmak için bu gibi durumlarda httpd
       <code>Accept-language</code> başlığını yoksaymaya ayarlanabilir. Böylece
       istemcinin isteğine tam olarak uymasa da bir belge sağlanır. Bu hata
@@ -465,11 +465,11 @@
       <code>en</code> olarak imlenmesine izin vermez. (Bir okuyucu Britanya
       İngilizcesini anlıyor ama genel İngilizceyi anlamıyor diye
       <code>Accept-Language</code> başlığında <code>en</code>  değil de
-      <code>en-GB</code>’yi belirtmesinin hemen hemen daima bir yapılandırma
+      <code>en-GB</code>'yi belirtmesinin hemen hemen daima bir yapılandırma
       hatasına yol açacağına dikkat ediniz. Maalesef, mevcut istemcilerin çoğu
       öntanımlı yapılandırmalarında buna benzer şeyler yapmaktadır.) Bununla
-      birlikte, başka bir dille eşleşme mümkün değilse ve sunucu “Kabul
-      edilebilir bir gösterim çeşidi yok” hatasını döndürmeye hazırsa veya
+      birlikte, başka bir dille eşleşme mümkün değilse ve sunucu "Kabul
+      edilebilir bir gösterim çeşidi yok" hatasını döndürmeye hazırsa veya
       <directive module="mod_negotiation" >LanguagePriority</directive> son
       çaresine ayarlanmışsa alt küme belirtimini yok sayacak ve
       <code>en</code> belge isteklerine <code>en-GB</code> belgelerle yanıt
@@ -612,7 +612,7 @@ Header append Vary cookie
       olarak (<code>misal</code> gibi) kullanmanın daima mümkün olduğunu
       farkedeceksiniz. Böylece bir belgenin asıl türünü gizleyebilir ve
       sonradan bir hiperbağ değişikliği yapmaksızın örneğin
-      <code>html</code>’den <code>shtml</code> veya <code>cgi</code>’ye
+      <code>html</code>'den <code>shtml</code> veya <code>cgi</code>'ye
       geçebilirsiniz.</p>
 
     <p>Hiperbağlarda MIME türlerini (<code>misal.html</code> gibi) kullanmaya
@@ -622,7 +622,7 @@ Header append Vary cookie
 
 <section id="caching"><title>Arabellekler Hakkında</title>
 
-    <p>Bir arabellek, bir gösterimi istek URL’si ile ilişkilendirerek saklar.
+    <p>Bir arabellek, bir gösterimi istek URL'si ile ilişkilendirerek saklar.
       Böylece, sonradan aynı URL için bir istek yapıldığında kaydettiği
       gösterimi kullanabilir. Fakat özkaynak sunucuyla uzlaşılan türdeyse
       arabelleğe ilk istenen çeşit saklanmış olacağından isteğe yanlış

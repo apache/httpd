@@ -41,8 +41,8 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
       >Devingen Paylaşımlı Nesne</a> (DSO) mekanizması üzerinden
       kullanılabilmesini sağlar.</p>
 
-    <p>Unix’te yüklenen kod genellikle paylaşımlı nesne dosyalarından
-      (<code>.so</code> uzantılı dosyalar), Windows’ta ise ya <code>.so</code>
+    <p>Unix'te yüklenen kod genellikle paylaşımlı nesne dosyalarından
+      (<code>.so</code> uzantılı dosyalar), Windows'ta ise ya <code>.so</code>
       ya da <code>.dll</code> uzantılı dosyalardan gelir.</p>
 
     <note type="warning"><title>Uyarı</title>
@@ -65,17 +65,17 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
 
     <p><code>mod_so</code> modülü  <code>ApacheModuleFoo.dll</code> biçeminde
       isimlendirilmiş modülleri hala yüklemekteyse de yeni adlandırma uzlaşımı
-      tercih edilmelidir. Yüklenebilir modülleri 2.0’a dönüştürüyorsanız,
+      tercih edilmelidir. Yüklenebilir modülleri 2.0'a dönüştürüyorsanız,
       lütfen isimlerini de 2.0 uzlaşımına uygun hale getiriniz.</p></note>
 
     <p>Apache httpd modül programlama arayüzü Unix ve Windows sürümleri
       arasında değişiklik göstermez. Unix için kullanılan çoğu modül hiç
-      değişiklik yapmadan ya da çok küçük bir değişiklikle Windows’ta da
+      değişiklik yapmadan ya da çok küçük bir değişiklikle Windows'ta da
       çalışmaktadır. Çalışmayanlar Unix platformunun sahip olduğu ancak Windows
       platformunun sahip olmadığı nitelikleri kullanan modüllerdir.</p>
 
-    <p>Bir modül Windows’ta çalıştığı zaman, sunucuya iki şekilde
-      yüklenebilir. Unix’te olduğu gibi, doğrudan sunucunun içinde
+    <p>Bir modül Windows'ta çalıştığı zaman, sunucuya iki şekilde
+      yüklenebilir. Unix'te olduğu gibi, doğrudan sunucunun içinde
       derlenebilir. Windows için hazırlanan Apache httpd paketi, Unix için
       geçerli olan  <code>Configure</code> betiğini içermediğinden modülün
       kaynak dosyası ApacheCore proje dosyasına, sembolleri de
@@ -87,9 +87,9 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
       sunucuyu yeniden derlemek gerekmeksizin her Windows için Apache httpd
       kurulumunda çalışabilir.</p>
 
-    <p>Bir modül DLL’i oluşturmak için modülün kaynak dosyasında küçük bir
+    <p>Bir modül DLL'i oluşturmak için modülün kaynak dosyasında küçük bir
       değişiklik yapmak gerekir: Modül kaydının daha sonra oluşturulacak olan
-      DLL’den ihraç edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak için
+      DLL'den ihraç edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak için
       modülün modül kaydı tanımına (Apache httpd başlık dosyalarında
       tanımlanmış olan) <code>AP_MODULE_DECLARE_DATA</code> eklenmelidir.
       Örneğin, modülünüz</p>
@@ -121,7 +121,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
       dosyasını gaspedersiniz ya da kendi <code>.dsp</code> dosyanızın
       ilintileme seçenekleriyle derleyicininkileri karşılaştırırsınız.</p>
 
-    <p>Artık modülünüzün DLL sürümünü oluşturmalısınız. DLL’i sunucunuzun kök
+    <p>Artık modülünüzün DLL sürümünü oluşturmalısınız. DLL'i sunucunuzun kök
       dizininin altında bulunan <code>modules</code> dizinine yerleştirdikten
       sonra <directive>LoadModule</directive> yönergesi ile sunucunuza
       yükleyebilirsiniz.</p>
@@ -145,7 +145,7 @@ yeniden başlatılması sırasında yüklenmesini sağlar.</description>
       sunucu ile ilintiler. Yönerge, bazı modüllerin çalışması sırasında
       gereken ek kodların yüklenmesi için kullanılır.
       <code><em>dosya-ismi</em></code> olarak mutlak bir dosya yolu
-      belirtilebileceği gibi <directive module="core">ServerRoot</directive>’a
+      belirtilebileceği gibi <directive module="core">ServerRoot</directive>'a
       göreli bir dosya yolu da  belirtilebilir.</p>
 
     <p>Örnek:</p>
