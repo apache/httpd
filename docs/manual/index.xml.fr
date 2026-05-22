@@ -29,9 +29,9 @@
 </title>
 
 <category id="release"><title>Notes de version</title>
-    <page href="new_features_2_4.html">Nouvelles fonctionnalités dApache 2.3/2.4</page>
+    <page href="new_features_2_4.html">Nouvelles fonctionnalités d'Apache 2.3/2.4</page>
     <page href="new_features_2_2.html">Nouvelles fonctionnalités d'Apache 2.1/2.2</page>
-    <page href="new_features_2_0.html.fr">Nouvelles fonctionnalités d'Apache 2.0</page>
+    <page href="new_features_2_0.html">Nouvelles fonctionnalités d'Apache 2.0</page>
     <page href="upgrading.html">Mise à jour de la version 2.2 vers la version 2.4</page>
     <page href="license.html">Licence Apache</page>
 </category>
