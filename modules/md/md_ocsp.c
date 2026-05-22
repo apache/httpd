@@ -533,13 +533,13 @@ static const char *certid_summary(const OCSP_CERTID *certid, apr_pool_t *p)
     serial = issuer = key = "???";
     OCSP_id_get0_info(&aname_hash, &amd_nid, &akey_hash, &aserial, (OCSP_CERTID*)certid);
     if (aname_hash) {
-        data.len = (apr_size_t)aname_hash->length;
-        data.data = (const char*)aname_hash->data;
+        data.len = (apr_size_t)ASN1_STRING_length(aname_hash);
+        data.data = (const char*)ASN1_STRING_get0_data(aname_hash);
         md_data_to_hex(&issuer, 0, p, &data);
     }
     if (akey_hash) {
-        data.len = (apr_size_t)akey_hash->length;
-        data.data = (const char*)akey_hash->data;
+        data.len = (apr_size_t)ASN1_STRING_length(akey_hash);
+        data.data = (const char*)ASN1_STRING_get0_data(akey_hash);
         md_data_to_hex(&key, 0, p, &data);
     }
     if (aserial) {
