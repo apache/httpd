@@ -70,11 +70,12 @@ sudo systemctl start httpd
     <dt>Installing on Ubuntu/Debian</dt>
     <dd>
 <highlight>
+sudo apt update
 sudo apt install apache2
 sudo service apache2 start
 </highlight>
 
-    <note type="warning">See <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu's documentation</a> for platform-specific notes.</note>
+    <note type="warning">See <a href="https://ubuntu.com/tutorials/install-and-configure-apache">Ubuntu's documentation</a> for platform-specific notes.</note>
 
     </dd>
 
