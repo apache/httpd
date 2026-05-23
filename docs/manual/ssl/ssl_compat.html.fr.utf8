@@ -32,7 +32,7 @@
 <div class="warning"><h3>Document historique</h3>
 <p>Ce document décrit la compatibilité avec des produits SSL qui ont été
 abandonnés depuis de nombreuses années (Apache-SSL, Stronghold, Raven SSL, Red Hat
-Secure Web Server). Il n’est conservé qu’à titre de référence historique. Si
+Secure Web Server). Il n'est conservé qu'à titre de référence historique. Si
 vous configurez mod_ssl sur une installation actuelle de httpd, consultez le <a href="ssl_howto.html">didacticiel SSL/TLS</a>. Cette page sera probablement
 supprimée dans une future version.</p>
 </div>

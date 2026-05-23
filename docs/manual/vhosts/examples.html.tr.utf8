@@ -35,7 +35,7 @@
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
       karşılaşılması olası tüm  senaryolara yer verilmeye çalışılmıştır.
-      Buradaki senaryolar, tek bir  sunucu üzerinde  <a href="name-       based.html">isme dayalı</a> veya <a href="ip-based.html">IP’ye dayalı</a>
+      Buradaki senaryolar, tek bir  sunucu üzerinde  <a href="name-       based.html">isme dayalı</a> veya <a href="ip-based.html">IP'ye dayalı</a>
       sanal konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
@@ -45,13 +45,13 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Aynı içeriği farklı IP adresleriyle sunmak
     (örn., dahili ve harici ağlara)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#port">Farklı portlarla farklı siteler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP’ye dayalı sanal konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Hem IP’ye hem de porta dayalı sanal konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Hem isme hem de IP‘ye dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP'ye dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Hem IP'ye hem de porta dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Hem isme hem de IP'ye dayalı sanal konaklar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy"><code>Virtualhost</code> ve
-    <code>mod_proxy</code>’nin birlikte kullanımı</a></li>
+    <code>mod_proxy</code>'nin birlikte kullanımı</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#default"><code>_default_</code> sanal konakları</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#migrate">Bir isme dayalı sanal konağı bir IP’ye dayalı
+<li><img alt="" src="../images/down.gif" /> <a href="#migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
     sanal konakla yansılamak</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverpath"><code>ServerPath</code> yönergesinin kullanımı</a></li>
 </ul></div>
@@ -77,7 +77,7 @@
       gelecek ziyaretçileriniz için DNS kayıtlarınızın olması şarttır.</p>
     </div>
 
-    <pre class="prettyprint lang-config"># Apache’nin 80. portu dinlediğinden emin olalım
+    <pre class="prettyprint lang-config"># Apache'nin 80. portu dinlediğinden emin olalım
 Listen 80
 &lt;VirtualHost *:80&gt;
   DocumentRoot "/siteler/ecom"
@@ -179,7 +179,7 @@ DocumentRoot "/siteler/anasunucu"
     <p>Sunucu makine iki IP adresine sahip olsun. Biri iç ağa
       (<code>192.168.1.1</code>) diğeri dış ağa (<code>172.20.30.40</code>)
       bakıyor olsun. <code>sunucu.example.com</code> ismi dış ağda dış ağa
-      bakan IP’ye, iç ağda ise iç ağa bakan IP’ye çözümleniyor olsun.</p>
+      bakan IP'ye, iç ağda ise iç ağa bakan IP'ye çözümleniyor olsun.</p>
 
     <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
       dolayısıyla aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü ile hizmet verebilir.</p>
@@ -241,7 +241,7 @@ Listen 8080
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP’ye dayalı sanal konaklar</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2><a name="ip" id="ip">IP'ye dayalı sanal konaklar</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
@@ -265,7 +265,7 @@ Listen 8080
       genelindeki yapılandırma ile ana sunucu yanıt verecektir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">Hem IP’ye hem de porta dayalı sanal konaklar</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2><a name="ipport" id="ipport">Hem IP'ye hem de porta dayalı sanal konaklar</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
     
 
     <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
@@ -301,7 +301,7 @@ Listen 172.20.30.50:8080
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">Hem isme hem de IP‘ye dayalı sanal konaklar</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2><a name="mixed" id="mixed">Hem isme hem de IP'ye dayalı sanal konaklar</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
     
 
     <p>Bir <code>VirtualHost</code> yönergesinde belirtilen bir IP adresi başka
@@ -340,7 +340,7 @@ Listen 172.20.30.50:8080
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy"><code>Virtualhost</code> ve
-    <code>mod_proxy</code>’nin birlikte kullanımı</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+    <code>mod_proxy</code>'nin birlikte kullanımı</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>Bu örnekte bir arabirimi dışarıya bakan bir makinede, başka bir
       makinede çalışan bir sunucuya sanal konak olarak, bir vekil sunucu
@@ -433,7 +433,7 @@ Listen 172.20.30.50:8080
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">Bir isme dayalı sanal konağı bir IP’ye dayalı
+<h2><a name="migrate" id="migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
     sanal konakla yansılamak</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>İsme dayalı sanal konak örneklerinin <a href="#twoips">2. sinde</a> adı
@@ -465,7 +465,7 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Böylece sanal konağa hem yeni (bir IP’ye dayalı sanal konak olarak)
+    <p>Böylece sanal konağa hem yeni (bir IP'ye dayalı sanal konak olarak)
       hem de eski adresinden (bir isme dayalı sanal konak olarak)
       erişilebilecektir.</p>
 
@@ -512,18 +512,18 @@ DocumentRoot "/siteler/ecom"
 
     <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> yönergesinden dolayı
       <code>http://bir.baska.tld/bir/</code> şeklinde yapılan isteklere
-      <em>daima</em> “bir” sanal konağı hizmet sunacaktır.</p>
+      <em>daima</em> "bir" sanal konağı hizmet sunacaktır.</p>
 
     <p><code>http://bir.baska.tld/</code> şeklinde yapılan isteklere ise
       istemcinin doğru <code>Host:</code> başlığı göndermesi şartıyla
-      “bir” sanal konağı hizmet sunacaktır. İstemci, bir
+      "bir" sanal konağı hizmet sunacaktır. İstemci, bir
       <code>Host:</code> başlığı göndermediği takdirde ilk konaktan bir
       bilgilendirme sayfası alacaktır.</p>
 
     <p>Yalnız buradaki bir tuhaflığa dikkat edin: Eğer istemci bir
       <code>Host:</code> başlığı göndermeden
       <code>http://iki.baska.tld/bir/</code> şeklinde bir istek yaparsa bu
-      isteğe de “bir” sanal konağı hizmet sunacaktır.</p>
+      isteğe de "bir" sanal konağı hizmet sunacaktır.</p>
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesi, bir
       istemcinin, bir URL öneki belirtsin ya da belirtmesin doğru

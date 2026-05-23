@@ -43,7 +43,7 @@
 
     <p>İlk sütunda yönergenin ismi ve kullanımı belirtilmiştir. İkinci sütunda
       yönergenin varsa öntanımlı değeri gösterilmiştir. Eğer öntanımlı değer
-      sütuna sığmayacak kadar uzunsa sığmayan kısmı kırpılıp yerine “+” imi
+      sütuna sığmayacak kadar uzunsa sığmayan kısmı kırpılıp yerine "+" imi
       konmuştur.</p>
 
     <p>Aşağıda sağdaki gösterge tablolarına uygun olarak, üçüncü sütunda
@@ -121,9 +121,9 @@ responses from the server</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>URL-yolu</var>] <var>dosya-yolu</var> |
-<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL'leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch "<var>düzenli-ifade</var>"
-"<var>dosya-yolu</var>|<var>dizin-yolu</var>"</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+"<var>dosya-yolu</var>|<var>dizin-yolu</var>"</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL'leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliaspreservepath">AliasPreservePath OFF|ON</a></td><td> OFF </td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Map the full path after the alias in a location.</td></tr>
 <tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -132,7 +132,7 @@ server</td></tr>
 <tr class="odd"><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var>[-<var>port</var>]
 [<var>port</var>[-<var>port</var>]] ...</a></td><td> 443 563 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
-<tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off|NoDecode</a></td><td> Off </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Kodlanmış dosya yolu ayracı içeren URL’lere izin verilip
+<tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off|NoDecode</a></td><td> Off </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Kodlanmış dosya yolu ayracı içeren URL'lere izin verilip
   verilmeyeceğini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict access to the listed HTTP methods</td></tr>
@@ -645,10 +645,10 @@ sınırlar.</td></tr>
 <tr><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
 <tr class="odd"><td><a href="core.html#location">&lt;Location <code>URL-yolu</code>|<code>URL</code>&gt; ...
-&lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
+&lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL'lere uygulanır.
 </td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <code>düzifade</code>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
+    <code>düzifade</code>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL'lere
 uygulanır.</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>biçem</var>|<var>takma-ad</var>
 [<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
@@ -754,7 +754,7 @@ processing</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstorelocks">MDStoreLocks on|off|<var>duration</var></a></td><td> off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Configure locking of store for updates</td></tr>
 <tr><td><a href="mod_md.html#mdwarnwindow">MDWarnWindow duration</a></td><td> 10% </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Define the time window when you want to be warned about an expiring certificate.</td></tr>
 <tr class="odd"><td><a href="mod_socache_memcache.html#memcacheconnttl">MemcacheConnTTL <em>num[units]</em></a></td><td> 15s </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun URL’lerde ardışık bölü çizgilerini birleştirip birleştirmeyeceğini denetler.
+<tr><td><a href="core.html#mergeslashes">MergeSlashes ON|OFF</a></td><td> ON </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun URL'lerde ardışık bölü çizgilerini birleştirip birleştirmeyeceğini denetler.
 </td></tr>
 <tr class="odd"><td><a href="core.html#mergetrailers">MergeTrailers [on|off]</a></td><td> off </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Trailer alanlarının başlığa dahil edilip edilmeyeceğini belirler</td></tr>
 <tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
@@ -882,16 +882,16 @@ olmayacağını denetler</td></tr>
 belirler.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
 <tr><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] [<var>URL-yolu</var>]
-<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
+<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL'ye
 yönlendirir.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>durum</var>] <var>düzenli-ifade</var>
 <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Geçerli URL ile eşleşen bir düzenli ifadeye dayanarak bir harici
 yönlendirme gönderir.</td></tr>
 <tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, kalıcı bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</td></tr>
+URL'ye yönlendirir.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirectrelative">RedirectRelative On|Off</a></td><td> Off </td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Allows relative redirect targets.</td></tr>
 <tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</td></tr>
+URL'ye yönlendirir.</td></tr>
 <tr class="odd"><td><a href="mod_socache_redis.html#redisconnpoolttl">RedisConnPoolTTL <em>num</em>[<em>units</em>]</a></td><td> 15s </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">TTL used for the connection pool with the Redis server(s)</td></tr>
 <tr><td><a href="mod_socache_redis.html#redistimeout">RedisTimeout <em>num</em>[<em>units</em>]</a></td><td> 5s </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">R/W timeout used for the connection with the Redis server(s)</td></tr>
 <tr class="odd"><td><a href="mod_reflector.html#reflectorheader">ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Reflect an input header to the output headers</td></tr>
@@ -972,9 +972,9 @@ user authentication</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias [<var>URL-yolu</var>]
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL'yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL'yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">CGI betikleri için yorumlayıcı belirleme tekniği</td></tr>
 <tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>

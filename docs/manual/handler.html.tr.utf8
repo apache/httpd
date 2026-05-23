@@ -130,7 +130,7 @@ AddHandler add-footer .html</pre>
 <h2><a name="programmer" id="programmer">Yazılım Geliştirenler İçin</a> <a title="Permanent link" href="#programmer" class="permalink">&para;</a></h2>
     
 
-    <p>Eylemci özellikleri gerçeklenirken kullanılmak üzere <a href="developer/API.html">Apache API</a>’ye bir ekleme yapılmıştır.
+    <p>Eylemci özellikleri gerçeklenirken kullanılmak üzere <a href="developer/API.html">Apache API</a>'ye bir ekleme yapılmıştır.
       Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
       eklenmiştir:</p>
 

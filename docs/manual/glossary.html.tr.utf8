@@ -54,8 +54,8 @@
     <dt><a name="transportlayersecurity" id="transportlayersecurity">Aktarım Katmanı Güvenliği</a></dt>
     <dd>İngilizcesi: Transport Layer Security <a name="tls" id="tls">(TLS)</a></dd>
     <dd>TCP/IP ağları üzerinden genel iletişimin kimlik doğrulamalı ve şifreli
-      yapılabilmesi için SSL’nin ardılı olarak Genel Ağ Mühendisliği Görev Gücü
-      (IETF) tarafından oluşturulmuş protokol. TLS’nin 1. sürümü ile SSL’in 3.
+      yapılabilmesi için SSL'nin ardılı olarak Genel Ağ Mühendisliği Görev Gücü
+      (IETF) tarafından oluşturulmuş protokol. TLS'nin 1. sürümü ile SSL'in 3.
       sürümü hemen hemen aynıdır.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
@@ -132,13 +132,13 @@
 
     <dt><a name="regularexpression" id="regularexpression">Düzenli İfade</a>
       <a name="regex" id="regex">(Regex)</a></dt>
-    <dd>Metin içinde bir şablon tanımlama yolu. Örneğin, “A harfi ile
-      başlayan bütün sözcükler” veya “10 rakamlı telefon numaraları” ya da
-      “Baş harfi Z olmayan ve iki virgül içeren cümleler” gibi. Düzenli
-      ifadeler, Apache’de belli özniteliklere uygun dosya veya özkaynakları
+    <dd>Metin içinde bir şablon tanımlama yolu. Örneğin, "A harfi ile
+      başlayan bütün sözcükler" veya "10 rakamlı telefon numaraları" ya da
+      "Baş harfi Z olmayan ve iki virgül içeren cümleler" gibi. Düzenli
+      ifadeler, Apache'de belli özniteliklere uygun dosya veya özkaynakları
       toplamak için esnek bir yol sağlamasından ötürü oldukça yararlıdır.
-      Örneğin, “resimler” dizini altındaki dosyalardan .gif ve .jpg uzantılı
-      olanları toplamak için “<code>/resimler/.*(jpg|gif)$</code>” düzenli
+      Örneğin, "resimler" dizini altındaki dosyalardan .gif ve .jpg uzantılı
+      olanları toplamak için "<code>/resimler/.*(jpg|gif)$</code>" düzenli
       ifadesi yazılabilir. Dizgileri değiştirmek için düzenli ifadelerin
       kullanıldığı yerlerde, eşleşen (parantezlerin içinde) gruplanmış
       parçalara başvurmak için $1 ... $9 özel değişkenleri kullanılır. $0 özel
@@ -154,7 +154,7 @@
     <dt><a name="accesscontrol" id="accesscontrol">Erişim Denetimi</a></dt>
     
     <dd>Ağ bölgelerine erişimin kısıtlanması. Apache bağlamında normal
-      olarak belli <em>URL</em>’lere erişimi kısıtlamak şeklinde
+      olarak belli <em>URL</em>'lere erişimi kısıtlamak şeklinde
       uygulanır.<br /> Bakınız:  <a href="howto/auth.html">Kimlik Doğrulama,
       Yetkilendirme ve Erişim Denetimi</a>
     </dd>
@@ -165,7 +165,7 @@
       sahiptir. Normalde tüm dosyalar sunucu tarafından sıradan birer dosya
       olarak işleme sokulduğu halde bazı belli dosyalar diğerlerinden ayrı
       ele alınır. Örneğin, <code>cgi-script</code> eylemcisi dosyaları
-      <a class="glossarylink" href="./glossary.html#cgi" title="sözlüğe bakınız">CGI</a>’ler tarafından işlenebilir hale
+      <a class="glossarylink" href="./glossary.html#cgi" title="sözlüğe bakınız">CGI</a>'ler tarafından işlenebilir hale
       getirmek üzere işleme sokar.<br />
       Bakınız: <a href="handler.html">Apache Eylemcilerinin Kullanımı</a>
     </dd>
@@ -196,7 +196,7 @@
     <dt><a name="https" id="https">Güvenli Hiper Metin Aktarım Protokolü
       (HTTPS)</a></dt>
     <dd>İngilizcesi: The HyperText Transfer Protocol (Secure), (HTTPS)</dd>
-    <dd>Güvenli Hiper Metin Aktarım Protokolü, Genel Ağ’da kullanılan standart
+    <dd>Güvenli Hiper Metin Aktarım Protokolü, Genel Ağ'da kullanılan standart
       şifreli iletişim mekanizmasıdır. Aslında HTTP protokolünün <a class="glossarylink" href="./glossary.html#ssl" title="sözlüğe bakınız">SSL</a> üzerinden gerçekleştirilmesinden başka bir
       şey değildir.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
@@ -214,7 +214,7 @@
     <dt><a name="hypertexttransferprotocol" id="hypertexttransferprotocol">Hiper Metin Aktarım Protokolü</a>
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>İngilizcesi: HyperText Transfer Protocol (HTTP)</dd>
-    <dd>Genel Ağ’da kullanılan standart aktarım protokollerinden biri.
+    <dd>Genel Ağ'da kullanılan standart aktarım protokollerinden biri.
       Apache, <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a> ile
       tanımlanmış protokolün HTTP/1.1 olarak bilinen 1.1 sürümünü gerçekler.
     </dd>
@@ -267,8 +267,8 @@
     </dd>
 
     <dt><a name="mime-type" id="mime-type">MIME türü</a></dt>
-    <dd>Aktarılan belgenin çeşidini betimlemenin bir yolu. MIME, Türkçe’ye
-      ‘Çok Amaçlı Genel Ağ Posta Eklentileri’ olarak çevrilebilecek olan
+    <dd>Aktarılan belgenin çeşidini betimlemenin bir yolu. MIME, Türkçe'ye
+      'Çok Amaçlı Genel Ağ Posta Eklentileri' olarak çevrilebilecek olan
       "Multipurpose Internet Mail Extensions" sözcüklerinden türetilmiş bir
       kısaltmadır. MIME türleri bir bölü çizgisi ile ayrılmış bir ana ve bir
       alt belge türünün birleşiminden oluşur. <code>text/html</code>,
@@ -285,7 +285,7 @@
       çalıştırılabiliri içinde derlenmiş modüllere <dfn>durağan modüller</dfn>
       adı verilirken ayrı bir yerde saklanan ve çalışma anında isteğe bağlı
       olarak yüklenebilen modüllere <dfn>devingen modüller</dfn> veya
-      <a class="glossarylink" href="./glossary.html#dso" title="sözlüğe bakınız">DSO</a>’lar denir. Yapılandırmaya öntanımlı
+      <a class="glossarylink" href="./glossary.html#dso" title="sözlüğe bakınız">DSO</a>'lar denir. Yapılandırmaya öntanımlı
       olarak dahil edilen modüllere <dfn>temel modüller</dfn> denir. Apache
       için kullanılabilecek modüllerin çoğu Apache HTTP Sunucusunun
       <a class="glossarylink" href="./glossary.html#tarball" title="sözlüğe bakınız">tar paketi</a> içinde dağıtılmaz; bunlara
@@ -342,7 +342,7 @@
       Makamı</a> tarafından bir <em>sertifikaya</em> gömülü olan
       <em>genel anahtardan</em> bir özet üretilerek oluşturulur. İmza şifresi
       sadece <em>sertifika</em> sahibi ağ öğesinin kimliğini doğrulayacak
-      SM’nin genel anahtarı kullanılarak çözülebilir.<br />
+      SM'nin genel anahtarı kullanılarak çözülebilir.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
 
@@ -368,7 +368,7 @@
     <dd>İngilizcesi: Certification Authority (CA)</dd>
     <dd>Ağ öğelerinin güvenilir olarak kimliklerinin doğrulanması için
       sertifikaları imzalayan güvenilir üçüncü şahıs. Diğer ağ öğeleri,
-      sertifikalı bir öğenin kimliğini kanıtlayan bir SM’yi doğrulamak
+      sertifikalı bir öğenin kimliğini kanıtlayan bir SM'yi doğrulamak
       için imzayı sınayabilir.<br />
       Bakınız: <a href="ssl/">SSL/TLS Şifrelemesi</a>
     </dd>
@@ -447,16 +447,16 @@
     <dd>İngilizcesi: Uniform Resource Identifier
       <a name="URI" id="URI">(URI)</a></dd>
     <dd>Soyut veya somut bir özkaynağı betimlemek için kullanılan bütünleşik
-      bir karakter dizisi. Aslen <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> tarafından tanımlanmıştır. Genel Ağ’da kullanılan URI’lerden
-      genellikle <a class="glossarylink" href="./glossary.html#url" title="sözlüğe bakınız">URL</a>’ler olarak bahsedilir.
+      bir karakter dizisi. Aslen <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a> tarafından tanımlanmıştır. Genel Ağ'da kullanılan URI'lerden
+      genellikle <a class="glossarylink" href="./glossary.html#url" title="sözlüğe bakınız">URL</a>'ler olarak bahsedilir.
     </dd>
 
     <dt><a name="uniformresourcelocator" id="uniformresourcelocator">Tektip Özkaynak Konumlayıcı</a></dt>
     <dd>İngilizcesi: Uniform Resource Locator <a name="url" id="url">(URL)</a></dd>
     <dd>Genel Ağ üzerindeki bir özkaynağın ismi veya adresi. Aslen <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="sözlüğe bakınız">Tektip Özkaynak Betimleyici</a>
-      denilen terimin gayrı resmi karşılığıdır. URL’ler <code>http</code> veya
+      denilen terimin gayrı resmi karşılığıdır. URL'ler <code>http</code> veya
       <code>https</code> gibi bir şemayı takip eden bir konak adı ve bir dosya
-      yolundan oluşurlar.  Örneğin, bu sayfanın URL’si
+      yolundan oluşurlar.  Örneğin, bu sayfanın URL'si
       <code>http://httpd.apache.org/docs/2.4/glossary.html</code> olurdu.
     </dd>
 

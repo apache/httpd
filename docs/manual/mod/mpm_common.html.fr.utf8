@@ -381,7 +381,7 @@ plateformes de type BSD.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="listentcpdeferaccept" id="listentcpdeferaccept">Directive</a> <a name="ListenTCPDeferAccept" id="ListenTCPDeferAccept">ListenTCPDeferAccept</a> <a title="Lien permanent" href="#listentcpdeferaccept" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur de l’option de socket TCP_DEFER_ACCEPT si elle est
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur de l'option de socket TCP_DEFER_ACCEPT si elle est
 définie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ListenTCPDeferAccept <var>integer</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ListenTCPDeferAccept 30</code></td></tr>
@@ -390,9 +390,9 @@ définie</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5.1 du serveur HTTP Apache</td></tr>
 </table>
-    <p>La valeur spécifiée ici est définie comme valeur de l’option de socket
+    <p>La valeur spécifiée ici est définie comme valeur de l'option de socket
     <code>TCP_DEFER_ACCEPT</code> si cette dernière est définie sur le socket
-    d’écoute. Cela se produit sous Linux lorsque la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> est définie à toute autre valeur que
+    d'écoute. Cela se produit sous Linux lorsque la directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> est définie à toute autre valeur que
     <code>none</code>. Dans tous les autres cas, ce réglage est ignoré. Pour
     plus de détails, voir la page de manuel de <a href="http://man7.org/linux/man-pages/man7/tcp.7.html">tcp(7)</a> sous
     Linux.</p>

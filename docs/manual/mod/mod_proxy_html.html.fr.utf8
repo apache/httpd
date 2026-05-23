@@ -216,8 +216,8 @@ directives <code class="directive">ProxyHTMLEvents</code>.</p>
 <div class="note"><h3>Nécessite ProxyHTMLExtended</h3>
 <p>Les évènements de type scripting  ne sont traités que si la directive
 <code class="directive"><a href="#proxyhtmlextended">ProxyHTMLExtended</a></code> est définie à
-<var>On</var>. Dans le cas contraire, les attributs d’évènement sont transmis
-sans modification, même s’ils sont listés dans la directive
+<var>On</var>. Dans le cas contraire, les attributs d'évènement sont transmis
+sans modification, même s'ils sont listés dans la directive
 <code class="directive">ProxyHTMLEvents</code>.</p>
 </div>
 <p>Normalement, cette directive est définie globalement. Si vous

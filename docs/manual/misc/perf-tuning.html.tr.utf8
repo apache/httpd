@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache’de Başarımın Arttırılması - Apache HTTP Sunucusu Sürüm 2.4</title>
+<title>Apache'de Başarımın Arttırılması - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
@@ -22,7 +22,7 @@
 <img alt="" src="../images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache’de Başarımın Arttırılması</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Apache'de Başarımın Arttırılması</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -46,7 +46,7 @@
       etkileyebilen yapılandırma seçenekleri de mevcuttur. Bu belgede, bir
       Apache 2.x kurulumunda sunucu yöneticisinin sunucunun başarımını
       arttırmak amacıyla yapılandırma sırasında neler yapabileceğinden
-      bahsedilmiştir. Bu yapılandırma seçeneklerinden bazıları, httpd’nin
+      bahsedilmiştir. Bu yapılandırma seçeneklerinden bazıları, httpd'nin
       donanımın ve işletim sisteminin olanaklarından daha iyi
       yararlanabilmesini sağlarken bir kısmı da  daha hızlı bir sunum için
       yöneticinin işlevsellikten ödün verebilmesini olanaklı kılar.</p>
@@ -97,7 +97,7 @@
         <p>İşletim sisteminiz <code>sendfile</code>(2) sistem çağrısını
           destekliyorsa bunun etkinleştirilebildiği sürümün kurulu olması
           önemlidir. (Örneğin, Linux için bu, Linux 2.4 ve sonraki sürümler
-          anlamına gelirken, Solaris için Solaris 8’den önceki sürümlerin
+          anlamına gelirken, Solaris için Solaris 8'den önceki sürümlerin
           yamanması gerektirdiği anlamına gelmektedir.)
           <code>sendfile</code> işlevinin desteklendiği sistemlerde Apache 2
           duruk içeriği daha hızlı teslim etmek ve işlemci kullanımını
@@ -120,7 +120,7 @@
       <p>Apache 1.3 öncesinde, <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> yönergesinin öntanımlı değeri
         <code>On</code> idi. İstek yerine getirilmeden önce bir DNS sorgusu
         yapılmasını gerektirmesi sebebiyle bu ayarlama her istekte bir
-        miktar gecikmeye sebep olurdu. Apache 1.3’ten itibaren yönergenin
+        miktar gecikmeye sebep olurdu. Apache 1.3'ten itibaren yönergenin
         öntanımlı değeri <code>Off</code> yapılmıştır. Eğer günlük
         dosyalarınızda konak isimlerinin bulunmasını isterseniz, Apache ile
         birlikte gelen <code class="program"><a href="../programs/logresolve.html">logresolve</a></code> programını
@@ -153,7 +153,7 @@
 &lt;/Files&gt;</pre>
 
 
-      <p>Yine de bazı CGI’lerin DNS isimlerine ihtiyacı olursa bu CGI’lerin
+      <p>Yine de bazı CGI'lerin DNS isimlerine ihtiyacı olursa bu CGI'lerin
         bu ihtiyaçlarına yönelik olarak <code>gethostbyname</code> çağrıları
         yapabileceğini gözardı etmeyiniz.</p>
 
@@ -270,7 +270,7 @@
 
       
 
-      <p>Apache’nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
+      <p>Apache'nin SSI sayfalarında olduğu gibi teslim edilecek dosyanın
         içeriğine bakma gereği duyduğu durumlarda, eğer işletim sistemi
         <code>mmap</code>(2) ve benzerlerini destekliyorsa çekirdek normal
         olarak dosyayı belleğe kopyalayacaktır.</p>
@@ -309,7 +309,7 @@
 
       
 
-      <p>Apache’nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
+      <p>Apache'nin duruk dosyalarda olduğu gibi teslim edilecek dosyanın
         içeriğine bakmadığı durumlarda, eğer işletim sistemi
         <code>sendfile</code>(2) desteğine sahipse çekirdek normal olarak bu
         desteği kullanacaktır.</p>
@@ -349,7 +349,7 @@
       <p>Apache 1.3 öncesinde <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> ayarları, başka sunucularla kıyaslama
         denemelerinde olağanüstü kötü sonuçlar alınmasına sebep olmaktaydı.
         Özellikle uygulanan yükü karşılamaya yetecek sayıda çocuk süreç
-        oluşturulması aşamasında Apache’nin elde ettiği ivme bunlardan
+        oluşturulması aşamasında Apache'nin elde ettiği ivme bunlardan
         biriydi. Başlangıçta <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> yönergesiyle belli sayıda süreç
         oluşturulduktan sonra her saniyede bir tane olmak üzere <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code> sayıda çocuk süreç
         oluşturulmaktaydı. Örneğin, aynı anda 100 isteğe yanıt vermek için
@@ -364,8 +364,8 @@
       <p>Saniyede bir kuralı, sunucunun yeni çocukları oluşturması sırasında
         sistemin aşırı meşgul duruma düşmemesi için alınmış bir önlemdi.
         Makine çocuk süreç oluşturmakla meşgul edildiği sürece isteklere
-        yanıt veremeyecektir. Böylesi bir durum Apache’nin başarımını
-        kötüleştirmekten başka işe yaramayacaktır. Apache 1.3’te saniyede
+        yanıt veremeyecektir. Böylesi bir durum Apache'nin başarımını
+        kötüleştirmekten başka işe yaramayacaktır. Apache 1.3'te saniyede
         bir kuralı biraz esnetildi. Yeni gerçeklenimde artık bir süreç
         oluşturduktan bir saniye sonra iki süreç, bir saniye sonra dört
         süreç oluşturulmakta ve işlem, saniyede 32 çocuk süreç oluşturulur
@@ -388,7 +388,7 @@
         başına istek sayısının sınırsız olduğu anlamına gelir. Eğer
         yapılandırmanızda bu değeri <code>30</code> gibi çok düşük bir
         değere ayarlarsanız bunu hemen kaldırmak zorunda kalabilirsiniz.
-        Sunucunuzu SunOS veya Solaris’in eski bir sürümü üzerinde
+        Sunucunuzu SunOS veya Solaris'in eski bir sürümü üzerinde
         çalıştırıyorsanız bellek kaçaklarına sebep olmamak için bu değeri
         <code>10000</code> ile sınırlayınız.</p>
 
@@ -412,12 +412,12 @@
 
       <p>Apache 2.x, <a href="../mpm.html">Çok Süreçlilik Modülleri</a>
         (MPM) adı verilen eklemlenebilir çok görevlilik modellerini
-        destekler. Apache’yi derlerken bu MPM’lerden birini seçmeniz
-        gerekir. MPM’lerden bazıları platformlara özeldir:
+        destekler. Apache'yi derlerken bu MPM'lerden birini seçmeniz
+        gerekir. MPM'lerden bazıları platformlara özeldir:
         <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> ve
         <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
         benzeri sistemler için ise seçebileceğiniz modül sayısı birden
-        fazladır. MPM seçiminin httpd’nin hızında ve ölçeklenebilirliğinde
+        fazladır. MPM seçiminin httpd'nin hızında ve ölçeklenebilirliğinde
         bazı etkileri olabilir:</p>
 
       <ul>

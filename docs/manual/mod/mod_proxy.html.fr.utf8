@@ -409,10 +409,10 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
 
       <div class="note"><h3>Requêtes HTTPS/CONNECT</h3>
-      <p>L’instruction générique <code>&lt;Proxy "*"&gt;</code> ci-dessus
+      <p>L'instruction générique <code>&lt;Proxy "*"&gt;</code> ci-dessus
       correspond à toutes les requêtes, y compris les requêtes HTTPS sous tunnel
-      via la méthode CONNECT. Notez que le contrôle d’accès pour les tunnels
-      CONNECT ne peut fonctionner qu’avec l’hôte et le port —&nbsp;le contrôle avec
+      via la méthode CONNECT. Notez que le contrôle d'accès pour les tunnels
+      CONNECT ne peut fonctionner qu'avec l'hôte et le port —&nbsp;le contrôle avec
       le chemin (par exemple <code>&lt;Proxy
       "https://example.com/path/"&gt;</code>) ne fonctionnera pas, car les
       requêtes CONNECT ne comportent pas de chemin.</p></div>
@@ -493,7 +493,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10</pre>
 
 
       <p>Notez que <code>force-proxy-request-1.0</code> implique aussi
-      <code>proxy-sendcl</code>, car HTTP/1.0 ne prend pas en charge l’encodage
+      <code>proxy-sendcl</code>, car HTTP/1.0 ne prend pas en charge l'encodage
       de transfert fractionné. La redirection des corps de requête fractionnés
       (via <code>proxy-sendchunked</code>) est désactivée si cette option est
       définie.</p>
@@ -1195,7 +1195,7 @@ sont supportés à partir de la version 2.4.7 du serveur HTTP Apache</td></tr>
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est
     omis et le répertoire local est obtenu à partir de l'argument de la
     directive <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.
-    Lorsque cette directive est utilisée en dehors d’une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, l’argument
+    Lorsque cette directive est utilisée en dehors d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, l'argument
     <var>chemin</var> est requis. Il en est de même à l'intérieur d'une section
     <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, mais le
     résultat ne sera probablement pas celui attendu car ProxyPassReverse va
@@ -1287,9 +1287,9 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
       <code class="directive"><a href="../mod/core.html#location">Location</a></code> correspondante qui
       l'emportera, suivant en cela les règles standards de <a href="../sections.html#merging">fusion des sections</a>. Placez les
       sections <code class="directive"><a href="../mod/core.html#location">Location</a></code> les plus
-      spécifiques <em>après</em> les moins spécifiques afin de s’assurer que la
+      spécifiques <em>après</em> les moins spécifiques afin de s'assurer que la
       directive <code class="directive">ProxyPass</code> attendue
-      s’applique.</p>
+      s'applique.</p>
      </div>
 
      <div class="warning"><h3>Exclusions et variable d'environnement no-proxy</h3>
@@ -1331,7 +1331,7 @@ ProxyPass "/mirror/foo" "http://backend.example.com"</pre>
     <p>Avec le MPM prefork, les connexions avec les serveurs dorsaux ne sont pas
     mises en commun (chaque processus enfant gère une connexion à la fois). Les
     paramètres <code>acquire</code> et <code>ttl</code> qui contrôlent le
-    comportement des pools de connexions n’ont aucun effet si on utilise
+    comportement des pools de connexions n'ont aucun effet si on utilise
     prefork. Les paramètres de dimensionnement <code>min</code>,
     <code>smax</code> et <code>hmax</code> sont eux aussi ignorés.</p>
     </div>
@@ -1999,8 +1999,8 @@ arrières (voir note ci-dessous).
     <div class="warning"><h3>Correspondance de worker avec les références
     arrières</h3>
     <p>Quand <code class="directive">ProxyPassMatch</code> contient des références
-    arrières (par exemple <code>$1</code>) dans l’URL cible, chaque requête
-    produit un URL résolu différent. Comme la recherche de correspondance des <a href="#workers">workers</a> s’effectue par URL, ces requêtes ne
+    arrières (par exemple <code>$1</code>) dans l'URL cible, chaque requête
+    produit un URL résolu différent. Comme la recherche de correspondance des <a href="#workers">workers</a> s'effectue par URL, ces requêtes ne
     correspondront pas au worker créé par cette directive et utiliseront à la
     place le worker du mandataire inverse par défaut, qui ne réutilise pas les
     connexions, ni ne met en cache les recherches DNS. Pour activer la mise en
@@ -2010,7 +2010,7 @@ arrières (voir note ci-dessous).
 ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"</pre>
 
     <p>La définition explicite du worker <code class="directive">ProxyPass</code> permet
-    de s’assurer que le jeu de connexions d’arrière-plan est disponible pour les
+    de s'assurer que le jeu de connexions d'arrière-plan est disponible pour les
     requêtes <code class="directive">ProxyPassMatch</code>.</p>
     </div>
 
@@ -2028,10 +2028,10 @@ ProxyPassMatch   "^/(.*\.gif)$" "http://backend.example.com/$1"</pre>
     sous-répertoire donné.</p>
 
     <p>Dans une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, le premier argument est omis et
-    l'expression rationnelle est obtenue à partir de la directive <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>. En dehors d’une
+    l'expression rationnelle est obtenue à partir de la directive <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>. En dehors d'une
     section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou
     <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>,
-    l’argument <var>regex</var> est requis.</p>
+    l'argument <var>regex</var> est requis.</p>
 
     <p>Si vous avez besoin d'une configuration du mandataire inverse
     plus flexible, voyez la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> avec le drapeau
@@ -2149,7 +2149,7 @@ ProxyPassReverseCookiePath  "/"  "/mirror/foo/"</pre>
     <p>Lorsque cette directive est utilisée dans une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, le premier argument est
     omis et le répertoire local est obtenu à partir de l'argument de la
     directive <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>. En
-    dehors d’une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, l’argument <var>chemin</var> est
+    dehors d'une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, l'argument <var>chemin</var> est
     requis. Il en est de même à l'intérieur d'une section <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>, mais le résultat ne
     sera probablement pas celui attendu car ProxyPassReverse va interpréter
     l'expression rationnelle littéralement comme un chemin ; si besoin est dans

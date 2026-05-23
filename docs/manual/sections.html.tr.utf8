@@ -35,7 +35,7 @@
 
     <p><a href="configuring.html">Yapılandırma dosyaları</a>ndaki
        yönergeler sunucunun tamamına uygulanacağı gibi sadece belli dizinler,
-       dosyalar, konaklar veya URL’lere uygulanmakla sınırlanabilir. Bu
+       dosyalar, konaklar veya URL'lere uygulanmakla sınırlanabilir. Bu
        belgede, yapılandırma bölümü taşıyıcılarınının veya
        <code>.htaccess</code> dosyalarının, yapılandırma dosyalarındaki diğer
        yönergelerin etki alanlarını değiştirtirmek için nasıl kullanılacağı
@@ -131,7 +131,7 @@
       dosyalarında dosya yolu belirtilirken tersbölü değil normal bölü
       karakterleri kullanılır.) Site alanı ise sunucu tarafından istemciye
       sunulan dizin ağacıdır. Yani, site alanı içindeki <code>/dir/</code>
-      dizini, Apache httpd’nin Unix üzerinde dosya sistemine öntanımlı olarak
+      dizini, Apache httpd'nin Unix üzerinde dosya sistemine öntanımlı olarak
       kurulduğu yer göz önüne alınarak, dosya sistemindeki
       <code>/usr/local/apache2/htdocs/dir/</code> dizinine karşılıktır. Site
       sayfaları veritabanlarından veya başka yerlerden devingen olarak
@@ -205,7 +205,7 @@
 
     <p>Dosya sistemi ile etkileşime girmeyen herşey için
       <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-      yönergesi gerekir. Aşağıdaki örnekte, belli bir URL’nin
+      yönergesi gerekir. Aşağıdaki örnekte, belli bir URL'nin
       <code class="module"><a href="./mod/mod_status.html">mod_status</a></code> modülü tarafından sağlanan bir dahili
       Apache eylemcisine nasıl eşlenebileceği gösterilmiştir. Bu örnek
       için dosya sisteminde <code>server-status</code> adında bir dosya
@@ -314,7 +314,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
     <p>Dosya sistemindeki nesnelere erişimi kısıtlarken asla
       <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
       kullanmamak önemlidir. Bunun sebebi farklı site alanı konumlarının
-      (URL’ler) aynı dosya sistemi konumuna eşlenebilmesi dolayısıyla
+      (URL'ler) aynı dosya sistemi konumuna eşlenebilmesi dolayısıyla
       kısıtlamalarınızın etrafından dolaşılabilmesine izin vermesidir.
       Örneğin, aşağıdaki yapılandırmayı ele alalım:</p>
 
@@ -491,7 +491,7 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 
     <div class="note"><h3>Bazı Teknik Bilgiler</h3>
       Aslında, isim dönüşüm aşamasından (<code>Aliases</code> ve
-      <code>DocumentRoots</code>, URL’leri dosya isimlerine eşlemek için
+      <code>DocumentRoots</code>, URL'leri dosya isimlerine eşlemek için
       kullanılırken) hemen önce uygulanan bir
       <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code> dizisi
       vardır. Bu dizinin sonuçları isim dönüşüm aşaması tamamlandıktan sonra

@@ -8,7 +8,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache HTTP Sunucusu 2.2’de Yeni olan Özellikler - Apache HTTP Sunucusu Sürüm 2.4</title>
+<title>Apache HTTP Sunucusu 2.2'de Yeni olan Özellikler - Apache HTTP Sunucusu Sürüm 2.4</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
@@ -22,7 +22,7 @@
 <img alt="" src="./images/feather.png" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Sunucusu 2.2’de Yeni olan Özellikler</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Sunucusu 2.2'de Yeni olan Özellikler</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -34,7 +34,7 @@
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Apache HTTP Sunucusunun 2.0 ve 2.2 sürümleri arasındaki
-    başlıca farklara değinilmiştir. 1.3 sürümüne göre yeni özellikler için <a href="new_features_2_0.html">Apache 2.0’da Yeni olan Özellikler</a>
+    başlıca farklara değinilmiştir. 1.3 sürümüne göre yeni özellikler için <a href="new_features_2_0.html">Apache 2.0'da Yeni olan Özellikler</a>
     belgesine bakınız.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Çekirdekteki Gelişmeler</a></li>
@@ -74,7 +74,7 @@
 
       <dt>Nazikçe Durdurma</dt>
       <dd><code class="module"><a href="./mod/prefork.html">prefork</a></code>, <code class="module"><a href="./mod/worker.html">worker</a></code> ve
-        <code class="module"><a href="./mod/event.html">event</a></code>  MPM’leri artık <code class="program"><a href="./programs/httpd.html">httpd</a></code>’yi <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a>
+        <code class="module"><a href="./mod/event.html">event</a></code>  MPM'leri artık <code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi <a href="stopping.html#gracefulstop"><code>graceful-stop</code></a>
         sinyali sayesinde nazikçe durdurabilmektedir.
         <code class="program"><a href="./programs/httpd.html">httpd</a></code> programının sonlandırılmasındaki gecikmelere
         karşı bir önlem olarak, isteğe bağlı bir zaman aşımı belirtmeyi
@@ -106,21 +106,21 @@
 
       <dt>Büyük Dosya (&gt;2GB) Desteği</dt>
       <dd><code class="program"><a href="./programs/httpd.html">httpd</a></code> artık günümüzün 32 bitlik Unix
-        sistemlerinde bulunan 2 GB’lık büyük dosyaları destekleyecek tarzda
-        derlenebilmektedir. 2 GB’lık istek gövdelerine destek de ayrıca
+        sistemlerinde bulunan 2 GB'lık büyük dosyaları destekleyecek tarzda
+        derlenebilmektedir. 2 GB'lık istek gövdelerine destek de ayrıca
         eklenmiştir.</dd>
 
       <dt>Event MPM</dt>
       <dd><code class="module"><a href="./mod/event.html">event</a></code> MPM modülü sürekli bağlantı isteklerinin
         işlenmesi ve bağlantıların kabul edilmesi için ayrı bir evre
         kullanır. Sürekli bağlantı (keepalive) isteklerinin işlenmesi
-        geleneksel olarak httpd’nin buna bir <code class="module"><a href="./mod/worker.html">worker</a></code>
+        geleneksel olarak httpd'nin buna bir <code class="module"><a href="./mod/worker.html">worker</a></code>
         adamasını gerektirirdi. Bu adanmış <code class="module"><a href="./mod/worker.html">worker</a></code> bağlantı
         zaman aşımına uğrayıncaya değin tekrar kullanılamazdı.</dd>
 
       <dt>SQL Veritabanı Desteği</dt>
       <dd><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code> modülü <code>apr_dbd</code> arayüzü ile
-        birlikte, ihtiyacı olan modüllere SQL desteği sağlar. Evreli MPM’ler
+        birlikte, ihtiyacı olan modüllere SQL desteği sağlar. Evreli MPM'ler
         için bağlantı havuzlamasını destekler.</dd>
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -159,7 +159,7 @@
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Apache tarafından çözümlenen haliyle yapılandırma yönergelerinin
         gösterilmesini sağlayan yeni <code>?config</code> parametresini
-        ekler. Modül ayrıca, <code>httpd -V</code>’nin yaptığı gibi ek olarak
+        ekler. Modül ayrıca, <code>httpd -V</code>'nin yaptığı gibi ek olarak
         derleme bilgisini ve tüm istek kancalarının sırasını da gösterir.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
@@ -180,7 +180,7 @@
       <dd>Mevcut yapılandırmaya göre yüklenen modülleri listelemek için
         <code>-M</code> diye yeni bir komut satırı seçeneği eklendi.
         <code>-l</code> seçeneğinin aksine, bu seçenekle elde edilen liste
-        <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> üzerinden yüklenen DSO’ları içerir.</dd>
+        <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> üzerinden yüklenen DSO'ları içerir.</dd>
 
       <dt><code class="program"><a href="./programs/httxt2dbm.html">httxt2dbm</a></code></dt>
       <dd><code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesinde
@@ -194,9 +194,9 @@
     <dl>
       <dt><a class="glossarylink" href="./glossary.html#apr" title="sözlüğe bakınız">APR</a> 1.0 Programlama Arayüzü</dt>
 
-      <dd>Apache 2.2’de APR 1.0 API kullanılmıştır.  Kullanımı önerilmeyen
+      <dd>Apache 2.2'de APR 1.0 API kullanılmıştır.  Kullanımı önerilmeyen
         tüm işlevler ve simgeler <code>APR</code> ve
-        <code>APR-Util</code>’den kaldırılmıştır. Ayrıntılar için <a href="http://apr.apache.org/">APR Sitesine bakınız</a>.</dd>
+        <code>APR-Util</code>'den kaldırılmıştır. Ayrıntılar için <a href="http://apr.apache.org/">APR Sitesine bakınız</a>.</dd>
 
       <dt>Authn/Authz</dt>
       <dd>Dağıtımla gelen kimlik doğrulama ve yetkilendirme modüllerinin
@@ -223,14 +223,14 @@
 
       <dt>Deneme Yapılandırma Kancası Eklendi</dt>
 
-      <dd>Kullanıcı, <code class="program"><a href="./programs/httpd.html">httpd</a></code>’yi sadece <code>-t</code>
+      <dd>Kullanıcı, <code class="program"><a href="./programs/httpd.html">httpd</a></code>'yi sadece <code>-t</code>
         seçeneği ile kullandığı takdirde özel kod icra edilmesini isteyen
         modüllere yardımcı olmak üzere <code>test_config</code> diye yeni bir
         kanca işlev eklendi.</dd>
 
-      <dt>Evreli MPM’lerin Yığıt Boyutunun Ayarlanması</dt>
+      <dt>Evreli MPM'lerin Yığıt Boyutunun Ayarlanması</dt>
 
-      <dd>Tüm evreli MPM’lerin yığıt boyutunu ayarlamak üzere <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> isminde yeni bir
+      <dd>Tüm evreli MPM'lerin yığıt boyutunu ayarlamak üzere <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> isminde yeni bir
         yönerge eklendi. Öntanımlı yığıt boyutunun küçük olduğu platformlarda
         bazı üçüncü parti modüller tarafından buna ihtiyaç duyulmaktadır.</dd>
 
@@ -258,13 +258,13 @@
 
       <dt>DBD Arayüzü (SQL Veritabanı API)</dt>
 
-      <dd><p>Apache 1.x ve 2.0’da, modüller, SQL veritabanlarını kendileri
+      <dd><p>Apache 1.x ve 2.0'da, modüller, SQL veritabanlarını kendileri
         yönetebilmek için sorumluluğu alacak bir SQL artalanına ihtiyaç
         duymaktadır. Her biri kendi bağlantısına sahip bir sürü modül
         olduğunda bu yöntem çok verimsiz olabilmektedir.</p>
 
       <p>Apache 2.1 ve sonrasında veritabanı bağlantılarını (evreli olsun
-        olmasın MPM’lerin eniyilenmiş stratejileri dahil) yönetmek için
+        olmasın MPM'lerin eniyilenmiş stratejileri dahil) yönetmek için
         <code>ap_dbd</code> arayüzü kullanılmıştır. APR 1.2 ve sonrasında ise
         veritabanı ile etkileşim <code>apr_dbd</code> arayüzüyle
         sağlanmıştır.</p>

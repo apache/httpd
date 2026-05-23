@@ -181,7 +181,7 @@ multiples</a> <a title="Lien permanent" href="#multipleext" class="permalink">&p
     <div class="note"><h3>Files with no extension</h3>
     <p>Les fichiers sans extension (comme <code>Makefile</code>) ne peuvent pas
     être reconnus par les directives de <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> basées sur
-    l’extension. Pour définir le type de contenu ou le jeu de caractères de tels
+    l'extension. Pour définir le type de contenu ou le jeu de caractères de tels
     fichiers, utilisez à la place une section <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>&nbsp;:</p>
 
     <pre class="prettyprint lang-config"># Pour un fichier spécifique :

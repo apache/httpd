@@ -229,7 +229,7 @@ ExpiresByType text/html M604800</pre>
 
     <p>Le type MIME peut utiliser des caractères génériques pour le sous-type,
     comme dans <code>image/*</code>. Cet exemple correspond à tout sous-type
-    sous le type principal. Lorsque le type de contenu d’une requête ne
+    sous le type principal. Lorsque le type de contenu d'une requête ne
     correspond pas à une entrée <code class="directive">ExpiresByType</code> spécifique,
     une entrée avec caractères génériques pour le type principal est recherchée
     avant de se rebattre sur <code class="directive"><a href="#expiresdefault">ExpiresDefault</a></code>.</p>

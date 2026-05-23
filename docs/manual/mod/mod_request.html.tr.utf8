@@ -62,7 +62,7 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
       olarak, mod_include gibi süzgeçler, özgün istek (süzme işlemi
       gerçekleştikten sonra artık gerekmediğinden istek gövdesini iptal eden)
       bir <code>POST</code> isteği olsa bile, <code>GET</code> isteklerinin
-      yapılmasına sadece diğer URL’lerin alt istekler olarak içerilmesi
+      yapılmasına sadece diğer URL'lerin alt istekler olarak içerilmesi
       şartıyla  izin verir.</p>
 
     <p>Bu yönergede belirtilen değer sıfırdan büyük olduğunda, istek
@@ -78,11 +78,11 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
       sayfa yapısıyla birlikte sarmalanarak birleştirilmesini mümkün kılar.
       Bileşenler, CGI programları veya betik dilleri biçiminde olabileceği
       gibi, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> kullanarak başka bir sunucudaki URL
-      uzayına ters vekil URL’ler şeklinde bile olabilir.</p>
+      uzayına ters vekil URL'ler şeklinde bile olabilir.</p>
 
     <p><strong>Bilginize:</strong> İstekler tamamlanana kadar alınan istekler
       geçici RAM içinde biriktirilir. Sonuç olarak, bahsi geçen yükü karşılamak
-      için yeterince RAM’in mevcut olması gerekir. Bu yönergeyi kullanmakla,
+      için yeterince RAM'in mevcut olması gerekir. Bu yönergeyi kullanmakla,
       istek gövdesini saklamaya yetecek olası en düşük değerle bile URL
       uzayınız için gereken yeri kısıtlamış olursunuz.</p>
 

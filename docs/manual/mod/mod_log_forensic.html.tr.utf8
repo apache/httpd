@@ -149,7 +149,7 @@
         varsayılır.
 
       <div class="warning"><h3>Güvenlik:</h3>
-      <p>Bir borulu süreç kullanılmışsa, süreç <code class="program"><a href="../programs/httpd.html">httpd</a></code>’yi
+      <p>Bir borulu süreç kullanılmışsa, süreç <code class="program"><a href="../programs/httpd.html">httpd</a></code>'yi
         başlatan kullanıcı tarafından başlatılacaktır. Sunucu root tarafından
         başlatılıyorsa bu root olacaktır; bu bakımdan günlük kaydını alacak
         programın güvenilir olması veya daha az yetkili bir kullanıcıya geçiş

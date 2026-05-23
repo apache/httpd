@@ -319,7 +319,7 @@ la réécriture soit effectuée
 		<code>struct tm</code> du système Unix. La plupart d'entre elles
 		sont documentées dans la <a href="../expr.html#vars">documentation des expressions</a>, dans
 		la <a href="../env.html">documentation des variables
-		d’environnement</a> ou dans la <a href="http://www.ietf.org/rfc/rfc3875">spécification de
+		d'environnement</a> ou dans la <a href="http://www.ietf.org/rfc/rfc3875">spécification de
 		CGI</a>.</p>
 
 		<p>SERVER_NAME et SERVER_PORT dépendent respectivement
@@ -1571,7 +1571,7 @@ substitution !
     </tr>
 <tr class="odd">
         <td>UnsafeAllow3F</td>
-        <td>Autorise les substitutions à partir d’URL potentiellement non
+        <td>Autorise les substitutions à partir d'URL potentiellement non
 	fiables.
         <em><a href="../rewrite/flags.html#flag_unsafe_allow_3f">détails ...</a></em>
         </td>
@@ -1579,7 +1579,7 @@ substitution !
 <tr>
         <td>UnsafePrefixStat</td>
         <td>Autorise les substitutions potentiellement non fiables à partir
-	d’une variable de tête ou d’une référence arrière vers un chemin du
+	d'une variable de tête ou d'une référence arrière vers un chemin du
 	système de fichiers.
         <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">détails ...</a></em><br />
         Disponible à partir de la version 2.4.60 du serveur HTTP Apache.

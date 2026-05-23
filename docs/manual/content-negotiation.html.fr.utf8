@@ -189,23 +189,23 @@ Content-language: fr, de</pre>
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
     les extensions de noms de fichier, même si les Multivues sont activées. Si
     un fichier de correspondances de types <code>.var</code> est trouvé au cours
-    d’un balayage de répertoire de Multivues, le serveur n’utilisera
+    d'un balayage de répertoire de Multivues, le serveur n'utilisera
     <em>que</em> les variantes listées dans ce fichier de correspondances de
     types. Tout autre fichier du répertoire qui correspond au nom de base mais
-    n’est pas listé dans les correspondances de types sera totalement ignoré.
+    n'est pas listé dans les correspondances de types sera totalement ignoré.
     Par exemple, si <code>foo.var</code> existe et ne liste que
     <code>foo.en.html</code> et <code>foo.fr.de.html</code>, un fichier
     <code>foo.mn.html</code> présent dans le même répertoire ne sera jamais
     servi après négociation, même si le client demande «&nbsp;Mongolian&nbsp;». Pour
-    qu’une telle variante soit disponible, elle doit être ajoutée au fichier de
+    qu'une telle variante soit disponible, elle doit être ajoutée au fichier de
     correspondances de types.</p>
 
     <p>Ce comportement est intéressant pour les sites qui ajoutent de nouvelles
     variantes linguistiques au cours du temps. Si vous avez une ressource
     existante <code>foo.html</code> et ajoutez par la suite des variantes
     traduites avec des extensions de langue, vous devez lister toutes les
-    variantes (y compris l’original) dans le fichier de
-    correspondances de types. Il est possible d’assigner sa langue au fichier
+    variantes (y compris l'original) dans le fichier de
+    correspondances de types. Il est possible d'assigner sa langue au fichier
     original dans le fichier de
     correspondances de types sans avoir à le renommer&nbsp;:</p>
 
@@ -221,7 +221,7 @@ Content-language: fr</pre>
 </div> 
 
     <p>Si les variantes possèdent des qualités de source différentes, elles
-    peuvent être indiquées par l’ajout du paramètre «&nbsp;qs&nbsp;» au type de média,
+    peuvent être indiquées par l'ajout du paramètre «&nbsp;qs&nbsp;» au type de média,
     comme pour cette image (disponible en JPEG, GIF ou ASCII-art)&nbsp;:</p>
 
 <div class="example"><pre class="prettyprint lang-config">URI: foo
@@ -284,7 +284,7 @@ Content-type: text/plain; qs=0.01</pre>
 
     <p>le serveur va choisir entre <code>index.html</code>
     et <code>index.html3</code> si les deux fichiers sont présents. Si aucun
-    n'est présent, alors qu’<code>index.cgi</code> existe,
+    n'est présent, alors qu'<code>index.cgi</code> existe,
     le serveur l'exécutera.</p>
 
     <p>Si, parcequ'elle n'est pas reconnue par <code>mod_mime</code>,
@@ -469,7 +469,7 @@ httpd</a></h3>
 
     <p>Parfois httpd modifie les valeurs de qualité par rapport à celles qui
     découleraient d'une stricte interprétation de l'algorithme de négociation
-    de httpd ci-dessus, cela afin d’améliorer les résultats de l'algorithme pour
+    de httpd ci-dessus, cela afin d'améliorer les résultats de l'algorithme pour
     les navigateurs qui envoient des informations incomplètes ou inappropriées.
     Certains des navigateurs les plus populaires envoient des informations dans
     l'en-tête <code>Accept</code> qui, sans ce traitement, provoqueraient la

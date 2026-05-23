@@ -81,8 +81,8 @@ le Serveur HTTP Apache.</p>
 
     <p>Les lignes qui commencent par un croisillon «&nbsp;#&nbsp;» sont interprétées comme
     des commentaires et sont ignorées. Les commentaires <strong>ne doivent
-    pas</strong> se trouver sur la même ligne qu’une directive de configuration,
-    y compris au début de la continuation d’une ligne comme décrit dans le
+    pas</strong> se trouver sur la même ligne qu'une directive de configuration,
+    y compris au début de la continuation d'une ligne comme décrit dans le
     paragraphe précédent. Les commentaires peuvent aussi continuer sur la ligne
     suivante, ce qui signifie que la prochaine ligne physique est aussi
     interprétée comme un commentaire car la ligne logique commence par un

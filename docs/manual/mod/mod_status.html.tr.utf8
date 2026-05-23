@@ -108,7 +108,7 @@
 <h2><a name="autoupdate" id="autoupdate">Sayfanın Tazelenmesi</a> <a title="Permanent link" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
-    <p>Tarayıcınız “tazeleme” yeteneğine sahipse durum sayfası düzenli
+    <p>Tarayıcınız "tazeleme" yeteneğine sahipse durum sayfası düzenli
       aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
       isterseniz isteği şöyle yapabilirsiniz:<br />
       <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>

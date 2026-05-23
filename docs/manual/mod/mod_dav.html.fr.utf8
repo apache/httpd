@@ -93,7 +93,7 @@ documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
     les directives <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> et
     <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>.</p>
 
-    <p>Dans l’exemple ci-après, la directive <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code> permet de s’assurer que les méthodes
+    <p>Dans l'exemple ci-après, la directive <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code> permet de s'assurer que les méthodes
     spécifiques à DAV (autrement dit les méthodes autres que <code>GET</code>,
     <code>POST</code> et <code>OPTIONS</code>) sont réservées aux utilisateurs
     authentifiés.</p>

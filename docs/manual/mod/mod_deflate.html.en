@@ -29,7 +29,7 @@
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -111,7 +111,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
-      enabling compression only for the html files of the Apache
+      enabling compression only for the html files of the Apache httpd
       documentation:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
@@ -143,14 +143,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 &lt;/Location&gt;</pre>
 
 
-      <p>This Example will uncompress gzip'ed output from example.com, so other
+      <p>This example will uncompress gzip-compressed output from example.com, so other
       filters can do further processing with it.
       </p>
 
     
     <h3><a name="input" id="input">Input Decompression</a></h3>
       <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
-      decompressing a gzip compressed request body . In order to activate
+      decompressing a gzip compressed request body. In order to activate
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
@@ -163,7 +163,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
       gzip</code> header, the body will be automatically decompressed.
       Few browsers have the ability to gzip request bodies. However,
       some special applications actually do support request
-      compression, for instance some <a href="http://www.webdav.org">WebDAV</a> clients.</p>
+      compression, for instance some <a href="https://www.webdav.org">WebDAV</a> clients.</p>
 
       <div class="warning"><h3>Note on Content-Length</h3>
         <p>If you evaluate the request body yourself, <em>don't trust
@@ -180,14 +180,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
     a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
+    appropriate <code>Accept-Encoding</code> request header. This
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
+    to alert proxies of the additional restrictions. For example,
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
@@ -303,7 +303,7 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
         what level of compression should be used, the higher the value,
         the better the compression, but the more CPU time is required to
         achieve this.</p>
-    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+    <p>The value must be between 1 (less compression) and 9 (more compression).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -366,6 +366,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None, but LimitRequestBody applies after deflation</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
@@ -386,6 +387,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioBurst <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateInflateRatioBurst 3</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
@@ -403,6 +405,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DeflateInflateRatioLimit 200</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_deflate</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>2.4.10 and later</td></tr>
@@ -448,7 +451,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_deflate.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_deflate.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_deflate.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">

@@ -38,16 +38,16 @@
     <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
       birden fazla sitenin (sirket1.example.com, sirket2.example.com gibi)
       barındırılma uygulamasını betimler. Sanal konaklar,
-      "<a href="ip-based.html">IP’ye dayalı</a>" veya
+      "<a href="ip-based.html">IP'ye dayalı</a>" veya
       "<a href="name-based.html">isme dayalı</a>" olabilir;
       birincisinde, her site ayrı bir IP adresinden sunulurken, ikincisinde her
       IP adresinde birden fazla site sunulur. Olayda aynı fiziksel sunucu
       kullanıldığı halde bu sunucu son kullanıcıya görünür değildir.</p>
 
-    <p>Apache yazılımsal olarak IP’ye dayalı sanal konakları destekleyen ilk
-      sunuculardan biridir. 1.1 sürümünden itibaren Apache hem IP’ye dayalı hem
+    <p>Apache yazılımsal olarak IP'ye dayalı sanal konakları destekleyen ilk
+      sunuculardan biridir. 1.1 sürümünden itibaren Apache hem IP'ye dayalı hem
       de isme dayalı sanal konakları desteklemektedir. İsme dayalı sanal
-      konaklara bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP’ye
+      konaklara bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP'ye
       dayanmayan</em> sanal konaklar da denmektedir.</p>
 
     <p>Aşağıda, Apache HTTP Suncusundaki sanal konak desteğini bütün

@@ -191,7 +191,7 @@ SetEnvIfNoCase User-Agent Robot is_a_robot</pre>
         sayede önceki bir eşleşmenin sonucuna karşı yeni bir sınama yapma
         imkanı ortaya çıkar. Böyle bir sınama için sadece evvelce
         <code>SetEnvIf[NoCase]</code> yönergeleri ile yapılmış atamalardaki
-        ortam değişkenleri kullanılabilir.  ‘Evvelce’ derken, sunucu genelinde
+        ortam değişkenleri kullanılabilir.  'Evvelce' derken, sunucu genelinde
         veya bölüm içinde bu yönergeden önce yer alan
         <code>SetEnvIf[NoCase]</code> yönerge satırları kastedilmektedir.
         Ortam değişkenlerinin dikkate alınabilmesi için istek öznitelikleri

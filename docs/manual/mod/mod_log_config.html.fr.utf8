@@ -339,7 +339,7 @@ d'Apache</a></li>
       
       <tr><th>Format</th><th>Description</th><th>Échappé</th></tr>
       <tr><td><code>%C</code></td><td>Valeur de Cookie</td><td>Oui</td></tr>
-      <tr><td><code>%e</code></td><td>Variable d’environnement</td><td>Oui</td></tr>
+      <tr><td><code>%e</code></td><td>Variable d'environnement</td><td>Oui</td></tr>
       <tr><td><code>%f</code></td><td>Nom de fichier de la requête</td><td>Oui</td></tr>
       <tr><td><code>%h</code></td><td>Nom hôte distant</td><td>Oui</td></tr>
       <tr><td><code>%H</code></td><td>Protocole de la requête</td><td>Oui</td></tr>
@@ -353,14 +353,14 @@ d'Apache</a></li>
       <tr><td><code>%R</code></td><td>Gestionnaire</td><td>Oui</td></tr>
       <tr><td><code>%u</code></td><td>Utilisateur distant</td><td>Oui</td></tr>
       <tr><td><code>%U</code></td><td>URI de la requête</td><td>Oui</td></tr>
-      <tr><td><code>%v</code></td><td>Nom d’hôte du serveur</td><td>Oui</td></tr>
+      <tr><td><code>%v</code></td><td>Nom d'hôte du serveur</td><td>Oui</td></tr>
       <tr><td><code>%V</code></td><td>Nom canonique du serveur</td><td>Oui</td></tr>
       <tr><td><code>%^ti</code></td><td>Données en fin de requête</td><td>Oui</td></tr>
       <tr><td><code>%^to</code></td><td>Données en fin de réponse</td><td>Oui</td></tr>
       <tr><td><code>%a</code></td><td>Adresse IP distante</td><td>Non (adresse
 IP)</td></tr>
       <tr><td><code>%A</code></td><td>Adresse IP locale</td><td>Non (adresse IP)</td></tr>
-      <tr><td><code>%b</code>, <code>%B</code></td><td>Nombre d’octets
+      <tr><td><code>%b</code>, <code>%B</code></td><td>Nombre d'octets
 envoyés</td><td>Non (numérique)</td></tr>
       <tr><td><code>%D</code></td><td>Durée de la requête
  (microsecondes)</td><td>Non (numérique)</td></tr>
@@ -369,7 +369,7 @@ envoyés</td><td>Non (numérique)</td></tr>
 (généré en interne)</td></tr>
       <tr><td><code>%p</code></td><td>Port du serveur</td><td>Non (numérique)</td></tr>
       <tr><td><code>%P</code></td><td>PID/TID</td><td>Non (numérique)</td></tr>
-      <tr><td><code>%s</code></td><td>Code d’état</td><td>Non (numérique)</td></tr>
+      <tr><td><code>%s</code></td><td>Code d'état</td><td>Non (numérique)</td></tr>
       <tr><td><code>%t</code></td><td>Moment de la requête</td><td>Non (temps
 formaté)</td></tr>
       <tr><td><code>%T</code></td><td>Durée de la requête (secondes)</td><td>Non (numérique)</td></tr>
