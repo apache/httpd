@@ -37,7 +37,7 @@
     <p>Bu belgede isme dayalı sanal konakların ne zaman, nasıl kullanılacakları
       açıklanmıştır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">İsme dayalı ve IP’ye dayalı Sanal Konaklar</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">İsme dayalı ve IP'ye dayalı Sanal Konaklar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl seçer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">İsme Dayalı Sanal Konakların Kullanımı</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></li><li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a>
@@ -46,9 +46,9 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
 örnekleri</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">İsme dayalı ve IP’ye dayalı Sanal Konaklar</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
+<h2><a name="namevip" id="namevip">İsme dayalı ve IP'ye dayalı Sanal Konaklar</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
-    <p><a href="ip-based.html">IP’ye dayalı sanal konaklar</a>da sunulacak
+    <p><a href="ip-based.html">IP'ye dayalı sanal konaklar</a>da sunulacak
       sanal konağı doğru tespit edebilmek için bağlantının yapıldığı IP
       adresine bakılır. Bu bakımdan her konak için ayrı bir IP adresine
       gereksinim vardır.</p>
@@ -61,9 +61,9 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
       ismini doğru IP adresiyle eşlemek için DNS sunucunuzu yapılandırdıktan
       sonra Apache HTTP sunucusunu farklı konak isimlerini tanıyacak şekilde
       yapılandırmanız yeterli olur. İsme dayalı sanal barındırma ayrıca zaten
-      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP’ye dayalı sanal
+      kıt olan IP adreslerine talebi de azaltır. Bu nedenle, IP'ye dayalı sanal
       konakları kullanmanızı gerektiren donanım kullanmadıkça isme  dayalı
-      sanal konaklar kullanmalısınız. İstemci uyumuna bağlı IP’ye dayalı
+      sanal konaklar kullanmalısınız. İstemci uyumuna bağlı IP'ye dayalı
       sanal barındırma için eskiden varolan sebepler genel amaçlı bir HTTP
       sunucusu için artık uygulanabilir değildir.</p>
 
@@ -150,7 +150,7 @@ Barındırma</a></li><li><a href="examples.html">Çok kullanılan sanal konak ya
 
     <p>İsterseniz, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesinde argüman olarak <code>*</code>
       yerine doğrudan bir IP adresi belirtebilirsiniz. Hatta, daha sonra, isme
-      dayalı sanal konakları bir IP adresinden ve IP’ye dayalı olanları veya
+      dayalı sanal konakları bir IP adresinden ve IP'ye dayalı olanları veya
       isme dayalı diğer bir sanal konak grubunu diğer IP adreslerinden sunmak
       isteyebilirsiniz.</p>
 

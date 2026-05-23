@@ -451,11 +451,11 @@ Require ldap-user "Joe Manager"</pre>
     membres auront l'autorisation d'accès. Elle prend comme argument le
     DN du groupe LDAP.</p>
 
-    <div class="warning">N’entourez pas de guillemets le nom du groupe. À la
+    <div class="warning">N'entourez pas de guillemets le nom du groupe. À la
     différence de <code>Require ldap-user</code>, le fournisseur
     <code>ldap-group</code> ne prend pas en charge les valeurs entre guillemets.</div>
 
-    <p>Supposons par exemple que l’entrée suivante existait dans l’annuaire
+    <p>Supposons par exemple que l'entrée suivante existait dans l'annuaire
     LDAP&nbsp;:</p>
 
 <div class="example"><pre>dn: cn=Administrators, o=Example
@@ -525,7 +525,7 @@ AuthLDAPMaxSubGroupDepth 1</pre>
     l'annuaire correspond au DN spécifié par la directive <code>Require
     ldap-dn</code>, l'autorisation d'accès est accordée.</p>
 
-    <div class="warning">N’entourez pas de guillemets le DN. À la différence de
+    <div class="warning">N'entourez pas de guillemets le DN. À la différence de
     <code>Require ldap-user</code>, le fournisseur <code>ldap-dn</code> ne prend
     pas en charge les valeurs entre guillemets.</div>
 
@@ -1478,7 +1478,7 @@ Apache</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
 </table><p>La documentation de cette directive
-	n'a pas encore t traduite. Veuillez vous reporter  la version
+	n'a pas encore été traduite. Veuillez vous reporter à la version
 	en langue anglaise.</p></div>
 </div>
 <div class="bottomlang">

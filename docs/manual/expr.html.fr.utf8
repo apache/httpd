@@ -585,8 +585,8 @@ DIGIT       ::= &lt;any US-ASCII digit "0".."9"&gt;</pre>
 	spécifiée toutes les occurrences de "from" par "to". Le premier
 	paramètre ne doit pas être une chaîne littérale.</td><td /></tr>
 <tr><td><code>escapehtml</code></td>
-        <td>Protège une chaîne HTML à l’aide de séquences
-	d’échappement.</td><td /></tr>
+        <td>Protège une chaîne HTML à l'aide de séquences
+	d'échappement.</td><td /></tr>
 </table>
 
     <p>Les fonctions marquées comme "limité" dans la dernière colonne ne sont

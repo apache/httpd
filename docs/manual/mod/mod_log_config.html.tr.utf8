@@ -84,7 +84,7 @@
       olarak kullanılan tırnak ve tersbölü imlerinin tersbölü ile öncelenmesi
       gerekir.</p>
 
-    <p>İstek özellikleri biçem dizgesine “<code>%</code>” imli belirteçler
+    <p>İstek özellikleri biçem dizgesine "<code>%</code>" imli belirteçler
       yerleştirilerek günlüklenir. Bu belirteçler ve anlamları:</p>
 
     <table class="bordered"><tr class="header"><th>Belirteç</th>
@@ -135,7 +135,7 @@
     	  '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,
     	  '2', ikinci bağlantıyı, ..., vb. gösterir;
           <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> kullanılmışsa
-          değer anlamlıdır; aksi takdirde değer daima 0’dır.</td></tr>
+          değer anlamlıdır; aksi takdirde değer daima 0'dır.</td></tr>
 <tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
           <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> modülü mevcut ve <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> yönergesine değer
@@ -388,7 +388,7 @@ expr=<var>ifade</var>]</code></td></tr>
         günlükler</a>e bakınız.
 
       <div class="warning"><h3>Güvenlik:</h3>
-      <p>Bir borulu süreç kullanılmışsa, süreç <code class="program"><a href="../programs/httpd.html">httpd</a></code>’yi
+      <p>Bir borulu süreç kullanılmışsa, süreç <code class="program"><a href="../programs/httpd.html">httpd</a></code>'yi
         başlatan kullanıcı tarafından başlatılacaktır. Sunucu root tarafından
         başlatılıyorsa bu root olacaktır; bu bakımdan günlük kaydını alacak
         programın güvenilir olması önemlidir.</p>

@@ -43,7 +43,7 @@
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#core">Temel Özellikler ve Çoklu İşlem Modülleri</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Diğer Modüller</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</a>
+<li><a href="../mpm.html">Çok Süreçlilik Modülleri (MPM'ler)</a>
   </li>
 <li><a href="quickreference.html">Hızlı Yönerge Kılavuzu</a>
   </li>

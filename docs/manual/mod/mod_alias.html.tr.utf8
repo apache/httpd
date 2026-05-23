@@ -43,8 +43,8 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_alias.c</td></tr></table>
 <h3>Özet</h3>
 
-    <p>Bu modülde bulunan yönergeler sunucuya istek olarak gelen URL’lerin
-      denetlenmesini ve değiştirilmesini mümkün kılar. <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergeleri URL’lerin dosya sisteminin
+    <p>Bu modülde bulunan yönergeler sunucuya istek olarak gelen URL'lerin
+      denetlenmesini ve değiştirilmesini mümkün kılar. <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergeleri URL'lerin dosya sisteminin
       dizinlerine eşlenmesini sağlar. Böylece, kök dizini <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> ile belirtilen site belge ağacı
       altında bulunmayan içeriğe erişmek mümkün olur. <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergesi buna ek olarak
       hedef dizini sadece CGI betiklerini içeren dizin olarak imler.</p>
@@ -79,7 +79,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_alias">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_alias">Report a bug</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
-<li><a href="../urlmapping.html">URL’lerin Dosya sistemi ile Eşlenmesi</a>
+<li><a href="../urlmapping.html">URL'lerin Dosya sistemi ile Eşlenmesi</a>
   </li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -92,7 +92,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       aynı bağlam dahilinde (örneğin, aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümünde) çok fazla <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#redirect">Redirect</a></code> varsa bunlar belli bir
       sıraya göre işleme sokulurlar.</p>
 
-    <p>İlk adımda, <code class="directive"><a href="#alias">Alias</a></code>’lardan önce
+    <p>İlk adımda, <code class="directive"><a href="#alias">Alias</a></code>'lardan önce
       bütün <code class="directive"><a href="#redirect">Redirect</a></code> yönergeleri
       işleme sokulur. Bu bakımdan bir <code class="directive"><a href="#redirect">Redirect</a></code> veya <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> ile eşleşen bir istek için
       hiçbir <code class="directive"><a href="#alias">Alias</a></code>
@@ -119,7 +119,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Yönergesi</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL'leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
 <var>dizin-yolu</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
@@ -129,7 +129,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 
     <p><code class="directive">Alias</code> yönergesi, belgelerin <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dizininden farklı bir yerde
       saklanmasını mümkün kılar. <code><em>URL-yolu</em></code> ile başlayan
-      URL’ler (% imlemesi çözüldükten sonra) <code><em>dizin-yolu</em></code>
+      URL'ler (% imlemesi çözüldükten sonra) <code><em>dizin-yolu</em></code>
       ile başlayan yerel dosyalarla eşlenir. <code><em>URL-yolu</em></code>,
       harf büyüklüğüne duyarsız sistemlerde bile harf büyüklüğüne
       duyarlıdır.</p>
@@ -145,7 +145,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
       <code>http://example.com/imagefoo.gif</code> ile eşleşmez. Düzenli
       ifadelerin kullanıldığı daha karmaşık eşleşmeler için <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
 
-    <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
+    <p><code><em>URL-yolu</em></code>'nu bir <code>/</code> ile
       sonlandırırsanız <code class="directive">Alias</code> yönergesini yorumlarken
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
       eğer</p>
@@ -153,7 +153,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
     <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
 
     <p>diye bir tanım yaparsanız sona bir / ekleme ihtiyacından dolayı
-      <code>/icons</code> URL’si için bir <code class="directive">Alias</code>
+      <code>/icons</code> URL'si için bir <code class="directive">Alias</code>
       kullanılmayacaktır.</p>
 
     <p><code class="directive">Alias</code> <em>hedefleri</em> için ek <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri
@@ -181,7 +181,7 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Yönergesi</a> <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL'leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
 eşler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
@@ -271,7 +271,7 @@ eşler.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Yönergesi</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL'ye
 yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Redirect [<var>durum</var>] <var>URL-yolu</var>
 <var>URL</var></code></td></tr>
@@ -281,7 +281,7 @@ yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
 </table>
     <p><code class="directive">Redirect</code> yönergesi istemciye bir yönlendirme
-      isteği döndürerek eski URL’yi yenisiyle eşler.</p>
+      isteği döndürerek eski URL'yi yenisiyle eşler.</p>
 
     <p>Eski <code><em>URL-yolu</em></code> bir bölü çizgisi ile başlar ve harf
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
@@ -294,8 +294,8 @@ yönlendirir.</td></tr>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
-      dönecektir. <code><em>URL-yolu</em></code>’nun devamı niteliğindeki ek
-      yol hedef URL’ye eklenir.</p>
+      dönecektir. <code><em>URL-yolu</em></code>'nun devamı niteliğindeki ek
+      yol hedef URL'ye eklenir.</p>
 
     <div class="example"><h3>Örnek:</h3><p><code>
       # Farklı bir konaktaki bir URL'ye yönlendirme<br />
@@ -400,7 +400,7 @@ yönlendirme gönderir.</td></tr>
 <div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Yönergesi</a> <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, kalıcı bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</td></tr>
+URL'ye yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RedirectPermanent <var>URL-yolu</var> <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -427,7 +427,7 @@ URL’ye yönlendirir.</td></tr>
 <div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Yönergesi</a> <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
-URL’ye yönlendirir.</td></tr>
+URL'ye yönlendirir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RedirectTemp <var>URL-yolu</var> <var>URL</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
@@ -441,7 +441,7 @@ URL’ye yönlendirir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Yönergesi</a> <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL'yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAlias <var>URL-yolu</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin</td></tr>
@@ -452,7 +452,7 @@ URL’ye yönlendirir.</td></tr>
       yorumlayıcısı tarafından çalıştırılacak betikleri içeren dizin olarak
       imlemesi dışında <code class="directive"><a href="#alias">Alias</a></code>
       yönergesinin yaptığı işi yapar. <code><em>URL-yolu</em></code> ile
-      başlayan harf büyüklüğüne duyarlı URL’ler (% imlemesi çözüldükten
+      başlayan harf büyüklüğüne duyarlı URL'ler (% imlemesi çözüldükten
       sonra), dosya sistemindeki bir tam yol olarak belirtilmiş
       <code><em>dizin-yolu</em></code> ile başlayan betiklerle eşlenir.</p>
 
@@ -481,7 +481,7 @@ URL’ye yönlendirir.</td></tr>
          ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
     </code></p></div>
 
-    <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
+    <p>Bu senaryoda <code>/cgi-bin/</code>'den istenen tüm dosyalar sizin
       belirttiğiniz dosya tarafından işleme sokulacaktır. Bu yöntemle kendi
       özel eylemcinizi kullanabilirsiniz. İsterseniz, bunu içerik eklemek
       ya da ısmarlama bir eylem için bir CGI sarmalayıcısı olarak da
@@ -489,7 +489,7 @@ URL’ye yönlendirir.</td></tr>
 
     <div class="warning">Yapılandırma değiştiğinde kaynak kodlarının ister
       istemez açığa çıkmasını istemiyorsanız CGI betiklerinizi <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altına koymayınız.
-      <code class="directive">ScriptAlias</code> yönergesi URL’yi doğru yere
+      <code class="directive">ScriptAlias</code> yönergesi URL'yi doğru yere
       eşlemekten başka orayı bir CGI betikleri dizini olarak imler. CGI
       betiklerinizi <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altına
       koyarsanız çalıştırmak için <code class="directive">ScriptAlias</code> değil,
@@ -521,7 +521,7 @@ URL’ye yönlendirir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Yönergesi</a> <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL'yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAliasMatch <var>düzenli-ifade</var>
 <var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>

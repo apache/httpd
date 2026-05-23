@@ -61,7 +61,7 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>httpd’nin beklendiği gibi işlemesi için her sanal konak için iki
+    <p>httpd'nin beklendiği gibi işlemesi için her sanal konak için iki
       veriye mutlaka ihtiyacı vardır: <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> ve sunucunun bağlantı kabul edip hizmet
       sunacağı en az bir IP adresi. Yukarıdaki örnekte IP adresi
       bulunmamaktadır, dolayısıyla Apache, <code>falan.fesmekan.dom</code>
@@ -70,7 +70,7 @@
       erişemezse bu sanal konak <em>yapılandırılmayacak</em> ve bu sanal konağa
       yapılan isteklere yanıt verilemeyecektir.</p>
 
-    <p><code>falan.fesmekan.dom</code>’un 192.168.2.1 IP adresine sahip
+    <p><code>falan.fesmekan.dom</code>'un 192.168.2.1 IP adresine sahip
       olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
 
     <div class="example"><p><code>
@@ -84,10 +84,10 @@
     </code></p></div>
 
     <p>Ancak, bu sefer de bu sanal konağın sunucu ismini öğrenmek için
-      httpd’nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
+      httpd'nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
       başarısız olursa kısmi bir yapılandırmaya gidilir.
       Eğer sanal konak isme dayalı ise sanal konak
-      kısmen bile yapılandırılmaz. IP’ye dayalı sanal konaklar büyük oranda
+      kısmen bile yapılandırılmaz. IP'ye dayalı sanal konaklar büyük oranda
       çalışır, fakat (örneğin, bir Redirect varlığında olduğu gibi) sunucu ismini
       içeren tam bir adres üretilmesini gerektiren bir durumda, sunucu geçerli
       bir adres üretemez.</p>
@@ -126,21 +126,21 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p><code>falan.fesmekan.dom</code>’a 192.168.2.1,
-      <code>misal.mesela.dom</code>’a 192.168.2.2 atadığınızı fakat,
-      <code>mesela.dom</code>’un DNS kaydının sizin denetiminizde olmadığını
-      varsayalım. Bu yapılandırmayla, <code>mesela.dom</code>’u
-      <code>fesmekan.dom</code>’a giden tüm trafiği çalabilecek duruma
+    <p><code>falan.fesmekan.dom</code>'a 192.168.2.1,
+      <code>misal.mesela.dom</code>'a 192.168.2.2 atadığınızı fakat,
+      <code>mesela.dom</code>'un DNS kaydının sizin denetiminizde olmadığını
+      varsayalım. Bu yapılandırmayla, <code>mesela.dom</code>'u
+      <code>fesmekan.dom</code>'a giden tüm trafiği çalabilecek duruma
       getirirsiniz. Bunu gerçekleştirmek için DNS kaydında
-      <code>misal.mesela.dom</code>’a 192.168.2.1 adresinin atanması
-      yeterlidir. Kendi DNS’lerine sahip olduklarından dolayı
-      <code>misal.mesela.dom</code>’a istedikleri IP adresini atamaktan
+      <code>misal.mesela.dom</code>'a 192.168.2.1 adresinin atanması
+      yeterlidir. Kendi DNS'lerine sahip olduklarından dolayı
+      <code>misal.mesela.dom</code>'a istedikleri IP adresini atamaktan
       onları alıkoyamazsınız.</p>
 
-    <p>192.168.2.1’e gelen isteklerin hepsine
+    <p>192.168.2.1'e gelen isteklerin hepsine
       (<code>http://falan.fesmekan.dom/biryer</code> şeklinde yazılan
       adresler dahil) <code>mesela.dom</code> sanal konağınca hizmet
-      sunulacaktır. Apache’nin gelen istekleri sunduğu sanal konaklarla nasıl
+      sunulacaktır. Apache'nin gelen istekleri sunduğu sanal konaklarla nasıl
       eşleştirdiğini bilirseniz bunun sebebini kolayca anlarsınız. Bunu
       kabataslak açıklayan  <a href="vhosts/details.html">bir belgemiz
       mevcuttur</a>.</p>
@@ -150,10 +150,10 @@
     
 
     <p><a href="vhosts/name-based.html">İsme dayalı sanal konak
-      desteği</a>, httpd’nin çalıştığı makinenin IP adres(ler)ini de bilmesini
+      desteği</a>, httpd'nin çalıştığı makinenin IP adres(ler)ini de bilmesini
       gerektirir. Bu adresi elde etmek için sunucu, ya sunucu genelinde geçerli
       <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> yönergesine bakar ya da bir
-      C işlevi olan <code>gethostname</code>’i kullanır (işlev, komut
+      C işlevi olan <code>gethostname</code>'i kullanır (işlev, komut
       isteminden <code>hostname</code> komutuna dönen yanıtın aynısını
       döndürür) ve ardından bu adresle ilgili olarak bir DNS sorgusu yapar.
       Bu sorgudan kaçınmanın henüz bir yolu yoktur.</p>
@@ -167,11 +167,11 @@
       dosyasında bulunması gerekebilir.</p>
 
     <p>Herhangi bir nedenle sunucunuz bir DNS sorgusu yapmıyorsa veya
-      yapmamalıysa, httpd’yi <code>HOSTRESORDER</code> ortam değişkenine
+      yapmamalıysa, httpd'yi <code>HOSTRESORDER</code> ortam değişkenine
       "<code>local</code>" değerini atadıktan sonra çalıştırabilirsiniz. Bu
       tamamen işletim sistemine ve kullandığınız çözümleyici kütüphanelere
       bağlıdır. Ayrıca, ortamı denetlemek için <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>
-      kullanmıyorsanız, CGI’ler de bundan etkilenir. En iyisi işletim
+      kullanmıyorsanız, CGI'ler de bundan etkilenir. En iyisi işletim
       sisteminizin SSS belgelerini ve kılavuz sayfalarını okumaktır.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

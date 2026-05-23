@@ -362,15 +362,15 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
     via la variable de serveur <code>REQUEST_URI</code>. Pour accéder à cette
     variable en PHP, par exemple, utilisez <code>$_SERVER['REQUEST_URI']</code>.</p>
     <div class="note"><h3>Interaction avec les autres gestionnaires</h3>
-    <p>La directive <code class="directive">FallbackResource</code> n’a d’effet que si
-    aucun autre gestionnaire n’a été assigné à la requête. Si une directive
+    <p>La directive <code class="directive">FallbackResource</code> n'a d'effet que si
+    aucun autre gestionnaire n'a été assigné à la requête. Si une directive
     comme <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ou <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> a déjà assigné un gestionnaire à un
     URL ou à une extension de fichier, la directive
-    <code class="directive">FallbackResource</code> ne l’outrepassera pas. Par exemple,
+    <code class="directive">FallbackResource</code> ne l'outrepassera pas. Par exemple,
     si vous utilisez <code>SetHandler application/x-httpd-php</code> dans une
     section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, ce
-    gestionnaire s’appliquera à toutes les requêtes dans ce répertoire, même
-    aux requêtes pour des fichiers qui n’existent pas ; la directive
+    gestionnaire s'appliquera à toutes les requêtes dans ce répertoire, même
+    aux requêtes pour des fichiers qui n'existent pas ; la directive
     <code class="directive">FallbackResource</code> ne sera alors jamais invoquée.</p></div>
 
 <h3>Voir aussi</h3>

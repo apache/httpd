@@ -638,8 +638,8 @@ All pour les versions antérieures</code></td></tr>
     <code>.htaccess</code> dans le système de fichiers.</p>
 
     <div class="note">
-    <p>La valeur <code>None</code> ne peut pas être combinée avec d’autres
-    valeurs. Si c’est le cas, une erreur sera produite qui interrompra la
+    <p>La valeur <code>None</code> ne peut pas être combinée avec d'autres
+    valeurs. Si c'est le cas, une erreur sera produite qui interrompra la
     lecture de la configuration.</p>
     </div>
 
@@ -5476,7 +5476,7 @@ dernière.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="unclist" id="unclist">Directive</a> <a name="UNCList" id="UNCList">UNCList</a> <a title="Lien permanent" href="#unclist" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels sont les noms d’hôte UNC auxquels le serveur peut accéder
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels sont les noms d'hôte UNC auxquels le serveur peut accéder
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UNCList <var>hostname</var> [<var>hostname</var>...]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>unset</code></td></tr>
@@ -5488,16 +5488,16 @@ serveur HTTP Apache.</td></tr>
 </table>
     <p>Au cours de leur traitement, les requêtes pour accéder à un chemin du
     système de fichiers qui aboutissent à un chemin UNC échoueront si le nom
-    d’hôte dans le chemin UNC n’a pas été spécifié par cette directive. Le but
-    est de limiter l’accès aux chemins dérivés d’entrées non fiables.</p>
+    d'hôte dans le chemin UNC n'a pas été spécifié par cette directive. Le but
+    est de limiter l'accès aux chemins dérivés d'entrées non fiables.</p>
 
     <pre class="prettyprint lang-config">UNCList example.com other.example.com</pre>
 
 
     <div class="warning"><h3>Sécurité</h3>
         <p>Les valeurs spécifiées par cette directive ne sont vérifiées que par
-	certaines composantes du serveur, avant d’accéder à des chemins du
-	système de fichiers qui peuvent dériver par inadvertance d’entrées non
+	certaines composantes du serveur, avant d'accéder à des chemins du
+	système de fichiers qui peuvent dériver par inadvertance d'entrées non
 	fiables. </p>
         <p> Les systèmes Windows doivent être isolés au niveau de la couche
 	réseau pour éviter les appels SMB/NTLM sortants vers des destinations

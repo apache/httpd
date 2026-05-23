@@ -34,15 +34,15 @@
 <div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
-    ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
+    ipuçları.  Öneriler kısmen Apache'ye özel kısmen de genel olacaktır.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Güncel Tutma</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dos">Hizmet Reddi (DoS) Saldırıları</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverroot"><code>ServerRoot</code> Dizinlerinin İzinleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssi">Sunucu Taraflı İçerik Yerleştirme</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI Genelinde</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi"><code>ScriptAlias</code>’sız CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi"><code>ScriptAlias</code>’lı CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi"><code>ScriptAlias</code>'sız CGI</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi"><code>ScriptAlias</code>'lı CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Devingen içerikli kaynaklar</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamicsec">Devingen içeriğin güvenliği</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Sistem Ayarlarının Korunması</a></li>
@@ -59,7 +59,7 @@
       bir yazılımın dağıtılmasının ardından küçük ya da büyük bazı sorunların
       keşfedilmesi kaçınılmazdır. Bu sebeple, yazılım güncellemelerinden
       haberdar olmak oldukça önem kazanır. HTTP sunucunuzu doğrudan
-      Apache’den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
+      Apache'den temin ediyorsanız yeni sürümler ve güvenlik güncellemeleri
       ile ilgili bilgileri tam zamanında alabilmek için <a href="http://httpd.apache.org/lists.html#http-announce">Apache
       HTTP Sunucusu Duyuru Listesi</a>ne mutlaka üye olmanızı öneririz.
       Apache yazılımının üçüncü parti dağıtımlarını yapanların da buna benzer
@@ -96,13 +96,13 @@
         yönergesi bir istemcinin isteği göndermek için harcadığı zamanı
         sınırlamayı sağlar.</li>
 
-      <li>HRS’ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> yönergesinin değeri düşürülmelidir. Birkaç
+      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> yönergesinin değeri düşürülmelidir. Birkaç
         saniye gibi mümkün olduğunca düşük bir ayar uygun olabilir. Ancak
         <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> başka işlemlerde de
         kullanıldığından çok düşük değerler, örneğin, uzun süre çalışan CGI
         betiklerinde sorunlar çıkmasına sebep olabilir.</li>
 
-      <li>HRS’ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> yönergesinin değeri de düşürülebilir.
+      <li>HRS'ye maruz kalması olası sitelerde <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> yönergesinin değeri de düşürülebilir.
         Hatta bazı siteler başarımı arttırmak amacıyla <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> yönergesi üzerinden kalıcı
         bağlantıları tamamen kapatabilirler.</li>
 
@@ -127,12 +127,12 @@
         bağlantıların sayısını sınırlamak için <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesini kullanın. Ayrıca, <a href="perf-tuning.html">başarım arttırma belgesine</a> de
         bakabilirsiniz.</li>
 
-      <li>HRS’lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
-        arttırabilecek evreli <a href="../mpm.html">MPM</a>’lerden birini
-        kullanmak iyi olabilir. Dahası, <code class="module"><a href="../mod/event.html">event</a></code> MPM’i
+      <li>HRS'lerin etkilerini azaltmak için aynı andaki bağlantı sayısını
+        arttırabilecek evreli <a href="../mpm.html">MPM</a>'lerden birini
+        kullanmak iyi olabilir. Dahası, <code class="module"><a href="../mod/event.html">event</a></code> MPM'i
         her bağlantıya yeni bir evre atanmaması için eşzamansız işlem yapar.
         OpenSSL kütüphanesinin doğası nedeniyle
-        <code class="module"><a href="../mod/event.html">event</a></code> MPM’i <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ve diğer girdi
+        <code class="module"><a href="../mod/event.html">event</a></code> MPM'i <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> ve diğer girdi
         süzgeçleri ile henüz uyumlu değildir. Bu durumlarda,
         <code class="module"><a href="../mod/worker.html">worker</a></code> MPM'inin davranışına geri döner.</li>
 
@@ -209,7 +209,7 @@
 
     <p>SSI sayfaları, CGI betikleriyle ilgili riskleri de taşır. <code>exec
       cmd</code> elemanı kullanılarak bir SSI sayfasından herhangi bir CGI
-      betiğini veya bir sistem programını Apache’nin aidiyetinde olduğu
+      betiğini veya bir sistem programını Apache'nin aidiyetinde olduğu
       kullanıcının yetkisiyle çalıştırmak mümkündür.</p>
 
     <p>SSI sayfalarının yararlı özelliklerinden yararlanırken güvenliğini de
@@ -217,7 +217,7 @@
 
     <p>Sunucu yöneticisi, bir başıbozuk SSI sayfasının sebep olabileceği
       zararları bertaraf etmek için <a href="#cgi">CGI Genelinde</a>
-      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>’i etkin
+      bölümünde açıklandığı gibi <a href="../suexec.html">suexec</a>'i etkin
       kılabilir.</p>
 
     <p>SSI sayfalarını <code>.html</code> veya <code>.htm</code>
@@ -251,14 +251,14 @@
     <p>CGI betiklerinin hepsi aynı kullanıcının aidiyetinde çalışırsa diğer
       betiklerle aralarında çelişkilerin ortaya çıkması ister istemez
       kaçınılmazdır. Örneğin A kullanıcısının B kullanıcısına garezi varsa
-      bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
+      bir betik yazıp B'nin CGI veritabanını silebilir. Bu gibi durumların
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
       da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi"><code>ScriptAlias</code>’sız CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
+<h2><a name="nsaliasedcgi" id="nsaliasedcgi"><code>ScriptAlias</code>'sız CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
     
 
     <p>Kullanıcıların sitenin her yerinde CGI betiklerini çalıştırmalarına
@@ -275,17 +275,17 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi"><code>ScriptAlias</code>’lı CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
+<h2><a name="saliasedcgi" id="saliasedcgi"><code>ScriptAlias</code>'lı CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
     
 
-    <p>CGI’yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
-      denetim imkanı sağlar. Bu kaçınılmaz olarak <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>’sız CGI’den çok daha
+    <p>CGI'yi belli dizinlerle sınırlamak yöneticiye bu dizinlerde daha iyi
+      denetim imkanı sağlar. Bu kaçınılmaz olarak <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'sız CGI'den çok daha
       güvenlidir, ancak bu dizinlere yazma hakkı olan kullanıcılarınız
       güvenilir kişiler olması ve site yöneticisinin de olası güvenlik
       açıklarına karşı CGI betiklerini ve programlarını denemeye istekli
       olması şartıyla.</p>
 
-    <p>Çoğu site yöneticisi <code>ScriptAlias</code>’sız CGI yerine bu
+    <p>Çoğu site yöneticisi <code>ScriptAlias</code>'sız CGI yerine bu
       yaklaşımı seçer.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -353,7 +353,7 @@
 <h2><a name="protectserverfiles" id="protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a> <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
     
 
-    <p>Apache’nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
+    <p>Apache'nin ister istemez yanlış anlaşılan yönlerinden biri öntanımlı
       erişim özelliğidir. Yani siz aksine bir şeyler yapmadıkça, sunucu normal
       URL eşleme kurallarını kullanarak bir dosyayı bulabildiği sürece onu
       istemciye sunacaktır.</p>

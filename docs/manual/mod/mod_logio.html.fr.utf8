@@ -92,7 +92,7 @@ d'Apache</a></li>
 	pas être nul.</td></tr>
 <tr class="odd"><td><code>%O</code></td>
         <td>Octets envoyés, en-têtes inclus. Peut être égal à zéro dans de rares
-	cas ; par exemple lorsqu’une requête est interrompue avant l’envoi de la
+	cas ; par exemple lorsqu'une requête est interrompue avant l'envoi de la
 	réponse.</td></tr>
 <tr><td><code>%S</code></td>
         <td>Nombre d'octets transmis en émission et réception y compris

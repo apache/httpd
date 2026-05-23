@@ -513,7 +513,7 @@ Require ip 127.0.0.1</pre>
       </li>
 
       <li>Le symbole <code>&lt;set&gt;</code> de <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>
-      n’effectue plus le décodage d’entité sur la valeur définie.</li>
+      n'effectue plus le décodage d'entité sur la valeur définie.</li>
 
     </ul>
 

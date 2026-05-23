@@ -57,7 +57,7 @@
       bağlar ve gelecek istekleri bekler. Öntanımlı olarak makine üzerindeki
       tüm adresleri dinler. Bununla birlikte, belli portları veya sadece
       seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
-      belirtilmesi gerekebilir. Bu çoğunlukla, httpd’nin farklı IP
+      belirtilmesi gerekebilir. Bu çoğunlukla, httpd'nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
       belirlendiği <a href="vhosts/">sanal konak</a> özelliği ile birlikte
       yürür.</p>
@@ -139,33 +139,33 @@ Listen 192.0.2.5:8000</pre>
 <h2><a name="ipv6" id="ipv6">IPv6 Adreslerin Durumu</a> <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
     
 
-    <p>IPv6’yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
-      platformların çoğunda <a class="glossarylink" href="./glossary.html#apr" title="sözlüğe bakınız">APR</a>, httpd’nin IPv6
-      soketleri ayırmasını mümkün kılarak IPv6’yı desteklemekte ve IPv6
+    <p>IPv6'yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
+      platformların çoğunda <a class="glossarylink" href="./glossary.html#apr" title="sözlüğe bakınız">APR</a>, httpd'nin IPv6
+      soketleri ayırmasını mümkün kılarak IPv6'yı desteklemekte ve IPv6
       üzerinden gönderilmiş istekleri elde etmektedir.</p>
 
     <p>httpd yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
       hem IPv4 hem de IPv6 bağlantılarını kabul edip etmeyeceğidir. IPv4
       bağlantılarını kabul eden IPv6 soketleri IPv4 eşlemli IPv6 adresleri
       kullanırlar. Bu çoğu sistemde öntanımlı olarak böyleyken, FreeBSD,
-      NetBSD ve OpenBSD’de sistem geneline uygulanan kurallar gereğince
+      NetBSD ve OpenBSD'de sistem geneline uygulanan kurallar gereğince
       öntanımlı olarak buna izin verilmez; bu sistemlerde özel bir
-      <code class="program"><a href="./programs/configure.html">configure</a></code> parametresi ile <code>httpd</code>’nin
+      <code class="program"><a href="./programs/configure.html">configure</a></code> parametresi ile <code>httpd</code>'nin
       davranışı değiştirilebilir.</p>
 
     <p>Diğer taraftan, Linux ve Tru64 gibi bazı platformlarda hem IPv4 hem de
       IPv6 adresleri kabul etmenin <strong>tek yolu</strong> eşlemli adresler
-      kullanmaktır. <code>httpd</code>’nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
+      kullanmaktır. <code>httpd</code>'nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
       IPv6 adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
       istiyorsanız, <code class="program"><a href="./programs/configure.html">configure</a></code> betiğine
       <code>--enable-v4-mapped</code> seçeneğini belirtiniz.</p>
 
     <p><code>--enable-v4-mapped</code> seçeneği, FreeBSD, NetBSD ve OpenBSD
       hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de
-      <code>httpd</code>’nin böyle derlenmesini isterdiniz.</p>
+      <code>httpd</code>'nin böyle derlenmesini isterdiniz.</p>
 
-    <p>Platformunuzun ve APR’nin neyi desteklediğine bakmaksızın
-      <code>httpd</code>’nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
+    <p>Platformunuzun ve APR'nin neyi desteklediğine bakmaksızın
+      <code>httpd</code>'nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
       tüm <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergelerinde
       örnekteki gibi IPv4 adresleri belirtiniz:</p>
 
@@ -174,10 +174,10 @@ Listen 192.0.2.1:80</pre>
 </div>
 
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
-      <code>httpd</code>’nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
+      <code>httpd</code>'nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
       adreslerin iptalini)  istiyorsanız <code class="program"><a href="./programs/configure.html">configure</a></code>
       betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
-      seçenek FreeBSD, NetBSD ve OpenBSD’de öntanımlıdır.</p>
+      seçenek FreeBSD, NetBSD ve OpenBSD'de öntanımlıdır.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="protocol" id="protocol">Protokolü Listen ile Belirtme</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>

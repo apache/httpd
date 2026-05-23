@@ -49,7 +49,7 @@ süreçlilik modülü.</td></tr>
       çok sayıda evreye sahip çok sayıda süreci canlı tutarak bir çok süreçli
       sunucu kadar kararlı olur.</p>
 
-    <p>Bu MPM’i denetim altında tutmakta kullanılan en önemli yönergeler, her
+    <p>Bu MPM'i denetim altında tutmakta kullanılan en önemli yönergeler, her
       çocuk süreç için konuşlandırılacak evre sayısını belirleyen <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> yönergesi ile devreye
       sokulacak toplam evre sayısının azamisini belirleyen <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> yönergesidir.</p>
 </div>
@@ -151,7 +151,7 @@ süreçlilik modülü.</td></tr>
     <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache
       httpd tarafından daha az yetkili bir kullanıcının aidiyetinde
-      çalıştırılırlar. Apache httpd’nin çocuk süreçlerinin kullanıcı ve
+      çalıştırılırlar. Apache httpd'nin çocuk süreçlerinin kullanıcı ve
       gruplarını ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
       ve <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri
       kullanılır.

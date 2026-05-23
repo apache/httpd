@@ -111,7 +111,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
       <p>If you want to restrict the compression to particular MIME types
       in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
-      enabling compression only for the html files of the Apache
+      enabling compression only for the html files of the Apache httpd
       documentation:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
@@ -143,14 +143,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 &lt;/Location&gt;</pre>
 
 
-      <p>This Example will uncompress gzip'ed output from example.com, so other
+      <p>This example will uncompress gzip-compressed output from example.com, so other
       filters can do further processing with it.
       </p>
 
     
     <h3><a name="input" id="input">Input Decompression</a></h3>
       <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module also provides a filter for
-      decompressing a gzip compressed request body . In order to activate
+      decompressing a gzip compressed request body. In order to activate
       this feature you have to insert the <code>DEFLATE</code> filter into
       the input filter chain using <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code> or <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>, for example:</p>
 
@@ -163,7 +163,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
       gzip</code> header, the body will be automatically decompressed.
       Few browsers have the ability to gzip request bodies. However,
       some special applications actually do support request
-      compression, for instance some <a href="http://www.webdav.org">WebDAV</a> clients.</p>
+      compression, for instance some <a href="https://www.webdav.org">WebDAV</a> clients.</p>
 
       <div class="warning"><h3>Note on Content-Length</h3>
         <p>If you evaluate the request body yourself, <em>don't trust
@@ -180,14 +180,14 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
     <p>The <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> module sends a <code>Vary:
     Accept-Encoding</code> HTTP response header to alert proxies that
     a cached response should be sent only to clients that send the
-    appropriate <code>Accept-Encoding</code> request header.  This
+    appropriate <code>Accept-Encoding</code> request header. This
     prevents compressed content from being sent to a client that will
     not understand it.</p>
 
     <p>If you use some special exclusions dependent
     on, for example, the <code>User-Agent</code> header, you must
     manually configure an addition to the <code>Vary</code> header
-    to alert proxies of the additional restrictions.  For example,
+    to alert proxies of the additional restrictions. For example,
     in a typical configuration where the addition of the <code>DEFLATE</code>
     filter depends on the <code>User-Agent</code>, you should add:</p>
 
@@ -303,7 +303,7 @@ content</a> <a title="Permanent link" href="#precompressed" class="permalink">&p
         what level of compression should be used, the higher the value,
         the better the compression, but the more CPU time is required to
         achieve this.</p>
-    <p>The value must between 1 (less compression) and 9 (more compression).</p>
+    <p>The value must be between 1 (less compression) and 9 (more compression).</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

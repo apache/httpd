@@ -50,7 +50,7 @@ açıklanmıştır.</p>
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
     <p>Apache HTTP Sunucusu düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
-    Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>’tur.
+    Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>'tur.
     Bu dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma
     sırasında <code>-f</code> komut satırı seçeneği ile başka bir yer
     belirtilebilir. Ayrıca, <code class="directive"><a href="./mod/core.html#include">Include</a></code>
@@ -72,12 +72,12 @@ açıklanmıştır.</p>
     <p>httpd yapılandırma dosyalarının her satırında sadece bir yönerge
     bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi
     olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın
-    son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
+    son karakteri "\" (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü
     karakteri arasında başka karakter bulunmamalıdır.</p>
 
     <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
     duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı
-    değildir. Diyez (“#”) karakteri ile başlayan satırlar açıklama olarak
+    değildir. Diyez ("#") karakteri ile başlayan satırlar açıklama olarak
     ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların
     ardına  açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar
     ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için
@@ -125,13 +125,13 @@ açıklanmıştır.</p>
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>httpd modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
-    temel işlevselliği içermesi demektir. Ek özellikler, httpd’ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
+    temel işlevselliği içermesi demektir. Ek özellikler, httpd'ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
     sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
     modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
     yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
     ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#loadmodule">
     LoadModule</a></code> yönergesi kullanılarak yüklenebilir. Aksi takdirde,
-    ek modülleri yükleyebilmek veya kaldırabilmek için httpd’nin yeniden
+    ek modülleri yükleyebilmek veya kaldırabilmek için httpd'nin yeniden
     derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına
     dayalı olarak bir <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
     bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir. Ancak,
@@ -154,7 +154,7 @@ açıklanmıştır.</p>
     uygulanır. Yapılandırmanızı sunucunun belli bir parçası için değiştirmek
     isterseniz yönergelerinizi <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> bölümleri içine yerleştirerek etki
     alanlarını değiştirebilirsiniz. Bu bölümler yönergelerin etkilediği
-    alanları dosya sistemininin belli yerleri veya belli URL’lerle sınırlar.
+    alanları dosya sistemininin belli yerleri veya belli URL'lerle sınırlar.
     Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de
     kullanılabilir.</p>
 

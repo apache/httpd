@@ -56,8 +56,8 @@
       edebilirsiniz.</p>
 
     <p>Sunucu <code>http://example.com/filanca/birdizin</code> şeklinde bir
-      istek aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü
-      çizgisiyle biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir
+      istek aldığında <code>birdizin</code> bir dizinin ismiyse 'bölü
+      çizgisiyle biten' bir yönlendirme söz konusudur. Dizinler URL sonuna bir
       bölü çizgisi eklenmesini gerektirir, bu bakımdan <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
       modülü isteği <code>http://example.com/filanca/birdizin/</code> şeklinde
       yönlendirir.</p>
@@ -103,8 +103,8 @@ act as if "DirectoryCheckHandler ON" was specified.</td></tr>
       sonuna bir bölü çizgisi ekleyerek dizin içeriğinin listelenmesini
       istediğinde bakılmak üzere özkaynakları listeler.
       <code><em>yerel-url</em></code>, sunucu üstünde istenen dizine göreli
-      bir belgenin URL’sidir; normal olarak dizin içindeki bir dosyanın
-      ismidir. Çeşitli URL’ler verilebilirse de sunucu daima ilk bulduğuyla
+      bir belgenin URL'sidir; normal olarak dizin içindeki bir dosyanın
+      ismidir. Çeşitli URL'ler verilebilirse de sunucu daima ilk bulduğuyla
       dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
       seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
 
@@ -127,7 +127,7 @@ act as if "DirectoryCheckHandler ON" was specified.</td></tr>
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
 
-    <p><code>disabled</code> değeri tek başına <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>’in bir
+    <p><code>disabled</code> değeri tek başına <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>'in bir
       dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
       öncesinde ve sonrasında başka bir değiştirge hatta bir <code>disabled</code>
       daha olsa bile tek başına <code>disabled</code> verilmiş gibi
@@ -178,7 +178,7 @@ act as if "DirectoryCheckHandler ON" was specified.</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0.51 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p><code class="directive">DirectorySlash</code> yönergesi, bir dizin isteğinde
-      bulunan URL’lerin sonuna <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından bir
+      bulunan URL'lerin sonuna <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından bir
       bölü çizgisi eklenip eklenmeyeceğini belirler.</p>
 
     <p>Normalde, bir kullanıcı sona bir bölü çizgisi eklemeden bir dizin için

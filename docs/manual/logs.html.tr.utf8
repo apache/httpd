@@ -74,7 +74,7 @@
 <h2><a name="security" id="security">Güvenlik Uyarısı</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
-    <p>Apache httpd’nin günlük dosyalarını yazdığı dizine yazabilen birinin sunucuyu
+    <p>Apache httpd'nin günlük dosyalarını yazdığı dizine yazabilen birinin sunucuyu
       başlatan kullanıcı kimliğine (bu genellikle root olur) erişim
       kazanabileceğine hemen hemen kesin gözüyle bakılabilir. Sonuçlarının
       neler olacağını kestiremiyorsanız günlüklerin yazıldığı dizinde <em>hiç
@@ -100,9 +100,9 @@
       düzeltileceği ile ilgili ayrıntıları da içerir.</p>
 
     <p>Hata günlüğü normal olarak bir dosyaya yazılır (genellikle, dosyanın
-      ismi Unix sistemlerinde <code>error_log</code>, OS/2 ve Windows’ta ise
-      <code>error.log</code>’dur). Ayrıca, Unix sistemlerinde sunucunun
-      hataları <code>syslog</code>’a veya <a href="#piped">borulamak suretiyle
+      ismi Unix sistemlerinde <code>error_log</code>, OS/2 ve Windows'ta ise
+      <code>error.log</code>'dur). Ayrıca, Unix sistemlerinde sunucunun
+      hataları <code>syslog</code>'a veya <a href="#piped">borulamak suretiyle
       bir programa</a> aktarması da mümkündür.</p>
 
     <p>Hata günlüğünün biçemi <code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code> yönergesi ile belirlenir. Bu yönergeyi
@@ -191,7 +191,7 @@
       bilgi edinmek için <a href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">dmoz.org</a>
       bakınız.</p>
 
-    <p>Apache httpd’nin çeşitli sürümlerinde erişim günlüklerini denetlemek
+    <p>Apache httpd'nin çeşitli sürümlerinde erişim günlüklerini denetlemek
       için kullanılan diğer modüller ve yönergeler arasında mod_log_referer,
       mod_log_agent modülleri ve <code>TransferLog</code> yönergesi
       sayılabilir. Artık, daha eski tüm diğer yönergelerin işlevselliklerini
@@ -310,7 +310,7 @@
         <dd>İstemciden alınan istek satırının çift tırnaklar arasında
           gösterilmesi istenmiştir. İstek satırı en yararlı bilgi parçalarını
           içerir. Birincisi, istemci tarafından kullanılan yöntem
-          <code>GET</code>’miş. İkinci olarak istemci
+          <code>GET</code>'miş. İkinci olarak istemci
           <code>/apache_pb.gif</code> dosyasını istemiş ve üçüncü olarak
           istemci <code>HTTP/1.0</code> protokolünü kullanmış. İstek satırının
           bazı parçalarını bağımsız olarak da günlüklemek mümkündür. Örneğin,
@@ -371,7 +371,7 @@
         <dd>HTTP istek başlığı "Referer". İstemcinin raporladığı isteğin
           kaynaklandığı URI. (Bu isteğin yapılmasını sağlayan bağlantıyı
           içeren URL veya istek bir sayfanın bileşenleri ile ilgiliyse istenen
-          sayfanın URL’si olabilir.)</dd>
+          sayfanın URL'si olabilir.)</dd>
 
         <dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
         (<code>\"%{User-agent}i\"</code>)</dt>
@@ -517,7 +517,7 @@
       Apache httpd başlatıldığı zaman borulu günlük işlemini de
       başlatacaktır. Eğer sunucu çalışırken günlükleri kabul eden süreç
       çökerse Apache httpd bu programı yeniden başlatır. (Bu son özelliği
-      sebebiyle bu tekniğe “güvenilir borulu günlükleme” adını veriyoruz.)</p>
+      sebebiyle bu tekniğe "güvenilir borulu günlükleme" adını veriyoruz.)</p>
 
     <p>Borulu günlük süreçleri ana Apache httpd süreci tarafından başlatılır
       ve bu süreçler ana Apache httpd sürecinin kullanıcı kimliğini miras

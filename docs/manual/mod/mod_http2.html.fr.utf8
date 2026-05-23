@@ -427,7 +427,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="h2maxheaderblocklen" id="h2maxheaderblocklen">Directive</a> <a name="H2MaxHeaderBlockLen" id="H2MaxHeaderBlockLen">H2MaxHeaderBlockLen</a> <a title="Lien permanent" href="#h2maxheaderblocklen" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des en-têtes d’une réponse</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des en-têtes d'une réponse</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxHeaderBlockLen <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxHeaderBlockLen 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
@@ -438,7 +438,7 @@
 </table>
             <p>
                 La directive <code class="directive">H2MaxHeaderBlockLen</code> permet
-		de définir la taille maximale globale des en-têtes d’une
+		de définir la taille maximale globale des en-têtes d'une
 		réponse. Définir cette directive à&nbsp;0 implique une taille maximale
 		de&nbsp;64 ko dans nghttp2, ce qui correspond à la valeur par défaut.
             </p>
@@ -472,7 +472,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="h2maxstreamerrors" id="h2maxstreamerrors">Directive</a> <a name="H2MaxStreamErrors" id="H2MaxStreamErrors">H2MaxStreamErrors</a> <a title="Lien permanent" href="#h2maxstreamerrors" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal toléré d’erreurs dues au client</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal toléré d'erreurs dues au client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>H2MaxStreamErrors <var>n</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>H2MaxStreamErrors 8</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
@@ -483,12 +483,12 @@
 </table>
             <p>
 		La directive <code class="directive">H2MaxStreamErrors</code> permet de
-		définir le nombre maximal toléré d’erreurs de flux HTTP/2
+		définir le nombre maximal toléré d'erreurs de flux HTTP/2
 		causées par le client. Si cette limite est dépassée, la
 		connexion sera fermée. Les erreurs de flux sont des violations
 		du protocole sur un flux HTTP/2 individuel pour lesquelles la
-		spécification du protocole n’exige pas de fermeture de la
-		connexion, mais qui peuvent être un signe d’activité
+		spécification du protocole n'exige pas de fermeture de la
+		connexion, mais qui peuvent être un signe d'activité
 		malveillante de la part du client.
             </p>
             <p>

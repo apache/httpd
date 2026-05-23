@@ -82,11 +82,12 @@ sudo service httpd start</pre>
 
     <dt>Installing on Ubuntu/Debian</dt>
     <dd>
-<pre class="prettyprint lang-">sudo apt install apache2
+<pre class="prettyprint lang-">sudo apt update
+sudo apt install apache2
 sudo service apache2 start</pre>
 
 
-    <div class="warning">See <a href="https://help.ubuntu.com/lts/serverguide/httpd.html">Ubuntu's documentation</a> for platform-specific notes.</div>
+    <div class="warning">See <a href="https://ubuntu.com/tutorials/install-and-configure-apache">Ubuntu's documentation</a> for platform-specific notes.</div>
 
     </dd>
 

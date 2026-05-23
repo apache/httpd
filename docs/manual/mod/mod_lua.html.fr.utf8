@@ -422,7 +422,7 @@ end</pre>
           <td>string</td>
           <td>oui</td>
 	  <td>Si une authentification a été effectuée, ce champ prend pour
-	  valeur le type d’authentification (par exemple <code>basic</code>)</td>
+	  valeur le type d'authentification (par exemple <code>basic</code>)</td>
         </tr>
 <tr>
           <td><code>args</code></td>

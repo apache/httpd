@@ -48,9 +48,9 @@
     <table class="related"><tr><th>相关模块</th><th>相关指令</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
 
-    <p>“处理器”是当文件被调用时，Apache 要执行的动作的内部表示形式。
+    <p>"处理器"是当文件被调用时，Apache 要执行的动作的内部表示形式。
     一般来说，每个文件都有基于其文件类型的隐式处理器。通常的文件会被
-    服务器简单处理，但是某些文件类型会被分别“处理”。</p>
+    服务器简单处理，但是某些文件类型会被分别"处理"。</p>
 
     <p>处理器也可以被基于扩展名或位置来明确配置。它们都很有用，这不仅
     因为它是优雅的方案，而且还允许类型<strong>与</strong>处理器关联到文件

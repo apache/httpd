@@ -34,6 +34,8 @@
 <a href="./pt-br/install.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta tradução pode estar desatualizada.
+        Verifique a versão em inglês para alterações recentes.</div>
 
 
     <p>Este documento cobre a compilação e a instalação do Servidor HTTP Apache

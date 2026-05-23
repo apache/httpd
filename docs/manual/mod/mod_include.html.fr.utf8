@@ -907,7 +907,7 @@ AddOutputFilter INCLUDES .shtml</pre>
 
 
     <div class="warning">
-    La valeur ne doit pas contenir d’espace.
+    La valeur ne doit pas contenir d'espace.
     </div>
 
 
@@ -1077,7 +1077,7 @@ SSIEndTag   "%&gt;"</pre>
 
 
     <div class="warning">
-    La valeur ne doit pas contenir d’espace.
+    La valeur ne doit pas contenir d'espace.
     </div>
 
     <p>Avec l'exemple ci-dessus, qui définit aussi une directive

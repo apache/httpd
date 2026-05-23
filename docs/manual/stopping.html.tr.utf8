@@ -37,9 +37,9 @@
 
     <p>Bu belge Apache HTTP Sunucusunun Unix benzeri sistemlerde durdurulması
       ve yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
-      kullanıcıları Apache HTTPd’yi bu platformlarda nasıl denetimlerine
-      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">httpd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
-      ME kullanıcıları ise <a href="platform/windows.html#wincons">httpd’nin
+      kullanıcıları Apache HTTPd'yi bu platformlarda nasıl denetimlerine
+      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">httpd'nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
+      ME kullanıcıları ise <a href="platform/windows.html#wincons">httpd'nin
       Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
       bakabilirler.</p>
 </div>
@@ -79,12 +79,12 @@
       kullanmaktır: <code>stop</code>, <code>restart</code>,
       <code>graceful</code> ve <code>graceful-stop</code>. Bunlar aşağıda
       açıklanacaktır. <code>-k</code> komut satırı seçeneği
-      <code class="program"><a href="./programs/httpd.html">httpd</a></code>’ye ait olsa da ana sürece bu sinyalleri
+      <code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye ait olsa da ana sürece bu sinyalleri
       göndermek için <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> betiğini kullanmanızı
       öneririz. <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, komut satırı seçeneklerini
-      <code class="program"><a href="./programs/httpd.html">httpd</a></code>’ye aktaracaktır.</p>
+      <code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye aktaracaktır.</p>
 
-    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>’ye sinyal gönderdikten sonra olup biteni şu
+    <p><code class="program"><a href="./programs/httpd.html">httpd</a></code>'ye sinyal gönderdikten sonra olup biteni şu
       komutla izleyebilirsiniz:</p>
 
     <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
@@ -121,7 +121,7 @@
       yerine yeni yapılandırma <em>kuşağından</em> bir süreç başlatır ve hemen
       yeni isteklere hizmet sunulmaya başlanır.</p>
 
-    <p>Bu kod MPM’lerin süreçleri denetleyen yönergelerine daima uyacak
+    <p>Bu kod MPM'lerin süreçleri denetleyen yönergelerine daima uyacak
       şekilde tasarlanmıştır. Bu suretle, istemcilere hizmet sunacak çocuk
       süreçler ve evreler, yeniden başlatma işleminde de uygun sayıda
       sağlanmış olur. Bununla birlikte, <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> yönergesinde şöyle
@@ -141,7 +141,7 @@
 
     <p><code class="module"><a href="./mod/mod_status.html">mod_status</a></code> modülü, nazikçe yeniden başlat komutunun
       verilmesinden önce başlamış ve sunulmaya devam eden isteklere bakan
-      çocukları imlemek için ayrıca bir <code>G</code> (Graceful’un baş harfi)
+      çocukları imlemek için ayrıca bir <code>G</code> (Graceful'un baş harfi)
       kullanır.</p>
 
     <p>Günlük dosyası döndürme betiğine, yeniden başlatma öncesi günlüğe yazan
@@ -164,13 +164,13 @@
     <p>Ancak, bu hala sunucunuzun düzgünce yeniden başlatılmasını garanti
       etmeyecektir. Yapılandırma dosyalarınızı sözdizimi denetiminin yanında
       anlamlandırılması bakımından da sınamak için
-      <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin root olmayan bir kullanıcı tarafından
+      <code class="program"><a href="./programs/httpd.html">httpd</a></code>'nin root olmayan bir kullanıcı tarafından
       çalıştırılmasını deneyebilirsiniz. Eğer yapılandırma dosyalarında bir
       hata yoksa soketleri ve günlük dosyalarını açmaya çalışırken root
       aidiyetinde çalışmadığından veya çalışmakta olan asıl sunucu bu portları
       zaten dinlediğinden başarısız olacaktır. Eğer başka bir sebeple
       başarısız olursa olası sebep bir yapılandırma dosyası hatasıdır ve asıl
-      sunucuya ‘nazikçe yeniden başla’ komutunu vermeden önce bu hatayı
+      sunucuya 'nazikçe yeniden başla' komutunu vermeden önce bu hatayı
       düzeltmeniz gerekir.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -191,7 +191,7 @@
       gönderildiğinde sunucu istatistiklerinin sıfırlandığı konusunda
       uyarılırlar.</p>
 
-    <div class="note">‘Nazikçe yeniden başlat’ komutundaki gibi yeniden başlatma öncesi
+    <div class="note">'Nazikçe yeniden başlat' komutundaki gibi yeniden başlatma öncesi
       bir sözdizimi denetimi yapılır. Eğer yapılandırma dosyalarınızda
       sözdizimi hatası varsa yeniden başlatma işlemi gerçekleşmez ve sözdizimi
       hatalarıyla ilgili bildirim alırsınız.</div>
@@ -216,7 +216,7 @@
 
     <p>Bir <code>TERM</code> sinyali ile "graceful" durumundaki tüm çocuklar
       ve ana süreç hemen sonlandırılacaktır. Bununla birlikte, <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> dosyası da silineceğinden, artık
-      <code>apachectl</code> veya <code>httpd</code>’yi bu sinyali göndermek
+      <code>apachectl</code> veya <code>httpd</code>'yi bu sinyali göndermek
       için kullanamayacaksınız.</p>
 
     <div class="note"><p><code>graceful-stop</code> sinyali, aynı anda, aynı yapılandırma
@@ -230,7 +230,7 @@
       disk üzerindeki mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin
       olunmaya çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü
       parti bir modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum
-      dosyaları olabilir; <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin birden fazla kopyasının
+      dosyaları olabilir; <code class="program"><a href="./programs/httpd.html">httpd</a></code>'nin birden fazla kopyasının
       çalışması nedeniyle bu dosyaların da üzerine yazılmadığından emin
       olunmaya çalışılmalıdır.</p>
 

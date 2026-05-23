@@ -213,7 +213,7 @@ que le message d'erreur puisse être lu.</dd>
 <div class="section">
 <h2><a name="dumpconf" id="dumpconf">Affichage des options de configuration</a> <a title="Lien permanent" href="#dumpconf" class="permalink">&para;</a></h2>
 
-<p>Les options suivantes peuvent être combinées avec l’option <var>-t</var> pour
+<p>Les options suivantes peuvent être combinées avec l'option <var>-t</var> pour
 afficher des informations à propos de la configuration :</p>
 
 <dl>

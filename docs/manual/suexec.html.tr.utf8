@@ -53,9 +53,9 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Başlamadan önce</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#model">SuEXEC Güvenlik Modeli</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC’in Yapılandırılması ve Kurulumu</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC’in etkin kılınması ve iptal edilmesi</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">SuEXEC’in kullanımı</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC'in Yapılandırılması ve Kurulumu</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC'in etkin kılınması ve iptal edilmesi</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#usage">SuEXEC'in kullanımı</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#debug">SuEXEC ve hata ayıklama</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">Uyarılar ve Örnekler</a></li>
 </ul></div>
@@ -91,7 +91,7 @@
       paylaşmanızı öneririz.</p>
 
     <p>Dördüncü ve son olarak, Apache HTTP Sunucusu geliştirme ekibinin
-      suEXEC’i öntanımlı httpd kurulumunun bir parçası yapmama kararından
+      suEXEC'i öntanımlı httpd kurulumunun bir parçası yapmama kararından
       bahsetmek gerekir. Bunun sonucu olarak, suEXEC yapılandırması sistem
       yöneticisinin ayrıntılı bir incelemesini gerektirir. Gerekli incelemeden
       sonra yönetici tarafından suEXEC yapılandırma seçeneklerine karar
@@ -99,7 +99,7 @@
       belirlenmesi, suEXEC işlevselliğinin kullanımı sırasında sistem
       güvenliğini gerektiği gibi sağlamak için yönetici tarafından dikkatle
       saptanmayı gerektirir. Bu sürecin ayrıntılarının yöneticiye bırakılma
-      sebebi, suEXEC kurulumunu, suEXEC’i dikkatle kullanacak yeterliliğe sahip
+      sebebi, suEXEC kurulumunu, suEXEC'i dikkatle kullanacak yeterliliğe sahip
       olanlarla sınırlama  beklentimizdir.</p>
 
     <p>Hala bizimle misiniz? Evet mi? Pekala, o halde devam!</p>
@@ -109,7 +109,7 @@
 
     <p>SuEXEC yapılandırması ve kurulumuna girişmeden önce biraz da
       gerçekleşmesini istediğiniz güvenlik modelinin ayrıntıları üzerinde
-      duralım. Böylece, suEXEC’in içinde olup bitenleri ve sisteminizin
+      duralım. Böylece, suEXEC'in içinde olup bitenleri ve sisteminizin
       güvenliği için alınacak önlemleri daha iyi anlayabilirsiniz.</p>
 
     <p><strong>suEXEC</strong> işlevselliği, Apache HTTP Sunucusu tarafından
@@ -153,7 +153,7 @@
         <strong>Bu geçerli kullanıcının bu setuid programı çalıştırma
           yetkisi var mı?</strong>
 
-        <p class="indent">Sadece tek bir kullanıcı (Apache’nin aidiyetinde
+        <p class="indent">Sadece tek bir kullanıcı (Apache'nin aidiyetinde
           çalıştığı kullanıcı) bu programı çalıştırmaya yetkilidir.</p>
       </li>
 
@@ -163,7 +163,7 @@
 
         <p class="indent">Hedef CGI veya SSI programının dosya yolu '/' veya
           '..' ile başlıyor  mu? Buna izin verilmez. Hedef CGI veya SSI
-          programı suEXEC’in belge kök dizininde yer almalıdır (aşağıda
+          programı suEXEC'in belge kök dizininde yer almalıdır (aşağıda
           <code>--with-suexec-docroot=<em>DİZİN</em></code> seçeneğine
           bakınız).</p>
       </li>
@@ -194,7 +194,7 @@
         <p class="indent">Asgari kullanıcı numarası yapılandırma sırasında
           belirtilir. Böylece CGI/SSI programlarını çalıştırmasına izin
           verilecek olası en düşük kullanıcı numarasını belirlemeniz mümkün
-          kılınmıştır. Bu bazı “sistem” hesaplarını devreden çıkarmak için
+          kılınmıştır. Bu bazı "sistem" hesaplarını devreden çıkarmak için
           yararlıdır.</p>
       </li>
 
@@ -212,12 +212,12 @@
         <p class="indent">Asgari grup numarası yapılandırma sırasında
           belirtilir. Böylece CGI/SSI programlarını çalıştırmasına izin
           verilecek olası en düşük grup numarasını belirlemeniz mümkün
-          kılınmıştır. Bu bazı “sistem” hesaplarını devreden çıkarmak için
+          kılınmıştır. Bu bazı "sistem" hesaplarını devreden çıkarmak için
           yararlıdır.</p>
       </li>
 
       <li>
-        <strong>Apache’nin artalanda çağırdığı setuid program hedef
+        <strong>Apache'nin artalanda çağırdığı setuid program hedef
           kullanıcı ve grubun aidiyetine geçebildi mi?</strong>
 
         <p class="indent">Bu noktadan itibaren program setuid ve setgid
@@ -239,9 +239,9 @@
         </strong>
 
         <p class="indent">İstek sunucunun normal bir bölümü için yapılmış
-          olsa da istenen dizin acaba suEXEC’in belge kök dizini altında mı?
-          Yani, istenen dizin, suEXEC’in aidiyetinde çalıştığı kullanıcının
-          ev dizini altında bulunan, <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> ile belirtilen dizinin altında mı? (<a href="#install">suEXEC’in yapılandırma seçeneklerine</a>
+          olsa da istenen dizin acaba suEXEC'in belge kök dizini altında mı?
+          Yani, istenen dizin, suEXEC'in aidiyetinde çalıştığı kullanıcının
+          ev dizini altında bulunan, <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> ile belirtilen dizinin altında mı? (<a href="#install">suEXEC'in yapılandırma seçeneklerine</a>
           bakınız).</p>
       </li>
 
@@ -271,7 +271,7 @@
         <strong>Hedef CGI/SSI program setuid veya setgid <em>değil</em>,
           değil mi?</strong>
 
-        <p class="indent">UID/GID‘i tekrar değiştirecek programlar
+        <p class="indent">UID/GID'i tekrar değiştirecek programlar
           çalıştırmayı istemeyiz.</p>
       </li>
 
@@ -295,7 +295,7 @@
       <li>
         <strong>Hedef CGI/SSI programı haline gelip çalışabildik mi?</strong>
 
-        <p class="indent">Burası suEXEC’in bitip CGI/SSI programının
+        <p class="indent">Burası suEXEC'in bitip CGI/SSI programının
           başladığı yerdir.</p>
       </li>
     </ol>
@@ -311,7 +311,7 @@
       ayrıntılı bilgi edinmek için bu belgenin <a href="#jabberwock">"Uyarılar ve Örnekler"</a> bölümüne bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="install" id="install">suEXEC’in Yapılandırılması ve Kurulumu</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2><a name="install" id="install">suEXEC'in Yapılandırılması ve Kurulumu</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Eğlence başlıyor.</p>
 
@@ -323,7 +323,7 @@
 
       <dd>Bu seçenek, hiçbir zaman öntanımlı olarak kurulmayan ve
         etkinleştirilmeyen suEXEC özelliğini etkin kılar. suEXEC özelliğini
-        kullanma isteğinizi Apache’nin kabul edebilmesi için
+        kullanma isteğinizi Apache'nin kabul edebilmesi için
         <code>--enable-suexec</code> seçeneğinin yanında en azından bir tane
         de <code>--with-suexec-xxxxx</code> seçeneği belirtilmiş
         olmalıdır.</dd>
@@ -337,21 +337,21 @@
 
       <dt><code>--with-suexec-caller=<em>KULLANICI</em></code></dt>
 
-      <dd>Normalde httpd’nin aidiyetinde çalıştığı <a href="mod/mpm_common.html#user">kullanıcı</a>dır. Bu, suEXEC
+      <dd>Normalde httpd'nin aidiyetinde çalıştığı <a href="mod/mpm_common.html#user">kullanıcı</a>dır. Bu, suEXEC
         çalıştırıcısını çalıştırmasına izin verilen tek kullanıcıdır.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DİZİN</em></code></dt>
 
-      <dd><p>Kullanıcıların ev dizinleri altında suEXEC’in erişmesine izin
+      <dd><p>Kullanıcıların ev dizinleri altında suEXEC'in erişmesine izin
         verilen alt dizinin yerini tanımlar. Bu dizin altında suEXEC
         kullanıcısı tarafından çalıştırılacak tüm programlar "güvenilir"
-        olmalıdır. Eğer “basit” bir <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi kullanıyorsanız ( içinde “*”
+        olmalıdır. Eğer "basit" bir <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi kullanıyorsanız ( içinde "*"
         bulunmayan), bunun aynı dizin olması gerekir. Eğer burada belirtilen
         dizin, <code>passwd</code> dosyasında kullanıcı için belirtilmiş
         dizinin altında <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>
         yönergesinde belirtilen dizin olmadığı takdirde suEXEC işini
         gerektiği gibi yapmayacaktır. Öntanımlı değer
-        <code>public_html</code>’dir.</p>
+        <code>public_html</code>'dir.</p>
 
       <p>Eğer, sanal konaklarınızın herbiri farklı <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> yönergeleri içeriyorsa
         burada belirtilecek dizinin üst dizininin hepsinde aynı olması
@@ -360,7 +360,7 @@
 
       <dt><code>--with-suexec-docroot=<em>DİZİN</em></code></dt>
 
-      <dd>httpd için belge kök dizinini belirler. Bu, (<code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>’lardan başka) suEXEC için
+      <dd>httpd için belge kök dizinini belirler. Bu, (<code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>'lardan başka) suEXEC için
         kullanılacak tek hiyerarşi olacaktır. Öntanımlı dizin sonuna
         "<code>/htdocs</code>" eklenmiş <code>--datadir</code> dizinidir.
         Yani, seçeneği "<code>--datadir=/home/apache</code>" olarak
@@ -370,7 +370,7 @@
       <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
       <dd>suEXEC kullanıcısının kullanıcı kimliği olarak izin verilen en
-        düşük değeri belirler. Çoğu sistemde bu ya 500’dür ya da 100; 100
+        düşük değeri belirler. Çoğu sistemde bu ya 500'dür ya da 100; 100
         öntanımlıdır.</dd>
 
       <dt><code>--with-suexec-gidmin=<em>GID</em></code></dt>
@@ -445,17 +445,17 @@
           chmod 4750 /usr/local/apache2/bin/suexec<br />
       </code></p></div>
 
-      <p>Böylece suEXEC çalıştırıcısını httpd’yi çalıştıran grubun
+      <p>Böylece suEXEC çalıştırıcısını httpd'yi çalıştıran grubun
         üyelerinden başkasının çalıştıramayacağından emin olabilirsiniz.</p>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">suEXEC’in etkin kılınması ve iptal edilmesi</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2><a name="enable" id="enable">suEXEC'in etkin kılınması ve iptal edilmesi</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>httpd başlatıldığı sırada <code class="program"><a href="./programs/suexec.html">suexec</a></code> çalıştırıcısı için
       <code>--sbindir</code> seçeneği ile tanımlanan dizine bakar (seçeneğin
-      öntanımlı değeri <code>/usr/local/apache/sbin/suexec</code>’tir). httpd
+      öntanımlı değeri <code>/usr/local/apache/sbin/suexec</code>'tir). httpd
       düzgün yapılandırılmış bir suEXEC çalıştırıcısı bulduğu takdirde hata
       günlüğüne şöyle bir ileti yazacaktır:</p>
 
@@ -476,7 +476,7 @@
       dosyasını sildikten sonra httpd'yi öldürüp yeniden başlamalısınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">SuEXEC’in kullanımı</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2><a name="usage" id="usage">SuEXEC'in kullanımı</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>CGI programlarına yapılan isteklerin suEXEC çalıştırıcısı tarafından
       yerine getirilebilmesi için sanal konağın bir <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesi içermesi veya
