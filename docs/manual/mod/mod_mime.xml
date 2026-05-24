@@ -170,7 +170,6 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 &lt;FilesMatch "^[^.]+$"&gt;
     ForceType text/plain
     AddDefaultCharset UTF-8
-    AddDefaultCharset UTF-8
 &lt;/FilesMatch&gt;
     </highlight>
     </note>
