@@ -186,7 +186,6 @@
 &lt;FilesMatch "^[^.]+$"&gt;
     ForceType text/plain
     AddDefaultCharset UTF-8
-    AddDefaultCharset UTF-8
 &lt;/FilesMatch&gt;</pre>
 
     </div>
