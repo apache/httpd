@@ -258,6 +258,16 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]
       with the substitution of the URL with
       <em>Substitution</em>.</p>
 
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.png"
+          alt="Flow of backreferences between RewriteRule and
+          RewriteCond directives" /><br />
+      <dfn>Figure 3:</dfn>The flow of backreferences through a rule.
+      RewriteRule Pattern is matched first; its captures ($1...$9)
+      are available in all RewriteCond TestStrings. The last matched
+      CondPattern's captures (%1...%9) are available in Substitution.
+</p>
+
 </section>
 
 
