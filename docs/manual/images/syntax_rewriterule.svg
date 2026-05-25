@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 498 318" width="498" height="318">
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 11px; }
+      .mono { font-family: "Courier New", Courier, monospace; font-size: 15px; font-weight: bold; }
+      .title { font-size: 11px; font-weight: bold; }
+      .desc { font-size: 10px; font-weight: 600; }
+      .small { font-size: 9px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="249" y="18" text-anchor="middle" class="title" style="font-size: 13px;" fill="#333">Syntax of a RewriteRule:</text>
+
+  <!-- The generic syntax line — at vertical center -->
+  <text x="18" y="155" class="mono" fill="#555">RewriteRule</text>
+  <text x="148" y="155" class="mono" fill="#1a56db">Pattern</text>
+  <text x="230" y="155" class="mono" fill="#b45309">Substitution</text>
+  <text x="380" y="155" class="mono" fill="#047857">[Flags]</text>
+
+  <!-- === ABOVE: "[Flags]" callout === -->
+  <path d="M 400,142 C 390,125 370,115 360,105" style="stroke: #047857; stroke-width: 1.5; fill: none;"/>
+  <circle cx="360" cy="105" r="2.5" fill="#047857"/>
+  <text x="360" y="55" text-anchor="middle" class="desc" fill="#047857">Optional: All kinds of special</text>
+  <text x="360" y="68" text-anchor="middle" class="desc" fill="#047857">actions: Define variables, Control</text>
+  <text x="360" y="81" text-anchor="middle" class="desc" fill="#047857">headers, Redirect, Deny, ...</text>
+
+  <!-- === BELOW-LEFT: "Pattern" callout === -->
+  <path d="M 170,165 C 155,180 140,190 125,200" style="stroke: #1a56db; stroke-width: 1.5; fill: none;"/>
+  <circle cx="125" cy="200" r="2.5" fill="#1a56db"/>
+  <text x="125" y="215" text-anchor="middle" class="desc" fill="#1a56db">Regular expression checked against</text>
+  <text x="125" y="230" text-anchor="middle" class="desc" fill="#1a56db">the requested URI, which is the</text>
+  <text x="125" y="245" text-anchor="middle" class="desc" fill="#1a56db">part after http://hostname:port</text>
+
+  <!-- === BELOW-RIGHT: "Substitution" callout === -->
+  <path d="M 290,165 C 310,185 330,195 345,205" style="stroke: #b45309; stroke-width: 1.5; fill: none;"/>
+  <circle cx="345" cy="205" r="2.5" fill="#b45309"/>
+  <text x="365" y="220" text-anchor="middle" class="desc" fill="#b45309">One of the following:</text>
+  <text x="365" y="235" text-anchor="middle" class="small" fill="#b45309">1. Modification to part matched by Pattern</text>
+  <text x="365" y="249" text-anchor="middle" class="small" fill="#b45309">2. Absolute path to a file</text>
+  <text x="365" y="263" text-anchor="middle" class="small" fill="#b45309">3. Full URL to issue as a redirect</text>
+  <text x="365" y="277" text-anchor="middle" class="small" fill="#b45309">4. A dash "-" to do nothing</text>
+</svg>
