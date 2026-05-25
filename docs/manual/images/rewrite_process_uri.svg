@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 472 560" width="472" height="560">
+  <defs>
+    <marker id="arrowhead" markerWidth="9" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 9 3, 0 6" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; fill: #333; }
+      .title { font-size: 11px; font-weight: bold; }
+      .label { font-size: 9px; fill: #555; }
+      rect.process { fill: #cce5ff; stroke: #004085; stroke-width: 1.3; rx: 4; ry: 4; }
+      polygon.decision { fill: #fff3cd; stroke: #856404; stroke-width: 1.3; }
+      ellipse.terminal { fill: #d4edda; stroke: #155724; stroke-width: 1.3; }
+      ellipse.start { fill: #f8d7da; stroke: #721c24; stroke-width: 1.3; }
+      line, path { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+  </defs>
+
+  <!-- Start: Request -->
+  <ellipse class="start" cx="236" cy="20" rx="45" ry="15"/>
+  <text x="236" y="24" text-anchor="middle">Request</text>
+
+  <line x1="236" y1="35" x2="236" y2="55"/>
+
+  <!-- Context decision -->
+  <polygon class="decision" points="236,55 330,78 236,101 142,78"/>
+  <text x="236" y="78" text-anchor="middle" font-size="9">Context?</text>
+
+  <!-- Per-server: left -->
+  <path d="M 142,78 C 100,78 70,78 70,103"/>
+  <text x="95" y="72" class="label">per-server</text>
+
+  <rect class="process" x="15" y="103" width="110" height="28"/>
+  <text x="70" y="115" text-anchor="middle" font-size="9">Strip prefix to</text>
+  <text x="70" y="126" text-anchor="middle" font-size="9">get URL-path</text>
+
+  <path d="M 70,131 C 70,150 180,155 210,163"/>
+
+  <!-- Per-directory: right -->
+  <path d="M 330,78 C 370,78 400,78 400,103"/>
+  <text x="350" y="72" class="label">per-directory</text>
+
+  <rect class="process" x="345" y="103" width="115" height="28"/>
+  <text x="402" y="115" text-anchor="middle" font-size="9">Strip per-dir prefix</text>
+  <text x="402" y="126" text-anchor="middle" font-size="9">to get remainder</text>
+
+  <path d="M 400,131 C 400,150 280,155 260,163"/>
+
+  <!-- Merge -->
+  <line x1="236" y1="163" x2="236" y2="178"/>
+
+  <!-- Find next RewriteRule -->
+  <rect class="process" x="166" y="178" width="140" height="26"/>
+  <text x="236" y="195" text-anchor="middle">Find next RewriteRule</text>
+
+  <line x1="236" y1="204" x2="236" y2="222"/>
+
+  <!-- More rules? -->
+  <polygon class="decision" points="236,222 316,240 236,258 156,240"/>
+  <text x="236" y="240" text-anchor="middle" font-size="9">More rules?</text>
+
+  <!-- No more rules → exit to "URL changed?" -->
+  <line x1="156" y1="240" x2="70" y2="240"/>
+  <text x="115" y="234" class="label">No</text>
+  <path d="M 70,240 C 50,240 40,250 40,440 C 40,460 80,460 156,460"/>
+  <text x="28" y="350" class="label" transform="rotate(90,28,350)">all rules done</text>
+
+  <!-- Yes → Pattern matches? -->
+  <line x1="236" y1="258" x2="236" y2="278"/>
+  <text x="244" y="270" class="label">Yes</text>
+
+  <!-- URL matches Pattern? -->
+  <polygon class="decision" points="236,278 326,298 236,318 146,298"/>
+  <text x="236" y="296" text-anchor="middle" font-size="9">URL matches</text>
+  <text x="236" y="307" text-anchor="middle" font-size="9">Pattern?</text>
+
+  <!-- No match → back to find next rule -->
+  <path d="M 326,298 C 380,298 390,240 390,204 C 390,190 340,191 306,191"/>
+  <text x="365" y="291" class="label">No</text>
+
+  <!-- Yes → Conditions -->
+  <line x1="236" y1="318" x2="236" y2="340"/>
+  <text x="244" y="332" class="label">Yes</text>
+
+  <!-- Evaluate RewriteCond(s) -->
+  <polygon class="decision" points="236,340 326,360 236,380 146,360"/>
+  <text x="236" y="357" text-anchor="middle" font-size="9">RewriteCond(s)</text>
+  <text x="236" y="368" text-anchor="middle" font-size="9">match?</text>
+
+  <!-- Conditions fail → back to next rule -->
+  <path d="M 146,360 C 100,360 80,320 80,270 C 80,220 120,191 166,191"/>
+  <text x="93" y="350" class="label">No</text>
+
+  <!-- Conditions pass → substitute -->
+  <line x1="236" y1="380" x2="236" y2="400"/>
+  <text x="244" y="393" class="label">Yes</text>
+
+  <!-- Substitute -->
+  <rect class="process" x="156" y="400" width="160" height="26"/>
+  <text x="236" y="417" text-anchor="middle">Substitute URL / filename</text>
+
+  <!-- After substitute → back to next rule -->
+  <path d="M 316,413 C 420,413 430,300 430,240 C 430,200 380,191 306,191"/>
+  <text x="435" y="310" class="label" transform="rotate(90,435,310)">next rule</text>
+
+  <!-- Also can exit via [L] flag -->
+  <line x1="236" y1="426" x2="236" y2="447"/>
+  <text x="244" y="440" class="label">[L] flag</text>
+
+  <!-- URL changed? decision -->
+  <polygon class="decision" points="236,447 316,465 236,483 156,465"/>
+  <text x="236" y="463" text-anchor="middle" font-size="9">URL</text>
+  <text x="236" y="474" text-anchor="middle" font-size="9">changed?</text>
+
+  <!-- No change → pass through to next phase -->
+  <line x1="316" y1="465" x2="390" y2="465"/>
+  <text x="345" y="459" class="label">No</text>
+  <ellipse class="terminal" cx="420" cy="465" rx="45" ry="14"/>
+  <text x="420" y="469" text-anchor="middle" font-size="9">Next phase</text>
+
+  <!-- Yes → redirect or restart -->
+  <line x1="236" y1="483" x2="236" y2="510"/>
+  <text x="244" y="498" class="label">Yes</text>
+
+  <!-- Per-server → redirect; per-dir → restart -->
+  <ellipse class="terminal" cx="150" cy="530" rx="55" ry="14"/>
+  <text x="150" y="534" text-anchor="middle" font-size="9">Redirect (per-server)</text>
+
+  <ellipse class="terminal" cx="330" cy="530" rx="60" ry="14"/>
+  <text x="330" y="534" text-anchor="middle" font-size="9">Restart (per-directory)</text>
+
+  <path d="M 220,510 C 190,510 170,520 150,516" style="marker-end: url(#arrowhead)"/>
+  <path d="M 252,510 C 280,510 310,520 330,516" style="marker-end: url(#arrowhead)"/>
+</svg>
