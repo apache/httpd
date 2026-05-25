@@ -284,12 +284,14 @@ minutes (24 hours) and is returned for all URIs.</p>
 </section>
 
 <section id="flag_dpi"><title>DPI|discardpath</title>
-<p>The DPI flag causes the <glossary ref="pathinfo">PATH_INFO</glossary> portion of the rewritten URL-path to be
-discarded.</p>
+<p>The DPI flag causes the <glossary ref="pathinfo">PATH_INFO</glossary>
+that was appended to the rewritten
+<glossary ref="urlpath">URL-path</glossary> to be discarded.</p>
 
-<p>In <glossary ref="perdirectory">per-directory context</glossary>,
-the URL-path each <directive>RewriteRule</directive> compares against
-is the concatenation of the current URL-path and PATH_INFO.</p>
+<p>In <glossary ref="perdirectory">per-directory context</glossary>, the
+<glossary ref="urlpath">URL-path</glossary> each
+<directive>RewriteRule</directive> compares against is the concatenation
+of the current URL-path and PATH_INFO.</p>
 
 <p>The current URL-path can be the initial path as requested by the
 client, the result of a previous round of <module>mod_rewrite</module>
