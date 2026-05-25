@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 497 297" width="497" height="297">
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 11px; }
+      .mono { font-family: "Courier New", Courier, monospace; font-size: 15px; font-weight: bold; }
+      .desc { font-size: 10px; font-weight: 600; }
+      .small { font-size: 9px; font-weight: 600; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="249" y="18" text-anchor="middle" style="font-size: 13px; font-weight: bold;" fill="#333">Syntax of a RewriteCond:</text>
+
+  <!-- The generic syntax line -->
+  <text x="18" y="135" class="mono" fill="#555">RewriteCond</text>
+  <text x="140" y="135" class="mono" fill="#7c3aed">TestString</text>
+  <text x="250" y="135" class="mono" fill="#b45309">CondPattern</text>
+  <text x="380" y="135" class="mono" fill="#047857">[Flags]</text>
+
+  <!-- === ABOVE: "[Flags]" callout === -->
+  <path d="M 400,122 C 385,108 365,98 350,88" style="stroke: #047857; stroke-width: 1.5; fill: none;"/>
+  <circle cx="350" cy="88" r="2.5" fill="#047857"/>
+  <text x="350" y="45" text-anchor="middle" class="desc" fill="#047857">Optional: Common flags:</text>
+  <text x="350" y="58" text-anchor="middle" class="small" fill="#047857">[NC] No Case (case insensitive)</text>
+  <text x="350" y="71" text-anchor="middle" class="small" fill="#047857">[OR] Combine with next using OR</text>
+  <text x="350" y="84" text-anchor="middle" class="small" fill="#047857">[NV] No Vary header</text>
+
+  <!-- === BELOW-LEFT: "TestString" callout === -->
+  <path d="M 170,145 C 155,160 135,170 120,180" style="stroke: #7c3aed; stroke-width: 1.5; fill: none;"/>
+  <circle cx="120" cy="180" r="2.5" fill="#7c3aed"/>
+  <text x="120" y="195" text-anchor="middle" class="desc" fill="#7c3aed">A string which can contain:</text>
+  <text x="120" y="210" text-anchor="middle" class="small" fill="#7c3aed">Server variables: %{HTTP_HOST}</text>
+  <text x="120" y="224" text-anchor="middle" class="small" fill="#7c3aed">Backreferences: $1 from RewriteRule</text>
+  <text x="120" y="238" text-anchor="middle" class="small" fill="#7c3aed">%1 from prior RewriteCond</text>
+  <text x="120" y="252" text-anchor="middle" class="small" fill="#7c3aed">Map lookups: ${mapname:key}</text>
+
+  <!-- === BELOW-RIGHT: "CondPattern" callout === -->
+  <path d="M 295,145 C 315,165 335,175 345,185" style="stroke: #b45309; stroke-width: 1.5; fill: none;"/>
+  <circle cx="345" cy="185" r="2.5" fill="#b45309"/>
+  <text x="365" y="200" text-anchor="middle" class="desc" fill="#b45309">One of the following:</text>
+  <text x="365" y="215" text-anchor="middle" class="small" fill="#b45309">1. Regular expression</text>
+  <text x="365" y="229" text-anchor="middle" class="small" fill="#b45309">2. Lexicographic comparison</text>
+  <text x="365" y="243" text-anchor="middle" class="small" fill="#b45309">   (&lt;String, &gt;String, =String)</text>
+  <text x="365" y="257" text-anchor="middle" class="small" fill="#b45309">3. File attribute test</text>
+  <text x="365" y="271" text-anchor="middle" class="small" fill="#b45309">   (-d, -f, -s, -l, -F, -U)</text>
+</svg>
