@@ -41,8 +41,9 @@ URLs on the fly</description>
       <p><module>mod_rewrite</module> provides a flexible and powerful way to
       manipulate URLs using an unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URLs
-      based on server variables, environment variables, cookies, HTTP headers, or time
-      stamps.</p>
+      based on <a href="#rewritecond">server variables</a> (including HTTP
+      headers, connection details, and timestamps), environment variables,
+      or other request properties.</p>
 
       <p><module>mod_rewrite</module> can operate on the full URL-path, or any
       portion of it, including the PATH_INFO or QUERY_STRING.</p>
@@ -498,7 +499,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
           RewriteMap</a> for more details.
         </li>
         <li>
-          <strong>Server-Variables</strong>: These are variables of
+          <strong>Server variables</strong>: These are variables of
           the form
             <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
             <code>}</code></strong>
@@ -1303,7 +1304,7 @@ sections and consider both set of statements, rather than only the last one.</li
         <li>back-references (<code>%N</code>) to the last matched
         RewriteCond pattern</li>
 
-        <li>server-variables as in rule condition test-strings
+        <li>server variables as in rule condition test-strings
         (<code>%{VARNAME}</code>)</li>
 
         <li><a href="#mapfunc">mapping-function</a> calls
@@ -1321,7 +1322,7 @@ sections and consider both set of statements, rather than only the last one.</li
       matched
       <directive module="mod_rewrite">RewriteCond</directive>
       <em>CondPattern</em>: <code>%0</code> is the entire match and
-      <code>%1</code>..<code>%9</code> are the captured groups. The server-variables are the same
+      <code>%1</code>..<code>%9</code> are the captured groups. The server variables are the same
       as for the <em>TestString</em> of a
       <directive module="mod_rewrite">RewriteCond</directive>
       directive. The mapping-functions come from the
@@ -1368,7 +1369,7 @@ sections and consider both set of statements, rather than only the last one.</li
     <tr>
         <td>B</td>
         <td>Escape non-alphanumeric characters in backreferences <em>before</em>
-        applying the transformation. For similar escaping of server-variables, see
+        applying the transformation. For similar escaping of server variables, see
         the "escape" <a href="#mapfunc">mapping-function</a>.<em><a
         href="../rewrite/flags.html#flag_b">details ...</a></em></td>
     </tr>

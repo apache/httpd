@@ -73,7 +73,7 @@ so backreferences are unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
 
-<p>For similar escaping of server-variables, see
+<p>For similar escaping of server variables, see
     the "escape" <a href="#mapfunc">mapping-function</a></p>
 
 
