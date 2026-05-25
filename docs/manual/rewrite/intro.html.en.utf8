@@ -219,8 +219,10 @@ pattern does not match.</p>
 <p class="figure">
       <img src="../images/rewrite_backreferences.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
       <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
-      In this example, a request for <code>/test/1234</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>.
+      In this example, a request for <code>/test/1234</code> to host <code>admin.example.com</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>, provided that <code>%{DOCUMENT_ROOT}/test</code> is not an existing file.
 </p>
+      <p>See also <a href="tech.html#InternalRuleset">Technical Details</a>
+      for a diagram showing backreference flow with multiple conditions.</p>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
