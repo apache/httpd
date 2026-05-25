@@ -142,8 +142,16 @@ and URL matching.</p>
       engine is started with the contained ruleset (one or more
       rules together with their conditions). The operation of the
       URL rewriting engine itself is exactly the same for both
-      configuration contexts. Only the final result processing is
+     configuration contexts. Only the final result processing is
       different.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig1.png"
+          alt="Overview of per-request rewrite processing through
+          per-server and per-directory phases" /><br />
+      <dfn>Figure 1:</dfn>The per-request rewrite process showing
+      both per-server and per-directory rule processing phases
+</p>
 
       <p>The order of rules in the ruleset is important because the
       rewriting engine processes them in a special (and not very
@@ -154,11 +162,11 @@ and URL matching.</p>
       existing corresponding conditions (<code>RewriteCond</code>
       directives). For historical reasons the conditions are given
       first, and so the control flow is a little bit long-winded. See
-      Figure 1 for more details.</p>
+      Figure 2 for more details.</p>
 <p class="figure">
       <img src="../images/rewrite_process_uri.png"
           alt="Flow of RewriteRule and RewriteCond matching" /><br />
-      <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
+      <dfn>Figure 2:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
       <em>Pattern</em> of each rule. If it fails, <module>mod_rewrite</module>
