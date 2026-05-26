@@ -1,0 +1,6 @@
+  *) mod_http2: update to version 2.0.40
+     Fix error handling on upload requests when server runs out of file
+     handles that left beam bucket callbacks in place, potentially using
+     no longer valid references. Only applies on platforms with pipes
+     and file descriptor limits not healthy for a network server.
+     [Stefan Eissing]
