@@ -72,19 +72,33 @@
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
     <pre class="prettyprint lang-">sudo dnf install httpd
-sudo service httpd start</pre>
+
+# Start service
+sudo systemctl start httpd
+
+# Stop service
+sudo systemctl stop httpd
+
+# Restart service
+sudo systemctl restart httpd</pre>
 
 
-    <div class="warning">Older releases of these distros use
-    <code>yum</code> rather than <code>dnf</code>. See <a href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
+    <div class="warning">See <a href="https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-apache-http-server/index.html">the
     Fedora project's documentation</a> for platform-specific notes.</div>
     </dd>
 
     <dt>Installing on Ubuntu/Debian</dt>
     <dd>
-<pre class="prettyprint lang-">sudo apt update
-sudo apt install apache2
-sudo service apache2 start</pre>
+<pre class="prettyprint lang-">sudo apt install apache2
+
+# Start service
+sudo systemctl start apache2
+
+# Stop service
+sudo systemctl stop apache2
+
+# Restart service
+sudo systemctl restart apache2</pre>
 
 
     <div class="warning">See <a href="https://ubuntu.com/tutorials/install-and-configure-apache">Ubuntu's documentation</a> for platform-specific notes.</div>
