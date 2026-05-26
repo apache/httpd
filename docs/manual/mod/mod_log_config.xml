@@ -599,7 +599,7 @@ CustomLog "referer.log" referer env=!localreferer
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
       </highlight>
     </example>
-    
+
 </usage>
 </directivesynopsis>
 
@@ -623,7 +623,7 @@ CustomLog "referer.log" referer env=!localreferer
     <example><title>Example</title>
     <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log
+TransferLog "logs/access_log"
       </highlight>
     </example>
 </usage>
@@ -632,7 +632,7 @@ TransferLog logs/access_log
 <directivesynopsis>
 <name>GlobalLog</name>
 <description>Sets filename and format of log file</description>
-<syntax>GlobalLog<var>file</var>|<var>pipe</var>
+<syntax>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</syntax>
