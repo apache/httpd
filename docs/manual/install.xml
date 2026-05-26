@@ -57,11 +57,18 @@
     <dd>
     <highlight>
 sudo dnf install httpd
-sudo service httpd start
+
+# Start service
+sudo systemctl start httpd
+
+# Stop service
+sudo systemctl stop httpd
+
+# Restart service
+sudo systemctl restart httpd
     </highlight>
 
-    <note type="warning">Older releases of these distros use
-    <code>yum</code> rather than <code>dnf</code>. See <a
+    <note type="warning">See <a
     href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
     Fedora project's documentation</a> for platform-specific notes.</note>
     </dd>
@@ -69,9 +76,16 @@ sudo service httpd start
     <dt>Installing on Ubuntu/Debian</dt>
     <dd>
 <highlight>
-sudo apt update
 sudo apt install apache2
-sudo service apache2 start
+
+# Start service
+sudo systemctl start apache2
+
+# Stop service
+sudo systemctl stop apache2
+
+# Restart service
+sudo systemctl restart apache2
 </highlight>
 
     <note type="warning">See <a href="https://ubuntu.com/tutorials/install-and-configure-apache">Ubuntu's documentation</a> for platform-specific notes.</note>
