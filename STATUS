@@ -207,6 +207,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
      +1: jailletc36, 
 
+  *) Update to mod_http2 v2.0.40
+     trunk patch: https://svn.apache.org/r1934628
+     2.4.x patch: svn merge -c 1934628 ^/httpd/httpd/trunk .
+     +1: icing,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
