@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933179:1933657 (outdated) -->
+<!-- English Revision: 1933657 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -502,8 +502,8 @@ simultanément</description>
     <p>Pour les serveur threadés et hybrides (utilisant <em>par
     exemple</em> <module>event</module> ou <module>worker</module>),
     <directive>MaxRequestWorkers</directive> définit alors le nombre total de
-    threads qui seront disponibles pour servir les clients. Dans le
-    cas des MPMs hybrides, la valeur par défaut est <code>16</code>
+    threads qui seront disponibles pour servir les clients. Pour les MPMs
+    hybrides et threadés, la valeur par défaut est <code>16</code>
     (directive <directive
     module="mpm_common">ServerLimit</directive>) multiplié par la valeur
     <code>25</code> (directive <directive module="mpm_common"
@@ -512,6 +512,26 @@ simultanément</description>
     plus de 16 processus, vous devez aussi augmenter la valeur de la
     directive <directive module="mpm_common"
     >ServerLimit</directive>.</p>
+
+    <p>Pour les MPMs threadés et hybrides, la valeur de la directive
+    <directive>MaxRequestWorkers</directive> doit supérieure ou égale à celle de
+    la directive <directive module="mpm_common">ThreadsPerChild</directive> et
+    doit être un multiple entier de cette dernière. Si elle n’est pas un
+    multiple de cette dernière, le serveur l’arrondit par le bas au démarrage au
+    multiple le plus proche et journalise un avertissement.</p>
+
+    <example><title>Avertissement : MaxRequestWorkers trop petit</title>
+    WARNING: MaxRequestWorkers of 10 is less than ThreadsPerChild
+    of 25, increasing to 25. MaxRequestWorkers must be at least as
+    large as the number of threads in a single server.
+    </example>
+
+    <example><title>Avertissement : MaxRequestWorkers n’est pas un multiple de
+    ThreadsPerChild</title>
+    WARNING: MaxRequestWorkers of 90 is not an integer multiple of
+    ThreadsPerChild of 25, decreasing to nearest multiple 75, for a
+    maximum of 3 servers.
+    </example>
 
     <p>Le nom de la directive <directive>MaxRequestWorkers</directive>
     était <directive>MaxClients</directive> avant la version 2.3.13. Cet
@@ -1015,6 +1035,12 @@ enfant</description>
     <p>La valeur de la directive <directive>ThreadsPerChild</directive> doit
     être supérieure ou égale à 1. Une valeur inférieure à 1 sera automatiquement
     augmentée à 1 et un avertissement sera journalisé.</p>
+
+    <p>La valeur de la directive <directive
+    module="mpm_common">MaxRequestWorkers</directive> doit être un multiple
+    entier de celle de la directive <directive>ThreadsPerChild</directive>. Voir
+    la directive <directive module="mpm_common">MaxRequestWorkers</directive>
+    pour les détails.</p>
 </usage>
 </directivesynopsis>
 

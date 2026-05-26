@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932902:1933854 (outdated) -->
+<!-- English Revision: 1933854 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -307,9 +307,8 @@ du type MIME</description>
     <ol>
     <li><strong>Non-conformité aux RFC&nbsp;:</strong> les documents des normes
     insistent sur la nécessité de définir l'en-tête Content-Encoding pour les
-    fichiers déjà compressés (comme les fichiers .zip ou .gz). Voir la <a
-    href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-encoding">RFC
-    9110</a>.</li>
+    fichiers déjà compressés (comme les fichiers .zip ou .gz). Voir la <rfc
+    anchor="name-content-encoding">9110</rfc>.</li>
 
     <li><strong>Atteinte à l'intégrité du contenu&nbsp;:</strong> lorsque l'en-tête
     Content-Encoding est défini, la plupart des clients HTTP décompressent le
