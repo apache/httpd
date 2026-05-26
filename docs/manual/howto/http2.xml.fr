@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1899235:1933861 (outdated) -->
+<!-- English Revision: 1933861 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -45,10 +45,8 @@
     requêtes, des réponses et des en-têtes. Par conséquent, si vous connaissez
     HTTP/1, vous connaissez déjà 95% de HTTP/2.</p>
     <p>Beaucoup a déjà été écrit à propos de HTTP/2 et de son fonctionnement. La
-    documentation la plus officielle est bien entendu sa <a
-    href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> (ou <a
-    href="http://httpwg.org/specs/rfc7540.html">cette version au format plus
-    lisible</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
+    documentation la plus officielle est bien entendu sa <rfc>7540</rfc> (ou cette version au format plus
+    lisible : YMMV (<rfc>7540</rfc>). Vous trouverez ici une description des rouages de HTTP/2 dans
     leurs moindres détails.</p>
     <p>Le premier document à lire lorsqu'on ne connaît pas un mécanisme n'est
     cependant pas sa RFC. Il est préférable de comprendre tout d'abord <em>ce
@@ -75,15 +73,13 @@
 	<li>Une <strong>frame</strong> ou trame est la plus petite unité de
 	communication au sein d'une connexion HTTP/2 et comporte une en-tête et
 	une séquence d'octets de longueur variable dont la structure correspond
-	au type de trame. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#FramingLayer">section
-	correspondante</a> de la documentation officielle pour plus de
-	détails.</li>
-        <li>Un <strong>stream</strong> est un flux bidirectionnel de frames au
-	sein d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
-	échange de messages de type requête et réponse. Voir la <a
-	href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">section
-	correspondante</a> de la documentation officielle pour plus de détails.</li>
+	au type de trame. Voir la section correspondante de la documentation
+	officielle pour plus de détails (<rfc>7540</rfc>).</li> <li>Un
+	<strong>stream</strong> est un flux bidirectionnel de frames au sein
+	d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
+	échange de messages de type requête et réponse. Voir la section
+	correspondante de la documentation officielle pour plus de détails
+	(<rfc>7540</rfc>).</li>
         <li>HTTP/2 peut gérer <strong>plusieurs streams</strong> de données sur
 	la même connexion TCP, ce qui permet d'éviter le point de blocage
 	classique de HTTP/1 pour les requêtes lentes, et de ne pas avoir à
@@ -180,9 +176,8 @@ Protocols http/1.1
     lorsqu'on configure httpd pour HTTP/2 pour la première fois ; donc gardez la
     à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
     voulez être sûr de définir une chaîne d'algorithmes de chiffrement
-    appropriée, évitez ceux qui sont listés dans la <a
-    href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites"> </a>liste des
-    algorithmes de chiffrement TLS HTTP/2 à proscrire.</p>
+    appropriée, évitez ceux qui sont listés dans la liste des
+    algorithmes de chiffrement TLS HTTP/2 à proscrire (<rfc>7540</rfc>).</p>
     </note>
     <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
     premier sera le protocole préféré. Lorsqu'un client offre plusieurs choix,
@@ -360,7 +355,7 @@ H2Push Off
     d'informer le serveur des ressources qu'il possède déjà dans son cache afin
     d'éviter les PUSHes pour ces dernières, mais ceci n'en est actuellement qu'à
     un stade très expérimental.</p>
-    <p>L'<a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
+    <p>L'<a href="https://datatracker.ietf.org/doc/html/draft-ruellan-http-accept-push-policy-00">
     en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
     implémenté dans <module>mod_http2</module> ; il permet au client de définir pour
     chaque requête quels genres de PUSHes il accepte.</p>
@@ -394,8 +389,7 @@ H2Push Off
     <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
     des en-têtes <code>Link</code> au client avant même que la réponse ne soit
     prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
-    précoces" (Early Hints) décrite dans la <a
-    href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    précoces" (Early Hints) décrite dans la <rfc>8297</rfc>.</p>
     <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
     sur le serveur via :</p>
     <highlight language="config">

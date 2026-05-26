@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933085:1933507 (outdated) -->
+<!-- English Revision: 1933507 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -46,11 +46,11 @@
 
     <p>CGI (Common Gateway Interface) définit une méthode d'interaction
     entre un serveur web et des programmes générateurs de contenu
-    externes, plus souvent appelés programmes CGI ou scripts CGI.
-    Il s'agit d'une méthode simple pour ajouter du contenu dynamique à votre site
+    externes, plus souvent appelés programmes CGI ou scripts CGI. Il
+    s'agit d'une méthode simple pour ajouter du contenu dynamique à votre site
     web en utilisant votre langage de programmation préféré.
     Ce document est une introduction à la configuration de CGI sur votre
-    serveur web httpd, et une initiation à l'écriture de programmes
+    serveur web HTTP Apache, et une initiation à l'écriture de programmes
     CGI.</p>
   </section>
 
@@ -76,7 +76,7 @@
      Sous Windows, ou si l'on utilise un module MPM non-threadé comme prefork,
      une directive correctement configurée sera du style :
 
-    <highlight language="config">
+    <highlight language="config">    
       LoadModule cgi_module modules/mod_cgi.so
     </highlight></note>
 
@@ -404,12 +404,11 @@ print "Hello, World.";
       d'environnement</a> non standards, vous devrez vous assurez que
       ces variables lui sont bien transmises par httpd.</p>
 
-      <p>Lorsque des en-têtes HTTP ne sont pas transmis à
-      l'environnement, assurez-vous qu'ils sont bien formatés selon la
-      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, section
-      4.2 : les noms d'en-têtes doivent commencer par une lettre,
-      elle-même suivie de lettres, chiffres ou traits d'union. Tout
-      en-tête dont le nom viole cette règle sera ignoré.</p>
+      <p>Lorsque des en-têtes HTTP ne sont pas transmis à l'environnement,
+      assurez-vous qu'ils sont bien formatés selon la <rfc>2616</rfc>, section
+      4.2 : les noms d'en-têtes doivent commencer par une lettre, elle-même
+      suivie de lettres, chiffres ou traits d'union. Tout en-tête dont le nom
+      viole cette règle sera ignoré.</p>
 
     </section>
 
@@ -471,7 +470,7 @@ print "Hello, World.";
 
       <p>Pour savoir si vous pouvez utiliser suexec, tapez la commande
       <code>apachectl -V</code>, et regardez le chemin indiqué par
-      <code>SUEXEC_BIN</code>. Si au démarrage de httpd, ce dernier
+      <code>SUEXEC_BIN</code>. Si au démarrage d'httpd, ce dernier
       trouve un exécutable <program>suexec</program> dans ce chemin,
       suexec sera activé.</p>
 
@@ -517,11 +516,10 @@ print "Hello, World.";
       serveur (httpd, IIS, WebSite), le nom du programme CGI en cours
       d'exécution, etc...</p>
 
-      <p>Ces variables sont à la disposition du programmeur CGI, et
-      elles constituent 50% de la communication client-serveur. La liste
-      complète des variables requises se trouve à
-      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
-      Interface RFC</a>.</p>
+      <p>Ces variables sont à la disposition du programmeur CGI, et elles
+      constituent 50% de la communication client-serveur. La liste complète des
+      variables requises se trouve dans la <rfc>3875</rfc> (Common Gateway
+      Interface).</p>
 
       <p>Ce programme CGI basique en Perl permet d'afficher toutes les
       variables d'environnement qui sont échangées. Deux programmes
@@ -610,7 +608,7 @@ foreach my $key (keys %ENV) {
     la majorité des programmes.</p>
 
     <p>Si vous écrivez des programmes CGI en C, vous disposez de nombreuses
-    options. L'une d'elles est la bibliothèque <code>CGIC</code> de  <a
+    options. L'une d'elles est la bibliothèque <code>CGIC</code> de <a
     href="https://web.mit.edu/wwwdev/www/cgic.html"
     >https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </section>
@@ -618,9 +616,8 @@ foreach my $key (keys %ENV) {
   <section id="moreinfo">
     <title>Pour plus d'informations</title>
 
-    <p>La spécification CGI actuelle est disponible dans la <a
-    href="http://www.ietf.org/rfc/rfc3875">Common Gateway
-    Interface RFC</a>.</p>
+    <p>La spécification CGI actuelle est disponible dans la <rfc>3875</rfc>
+    (Common Gateway Interface).</p>
 
     <p>Lorsque vous postez une question à propos d'un problème CGI que
     vous rencontrez, que ce soit dans une liste de diffusion ou dans un

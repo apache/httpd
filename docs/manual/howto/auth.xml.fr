@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1887638:1933688 (outdated) -->
+<!-- English Revision: 1933688 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -515,7 +515,11 @@ autorisation</title>
 	href="../mod/mod_authz_core.html#logic">Conteneurs
 	d'autorisations</a> pour un exemple de la manière de les
 	utiliser pour exprimer des logiques d'autorisation
-	complexes.</p>
+	complexes. Chaque fournisseur d’autorisation renvoie un des trois
+	résultats possibles ; voir <a
+	href="../mod/mod_authz_core.html#authzresults">États des résultats
+	d’autorisation</a> pour des détails sur la manière dont les conteneurs
+	interprètent ces résultats.</p>
 
         <p>Par défaut, toutes les directives <directive
 	module="mod_authz_core">Require</directive> sont
@@ -609,7 +613,7 @@ autorisation</title>
     <section id="filesystem"><title>Compatibilité ascendante du contrôle
     d'accès</title>
         <p>L'adoption d'un mécanisme à base de fournisseurs pour
-	l'authentification, a pour effet colatéral de rendre inutiles
+	l'autorisation, a pour effet colatéral de rendre inutiles
 	les directives <directive
 	module="mod_access_compat">Order</directive>, <directive
 	module="mod_access_compat">Allow</directive>, <directive
