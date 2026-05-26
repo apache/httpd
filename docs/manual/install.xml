@@ -40,7 +40,7 @@
     projects.</p>
 
     <p>If you are upgrading from one minor version to the next (for
-    example, 2.4.8 to 2.4.9), please skip down to the <a
+    example, 2.4.66 to 2.4.67), please skip down to the <a
     href="#upgrading">upgrading</a> section.</p>
 
 </summary>
@@ -55,7 +55,7 @@
     <dl>
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
-    <highlight>
+    <highlight language="sh">
 sudo dnf install httpd
 
 # Start service
@@ -75,7 +75,7 @@ sudo systemctl restart httpd
 
     <dt>Installing on Ubuntu/Debian</dt>
     <dd>
-<highlight>
+<highlight language="sh">
 sudo apt install apache2
 
 # Start service
@@ -99,16 +99,17 @@ sudo systemctl restart apache2
       <tr>
         <td><a href="#download">Download</a></td>
 
-        <td>Download the latest release from <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
+        <td>Download the latest release from <a href="https://httpd.apache.org/download.cgi#apache24">https://httpd.apache.org/download.cgi</a>
         </td>
       </tr>
 
       <tr>
         <td><a href="#extract">Extract</a></td>
 
-        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-<em>NN</em>.tar<br />
-         $ cd httpd-<em>NN</em></code></td>
+        <td><highlight language="sh">
+$ tar xzf httpd-NN.tar.gz
+$ cd httpd-NN
+</highlight></td>
       </tr>
 
       <tr>
@@ -157,21 +158,21 @@ sudo systemctl restart apache2
     </dl>
 
     <note type="warning">Don't see your favorite platform mentioned
-    here? <a href="http://httpd.apache.org/docs-project/">Come help us
+    here? <a href="https://httpd.apache.org/docs-project/">Come help us
     improve this doc.</a></note>
 
 </section>
 
 <section id="requirements"><title>Requirements</title>
 
-    <p>The following requirements exist for building Apache httpd:</p>
+    <p>The following requirements exist for building and running Apache httpd:</p>
 
     <dl>
       <dt>APR and APR-Util</dt>
       <dd>Make sure you have APR and APR-Util already installed on
       your system. If you don't, or prefer to not use the system-provided
       versions, download the latest versions of both APR and APR-Util
-      from <a href="http://apr.apache.org/">Apache APR</a>, unpack
+      from <a href="https://apr.apache.org/">Apache APR</a>, unpack
       them into <code>/httpd_source_tree_root/srclib/apr</code> and <code>/httpd_source_tree_root/srclib/apr-util</code>
       (be sure the directory names do not have version numbers; for example,
       the APR distribution must be under /httpd_source_tree_root/srclib/apr/) and use
@@ -182,7 +183,7 @@ sudo systemctl restart apache2
 
       <dt>Perl-Compatible Regular Expressions Library (PCRE)</dt>
       <dd>This library is required but no longer bundled with httpd.
-      Download the source code from <a href="http://www.pcre.org/">http://www.pcre.org</a>,
+      Download the source code from <a href="https://www.pcre.org/">https://www.pcre.org</a>,
       or install a Port or Package.  If your build system can't find
       the pcre-config script installed by the PCRE build, point to it
       using the <code>--with-pcre</code> parameter.  On some platforms,
@@ -191,18 +192,18 @@ sudo systemctl restart apache2
       of PCRE.</dd>
 
       <dt>Disk Space</dt>
-      <dd>Make sure you have at least 50 MB of temporary free disk
+      <dd>Make sure you have at least 200 MB of temporary free disk
       space available. After installation the server occupies
-      approximately 10 MB of disk space. The actual disk space
+      approximately 50 MB of disk space. The actual disk space
       requirements will vary considerably based on your chosen
       configuration options, any third-party modules, and, of course,
       the size of the web site or sites that you have on the server.</dd>
 
       <dt>ANSI-C Compiler and Build System</dt>
       <dd>Make sure you have an ANSI-C compiler installed. The <a
-      href="http://gcc.gnu.org/">GNU C
+      href="https://gcc.gnu.org/">GNU C
       compiler (GCC)</a> from the <a
-      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended. If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
@@ -211,19 +212,18 @@ sudo systemctl restart apache2
       <dt>Accurate time keeping</dt>
       <dd>Elements of the HTTP protocol are expressed as the time of
       day. So, it's time to investigate setting some time
-      synchronization facility on your system. Usually the
-      <code>ntpdate</code> or <code>xntpd</code> programs are used for
-      this purpose which are based on the Network Time Protocol (NTP).
-      See the <a href="http://www.ntp.org">NTP
+      synchronization facility on your system. Most modern Linux
+      distributions provide <code>systemd-timesyncd</code> or
+      <code>chrony</code> for this purpose.  See the <a href="https://www.ntp.org">NTP
       homepage</a> for more details about NTP software and public
       time servers.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONAL]</dt>
       <dd>For some of the support scripts like <program>
       apxs</program> or <program>dbmmanage</program> (which are
-      written in Perl) the Perl 5 interpreter is required (versions
-      5.003 or newer are sufficient).  If no Perl 5 interpreter is found by the
+      written in Perl) the Perl 5 interpreter is required.
+      If no Perl 5 interpreter is found by the
       <program>configure</program> script, you will not be able to use
       the affected support scripts. Of course, you will still be able to
       build and use Apache httpd.</dd>
@@ -232,36 +232,29 @@ sudo systemctl restart apache2
 
 <section id="download"><title>Download</title>
 
-    <p>The Apache HTTP Server can be downloaded from the <a
-    href="http://httpd.apache.org/download.cgi">Apache HTTP Server
-    download site</a>, which lists several mirrors.  Most users of
-    Apache on unix-like systems will be better off downloading and
-    compiling a source version.  The build process (described below) is
-    easy, and it allows you to customize your server to suit your needs.
-    In addition, binary releases are often not up to date with the latest
-    source releases.  If you do download a binary, follow the instructions
-    in the <code>INSTALL.bindist</code> file inside the distribution.</p>
+    <p>If you choose to build from source, start by downloading
+    the source tarball from the <a
+    href="https://httpd.apache.org/download.cgi">Apache HTTP Server
+    download site</a>.  The build process (described below)
+    allows you to customize your server to suit your
+    needs.</p>
 
     <p>After downloading, it is important to verify that you have a
     complete and unmodified version of the Apache HTTP Server. This
     can be accomplished by testing the downloaded tarball against the
-    PGP signature.  Details on how to do this are available on the <a
-    href="http://httpd.apache.org/download.cgi#verify">download
-    page</a> and an extended example is available describing the <a
-    href="http://httpd.apache.org/dev/verification.html">use of
-    PGP</a>.</p>
+    PGP signature.  Details on how to do this are available on the
+    <a href="https://httpd.apache.org/dev/verification.html">verification
+    page</a>.</p>
 
 </section>
 
 <section id="extract"><title>Extract</title>
 
-    <p>Extracting the source from the Apache HTTP Server tarball is a
-    simple matter of uncompressing, and then untarring:</p>
+    <p>Extract the source from the Apache HTTP Server tarball:</p>
 
 <example>
 <highlight language="sh">
-$ gzip -d httpd-<em>NN</em>.tar.gz
-$ tar xvf httpd-<em>NN</em>.tar
+$ tar xzf httpd-<em>NN</em>.tar.gz
 </highlight>
 </example>
 
@@ -283,7 +276,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     steps. This is not necessary for official releases.)</p>
 
     <p>To configure the source tree using all the default options,
-    simply type <code>./configure</code>. To change the default
+    type <code>./configure</code>. To change the default
     options, <program>configure</program> accepts a variety of variables
     and command line options.</p>
 
@@ -311,8 +304,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     to a dash.  Similarly, you can disable modules with the
     <code>--disable-<var>module</var></code> option.  Be careful when
     using these options, since <program>configure</program> cannot warn you
-    if the module you specify does not exist; it will simply ignore the
-    option.</p>
+    if the module you specify does not exist; it will ignore the option.</p>
 
     <p>In addition, it is sometimes necessary to provide the
     <program>configure</program> script with extra information about the
@@ -348,7 +340,7 @@ $ CC="pgcc" CFLAGS="-O2" \
 <section id="compile"><title>Build</title>
 
     <p>Now you can build the various parts which form the Apache
-    package by simply running the command:</p>
+    package by running:</p>
 
 <example>$ make</example>
 
@@ -384,8 +376,8 @@ $ CC="pgcc" CFLAGS="-O2" \
 
     <p>Have a look at the Apache manual under
     <code><em>PREFIX</em>/docs/manual/</code> or consult <a
-    href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
+    href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
     version of this manual and a complete reference of available <a
     href="mod/directives.html">configuration directives</a>.</p>
 </section>
@@ -411,14 +403,14 @@ $ CC="pgcc" CFLAGS="-O2" \
     <p>The first step in upgrading is to read the release announcement
     and the file <code>CHANGES</code> in the source distribution to
     find any changes that may affect your site.  When changing between
-    major releases (for example, from 2.0 to 2.2 or from 2.2 to 2.4),
+    major releases (for example, from 2.4 to 2.6),
     there will likely be major differences in the compile-time and
     run-time configuration that will require manual adjustments.  All
     modules will also need to be upgraded to accommodate changes in the
     module API.</p>
 
     <p>Upgrading from one minor version to the next (for example, from
-    2.2.55 to 2.2.57) is easier.  The <code>make install</code>
+    2.4.66 to 2.4.67) is easier.  The <code>make install</code>
     process will not overwrite any of your existing documents, log
     files, or configuration files.  In addition, the developers make
     every effort to avoid incompatible changes in the
@@ -469,8 +461,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on
     particular platforms. This includes the various Linux distributions,
-    various third-party Windows packages, Mac OS X, Solaris, and many
-    more.</p>
+    various third-party Windows packages, macOS, and many more.</p>
 
     <p>Our software license not only permits, but encourages, this kind
     of redistribution. However, it does result in a situation where the
