@@ -69,7 +69,7 @@ sudo systemctl restart httpd
     </highlight>
 
     <note type="warning">See <a
-    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">the
+    href="https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-apache-http-server/index.html">the
     Fedora project's documentation</a> for platform-specific notes.</note>
     </dd>
 
