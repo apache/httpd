@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1796503:1933855 (outdated) -->
+<!-- English Revision: 1933855 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -36,17 +36,17 @@
 
     <ul>
       <li>
-        <a href="http://purl.org/NET/http-errata">
-        http://purl.org/NET/http-errata</a> - Corrections de la
+        <a href="https://www.skrb.org/ietf/http_errata.html">
+        https://www.skrb.org/ietf/http_errata.html</a> - Corrections de la
 	spécification HTTP/1.1
       </li>
       <li>
-      <a href="http://www.rfc-editor.org/errata.php">
-        http://www.rfc-editor.org/errata.php</a>   - Corrections des RFCs
+        <a href="https://www.rfc-editor.org/errata.php">
+        https://www.rfc-editor.org/errata.php</a> - Corrections des RFCs
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - Une liste
+        <a href="https://httpwg.org/specs/">
+        https://httpwg.org/specs/</a> - Une liste
 	précompilée des RFCs en rapport avec HTTP
       </li>
     </ul>
@@ -59,12 +59,12 @@
 
   <section id="http_recommendations"><title>Recommandations HTTP</title>
 
-    <p>Indépendamment des modules compilés et utilisés, Apache en
+    <p>Sans tenir compte des modules compilés et utilisés, Apache en
     tant que serveur web de base respecte les recommandations IETF
     suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><rfc>1945</rfc>
       (Informations)</dt>
 
       <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
@@ -73,7 +73,7 @@
       distribués, collaboratifs et hypermédia. Cette RFC documente le
       protocole HTTP/1.0.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><rfc>2616</rfc>
       (Série de standards)</dt>
 
       <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
@@ -81,14 +81,14 @@
       systèmes d'informations distribués, collaboratifs et hypermédia.
       Cette RFC documente le protocole HTTP/1.1.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><rfc>2396</rfc>
       (Série de standards)</dt>
 
       <dd>Un Identificateur de Ressource Uniforme (Uniform Resource
       Identifier - URI) est une chaîne de caractères compacte permettant
       d'identifier une ressource physique ou abstraite.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
+      <dt><rfc>4346</rfc>
       (Série de standards)</dt>
 
       <dd>Le protocole TLS permet l'utilisation de communications
@@ -105,7 +105,7 @@
     recommandations IETF et W3C suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><rfc>2854</rfc>
       (Informations)</dt>
 
       <dd>Ce document résume l'historique du développement de HTML, et
@@ -116,7 +116,7 @@
       4.01</a>
       (<a
       href="http://www.w3.org/MarkUp/html4-updates/errata">Corrections
-      d'erreurs</a>)
+      Erreurs</a>)
       </dt>
 
       <dd>Cette spécification définit le Langage à Balises HyperTexte
@@ -162,26 +162,26 @@
     Apache respecte les recommandations IETF suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
-      (Le track des standards)</dt>
+      <dt><rfc>2617</rfc>
+      (Série de standards)</dt>
 
-      <dd>"HTTP/1.0", y compris la spécification d'un protocole basique
-      d'authentification et de contrôle d'accès.</dd>
+      <dd>"HTTP/1.0", y compris la spécification d'un protocole
+      d'authentification et de contrôle d'accès basique.</dd>
 
     </dl>
 
   </section>
 
-  <section id="language_country_codes"><title>Codes de langues et de
+  <section id="language_country_codes"><title>Codes de langages et de
   pays</title>
 
     <p>Les liens suivants fournissent des informations à propos des
-    codes de langues et de pays aux normes ISO ou autres :</p>
+    codes de langages et de pays aux normes ISO ou autres :</p>
 
     <dl>
       <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
-      <dd>ISO 639 fournit deux jeux de codes de langues permettant de
+      <dd>ISO 639 fournit deux jeux de codes de langages permettant de
       représenter les noms des langues ; le premier est
       un jeu de codes sur deux lettres (639-1), le second (celui
       présenté dans le lien ci-dessus), est un jeu de codes sur trois
@@ -195,21 +195,20 @@
       présentés dans la norme ISO 3166-1 et les éléments de codes
       correspondants de la norme ISO 3166-1-alpha-2.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
-      (Les meilleurs pratiques courantes),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a> (Les
+      meilleurs pratiques courantes), <rfc>3066</rfc></dt>
 
       <dd>Ce document décrit une balise de langue permettant de
-      spécifier la langue utilisé dans un objet contenant des
+      spécifier la langue utilisée dans un objet contenant des
       informations, la manière d'enregistrer des valeurs à utiliser dans
-      cette balise de langage, et une méthode pour comparer les balises
+      cette balise de langue, et une méthode pour comparer les balises
       de langue de ce style.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><rfc>3282</rfc>
       (Série de standards)</dt>
 
-      <dd>Ce document définit un en-tête "Content-language:" permettant
-      de spécifier le langage d'un élément possédant des en-têtes du
+      <dd>Ce document définit une en-tête "Content-language:" permettant
+      de spécifier la langue d'un élément possédant des en-têtes du
       style RFC 822, comme les portions de corps MIME ou les documents
       Web, et un en-tête "Accept-Language:" permettant de spécifier des
       préférences en matière de langue.</dd>

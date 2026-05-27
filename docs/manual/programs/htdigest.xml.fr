@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933137:1933948 (outdated) -->
+<!-- English Revision: 1933948 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -68,8 +68,7 @@ l'authentification à base de condensés</title>
 
     <dt><code><var>realm</var></code></dt>
     <dd>Le nom du domaine de protection auquel le nom d'utilisateur
-    appartient. Voir <a
-    href="http://tools.ietf.org/html/rfc2617#section-3.2.1">http://tools.ietf.org/html/rfc2617#section-3.2.1</a>
+    appartient. Voir la <rfc section="3.2.1">2617</rfc>
     pour plus de détails.</dd>
 
     <dt><code><var>nom-utilisateur</var></code></dt>
@@ -83,6 +82,20 @@ l'authentification à base de condensés</title>
 <section id="security"><title>Considérations à propos de sécurité</title>
     <p>En tant qu'exécutable setuid, ce programme n'est pas sûr. En
     conséquence, évitez de lui attribuer des permissions setuid.</p>
+</section>
+
+<section id="files"><title>Fichiers</title>
+
+<p>Le chemin du fichier d’authentification à base de condensés est spécifié en
+tant qu’argument de la ligne de commande et il peut être placé n’importe où dans
+le système de fichiers.</p>
+
+<dl>
+<dt><var>fichier des mots de passe</var></dt>
+<dd>Le fichier plat contenant les noms des utilisateurs, les domaines de
+protection (realms) et les mots de passe hachés.</dd>
+</dl>
+
 </section>
 
 </manualpage>
