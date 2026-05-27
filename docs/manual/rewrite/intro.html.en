@@ -44,7 +44,7 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
@@ -76,12 +76,12 @@ it will tell you exactly how each rule is processed.</p>
 <div class="section">
 <h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
-<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/">Perl Compatible
-Regular Expression</a> vocabulary. In this document, we do not attempt
+<p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">Perl Compatible
+Regular Expressions</a> vocabulary, via the PCRE2 library. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
-recommend the <a href="https://www.pcre.org/pcre.txt">PCRE man pages</a>, the
+recommend the <a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">PCRE2 documentation</a>, the
 <a href="https://perldoc.perl.org/perlre">Perl regular
-expression man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
+expressions man page</a>, and <a href="https://www.oreilly.com/library/view/mastering-regular-expressions/0596528124/">Mastering
 Regular Expressions, by Jeffrey Friedl</a> (the third edition is from
 2006, but regular expression syntax is essentially unchanged, and this
 remains the definitive reference on the subject).</p>
@@ -231,14 +231,32 @@ of three arguments separated by spaces. The arguments are</p>
 </ol>
 
 <p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
-It is initially (for the first rewrite rule or until a substitution occurs)
-matched against the URL-path of the incoming request (the part after the
-hostname but before any question mark indicating the beginning of a query
-string) or, in per-directory context, against the request's path relative
-to the directory for which the rule is defined. Once a substitution has
-occurred, the rules that follow are matched against the substituted
-value.
+In server or virtualhost context, it is matched against the
+%-decoded <a href="../directive-dict.html#Syntax">URL-path</a>
+of the incoming request — the part after the hostname and port,
+and not including the query string (e.g., <code>/app/index.html</code>).
+In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
+the pattern is matched against the request's path relative to the
+directory for which the rule is defined (with the directory prefix
+stripped — see <a href="htaccess.html#path-stripping">Per-directory
+Rewrites</a> for details).
 </p>
+
+<p>Once a substitution has occurred, any rules that follow are
+matched against the substituted value.</p>
+
+<p>The <var>Pattern</var> is matched only against the URL-path
+— not the hostname, port, or query string. To match against
+those, use a
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> with the
+<code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
+<code>%{QUERY_STRING}</code> variables respectively.</p>
+
+<div class="note"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> operates entirely on the URL-path
+and HTTP headers. It cannot inspect the request body (e.g., POST
+data). If you need to make routing decisions based on request body
+content, handle that in your application logic or use a module such
+as <code class="module"><a href="../mod/mod_request.html">mod_request</a></code> paired with a custom filter.</div>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
@@ -372,25 +390,18 @@ rewriting for you. This is discussed in greater detail in the <a href="rewritema
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess files</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
-<p>Rewriting is typically configured in the main server configuration
-setting (outside any <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section) or
-inside <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-containers. This is the easiest way to do rewriting and is
-recommended. It is possible, however, to do rewriting
-inside <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
-files</a> at the expense of some additional complexity. This technique
-is called <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> rewrites.
-Note that
+<p>It is possible to use rewrite rules in
+<a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context
+(<a href="../howto/htaccess.html"><code>.htaccess</code> files</a> and
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks),
+but the rules behave differently there — in particular, the directory
+prefix is stripped from the URL before matching. See the
+<a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
+document for full details. Note that
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> and
 <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> blocks
 also trigger per-directory behavior — see
 <a href="htaccess.html#context-restrictions">Which contexts support rewrite rules?</a>.</p>
-
-<p>The main difference from per-server rewrites is that the path
-prefix of the directory containing the <code>.htaccess</code> file is
-stripped before matching in
-the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. In addition, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> should be used to assure the request is properly mapped.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

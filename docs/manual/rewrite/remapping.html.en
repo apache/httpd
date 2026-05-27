@@ -26,7 +26,7 @@
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div>
 
 
@@ -39,8 +39,8 @@ including detailed descriptions of how each works.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#https-redirect">Forcing HTTPS</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#www-resolve">Canonical www/non-www Hostname</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#front-controller">Front Controller / Application Routing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
@@ -49,13 +49,12 @@ including detailed descriptions of how each works.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#fallback-resource">Fallback Resource</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewrite-query">Rewrite query string</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Userdirs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a> <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
@@ -143,6 +142,96 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
       <p>See also the <a href="avoid.html#redirect">When not to use
       mod_rewrite</a> document for more discussion of the
       <code>Redirect</code> approach.</p>
+
+      <div class="note"><h3>Behind a load balancer or SSL terminator</h3>
+      <p>The <code>%{HTTPS}</code> variable is not a general-purpose
+      environment variable — it queries <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+      directly. If SSL/TLS is terminated at an upstream load balancer
+      or reverse proxy, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not handling the
+      connection and <code>%{HTTPS}</code> will always report
+      <code>off</code>, even when the original client connected over
+      HTTPS.</p>
+
+      <p>In this situation, check the header set by the upstream proxy
+      instead. Most load balancers set
+      <code>X-Forwarded-Proto</code>:</p>
+      </div>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteCond "%{HTTP:X-Forwarded-Proto}" =http [NC]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
+
+
+      <div class="warning">
+      <p>Only trust <code>X-Forwarded-Proto</code> if you control the
+      upstream proxy and it overwrites the header on every request. An
+      attacker can forge this header when connecting directly to your
+      server. Consider restricting access so that only your load
+      balancer can reach the backend, or use
+      <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> to validate the source.</p>
+      </div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="acme-exemption" id="acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a> <a title="Permanent link" href="#acme-exemption" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You have forced all traffic to HTTPS (as above), but your
+      ACME client (Let's Encrypt, Certbot, etc.) needs plain HTTP
+      access to <code>/.well-known/acme-challenge/</code> to complete
+      domain validation.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Place an exception <em>before</em> your HTTPS redirect
+      rule:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine On
+RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
+
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>The dash (<code>-</code>) substitution means "do not rewrite."
+      Combined with <code>[L]</code>, it stops rule processing for any
+      request matching the ACME challenge path, allowing it to be
+      served over plain HTTP. All other requests continue to the
+      next rule and are redirected to HTTPS as usual.</p>
+
+      <p>If you are using the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> approach in a dedicated
+      port-80 VirtualHost, use an
+      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> and
+      <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>
+      instead:</p>
+
+<pre class="prettyprint lang-config">&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+
+    # Allow ACME challenges over HTTP
+    Alias "/.well-known/acme-challenge/" "/var/www/acme/.well-known/acme-challenge/"
+    &lt;Directory "/var/www/acme/.well-known/acme-challenge"&gt;
+        Require all granted
+    &lt;/Directory&gt;
+
+    # Everything else goes to HTTPS
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$0"
+&lt;/VirtualHost&gt;</pre>
+
+
     </dd>
   </dl>
 
@@ -196,111 +285,22 @@ RewriteRule "^" "%1" [R=301,L]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="www-resolve" id="www-resolve">Canonical www/non-www Hostname</a> <a title="Permanent link" href="#www-resolve" class="permalink">&para;</a></h2>
-
-  
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>You want to force all requests to use either
-      <code>www.example.com</code> or <code>example.com</code>,
-      not both. This ensures search engines treat them as one site
-      and prevents cookie scope issues.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>The best approach does not use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> at
-      all. Place a <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code>
-      in the virtual host for the non-canonical hostname:</p>
-
-<pre class="prettyprint lang-config"># Redirect example.com -&gt; www.example.com
-&lt;VirtualHost *:80 *:443&gt;
-    ServerName example.com
-    Redirect permanent "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;</pre>
-
-
-      <p>If you only have <code>.htaccess</code> access:</p>
-
-<pre class="prettyprint lang-config"># Add www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
-RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]</pre>
-
-
-<pre class="prettyprint lang-config"># Remove www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
-RewriteRule "^(.*)" "https://%1$1" [R=301,L]</pre>
-
-
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
-      recipe above, which covers the general case. This recipe focuses
-      specifically on the www/non-www choice, which is the most common
-      hostname canonicalization need.</p>
-    </dd>
-  </dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="front-controller" id="front-controller">Front Controller / Application Routing</a> <a title="Permanent link" href="#front-controller" class="permalink">&para;</a></h2>
 
   
 
-  <dl>
-    <dt>Description:</dt>
+  <p>Most modern web frameworks route all requests through a single
+  entry point (a "front controller"). The
+  <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive
+  handles this more simply and efficiently than
+  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. See <a href="avoid.html#fallback-resource">When NOT to use mod_rewrite</a>
+  for the recommended approach.</p>
 
-    <dd>
-      <p>Most modern web frameworks (PHP, Python, Ruby, etc.) use a
-      single entry point - often called a "front controller" - that
-      handles all requests. URLs like <code>/products/widget</code>
-      are routed to <code>index.php</code> (or equivalent), which
-      parses the URL internally.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-
-    <div class="note">For this use case, the
-    <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive is
-    almost always the better choice. See the
-    <a href="#fallback-resource">Fallback Resource</a> recipe above.</div>
-
-      <p>If you need <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> (for example, to add
-      additional conditions), the standard pattern is:</p>
-
-<pre class="prettyprint lang-config">RewriteEngine On
-RewriteCond "%{REQUEST_FILENAME}" !-f
-RewriteCond "%{REQUEST_FILENAME}" !-d
-RewriteRule "^(.*)$" "/index.php" [L]</pre>
-
-
-      <p>The <code>!-f</code> and <code>!-d</code> conditions skip the
-      rule for requests that map to an existing file or directory, so
-      static assets (images, CSS, JavaScript) are still served
-      directly.</p>
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>In <code>.htaccess</code> context, consider using
-      <code>[END]</code> instead of <code>[L]</code> to avoid
-      reprocessing loops. See the
-      <a href="htaccess.html#loops">.htaccess looping</a> discussion
-      for details.</p>
-    </dd>
-  </dl>
+  <p>If you genuinely need <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for this (for
+  example, to add conditions beyond "file doesn't exist"), see the
+  <a href="htaccess.html#rewritebase">per-directory rewrites</a>
+  document for an annotated example that also demonstrates
+  <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> usage.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -525,6 +525,15 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]</pre>
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
+<p>To do the reverse - strip the <code>www.</code> prefix - swap the
+condition:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "^www\.(.+)$"              [NC]
+RewriteRule "^(.*)"        "http://%1/$1"             [L,R,NE]</pre>
+
+
+<p>To generically add <code>www.</code> to any hostname:</p>
+
 <pre class="prettyprint lang-config">RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
 RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
@@ -532,23 +541,25 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
-
     </dd>
-    
+
     <dt>Discussion:</dt>
 
     <dd>
       <p>If you have access to the server configuration, a
       <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> in a dedicated
       <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-      is the cleanest approach. Use the
+      is the cleanest approach. Canonicalizing the hostname ensures that
+      search engines treat your site as a single entity and avoids
+      cookie scope issues that arise when the same site is reachable
+      under multiple names.</p>
+      <p>Use the
       <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> directive
       as a middle ground, and <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> only if you
       are limited to <code>.htaccess</code>.</p>
     </dd>
 
-    </dl>
-
+</dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -689,61 +700,6 @@ rather than rewriting URLs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">Fallback Resource</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
-
-
-<dl>
-<dt>Description:</dt>
-<dd>You want a single resource (say, a certain file, like index.php) to
-handle all requests that come to a particular directory, except those
-that should go to an existing resource such as an image, or a css file.</dd>
-
-<dt>Solution:</dt>
-<dd>
-<p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
-
-<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource index.php
-&lt;/Directory&gt;</pre>
-
-
-<p>However, in earlier versions of Apache, or if your needs are more
-complicated than this, you can use a variation of the following rewrite
-set to accomplish the same thing:</p>
-
-<pre class="prettyprint lang-config">&lt;Directory "/var/www/my_blog"&gt;
-  RewriteBase "/my_blog"
-
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^"                                    "index.php" [PT]
-&lt;/Directory&gt;</pre>
-
-
-<p>If, on the other hand, you wish to pass the requested URI as a query
-string argument to index.php, you can replace that RewriteRule with:</p>
-
-<pre class="prettyprint lang-config">RewriteRule "(.*)" "index.php?$1" [PT,QSA]</pre>
-
-
-<p>Note that these rulesets can be used in a <code>.htaccess</code>
-file, as well as in a &lt;Directory&gt; block.</p>
-
-</dd>
-
-<dt>Discussion:</dt>
-
-<dd>
-<p>The <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive
-is almost always the better choice for this use case. See the
-<a href="avoid.html#fallback-resource">When not to use mod_rewrite</a>
-document for a simpler one-line alternative.</p>
-</dd>
-
-</dl>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="rewrite-query" id="rewrite-query">Rewrite query string</a> <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
 
 
@@ -788,7 +744,7 @@ RewriteRule "(.*)"            "-" [F]</pre>
   </li>
 
   <li>This solution shows the reverse of the previous ones, copying
-      path components (perhaps PATH_INFO) from the URL into the query string.
+      path components (perhaps <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a>) from the URL into the query string.
 <pre class="prettyprint lang-config"># The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.
 RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
@@ -986,7 +942,7 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
