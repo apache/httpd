@@ -168,15 +168,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1931949 ^/httpd/httpd/trunk .
      +1: icing, steffenal, covener
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   *) mod_dav_fs: Fix missing 404 with DELETE race
      trunk patch: https://svn.apache.org/r1926172
      2.4.x patch: svn merge -c 1926172 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/583
-     +1: jorton, rpluem
+     +1: jorton, rpluem, covener
 
   *) mod_unixd: sync with trunk.
      trunk patch: https://svn.apache.org/r1617196
@@ -186,14 +182,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1927804
      2.4.x patch: svn merge -c 1617196,1617201,1618778,1897269,1927804,1930444 ^/httpd/httpd/trunk .
                   (or https://github.com/apache/httpd/pull/588)
-     +1: jorton, rpluem
+     +1: jorton, rpluem, covener
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
   *) core: Add millisecond time formatting for ErrorLogFormat
      trunk patch: https://svn.apache.org/r1931452
                   https://svn.apache.org/r1931453
      2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/599
-     +1: jorton,
+     +1: jorton, covener
 
   *) Fix compatibility with OpenSSL 4.0
      trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
@@ -215,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Update to mod_http2 v2.0.41
      trunk patch: https://svn.apache.org/r1934678
      2.4.x patch: svn merge -c 1934678 ^/httpd/httpd/trunk .
-     +1: icing,
+     +1: icing, covener
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
