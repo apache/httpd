@@ -33,9 +33,11 @@ and provides examples of each of the various <directive module="mod_rewrite"
   <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
   <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
   <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+  <seealso><a href="flags.html">RewriteRule Flags</a></seealso>
     <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
-      <seealso><a href="htaccess.html">Per-directory rewrites (.htaccess)</a></seealso>
+      <seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 
   <section id="introduction">
     <title>Introduction</title>
@@ -142,7 +144,7 @@ may be used, and give examples of each.</p>
     >RewriteRule</directive>:
     </p>
 
-   <p> <strong>Redirect a URI to an all-lowercase version of itself</strong></p>
+   <p> <strong>Redirect a URL-path to an all-lowercase version of itself</strong></p>
     <highlight language="config">
 RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]
@@ -385,7 +387,7 @@ by many requests.
     <directive module="core">Mutex</directive> directive.</p>
 
     <p>A simple example is shown here which will replace all dashes with
-    underscores in a request URI.</p>
+    underscores in a request URL-path.</p>
 
     <p><strong>Rewrite configuration</strong></p>
     <highlight language="config">
@@ -402,6 +404,40 @@ for line in sys.stdin:
     print(line.strip().replace('-', '_'), flush=True)
     </highlight>
 
+    <p>A more complete example shows the typical pattern for a
+    prg: map program: read a line, look up the result, and write
+    it back. Diagnostic output is written to <code>STDERR</code>,
+    which ends up in the Apache error log.</p>
+
+    <p><strong>Rewrite configuration</strong></p>
+    <highlight language="config">
+RewriteMap vhost2docroot "prg:/www/bin/vhost_lookup.py"
+RewriteRule "^/(.*)$" "${vhost2docroot:%{HTTP_HOST}}/$1"
+    </highlight>
+
+    <p><strong>vhost_lookup.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+"""Map a hostname to its document root directory."""
+import sys
+
+VHOSTS = {
+    "example.com": "/srv/www/example",
+    "blog.example.com": "/srv/www/blog",
+}
+
+for line in sys.stdin:
+    host = line.strip().lower()
+    docroot = VHOSTS.get(host)
+    if docroot:
+        print(docroot, flush=True)
+    else:
+        # "NULL" tells mod_rewrite the lookup failed
+        print("NULL", flush=True)
+        print(f"vhost_lookup: no match for {host!r}", file=sys.stderr)
+    </highlight>
+
+
 <note><title>Caution!</title>
 <ul>
 <li>Keep your rewrite map program as simple as possible. If the program
@@ -411,7 +447,9 @@ requests.</li>
 <li>Be sure to turn off buffering in your program. In the Python example
 above, this is done by passing <code>flush=True</code> to
 <code>print()</code>. Buffered I/O will cause httpd to wait for the
-output, and so it will hang.</li>
+output, and so it will hang. This is the single most common cause
+of prg: maps appearing to "do nothing" &mdash; the program has the
+answer but httpd never sees it because it is stuck in a buffer.</li>
 <li>Remember that there is only one copy of the program, started at
 server startup. All requests will need to go through this one bottleneck.
 This can cause significant slowdowns if many requests must go through

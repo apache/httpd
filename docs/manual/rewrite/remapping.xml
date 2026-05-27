@@ -36,10 +36,12 @@ including detailed descriptions of how each works.</p>
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
-<!--<seealso><a href="remapping.html">Redirection and remapping</a></seealso>-->
+<seealso><a href="htaccess.html">Per-directory Rewrites</a></seealso>
+<seealso><a href="flags.html">RewriteRule Flags</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 
 <section id="old-to-new">
 
@@ -129,6 +131,100 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
       <p>See also the <a href="avoid.html#redirect">When not to use
       mod_rewrite</a> document for more discussion of the
       <code>Redirect</code> approach.</p>
+
+      <note><title>Behind a load balancer or SSL terminator</title>
+      <p>The <code>%{HTTPS}</code> variable is not a general-purpose
+      environment variable — it queries <module>mod_ssl</module>
+      directly. If SSL/TLS is terminated at an upstream load balancer
+      or reverse proxy, <module>mod_ssl</module> is not handling the
+      connection and <code>%{HTTPS}</code> will always report
+      <code>off</code>, even when the original client connected over
+      HTTPS.</p>
+
+      <p>In this situation, check the header set by the upstream proxy
+      instead. Most load balancers set
+      <code>X-Forwarded-Proto</code>:</p>
+      </note>
+
+<highlight language="config">
+RewriteEngine On
+RewriteCond "%{HTTP:X-Forwarded-Proto}" =http [NC]
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+
+      <note type="warning">
+      <p>Only trust <code>X-Forwarded-Proto</code> if you control the
+      upstream proxy and it overwrites the header on every request. An
+      attacker can forge this header when connecting directly to your
+      server. Consider restricting access so that only your load
+      balancer can reach the backend, or use
+      <module>mod_remoteip</module> to validate the source.</p>
+      </note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="acme-exemption">
+
+  <title>Exempting ACME challenge requests from HTTPS redirect</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>You have forced all traffic to HTTPS (as above), but your
+      ACME client (Let's Encrypt, Certbot, etc.) needs plain HTTP
+      access to <code>/.well-known/acme-challenge/</code> to complete
+      domain validation.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Place an exception <em>before</em> your HTTPS redirect
+      rule:</p>
+
+<highlight language="config">
+RewriteEngine On
+RewriteRule "^/\.well-known/acme-challenge/" - [L]
+RewriteCond "%{HTTPS}" !=on
+RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]
+</highlight>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd>
+      <p>The dash (<code>-</code>) substitution means "do not rewrite."
+      Combined with <code>[L]</code>, it stops rule processing for any
+      request matching the ACME challenge path, allowing it to be
+      served over plain HTTP. All other requests continue to the
+      next rule and are redirected to HTTPS as usual.</p>
+
+      <p>If you are using the <directive
+      module="mod_alias">Redirect</directive> approach in a dedicated
+      port-80 VirtualHost, use an
+      <directive module="mod_alias">Alias</directive> and
+      <directive module="mod_alias">RedirectMatch</directive>
+      instead:</p>
+
+<highlight language="config">
+&lt;VirtualHost *:80&gt;
+    ServerName www.example.com
+
+    # Allow ACME challenges over HTTP
+    Alias "/.well-known/acme-challenge/" "/var/www/acme/.well-known/acme-challenge/"
+    &lt;Directory "/var/www/acme/.well-known/acme-challenge"&gt;
+        Require all granted
+    &lt;/Directory&gt;
+
+    # Everything else goes to HTTPS
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$0"
+&lt;/VirtualHost&gt;
+</highlight>
+
     </dd>
   </dl>
 
@@ -184,115 +280,23 @@ RewriteRule "^" "%1" [R=301,L]
 
 </section>
 
-<section id="www-resolve">
-
-  <title>Canonical www/non-www Hostname</title>
-
-  <dl>
-    <dt>Description:</dt>
-
-    <dd>
-      <p>You want to force all requests to use either
-      <code>www.example.com</code> or <code>example.com</code>,
-      not both. This ensures search engines treat them as one site
-      and prevents cookie scope issues.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-      <p>The best approach does not use <module>mod_rewrite</module> at
-      all. Place a <directive module="mod_alias">Redirect</directive>
-      in the virtual host for the non-canonical hostname:</p>
-
-<highlight language="config">
-# Redirect example.com -> www.example.com
-&lt;VirtualHost *:80 *:443&gt;
-    ServerName example.com
-    Redirect permanent "/" "https://www.example.com/"
-&lt;/VirtualHost&gt;
-</highlight>
-
-      <p>If you only have <code>.htaccess</code> access:</p>
-
-<highlight language="config">
-# Add www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "!^www\." [NC]
-RewriteRule "^(.*)" "https://www.%{HTTP_HOST}$1" [R=301,L]
-</highlight>
-
-<highlight language="config">
-# Remove www
-RewriteEngine On
-RewriteCond "%{HTTP_HOST}" "^www\.(.+)$" [NC]
-RewriteRule "^(.*)" "https://%1$1" [R=301,L]
-</highlight>
-
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>See also the <a href="#canonicalhost">Canonical Hostnames</a>
-      recipe above, which covers the general case. This recipe focuses
-      specifically on the www/non-www choice, which is the most common
-      hostname canonicalization need.</p>
-    </dd>
-  </dl>
-
-</section>
-
 <section id="front-controller">
 
   <title>Front Controller / Application Routing</title>
 
-  <dl>
-    <dt>Description:</dt>
+  <p>Most modern web frameworks route all requests through a single
+  entry point (a "front controller"). The
+  <directive module="mod_dir">FallbackResource</directive> directive
+  handles this more simply and efficiently than
+  <module>mod_rewrite</module>. See <a
+  href="avoid.html#fallback-resource">When NOT to use mod_rewrite</a>
+  for the recommended approach.</p>
 
-    <dd>
-      <p>Most modern web frameworks (PHP, Python, Ruby, etc.) use a
-      single entry point - often called a "front controller" - that
-      handles all requests. URLs like <code>/products/widget</code>
-      are routed to <code>index.php</code> (or equivalent), which
-      parses the URL internally.</p>
-    </dd>
-
-    <dt>Solution:</dt>
-
-    <dd>
-
-    <note>For this use case, the
-    <directive module="mod_dir">FallbackResource</directive> directive is
-    almost always the better choice. See the
-    <a href="#fallback-resource">Fallback Resource</a> recipe above.</note>
-
-      <p>If you need <module>mod_rewrite</module> (for example, to add
-      additional conditions), the standard pattern is:</p>
-
-<highlight language="config">
-RewriteEngine On
-RewriteCond "%{REQUEST_FILENAME}" !-f
-RewriteCond "%{REQUEST_FILENAME}" !-d
-RewriteRule "^(.*)$" "/index.php" [L]
-</highlight>
-
-      <p>The <code>!-f</code> and <code>!-d</code> conditions skip the
-      rule for requests that map to an existing file or directory, so
-      static assets (images, CSS, JavaScript) are still served
-      directly.</p>
-    </dd>
-
-    <dt>Discussion:</dt>
-
-    <dd>
-      <p>In <code>.htaccess</code> context, consider using
-      <code>[END]</code> instead of <code>[L]</code> to avoid
-      reprocessing loops. See the
-      <a href="htaccess.html#loops">.htaccess looping</a> discussion
-      for details.</p>
-    </dd>
-  </dl>
+  <p>If you genuinely need <module>mod_rewrite</module> for this (for
+  example, to add conditions beyond "file doesn't exist"), see the
+  <a href="htaccess.html#rewritebase">per-directory rewrites</a>
+  document for an annotated example that also demonstrates
+  <directive module="mod_rewrite">RewriteBase</directive> usage.</p>
 
 </section>
 
@@ -530,6 +534,16 @@ RewriteRule "^/?(.*)"        "http://www.example.com/$1" [L,R,NE]
         <strong>example.com</strong>, you could use the following
         recipe:</p>
 
+<p>To do the reverse - strip the <code>www.</code> prefix - swap the
+condition:</p>
+
+<highlight language="config">
+RewriteCond "%{HTTP_HOST}" "^www\.(.+)$"              [NC]
+RewriteRule "^(.*)"        "http://%1/$1"             [L,R,NE]
+</highlight>
+
+<p>To generically add <code>www.</code> to any hostname:</p>
+
 <highlight language="config">
 RewriteCond "%{HTTP_HOST}" "!^www\."                    [NC]
 RewriteCond "%{HTTP_HOST}" "!^$"
@@ -539,23 +553,25 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]
     <p>These rulesets will work either in your main server configuration
     file, or in a <code>.htaccess</code> file placed in the <directive
     module="core">DocumentRoot</directive> of the server.</p>
-
     </dd>
-    
+
     <dt>Discussion:</dt>
 
     <dd>
       <p>If you have access to the server configuration, a
       <directive module="mod_alias">Redirect</directive> in a dedicated
       <directive module="core" type="section">VirtualHost</directive>
-      is the cleanest approach. Use the
+      is the cleanest approach. Canonicalizing the hostname ensures that
+      search engines treat your site as a single entity and avoids
+      cookie scope issues that arise when the same site is reachable
+      under multiple names.</p>
+      <p>Use the
       <directive module="core" type="section">If</directive> directive
       as a middle ground, and <module>mod_rewrite</module> only if you
       are limited to <code>.htaccess</code>.</p>
     </dd>
 
-    </dl>
-
+</dl>
 
 </section>
 
@@ -702,65 +718,6 @@ rather than rewriting URLs.</p>
 
 </section>
 
-<section id="fallback-resource">
-<title>Fallback Resource</title>
-
-<dl>
-<dt>Description:</dt>
-<dd>You want a single resource (say, a certain file, like index.php) to
-handle all requests that come to a particular directory, except those
-that should go to an existing resource such as an image, or a css file.</dd>
-
-<dt>Solution:</dt>
-<dd>
-<p>As of version 2.2.16, you should use the <directive
-module="mod_dir">FallbackResource</directive> directive for this:</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  FallbackResource index.php
-&lt;/Directory&gt;
-</highlight>
-
-<p>However, in earlier versions of Apache, or if your needs are more
-complicated than this, you can use a variation of the following rewrite
-set to accomplish the same thing:</p>
-
-<highlight language="config">
-&lt;Directory "/var/www/my_blog"&gt;
-  RewriteBase "/my_blog"
-
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-f
-  RewriteCond "/var/www/my_blog/%{REQUEST_FILENAME}" !-d
-  RewriteRule "^"                                    "index.php" [PT]
-&lt;/Directory&gt;
-</highlight>
-
-<p>If, on the other hand, you wish to pass the requested URI as a query
-string argument to index.php, you can replace that RewriteRule with:</p>
-
-<highlight language="config">
-RewriteRule "(.*)" "index.php?$1" [PT,QSA]
-</highlight>
-
-<p>Note that these rulesets can be used in a <code>.htaccess</code>
-file, as well as in a &lt;Directory&gt; block.</p>
-
-</dd>
-
-<dt>Discussion:</dt>
-
-<dd>
-<p>The <directive module="mod_dir">FallbackResource</directive> directive
-is almost always the better choice for this use case. See the
-<a href="avoid.html#fallback-resource">When not to use mod_rewrite</a>
-document for a simpler one-line alternative.</p>
-</dd>
-
-</dl>
-
-</section>
-
 <section id="rewrite-query">
 <title>Rewrite query string</title>
 
@@ -808,7 +765,7 @@ RewriteRule "(.*)"            "-" [F]
   </li>
 
   <li>This solution shows the reverse of the previous ones, copying
-      path components (perhaps PATH_INFO) from the URL into the query string.
+      path components (perhaps <glossary ref="pathinfo">PATH_INFO</glossary>) from the URL into the query string.
 <highlight language="config">
 # The desired URL might be /products/kitchen-sink, and the script expects
 # /path?products=kitchen-sink.

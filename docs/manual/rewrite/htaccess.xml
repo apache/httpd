@@ -23,7 +23,7 @@
 <manualpage metafile="htaccess.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>mod_rewrite and .htaccess files</title>
+<title>Per-directory Rewrites</title>
 
 <summary>
 
@@ -123,6 +123,36 @@ where the rule lives:</p>
 in either the pattern or the substitution. This is the single most
 common source of confusion with per-directory rewriting.</p>
 
+<p>When a substitution is made in per-directory context, Apache issues
+a new internal subrequest with the rewritten URL, restarting request
+processing from the top. If the substitution is a relative path,
+the <directive module="mod_rewrite">RewriteBase</directive> directive
+determines what URL-path prefix is prepended. This subrequest
+mechanism is also why rules can loop &mdash; see
+<a href="#loops">below</a>.</p>
+
+
+<note type="warning"><title>Do not start .htaccess patterns with /</title>
+<p>Because the directory prefix (including the trailing
+slash) is stripped before matching, patterns in
+<glossary ref="perdirectory">per-directory context</glossary>
+will <em>never</em> match a leading slash. A pattern
+beginning with <code>^/</code> will never match in this
+context. A rule like <code>RewriteRule "^/foo" ...</code> will
+silently fail to match anything when placed in a
+<code>.htaccess</code> file.</p>
+</note>
+
+<p>If you need to match against the full original
+URL-path (including the directory prefix), use
+<code>%{REQUEST_URI}</code> in a
+<directive module="mod_rewrite">RewriteCond</directive>:</p>
+
+<highlight language="config">
+RewriteCond "%{REQUEST_URI}" "^/admin/"
+RewriteRule "^.*$" "-" [F]
+</highlight>
+
 </section>
 
 <section id="rewritebase"><title>When you need RewriteBase</title>
@@ -162,7 +192,7 @@ RewriteRule "^(.*)$" "index.php" [L]
 
 <note>For this particular use case - routing all unmatched
 requests to a front controller - the
-<a href="remapping.html#fallback-resource">FallbackResource</a> directive
+<a href="avoid.html#fallback-resource">FallbackResource</a> directive
 is a simpler and more efficient alternative to mod_rewrite.</note>
 
 <p>Without the <code>RewriteBase "/myapp/"</code> line, the rewritten
@@ -271,6 +301,41 @@ would be prohibitively expensive to repeat each time.</p>
 
 </section>
 
+<section id="context-restrictions"><title>Which contexts support rewrite rules?</title>
+
+<p>Rewrite rules are supported in
+<glossary ref="perdirectory">per-directory context</glossary>
+(<a href="../howto/htaccess.html">.htaccess</a> files,
+<directive module="core" type="section">Directory</directive>, and
+<directive module="core" type="section">If</directive> blocks).</p>
+
+<p>Although rewrite rules are syntactically permitted in
+<directive module="core" type="section">Location</directive>
+and <directive module="core" type="section">Files</directive>
+sections (including their regex counterparts), this is
+unsupported and should never be necessary. Relative
+substitutions, in particular, are likely to break in
+these contexts.</p>
+
+<note type="warning"><title>These containers silently change rewrite
+behavior</title>
+<p>Placing a <directive module="mod_rewrite">RewriteRule</directive>
+inside a <directive module="core" type="section">Directory</directive>,
+<directive module="core" type="section">If</directive>, or
+<directive module="core" type="section">Location</directive> block
+&mdash; even inside a
+<directive module="core" type="section">VirtualHost</directive> in the
+main server config &mdash; silently switches to
+<glossary ref="perdirectory">per-directory context</glossary> behavior.
+This means the leading slash is stripped from the URL before pattern
+matching, substitutions trigger an internal redirect (with loop risk),
+and the <a href="../rewrite/flags.html#flag_l">[L]</a> flag no longer
+truly stops processing &mdash; use
+<a href="../rewrite/flags.html#flag_end">[END]</a> instead.</p>
+</note>
+
+</section>
+
 <section id="inheritance"><title>Rule inheritance with RewriteOptions</title>
 
 <p>By default, <module>mod_rewrite</module> rules are <strong>not
@@ -340,38 +405,27 @@ performance.</note>
 
 </section>
 
-<section id="context-restrictions"><title>Which contexts support rewrite rules?</title>
+<section id="caching"><title>Browser caching of 301 redirects</title>
 
-<p>Rewrite rules are supported in
-<glossary ref="perdirectory">per-directory context</glossary>
-(<a href="../howto/htaccess.html">.htaccess</a> files,
-<directive module="core" type="section">Directory</directive>, and
-<directive module="core" type="section">If</directive> blocks).</p>
+<p>When you issue a <code>301 Moved Permanently</code> redirect
+(via <code>[R=301]</code> or <directive module="mod_alias"
+>Redirect permanent</directive>), the browser is allowed to cache
+that response indefinitely. This means that even after you fix an
+incorrect redirect rule in your configuration, returning visitors
+may continue to be sent to the old (wrong) destination without
+ever contacting your server again.</p>
 
-<p>Although rewrite rules are syntactically permitted in
-<directive module="core" type="section">Location</directive>
-and <directive module="core" type="section">Files</directive>
-sections (including their regex counterparts), this is
-unsupported and should never be necessary. Relative
-substitutions, in particular, are likely to break in
-these contexts.</p>
+<p>While debugging redirect rules, use <code>[R=302]</code>
+(temporary redirect) instead of <code>[R=301]</code>. Switch to 301
+only after you have confirmed the rule is correct. If you have
+already issued an incorrect 301, affected users will need to clear
+their browser cache (or use a private/incognito window) to see
+the corrected behavior.</p>
 
-<note type="warning"><title>These containers silently change rewrite
-behavior</title>
-<p>Placing a <directive module="mod_rewrite">RewriteRule</directive>
-inside a <directive module="core" type="section">Directory</directive>,
-<directive module="core" type="section">If</directive>, or
-<directive module="core" type="section">Location</directive> block
-&mdash; even inside a
-<directive module="core" type="section">VirtualHost</directive> in the
-main server config &mdash; silently switches to
-<glossary ref="perdirectory">per-directory context</glossary> behavior.
-This means the leading slash is stripped from the URL before pattern
-matching, substitutions trigger an internal redirect (with loop risk),
-and the <a href="../rewrite/flags.html#flag_l">[L]</a> flag no longer
-truly stops processing &mdash; use
-<a href="../rewrite/flags.html#flag_end">[END]</a> instead.</p>
-</note>
+<note>Search engines also cache 301 redirects. An incorrect 301
+may take days or weeks to be re-crawled, even after the
+configuration is fixed. This is another reason to test with 302
+first.</note>
 
 </section>
 
