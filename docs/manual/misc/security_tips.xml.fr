@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1918789:1933420 (outdated) -->
+<!-- English Revision: 1933420 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -320,6 +320,34 @@
 
   </section>
 
+  <section id="dynamicsec">
+
+  <title>Sécurité des contenus dynamiques</title>
+
+  <p>Quand vous utilisez des cadriciels à contenu dynamique — que ce soit à
+  travers <code>mod_php</code>, <code>mod_perl</code>, <code>mod_python</code>
+  ou tout autre générateur de contenu intégré ou externe — les responsabilités
+  en matière de sécurité s’étendent au-delà de httpd lui-même. Chaque cadriciel
+  possède ses propres modèle de sécurité, options de configuration et guides de
+  durcissement. Consultez la documentation de la technologie que vous utilisez
+  pour générer du contenu dynamique et maintenez cette dernière à jour.</p>
+
+  <p>Les principes généraux s’appliquent à tout cadriciel :</p>
+  <ul>
+  <li>Accordez des privilèges minimaux à vos scripts et applications.</li>
+  <li>Vérifiez et nettoyez toute entrée de l’utilisateur.</li>
+  <li>Maintenez à jour votre cadriciel de contenu et ses dépendances.</li>
+  <li>Vérifiez la configuration de la sécurité de votre cadriciel — les valeurs
+  par défaut ne sont pas toujours appropriées en matière de sécurité.</li>
+  </ul>
+
+  <p>Au niveau de httpd, un pare-feu d’application web tel que <a
+  href="https://modsecurity.org/">ModSecurity</a> peut fournir une couche
+  supplémentaire de défense en inspectant et filtrant le trafic HTTP avant qu’il
+  n’atteigne votre application.</p>
+
+  </section>
+
   <section id="systemsettings">
 
     <title>Protection de la configuration du système</title>
@@ -407,48 +435,40 @@
 
     <title>Surveillez vos journaux</title>
 
-    <p>Pour vous tenir informé de ce qui se passe réellement dans votre
-    serveur, vous devez consulter vos
-    <a href="../logs.html">fichiers journaux</a>. Même si les fichiers journaux
-    ne consignent que des évènements qui se sont déjà produits, ils vous
-    informeront sur la nature des attaques qui sont lancées contre le serveur
-    et vous permettront de vérifier si le niveau de sécurité nécessaire est
-    atteint.</p>
+    <p>Pour vous tenir informé de ce qui se passe réellement dans votre serveur,
+    consultez régulièrement vos <a href="../logs.html">fichiers journaux</a>.
+    Les fichiers journaux ne consignent que des évènements qui se sont déjà
+    produits, mais ils vous informeront sur la nature des attaques qui sont
+    lancées et vous permettront de vérifier si la configuration de votre
+    sécurité est efficace.</p>
 
     <p>Quelques exemples :</p>
 
+    <highlight language="sh">
+grep -c "\.\.\/" access_log
+grep "client denied" error_log | tail -n 10
+    </highlight>
+
+    <p>Le premier exemple compte les requêtes qui contiennent des séquences de
+    traversée de chemin — un signe connu de recherche de vulnérabilités. Le
+    second liste les dix « client denied » les plus récents ; par exemple :</p>
     <example>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br />
-      grep "client denied" error_log | tail -n 10
+      [Mon Apr 14 09:42:03.817295 2026] [authz_core:error] [pid 1234:tid 5678]
+      [client 192.168.1.100:54312] AH01630: client denied by server configuration:
+      /usr/local/apache2/htdocs/.env
     </example>
 
-    <p>Le premier exemple listera les attaques essayant d'exploiter la
-    <a href="http://online.securityfocus.com/bid/4876/info/">vulnérabilité
-    d'Apache Tomcat pouvant provoquer la divulgation d'informations par des
-    requêtes Source.JSP mal formées</a>, le second donnera la liste des dix
-    dernières interdictions client ; par exemple :</p>
-
-    <example>
-      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
-      by server configuration: /usr/local/apache/htdocs/.htpasswd
-    </example>
-
-    <p>Comme vous le voyez, les fichiers journaux ne consignent que ce qui
-    s'est déjà produit ; ainsi, si le client a pu accéder au fichier
-    <code>.htpasswd</code>, vous devriez avoir quelque chose du style :</p>
-
-    <example>
-      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
-    </example>
-
-    <p>dans votre <a href="../logs.html#accesslog">journal des accès</a> ; ce
-    qui signifie que vous avez probablement mis en commentaire ce qui suit dans
-    le fichier de configuration de votre serveur :</p>
+    <p>Comme vous pouvez le voir, les fichiers journaux ne mentionnent que ce
+    qu’il s’est déjà produit. Si le client avait pu accéder au fichier
+    <code>.env</code>, vous auriez vu une réponse <code>200</code> dans votre
+    fichier <a href="../logs.html#accesslog">Access Log</a> — ce qui aurait
+    signifié que la configuration de votre serveur devait être plus restrictive.
+    Assurez-vous d’interdire l’accès aux fichiers sensibles :</p>
 
     <highlight language="config">
-&lt;Files ".ht*"&gt;
+&lt;FilesMatch "^\.(?!well-known)"&gt;
     Require all denied
-&lt;/Files&gt;
+&lt;/FilesMatch&gt;
     </highlight>
 
   </section>
