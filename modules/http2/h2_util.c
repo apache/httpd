@@ -1708,6 +1708,8 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
              && !ap_cstr_casecmpn("cookie", (const char *)nv->name, nv->namelen)) {
         existing = apr_table_get(headers, "cookie");
         if (existing) {
+            if (!nv->valuelen)
+                return APR_SUCCESS;
             /* Cookie header come separately in HTTP/2, but need
              * to be merged by "; " (instead of default ", ")
              */
@@ -1719,6 +1721,8 @@ static apr_status_t req_add_header(apr_table_t *headers, apr_pool_t *pool,
             apr_table_setn(headers, "Cookie",
                            apr_psprintf(pool, "%s; %.*s", existing,
                                         (int)nv->valuelen, nv->value));
+            /* Treat the merge as an "add" to not escape LimitRequestFields */
+            *pwas_added = 1;
             return APR_SUCCESS;
         }
     }
