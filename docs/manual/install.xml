@@ -461,7 +461,9 @@ $ <em>PREFIX</em>/bin/apachectl -k start
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on
     particular platforms. This includes the various Linux distributions,
-    various third-party Windows packages, macOS, and many more.</p>
+    various 
+    <a href="https://httpd.apache.org/docs/trunk/en/platform/windows.html">Windows</a>
+    packages, macOS, and many more.</p>
 
     <p>Our software license not only permits, but encourages, this kind
     of redistribution. However, it does result in a situation where the
@@ -472,9 +474,8 @@ $ <em>PREFIX</em>/bin/apachectl -k start
 
     <p>A <a
     href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
-    of these third-party distributions</a> is maintained in the HTTP
-    Server wiki, and should reflect the current state of these
-    third-party distributions. However, you will need to familiarize
+    of these third-party distributions</a> is in the HTTP
+    Server wiki. However, you will need to familiarize
     yourself with your particular platform's package management and
     installation procedures.</p>
 
