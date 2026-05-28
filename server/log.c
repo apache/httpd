@@ -735,7 +735,7 @@ static int log_apr_status(const ap_errorlog_info *info, const char *arg,
         apr_strerror(status, buf + len, buflen - len);
     }
     else if (status < (APR_UTIL_START_STATUS + APR_UTIL_ERRSPACE_SIZE)) {
-        apu_strerror(status, buf + len, buflen - len);
+        apr_strerror(status, buf + len, buflen - len);
     }
     else {
         apr_strerror(status, buf + len, buflen - len);
