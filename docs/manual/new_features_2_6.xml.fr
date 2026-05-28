@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+<!-- English Revision: 1933854 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_6.xml.meta">
+
+<title>Présentation des nouvelles fonctionnalités de la version 2.6 du serveur
+HTTP Apache</title>
+
+<summary>
+  <p>Ce document décrit quelques changements majeurs entre les version 2.4 et
+  2.6 du serveur HTTP Apache. Pour les nouvelles fonctionnalités apparues dans
+  la version 2.4, voir le document <a href="new_features_2_4.html">nouvelles
+  fonctionnalités de la version 2.4</a>.</p>
+</summary>
+
+  <section id="core">
+    <title>Évolutions du cœur du serveur</title>
+    <dl>
+      <dt>Directive ContentDigest et en-tête Content-MD5</dt>
+      <dd>La directive <code>ContentDigest</code> et la prise en charge de
+      l’en-tête <code>Content-MD5</code> ont été supprimées du serveur, en
+      accord avec la suppression de cet en-tête de la <rfc
+      anchor="appendix-B">7231</rfc> (Hypertext Transfer Protocol (HTTP/1.1):
+      Semantics and Content).</dd>
+
+      <dt>Options de la directive <code>Listen</code></dt>
+      <dd>La directive <directive module="mpm_common">Listen</directive> prend
+      maintenant en charge un argument facultatif <code>options=...</code>,
+      permettant de spécifier des options de socket par écouteur.</dd>
+
+      <dt>Activation du socket <code>systemd</code></dt>
+      <dd><program>httpd</program> peut maintenant être configuré pour démarrer
+      via l’<a
+      href="https://www.freedesktop.org/software/systemd/man/systemd.socket.html">l’activation
+      du socket</a> <code>systemd</code>.</dd>
+
+<!--      <dt>Loadable errorlog providers</dt>
+      <dd>TODO</dd> -->
+
+      <dt>Nouvelle directive <code>DefaultStateDir</code></dt>
+      <dd>La nouvelle directive <directive
+      module="core">DefaultStateDir</directive> permet de spécifier un
+      répertoire pour stocker les états persistants.</dd>
+
+      <dt>Prise en charge de la Zone/portée dans les adresses IPv6</dt>
+      <dd>Si le serveur a été compilé avec APR version 1.7.0 ou supérieure, des
+      zones (portées) peuvent être spécifiées dans une adresse IPv6 link-local
+      utilisée avec la directive <directive
+      module="mpm_common">Listen</directive> ou <directive
+      module="core">VirtualHost</directive>.</dd>
+      
+    </dl>
+  </section>
+
+  <section id="newmods">
+    <title>Nouveaux modules</title>
+    <dl>
+<!--      <dt><module>mod_ssl_ct</module></dt>
+      <dd>Fill me in.</dd> -->
+
+      <dt><module>mod_journald</module>, <module>mod_syslog</module></dt>
+      <dd>Ces nouveaux modules permettent la prise en charge de la
+      journalisation vers syslog ou <code>journald</code>.</dd>
+
+</dl>
+  </section>
+
+  <section id="module">
+    <title>Évolutions des module</title>
+    <dl>
+      <dt><module>mod_ssl</module></dt>
+      <dd>Les évolutions de mod_ssl suivantes sont incluses :
+      <ul>
+        <li>La directive <directive module="mod_ssl">SSLRandomSeed</directive>
+	est maintenant obsolète et ignorée si le serveur a été compilé avec
+	OpenSSL version 1.1.1 ou supérieure.</li>
+        <li>La variable d’environnement <code>SSLKEYLOGFILE</code> peut
+	maintenant être définie pour enregistrer des informations de clé privée
+	pour déchiffrer hors-ligne des vidages du protocole SSL/TLS en utilisant
+	des outils tiers.</li>
+      </ul></dd>
+
+      <dt><module>mod_cgid</module></dt>
+      <dd>Si le serveur a été configuré avec
+      <code>--enable-cgid-fdpassing</code>, le démon CGI configure la gestion de
+      stderr de la même façon que mod_cgi.</dd>
+
+      
+    </dl>
+  </section>
+
+  <section id="programs">
+    <title>Évolutions des programmes</title>
+    <dl>
+        <dt><program>htpasswd</program></dt>
+        <dd>L’utilitaire <program>htpasswd</program> peut maintenant générer des
+	hachages <code>crypt()</code> SHA-256 ou SHA-512 s’ils sont pris en
+	charge par la bibliothèque C.</dd>
+    </dl>
+  </section>
+
+  <section id="documentation">
+    <title>Documentation</title>
+    <dl>
+        <dt>Complétez moi</dt>
+        <dd>La documentation de <module>mod_example</module> "Complétez moi".</dd>
+
+    </dl>
+  </section>
+
+  <section id="developer">
+    <title>Modifications pour le développeur de modules</title>
+    <dl>
+      <dt>Nouveau type <code>ap_method_mask_t</code></dt>
+
+      <dd>Le type <code>ap_method_mask_t</code> a été ajouté et est maintenant
+      utilisé pour le champ method_mask dans ap_method_list_t, AP_METHOD_BIT, le
+      champ allowed de request_rec, le champ limited de cmd_parms.</dd>
+
+      <dt>Modification du fichier <code>mod_ssl.h</code> de l’API de mod_ssl</dt>
+
+      <dd>L’API de la fonction optionnelle <code>ssl_var_lookup</code> prend
+      maintenant un argument <code>const char *</code><em>name</em> et renvoie
+      une chaîne <code>const char *</code>. L’argument pool doit maintenant être
+      non NULL.</dd>
+
+    </dl>
+    <p>La documentation du développeur contient une <a
+    href="developer/new_api_2_6.html">liste détaillée des changements de l’API</a>.
+    </p>
+  </section>
+
+</manualpage>

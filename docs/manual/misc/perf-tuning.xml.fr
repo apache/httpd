@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1769877:1933860 (outdated) -->
+<!-- English Revision: 1933860 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -751,7 +751,7 @@ DocumentRoot "/www/htdocs"
       <title>Fermeture en prenant son temps (Lingering close)</title>
 
       <p>Comme discuté dans <a
-      href="http://www.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+      href="https://datatracker.ietf.org/doc/html/draft-ietf-http-connection-00">
       draft-ietf-http-connection-00.txt</a> section 8, pour implémenter de
       manière <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
       les deux directions d'une communication indépendamment (rappelez-vous
@@ -820,7 +820,7 @@ DocumentRoot "/www/htdocs"
       pipeline de HTTP/1.1 commencent à être utilisées,
       <code>lingering_close</code> devient une absolue nécessité (et les
       <a
-      href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
+      href="https://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">
       connexions en pipeline sont plus rapides</a> ; vous avez donc tout
       intérêt à les supporter).</p>
 
