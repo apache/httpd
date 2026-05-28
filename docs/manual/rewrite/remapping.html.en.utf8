@@ -234,7 +234,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
     &lt;/Directory&gt;
 
     # Everything else goes to HTTPS
-    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$0"
+    RedirectMatch permanent "^/(?!\.well-known/acme-challenge/)" "https://www.example.com/$1"
 &lt;/VirtualHost&gt;</pre>
 
 
