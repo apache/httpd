@@ -144,32 +144,21 @@ apr_status_t h2_c1_io_init(h2_c1_io *io, h2_session *session)
 
     io->session = session;
     io->output = apr_brigade_create(c->pool, c->bucket_alloc);
-    io->is_tls = ap_ssl_conn_is_ssl(session->c1);
-    io->buffer_output  = io->is_tls;
     io->flush_threshold = 4 * (apr_size_t)h2_config_sgeti64(session->s, H2_CONF_STREAM_MAX_MEM);
 
-    if (io->buffer_output) {
-        /* This is what we start with, 
-         * see https://issues.apache.org/jira/browse/TS-2503 
-         */
-        io->warmup_size = h2_config_sgeti64(session->s, H2_CONF_TLS_WARMUP_SIZE);
-        io->cooldown_usecs = (h2_config_sgeti(session->s, H2_CONF_TLS_COOLDOWN_SECS)
-                              * APR_USEC_PER_SEC);
-        io->cooldown_usecs = 0;
-        io->write_size = (io->cooldown_usecs > 0?
-                          WRITE_SIZE_INITIAL : WRITE_SIZE_MAX);
-    }
-    else {
-        io->warmup_size = 0;
-        io->cooldown_usecs = 0;
-        io->write_size = 0;
-    }
+    /* This is what we start with,
+     * see https://issues.apache.org/jira/browse/TS-2503
+     */
+    io->warmup_size = h2_config_sgeti64(session->s, H2_CONF_TLS_WARMUP_SIZE);
+    io->cooldown_usecs = (h2_config_sgeti(session->s, H2_CONF_TLS_COOLDOWN_SECS)
+                          * APR_USEC_PER_SEC);
+    io->write_size = (io->cooldown_usecs > 0?
+                      WRITE_SIZE_INITIAL : WRITE_SIZE_MAX);
 
     if (APLOGctrace1(c)) {
         ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c,
-                      "h2_c1_io(%ld): init, buffering=%d, warmup_size=%ld, "
-                      "cd_secs=%f", c->id, io->buffer_output,
-                      (long)io->warmup_size,
+                      "h2_c1_io(%ld): init, warmup_size=%ld, "
+                      "cd_secs=%f", c->id, (long)io->warmup_size,
                       ((double)io->cooldown_usecs/APR_USEC_PER_SEC));
     }
 
@@ -366,25 +355,19 @@ apr_status_t h2_c1_io_add_data(h2_c1_io *io, const char *data, size_t length)
     ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, io->session->c1,
                   "h2_c1_io(%ld): adding %ld data bytes",
                   io->session->c1->id, (long)length);
-    if (io->buffer_output) {
-        while (length > 0) {
-            remain = assure_scratch_space(io);
-            if (remain >= length) {
-                memcpy(io->scratch + io->slen, data, length);
-                io->slen += length;
-                length = 0;
-            }
-            else {
-                memcpy(io->scratch + io->slen, data, remain);
-                io->slen += remain;
-                data += remain;
-                length -= remain;
-            }
+    while (length > 0) {
+        remain = assure_scratch_space(io);
+        if (remain >= length) {
+            memcpy(io->scratch + io->slen, data, length);
+            io->slen += length;
+            length = 0;
         }
-    }
-    else {
-        status = apr_brigade_write(io->output, NULL, NULL, data, length);
-        io->buffered_len += length;
+        else {
+            memcpy(io->scratch + io->slen, data, remain);
+            io->slen += remain;
+            data += remain;
+            length -= remain;
+        }
     }
     return status;
 }
@@ -403,7 +386,7 @@ apr_status_t h2_c1_io_append(h2_c1_io *io, apr_bucket_brigade *bb)
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(io->output, b);
         }
-        else if (io->buffer_output) {
+        else {
             apr_size_t remain = assure_scratch_space(io);
             if (b->length > remain) {
                 apr_bucket_split(b, remain);
@@ -422,13 +405,6 @@ apr_status_t h2_c1_io_append(h2_c1_io *io, apr_bucket_brigade *bb)
                 if (APR_SUCCESS != rv) goto cleanup;
                 continue;
             }
-        }
-        else {
-            /* no buffering, forward buckets setaside on flush */
-            apr_bucket_setaside(b, io->session->c1->pool);
-            APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(io->output, b);
-            io->buffered_len += b->length;
         }
     }
 cleanup:
