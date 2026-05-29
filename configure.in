@@ -148,13 +148,22 @@ AC_MSG_NOTICE([])
 if test "x${apr_major_version}" = "x2"; then
   apu_found=obsolete
 elif test "x$with_included_apr" = "xyes"; then
+  dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
+  dnl isn't supported.
+
+  if test "x${apr_major_version}" = "x1"; then
+   AC_MSG_ERROR([HTTPD Trunk version, APR 1.x not supported.  Please refer to the documentation on APR in the httpd INSTALL file.])
+  fi
   apu_found=reconfig
   if test ! -d srclib/apr-util && test ! -d $srcdir/srclib/apr-util; then
     AC_MSG_ERROR([Bundled APR-Util requested but not found at ./srclib/.  Please refer to the documentation on APR in the httpd INSTALL file.])
   fi
 else 
    dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
-   dnl isn't supported. 
+   dnl isn't supported.
+   if test "x${apr_major_version}" = "x1"; then
+    AC_MSG_ERROR([HTTPD Trunk version, APR 1.x not supported.  Please refer to the documentation on APR in the httpd INSTALL file.])
+   fi
    ifdef([APR_FIND_APU], [
      APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 
                   1, ${apr_major_version})
