@@ -1,9 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673945:1933743 (outdated) -->
+<!-- English Revision: 1933743 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2015041801 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -71,6 +70,11 @@ l'hébergement virtuel de masse</a></seealso>
     d'octets séparés par des points. L'insertion est contrôlée par des
     spécificateurs inspirés de <code>printf</code> et possèdant de
     nombreux formats :</p>
+
+    <note><title>Note</title>
+    <p>Le répertoire interpolé doit être un chemin absolu. La valeur spéciale
+    <code>none</code> désactive cette directive.</p>
+    </note>
 
 <table>
 <columnspec><column width=".2"/><column width=".6"/></columnspec>

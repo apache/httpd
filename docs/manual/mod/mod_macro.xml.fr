@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1850539:1933496 (outdated) -->
+<!-- English Revision: 1933496 -->
 <!-- French translation: Fabien Coelho -->
 <!-- Updated by Lucien Gentis -->
 
@@ -118,11 +118,14 @@ l'évaluation des expressions. Si cela se produit, c'est le nom de
 paramètre le plus long possible qui sera utilisé.</p>
 
 <p>Si vous désirez insérer une valeur dans une chaîne, il est conseillé
-de l'entourer d'accolades afin d'éviter toute confusion :</p>
+de l'entourer de parenthèses afin d'éviter toute confusion. Plutôt que
+d’utiliser la syntaxe <code>${...}</code>, il est préférable d’utiliser la
+syntaxe <code>$(...)</code>, car la première entre en conflit avec la syntaxe
+des variables de <directive module="core">Define</directive> :</p>
 
 <highlight language="config">
-&lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot "/var/www/${docroot}/htdocs"
+&lt;Macro DocRoot $(docroot)&gt;
+    DocumentRoot "/var/www/$(docroot)/htdocs"
 &lt;/Macro&gt;
 </highlight>
 
