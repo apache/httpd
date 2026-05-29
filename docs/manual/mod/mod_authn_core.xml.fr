@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1906507:1933752 (outdated) -->
+<!-- English Revision: 1933752 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -153,9 +153,13 @@ l'authentification HTTP</description>
      AuthName "Top Secret"
    </highlight>
 
-    <p>La chaîne fournie comme argument à <code>AuthName</code>
-    apparaîtra dans la boîte de dialogue d'authentification pour la
-    plupart des navigateurs.</p>
+    <p>La chaîne fournie comme argument à <code>AuthName</code> était
+    historiquement affichée dans la boîte de dialogue de mot de passe fournie
+    par les navigateurs. La plupart des navigateurs modernes n’affiche plus la
+    chaîne de realm, car elle pourrait être utilisée pour du phishing. La
+    directive est toujours nécessaire pour que l’authentification HTTP
+    fonctionne et la valeur du realm est toujours utilisée pour définir la
+    portée des informations d'identification. </p> 
 
      <p>A partir de la version 2.4.55 du serveur HTTP Apache, il est possible de
     définir cette directive en utilisant la <a href="../expr.html">syntaxe des
@@ -203,7 +207,7 @@ l'authentification HTTP</description>
     <p>Le type d'authentification <code>None</code> désactive
     l'authentification. Lorsqu'une authentification est définie, elle
     est en général héritée par chacune des <a
-    href="../sections.html#mergin">sections de configuration</a> qui
+    href="../sections.html#merging">sections de configuration</a> qui
     suivent, à moins qu'un autre type d'authentification ne soit
     spécifié. Si l'on ne souhaite pas mettre en oeuvre
     d'authentification pour une sous-section d'une section authentifiée,

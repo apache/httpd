@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision: 1933740 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1888003:1933740 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-     http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,7 +25,7 @@
 <modulesynopsis metafile="mod_authz_core.xml.meta">
 
 <name>mod_authz_core</name>
-<description>Autorisation basique</description>
+<description>Socle d'autorisation</description>
 <status>Base</status>
 <sourcefile>mod_authz_core.c</sourcefile>
 <identifier>authz_core_module</identifier>
@@ -33,7 +33,7 @@
 d'Apache HTTPD</compatibility>
 
 <summary>
-    <p>Ce module fournit des fonctionnalités d'autorisation basiques
+    <p>Ce module fournit un socle de fonctionnalités d'autorisation
     permettant d'accorder ou refuser l'accès à certaines zones du site
     web aux utilisateurs authentifiés. <module>mod_authz_core</module>
     donne la possibilité d'enregistrer divers fournisseurs
@@ -44,8 +44,6 @@ d'Apache HTTPD</compatibility>
     processus d'autorisation.</p>
 </summary>
 
-
-
 <section id="logic"><title>Conteneurs d'autorisation</title>
 
     <p>Les directives de conteneur d'autorisation <directive
@@ -54,14 +52,14 @@ d'Apache HTTPD</compatibility>
     type="section">RequireAny</directive> et <directive
     module="mod_authz_core" type="section">RequireNone</directive>
     peuvent être combinées entre elles et avec la directive <directive
-    module="mod_authz_core">Require</directive> pour confectionner une
+    module="mod_authz_core">Require</directive> pour construire une
     logique d'autorisation complexe.</p>
 
     <p>L'exemple ci-dessous illustre la logique d'autorisation suivante.
     Pour pouvoir accéder à la ressource, l'utilisateur doit être
     l'utilisateur <code>superadmin</code>, ou appartenir aux deux
     groupes LDAP <code>admins</code> et <code>Administrateurs</code> et
-    soit appartenir au groupe <code>ventes</code> ou avoir
+    soit appartenir au groupe <code>ventes</code>, soit avoir
     <code>ventes</code> comme valeur de l'attribut LDAP
     <code>dept</code>. De plus, pour pouvoir accéder à la ressource,
     l'utilisateur ne doit appartenir ni au groupe <code>temps</code>, ni
@@ -74,20 +72,70 @@ d'Apache HTTPD</compatibility>
             Require user superadmin
             &lt;RequireAll&gt;
             Require group admins
-            Require ldap-group "cn=Administrators,o=Airius"
+            Require ldap-group "cn=Administrateurs,o=Airius"
                 &lt;RequireAny&gt;
-                Require group sales
-                Require ldap-attribute dept="sales"
+                Require group ventes
+                Require ldap-attribute dept="ventes"
                 &lt;/RequireAny&gt;
             &lt;/RequireAll&gt;
         &lt;/RequireAny&gt;
         &lt;RequireNone&gt;
             Require group temps
-            Require ldap-group "cn=Temporary Employees,o=Airius"
+            Require ldap-group "cn=Employés temporaires,o=Airius"
         &lt;/RequireNone&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
     </highlight>
+</section>
+
+<section id="authzresults"><title>États des résultats d’autorisation</title>
+
+    <p>Chaque fournisseur d’autorisation renvoie un résultat parmi trois
+    possibles lorsqu’il évalue une directive <directive
+    module="mod_authz_core">Require</directive> :</p>
+
+    <dl>
+      <dt><strong>Granted</strong></dt>
+      <dd>Le fournisseur a vérifié que la requête satisfait à ses conditions.</dd>
+
+ <dt><strong>Denied</strong></dt>
+      <dd>Le fournisseur a déterminé que la requête ne satisfait pas à ses
+      conditions.</dd>
+
+      <dt><strong>Neutral</strong></dt>
+      <dd>Le fournisseur n’a pas d’opinion à propos de la requête. Cela peut se
+      produire lorsqu’un fournisseur n’est pas pertinent pour la requête (par
+      exemple, une vérification d’appartenance à un groupe alors que la requête
+      n’implique pas d’autorisation basée sur le groupe).</dd>
+    </dl>
+
+    <p>Les directives de conteneur d’autorisation interprètent ces trois
+    résultats comme suit :</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".25"/><column width=".25"/><column width=".25"/></columnspec>
+    <tr><th>Conteneur</th><th>Autorisé si...</th><th>Refusé si...</th><th>Neutre
+    traité comme...</th></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAny</directive></td>
+        <td>au moins un fournisseur autorise</td>
+        <td>tous les fournisseurs refusent</td>
+        <td>refus (ne satisfait pas aux conditions)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireAll</directive></td>
+        <td>aucun fournisseur ne refuse (et au moins un autorise)</td>
+        <td>tout fournisseur refuse</td>
+        <td>autorise (ne bloque pas la vérification)</td></tr>
+    <tr><td><directive module="mod_authz_core" type="section">RequireNone</directive></td>
+        <td>aucun fournisseur n’autorise</td>
+        <td>tout fournisseur autorise</td>
+        <td>autorise (ne bloque pas la vérification)</td></tr>
+    </table>
+
+    <p>Quand une directive <directive>Require</directive> est inversée avec
+    <code>not</code> (par exemple, <code>Require not group temps</code>), un
+    résultat autorisé est inversé en refusé et vice-versa, mais un résultat
+    neutre reste neutre. Une directive inversée ne peut donc jamais autoriser
+    une requête indépendamment.</p>
+
 </section>
 
 <section id="requiredirectives"><title>Les directives Require</title>
@@ -185,7 +233,7 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
   <section id="reqexpr"><title>Require expr</title>
 
   <p>Le fournisseur <code>expr</code> permet d'accorder l'autorisation
-  d'accès de base en fonction d'expressions arbitraires.</p>
+  d'accès en fonction d'expressions arbitraires.</p>
 
     <highlight language="config">
          Require expr "%{TIME_HOUR} -ge 9 &amp;&amp; %{TIME_HOUR} -le 17"
@@ -199,12 +247,12 @@ SetEnvIf User-Agent "^KnockKnock/2\.0" let_me_in
     </highlight>
 
     <highlight language="config">
-        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }" 
+        Require expr "!(%{QUERY_STRING} =~ /secret/) &amp;&amp; %{REQUEST_URI} in { '/example.cgi', '/other.cgi' }"
     </highlight>
 
     <p>La syntaxe de l'expression est décrite dans la documentation de <a
     href="../expr.html">ap_expr</a>. Avant la version 2.4.16, les doubles-quotes
-    étaient prohibées</p>
+    étaient prohibées.</p>
 
     <p>Normalement, l'expression est évaluée avant l'authentification.
     Cependant, si l'expression renvoie false et se réfère à la variable
@@ -225,7 +273,7 @@ d'autorisation</title>
     la même manière qu'on le ferait pour des fournisseurs d'autorisation
     de base. En plus de la possibilité de créer et d'aliaser un
     fournisseur étendu, le même fournisseur d'autorisation étendu peut
-    être référencé par plusieurs localisations.
+    être référencé par diverses localisations.
     </p>
 
     <section id="example"><title>Exemple</title>
@@ -240,25 +288,23 @@ d'autorisation</title>
 &lt;AuthzProviderAlias ldap-group ldap-group-alias1 "cn=my-group,o=ctx"&gt;
     AuthLDAPBindDN "cn=youruser,o=ctx"
     AuthLDAPBindPassword yourpassword
-    AuthLDAPURL "ldap://ldap.host/o=ctx"
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
 &lt;/AuthzProviderAlias&gt;
 
 &lt;AuthzProviderAlias ldap-group ldap-group-alias2 "cn=my-other-group,o=dev"&gt;
     AuthLDAPBindDN "cn=yourotheruser,o=dev"
     AuthLDAPBindPassword yourotherpassword
-    AuthLDAPURL "ldap://other.ldap.host/o=dev?cn"
+    AuthLDAPUrl "ldap://other.ldap.host/o=dev?cn"
 &lt;/AuthzProviderAlias&gt;
 
 Alias "/secure" "/webpages/secure"
 &lt;Directory "/webpages/secure"&gt;
-    Require all granted
-    
-    AuthBasicProvider file
-    
     AuthType Basic
-    AuthName LDAP_Protected_Place
-    
-    #implied OR operation
+    AuthName "LDAP Protected"
+    AuthBasicProvider ldap
+    AuthLDAPUrl "ldap://ldap.host/o=ctx"
+
+    #Opération logique implicite : OU inclusif
     Require ldap-group-alias1
     Require ldap-group-alias2
 &lt;/Directory&gt;
@@ -266,6 +312,7 @@ Alias "/secure" "/webpages/secure"
     </section>
 
 </section>
+
 
 <directivesynopsis>
 <name>Require</name>
@@ -336,7 +383,7 @@ d'autorisation.</description>
       dynamic.example.org aura l'autorisation d'accès.
       </dd>
 
-    </dl>    
+    </dl>      
 
     <p>D'autres modules d'autorisation comme
     <module>mod_authnz_ldap</module>, <module>mod_authz_dbm</module>,
@@ -379,7 +426,7 @@ Require group admin
     type="section">RequireNone</directive>, si la directive
     <directive>Require</directive> est inversée, elle ne peut qu'échouer
     ou produire un résultat neutre ; elle ne peut donc alors pas
-    autoriser une requête de manière indépendante.</p>
+    en soi autoriser une requête.</p>
 
     <p>Dans l'exemple suivant, tous les utilisateurs appartenant aux
     groupes <code>alpha</code> et <code>beta</code> ont l'autorisation
@@ -426,6 +473,7 @@ Require group admin
 
 <seealso><a href="../howto/access.html">Tutoriel du contrôle d'accès</a></seealso>
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
@@ -459,6 +507,7 @@ positif.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 
@@ -503,6 +552,7 @@ retourne elle-même un résultat positif.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 
@@ -531,8 +581,8 @@ pas.</description>
     type="section">RequireNone</directive> échouera. Dans tous les
     autres cas, cette dernière retournera un résultat neutre. Ainsi,
     comme pour la directive d'autorisation inversée <code>Require
-    not</code>, elle ne peut jamais autoriser une requête de manière
-    indépendante car elle ne pourra jamais retourner un résultat
+    not</code>, elle ne peut jamais en soi autoriser une requête
+    car elle ne pourra jamais retourner un résultat
     positif. Par contre, on peut l'utiliser pour restreindre l'ensemble
     des utilisateurs autorisés à accéder à une ressource.</p>
 
@@ -546,6 +596,7 @@ pas.</description>
 </usage>
 
 <seealso><a href="#logic">Conteneurs d'autorisation</a></seealso>
+<seealso><a href="#authzresults">États des résultats d’autorisation</a></seealso>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 
@@ -581,7 +632,7 @@ configuration précédentes.</description>
     se combine avec celle de la section de configuration qui la précède
     (selon l'ordre général des sections de configuration), et qui
     contient aussi une logique d'autorisation, comme si les deux
-    sections étaient concaténées respectivement dans une directive
+    sections étaient concaténées, respectivement, dans une directive
     <directive module="mod_authz_core"
     type="section">RequireAll</directive> ou <directive
     module="mod_authz_core" type="section">RequireAny</directive>.</p>
@@ -630,8 +681,7 @@ configuration précédentes.</description>
 <description>Regroupe des directives représentant une extension d'un
 fournisseur d'autorisation de base qui pourra être référencée à l'aide
 de l'alias spécifié</description>
-<syntax>&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Paramètres-Require</var>&gt;
+<syntax>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </syntax>
 <contextlist><context>server config</context>
@@ -662,6 +712,7 @@ Paramètres-Require</var>&gt;
     &lt;/RequireAll&gt;
 &lt;/Directory&gt;
     </highlight>
+
 </usage>
 </directivesynopsis>
 

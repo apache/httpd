@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 772682:1933851 (outdated) -->
+<!-- English Revision: 1933851 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,7 +55,7 @@ comme mod_include.</description>
 
     <p>Lorsque l'argument de cette directive a une valeur supérieure à
     zéro, les gestionnaires de requête qui suppriment habituellement les
-    corps de requête vont alors conserver ces corps de requête, à
+    corps de requête vont alors définir ces corps de requête, à
     concurrence de la taille maximale spécifiée, pour être
     éventuellement utilisés par des filtres. Dans le cas du filtre
     mod_include, une tentative de requête <code>POST</code> pour un
@@ -71,15 +71,15 @@ comme mod_include.</description>
     ou d'URLs issues d'un mandataire inverse dans l'espace d'URL d'un
     autre serveur en utilisant <module>mod_proxy</module>.</p>
 
-    <p><strong>Note :</strong> Chaque requête dont le corps est ainsi
-    conservé doit être enregistrée temporairement en mémoire vive
+    <note>Chaque requête dont le corps est ainsi
+    défini doit être enregistrée temporairement en mémoire vive
     jusqu'à la fin du traitement de la requête. Il faut donc s'assurer
     que la mémoire RAM du serveur est suffisante pour pouvoir supporter
     la charge induite. L'utilisation de cette directive doit être
     limitée à certaines portions de votre espace d'URL bien précises qui
     le nécessitent, et en spécifiant comme taille maximale une valeur la
     plus petite possible, mais tout de même suffisante pour un corps de
-    requête.</p>
+    requête.</note>
 
     <p>Si la taille de la requête envoyée par le client dépasse la taille
     maximale autorisée par cette directive, le serveur renverra l'erreur
