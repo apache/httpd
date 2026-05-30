@@ -1,80 +1,78 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="de"><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>RewriteRule-Flags - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>RewriteRule-Flags</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/rewrite/flags.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/flags.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
-            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
-            die neuesten &#196;nderungen.</div>
+<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
+            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
+            die neuesten &Auml;nderungen.</div>
 
-<p>Dieses Dokument behandelt die Flags, die f&#252;r die Direktive
-<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> verf&#252;gbar sind,
-und bietet detaillierte Erkl&#228;rungen und Beispiele.</p>
+<p>Dieses Dokument behandelt die Flags, die f&uuml;r die Direktive
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> verf&uuml;gbar sind,
+und bietet detaillierte Erkl&auml;rungen und Beispiele.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Einf&#252;hrung</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (R&#252;ckreferenzen maskieren)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bnp">BNP|backrefnoplus (Leerzeichen nicht zu + maskieren)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bctls">BCTLS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_bne">BNE</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpath</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_end">END</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_g">G|gone</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_h">H|handler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_l">L|last</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_n">N|next</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_nc">NC|nocase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_ne">NE|noescape</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_ns">NS|nosubreq</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_p">P|proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_pt">PT|passthrough</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsa">QSA|qsappend</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsd">QSD|qsdiscard</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsl">QSL|qslast</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_r">R|redirect</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_s">S|skip</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_t">T|type</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flag_unc">UNC</a></li>
-</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&#252;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Einf&uuml;hrung</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_b">B (R&uuml;ckreferenzen maskieren)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bnp">BNP|backrefnoplus (Leerzeichen nicht zu + maskieren)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bctls">BCTLS</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_bne">BNE</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_c">C|chain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_co">CO|cookie</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_dpi">DPI|discardpath</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_e">E|env</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_end">END</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_f">F|forbidden</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_g">G|gone</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_h">H|handler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_l">L|last</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_n">N|next</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_nc">NC|nocase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_ne">NE|noescape</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_ns">NS|nosubreq</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_p">P|proxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_pt">PT|passthrough</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsa">QSA|qsappend</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsd">QSD|qsdiscard</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_qsl">QSL|qslast</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_r">R|redirect</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_s">S|skip</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_t">T|type</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unsafe_allow_3f">UnsafeAllow3F</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_unc">UNC</a></li>
+</ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&uuml;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einf&#252;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2><a name="introduction" id="introduction">Einf&uuml;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Das Verhalten einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 kann durch ein oder mehrere Flags modifiziert werden. Flags werden in
 eckigen Klammern am Ende der Regel angegeben, und mehrere Flags werden
@@ -84,30 +82,30 @@ durch Kommas getrennt.</p>
 
 <p>Jedes Flag hat (mit wenigen Ausnahmen) eine Kurzform, wie
 <code>CO</code>, sowie eine Langform, wie <code>cookie</code>.
-Obwohl es am h&#228;ufigsten ist, die Kurzform zu verwenden, wird empfohlen,
-sich mit der Langform vertraut zu machen, damit Sie sich merken k&#246;nnen,
+Obwohl es am h&auml;ufigsten ist, die Kurzform zu verwenden, wird empfohlen,
+sich mit der Langform vertraut zu machen, damit Sie sich merken k&ouml;nnen,
 was jedes Flag bewirken soll. Einige Flags akzeptieren ein oder mehrere
-Argumente. Flags unterscheiden nicht zwischen Gro&#223;- und Kleinschreibung.</p>
+Argumente. Flags unterscheiden nicht zwischen Gro&szlig;- und Kleinschreibung.</p>
 
-<p>Flags, die mit der Anfrage verkn&#252;pfte Metadaten &#228;ndern (T=, H=, E=),
+<p>Flags, die mit der Anfrage verkn&uuml;pfte Metadaten &auml;ndern (T=, H=, E=),
 haben im Verzeichniskontext und htaccess-Kontext keine Wirkung, wenn eine
-Ersetzung (au&#223;er '-') w&#228;hrend derselben Runde der Umschreibungsverarbeitung
-durchgef&#252;hrt wird.</p>
+Ersetzung (au&szlig;er '-') w&auml;hrend derselben Runde der Umschreibungsverarbeitung
+durchgef&uuml;hrt wird.</p>
 
-<p>Hier werden alle verf&#252;gbaren Flags vorgestellt, zusammen mit einem
-Beispiel, wie Sie diese verwenden k&#246;nnten.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<p>Hier werden alle verf&uuml;gbaren Flags vorgestellt, zusammen mit einem
+Beispiel, wie Sie diese verwenden k&ouml;nnten.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (R&#252;ckreferenzen maskieren)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2><a name="flag_b" id="flag_b">B (R&uuml;ckreferenzen maskieren)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>Das [B]-Flag weist <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> an, nicht-alphanumerische
 Zeichen vor der Anwendung der Transformation zu maskieren.</p>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> muss URLs demaskieren, bevor sie zugeordnet werden,
-sodass R&#252;ckreferenzen zum Zeitpunkt ihrer Anwendung demaskiert sind.
-Mit dem B-Flag werden nicht-alphanumerische Zeichen in R&#252;ckreferenzen
+sodass R&uuml;ckreferenzen zum Zeitpunkt ihrer Anwendung demaskiert sind.
+Mit dem B-Flag werden nicht-alphanumerische Zeichen in R&uuml;ckreferenzen
 maskiert. Betrachten Sie beispielsweise die folgende Regel:</p>
 
-<p>F&#252;r eine &#228;hnliche Maskierung von Server-Variablen siehe die
+<p>F&uuml;r eine &auml;hnliche Maskierung von Server-Variablen siehe die
     "escape"-<a href="#mapfunc">Zuordnungsfunktion</a></p>
 
 <pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1"</pre>
@@ -116,58 +114,58 @@ maskiert. Betrachten Sie beispielsweise die folgende Regel:</p>
 <p>Bei einem Suchbegriff von 'x &amp; y/z' kodiert ein Browser diesen als
 'x%20%26%20y%2Fz', sodass die Anfrage 'search/x%20%26%20y%2Fz' lautet. Ohne das B-Flag
 wird diese Rewrite-Regel auf 'search.php?term=x &amp; y/z' abgebildet, was
-keine g&#252;ltige URL ist und daher als
-<code>search.php?term=x%20&amp;y%2Fz=</code> kodiert w&#252;rde, was nicht beabsichtigt war.</p>
+keine g&uuml;ltige URL ist und daher als
+<code>search.php?term=x%20&amp;y%2Fz=</code> kodiert w&uuml;rde, was nicht beabsichtigt war.</p>
 
 <p>Mit gesetztem B-Flag bei derselben Regel werden die Parameter erneut
-kodiert, bevor sie an die Ausgabe-URL &#252;bergeben werden, was zu einer korrekten
-Zuordnung zu <code>/search.php?term=x%20%26%20y%2Fz</code> f&#252;hrt.</p>
+kodiert, bevor sie an die Ausgabe-URL &uuml;bergeben werden, was zu einer korrekten
+Zuordnung zu <code>/search.php?term=x%20%26%20y%2Fz</code> f&uuml;hrt.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^search/(.*)$" "/search.php?term=$1" [B,PT]</pre>
 
 
-<p>Beachten Sie, dass Sie m&#246;glicherweise auch <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> auf <code>On</code> setzen m&#252;ssen,
+<p>Beachten Sie, dass Sie m&ouml;glicherweise auch <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> auf <code>On</code> setzen m&uuml;ssen,
 damit dieses spezielle Beispiel funktioniert, da httpd keine kodierten
-Schr&#228;gstriche in URLs zul&#228;sst und bei deren Auftreten einen 404-Fehler
-zur&#252;ckgibt.</p>
+Schr&auml;gstriche in URLs zul&auml;sst und bei deren Auftreten einen 404-Fehler
+zur&uuml;ckgibt.</p>
 
 <p>Diese Maskierung ist besonders notwendig in einer Proxy-Situation,
-wenn das Backend bei einer nicht-maskierten URL Probleme haben k&#246;nnte.</p>
+wenn das Backend bei einer nicht-maskierten URL Probleme haben k&ouml;nnte.</p>
 
-<p>Eine Alternative zu diesem Flag ist die Verwendung einer <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, die gegen %{THE_REQUEST} pr&#252;ft, welche Strings
+<p>Eine Alternative zu diesem Flag ist die Verwendung einer <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, die gegen %{THE_REQUEST} pr&uuml;ft, welche Strings
 in kodierter Form erfasst.</p>
 
-<p>Ab Version 2.4.26 k&#246;nnen Sie die Maskierung auf bestimmte Zeichen
-in R&#252;ckreferenzen beschr&#228;nken, indem Sie diese auflisten: <code>[B=#?;]</code>.
+<p>Ab Version 2.4.26 k&ouml;nnen Sie die Maskierung auf bestimmte Zeichen
+in R&uuml;ckreferenzen beschr&auml;nken, indem Sie diese auflisten: <code>[B=#?;]</code>.
 Hinweis: Das Leerzeichen kann in der Liste der zu maskierenden Zeichen
-verwendet werden, aber Sie m&#252;ssen das gesamte dritte Argument der
-<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in Anf&#252;hrungszeichen
+verwendet werden, aber Sie m&uuml;ssen das gesamte dritte Argument der
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in Anf&uuml;hrungszeichen
 setzen und das Leerzeichen darf nicht das letzte Zeichen in der Liste sein.</p>
 
-<pre class="prettyprint lang-config"># Leerzeichen und Fragezeichen maskieren. Die Anf&#252;hrungszeichen um das letzte Argument
+<pre class="prettyprint lang-config"># Leerzeichen und Fragezeichen maskieren. Die Anf&uuml;hrungszeichen um das letzte Argument
 # sind erforderlich, wenn ein Leerzeichen enthalten ist.
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 
-<p>Um die auf diese Weise maskierten Zeichen einzuschr&#228;nken, siehe <a href="#flag_bne">#flag_bne</a>
+<p>Um die auf diese Weise maskierten Zeichen einzuschr&auml;nken, siehe <a href="#flag_bne">#flag_bne</a>
         und <a href="#flag_bctls">#flag_bctls</a></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (Leerzeichen nicht zu + maskieren)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>Das [BNP]-Flag weist <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> an, das Leerzeichen
-in einer R&#252;ckreferenz zu %20 statt zu '+' zu maskieren. N&#252;tzlich, wenn die
-R&#252;ckreferenz im Pfadteil statt im Query-String verwendet wird.</p>
+in einer R&uuml;ckreferenz zu %20 statt zu '+' zu maskieren. N&uuml;tzlich, wenn die
+R&uuml;ckreferenz im Pfadteil statt im Query-String verwendet wird.</p>
 
-<pre class="prettyprint lang-config"># Leerzeichen im Pfad zu %20 maskieren statt zu +, wie es bei Formular&#252;bermittlungen
-# &#252;ber den Query-String verwendet wird
+<pre class="prettyprint lang-config"># Leerzeichen im Pfad zu %20 maskieren statt zu +, wie es bei Formular&uuml;bermittlungen
+# &uuml;ber den Query-String verwendet wird
 RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 
 
-<p>Dieses Flag ist ab Version 2.4.26 verf&#252;gbar.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<p>Dieses Flag ist ab Version 2.4.26 verf&uuml;gbar.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
-<p>Das [BCTLS]-Flag &#228;hnelt dem [B]-Flag, maskiert aber nur
+<p>Das [BCTLS]-Flag &auml;hnelt dem [B]-Flag, maskiert aber nur
 Steuerzeichen und das Leerzeichen. Dies ist dieselbe Menge von
 Zeichen, die abgelehnt werden, wenn sie unkodiert in den Query-String
 kopiert werden.</p>
@@ -176,9 +174,9 @@ kopiert werden.</p>
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 
-<p>Dieses Flag ist ab Version 2.5.1 verf&#252;gbar.</p>
+<p>Dieses Flag ist ab Version 2.5.1 verf&uuml;gbar.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>Die Liste der Zeichen in [BNE=...] wird als Ausnahmen von den
@@ -189,33 +187,33 @@ werden nicht maskiert.</p>
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 
-<p>Dieses Flag ist ab Version 2.5.1 verf&#252;gbar.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<p>Dieses Flag ist ab Version 2.5.1 verf&uuml;gbar.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
-<p>Das [C]- oder [chain]-Flag zeigt an, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> mit der n&#228;chsten Regel
-verkettet ist. Wenn die Regel &#252;bereinstimmt, wird sie wie gewohnt
-verarbeitet und die Kontrolle geht an die n&#228;chste Regel &#252;ber. Wenn sie
-jedoch nicht &#252;bereinstimmt, werden die n&#228;chste Regel und alle weiteren
-verketteten Regeln &#252;bersprungen.</p>
+<p>Das [C]- oder [chain]-Flag zeigt an, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> mit der n&auml;chsten Regel
+verkettet ist. Wenn die Regel &uuml;bereinstimmt, wird sie wie gewohnt
+verarbeitet und die Kontrolle geht an die n&auml;chste Regel &uuml;ber. Wenn sie
+jedoch nicht &uuml;bereinstimmt, werden die n&auml;chste Regel und alle weiteren
+verketteten Regeln &uuml;bersprungen.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
-<p>Das [CO]- oder [cookie]-Flag erm&#246;glicht es Ihnen, ein Cookie zu setzen,
+<p>Das [CO]- oder [cookie]-Flag erm&ouml;glicht es Ihnen, ein Cookie zu setzen,
 wenn eine bestimmte <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-&#252;bereinstimmt. Das Argument besteht aus drei erforderlichen und f&#252;nf
+&uuml;bereinstimmt. Das Argument besteht aus drei erforderlichen und f&uuml;nf
 optionalen Feldern.</p>
 
-<p>Die vollst&#228;ndige Syntax f&#252;r das Flag einschlie&#223;lich aller Attribute
+<p>Die vollst&auml;ndige Syntax f&uuml;r das Flag einschlie&szlig;lich aller Attribute
 lautet wie folgt:</p>
 
 <div class="example"><p><code>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </code></p></div>
 
-<p>Wenn ein literales ':'-Zeichen in einem der Cookie-Felder ben&#246;tigt wird,
-steht eine alternative Syntax zur Verf&#252;gung. Um die alternative Syntax zu
+<p>Wenn ein literales ':'-Zeichen in einem der Cookie-Felder ben&ouml;tigt wird,
+steht eine alternative Syntax zur Verf&uuml;gung. Um die alternative Syntax zu
 verwenden, sollte der Cookie-"Name" mit einem ';'-Zeichen eingeleitet werden,
 und die Feldtrenner sollten als ';' angegeben werden.</p>
 
@@ -223,51 +221,51 @@ und die Feldtrenner sollten als ';' angegeben werden.</p>
 [CO=;NAME;VALUE:MOREVALUE;DOMAIN;lifetime;path;secure;httponly;samesite]
 </code></p></div>
 
-<p>Sie m&#252;ssen einen Namen, einen Wert und eine Domain angeben, damit das
+<p>Sie m&uuml;ssen einen Namen, einen Wert und eine Domain angeben, damit das
 Cookie gesetzt wird.</p>
 
 <dl>
 <dt>Domain</dt>
-<dd>Die Domain, f&#252;r die das Cookie g&#252;ltig sein soll. Dies kann ein
+<dd>Die Domain, f&uuml;r die das Cookie g&uuml;ltig sein soll. Dies kann ein
 Hostname sein, wie <code>www.example.com</code>, oder eine Domain,
 wie <code>.example.com</code>. Sie muss aus mindestens zwei durch einen
-Punkt getrennten Teilen bestehen. Das hei&#223;t, sie kann nicht einfach nur
+Punkt getrennten Teilen bestehen. Das hei&szlig;t, sie kann nicht einfach nur
 <code>.com</code> oder <code>.net</code> sein. Cookies dieser Art werden
 durch das Cookie-Sicherheitsmodell verboten.</dd>
 </dl>
 
-<p>Sie k&#246;nnen optional auch die folgenden Werte setzen:</p>
+<p>Sie k&ouml;nnen optional auch die folgenden Werte setzen:</p>
 
 <dl>
 <dt>Lebensdauer</dt>
-<dd>Die Zeit, f&#252;r die das Cookie bestehen bleibt, in Minuten.</dd>
-<dd>Ein Wert von 0 bedeutet, dass das Cookie nur f&#252;r die aktuelle
+<dd>Die Zeit, f&uuml;r die das Cookie bestehen bleibt, in Minuten.</dd>
+<dd>Ein Wert von 0 bedeutet, dass das Cookie nur f&uuml;r die aktuelle
 Browser-Sitzung bestehen bleibt. Dies ist der Standardwert, wenn keiner
 angegeben wird.</dd>
-<dd>Ein negativer Wert bewirkt, dass das Cookie im Browser gel&#246;scht wird.</dd>
+<dd>Ein negativer Wert bewirkt, dass das Cookie im Browser gel&ouml;scht wird.</dd>
 
 <dt>Pfad</dt>
-<dd>Der Pfad auf der aktuellen Website, f&#252;r den das Cookie g&#252;ltig ist,
+<dd>Der Pfad auf der aktuellen Website, f&uuml;r den das Cookie g&uuml;ltig ist,
 wie <code>/customers/</code> oder <code>/files/download/</code>.</dd>
-<dd>Standardm&#228;&#223;ig ist dies auf <code>/</code> gesetzt - also die gesamte
+<dd>Standardm&auml;&szlig;ig ist dies auf <code>/</code> gesetzt - also die gesamte
 Website.</dd>
 
 <dt>Secure</dt>
 <dd>Wenn auf <code>secure</code>, <code>true</code> oder <code>1</code>
-gesetzt, wird das Cookie nur &#252;ber sichere (https-)Verbindungen
-&#252;bertragen.</dd>
+gesetzt, wird das Cookie nur &uuml;ber sichere (https-)Verbindungen
+&uuml;bertragen.</dd>
 
 <dt>httponly</dt>
 <dd>Wenn auf <code>HttpOnly</code>, <code>true</code> oder
 <code>1</code> gesetzt, wird das Cookie mit dem <code>HttpOnly</code>-Flag
-versehen, was bedeutet, dass das Cookie f&#252;r JavaScript-Code in Browsern,
-die diese Funktion unterst&#252;tzen, nicht zug&#228;nglich ist.</dd>
+versehen, was bedeutet, dass das Cookie f&uuml;r JavaScript-Code in Browsern,
+die diese Funktion unterst&uuml;tzen, nicht zug&auml;nglich ist.</dd>
 
 <dt>samesite</dt>
 <dd>Wenn auf etwas anderes als <code>false</code> oder <code>0</code> gesetzt,
 wird das <code>SameSite</code>-Attribut auf den angegebenen Wert gesetzt.
 Typische Werte sind <code>None</code>, <code>Lax</code> und
-<code>Strict</code>. Verf&#252;gbar ab Version 2.5.1.</dd>
+<code>Strict</code>. Verf&uuml;gbar ab Version 2.5.1.</dd>
 </dl>
 
 <p>Betrachten Sie dieses Beispiel:</p>
@@ -278,32 +276,32 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 <p>In diesem Beispiel schreibt die Regel die Anfrage nicht um.
 Das "-"-Umschreibungsziel weist <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> an, die Anfrage
-unver&#228;ndert weiterzuleiten. Stattdessen setzt sie ein Cookie
-namens 'frontdoor' auf den Wert 'yes'. Das Cookie ist f&#252;r jeden Host
-in der <code>.example.com</code>-Domain g&#252;ltig. Es l&#228;uft in 1440
-Minuten (24 Stunden) ab und wird f&#252;r alle URIs zur&#252;ckgegeben.</p>
+unver&auml;ndert weiterzuleiten. Stattdessen setzt sie ein Cookie
+namens 'frontdoor' auf den Wert 'yes'. Das Cookie ist f&uuml;r jeden Host
+in der <code>.example.com</code>-Domain g&uuml;ltig. Es l&auml;uft in 1440
+Minuten (24 Stunden) ab und wird f&uuml;r alle URIs zur&uuml;ckgegeben.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>Das DPI-Flag bewirkt, dass der PATH_INFO-Teil des umgeschriebenen URI
 verworfen wird.</p>
-<p>Dieses Flag ist ab Version 2.2.12 verf&#252;gbar.</p>
+<p>Dieses Flag ist ab Version 2.2.12 verf&uuml;gbar.</p>
 <p>Im Verzeichniskontext wird der URI, gegen den jede
-<code class="directive">RewriteRule</code> pr&#252;ft, aus der Verkettung der aktuellen
+<code class="directive">RewriteRule</code> pr&uuml;ft, aus der Verkettung der aktuellen
 Werte von URI und PATH_INFO gebildet.</p>
 
-<p>Der aktuelle URI kann der urspr&#252;nglich vom Client angeforderte URI sein,
+<p>Der aktuelle URI kann der urspr&uuml;nglich vom Client angeforderte URI sein,
 das Ergebnis einer vorherigen Runde der <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung
-oder das Ergebnis einer fr&#252;heren Regel in der aktuellen Runde der
+oder das Ergebnis einer fr&uuml;heren Regel in der aktuellen Runde der
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung.</p>
 
 <p>Im Gegensatz dazu spiegelt der PATH_INFO, der vor jeder Regel an den
-URI angeh&#228;ngt wird, nur den Wert von PATH_INFO vor dieser Runde der
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung wider. Wenn daher gro&#223;e Teile
+URI angeh&auml;ngt wird, nur den Wert von PATH_INFO vor dieser Runde der
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung wider. Wenn daher gro&szlig;e Teile
 des URI in einer Ersetzung in mehreren <code class="directive">RewriteRule</code>-Direktiven
-abgeglichen und kopiert werden, ohne zu ber&#252;cksichtigen, welche Teile des
-URI vom aktuellen PATH_INFO stammen, kann der endg&#252;ltige URI mehrere
+abgeglichen und kopiert werden, ohne zu ber&uuml;cksichtigen, welche Teile des
+URI vom aktuellen PATH_INFO stammen, kann der endg&uuml;ltige URI mehrere
 Kopien von PATH_INFO enthalten.</p>
 
 <p>Verwenden Sie dieses Flag bei jeder Ersetzung, bei der der PATH_INFO,
@@ -312,24 +310,24 @@ nicht von Interesse ist. Dieses Flag vergisst dauerhaft den PATH_INFO,
 der vor dieser Runde der <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung festgelegt wurde.
 PATH_INFO wird erst neu berechnet, wenn die aktuelle Runde der
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung abgeschlossen ist. Nachfolgende Regeln
-w&#228;hrend dieser Runde der Verarbeitung sehen nur das direkte Ergebnis der
-Ersetzungen, ohne angeh&#228;ngten PATH_INFO.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+w&auml;hrend dieser Runde der Verarbeitung sehen nur das direkte Ergebnis der
+Ersetzungen, ohne angeh&auml;ngten PATH_INFO.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
-<p>Mit dem [E]- oder [env]-Flag k&#246;nnen Sie den Wert einer Umgebungsvariable
-setzen. Beachten Sie, dass einige Umgebungsvariablen nach der Ausf&#252;hrung
-der Regel gesetzt werden k&#246;nnen, wodurch das von Ihnen Gesetzte &#252;berschrieben
+<p>Mit dem [E]- oder [env]-Flag k&ouml;nnen Sie den Wert einer Umgebungsvariable
+setzen. Beachten Sie, dass einige Umgebungsvariablen nach der Ausf&uuml;hrung
+der Regel gesetzt werden k&ouml;nnen, wodurch das von Ihnen Gesetzte &uuml;berschrieben
 wird. Siehe <a href="../env.html">das Dokument zu Umgebungsvariablen</a>
-f&#252;r weitere Details zur Funktionsweise von Umgebungsvariablen.</p>
+f&uuml;r weitere Details zur Funktionsweise von Umgebungsvariablen.</p>
 
-<p>Die vollst&#228;ndige Syntax f&#252;r dieses Flag lautet:</p>
+<p>Die vollst&auml;ndige Syntax f&uuml;r dieses Flag lautet:</p>
 
 <pre class="prettyprint lang-config">[E=VAR:VAL]
 [E=!VAR]</pre>
 
 
-<p><code>VAL</code> kann R&#252;ckreferenzen (<code>$N</code> oder
+<p><code>VAL</code> kann R&uuml;ckreferenzen (<code>$N</code> oder
 <code>%N</code>) enthalten, die expandiert werden.</p>
 
 <p>In der Kurzform</p>
@@ -338,7 +336,7 @@ f&#252;r weitere Details zur Funktionsweise von Umgebungsvariablen.</p>
 [E=VAR]
 </code></p></div>
 
-<p>k&#246;nnen Sie die Umgebungsvariable namens <code>VAR</code> auf einen
+<p>k&ouml;nnen Sie die Umgebungsvariable namens <code>VAR</code> auf einen
 leeren Wert setzen.</p>
 
 <p>Die Form</p>
@@ -347,17 +345,17 @@ leeren Wert setzen.</p>
 [E=!VAR]
 </code></p></div>
 
-<p>erm&#246;glicht es, eine zuvor gesetzte Umgebungsvariable namens
-<code>VAR</code> zu l&#246;schen.</p>
+<p>erm&ouml;glicht es, eine zuvor gesetzte Umgebungsvariable namens
+<code>VAR</code> zu l&ouml;schen.</p>
 
-<p>Umgebungsvariablen k&#246;nnen dann in verschiedenen Kontexten verwendet
-werden, einschlie&#223;lich CGI-Programmen, anderen RewriteRule-Direktiven
+<p>Umgebungsvariablen k&ouml;nnen dann in verschiedenen Kontexten verwendet
+werden, einschlie&szlig;lich CGI-Programmen, anderen RewriteRule-Direktiven
 oder CustomLog-Direktiven.</p>
 
 <p>Das folgende Beispiel setzt eine Umgebungsvariable namens 'image' auf
 den Wert '1', wenn der angeforderte URI eine Bilddatei ist. Dann wird
 diese Umgebungsvariable verwendet, um diese Anfragen aus dem
-Zugriffsprotokoll auszuschlie&#223;en.</p>
+Zugriffsprotokoll auszuschlie&szlig;en.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "\.(png|gif|jpg)$"   "-" [E=image:1]
 CustomLog   "logs/access_log"    combined env=!image</pre>
@@ -365,22 +363,22 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 <p>Beachten Sie, dass derselbe Effekt mit <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> erzielt werden kann. Diese
 Technik wird als Beispiel angeboten, nicht als Empfehlung.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [END]-Flags beendet nicht nur die aktuelle Runde der
 Umschreibungsverarbeitung (wie [L]), sondern verhindert auch jede
 nachfolgende Umschreibungsverarbeitung im Verzeichniskontext (htaccess).</p>
 
-<p>Dies gilt nicht f&#252;r neue Anfragen, die aus externen Umleitungen
+<p>Dies gilt nicht f&uuml;r neue Anfragen, die aus externen Umleitungen
 resultieren.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [F]-Flags bewirkt, dass der Server einen
-403-Forbidden-Statuscode an den Client zur&#252;ckgibt. Obwohl dasselbe
+403-Forbidden-Statuscode an den Client zur&uuml;ckgibt. Obwohl dasselbe
 Verhalten mit der <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>-Direktive
-erreicht werden kann, erm&#246;glicht dies mehr Flexibilit&#228;t bei der Zuweisung
+erreicht werden kann, erm&ouml;glicht dies mehr Flexibilit&auml;t bei der Zuweisung
 eines Forbidden-Status.</p>
 
 <p>Die folgende Regel verbietet das Herunterladen von <code>.exe</code>-Dateien
@@ -389,49 +387,49 @@ von Ihrem Server.</p>
 <pre class="prettyprint lang-config">RewriteRule "\.exe"   "-" [F]</pre>
 
 
-<p>Dieses Beispiel verwendet die "-"-Syntax f&#252;r das Umschreibungsziel,
-was bedeutet, dass der angeforderte URI nicht ge&#228;ndert wird. Es gibt
+<p>Dieses Beispiel verwendet die "-"-Syntax f&uuml;r das Umschreibungsziel,
+was bedeutet, dass der angeforderte URI nicht ge&auml;ndert wird. Es gibt
 keinen Grund, zu einem anderen URI umzuschreiben, wenn Sie die Anfrage
-verweigern m&#246;chten.</p>
+verweigern m&ouml;chten.</p>
 
-<p>Bei der Verwendung von [F] wird ein [L] impliziert - das hei&#223;t, die
-Antwort wird sofort zur&#252;ckgegeben und keine weiteren Regeln werden
+<p>Bei der Verwendung von [F] wird ein [L] impliziert - das hei&szlig;t, die
+Antwort wird sofort zur&uuml;ckgegeben und keine weiteren Regeln werden
 ausgewertet.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>Das [G]-Flag zwingt den Server, einen 410-Gone-Status mit der
-Antwort zur&#252;ckzugeben. Dies zeigt an, dass eine Ressource fr&#252;her
-verf&#252;gbar war, aber nicht mehr verf&#252;gbar ist.</p>
+Antwort zur&uuml;ckzugeben. Dies zeigt an, dass eine Ressource fr&uuml;her
+verf&uuml;gbar war, aber nicht mehr verf&uuml;gbar ist.</p>
 
-<p>Wie beim [F]-Flag verwenden Sie typischerweise die "-"-Syntax f&#252;r das
+<p>Wie beim [F]-Flag verwenden Sie typischerweise die "-"-Syntax f&uuml;r das
 Umschreibungsziel, wenn Sie das [G]-Flag verwenden:</p>
 
 <pre class="prettyprint lang-config">RewriteRule "oldproduct"   "-" [G,NC]</pre>
 
 
-<p>Bei der Verwendung von [G] wird ein [L] impliziert - das hei&#223;t, die
-Antwort wird sofort zur&#252;ckgegeben und keine weiteren Regeln werden
+<p>Bei der Verwendung von [G] wird ein [L] impliziert - das hei&szlig;t, die
+Antwort wird sofort zur&uuml;ckgegeben und keine weiteren Regeln werden
 ausgewertet.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Erzwingt, dass die resultierende Anfrage mit dem angegebenen
-Handler behandelt wird. Beispielsweise k&#246;nnte man dies verwenden, um
+Handler behandelt wird. Beispielsweise k&ouml;nnte man dies verwenden, um
 alle Dateien ohne Dateiendung vom PHP-Handler parsen zu lassen:</p>
 
 <pre class="prettyprint lang-config">RewriteRule "!\."  "-" [H=application/x-httpd-php]</pre>
 
 
 <p>
-Der obige regul&#228;re Ausdruck - <code>!\.</code> - stimmt mit jeder Anfrage
-&#252;berein, die kein literales <code>.</code>-Zeichen enth&#228;lt.
+Der obige regul&auml;re Ausdruck - <code>!\.</code> - stimmt mit jeder Anfrage
+&uuml;berein, die kein literales <code>.</code>-Zeichen enth&auml;lt.
 </p>
 
 <p>Dies kann auch verwendet werden, um den Handler basierend auf
-bestimmten Bedingungen zu erzwingen. Beispielsweise erm&#246;glicht der
+bestimmten Bedingungen zu erzwingen. Beispielsweise erm&ouml;glicht der
 folgende Ausschnitt, der im Server-Kontext verwendet wird, dass
 <code>.php</code>-Dateien von <code>mod_php</code> <em>angezeigt</em>
 werden, wenn sie mit der <code>.phps</code>-Erweiterung angefordert werden:</p>
@@ -439,81 +437,81 @@ werden, wenn sie mit der <code>.phps</code>-Erweiterung angefordert werden:</p>
 <pre class="prettyprint lang-config">RewriteRule "^(/source/.+\.php)s$" "$1" [H=application/x-httpd-php-source]</pre>
 
 
-<p>Der obige regul&#228;re Ausdruck - <code>^(/source/.+\.php)s$</code> - stimmt
-mit jeder Anfrage &#252;berein, die mit <code>/source/</code> beginnt, gefolgt von
-einem oder mehreren Zeichen, gefolgt von <code>.phps</code>. Die R&#252;ckreferenz
-$1 verweist auf die erfasste &#220;bereinstimmung innerhalb der Klammern des
-regul&#228;ren Ausdrucks.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<p>Der obige regul&auml;re Ausdruck - <code>^(/source/.+\.php)s$</code> - stimmt
+mit jeder Anfrage &uuml;berein, die mit <code>/source/</code> beginnt, gefolgt von
+einem oder mehreren Zeichen, gefolgt von <code>.phps</code>. Die R&uuml;ckreferenz
+$1 verweist auf die erfasste &Uuml;bereinstimmung innerhalb der Klammern des
+regul&auml;ren Ausdrucks.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>Das [L]-Flag bewirkt, dass <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> die Verarbeitung
 des Regelsatzes stoppt. In den meisten Kontexten bedeutet dies, dass bei
-&#220;bereinstimmung der Regel keine weiteren Regeln verarbeitet werden. Dies
+&Uuml;bereinstimmung der Regel keine weiteren Regeln verarbeitet werden. Dies
 entspricht dem <code>last</code>-Befehl in Perl oder dem <code>break</code>-Befehl
 in C. Verwenden Sie dieses Flag, um anzuzeigen, dass die aktuelle Regel
-sofort angewendet werden soll, ohne weitere Regeln zu ber&#252;cksichtigen.</p>
+sofort angewendet werden soll, ohne weitere Regeln zu ber&uuml;cksichtigen.</p>
 
 <p>Wenn Sie <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in
 <code>.htaccess</code>-Dateien oder in
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Abschnitten
-verwenden, ist es wichtig, ein gewisses Verst&#228;ndnis daf&#252;r zu haben, wie die
+verwenden, ist es wichtig, ein gewisses Verst&auml;ndnis daf&uuml;r zu haben, wie die
 Regeln verarbeitet werden. Die vereinfachte Form davon ist, dass nach der
 Verarbeitung der Regeln die umgeschriebene Anfrage an die URL-Parsing-Engine
-zur&#252;ckgegeben wird. Es ist m&#246;glich, dass bei der Verarbeitung der
+zur&uuml;ckgegeben wird. Es ist m&ouml;glich, dass bei der Verarbeitung der
 umgeschriebenen Anfrage die <code>.htaccess</code>-Datei oder der
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Abschnitt
 erneut angetroffen wird und der Regelsatz von Anfang an erneut durchlaufen
-wird. Am h&#228;ufigsten geschieht dies, wenn eine der Regeln eine Umleitung
-ausl&#246;st - entweder intern oder extern - wodurch der Anfrageprozess von
+wird. Am h&auml;ufigsten geschieht dies, wenn eine der Regeln eine Umleitung
+ausl&ouml;st - entweder intern oder extern - wodurch der Anfrageprozess von
 vorne beginnt.</p>
 
 <p>Es ist daher wichtig, wenn Sie <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>-Direktiven in einem dieser
-Kontexte verwenden, dass Sie explizite Ma&#223;nahmen ergreifen, um
-Regelschleifen zu vermeiden, und sich nicht ausschlie&#223;lich auf das [L]-Flag
-verlassen, um die Ausf&#252;hrung einer Reihe von Regeln zu beenden, wie
+Kontexte verwenden, dass Sie explizite Ma&szlig;nahmen ergreifen, um
+Regelschleifen zu vermeiden, und sich nicht ausschlie&szlig;lich auf das [L]-Flag
+verlassen, um die Ausf&uuml;hrung einer Reihe von Regeln zu beenden, wie
 unten gezeigt.</p>
 
 <p>Ein alternatives Flag, [END], kann verwendet werden, um nicht nur die
 aktuelle Runde der Umschreibungsverarbeitung zu beenden, sondern auch
 jede nachfolgende Umschreibungsverarbeitung im Verzeichniskontext (htaccess)
-zu verhindern. Dies gilt nicht f&#252;r neue Anfragen, die aus externen
+zu verhindern. Dies gilt nicht f&uuml;r neue Anfragen, die aus externen
 Umleitungen resultieren.</p>
 
 <p>Das hier gegebene Beispiel schreibt jede Anfrage auf
-<code>index.php</code> um und gibt die urspr&#252;ngliche Anfrage als
+<code>index.php</code> um und gibt die urspr&uuml;ngliche Anfrage als
 Query-String-Argument an <code>index.php</code> weiter. Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> stellt jedoch sicher, dass die
-<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> &#252;bersprungen wird,
-wenn die Anfrage bereits f&#252;r <code>index.php</code> bestimmt ist.</p>
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> &uuml;bersprungen wird,
+wenn die Anfrage bereits f&uuml;r <code>index.php</code> bestimmt ist.</p>
 
 <pre class="prettyprint lang-config">RewriteBase "/"
 RewriteCond "%{REQUEST_URI}" !=/index.php
 RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 Das [N]-Flag bewirkt, dass der Regelsatz von oben neu gestartet wird,
 wobei das bisherige Ergebnis des Regelsatzes als Ausgangspunkt verwendet wird.
-Verwenden Sie es mit &#228;u&#223;erster Vorsicht, da es zu Schleifen f&#252;hren kann.
+Verwenden Sie es mit &auml;u&szlig;erster Vorsicht, da es zu Schleifen f&uuml;hren kann.
 </p>
 <p>
-Das [Next]-Flag k&#246;nnte beispielsweise verwendet werden, wenn Sie einen
+Das [Next]-Flag k&ouml;nnte beispielsweise verwendet werden, wenn Sie einen
 bestimmten String oder Buchstaben wiederholt in einer Anfrage ersetzen
-m&#246;chten. Das hier gezeigte Beispiel ersetzt A &#252;berall in einer Anfrage
-durch B und f&#228;hrt damit fort, bis keine weiteren A mehr zu ersetzen sind.
+m&ouml;chten. Das hier gezeigte Beispiel ersetzt A &uuml;berall in einer Anfrage
+durch B und f&auml;hrt damit fort, bis keine weiteren A mehr zu ersetzen sind.
 </p>
 <pre class="prettyprint lang-config">RewriteRule "(.*)A(.*)" "$1B$2" [N]</pre>
 
-<p>Sie k&#246;nnen sich dies als <code>while</code>-Schleife vorstellen: Solange
-dieses Muster noch &#252;bereinstimmt (d.h. solange der URI noch ein
-<code>A</code> enth&#228;lt), f&#252;hre diese Ersetzung durch (d.h. ersetze das
+<p>Sie k&ouml;nnen sich dies als <code>while</code>-Schleife vorstellen: Solange
+dieses Muster noch &uuml;bereinstimmt (d.h. solange der URI noch ein
+<code>A</code> enth&auml;lt), f&uuml;hre diese Ersetzung durch (d.h. ersetze das
 <code>A</code> durch ein <code>B</code>).</p>
 
 <p>Ab Version 2.5.0 gibt dieses Modul nach 10.000 Iterationen einen Fehler
-zur&#252;ck, um vor unbeabsichtigten Schleifen zu sch&#252;tzen. Eine alternative
-maximale Anzahl von Iterationen kann durch Hinzuf&#252;gen zum N-Flag angegeben
+zur&uuml;ck, um vor unbeabsichtigten Schleifen zu sch&uuml;tzen. Eine alternative
+maximale Anzahl von Iterationen kann durch Hinzuf&uuml;gen zum N-Flag angegeben
 werden.</p>
 <pre class="prettyprint lang-config"># Bereit, 1 Zeichen pro Schleifendurchlauf zu ersetzen
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
@@ -521,28 +519,28 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=32000]
 RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
-<p>Die Verwendung des [NC]-Flags bewirkt, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ohne Ber&#252;cksichtigung der
-Gro&#223;-/Kleinschreibung abgeglichen wird. Das hei&#223;t, es spielt keine Rolle,
-ob Buchstaben im abgeglichenen URI als Gro&#223;- oder Kleinbuchstaben
+<p>Die Verwendung des [NC]-Flags bewirkt, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ohne Ber&uuml;cksichtigung der
+Gro&szlig;-/Kleinschreibung abgeglichen wird. Das hei&szlig;t, es spielt keine Rolle,
+ob Buchstaben im abgeglichenen URI als Gro&szlig;- oder Kleinbuchstaben
 erscheinen.</p>
 
 <p>Im folgenden Beispiel wird jede Anfrage nach einer Bilddatei an Ihren
 dedizierten Bildserver weitergeleitet. Der Abgleich erfolgt ohne
-Ber&#252;cksichtigung der Gro&#223;-/Kleinschreibung, sodass beispielsweise sowohl
+Ber&uuml;cksichtigung der Gro&szlig;-/Kleinschreibung, sodass beispielsweise sowohl
 <code>.jpg</code>- als auch <code>.JPG</code>-Dateien akzeptiert werden.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "(.*\.(jpg|gif|png))$" "http://images.example.com$1" [P,NC]</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
-<p>Standardm&#228;&#223;ig werden bei einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
-die zu einer externen Umleitung f&#252;hrt, alle Zeichen in der Ausgabe, die
+<p>Standardm&auml;&szlig;ig werden bei einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
+die zu einer externen Umleitung f&uuml;hrt, alle Zeichen in der Ausgabe, die
 nicht in der folgenden sicheren Menge enthalten sind, in ihre
-Hexcode-&#196;quivalente (prozentcodiert) umgewandelt:</p>
+Hexcode-&Auml;quivalente (prozentcodiert) umgewandelt:</p>
 
 <ul>
   <li>Alphanumerische Zeichen: <code>A-Z</code>, <code>a-z</code>,
@@ -550,13 +548,13 @@ Hexcode-&#196;quivalente (prozentcodiert) umgewandelt:</p>
   <li>Sonderzeichen: <code>$-_.+!*'(),:;@&amp;=/~</code></li>
 </ul>
 
-<p>Beispielsweise w&#252;rde <code>#</code> in <code>%23</code> umgewandelt
+<p>Beispielsweise w&uuml;rde <code>#</code> in <code>%23</code> umgewandelt
 und <code>?</code> in <code>%3F</code>. Das <code>%</code>-Zeichen
 wird ebenfalls maskiert (zu <code>%25</code>), was bedeutet, dass jede
 bereits vorhandene Prozentkodierung in der Ersetzung doppelt kodiert wird.</p>
 
-<p>Die Verwendung des [NE]-Flags verhindert diese Maskierung und erm&#246;glicht,
-dass Zeichen wie <code>#</code> und <code>?</code> unver&#228;ndert an die
+<p>Die Verwendung des [NE]-Flags verhindert diese Maskierung und erm&ouml;glicht,
+dass Zeichen wie <code>#</code> und <code>?</code> unver&auml;ndert an die
 Umleitungs-URL weitergegeben werden.</p>
 
 <pre class="prettyprint lang-config">RewriteRule "^/anchor/(.+)" "/bigpage.html#$1" [NE,R]</pre>
@@ -564,31 +562,31 @@ Umleitungs-URL weitergegeben werden.</p>
 
 <p>
 Das obige Beispiel leitet <code>/anchor/xyz</code> auf
-<code>/bigpage.html#xyz</code> um. Ohne [NE] w&#252;rde das #-Zeichen in
-sein Hexcode-&#196;quivalent <code>%23</code> umgewandelt, was dann zu einem
-404-Nicht-Gefunden-Fehler f&#252;hren w&#252;rde.
+<code>/bigpage.html#xyz</code> um. Ohne [NE] w&uuml;rde das #-Zeichen in
+sein Hexcode-&Auml;quivalent <code>%23</code> umgewandelt, was dann zu einem
+404-Nicht-Gefunden-Fehler f&uuml;hren w&uuml;rde.
 </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [NS]-Flags verhindert, dass die Regel auf
 Unteranfragen angewendet wird. Beispielsweise ist eine Seite, die mittels
 SSI (Server Side Include) eingebunden wird, eine Unteranfrage, und Sie
-m&#246;chten m&#246;glicherweise Umschreibungen bei diesen Unteranfragen vermeiden.
-Auch wenn <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> versucht, Informationen &#252;ber m&#246;gliche
+m&ouml;chten m&ouml;glicherweise Umschreibungen bei diesen Unteranfragen vermeiden.
+Auch wenn <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> versucht, Informationen &uuml;ber m&ouml;gliche
 Standarddateien des Verzeichnisses herauszufinden (wie
 <code>index.html</code>-Dateien), handelt es sich um eine interne
-Unteranfrage, und Sie m&#246;chten h&#228;ufig Umschreibungen bei solchen
-Unteranfragen vermeiden. Bei Unteranfragen ist es nicht immer n&#252;tzlich
-und kann sogar Fehler verursachen, wenn der vollst&#228;ndige Regelsatz
+Unteranfrage, und Sie m&ouml;chten h&auml;ufig Umschreibungen bei solchen
+Unteranfragen vermeiden. Bei Unteranfragen ist es nicht immer n&uuml;tzlich
+und kann sogar Fehler verursachen, wenn der vollst&auml;ndige Regelsatz
 angewendet wird. Verwenden Sie dieses Flag, um problematische Regeln
-auszuschlie&#223;en.</p>
+auszuschlie&szlig;en.</p>
 
 <p>Um zu entscheiden, ob Sie diese Regel verwenden sollten oder nicht: Wenn
 Sie URLs mit CGI-Skripten voranstellen, um deren Verarbeitung durch das
 CGI-Skript zu erzwingen, werden Sie wahrscheinlich bei Unteranfragen auf
-Probleme (oder erheblichen Overhead) sto&#223;en. In diesen F&#228;llen verwenden
+Probleme (oder erheblichen Overhead) sto&szlig;en. In diesen F&auml;llen verwenden
 Sie dieses Flag.</p>
 
 <p>
@@ -596,48 +594,48 @@ Bilder, JavaScript-Dateien oder CSS-Dateien, die als Teil einer HTML-Seite
 geladen werden, sind keine Unteranfragen - der Browser fordert sie als
 separate HTTP-Anfragen an.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [P]-Flags bewirkt, dass die Anfrage von
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> behandelt und &#252;ber eine Proxy-Anfrage verarbeitet
-wird. Wenn Sie beispielsweise m&#246;chten, dass alle Bildanfragen von einem
-Backend-Bildserver behandelt werden, k&#246;nnten Sie Folgendes tun:</p>
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> behandelt und &uuml;ber eine Proxy-Anfrage verarbeitet
+wird. Wenn Sie beispielsweise m&ouml;chten, dass alle Bildanfragen von einem
+Backend-Bildserver behandelt werden, k&ouml;nnten Sie Folgendes tun:</p>
 
 <pre class="prettyprint lang-config">RewriteRule "/(.*)\.( jpg|gif|png)$" "http://images.example.com/$1.$2" [P]</pre>
 
 
-<p>Die Verwendung des [P]-Flags impliziert [L] - das hei&#223;t, die Anfrage
+<p>Die Verwendung des [P]-Flags impliziert [L] - das hei&szlig;t, die Anfrage
 wird sofort durch den Proxy geleitet und nachfolgende Regeln werden nicht
-ber&#252;cksichtigt.</p>
+ber&uuml;cksichtigt.</p>
 
 <p>
-Sie m&#252;ssen sicherstellen, dass der Ersetzungsstring ein g&#252;ltiger URI ist
+Sie m&uuml;ssen sicherstellen, dass der Ersetzungsstring ein g&uuml;ltiger URI ist
 (typischerweise beginnend mit <code>http://</code><em>hostname</em>),
 der von <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> verarbeitet werden kann. Andernfalls
 erhalten Sie einen Fehler vom Proxy-Modul. Verwenden Sie dieses Flag,
-um eine leistungsf&#228;higere Implementierung der <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>-Direktive zu erreichen und
+um eine leistungsf&auml;higere Implementierung der <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>-Direktive zu erreichen und
 entfernte Inhalte in den Namensraum des lokalen Servers einzubinden.</p>
 
 <div class="warning">
 <h3>Sicherheitswarnung</h3>
 <p>Seien Sie vorsichtig beim Aufbau der Ziel-URL der Regel und bedenken Sie
 die Sicherheitsauswirkungen, wenn Sie dem Client Einfluss auf die Menge
-der URLs gew&#228;hren, f&#252;r die Ihr Server als Proxy fungiert. Stellen Sie
+der URLs gew&auml;hren, f&uuml;r die Ihr Server als Proxy fungiert. Stellen Sie
 sicher, dass Schema und Hostname-Teil der URL entweder fest sind oder dem
-Client keinen unangemessenen Einfluss gew&#228;hren.</p>
+Client keinen unangemessenen Einfluss gew&auml;hren.</p>
 </div>
 
 <div class="warning">
 <h3>Leistungswarnung</h3>
-<p>Die Verwendung dieses Flags l&#246;st die Nutzung von <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> aus,
+<p>Die Verwendung dieses Flags l&ouml;st die Nutzung von <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> aus,
 ohne Verwaltung persistenter Verbindungen, da in diesem Fall der
 Standard-Worker verwendet wird, der kein Connection-Pooling/-Reuse
-durchf&#252;hrt.</p>
-<p>Um persistente Verbindungen zu nutzen, m&#252;ssen Sie einen
-<code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code>-Block mindestens f&#252;r den
+durchf&uuml;hrt.</p>
+<p>Um persistente Verbindungen zu nutzen, m&uuml;ssen Sie einen
+<code class="directive"><a href="../mod/mod_proxy.html#proxy">Proxy</a></code>-Block mindestens f&uuml;r den
 Schema- und Host-Teil der Ziel-URL einrichten, der eine
-<code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code>-Direktive enth&#228;lt,
+<code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code>-Direktive enth&auml;lt,
 in der Sie z.B. ein Timeout setzen.</p>
 <p>Wenn Sie es mit <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> oder
 <code class="directive"><a href="../mod/mod_proxy.html#proxypassmatch">ProxyPassMatch</a></code> einrichten,
@@ -645,25 +643,25 @@ werden persistente Verbindungen automatisch verwendet.</p>
 </div>
 
 <p>Hinweis: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> muss aktiviert sein, um dieses
-Flag verwenden zu k&#246;nnen.</p>
+Flag verwenden zu k&ouml;nnen.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 Das Ziel (oder der Ersetzungsstring) in einer RewriteRule wird
-standardm&#228;&#223;ig als Dateipfad behandelt. Die Verwendung des [PT]-Flags
-bewirkt, dass es stattdessen als URI behandelt wird. Das hei&#223;t, die
+standardm&auml;&szlig;ig als Dateipfad behandelt. Die Verwendung des [PT]-Flags
+bewirkt, dass es stattdessen als URI behandelt wird. Das hei&szlig;t, die
 Verwendung des [PT]-Flags bewirkt, dass das Ergebnis der <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> durch die
-URL-Zuordnung zur&#252;ckgeleitet wird, sodass standortbasierte Zuordnungen
+URL-Zuordnung zur&uuml;ckgeleitet wird, sodass standortbasierte Zuordnungen
 wie <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> oder <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> beispielsweise wirksam
-werden k&#246;nnen.
+werden k&ouml;nnen.
 </p>
 
 <p>
 Wenn Sie beispielsweise einen <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
-f&#252;r /icons haben und eine <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dorthin zeigt, sollten
+f&uuml;r /icons haben und eine <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dorthin zeigt, sollten
 Sie das [PT]-Flag verwenden, um sicherzustellen, dass der
 <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ausgewertet wird.
 </p>
@@ -673,24 +671,24 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 
 <p>
-Das Weglassen des [PT]-Flags in diesem Fall f&#252;hrt dazu, dass der Alias
-ignoriert wird und ein 'Datei nicht gefunden'-Fehler zur&#252;ckgegeben wird.
+Das Weglassen des [PT]-Flags in diesem Fall f&uuml;hrt dazu, dass der Alias
+ignoriert wird und ein 'Datei nicht gefunden'-Fehler zur&uuml;ckgegeben wird.
 </p>
 
 <p>Das <code>PT</code>-Flag impliziert das <code>L</code>-Flag:
 Die Umschreibung wird gestoppt, um die Anfrage an die
-n&#228;chste Verarbeitungsphase weiterzuleiten.</p>
+n&auml;chste Verarbeitungsphase weiterzuleiten.</p>
 
 <p>Beachten Sie, dass das <code>PT</code>-Flag in Verzeichniskontexten
 wie <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Abschnitten
 oder in <code>.htaccess</code>-Dateien impliziert ist. Die einzige
-M&#246;glichkeit, dies zu umgehen, ist die Umschreibung zu <code>-</code>.</p>
+M&ouml;glichkeit, dies zu umgehen, ist die Umschreibung zu <code>-</code>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
-Wenn der Ersetzungs-URI einen Query-String enth&#228;lt, ist das Standardverhalten
+Wenn der Ersetzungs-URI einen Query-String enth&auml;lt, ist das Standardverhalten
 von <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, den vorhandenen
 Query-String zu verwerfen und durch den neu generierten zu ersetzen.
 Die Verwendung des [QSA]-Flags bewirkt, dass die Query-Strings kombiniert
@@ -702,131 +700,131 @@ werden.
 <pre class="prettyprint lang-config">RewriteRule "/pages/(.+)" "/page.php?page=$1" [QSA]</pre>
 
 
-<p>Mit dem [QSA]-Flag wird eine Anfrage f&#252;r <code>/pages/123?one=two</code>
+<p>Mit dem [QSA]-Flag wird eine Anfrage f&uuml;r <code>/pages/123?one=two</code>
 auf <code>/page.php?page=123&amp;one=two</code> abgebildet. Ohne das
 [QSA]-Flag wird dieselbe Anfrage auf <code>/page.php?page=123</code>
-abgebildet - das hei&#223;t, der vorhandene Query-String wird verworfen.
+abgebildet - das hei&szlig;t, der vorhandene Query-String wird verworfen.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
-Wenn der angeforderte URI einen Query-String enth&#228;lt und der Ziel-URI
+Wenn der angeforderte URI einen Query-String enth&auml;lt und der Ziel-URI
 nicht, ist das Standardverhalten von <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, diesen Query-String in den
 Ziel-URI zu kopieren. Die Verwendung des [QSD]-Flags bewirkt, dass der
 Query-String verworfen wird.
 </p>
 
-<p>Dieses Flag ist ab Version 2.4.0 verf&#252;gbar.</p>
+<p>Dieses Flag ist ab Version 2.4.0 verf&uuml;gbar.</p>
 
 <p>
-Die gemeinsame Verwendung von [QSD] und [QSA] f&#252;hrt dazu, dass [QSD]
+Die gemeinsame Verwendung von [QSD] und [QSA] f&uuml;hrt dazu, dass [QSD]
 Vorrang hat.
 </p>
 
 <p>
 Wenn der Ziel-URI einen Query-String hat, wird das Standardverhalten
-beobachtet - das hei&#223;t, der urspr&#252;ngliche Query-String wird verworfen und
+beobachtet - das hei&szlig;t, der urspr&uuml;ngliche Query-String wird verworfen und
 durch den Query-String im <code>RewriteRule</code>-Ziel-URI ersetzt.
 </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
-Standardm&#228;&#223;ig trennt das erste (linkeste) Fragezeichen in der Ersetzung
+Standardm&auml;&szlig;ig trennt das erste (linkeste) Fragezeichen in der Ersetzung
 den Pfad vom Query-String. Die Verwendung des [QSL]-Flags weist
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> an, stattdessen
 die beiden Komponenten beim letzten (rechtesten) Fragezeichen zu trennen.
 </p>
 
 <p>
-Dies ist n&#252;tzlich bei der Zuordnung zu Dateien, die literale Fragezeichen
+Dies ist n&uuml;tzlich bei der Zuordnung zu Dateien, die literale Fragezeichen
 in ihrem Dateinamen haben. Wenn kein Query-String in der Ersetzung
 verwendet wird, kann ein Fragezeichen in Kombination mit diesem Flag
-angeh&#228;ngt werden.
+angeh&auml;ngt werden.
 </p>
 
-<p>Dieses Flag ist ab Version 2.4.19 verf&#252;gbar.</p>
+<p>Dieses Flag ist ab Version 2.4.19 verf&uuml;gbar.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 Die Verwendung des [R]-Flags bewirkt, dass eine HTTP-Umleitung an den
 Browser gesendet wird. Wenn eine vollqualifizierte URL angegeben wird
-(das hei&#223;t, einschlie&#223;lich <code>http://servername/</code>), wird eine
-Umleitung an diesen Ort durchgef&#252;hrt. Andernfalls werden das aktuelle
+(das hei&szlig;t, einschlie&szlig;lich <code>http://servername/</code>), wird eine
+Umleitung an diesen Ort durchgef&uuml;hrt. Andernfalls werden das aktuelle
 Protokoll, der Servername und die Portnummer verwendet, um die URL zu
 generieren, die mit der Umleitung gesendet wird.
 </p>
 
 <p>
-<em>Jeder</em> g&#252;ltige HTTP-Antwort-Statuscode kann angegeben werden,
-mit der Syntax [R=305], wobei standardm&#228;&#223;ig ein 302-Statuscode verwendet
+<em>Jeder</em> g&uuml;ltige HTTP-Antwort-Statuscode kann angegeben werden,
+mit der Syntax [R=305], wobei standardm&auml;&szlig;ig ein 302-Statuscode verwendet
 wird, wenn keiner angegeben ist. Der angegebene Statuscode muss nicht
 unbedingt ein Umleitungs-(3xx-)Statuscode sein. Wenn jedoch ein Statuscode
-au&#223;erhalb des Umleitungsbereichs (300-399) liegt, wird der
-Ersetzungsstring vollst&#228;ndig verworfen und die Umschreibung gestoppt,
-als ob <code>L</code> verwendet worden w&#228;re.</p>
+au&szlig;erhalb des Umleitungsbereichs (300-399) liegt, wird der
+Ersetzungsstring vollst&auml;ndig verworfen und die Umschreibung gestoppt,
+als ob <code>L</code> verwendet worden w&auml;re.</p>
 
-<p>Zus&#228;tzlich zu Antwort-Statuscodes k&#246;nnen Sie auch den Umleitungsstatus
+<p>Zus&auml;tzlich zu Antwort-Statuscodes k&ouml;nnen Sie auch den Umleitungsstatus
 mit ihren symbolischen Namen angeben: <code>temp</code> (Standard),
 <code>permanent</code> oder <code>seeother</code>.</p>
 
 <p>
 Sie werden fast immer [R] in Verbindung mit [L] verwenden wollen (also
 [R,L]), da das [R]-Flag allein <code>http://thishost[:thisport]</code> dem
-URI voranstellt, dies aber dann an die n&#228;chste Regel im Regelsatz
-weitergibt, was h&#228;ufig zu 'Ung&#252;ltiger URI in Anfrage'-Warnungen f&#252;hren kann.
+URI voranstellt, dies aber dann an die n&auml;chste Regel im Regelsatz
+weitergibt, was h&auml;ufig zu 'Ung&uuml;ltiger URI in Anfrage'-Warnungen f&uuml;hren kann.
 </p>
 
-<p>Hinweis: httpd unterst&#252;tzt nur Statuscodes, die in der HTTP-Spezifikation
-enthalten sind. Die Verwendung eines nicht erkannten Statuscodes f&#252;hrt zu
+<p>Hinweis: httpd unterst&uuml;tzt nur Statuscodes, die in der HTTP-Spezifikation
+enthalten sind. Die Verwendung eines nicht erkannten Statuscodes f&uuml;hrt zu
 einem 500-Fehler und einer Fehlermeldung im Fehlerprotokoll.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
-<p>Das [S]-Flag wird verwendet, um Regeln zu &#252;berspringen, die Sie nicht
-ausf&#252;hren m&#246;chten. Die Syntax des Skip-Flags ist [S=<em>N</em>], wobei
-<em>N</em> die Anzahl der zu &#252;berspringenden Regeln angibt (vorausgesetzt,
+<p>Das [S]-Flag wird verwendet, um Regeln zu &uuml;berspringen, die Sie nicht
+ausf&uuml;hren m&ouml;chten. Die Syntax des Skip-Flags ist [S=<em>N</em>], wobei
+<em>N</em> die Anzahl der zu &uuml;berspringenden Regeln angibt (vorausgesetzt,
 die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> und alle
 vorhergehenden <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>-Direktiven
-stimmen &#252;berein). Dies kann als <code>goto</code>-Anweisung in Ihrem
-Umschreibungsregelsatz betrachtet werden. Im folgenden Beispiel m&#246;chten
+stimmen &uuml;berein). Dies kann als <code>goto</code>-Anweisung in Ihrem
+Umschreibungsregelsatz betrachtet werden. Im folgenden Beispiel m&ouml;chten
 wir die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> nur
-ausf&#252;hren, wenn der angeforderte URI keiner tats&#228;chlichen Datei entspricht.</p>
+ausf&uuml;hren, wenn der angeforderte URI keiner tats&auml;chlichen Datei entspricht.</p>
 
-<pre class="prettyprint lang-config"># Ist die Anfrage f&#252;r eine nicht existierende Datei?
+<pre class="prettyprint lang-config"># Ist die Anfrage f&uuml;r eine nicht existierende Datei?
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
-# Falls ja, &#252;berspringe diese zwei RewriteRules
+# Falls ja, &uuml;berspringe diese zwei RewriteRules
 RewriteRule ".?"                  "-" [S=2]
 
 RewriteRule "(.*\.gif)"           "images.php?$1"
 RewriteRule "(.*\.html)"          "docs.php?$1"</pre>
 
 
-<p>Diese Technik ist n&#252;tzlich, weil eine <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> nur auf die unmittelbar
+<p>Diese Technik ist n&uuml;tzlich, weil eine <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> nur auf die unmittelbar
 darauf folgende <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 angewendet wird. Wenn Sie also eine <code>RewriteCond</code> auf mehrere
-<code>RewriteRule</code>s anwenden m&#246;chten, besteht eine M&#246;glichkeit darin,
+<code>RewriteRule</code>s anwenden m&ouml;chten, besteht eine M&ouml;glichkeit darin,
 diese Bedingungen zu negieren und eine <code>RewriteRule</code> mit einem
-[Skip]-Flag hinzuzuf&#252;gen. Sie k&#246;nnen damit Pseudo-if-then-else-Konstrukte
+[Skip]-Flag hinzuzuf&uuml;gen. Sie k&ouml;nnen damit Pseudo-if-then-else-Konstrukte
 erstellen: Die letzte Regel der then-Klausel wird zu
 <code>skip=N</code>, wobei N die Anzahl der Regeln in der
 else-Klausel ist:</p>
 <pre class="prettyprint lang-config"># Existiert die Datei?
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
-# Erstelle ein if-then-else-Konstrukt, indem 3 Zeilen &#252;bersprungen werden, wenn wir zur "else"-Klausel wollten.
+# Erstelle ein if-then-else-Konstrukt, indem 3 Zeilen &uuml;bersprungen werden, wenn wir zur "else"-Klausel wollten.
 RewriteRule ".?"                  "-" [S=3]
 
 # WENN die Datei existiert, dann:
     RewriteRule "(.*\.gif)"  "images.php?$1"
     RewriteRule "(.*\.html)" "docs.php?$1"
-    # &#220;berspringe die "else"-Klausel.
+    # &Uuml;berspringe die "else"-Klausel.
     RewriteRule ".?"         "-" [S=1]
 # SONST...
     RewriteRule "(.*)"       "404.php?file=$1"
@@ -836,13 +834,13 @@ RewriteRule ".?"                  "-" [S=3]
 <p>Es ist wahrscheinlich einfacher, diese Art der Konfiguration mit den
 Direktiven <code class="directive">&lt;If&gt;</code>, <code class="directive">&lt;ElseIf&gt;</code> und <code class="directive">&lt;Else&gt;</code> zu erreichen.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Setzt den MIME-Typ, mit dem die resultierende Antwort gesendet wird.
 Dies hat denselben Effekt wie die <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>-Direktive.</p>
 
-<p>Sie k&#246;nnten beispielsweise die folgende Technik verwenden, um
+<p>Sie k&ouml;nnten beispielsweise die folgende Technik verwenden, um
 Perl-Quellcode als Klartext bereitzustellen, wenn er auf eine bestimmte
 Weise angefordert wird:</p>
 
@@ -851,7 +849,7 @@ RewriteRule "\.pl$"  "-" [T=text/plain]</pre>
 
 
 <p>Oder wenn Sie eine Kamera haben, die JPEG-Bilder ohne Dateiendungen
-produziert, k&#246;nnten Sie erzwingen, dass diese Bilder mit dem korrekten
+produziert, k&ouml;nnten Sie erzwingen, dass diese Bilder mit dem korrekten
 MIME-Typ bereitgestellt werden, basierend auf ihren Dateinamen:</p>
 
 <pre class="prettyprint lang-config"># Dateien mit 'IMG' im Namen sind jpg-Bilder.
@@ -859,59 +857,59 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 
 
 <p>Bitte beachten Sie, dass dies ein triviales Beispiel ist und besser mit
-<code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> gel&#246;st werden
-k&#246;nnte. Ber&#252;cksichtigen Sie immer die alternativen L&#246;sungen f&#252;r ein Problem,
-bevor Sie auf Umschreibung zur&#252;ckgreifen, die stets eine weniger
-effiziente L&#246;sung darstellt als die Alternativen.</p>
+<code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> gel&ouml;st werden
+k&ouml;nnte. Ber&uuml;cksichtigen Sie immer die alternativen L&ouml;sungen f&uuml;r ein Problem,
+bevor Sie auf Umschreibung zur&uuml;ckgreifen, die stets eine weniger
+effiziente L&ouml;sung darstellt als die Alternativen.</p>
 
 <p>
 Bei Verwendung im Verzeichniskontext verwenden Sie nur <code>-</code> (Bindestrich)
-als Ersetzung <em>f&#252;r die gesamte Runde der <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung</em>,
+als Ersetzung <em>f&uuml;r die gesamte Runde der <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung</em>,
 da sonst der mit diesem Flag gesetzte MIME-Typ durch eine interne
-Neuverarbeitung verloren geht (einschlie&#223;lich nachfolgender Runden der
+Neuverarbeitung verloren geht (einschlie&szlig;lich nachfolgender Runden der
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung). Das <code>L</code>-Flag kann in
-diesem Kontext n&#252;tzlich sein, um die <em>aktuelle</em> Runde der
+diesem Kontext n&uuml;tzlich sein, um die <em>aktuelle</em> Runde der
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung zu beenden.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Das Setzen dieses Flags ist erforderlich, um eine Umschreibung
     fortzusetzen, wenn die zu schreibende HTTP-Anfrage ein kodiertes
-    Fragezeichen '%3f' enth&#228;lt und das umgeschriebene Ergebnis ein '?' in
-    der Ersetzung hat. Dies sch&#252;tzt vor einer b&#246;sartigen URL, die eine
+    Fragezeichen '%3f' enth&auml;lt und das umgeschriebene Ergebnis ein '?' in
+    der Ersetzung hat. Dies sch&uuml;tzt vor einer b&ouml;sartigen URL, die eine
     Erfassung und Neuersetzung des kodierten Fragezeichens ausnutzt.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>Das Setzen dieses Flags ist erforderlich bei Server-Kontext-Ersetzungen,
-    die mit einer Variable oder R&#252;ckreferenz beginnen und zu einem
-    Dateisystempfad aufgel&#246;st werden. Diesen Ersetzungen wird nicht das
-    Document Root vorangestellt. Dies sch&#252;tzt vor einer b&#246;sartigen URL,
+    die mit einer Variable oder R&uuml;ckreferenz beginnen und zu einem
+    Dateisystempfad aufgel&ouml;st werden. Diesen Ersetzungen wird nicht das
+    Document Root vorangestellt. Dies sch&uuml;tzt vor einer b&ouml;sartigen URL,
     die die expandierte Ersetzung auf einen unerwarteten
-    Dateisystemstandort abbilden l&#228;sst.</p>
+    Dateisystemstandort abbilden l&auml;sst.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
-    <p>Das Setzen dieses Flags verhindert das Zusammenf&#252;hren mehrerer
-    f&#252;hrender Schr&#228;gstriche, wie sie in Windows-UNC-Pfaden verwendet werden.
+    <p>Das Setzen dieses Flags verhindert das Zusammenf&uuml;hren mehrerer
+    f&uuml;hrender Schr&auml;gstriche, wie sie in Windows-UNC-Pfaden verwendet werden.
     Das Flag ist nicht erforderlich, wenn die Regelersetzung mit mehreren
-    literalen Schr&#228;gstrichen beginnt.</p>
+    literalen Schr&auml;gstrichen beginnt.</p>
 
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="../de/rewrite/flags.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="../de/rewrite/flags.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/flags.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/flags.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/flags.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/flags.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

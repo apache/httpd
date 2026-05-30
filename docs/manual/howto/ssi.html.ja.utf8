@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache チュートリアル: Server Side Includes 入門 - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>Apache チュートリアル: Server Side Includes 入門</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -39,17 +37,17 @@
 <p>サーバサイドインクルードによって、既存の HTML
 ドキュメントに動的なコンテンツを追加することができます。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">はじめに</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#what">SSI とは ?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#configuring">SSI を許可するためのサーバの設定</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic">基本的な SSI ディレクティブ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#additionalexamples">追加の例</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">他に何が設定できるのか ?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exec">コマンドの実行</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#advanced">高度な SSI テクニック</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#conclusion">終わりに</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">はじめに</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#what">SSI とは ?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#configuring">SSI を許可するためのサーバの設定</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic">基本的な SSI ディレクティブ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#additionalexamples">追加の例</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">他に何が設定できるのか ?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#exec">コマンドの実行</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#advanced">高度な SSI テクニック</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#conclusion">終わりに</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="related" id="related">はじめに</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
@@ -63,7 +61,7 @@
     と共に実行することができる条件文のような
     幾分高度な事柄について述べています。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="what" id="what">SSI とは ?</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
@@ -79,7 +77,7 @@
     SSI は現在時刻のような小さい情報を加えるにはうってつけの方法です。
     しかし、そのページのほとんどの部分が提供時に生成される場合は、
     他の方法を探す必要があります。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="configuring" id="configuring">SSI を許可するためのサーバの設定</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
 
@@ -107,7 +105,7 @@
     のような特別なファイル拡張子を持つファイルを解析するよう
     Apache に伝えることができます:</p>
 <div class="example"><p><code>
-        AddType text/html .shtml<br />
+        AddType text/html .shtml<br>
         AddOutputFilter INCLUDES .shtml
 </code></p></div>
 
@@ -164,7 +162,7 @@
       ファイルが無効になる時刻を明示します。これにより、
       ブラウザとプロキシにキャッシュが有効であることを通知します。</li>
     </ol>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="basic" id="basic">基本的な SSI ディレクティブ</a> <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
 
@@ -199,7 +197,7 @@
     属性を使用することができます。</p>
 
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
+        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br>
         Today is &lt;!--#echo var="DATE_LOCAL" --&gt;
 </code></p></div>
 
@@ -225,7 +223,7 @@
 </code></p></div>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="additionalexamples" id="additionalexamples">追加の例</a> <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
 
@@ -243,7 +241,7 @@
     タイムスタンプを入れるでしょう。もちろん、上述のように、
     SSI を正しく動作可能にしておく必要があります。</p>
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
+        &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br>
         This file last modified &lt;!--#flastmod file="ssi.shtml" --&gt;
 </code></p></div>
 
@@ -254,7 +252,7 @@
     そうする代わりに変数 <code>LAST_MODIFIED</code>
     を使用したいと考えるでしょう:</p>
 <div class="example"><p><code>
-        &lt;!--#config timefmt="%D" --&gt;<br />
+        &lt;!--#config timefmt="%D" --&gt;<br>
         This file last modified &lt;!--#echo var="LAST_MODIFIED" --&gt;
 </code></p></div>
 
@@ -295,7 +293,7 @@
     挿入用のファイルは他のファイルを再帰的に挿入することができます。</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="config" id="config">他に何が設定できるのか ?</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
 
@@ -324,7 +322,7 @@
     返されるファイルサイズの書式を設定することができます。
     バイト数には <code>bytes</code> を、適当に Kb や Mb
     に短縮させるには <code>abbrev</code> を指定することができます。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="exec" id="exec">コマンドの実行</a> <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
     
@@ -336,15 +334,15 @@
     を使用してコマンドを実行させることができます。
     下記の例では、ディレクトリリスト出力を行ないます。</p>
 <div class="example"><p><code>
-        &lt;pre&gt;<br />
-        &lt;!--#exec cmd="ls" --&gt;<br />
+        &lt;pre&gt;<br>
+        &lt;!--#exec cmd="ls" --&gt;<br>
         &lt;/pre&gt;
 </code></p></div>
 
     <p>Windows 上では、</p>
 <div class="example"><p><code>
-        &lt;pre&gt;<br />
-        &lt;!--#exec cmd="dir" --&gt;<br />
+        &lt;pre&gt;<br>
+        &lt;!--#exec cmd="dir" --&gt;<br>
         &lt;/pre&gt;
 </code></p></div>
 
@@ -360,7 +358,7 @@
     ディレクティブの <code>IncludesNOEXEC</code> 引数を指定することで、
     SSI は許可するけれど <code>exec</code>
     機能は許可しないようにすることができます。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="advanced" id="advanced">高度な SSI テクニック</a> <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
 
@@ -429,9 +427,9 @@
 
     <p>条件構造は以下のとおりです:</p>
 <div class="example"><p><code>
-    &lt;!--#if expr="test_condition" --&gt;<br />
-    &lt;!--#elif expr="test_condition" --&gt;<br />
-    &lt;!--#else --&gt;<br />
+    &lt;!--#if expr="test_condition" --&gt;<br>
+    &lt;!--#elif expr="test_condition" --&gt;<br>
+    &lt;!--#else --&gt;<br>
     &lt;!--#endif --&gt;
 </code></p></div>
 
@@ -445,7 +443,7 @@
 
     <p>設定ファイルで次の行を記述します:</p>
 <div class="example"><p><code>
-        BrowserMatchNoCase macintosh Mac<br />
+        BrowserMatchNoCase macintosh Mac<br>
         BrowserMatchNoCase MSIE InternetExplorer
 </code></p></div>
 
@@ -456,10 +454,10 @@
     <p>次に、SSI が可能になったドキュメントで以下を行ないます:
     </p>
 <div class="example"><p><code>
-        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
-        Apologetic text goes here<br />
-        &lt;!--#else --&gt;<br />
-        Cool JavaScript code goes here<br />
+        &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br>
+        Apologetic text goes here<br>
+        &lt;!--#else --&gt;<br>
+        Cool JavaScript code goes here<br>
         &lt;!--#endif --&gt;
 </code></p></div>
 
@@ -475,7 +473,7 @@
     この機能により、CGI
     に頼ることなくかなり複雑な動的なことをさせることができます。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="conclusion" id="conclusion">終わりに</a> <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
 
@@ -486,12 +484,12 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/ssi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/ssi.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/ssi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/ssi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,38 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_autoindex - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_autoindex</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -95,29 +93,29 @@
 </div>
 <div id="quickview"><h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#query">Autoindex リクエストクエリー引数</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#query">Autoindex リクエストクエリー引数</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addalt">AddAlt</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addaltbytype">AddAltByType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#adddescription">AddDescription</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addicon">AddIcon</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addiconbyencoding">AddIconByEncoding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexignorereset">IndexIgnoreReset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#indexstylesheet">IndexStyleSheet</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#readmename">ReadmeName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addalt">AddAlt</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addaltbyencoding">AddAltByEncoding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addaltbytype">AddAltByType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#adddescription">AddDescription</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addicon">AddIcon</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addiconbyencoding">AddIconByEncoding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addiconbytype">AddIconByType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#defaulticon">DefaultIcon</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexforbiddenreturn404">IndexForbiddenReturn404</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexheadinsert">IndexHeadInsert</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexignore">IndexIgnore</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexignorereset">IndexIgnoreReset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexoptions">IndexOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexorderdefault">IndexOrderDefault</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#indexstylesheet">IndexStyleSheet</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#readmename">ReadmeName</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="query" id="query">Autoindex リクエストクエリー引数</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
     
@@ -191,43 +189,43 @@
     未知の引数 "X" はリストの最後に置かれています。</p>
 
     <div class="example"><p><code>
-      &lt;form action="" method="get"&gt;<br />
+      &lt;form action="" method="get"&gt;<br>
       <span class="indent">
-        Show me a &lt;select name="F"&gt;<br />
+        Show me a &lt;select name="F"&gt;<br>
         <span class="indent">
-          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br />
-          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br />
-          &lt;option value="2"&gt; Table list&lt;/option&gt;<br />
+          &lt;option value="0"&gt; Plain list&lt;/option&gt;<br>
+          &lt;option value="1" selected="selected"&gt; Fancy list&lt;/option&gt;<br>
+          &lt;option value="2"&gt; Table list&lt;/option&gt;<br>
         </span>
-        &lt;/select&gt;<br />
-        Sorted by &lt;select name="C"&gt;<br />
+        &lt;/select&gt;<br>
+        Sorted by &lt;select name="C"&gt;<br>
         <span class="indent">
-          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br />
-          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br />
-          &lt;option value="S"&gt; Size&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Description&lt;/option&gt;<br />
+          &lt;option value="N" selected="selected"&gt; Name&lt;/option&gt;<br>
+          &lt;option value="M"&gt; Date Modified&lt;/option&gt;<br>
+          &lt;option value="S"&gt; Size&lt;/option&gt;<br>
+          &lt;option value="D"&gt; Description&lt;/option&gt;<br>
         </span>
-        &lt;/select&gt;<br />
-        &lt;select name="O"&gt;<br />
+        &lt;/select&gt;<br>
+        &lt;select name="O"&gt;<br>
         <span class="indent">
-          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br />
-          &lt;option value="D"&gt; Descending&lt;/option&gt;<br />
+          &lt;option value="A" selected="selected"&gt; Ascending&lt;/option&gt;<br>
+          &lt;option value="D"&gt; Descending&lt;/option&gt;<br>
         </span>
-        &lt;/select&gt;<br />
-        &lt;select name="V"&gt;<br />
+        &lt;/select&gt;<br>
+        &lt;select name="V"&gt;<br>
         <span class="indent">
-          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br />
-          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br />
+          &lt;option value="0" selected="selected"&gt; in Normal order&lt;/option&gt;<br>
+          &lt;option value="1"&gt; in Version order&lt;/option&gt;<br>
         </span>
-        &lt;/select&gt;<br />
-        Matching &lt;input type="text" name="P" value="*" /&gt;<br />
-        &lt;input type="submit" name="X" value="Go" /&gt;<br />
+        &lt;/select&gt;<br>
+        Matching &lt;input type="text" name="P" value="*" /&gt;<br>
+        &lt;input type="submit" name="X" value="Go" /&gt;<br>
       </span>
       &lt;/form&gt;
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">ディレクティブ</a> <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに
@@ -250,12 +248,12 @@
     アイコンの取得に失敗したときに表示されます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      AddAlt "PDF file" *.pdf<br />
+      AddAlt "PDF file" *.pdf<br>
       AddAlt Compressed *.gz *.zip *.Z
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">ディレクティブ</a> <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに表示される、MIME 符号化方法で選択された
@@ -284,7 +282,7 @@
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">ディレクティブ</a> <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>アイコンの代わりに
@@ -313,7 +311,7 @@
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">ディレクティブ</a> <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに対して表示する説明</td></tr>
@@ -361,7 +359,7 @@
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">ディレクティブ</a> <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを名前で選択</td></tr>
@@ -387,8 +385,8 @@
     完全なファイル名です。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
+      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br>
+      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br>
       AddIcon /icons/backup.xbm *~
     </code></p></div>
 
@@ -399,7 +397,7 @@
     を優先的に使うべきでしょう。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ディレクティブ</a> <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを MIME
@@ -427,7 +425,7 @@
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">ディレクティブ</a> <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルの隣に表示するアイコンを
@@ -455,7 +453,7 @@ MIME タイプによって選択</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">ディレクティブ</a> <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>特定のアイコンが何も設定されていない時に
@@ -477,7 +475,7 @@ MIME タイプによって選択</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">ディレクティブ</a> <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>
@@ -548,7 +546,7 @@ MIME タイプによって選択</td></tr>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexForbiddenReturn404" id="IndexForbiddenReturn404">IndexForbiddenReturn404</a> <a name="indexforbiddenreturn404" id="indexforbiddenreturn404">ディレクティブ</a> <a title="Permanent link" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Return an HTTP 404 error instead of Forbidden when options 
@@ -562,7 +560,7 @@ don't permit directory listing</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ディレクティブ</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インデックスページの HEAD セクションにテキストを挿入する</td></tr>
@@ -581,7 +579,7 @@ don't permit directory listing</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">ディレクティブ</a> <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリ一覧を行なう際に無視すべき
@@ -605,7 +603,7 @@ don't permit directory listing</td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">ディレクティブ</a> <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Empties the list of files to hide when listing
@@ -619,7 +617,7 @@ a directory</td></tr>
 </table><p>このディレクティブの解説文書は
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">ディレクティブ</a> <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリインデックスの様々な設定項目
@@ -890,20 +888,20 @@ a directory</td></tr>
       その数値で比較されます。
 
       <div class="example"><h3>例:</h3><p><code>
-        foo-1.7<br />
-        foo-1.7.2<br />
-        foo-1.7.12<br />
-        foo-1.8.2<br />
-        foo-1.8.2a<br />
+        foo-1.7<br>
+        foo-1.7.2<br>
+        foo-1.7.12<br>
+        foo-1.8.2<br>
+        foo-1.8.2a<br>
         foo-1.12
       </code></p></div>
 
       <p>番号が 0 から始まる場合は、端数と考えられます</p>
 
       <div class="example"><p><code>
-        foo-1.001<br />
-        foo-1.002<br />
-        foo-1.030<br />
+        foo-1.001<br>
+        foo-1.002<br>
+        foo-1.030<br>
         foo-1.04
       </code></p></div>
       </dd>
@@ -931,7 +929,7 @@ a directory</td></tr>
      <div class="example"><p><code>
        &lt;Directory /foo&gt;
        <span class="indent">
-         IndexOptions HTMLTable<br />
+         IndexOptions HTMLTable<br>
          IndexOptions SuppressColumnsorting
        </span>
        &lt;/Directory&gt;
@@ -958,7 +956,7 @@ a directory</td></tr>
      消去されます。次の例を考えてみてください:</p>
 
      <div class="example"><p><code>
-       IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
+       IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br>
        IndexOptions +SuppressSize
      </code></p></div>
 
@@ -977,7 +975,7 @@ a directory</td></tr>
    </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">ディレクティブ</a> <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>
@@ -1013,7 +1011,7 @@ Name|Date|Size|Description</code></td></tr>
     クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">ディレクティブ</a> <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ディレクトリインデックスに CSS スタイルシートを追加する</td></tr>
@@ -1032,7 +1030,7 @@ Name|Date|Size|Description</code></td></tr>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">ディレクティブ</a> <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インデックス一覧の最後に挿入されるファイルの名前</td></tr>
@@ -1065,12 +1063,12 @@ Name|Date|Size|Description</code></td></tr>
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_autoindex.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_autoindex.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_autoindex.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

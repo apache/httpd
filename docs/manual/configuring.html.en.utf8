@@ -1,48 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Configuration Files - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Configuration Files</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 <p>This document describes the files used to configure Apache HTTP
 Server.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Main Configuration Files</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#syntax">Syntax of the Configuration Files</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#modules">Modules</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#scope">Scope of Directives</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#htaccess">.htaccess Files</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#main">Main Configuration Files</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#syntax">Syntax of the Configuration Files</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#modules">Modules</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#scope">Scope of Directives</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#htaccess">.htaccess Files</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="main" id="main">Main Configuration Files</a> <a title="Permanent link" href="#main" class="permalink">&para;</a></h2>
     
@@ -62,7 +60,7 @@ Server.</p>
     <p>The server also reads a file containing mime document types;
     the filename is set by the <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> directive,
     and is <code>mime.types</code> by default.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="syntax" id="syntax">Syntax of the Configuration Files</a> <a title="Permanent link" href="#syntax" class="permalink">&para;</a></h2>
     
@@ -100,7 +98,7 @@ Server.</p>
     <code>\"</code> (or <code>\'</code> if the string is
     single-quoted) produces a literal quote character without ending
     the string.  All other backslash sequences are passed through
-    unchanged — for example, <code>\n</code> is the literal two
+    unchanged &mdash; for example, <code>\n</code> is the literal two
     characters <code>\n</code>, not a newline.</p>
 
     <p>Outside of quotes, backslashes have no special meaning and
@@ -109,11 +107,11 @@ Server.</p>
     described above.</p>
 
     <p>Note that adjacent quoted strings with no whitespace between
-    them are <strong>not</strong> concatenated — they are parsed as
+    them are <strong>not</strong> concatenated &mdash; they are parsed as
     separate arguments.  For example:</p>
 
     <div class="example"><p><code>
-    # This is TWO arguments, not one:<br />
+    # This is TWO arguments, not one:<br>
     Header set X-Foo "bar""baz"
     </code></p></div>
 
@@ -134,13 +132,13 @@ Server.</p>
 
     <p>The values of variables defined with the <code class="directive"><a href="./mod/core.html#define">Define</a></code> or of shell environment variables can
     be used in configuration file lines using the syntax
-    <code>${VAR}</code>.<br />
+    <code>${VAR}</code>.<br>
     If "VAR" is the name of a valid variable, the value of that variable is
     substituted into that spot in the configuration file line, and processing
     continues as if that text were found directly in the configuration
-    file.<br />
+    file.<br>
     Variables defined with <code class="directive"><a href="./mod/core.html#define">Define</a></code> take
-    precedence over shell environment variables.<br />
+    precedence over shell environment variables.<br>
     If the "VAR" variable is not defined, the characters <code>${VAR}</code>
     are left unchanged, and a warning is logged. If instead a default value
     should be substituted, the conditional form
@@ -148,7 +146,7 @@ Server.</p>
     <strong>defined</strong> empty variable will <strong>not</strong> be
     substituted with the default value, and that an empty default value like
     in <code>${VAR?=}</code> is a valid substitution (which produces an empty
-    value if "VAR" is not defined, but no warning).<br />
+    value if "VAR" is not defined, but no warning).<br>
     Variable names may not contain colon ":" characters, to avoid clashes with
     <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>'s syntax.</p>
 
@@ -174,7 +172,7 @@ Server.</p>
     <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> sections
     removed. However, the output does not reflect the merging or overriding
     that may happen for repeated directives.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="modules" id="modules">Modules</a> <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
     
@@ -201,12 +199,12 @@ Server.</p>
     you can use the <code>-l</code> command line option. You can also
     see what modules are loaded dynamically using the <code>-M</code>
     command line option.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="scope" id="scope">Scope of Directives</a> <a title="Permanent link" href="#scope" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
     <p>Directives placed in the main configuration files apply to
     the entire server. If you wish to change the configuration for
@@ -231,12 +229,12 @@ Server.</p>
     can be placed in which sections, check the <a href="mod/directive-dict.html#Context">Context</a> of the
     directive. For further information, we provide details on <a href="sections.html">How Directory, Location and Files sections
     work</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess Files</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
     <p>httpd allows for decentralized management of configuration
     via special files placed inside the web tree. The special files
@@ -262,12 +260,12 @@ Server.</p>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/configuring.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/configuring.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/configuring.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

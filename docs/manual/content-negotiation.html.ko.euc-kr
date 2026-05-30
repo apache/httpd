@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>내용협상 (Content Negotiation) - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>내용협상 (Content Negotiation)</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -44,15 +42,15 @@
     <p>기본적으로 컴파일되는 <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>
     모듈이 내용협상 기능을 제공한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">내용협상에 대해</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">아파치의 협상</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#methods">협상방법</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#better">품질계수 조작하기</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extensions">자연스러운(transparent) 내용협상의 확장</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#naming">하이퍼링크와 이름규칙에 대하여</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#caching">캐쉬에 대하여</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#about">내용협상에 대해</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#negotiation">아파치의 협상</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#methods">협상방법</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#better">품질계수 조작하기</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#extensions">자연스러운(transparent) 내용협상의 확장</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#naming">하이퍼링크와 이름규칙에 대하여</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#caching">캐쉬에 대하여</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="about" id="about">내용협상에 대해</a> <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
@@ -77,7 +75,7 @@
     GIF와 JPEG을 선호한다고 알려준다.</p>
 
 <div class="example"><p><code>
-  Accept-Language: fr; q=1.0, en; q=0.5<br />
+  Accept-Language: fr; q=1.0, en; q=0.5<br>
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
 </code></p></div>
 
@@ -100,7 +98,7 @@
     각 표현을 <strong>변형(variant)</strong>이라고 한다.
     협상가능한 자원의 변형 종류를 협상의
     <strong>범위(dimension)</strong>라고 한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="negotiation" id="negotiation">아파치의 협상</a> <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
@@ -136,15 +134,15 @@
     <code>foo</code>라는 자원을 설명한다.</p>
 
 <div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.en.html<br />
-  Content-type: text/html<br />
-  Content-language: en<br />
-<br />
-  URI: foo.fr.de.html<br />
-  Content-type: text/html;charset=iso-8859-2<br />
-  Content-language: fr, de<br />
+  URI: foo<br>
+<br>
+  URI: foo.en.html<br>
+  Content-type: text/html<br>
+  Content-language: en<br>
+<br>
+  URI: foo.fr.de.html<br>
+  Content-type: text/html;charset=iso-8859-2<br>
+  Content-language: fr, de<br>
 </code></p></div>
     <p>typemap 파일이 파일명 확장자 보다, 심지어 Multiviews를
     사용하여도, 우선권을 가짐을 주의하라. 변형이 서로 다른 품질을
@@ -153,16 +151,16 @@
     수 있다:</p>
 
 <div class="example"><p><code>
-  URI: foo<br />
-<br />
-  URI: foo.jpeg<br />
-  Content-type: image/jpeg; qs=0.8<br />
-<br />
-  URI: foo.gif<br />
-  Content-type: image/gif; qs=0.5<br />
-<br />
-  URI: foo.txt<br />
-  Content-type: text/plain; qs=0.01<br />
+  URI: foo<br>
+<br>
+  URI: foo.jpeg<br>
+  Content-type: image/jpeg; qs=0.8<br>
+<br>
+  URI: foo.gif<br>
+  Content-type: image/gif; qs=0.5<br>
+<br>
+  URI: foo.txt<br>
+  Content-type: text/plain; qs=0.01<br>
 </code></p></div>
 
     <p>qs 값은 0.000에서 1.000 사이다. qs 값이 0.000인 변형은
@@ -214,7 +212,7 @@
     달렷다. 이 지시어는 핸들러, 필터, 다른 확장형들이 MultiViews
     협상에 참여할지 여부를 결정한다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="methods" id="methods">협상방법</a> <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
@@ -359,7 +357,7 @@
       <code>Vary</code> 헤더는 변형의 범위를 나타낸다.</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="better" id="better">품질계수 조작하기</a> <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
 
@@ -455,7 +453,7 @@
       SetEnvIf Cookie "language=(.+)" prefer-language=$1
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="extensions" id="extensions">자연스러운(transparent) 내용협상의 확장</a> <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
 
@@ -467,7 +465,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 변형들도 후보로 사용하도록 확장되었다. RVSA/1.0 구현은 최적의
 변형을 찾기 전에 계산된 품질계수를 소수점 5자리에서 반올림하지
 않는다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="naming" id="naming">하이퍼링크와 이름규칙에 대하여</a> <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
@@ -508,7 +506,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
       <tr>
         <td><em>foo.html.en</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
         <td>-</td>
@@ -525,10 +523,10 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
       <tr>
         <td><em>foo.html.en.gz</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
-        <td>foo.gz<br />
+        <td>foo.gz<br>
          foo.html.gz</td>
       </tr>
 
@@ -537,16 +535,16 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 
         <td>foo</td>
 
-        <td>foo.html<br />
-         foo.html.gz<br />
+        <td>foo.html<br>
+         foo.html.gz<br>
          foo.gz</td>
       </tr>
 
       <tr>
         <td><em>foo.gz.html.en</em></td>
 
-        <td>foo<br />
-         foo.gz<br />
+        <td>foo<br>
+         foo.gz<br>
          foo.gz.html</td>
 
         <td>foo.html</td>
@@ -555,8 +553,8 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
       <tr>
         <td><em>foo.html.gz.en</em></td>
 
-        <td>foo<br />
-         foo.html<br />
+        <td>foo<br>
+         foo.html<br>
          foo.html.gz</td>
 
         <td>foo.gz</td>
@@ -575,7 +573,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
     있다면 이것도 포함하여) 언어 확장자를 MIME-type 확장자보다
     오른쪽에 (<em>예를 들어</em>, <code>foo.html.en</code>)
     두어야한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="caching" id="caching">캐쉬에 대하여</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
@@ -603,12 +601,12 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

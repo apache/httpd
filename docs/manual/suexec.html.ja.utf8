@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>suEXEC サポート - Apache HTTP サーバ バージョン 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>suEXEC サポート</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./en/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/suexec.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/suexec.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -52,17 +50,17 @@
     詳しくないようなら、suEXEC の使用を検討しないように強く推奨します。
     </p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">始める前に</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC セキュリティモデル</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#install">suEXEC
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#before">始める前に</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#model">suEXEC セキュリティモデル</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#install">suEXEC
     の設定とインストール</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#enable">suEXEC
+<li><img alt="" src="./images/down.gif"> <a href="#enable">suEXEC
     の有効化と無効化</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">suEXEC の使用</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#debug">suEXEC のデバッグ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">とかげに注意: 警告と事例</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#usage">suEXEC の使用</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#debug">suEXEC のデバッグ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#jabberwock">とかげに注意: 警告と事例</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="before" id="before">始める前に</a> <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
@@ -110,7 +108,7 @@
     </p>
 
     <p>それでも進みますか? よろしい。では、先へ進みましょう!</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="model" id="model">suEXEC セキュリティモデル</a> <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
@@ -361,7 +359,7 @@
     関するより詳しい情報については、<a href="#jabberwock">"とかげに注意"
     (Beware the Jabberwock)</a> の章を参照してください。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="install" id="install">suEXEC
     の設定とインストール</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
@@ -369,7 +367,7 @@
     <p>ここから楽しくなります。</p>
 
     <p><strong>suEXEC
-    設定オプション</strong><br />
+    設定オプション</strong><br>
     </p>
 
     <dl>
@@ -404,7 +402,7 @@
       Userdir ディレクティブがそのユーザのパスワードファイル内の
       ホームディレクトリと同じ場所を指していなければ、
       suEXEC は適切に動作しません。デフォルトは "public_html" です。
-      <br />
+      <br>
       各 UserDir が異なった仮想ホストを設定している場合、
       それらを全て一つの親ディレクトリに含めて、
       その親ディレクトリの名前をここで指定する必要があります。
@@ -449,15 +447,15 @@
     </dl>
 
     <p><strong>suEXEC wrapper
-    のコンパイルとインストール</strong><br />
+    のコンパイルとインストール</strong><br>
     <code>--enable-suexec</code> オプションで suEXEC 機能を有効にすると、
     "make" コマンドを実行した時に <code>suexec</code> のバイナリ (Apache 自体も)
     が自動的に作成されます。
-    <br />
+    <br>
     すべての構成要素が作成されると、それらのインストールには
     <code>make install</code> コマンドが実行できます。バイナリイメージの <code>suexec</code>
     は <code>--sbindir</code> オプションで指定されたディレクトリにインストールされます。
-    デフォルトの場所は "/usr/local/apache/bin/suexec" です。<br />
+    デフォルトの場所は "/usr/local/apache/bin/suexec" です。<br>
     インストール時には <strong><em>root</em></strong>
     権限が必要なので注意してください。wrapper がユーザ ID
     を設定するために、所有者 <code><em>root</em></code>
@@ -465,7 +463,7 @@
     ビットをそのファイルのモードに設定しなければなりません。
     </p>
 
-    <p><strong>安全なパーミッションを設定する</strong><br />
+    <p><strong>安全なパーミッションを設定する</strong><br>
     suEXEC ラッパーは、<code>--with-suexec-caller</code> <code class="program"><a href="./programs/configure.html">configure</a></code> 
     オプションで指定した正しいユーザで起動されていることを確認しますが、
     システム上でこのチェックが行なわれる前に、
@@ -478,22 +476,22 @@
     <p>たとえば、次のようにサーバが設定されていたとします。</p>
 
 <div class="example"><p><code>
-    User www<br />
-    Group webgroup<br />
+    User www<br>
+    Group webgroup<br>
 </code></p></div>
 
     <p><code class="program"><a href="./programs/suexec.html">suexec</a></code> が "/usr/local/apache2/bin/suexec" 
     にインストールされていた場合、次のように設定する必要があります。</p>
 
 <div class="example"><p><code>
-    chgrp webgroup /usr/local/apache2/bin/suexec<br />
-    chmod 4750 /usr/local/apache2/bin/suexec<br />
+    chgrp webgroup /usr/local/apache2/bin/suexec<br>
+    chmod 4750 /usr/local/apache2/bin/suexec<br>
 </code></p></div>
 
     <p>これで Apache が実行されるグループのみが 
     suEXEC ラッパーを実行できるということを
     確証します。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">suEXEC
     の有効化と無効化</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
@@ -519,7 +517,7 @@
     <p>suEXEC を無効にする場合は、<code>suexec</code> ファイルを削除してから
     Apache を kill して再起動します。
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">suEXEC の使用</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
@@ -528,7 +526,7 @@
     含むバーチャルホストへのリクエストか、<code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> により
     処理されたリクエストの場合に限ります。</p>
 
-    <p><strong>仮想ホスト:</strong><br />
+    <p><strong>仮想ホスト:</strong><br>
     suEXEC wrapper の使い方として、
     <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> 設定での
     <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code>
@@ -540,7 +538,7 @@
     でこのディレクティブが指定されていない場合、
     メインサーバのユーザ ID が想定されます。</p>
 
-    <p><strong>ユーザディレクトリ:</strong><br />
+    <p><strong>ユーザディレクトリ:</strong><br>
     <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> により処理されたリクエストは
     リクエストされたユーザディレクトリのユーザ ID で CGI プログラムを
     実行するために suEXEC ラッパーを呼びます。
@@ -548,7 +546,7 @@
     をそのユーザで実行できること、そのスクリプトが上記の<a href="#model">セキュリティ検査</a>をパスできることです。
     <a href="#install">コンパイル
      時のオプション</a> <code>--with-suexec-userdir</code> も参照してください。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="debug" id="debug">suEXEC のデバッグ</a> <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
@@ -557,7 +555,7 @@
     wrapper を適切に設定、インストールできていると思う場合、
     どこで迷っているか見ようとするならこのログとサーバの
     エラーログを見るとよいでしょう。</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a> <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
 
@@ -614,12 +612,12 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="./en/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/suexec.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/suexec.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

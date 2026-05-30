@@ -1,60 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>httpd - Apache Hiper Metin Aktarım Protokolü Sunucusu - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<title>httpd - Apache Hiper Metin Aktarım Protokol&uuml; Sunucusu - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>httpd - Apache Hiper Metin Aktarım Protokolü Sunucusu</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>httpd - Apache Hiper Metin Aktarım Protokol&uuml; Sunucusu</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/httpd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httpd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/httpd.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/httpd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/httpd.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
      <p><strong><code>httpd</code></strong>, Apache Hiper Metin Aktarım
-      Protokolü (HTTP) sunucusu programıdır. Tek başına çalışan bir artalan
-      süreci olarak tasarlanmıştır. Bu tarz kullanıldığında istekleri işleme
-      sokmak için çocuk süreçlerden ve evrelerden oluşan bir havuz
+      Protokol&uuml; (HTTP) sunucusu programıdır. Tek başına &ccedil;alışan bir artalan
+      s&uuml;reci olarak tasarlanmıştır. Bu tarz kullanıldığında istekleri işleme
+      sokmak i&ccedil;in &ccedil;ocuk s&uuml;re&ccedil;lerden ve evrelerden oluşan bir havuz
       oluşturur.</p>
 
-     <p>Genelde, <strong><code>httpd</code></strong>'nin doğrudan çağrılmaması
+     <p>Genelde, <strong><code>httpd</code></strong>'nin doğrudan &ccedil;ağrılmaması
       gerekir. Unix ve benzerlerinde <code class="program"><a href="../programs/apachectl.html">apachectl</a></code>
       aracılığıyla, <a href="../platform/windows.html#winsvc">Windows NT, 2000
       ve XP</a>'de bir hizmet olarak,  <a href="../platform/windows.html#wincons">Windows 9x ve ME</a>'de ise bir
-      konsol uygulaması olarak çalıştırılır.</p>
+      konsol uygulaması olarak &ccedil;alıştırılır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../invoking.html">Apache httpd'nin Başlatılması</a></li><li><a href="../stopping.html">Apache httpd'nin Durdurulması</a></li><li><a href="../configuring.html">Yapılandırma Dosyaları</a></li><li><a href="../platform/">Platforma Özgü Belgeler</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Se&ccedil;enekler</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../invoking.html">Apache httpd'nin Başlatılması</a></li><li><a href="../stopping.html">Apache httpd'nin Durdurulması</a></li><li><a href="../configuring.html">Yapılandırma Dosyaları</a></li><li><a href="../platform/">Platforma &Ouml;zg&uuml; Belgeler</a></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
      <p><code><strong>httpd</strong> [ -<strong>d</strong>
-     <var>sunucu-kök-dizini</var> ] [ -<strong>f</strong>
+     <var>sunucu-k&ouml;k-dizini</var> ] [ -<strong>f</strong>
      <var>yapılandırma-dosyası</var> ]
-     [ -<strong>C</strong> <var>yönerge</var> ] [ -<strong>c</strong>
-     <var>yönerge</var> ] [ -<strong>D</strong> <var>parametre</var> ]
+     [ -<strong>C</strong> <var>y&ouml;nerge</var> ] [ -<strong>c</strong>
+     <var>y&ouml;nerge</var> ] [ -<strong>D</strong> <var>parametre</var> ]
      [ -<strong>e</strong> <var>seviye</var> ] [ -<strong>E</strong>
      <var>dosya</var> ]
      [ <strong>-k</strong> start | restart | graceful | stop | graceful-stop ]
@@ -70,131 +68,131 @@
      <p><code><strong>httpd</strong> [ -<strong>k</strong> install | config |
       uninstall ] [ -<strong>n</strong> <var>isim</var> ]
      [ -<strong>w</strong> ]</code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2><a name="options" id="options">Se&ccedil;enekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 
   <dl>
-    <dt><code><strong>-d</strong> <var>sunucu-kök-dizini</var></code></dt>
-      <dd><var>sunucu-kök-dizini</var>'ni <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> yönergesine ilk değer olarak atar. Yapılandırma
+    <dt><code><strong>-d</strong> <var>sunucu-k&ouml;k-dizini</var></code></dt>
+      <dd><var>sunucu-k&ouml;k-dizini</var>'ni <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> y&ouml;nergesine ilk değer olarak atar. Yapılandırma
       dosyasındaki bir <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
-      yönergesiyle bu atama geçersiz kılınabilir. Bu seçenek belirtilmediği
-      takdirde <code>/usr/local/apache2</code> dizini öntanımlıdır.</dd>
+      y&ouml;nergesiyle bu atama ge&ccedil;ersiz kılınabilir. Bu se&ccedil;enek belirtilmediği
+      takdirde <code>/usr/local/apache2</code> dizini &ouml;ntanımlıdır.</dd>
 
     <dt><code><strong>-f</strong> <var>yapılandırma-dosyası</var></code></dt>
-      <dd>Başlatma sırasında <var>yapılandırma-dosyası</var>'ndaki yönergeler
+      <dd>Başlatma sırasında <var>yapılandırma-dosyası</var>'ndaki y&ouml;nergeler
       kullanılır. Eğer <var>yapılandırma-dosyası</var> bir / ile başlamıyorsa
-      dosyanın <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> yönergesinin
-      değerine göreli olduğu varsayılır. Seçenek belirtilmediği takdirde
-      <code>conf/httpd.conf</code> öntanımlı değerdir.</dd>
+      dosyanın <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> y&ouml;nergesinin
+      değerine g&ouml;reli olduğu varsayılır. Se&ccedil;enek belirtilmediği takdirde
+      <code>conf/httpd.conf</code> &ouml;ntanımlı değerdir.</dd>
 
     <dt><code><strong>-k</strong> <code>start | restart | graceful | stop |
       graceful-stop</code></code></dt>
     <dd><strong><code>httpd</code></strong>'yi başlatmak, durdurmak ve yeniden
-      başlatmak için sinyal gönderir. Daha ayrıntılı bilgi edinmek için <a href="../stopping.html">Apache httpd'nin Durdurulması</a> belgesine
+      başlatmak i&ccedil;in sinyal g&ouml;nderir. Daha ayrıntılı bilgi edinmek i&ccedil;in <a href="../stopping.html">Apache httpd'nin Durdurulması</a> belgesine
       bakınız.</dd>
 
-    <dt><code><strong>-C</strong> <var>yönerge</var></code></dt>
-    <dd>Yapılandırma <var>yönerge</var>'sini yapılandırma dosyalarını okumadan
-      önce işleme sokar.</dd>
+    <dt><code><strong>-C</strong> <var>y&ouml;nerge</var></code></dt>
+    <dd>Yapılandırma <var>y&ouml;nerge</var>'sini yapılandırma dosyalarını okumadan
+      &ouml;nce işleme sokar.</dd>
 
-    <dt><code><strong>-c</strong> <var>yönerge</var></code></dt>
-    <dd>Yapılandırma <var>yönerge</var>'sini yapılandırma dosyalarını
+    <dt><code><strong>-c</strong> <var>y&ouml;nerge</var></code></dt>
+    <dd>Yapılandırma <var>y&ouml;nerge</var>'sini yapılandırma dosyalarını
       okuduktan sonra işleme sokar.</dd>
 
     <dt><code><strong>-D</strong> <var>parametre</var></code></dt>
     <dd>Sunucu başlatılırken veya yeniden başlatılırken komutları şarta bağlı
-      olarak işleme sokmak veya atlamak için yapılandırma dosyalarında
+      olarak işleme sokmak veya atlamak i&ccedil;in yapılandırma dosyalarında
       kullanılan <code class="directive"><a href="../mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-      bölümlerinde kullanılmak üzere bir yapılandırma <var>parametre</var>'si
-      tanımlar. Ayrıca, <code>-DNO_DETACH</code> (ana sürecin çatallanmasını
-      engellemek için), <code>-DFOREGROUND</code> (ana sürecin
-      <code>setsid()</code> ve benzerlerinden çağrılmasını engellemek için)
+      b&ouml;l&uuml;mlerinde kullanılmak &uuml;zere bir yapılandırma <var>parametre</var>'si
+      tanımlar. Ayrıca, <code>-DNO_DETACH</code> (ana s&uuml;recin &ccedil;atallanmasını
+      engellemek i&ccedil;in), <code>-DFOREGROUND</code> (ana s&uuml;recin
+      <code>setsid()</code> ve benzerlerinden &ccedil;ağrılmasını engellemek i&ccedil;in)
       gibi daha az bilinen bazı başlatma parametrelerini atamakta da
       kullanılabilir.</dd>
 
     <dt><code><strong>-e</strong> <var>seviye</var></code></dt>
-    <dd>Hata günlüğü seviyesi olarak <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> yönergesine sunucu başlatılırken <var>seviye</var>
-      değerini atar. Bu seçenek, başlatma sırasındaki sorunları saptamak
-      amacıyla hata iletilerinin ayrıntı seviyesini geçici olarak arttırmak
-      için kullanılır.</dd>
+    <dd>Hata g&uuml;nl&uuml;ğ&uuml; seviyesi olarak <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> y&ouml;nergesine sunucu başlatılırken <var>seviye</var>
+      değerini atar. Bu se&ccedil;enek, başlatma sırasındaki sorunları saptamak
+      amacıyla hata iletilerinin ayrıntı seviyesini ge&ccedil;ici olarak arttırmak
+      i&ccedil;in kullanılır.</dd>
 
     <dt><code><strong>-E</strong> <var>dosya</var></code></dt>
     <dd>Sunucunun başlatılması sırasında hata iletilerinin belirtilen
-      <var>dosya</var>'ya gönderilmesini sağlar.</dd>
+      <var>dosya</var>'ya g&ouml;nderilmesini sağlar.</dd>
 
     <dt><code><strong>-h</strong></code></dt>
-    <dd>Mevcut komut satırı seçeneklerinin kısa bir özetini çıktılar.</dd>
+    <dd>Mevcut komut satırı se&ccedil;eneklerinin kısa bir &ouml;zetini &ccedil;ıktılar.</dd>
 
     <dt><code><strong>-l</strong></code></dt>
-    <dd>Sunucunun içinde derlenmiş modüllerin listesini çıktılar. Bu liste
-      <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi kullanılarak
-      devingen olarak yüklenen modülleri içermez.</dd>
+    <dd>Sunucunun i&ccedil;inde derlenmiş mod&uuml;llerin listesini &ccedil;ıktılar. Bu liste
+      <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> y&ouml;nergesi kullanılarak
+      devingen olarak y&uuml;klenen mod&uuml;lleri i&ccedil;ermez.</dd>
 
     <dt><code><strong>-L</strong></code></dt>
-    <dd>Durağan modüllerce sağlanmış yönergeleri olası değerleriyle geçerli
-      konumlarına yerleştirerek listeler. Paylaşımlı modüllerce sağlanan
-      yönergeleri listelemez.</dd>
+    <dd>Durağan mod&uuml;llerce sağlanmış y&ouml;nergeleri olası değerleriyle ge&ccedil;erli
+      konumlarına yerleştirerek listeler. Paylaşımlı mod&uuml;llerce sağlanan
+      y&ouml;nergeleri listelemez.</dd>
 
     <dt><code><strong>-M</strong></code></dt>
-    <dd>Yüklü durağan ve paylaşımlı modülleri listeler.</dd>
+    <dd>Y&uuml;kl&uuml; durağan ve paylaşımlı mod&uuml;lleri listeler.</dd>
 
     <dt><code><strong>-S</strong></code></dt>
-    <dd>Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an
-      sadece sanal konak ayarları gösterilmektedir).</dd>
+    <dd>Yapılandırma dosyasından &ccedil;&ouml;z&uuml;mlenmiş haliyle ayarları g&ouml;sterir (şu an
+      sadece sanal konak ayarları g&ouml;sterilmektedir).</dd>
 
     <dt><code><strong>-T</strong></code> (2.3.8 ve sonrasında
     kullanılabilmektedir)</dt>
-    <dd>Başlatma ve yeniden başlatma sırasında belge kökü sınanmadan
-      geçilir.</dd>
+    <dd>Başlatma ve yeniden başlatma sırasında belge k&ouml;k&uuml; sınanmadan
+      ge&ccedil;ilir.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
-    <dd>Yapılandırma dosyasını sözdizimi hatalarına karşı denetler. Program
-      sözdizimini denetledikten sonra sözdizimi geçerliyse 0 ile, değilse
-      sıfırdan farklı bir değerle çıkar.
-      <code><strong>-D</strong>DUMP_VHOSTS</code> seçeneği ile birlikte
+    <dd>Yapılandırma dosyasını s&ouml;zdizimi hatalarına karşı denetler. Program
+      s&ouml;zdizimini denetledikten sonra s&ouml;zdizimi ge&ccedil;erliyse 0 ile, değilse
+      sıfırdan farklı bir değerle &ccedil;ıkar.
+      <code><strong>-D</strong>DUMP_VHOSTS</code> se&ccedil;eneği ile birlikte
       kullanılmışsa ek olarak sanal konak ayrıntıları da basılır.
-      <code><strong>-D</strong>DUMP_MODULES</code> seçeneği ile ise ek olarak
-      tüm modüller listelenir.</dd>
+      <code><strong>-D</strong>DUMP_MODULES</code> se&ccedil;eneği ile ise ek olarak
+      t&uuml;m mod&uuml;ller listelenir.</dd>
 
     <dt><code><strong>-v</strong></code></dt>
-    <dd><strong><code>httpd</code></strong> sürümünü basar ve çıkar.</dd>
+    <dd><strong><code>httpd</code></strong> s&uuml;r&uuml;m&uuml;n&uuml; basar ve &ccedil;ıkar.</dd>
 
     <dt><code><strong>-V</strong></code></dt>
-    <dd>Sürümü ve <strong><code>httpd</code></strong> kurulum parametrelerini
-      basar ve çıkar.</dd>
+    <dd>S&uuml;r&uuml;m&uuml; ve <strong><code>httpd</code></strong> kurulum parametrelerini
+      basar ve &ccedil;ıkar.</dd>
 
     <dt><code><strong>-X</strong></code></dt>
-    <dd><strong><code>httpd</code></strong> hata ayıklama kipinde çalışır. Tek
-      çocuk süreç başlatılır ve sunucu konsolu terketmez.</dd>
+    <dd><strong><code>httpd</code></strong> hata ayıklama kipinde &ccedil;alışır. Tek
+      &ccedil;ocuk s&uuml;re&ccedil; başlatılır ve sunucu konsolu terketmez.</dd>
   </dl>
 
-  <p>Aşağıdaki seçenekler sadece <a href="../platform/windows.html">Windows
-    platformunda geçerlidir</a>:</p>
+  <p>Aşağıdaki se&ccedil;enekler sadece <a href="../platform/windows.html">Windows
+    platformunda ge&ccedil;erlidir</a>:</p>
 
   <dl>
     <dt><code><strong>-k</strong> install | config | uninstall</code></dt>
     <dd>Parametreler bakımından sırasıyla: Apache httpd bir Windows NT hizmeti
-      haline getirilir; başlatma seçenekleri Apache httpd hizmeti için
+      haline getirilir; başlatma se&ccedil;enekleri Apache httpd hizmeti i&ccedil;in
       değiştirilir; ve Apache httpd hizmeti sistemden kaldırılır.</dd>
 
     <dt><code><strong>-n</strong> <var>isim</var></code></dt>
-    <dd>Sinyal gönderilecek Apache httpd hizmetinin <var>ismi</var>.</dd>
+    <dd>Sinyal g&ouml;nderilecek Apache httpd hizmetinin <var>ismi</var>.</dd>
 
     <dt><code><strong>-w</strong></code></dt>
-    <dd>Hata durumunda konsol penceresi açık tutularak hata iletilerinin
+    <dd>Hata durumunda konsol penceresi a&ccedil;ık tutularak hata iletilerinin
       okunması sağlanır.</dd>
   </dl>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/httpd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/httpd.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/programs/httpd.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/httpd.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/httpd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/programs/httpd.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

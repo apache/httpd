@@ -1,69 +1,67 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_authn_dbd - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_authn_dbd</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authn_dbd.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur à l'aide d'une base de données
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur &agrave; l'aide d'une base de donn&eacute;es
 SQL</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authn_dbd_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authn_dbd.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>authn_dbd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_authn_dbd.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet aux frontaux d'authentification comme
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> et <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>
     d'authentifier les utilisateurs en les recherchant dans une base de
-    données SQL. <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, par exemple, fournit
-    une fonctionnalité similaire.</p>
-    <p>Ce module s'appuie sur <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour spécifier le
-    pilote de la base de données sous-jacente et les paramètres de
-    connexion, mais aussi  pour gérer les connexions à la base de
-    données.</p>
+    donn&eacute;es SQL. <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, par exemple, fournit
+    une fonctionnalit&eacute; similaire.</p>
+    <p>Ce module s'appuie sur <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour sp&eacute;cifier le
+    pilote de la base de donn&eacute;es sous-jacente et les param&egrave;tres de
+    connexion, mais aussi  pour g&eacute;rer les connexions &agrave; la base de
+    donn&eacute;es.</p>
 
     <p>Si l'on utilise <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>, on peut invoquer ce module en
-    affectant la valeur <code>dbd</code> à la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
+    affectant la valeur <code>dbd</code> &agrave; la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> ou <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#socache">Performances et mise en cache</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Exemple de configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exposed">Mise à disposition des informations de connexion</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Prévention contre les injections SQL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#socache">Performances et mise en cache</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#example">Exemple de configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#exposed">Mise &agrave; disposition des informations de connexion</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">Pr&eacute;vention contre les injections SQL</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authdbduserrealmquery">AuthDBDUserRealmQuery</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_dbd">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_dbd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authn_dbd">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authn_dbd">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
@@ -78,25 +76,25 @@ SQL</td></tr>
 <li><a href="../misc/password_encryptions.html">Formats de mots de
 passe</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="socache" id="socache">Performances et mise en cache</a> <a title="Lien permanent" href="#socache" class="permalink">&para;</a></h2>
 
 <p>Certains utilisateurs de l'authentification DBD sous HTTPD 2.2/2.4 ont
-signalé une charge problématique au niveau de la base de données. Cela
-se produit en général lorsqu'une page HTML contient des centaines d'objets
-(comme des images, des scripts, etc...), chacun d'entre eux nécessitant
+signal&eacute; une charge probl&eacute;matique au niveau de la base de donn&eacute;es. Cela
+se produit en g&eacute;n&eacute;ral lorsqu'une page HTML contient des centaines d'objets
+(comme des images, des scripts, etc...), chacun d'entre eux n&eacute;cessitant
 une authentification. Les utilisateurs qui rencontrent ce genre de
-problème peuvent utiliser le module <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
-qui permet de mettre les données d'authentification en cache, et
-soulager ainsi la base de données de la plus grande partie de la charge.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+probl&egrave;me peuvent utiliser le module <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
+qui permet de mettre les donn&eacute;es d'authentification en cache, et
+soulager ainsi la base de donn&eacute;es de la plus grande partie de la charge.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="example" id="example">Exemple de configuration</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
 
 <p>Voici un exemple simple d'utilisation de ce module dans un contexte
-d'authentification et de bases de données.</p>
-<pre class="prettyprint lang-config"># configuration de mod_dbd modifiée pour inclure la mise en cache de
+d'authentification et de bases de donn&eacute;es.</p>
+<pre class="prettyprint lang-config"># configuration de mod_dbd modifi&eacute;e pour inclure la mise en cache de
 # l'authentification
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
@@ -112,11 +110,11 @@ DBDExptime 300
   AuthType Basic
   AuthName "Mon serveur"
 
-  # Pour mettre en cache les données d'authentification, placez socache
+  # Pour mettre en cache les donn&eacute;es d'authentification, placez socache
   # avant dbd
   AuthBasicProvider socache dbd
 
-  # Aussi nécessaire à la mise en cache : dire au cache de mettre en
+  # Aussi n&eacute;cessaire &agrave; la mise en cache : dire au cache de mettre en
   # cache les recherches dbd !
   AuthnCacheProvideFor dbd
   AuthnCacheContext mon-serveur
@@ -124,122 +122,122 @@ DBDExptime 300
   # configuration de mod_authz_core
   Require valid-user
 
-  # la requête SQL de mod_authn_dbd pour authentifier un utilisateur
+  # la requ&ecirc;te SQL de mod_authn_dbd pour authentifier un utilisateur
   AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
 &lt;/Directory&gt;</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exposed" id="exposed">Mise à disposition des informations de connexion</a> <a title="Lien permanent" href="#exposed" class="permalink">&para;</a></h2>
+<h2><a name="exposed" id="exposed">Mise &agrave; disposition des informations de connexion</a> <a title="Lien permanent" href="#exposed" class="permalink">&para;</a></h2>
 
 <p>
-Pour chaque requête envoyée au serveur de
-base de données, toutes les valeurs de colonnes du premier
-enregistrement renvoyé par la requête sont affectées à des variables
-d'environnement avec le préfixe "AUTHENTICATE_".
+Pour chaque requ&ecirc;te envoy&eacute;e au serveur de
+base de donn&eacute;es, toutes les valeurs de colonnes du premier
+enregistrement renvoy&eacute; par la requ&ecirc;te sont affect&eacute;es &agrave; des variables
+d'environnement avec le pr&eacute;fixe "AUTHENTICATE_".
 </p>
-<p>Par exemple, si une requête renvoie un nom d'utilisateur, un nom
-complet et un numéro de téléphone, un programme CGI pourra accéder à ces
-informations sans avoir besoin d'effectuer une deuxième requête vers la
-base de données.</p>
-<p>Ceci va entraîner une simplification considérable du code et de la
-configuration nécessaire de certaines applications web.
+<p>Par exemple, si une requ&ecirc;te renvoie un nom d'utilisateur, un nom
+complet et un num&eacute;ro de t&eacute;l&eacute;phone, un programme CGI pourra acc&eacute;der &agrave; ces
+informations sans avoir besoin d'effectuer une deuxi&egrave;me requ&ecirc;te vers la
+base de donn&eacute;es.</p>
+<p>Ceci va entra&icirc;ner une simplification consid&eacute;rable du code et de la
+configuration n&eacute;cessaire de certaines applications web.
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Prévention contre les injections SQL</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2><a name="security" id="security">Pr&eacute;vention contre les injections SQL</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
 
-  <p>Selon le driver DBD et le serveur d'arrière-plan que vous utilisez,
-  vous devrez prendre garde à la sécurité dans le domaine SQL.
-  Avec la plupart des drivers, vous n'avez rien à faire : la
-  requête est préparée par la base de données au démarrage, et l'entrée
-  utilisateur n'est utilisée qu'en tant que donnée. Mais vous aurez
-  peut-être à nettoyer cette entrée. Au moment où ces lignes sont
-  écrites, le seul driver qui peut nécessiter le nettoyage de l'entrée
+  <p>Selon le driver DBD et le serveur d'arri&egrave;re-plan que vous utilisez,
+  vous devrez prendre garde &agrave; la s&eacute;curit&eacute; dans le domaine SQL.
+  Avec la plupart des drivers, vous n'avez rien &agrave; faire : la
+  requ&ecirc;te est pr&eacute;par&eacute;e par la base de donn&eacute;es au d&eacute;marrage, et l'entr&eacute;e
+  utilisateur n'est utilis&eacute;e qu'en tant que donn&eacute;e. Mais vous aurez
+  peut-&ecirc;tre &agrave; nettoyer cette entr&eacute;e. Au moment o&ugrave; ces lignes sont
+  &eacute;crites, le seul driver qui peut n&eacute;cessiter le nettoyage de l'entr&eacute;e
   est FreeTDS.</p>
-  <p>Veuillez vous référez à la documentation de
-  <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour plus d'informations à propos de la
-  sécurité dans ce domaine.</p>
+  <p>Veuillez vous r&eacute;f&eacute;rez &agrave; la documentation de
+  <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code> pour plus d'informations &agrave; propos de la
+  s&eacute;curit&eacute; dans ce domaine.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a> <a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a> <a title="Lien permanent" href="#authdbduserpwquery" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier le mot de passe d'un
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requ&ecirc;te SQL servant &agrave; v&eacute;rifier le mot de passe d'un
 utilisateur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserPWQuery <var>requête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserPWQuery <var>requ&ecirc;te</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
     <p>La directive <code class="directive">AuthDBDUserPWQuery</code> permet de
-    spécifier une requête servant à vérifier le mot de passe d'un
-    utilisateur donné. L'identifiant utilisateur sera transmis comme
-    paramètre sous forme d'une seule chaîne de caractères lorsque la
-    requête sera exécutée. Cet identifiant est référencé dans la requête
-    en utilisant le spécificateur de format <code>%s</code>.</p>
+    sp&eacute;cifier une requ&ecirc;te servant &agrave; v&eacute;rifier le mot de passe d'un
+    utilisateur donn&eacute;. L'identifiant utilisateur sera transmis comme
+    param&egrave;tre sous forme d'une seule cha&icirc;ne de caract&egrave;res lorsque la
+    requ&ecirc;te sera ex&eacute;cut&eacute;e. Cet identifiant est r&eacute;f&eacute;renc&eacute; dans la requ&ecirc;te
+    en utilisant le sp&eacute;cificateur de format <code>%s</code>.</p>
     <pre class="prettyprint lang-config">AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"</pre>
 
-    <p>La première colonne du premier enregistrement renvoyé par la
-    requête se présentera sous la forme d'une chaîne de caractères
-    contenant le mot de passe chiffré. Les enregistrements suivants sont
-    ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur ne
-    sera pas authentifié par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>Toute valeur de colonne supplémentaire
-    du premier enregistrement renvoyé par la requête sera stockée dans
+    <p>La premi&egrave;re colonne du premier enregistrement renvoy&eacute; par la
+    requ&ecirc;te se pr&eacute;sentera sous la forme d'une cha&icirc;ne de caract&egrave;res
+    contenant le mot de passe chiffr&eacute;. Les enregistrements suivants sont
+    ignor&eacute;s. Si aucun enregistrement n'est renvoy&eacute;, l'utilisateur ne
+    sera pas authentifi&eacute; par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+    <p>Toute valeur de colonne suppl&eacute;mentaire
+    du premier enregistrement renvoy&eacute; par la requ&ecirc;te sera stock&eacute;e dans
     une variable d'environnement dont le nom aura la forme
     <code>AUTHENTICATE_<var>valeur-colonne</var></code>.
     </p>
-    <p>Le format du mot de passe chiffré dépend du frontal
-    d'authentification utilisé (par exemple
+    <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
+    d'authentification utilis&eacute; (par exemple
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
-    plus de détails.</p>
+    plus de d&eacute;tails.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authdbduserrealmquery" id="authdbduserrealmquery">Directive</a> <a name="AuthDBDUserRealmQuery" id="AuthDBDUserRealmQuery">AuthDBDUserRealmQuery</a> <a title="Lien permanent" href="#authdbduserrealmquery" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requête SQL servant à vérifier une empreinte de mot de
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Requ&ecirc;te SQL servant &agrave; v&eacute;rifier une empreinte de mot de
 passe pour un utilisateur et un identifiant d'authentification.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserRealmQuery <var>requête</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDBDUserRealmQuery <var>requ&ecirc;te</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
-    <p>La directive <code class="directive">AuthDBDUserRealmQuery</code> spécifie
-    une requête SQL servant à vérifier une empreinte de mot
+    <p>La directive <code class="directive">AuthDBDUserRealmQuery</code> sp&eacute;cifie
+    une requ&ecirc;te SQL servant &agrave; v&eacute;rifier une empreinte de mot
     de passe pour un utilisateur et un identifiant d'authentification
-    donnés au cours d'un processus d'authentification digest. Les
+    donn&eacute;s au cours d'un processus d'authentification digest. Les
     identifiants de l'utilisateur et de l'authentification
-    sont passés dans cet ordre comme paramètres à l'exécution de la
-    requête. Ils sont référencés dans la chaîne de la requête en
-    utilisant des spécificateurs de format <code>%s</code>.</p>
+    sont pass&eacute;s dans cet ordre comme param&egrave;tres &agrave; l'ex&eacute;cution de la
+    requ&ecirc;te. Ils sont r&eacute;f&eacute;renc&eacute;s dans la cha&icirc;ne de la requ&ecirc;te en
+    utilisant des sp&eacute;cificateurs de format <code>%s</code>.</p>
     <pre class="prettyprint lang-config">AuthDBDUserRealmQuery "SELECT password FROM authn WHERE user = %s AND realm = %s"</pre>
 
-    <p>La première colonne du premier enregistrement renvoyé par la
-    requête se présentera sous la forme d'une chaîne de caractères
-    contenant le mot de passe chiffré. Les enregistrements suivants
-    seront ignorés. Si aucun enregistrement n'est renvoyé, l'utilisateur
-    ne sera pas authentifié par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
-    <p>Toute valeur de colonne supplémentaire
-    du premier enregistrement renvoyé par la requête sera stockée dans
+    <p>La premi&egrave;re colonne du premier enregistrement renvoy&eacute; par la
+    requ&ecirc;te se pr&eacute;sentera sous la forme d'une cha&icirc;ne de caract&egrave;res
+    contenant le mot de passe chiffr&eacute;. Les enregistrements suivants
+    seront ignor&eacute;s. Si aucun enregistrement n'est renvoy&eacute;, l'utilisateur
+    ne sera pas authentifi&eacute; par <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+    <p>Toute valeur de colonne suppl&eacute;mentaire
+    du premier enregistrement renvoy&eacute; par la requ&ecirc;te sera stock&eacute;e dans
     une variable d'environnement avec un nom de la forme
     <code>AUTHENTICATE_<var>COLONNE</var></code>.
     </p>
-    <p>Le format du mot de passe chiffré dépend du frontal
-    d'authentification utilisé (par exemple
+    <p>Le format du mot de passe chiffr&eacute; d&eacute;pend du frontal
+    d'authentification utilis&eacute; (par exemple
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ou
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>). Voir la documentation sur les <a href="../misc/password_encryptions.html">Formats de mots de passe</a> pour
-    plus de détails.</p>
+    plus de d&eacute;tails.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_dbd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authn_dbd.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authn_dbd.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

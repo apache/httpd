@@ -1,38 +1,36 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>コンパイルとインストール - Apache HTTP サーバ バージョン 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.5</a></div><div id="page-content"><div id="preamble"><h1>コンパイルとインストール</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/install.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/install.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -55,18 +53,18 @@
     アップグレード</a>をご覧下さい。</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">概要 (せっかちな人向け)</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#requirements">必要なもの</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#download">ダウンロード</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extract">展開</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configure">ソースツリーを設定する</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#compile">ビルド</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#install">インストール</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#customize">カスタマイズ</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#test">テスト</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#upgrading">アップグレード</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">概要 (せっかちな人向け)</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#requirements">必要なもの</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#download">ダウンロード</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#extract">展開</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#configure">ソースツリーを設定する</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#compile">ビルド</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#install">インストール</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#customize">カスタマイズ</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#test">テスト</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#upgrading">アップグレード</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><a href="programs/configure.html">ソースツリーの設定</a></li><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">概要 (せっかちな人向け)</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
@@ -82,8 +80,8 @@
       <tr>
         <td><a href="#extract">展開</a></td>
 
-        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-<em>NN</em>.tar<br />
+        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br>
+         $ tar xvf httpd-<em>NN</em>.tar<br>
          $ cd httpd-<em>NN</em></code></td>
       </tr>
 
@@ -127,7 +125,7 @@
 
     <p>Apache httpd のコンパイルとインストールに必要なものをはじめとして、
     コンパイルとインストールについては、次に詳しく記述されています。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">必要なもの</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
@@ -171,7 +169,7 @@
       見つからない場合は、この影響を受けるサポートスクリプトが使えなくなります。
       もちろん、Apache httpd のコンパイルとインストールは問題なく行えます。</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="download" id="download">ダウンロード</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
@@ -196,7 +194,7 @@
     ページ</a> にあり、さらに詳しい例は <a href="http://httpd.apache.org/dev/verification.html">PGP の使用
     </a> に記載されています。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="extract" id="extract">展開</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
@@ -205,7 +203,7 @@
     単なる圧縮の解除と tar の展開です:</p>
 
 <div class="example"><p><code>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+$ gzip -d httpd-<em>NN</em>.tar.gz<br>
 $ tar xvf httpd-<em>NN</em>.tar
 </code></p></div>
 
@@ -213,7 +211,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     新しいディレクトリが作られます。
     サーバをコンパイルする段階に進む前に、そのディレクトリに
     <code>cd</code> で移動してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="configure" id="configure">ソースツリーを設定する</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
@@ -275,9 +273,9 @@ $ tar xvf httpd-<em>NN</em>.tar
     メカニズムでロードするようにコンパイルしてみます:</p>
 
 <div class="example"><p><code>
-      $ CC="pgcc" CFLAGS="-O2" \<br />
-       ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite=shared \<br />
+      $ CC="pgcc" CFLAGS="-O2" \<br>
+       ./configure --prefix=/sw/pkg/apache \<br>
+       --enable-rewrite=shared \<br>
        --enable-speling=shared
 </code></p></div>
 
@@ -288,7 +286,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>個々の <code class="program"><a href="./programs/configure.html">configure</a></code> オプションの詳細に関しては
     <code class="program"><a href="./programs/configure.html">configure</a></code> マニュアルページ
     をご覧ください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="compile" id="compile">ビルド</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
@@ -301,7 +299,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     あらかじめご了承ください。
     また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="install" id="install">インストール</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
@@ -318,7 +316,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>アップグレードする場合は、インストールでは設定ファイルや
     ドキュメントファイルの上書きは行いません。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="customize" id="customize">カスタマイズ</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
@@ -331,7 +329,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     <a href="./">docs/manual/</a> にある Apache マニュアルをざっと見てください。
     または、<a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a>
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="test" id="test">テスト</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
@@ -348,7 +346,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     次のコマンドを実行します:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">アップグレード</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
@@ -381,11 +379,11 @@ $ tar xvf httpd-<em>NN</em>.tar
     必要であればそれを編集した後に、次のように実行します。</p>
 
     <div class="example"><p><code>
-    $ ./config.nice<br />
-    $ make<br />
-    $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
-    $ <em>PREFIX</em>/bin/apachectl -k start<br />
+    $ ./config.nice<br>
+    $ make<br>
+    $ make install<br>
+    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br>
+    $ <em>PREFIX</em>/bin/apachectl -k start<br>
     </code></p></div>
 
     <div class="warning">新しいバージョンを使用する場合は、
@@ -405,14 +403,14 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/install.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/install.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/install.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/install.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/install.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/install.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

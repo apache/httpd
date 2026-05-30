@@ -1,303 +1,299 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_crypto - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_crypto</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_crypto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_crypto.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_crypto.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support du chiffrement/déchiffrement symétrique</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support du chiffrement/d&eacute;chiffrement sym&eacute;trique</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>crypto_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_crypto.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.5 du serveur HTTP Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>crypto_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_crypto.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de <strong>chiffrer et déchiffrer</strong> les données au
-    niveau des piles de filtrage en entrée et en sortie.</p>
+    <p>Ce module permet de <strong>chiffrer et d&eacute;chiffrer</strong> les donn&eacute;es au
+    niveau des piles de filtrage en entr&eacute;e et en sortie.</p>
 
-    <p>En particulier, il permet d'effectuer un <strong>chiffrement HLS à la
-    volée</strong> comme décrit dans le document <a href="http://www.ietf.org/id/draft-pantos-http-live-streaming-19.txt">draft-pantos-http-live-streaming-19</a>.</p>
+    <p>En particulier, il permet d'effectuer un <strong>chiffrement HLS &agrave; la
+    vol&eacute;e</strong> comme d&eacute;crit dans le document <a href="http://www.ietf.org/id/draft-pantos-http-live-streaming-19.txt">draft-pantos-http-live-streaming-19</a>.</p>
 
-    <p>Mais il peut aussi assurer la livraison sécurisée de données via un CDN
-    non sécurisé aux clients qui le supportent.</p>
+    <p>Mais il peut aussi assurer la livraison s&eacute;curis&eacute;e de donn&eacute;es via un CDN
+    non s&eacute;curis&eacute; aux clients qui le supportent.</p>
 
-    <p>Selon les besoins, on peut ajouter le filtre crypto à la pile de filtrage
-    en entrée ou en sortie via les directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>, <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
+    <p>Selon les besoins, on peut ajouter le filtre crypto &agrave; la pile de filtrage
+    en entr&eacute;e ou en sortie via les directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>, <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#format">Format du flux de données</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">Clés et blocs IV</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handler">Gestionnaire de clé de chiffrement</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#hls">HTTP Live Streaming (HLS)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#format">Format du flux de donn&eacute;es</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Cl&eacute;s et blocs IV</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#handler">Gestionnaire de cl&eacute; de chiffrement</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#hls">HTTP Live Streaming (HLS)</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#cryptocipher">CryptoCipher</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cryptodriver">CryptoDriver</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cryptoiv">CryptoIV</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cryptokey">CryptoKey</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cryptosize">CryptoSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cryptocipher">CryptoCipher</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cryptodriver">CryptoDriver</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cryptoiv">CryptoIV</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cryptokey">CryptoKey</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cryptosize">CryptoSize</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_crypto">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_crypto">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_crypto">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_crypto">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../filter.html">Filtres</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du flux de données</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
+<h2><a name="format" id="format">Format du flux de donn&eacute;es</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
     
 
-    <p>Le flux de données chiffrées comporte un bloc IV optionnel suivi des
-    données chiffrées avec l'algorithme de chiffrement choisi. Le bloc final est
-    éventuellement complété par bourrage avant d'être écrit. La taille des blocs
-    est déterminée par l'algorithme de chiffrement choisi.</p>
+    <p>Le flux de donn&eacute;es chiffr&eacute;es comporte un bloc IV optionnel suivi des
+    donn&eacute;es chiffr&eacute;es avec l'algorithme de chiffrement choisi. Le bloc final est
+    &eacute;ventuellement compl&eacute;t&eacute; par bourrage avant d'&ecirc;tre &eacute;crit. La taille des blocs
+    est d&eacute;termin&eacute;e par l'algorithme de chiffrement choisi.</p>
 
-    <p>Lorsque le bloc IV est spécifié via la directive <code class="directive"><a href="#cryptoiv">CryptoIV</a></code>, il est utilisé, mais n'est pas
-    injecté dans le flux d'entrée/sortie.</p>
+    <p>Lorsque le bloc IV est sp&eacute;cifi&eacute; via la directive <code class="directive"><a href="#cryptoiv">CryptoIV</a></code>, il est utilis&eacute;, mais n'est pas
+    inject&eacute; dans le flux d'entr&eacute;e/sortie.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Clés et blocs IV</a> <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
+<h2><a name="config" id="config">Cl&eacute;s et blocs IV</a> <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>Les directives <code class="directive"><a href="#cryptokey">CryptoKey</a></code> et
     <code class="directive"><a href="#cryptoiv">CryptoIV</a></code> acceptent comme
-    arguments des valeurs binaires qui peuvent être spécifiées comme indiqué
-    ci-après. Les bits les plus significatifs de ces valeurs sont utilisés, et
-    si les valeurs sont trop petites, elles sont complétées par bourrage avec
-    des bits à 0 par la gauche.
+    arguments des valeurs binaires qui peuvent &ecirc;tre sp&eacute;cifi&eacute;es comme indiqu&eacute;
+    ci-apr&egrave;s. Les bits les plus significatifs de ces valeurs sont utilis&eacute;s, et
+    si les valeurs sont trop petites, elles sont compl&eacute;t&eacute;es par bourrage avec
+    des bits &agrave; 0 par la gauche.
     </p>
 
     <dl>
-    <dt>file:</dt><dd>La valeur est lue directement depuis le fichier spécifié.</dd>
-    <dt>hex:</dt><dd>Interprète l'expression en tant que valeur hexadécimale qui
-    peut contenir des caractères ':' comme séparateurs.</dd>
-    <dt>decimal:</dt><dd>Interprète l'expression en tant que valeur décimale.</dd>
-    <dt>base64:</dt><dd>Interprète l'expression en tant que valeur codée en
+    <dt>file:</dt><dd>La valeur est lue directement depuis le fichier sp&eacute;cifi&eacute;.</dd>
+    <dt>hex:</dt><dd>Interpr&egrave;te l'expression en tant que valeur hexad&eacute;cimale qui
+    peut contenir des caract&egrave;res ':' comme s&eacute;parateurs.</dd>
+    <dt>decimal:</dt><dd>Interpr&egrave;te l'expression en tant que valeur d&eacute;cimale.</dd>
+    <dt>base64:</dt><dd>Interpr&egrave;te l'expression en tant que valeur cod&eacute;e en
     base64.</dd>
-    <dt>none</dt><dd>Aucune valeur n'est spécifiée.</dd>
+    <dt>none</dt><dd>Aucune valeur n'est sp&eacute;cifi&eacute;e.</dd>
     </dl>
 
-    <p>Si le IV n'est pas spécifié, un IV aléatoire sera généré au cours du
-    chiffrement et écrit comme premier bloc. Lors du déchiffrement, le premier
-    bloc sera interprété en tant que IV.
+    <p>Si le IV n'est pas sp&eacute;cifi&eacute;, un IV al&eacute;atoire sera g&eacute;n&eacute;r&eacute; au cours du
+    chiffrement et &eacute;crit comme premier bloc. Lors du d&eacute;chiffrement, le premier
+    bloc sera interpr&eacute;t&eacute; en tant que IV.
     </p>
 
     <p>A l'exception du format file:, les directives <code class="directive"><a href="#cryptokey">CryptoKey</a></code> et <code class="directive"><a href="#cryptoiv">CryptoIV</a></code> supportent la <a href="../expr.html">syntaxe des expressions</a> qui fournit plus de
-    flexibilité pour définir les valeurs. Les clés et IVs peuvent ainsi être
-    initialisées aléatoirement via des valeurs disponibles au niveau du serveur
+    flexibilit&eacute; pour d&eacute;finir les valeurs. Les cl&eacute;s et IVs peuvent ainsi &ecirc;tre
+    initialis&eacute;es al&eacute;atoirement via des valeurs disponibles au niveau du serveur
     web comme REMOTE_USER ou l'URL.
     </p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">Gestionnaire de clé de chiffrement</a> <a title="Lien permanent" href="#handler" class="permalink">&para;</a></h2>
+<h2><a name="handler" id="handler">Gestionnaire de cl&eacute; de chiffrement</a> <a title="Lien permanent" href="#handler" class="permalink">&para;</a></h2>
     
 
-    <p>Le gestionnaire <strong>crypto-key</strong> permet de fournir la clé aux
-    clients autorisés qui le supportent sans avoir à stocker cette dernière dans
-    l'arborescence du serveur web. La même <a href="../expr.html">syntaxe
-    d'expression</a> peut ainsi être utilisée afin d'obtenir la clé pour les
-    clients et pour le contenu chiffré.</p>
+    <p>Le gestionnaire <strong>crypto-key</strong> permet de fournir la cl&eacute; aux
+    clients autoris&eacute;s qui le supportent sans avoir &agrave; stocker cette derni&egrave;re dans
+    l'arborescence du serveur web. La m&ecirc;me <a href="../expr.html">syntaxe
+    d'expression</a> peut ainsi &ecirc;tre utilis&eacute;e afin d'obtenir la cl&eacute; pour les
+    clients et pour le contenu chiffr&eacute;.</p>
 
-    <div class="example"><h3>Gestionnaire de clé de chiffrement avec un fichier</h3><p><code>
-      &lt;Location /key&gt;<br />
+    <div class="example"><h3>Gestionnaire de cl&eacute; de chiffrement avec un fichier</h3><p><code>
+      &lt;Location /key&gt;<br>
       <span class="indent">
-        SetHandler crypto-key<br />
-        CryptoCipher aes128<br />
-        CryptoKey file:/path/to/file.key<br />
-        AuthType basic<br />
-        ...<br />
+        SetHandler crypto-key<br>
+        CryptoCipher aes128<br>
+        CryptoKey file:/path/to/file.key<br>
+        AuthType basic<br>
+        ...<br>
         </span>
-      &lt;/Location&gt;<br />
+      &lt;/Location&gt;<br>
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="hls" id="hls">HTTP Live Streaming (HLS)</a> <a title="Lien permanent" href="#hls" class="permalink">&para;</a></h2>
     
 
-    <p>Le protocole HLS supporte les flux chiffrés qui utilisent l'algorithme de
-    chiffrement AES-128 et une clé correspondante. On autorise l'accès au flux
-    en partageant la clé avec le client HLS en général via une connexion
-    sécurisée.</p>
+    <p>Le protocole HLS supporte les flux chiffr&eacute;s qui utilisent l'algorithme de
+    chiffrement AES-128 et une cl&eacute; correspondante. On autorise l'acc&egrave;s au flux
+    en partageant la cl&eacute; avec le client HLS en g&eacute;n&eacute;ral via une connexion
+    s&eacute;curis&eacute;e.</p>
 
-    <p>Le IV utilisé pour le chiffrement de chaque segment de media est spécifié
-    dans HLS de deux manières :</p>
+    <p>Le IV utilis&eacute; pour le chiffrement de chaque segment de media est sp&eacute;cifi&eacute;
+    dans HLS de deux mani&egrave;res :</p>
 
     <ul>
         <li>
-            Spécifié explicitement via un attribut IV dans le tag EXT-X-KEY sous
-	    la forme d'une valeur <strong>hexadécimale</strong>.
+            Sp&eacute;cifi&eacute; explicitement via un attribut IV dans le tag EXT-X-KEY sous
+	    la forme d'une valeur <strong>hexad&eacute;cimale</strong>.
         </li>
         <li>
-            Spécifié implicitement en interprétant la valeur
-	    <strong>décimale</strong> du tag EXT-X-MEDIA-SEQUENCE.
+            Sp&eacute;cifi&eacute; implicitement en interpr&eacute;tant la valeur
+	    <strong>d&eacute;cimale</strong> du tag EXT-X-MEDIA-SEQUENCE.
         </li>
     </ul>
 
-    <p>La valeur de la séquence de media est en générale incorporée dans les
-    noms de segment de média et peut être recherchée en utilisant des
-    expressions rationnelles nommées comme dans l'exemple ci-dessous.
+    <p>La valeur de la s&eacute;quence de media est en g&eacute;n&eacute;rale incorpor&eacute;e dans les
+    noms de segment de m&eacute;dia et peut &ecirc;tre recherch&eacute;e en utilisant des
+    expressions rationnelles nomm&eacute;es comme dans l'exemple ci-dessous.
     </p>
 
-    <div class="example"><h3>Exemple HLS - IV de la séquence de média</h3><p><code>
-      &lt;LocationMatch (?&lt;SEQUENCE&gt;[\d]+)[^\d^/]+$&gt;<br />
+    <div class="example"><h3>Exemple HLS - IV de la s&eacute;quence de m&eacute;dia</h3><p><code>
+      &lt;LocationMatch (?&lt;SEQUENCE&gt;[\d]+)[^\d^/]+$&gt;<br>
       <span class="indent">
-        SetOutputFilter ENCRYPT<br />
-        CryptoCipher aes128<br />
-        CryptoKey file:/path/to/file.key<br />
-        CryptoIV decimal:%{env:MATCH_SEQUENCE}<br />
+        SetOutputFilter ENCRYPT<br>
+        CryptoCipher aes128<br>
+        CryptoKey file:/path/to/file.key<br>
+        CryptoIV decimal:%{env:MATCH_SEQUENCE}<br>
         </span>
-      &lt;/LocationMatch&gt;<br />
+      &lt;/LocationMatch&gt;<br>
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="cryptocipher" id="cryptocipher">Directive</a> <a name="CryptoCipher" id="CryptoCipher">CryptoCipher</a> <a title="Lien permanent" href="#cryptocipher" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme de chiffrement que le filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoCipher name</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CryptoCipher aes256</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>CryptoCipher aes256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>La directive <code class="directive">CryptoCipher</code> permet de spécifier
-    l'algorithme de chiffrement à utiliser au cours des phases de chiffrement et
-    de déchiffrement. L'algorithme de chiffrement par défaut est
+    <p>La directive <code class="directive">CryptoCipher</code> permet de sp&eacute;cifier
+    l'algorithme de chiffrement &agrave; utiliser au cours des phases de chiffrement et
+    de d&eacute;chiffrement. L'algorithme de chiffrement par d&eacute;faut est
     <code>aes256</code>.</p>
 
-    <p>C'est le pilote crypto utilisé qui détermine l'étendue du choix des algorithmes de
+    <p>C'est le pilote crypto utilis&eacute; qui d&eacute;termine l'&eacute;tendue du choix des algorithmes de
     chiffrement parmi les valeurs possibles suivantes :</p>
 
     <ul><li>3des192</li><li>aes128</li><li>aes192</li><li>aes256</li></ul>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="cryptodriver" id="cryptodriver">Directive</a> <a name="CryptoDriver" id="CryptoDriver">CryptoDriver</a> <a title="Lien permanent" href="#cryptodriver" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du pilote crypto à utiliser</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du pilote crypto &agrave; utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoDriver name</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CryptoDriver openssl</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>CryptoDriver openssl</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
     <p>La directive <code class="directive">CryptoDriver</code>
-    permet de spécifier le nom du pilote crypto à utiliser. Un pilote recommandé
-    par défaut est en général défini pour chaque plateforme. Les pilotes
-    supportés sont <strong>openssl</strong>, <strong>commoncrypto</strong> et
+    permet de sp&eacute;cifier le nom du pilote crypto &agrave; utiliser. Un pilote recommand&eacute;
+    par d&eacute;faut est en g&eacute;n&eacute;ral d&eacute;fini pour chaque plateforme. Les pilotes
+    support&eacute;s sont <strong>openssl</strong>, <strong>commoncrypto</strong> et
     <strong>nss</strong>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="cryptoiv" id="cryptoiv">Directive</a> <a name="CryptoIV" id="CryptoIV">CryptoIV</a> <a title="Lien permanent" href="#cryptoiv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le Vecteur d'Initialisation IV (Initialisation Vector) que le
 filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoIV value</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CryptoIV none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>CryptoIV none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>La directive <code class="directive">CryptoIV</code> permet de spécifier le IV
-    (Initialisation Vector) pour l'espace d'URL considéré. Le IV peut être lu à
-    partir d'un fichier ou défini via l'<a href="../expr.html">interpréteur
-    d'expressions</a>, ce qui confère plus de souplesse aux scénarios de
-    définition des clés.</p>
+    <p>La directive <code class="directive">CryptoIV</code> permet de sp&eacute;cifier le IV
+    (Initialisation Vector) pour l'espace d'URL consid&eacute;r&eacute;. Le IV peut &ecirc;tre lu &agrave;
+    partir d'un fichier ou d&eacute;fini via l'<a href="../expr.html">interpr&eacute;teur
+    d'expressions</a>, ce qui conf&egrave;re plus de souplesse aux sc&eacute;narios de
+    d&eacute;finition des cl&eacute;s.</p>
 
-    <p>Les valeurs possibles peuvent être lues depuis un fichier ou exprimées
-    sous une forme hexadécimale, décimale ou en base64 en fonction des préfixes
+    <p>Les valeurs possibles peuvent &ecirc;tre lues depuis un fichier ou exprim&eacute;es
+    sous une forme hexad&eacute;cimale, d&eacute;cimale ou en base64 en fonction des pr&eacute;fixes
     suivants :</p>
 
     <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
 
-    <p>La valeur 'none' désactive la définition du IV. Dans ce cas, un IV
-    aléatoire sera généré durant le chiffrement et inséré en tant que premier
-    bloc ; au cours du déchiffrement, le premier bloc sera interprété comme bloc
+    <p>La valeur 'none' d&eacute;sactive la d&eacute;finition du IV. Dans ce cas, un IV
+    al&eacute;atoire sera g&eacute;n&eacute;r&eacute; durant le chiffrement et ins&eacute;r&eacute; en tant que premier
+    bloc ; au cours du d&eacute;chiffrement, le premier bloc sera interpr&eacute;t&eacute; comme bloc
     IV.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="cryptokey" id="cryptokey">Directive</a> <a name="CryptoKey" id="CryptoKey">CryptoKey</a> <a title="Lien permanent" href="#cryptokey" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Clé que le filtre crypto doit utiliser</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cl&eacute; que le filtre crypto doit utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoKey value</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CryptoKey none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>CryptoKey none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
-    <p>La directive <code class="directive">CryptoKey</code> permet de spécifier la clé
-    de chiffrement/déchiffrement pour l'espace d'URL considéré. La clé peut être
-    lue depuis un fichier ou défini via l'<a href="../expr.html">interpréteur
-    d'expressions</a>, ce qui confère plus de souplesse aux scénarios de
-    définition des clés.</p>
+    <p>La directive <code class="directive">CryptoKey</code> permet de sp&eacute;cifier la cl&eacute;
+    de chiffrement/d&eacute;chiffrement pour l'espace d'URL consid&eacute;r&eacute;. La cl&eacute; peut &ecirc;tre
+    lue depuis un fichier ou d&eacute;fini via l'<a href="../expr.html">interpr&eacute;teur
+    d'expressions</a>, ce qui conf&egrave;re plus de souplesse aux sc&eacute;narios de
+    d&eacute;finition des cl&eacute;s.</p>
 
-    <p>Les valeurs possibles peuvent être lues depuis un fichier ou exprimées
-    sous une forme hexadécimale, décimale ou en base64 en fonction des préfixes
+    <p>Les valeurs possibles peuvent &ecirc;tre lues depuis un fichier ou exprim&eacute;es
+    sous une forme hexad&eacute;cimale, d&eacute;cimale ou en base64 en fonction des pr&eacute;fixes
     suivants :</p>
 
     <ul><li>file:</li><li>hex:</li><li>decimal:</li><li>base64:</li></ul>
 
-    <p>La valeur 'none' désactive la clé. Toute requête pour obtenir sans clé un fichier
-    via les filtres ENCRYPT ou DECRYPT se soldera alors par un échec. </p>
+    <p>La valeur 'none' d&eacute;sactive la cl&eacute;. Toute requ&ecirc;te pour obtenir sans cl&eacute; un fichier
+    via les filtres ENCRYPT ou DECRYPT se soldera alors par un &eacute;chec. </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="cryptosize" id="cryptosize">Directive</a> <a name="CryptoSize" id="CryptoSize">CryptoSize</a> <a title="Lien permanent" href="#cryptosize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du tampon utilisé par le filtre crypto</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du tampon utilis&eacute; par le filtre crypto</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CryptoSize integer</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CryptoSize 131072</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>CryptoSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_crypto</td></tr>
 </table>
     <p>La directive <code class="directive">CryptoSize</code> permet
-    de spécifier la quantité de données en octets qui sera mise en tampon pour
-    chaque requête avant d'être chiffrée ou déchiffrée. La valeur par défaut est
+    de sp&eacute;cifier la quantit&eacute; de donn&eacute;es en octets qui sera mise en tampon pour
+    chaque requ&ecirc;te avant d'&ecirc;tre chiffr&eacute;e ou d&eacute;chiffr&eacute;e. La valeur par d&eacute;faut est
     128 Ko.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_crypto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_crypto.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_crypto.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

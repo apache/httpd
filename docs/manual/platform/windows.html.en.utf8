@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Using Apache HTTP Server on Microsoft Windows - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache HTTP Server on Microsoft Windows</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
@@ -43,16 +41,16 @@
     see <a href="win_compiling.html">Compiling httpd for Microsoft
     Windows</a>.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Operating System Requirements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading httpd for Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cust">Customizing httpd for Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#winsvc">Running httpd as a Service</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#wincons">Running httpd as a Console Application</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#test">Testing the Installation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#windrivemap">Configuring Access to Network Resources</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tuning">Windows Tuning</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#req">Operating System Requirements</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#down">Downloading httpd for Windows</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cust">Customizing httpd for Windows</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#winsvc">Running httpd as a Service</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#wincons">Running httpd as a Console Application</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#test">Testing the Installation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#windrivemap">Configuring Access to Network Resources</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#tuning">Windows Tuning</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="req" id="req">Operating System Requirements</a> <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
     
@@ -63,7 +61,7 @@
 
     <div class="note">Apache HTTP Server versions later than 2.2 will not run on any
     operating system earlier than Windows 2000.</div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="down" id="down">Downloading httpd for Windows</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
     
@@ -81,7 +79,7 @@
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="cust" id="cust">Customizing httpd for Windows</a> <a title="Permanent link" href="#cust" class="permalink">&para;</a></h2>
     
@@ -208,7 +206,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
       - Event Viewer.</p></li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="winsvc" id="winsvc">Running httpd as a Service</a> <a title="Permanent link" href="#winsvc" class="permalink">&para;</a></h2>
     
@@ -365,7 +363,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     Windows Control Panel, you may get the following message:</p>
 
     <div class="example"><p><code>
-      Could not start the Apache2.5 service on \\COMPUTER <br />
+      Could not start the Apache2.5 service on \\COMPUTER <br>
       Error 1067; The process terminated unexpectedly.
     </code></p></div>
 
@@ -378,7 +376,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     you follow the instructions below to try starting httpd.exe from
     a console window, and work out the errors before struggling to
     start it as a service again.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="wincons" id="wincons">Running httpd as a Console Application</a> <a title="Permanent link" href="#wincons" class="permalink">&para;</a></h2>
     
@@ -450,8 +448,8 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     you can do the following:</p>
 
     <div class="example"><p><code>
-      c: <br />
-      cd "\Program Files\Apache Software Foundation\Apache2.5\bin" <br />
+      c: <br>
+      cd "\Program Files\Apache Software Foundation\Apache2.5\bin" <br>
       httpd.exe
     </code></p></div>
 
@@ -459,7 +457,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     following:</p>
 
     <div class="example"><p><code>
-      cd ..\logs <br />
+      cd ..\logs <br>
       more &lt; error.log
     </code></p></div>
 
@@ -541,7 +539,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     location it is vital that you update the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> directive in the
     <code>httpd.conf</code> file to reflect the new location.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="test" id="test">Testing the Installation</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
     
@@ -587,7 +585,7 @@ RewriteRule "(.*)"           "${lowercase:$1}" [R,L]</pre>
     services include other WWW servers, some firewall implementations,
     and even some client applications (such as Skype) which will use port
     80 to attempt to bypass firewall issues.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="windrivemap" id="windrivemap">Configuring Access to Network Resources</a> <a title="Permanent link" href="#windrivemap" class="permalink">&para;</a></h2>
     
@@ -636,7 +634,7 @@ Alias "/images2/" "//imagehost2/www/images/"
   <p>When running Apache httpd as a service, you must create a
   separate account in order to access network resources, as described
   above.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="tuning" id="tuning">Windows Tuning</a> <a title="Permanent link" href="#tuning" class="permalink">&para;</a></h2>
     
@@ -648,10 +646,10 @@ Alias "/images2/" "//imagehost2/www/images/"
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,84 +1,82 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_rewrite ile Devingen Kitlesel Sanal Konaklar - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<title>mod_rewrite ile Devingen Kitlesel Sanal Konaklar - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite ile Devingen Kitlesel Sanal Konaklar</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite ile Devingen Kitlesel Sanal Konaklar</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/vhosts.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/vhosts.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/vhosts.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 
 <p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 <a href="../mod/mod_rewrite.html">başvuru belgelerini</a> tamamlar.
-Devingen olarak yapılandırılmış sanal konaklar oluşturmak için
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünü nasıl kullanabileceğinizi
-açıklar.</p>
+Devingen olarak yapılandırılmış sanal konaklar oluşturmak i&ccedil;in
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml; nasıl kullanabileceğinizi
+a&ccedil;ıklar.</p>
 
 <div class="warning"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, sanal konakları
 yapılandırmanın genellikle en iyi yolu değildir. mod_rewrite'a
-başvurmadan önce <a href="../vhosts/mass.html">alternatifleri</a>
+başvurmadan &ouml;nce <a href="../vhosts/mass.html">alternatifleri</a>
 değerlendirmelisiniz. Ayrıca "<a href="avoid.html#vhosts">mod_rewrite
-kullanmaktan nasıl kaçınılır</a>" belgesine de bakın.</div>
+kullanmaktan nasıl ka&ccedil;ınılır</a>" belgesine de bakın.</div>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#per-hostname">Keyfi Konak Adları için Sanal Konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#per-hostname">Keyfi Konak Adları i&ccedil;in Sanal Konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple.rewrite"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     Kullanılarak Devingen Sanal Konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">Ayrı Bir Sanal Konak Yapılandırma Dosyası Kullanımı</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<li><img alt="" src="../images/down.gif"> <a href="#xtra-conf">Ayrı Bir Sanal Konak Yapılandırma Dosyası Kullanımı</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="per-hostname" id="per-hostname">Keyfi Konak Adları için Sanal Konaklar</a> <a title="Permanent link" href="#per-hostname" class="permalink">&para;</a></h2>
+<h2><a name="per-hostname" id="per-hostname">Keyfi Konak Adları i&ccedil;in Sanal Konaklar</a> <a title="Permanent link" href="#per-hostname" class="permalink">&para;</a></h2>
 
   
 
   <dl>
-    <dt>Açıklama:</dt>
+    <dt>A&ccedil;ıklama:</dt>
 
     <dd>
-    <p>Alan adımızda çözümlenen her konak adı için, yeni VirtualHost
-    bölümleri oluşturmak zorunda kalmadan otomatik olarak bir sanal
+    <p>Alan adımızda &ccedil;&ouml;z&uuml;mlenen her konak adı i&ccedil;in, yeni VirtualHost
+    b&ouml;l&uuml;mleri oluşturmak zorunda kalmadan otomatik olarak bir sanal
     konak oluşturmak istiyoruz.</p>
 
-    <p>Bu tarifle, her kullanıcı için
+    <p>Bu tarifle, her kullanıcı i&ccedil;in
     <code><strong>SITE</strong>.example.com</code> konak adını
-    kullanacağımızı ve içeriklerini
+    kullanacağımızı ve i&ccedil;eriklerini
     <code>/home/<strong>SITE</strong>/www</code> dizininden
     sunacağımızı varsayıyoruz. Ancak
-    <code>www.example.com</code>'u bu eşlemeden hariç tutmak
+    <code>www.example.com</code>'u bu eşlemeden hari&ccedil; tutmak
     istiyoruz.</p>
     </dd>
 
-    <dt>Çözüm:</dt>
+    <dt>&Ccedil;&ouml;z&uuml;m:</dt>
 
     <dd>
 
@@ -94,19 +92,19 @@ RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1</pre>
 <dt>Tartışma</dt>
     <dd>
 
-    <div class="warning">DNS çözümlemesine dikkat etmeniz
-    gerekecektir - Apache ad çözümlemesini üstlenmez. Her konak adı
-    için CNAME kayıtları veya bir DNS joker kaydı oluşturmanız
+    <div class="warning">DNS &ccedil;&ouml;z&uuml;mlemesine dikkat etmeniz
+    gerekecektir - Apache ad &ccedil;&ouml;z&uuml;mlemesini &uuml;stlenmez. Her konak adı
+    i&ccedil;in CNAME kayıtları veya bir DNS joker kaydı oluşturmanız
     gerekecektir. DNS kayıtları oluşturmak bu belgenin kapsamı
     dışındadır.</div>
 
-<p>Kullanılan konak adlarının tümünün küçük harf olmasını sağlamak
-için dahili <code>tolower</code> RewriteMap yönergesi kullanılır;
-böylece oluşturulması gereken dizin yapısında belirsizlik olmaz.</p>
+<p>Kullanılan konak adlarının t&uuml;m&uuml;n&uuml;n k&uuml;&ccedil;&uuml;k harf olmasını sağlamak
+i&ccedil;in dahili <code>tolower</code> RewriteMap y&ouml;nergesi kullanılır;
+b&ouml;ylece oluşturulması gereken dizin yapısında belirsizlik olmaz.</p>
 
 <p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
-içinde kullanılan parantezler <code>%1</code>, <code>%2</code> vb.
-geri başvurulara yakalanırken, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> içinde kullanılan
+i&ccedil;inde kullanılan parantezler <code>%1</code>, <code>%2</code> vb.
+geri başvurulara yakalanırken, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> i&ccedil;inde kullanılan
 parantezler <code>$1</code>, <code>$2</code> vb. geri başvurulara
 yakalanır.</p>
 
@@ -115,58 +113,58 @@ başlayıp başlamadığını kontrol eder ve başlıyorsa yeniden yazma
 atlanır.</p>
 
 <p>
-Bu belgede tartışılan birçok teknikte olduğu gibi, bu görevi
-gerçekleştirmek için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> gerçekten en iyi
-yol değildir. Bunun yerine, statik dosyaların sunulmasının ötesinde
-devingen içerik ve Alias çözümlemesi gibi şeyleri çok daha zarif bir
+Bu belgede tartışılan bir&ccedil;ok teknikte olduğu gibi, bu g&ouml;revi
+ger&ccedil;ekleştirmek i&ccedil;in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ger&ccedil;ekten en iyi
+yol değildir. Bunun yerine, statik dosyaların sunulmasının &ouml;tesinde
+devingen i&ccedil;erik ve Alias &ccedil;&ouml;z&uuml;mlemesi gibi şeyleri &ccedil;ok daha zarif bir
 şekilde ele alacak olan <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> kullanmayı
-düşünmelisiniz.
+d&uuml;ş&uuml;nmelisiniz.
 </p>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="simple.rewrite" id="simple.rewrite"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     Kullanılarak Devingen Sanal Konaklar</a> <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
 
-    <p>Bu <code>httpd.conf</code> alıntısı, <a href="#per-hostname">ilk örnekle</a> aynı şeyi yapar. İlk yarısı
-    yukarıdaki karşılık gelen bölüme çok benzer; ancak geriye dönük
-    uyumluluk ve <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> bölümünün düzgün
-    çalışması için gereken bazı değişiklikler yapılmıştır; ikinci
-    yarısı ise <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünü asıl işi yapacak
+    <p>Bu <code>httpd.conf</code> alıntısı, <a href="#per-hostname">ilk &ouml;rnekle</a> aynı şeyi yapar. İlk yarısı
+    yukarıdaki karşılık gelen b&ouml;l&uuml;me &ccedil;ok benzer; ancak geriye d&ouml;n&uuml;k
+    uyumluluk ve <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n d&uuml;zg&uuml;n
+    &ccedil;alışması i&ccedil;in gereken bazı değişiklikler yapılmıştır; ikinci
+    yarısı ise <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml; asıl işi yapacak
     şekilde yapılandırır.</p>
 
-    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, diğer URI çeviri modüllerinden
-    (örneğin <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>) önce çalıştığından,
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülüne bu modüller tarafından
-    işlenecek URL'leri açıkça yok sayması söylenmelidir. Ve bu
-    kurallar aksi takdirde <code>ScriptAlias</code> yönergelerini
-    atlayacağından, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün bu
-    eşlemeleri açıkça uygulaması gerekir.</p>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, diğer URI &ccedil;eviri mod&uuml;llerinden
+    (&ouml;rneğin <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>) &ouml;nce &ccedil;alıştığından,
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;ne bu mod&uuml;ller tarafından
+    işlenecek URL'leri a&ccedil;ık&ccedil;a yok sayması s&ouml;ylenmelidir. Ve bu
+    kurallar aksi takdirde <code>ScriptAlias</code> y&ouml;nergelerini
+    atlayacağından, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n bu
+    eşlemeleri a&ccedil;ık&ccedil;a uygulaması gerekir.</p>
 
 <pre class="prettyprint lang-config"># Konak adını Host: başlığından al
 UseCanonicalName Off
 
-# bölünebilir günlükler
+# b&ouml;l&uuml;nebilir g&uuml;nl&uuml;kler
 LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog "logs/access_log" vcommon
 
 &lt;Directory "/www/hosts"&gt;
-    # ScriptAlias'ın yaptığı gibi CGI yürütmesini
-    # zorlayamadığımız için burada ExecCGI gereklidir
+    # ScriptAlias'ın yaptığı gibi CGI y&uuml;r&uuml;tmesini
+    # zorlayamadığımız i&ccedil;in burada ExecCGI gereklidir
     Options FollowSymLinks ExecCGI
 &lt;/Directory&gt;
 
 RewriteEngine On
 
-# bir Host: başlığından türetilen ServerName herhangi bir durumda olabilir
+# bir Host: başlığından t&uuml;retilen ServerName herhangi bir durumda olabilir
 RewriteMap  lowercase  "int:tolower"
 
-## önce normal belgeleri ele al:
-# Alias /icons/ çalışmasına izin ver - diğer takma adlar için tekrarla
+## &ouml;nce normal belgeleri ele al:
+# Alias /icons/ &ccedil;alışmasına izin ver - diğer takma adlar i&ccedil;in tekrarla
 RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
-# CGI'lerin çalışmasına izin ver
+# CGI'lerin &ccedil;alışmasına izin ver
 RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
 # sihri yap
 RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1"
@@ -176,25 +174,25 @@ RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
 RewriteRule  "^/(.*)$"         "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="xtra-conf" id="xtra-conf">Ayrı Bir Sanal Konak Yapılandırma Dosyası Kullanımı</a> <a title="Permanent link" href="#xtra-conf" class="permalink">&para;</a></h2>
 
-    <p>Bu düzenleme, sanal konaktan belge köküne çeviriyi ayrı bir
-    yapılandırma dosyasından çözmek için daha gelişmiş
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> özelliklerini kullanır. Bu daha fazla
+    <p>Bu d&uuml;zenleme, sanal konaktan belge k&ouml;k&uuml;ne &ccedil;eviriyi ayrı bir
+    yapılandırma dosyasından &ccedil;&ouml;zmek i&ccedil;in daha gelişmiş
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> &ouml;zelliklerini kullanır. Bu daha fazla
     esneklik sağlar ancak daha karmaşık yapılandırma gerektirir.</p>
 
-    <p><code>vhost.map</code> dosyası şöyle görünmelidir:</p>
+    <p><code>vhost.map</code> dosyası ş&ouml;yle g&ouml;r&uuml;nmelidir:</p>
 
 <div class="example"><p><code>
-customer-1.example.com  /www/customers/1<br />
-customer-2.example.com  /www/customers/2<br />
-# ...<br />
-customer-N.example.com  /www/customers/N<br />
+customer-1.example.com  /www/customers/1<br>
+customer-2.example.com  /www/customers/2<br>
+# ...<br>
+customer-N.example.com  /www/customers/N<br>
 </code></p></div>
 
-    <p><code>httpd.conf</code> dosyası şunları içermelidir:</p>
+    <p><code>httpd.conf</code> dosyası şunları i&ccedil;ermelidir:</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
 
@@ -221,15 +219,15 @@ RewriteRule  "^/cgi-bin/(.*)$"                      "%1/cgi-bin/$1" [H=cgi-scrip
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/vhosts.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/vhosts.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/vhosts.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/vhosts.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/vhosts.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/vhosts.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/vhosts.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/vhosts.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

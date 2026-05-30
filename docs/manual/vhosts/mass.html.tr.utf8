@@ -1,61 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<title>Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Devingen olarak Yapılandırılan Kitlesel Sanal Barındırma</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/mass.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/mass.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 
     <p>Bu belgede sanal konakların sonu belirsiz bir şekilde artışı karşısında
-      Apache HTTP Sunucusunun nasıl daha verimli kullanılacağı açıklanmıştır.
-      Devingen kitlesel konakları oluşturmak için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
-      modülünün kullanımını açıklayan <a href="../rewrite/vhosts.html">ayrı bir
+      Apache HTTP Sunucusunun nasıl daha verimli kullanılacağı a&ccedil;ıklanmıştır.
+      Devingen kitlesel konakları oluşturmak i&ccedil;in <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      mod&uuml;l&uuml;n&uuml;n kullanımını a&ccedil;ıklayan <a href="../rewrite/vhosts.html">ayrı bir
       belge</a> de mevcuttur.
     </p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#motivation">Amaç</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#overview">Genel Bakış</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple">mod_vhost_alias ile Kitlesel Sanal Konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#homepages">Basitleştirilmiş Kitlesel Sanal Konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#combinations">Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipbased">IP'ye dayalı sanal konakları daha verimli kılmak</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite"><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#motivation">Ama&ccedil;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#overview">Genel Bakış</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple">mod_vhost_alias ile Kitlesel Sanal Konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#homepages">Basitleştirilmiş Kitlesel Sanal Konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#combinations">Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ipbased">IP'ye dayalı sanal konakları daha verimli kılmak</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple.rewrite"><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="motivation" id="motivation">Amaç</a> <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
+<h2><a name="motivation" id="motivation">Ama&ccedil;</a> <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
 
-    <p>Burada açıklanan teknikler, <code>httpd.conf</code> dosyanızın
-      örnekteki gibi, aslında hemen hemen birbirinin aynı çok sayıda
-      <code>&lt;VirtualHost&gt;</code> bölümü içereceği zaman yapılacaklar ile
+    <p>Burada a&ccedil;ıklanan teknikler, <code>httpd.conf</code> dosyanızın
+      &ouml;rnekteki gibi, aslında hemen hemen birbirinin aynı &ccedil;ok sayıda
+      <code>&lt;VirtualHost&gt;</code> b&ouml;l&uuml;m&uuml; i&ccedil;ereceği zaman yapılacaklar ile
       ilgilidir.</p>
 
 <pre>&lt;VirtualHost 111.22.33.44&gt;
@@ -76,53 +74,53 @@
     ScriptAlias  /cgi-bin/  /siteler/musteri-N/cgi-bin
 &lt;/VirtualHost&gt;</pre>
 
-    <p>İsteğimiz çok sayıda <code>&lt;VirtualHost&gt;</code> bölümünü devingen
-      olarak çalışan tek bir <code>&lt;VirtualHost&gt;</code> bölümüyle
+    <p>İsteğimiz &ccedil;ok sayıda <code>&lt;VirtualHost&gt;</code> b&ouml;l&uuml;m&uuml;n&uuml; devingen
+      olarak &ccedil;alışan tek bir <code>&lt;VirtualHost&gt;</code> b&ouml;l&uuml;m&uuml;yle
       değiştirmektir. Bunun elbette bazı getirileri olacaktır:</p>
 
     <ol>
-      <li>Yapılandırma dosyanız küçüleceği için Apache daha çabuk
+      <li>Yapılandırma dosyanız k&uuml;&ccedil;&uuml;leceği i&ccedil;in Apache daha &ccedil;abuk
         başlatılabilecek ve daha az bellek harcayacaktır. Muhtemelen daha da
-        önemlisi, küçülmüş bir yapılandırmanın bakımı da kolaylaşacağı için
+        &ouml;nemlisi, k&uuml;&ccedil;&uuml;lm&uuml;ş bir yapılandırmanın bakımı da kolaylaşacağı i&ccedil;in
         hatalar da azalacaktır.</li>
 
       <li>Yeni sanal konakların eklenmesi, DNS'de yeni girdiler oluşturmak ve
-        dosya sisteminde bununla ilgili dizinleri açmak dışında biraz daha
+        dosya sisteminde bununla ilgili dizinleri a&ccedil;mak dışında biraz daha
         basit olacaktır; en azından Apache'yi yeniden yapılandırmak ve yeniden
         başlatmak zorunda kalmayacaksınız.</li>
     </ol>
 
-    <p>Ana götürüsü ise her sanal konak için ayrı birer günlük dosyasına sahip
-      olamayacak olmanızdır. Öte yandan, <a href="fd-limits.html">dosya
+    <p>Ana g&ouml;t&uuml;r&uuml;s&uuml; ise her sanal konak i&ccedil;in ayrı birer g&uuml;nl&uuml;k dosyasına sahip
+      olamayacak olmanızdır. &Ouml;te yandan, <a href="fd-limits.html">dosya
       tanıtıcılarının sınırlı olması</a>  nedeniyle bunu yapmayı zaten
-      istemezsiniz. Günlük kayıtları için bir <a href="../logs.html#piped">fifo
-      veya bir boru hattı</a> oluşturmak ve diğer uçta çalışan bir süreç
-      vasıtasıyla günlükleri müşterilere paylaştırmak daha iyidir. Böyle bir
-      işlemle ilgili bir örneği <a href="../programs/other.html#split-logfile">split-logfile</a> aracının belgesinde bulabilirsiniz.</p>
+      istemezsiniz. G&uuml;nl&uuml;k kayıtları i&ccedil;in bir <a href="../logs.html#piped">fifo
+      veya bir boru hattı</a> oluşturmak ve diğer u&ccedil;ta &ccedil;alışan bir s&uuml;re&ccedil;
+      vasıtasıyla g&uuml;nl&uuml;kleri m&uuml;şterilere paylaştırmak daha iyidir. B&ouml;yle bir
+      işlemle ilgili bir &ouml;rneği <a href="../programs/other.html#split-logfile">split-logfile</a> aracının belgesinde bulabilirsiniz.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Genel Bakış</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <p>Bir sanal konak iki bilgiye bakarak belirlenir: IP adresi ve HTTP
-      isteğindeki <code>Host:</code> başlığının içeriği. Devingen sanal
-      barındırma tekniği, isteği yerine getirmek için kullanılacak dosya
+      isteğindeki <code>Host:</code> başlığının i&ccedil;eriği. Devingen sanal
+      barındırma tekniği, isteği yerine getirmek i&ccedil;in kullanılacak dosya
       yoluna bu bilgiyi kendiliğinden girmek esasına dayanır. Bu, Apache httpd
-      ile <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> modülünü kullanarak oldukça kolay
-      yapılabileceği gibi <a href="../rewrite/vhosts.html">mod_rewrite modülü
+      ile <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> mod&uuml;l&uuml;n&uuml; kullanarak olduk&ccedil;a kolay
+      yapılabileceği gibi <a href="../rewrite/vhosts.html">mod_rewrite mod&uuml;l&uuml;
       de kullanılabilir</a>.</p>
 
-    <p>Bu modüllerin her ikisi de öntanımlı olarak devre dışıdır. Bu tekniği
+    <p>Bu mod&uuml;llerin her ikisi de &ouml;ntanımlı olarak devre dışıdır. Bu tekniği
       kullanmak isterseniz  Apache httpd'yi yeniden yapılandırıp derleyerek bu
-      iki modülü etkin duruma getirmeniz gerekir.</p>
+      iki mod&uuml;l&uuml; etkin duruma getirmeniz gerekir.</p>
 
-    <p>Devingen sanal konağı normal bir sanal konak gibi göstermek için
-      bazı bilgileri istekten saptamak gerekir. Bunlardan en önemlisi,
-      httpd tarafından göreli URL'lerden normal URL'leri ve benzerlerini
-      üretmek için kullanılan sunucu ismidir. Sunucu ismi
-      <code>ServerName</code> yönergesi ile yapılandırılır ve CGI'ler
-      tarafından <code>SERVER_NAME</code> ortam değişkeni üzerinden
-      kullanılır. Çalışma anındaki asıl değer <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> yönergesi tarafından denetlenir.
+    <p>Devingen sanal konağı normal bir sanal konak gibi g&ouml;stermek i&ccedil;in
+      bazı bilgileri istekten saptamak gerekir. Bunlardan en &ouml;nemlisi,
+      httpd tarafından g&ouml;reli URL'lerden normal URL'leri ve benzerlerini
+      &uuml;retmek i&ccedil;in kullanılan sunucu ismidir. Sunucu ismi
+      <code>ServerName</code> y&ouml;nergesi ile yapılandırılır ve CGI'ler
+      tarafından <code>SERVER_NAME</code> ortam değişkeni &uuml;zerinden
+      kullanılır. &Ccedil;alışma anındaki asıl değer <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> y&ouml;nergesi tarafından denetlenir.
       <code>UseCanonicalName Off</code> olduğunda sunucu ismi isteğin
       <code>Host:</code> başlık alanından elde edilir. <code>UseCanonicalName
       DNS</code> belirtilmişse, sunucu ismi, sanal konağın IP adresinden
@@ -130,190 +128,190 @@
       konaklar tarafından ikincisi ise IP'ye dayalı sanal konaklar tarafından
       kullanılır. Eğer httpd, istekte <code>Host:</code> başlığının olmayışı
       veya DNS sorgusunun başarısız olması sebebiyle sunucu ismini elde
-      edemezse son çare olarak <code>ServerName</code> yönergesinde yazılı
+      edemezse son &ccedil;are olarak <code>ServerName</code> y&ouml;nergesinde yazılı
       değeri kullanır.</p>
 
     <p>Saptanan bilgilerden biri de <code>DocumentRoot</code>
-      yönergesi ile yapılandırılan belge kök dizini olup CGI'ler tarafından
-      <code>DOCUMENT_ROOT</code> ortam değişkeni üzerinden kullanılır. Normal
-      yapılandırmada <code class="module"><a href="../mod/core.html">core</a></code> modülü tarafından dosya isimlerini
+      y&ouml;nergesi ile yapılandırılan belge k&ouml;k dizini olup CGI'ler tarafından
+      <code>DOCUMENT_ROOT</code> ortam değişkeni &uuml;zerinden kullanılır. Normal
+      yapılandırmada <code class="module"><a href="../mod/core.html">core</a></code> mod&uuml;l&uuml; tarafından dosya isimlerini
       URI'lere eşlerken kullanılır. Fakat sunucu devingen sanal konakları
-      kullanmak üzere yapılandırıldığında, eşleştirmeyi farklı yollardan yapan
-      başka bir modül devreye girer (<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> veya
+      kullanmak &uuml;zere yapılandırıldığında, eşleştirmeyi farklı yollardan yapan
+      başka bir mod&uuml;l devreye girer (<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> veya
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>). <code>DOCUMENT_ROOT</code> ortam
-      değişkenine değerini atamaktan sorumlu olan bu iki modülden biri
-      kullanılmazsa CGI veya SSI belgeleri yanlış değerlerle üretilirler.</p>
+      değişkenine değerini atamaktan sorumlu olan bu iki mod&uuml;lden biri
+      kullanılmazsa CGI veya SSI belgeleri yanlış değerlerle &uuml;retilirler.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="simple" id="simple">mod_vhost_alias ile Kitlesel Sanal Konaklar</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
 
-    <p>Yukarıda <a href="#motivation">Amaç</a> bölümünde özetlenen sanal konak
-      düzenlemesinin <code>mod_vhost_alias</code> kullanarak gerçekleştirilmiş
-      halini içeren <code>httpd.conf</code> bölümü aşağıdadır.</p>
+    <p>Yukarıda <a href="#motivation">Ama&ccedil;</a> b&ouml;l&uuml;m&uuml;nde &ouml;zetlenen sanal konak
+      d&uuml;zenlemesinin <code>mod_vhost_alias</code> kullanarak ger&ccedil;ekleştirilmiş
+      halini i&ccedil;eren <code>httpd.conf</code> b&ouml;l&uuml;m&uuml; aşağıdadır.</p>
 
 <div class="example"><p><code>
-# sunucu ismini Host: başlığından elde edelim<br />
-UseCanonicalName Off<br />
-<br />
-# Bu günlükleme biçiminde split-logfile aracı kullanılarak<br />
-# ilk alana dayalı sanal konak günlükleri ayrıştırılabilir<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# istekleri yerine getirmek için kullanılacak<br />
-# dosya isimlerine sunucu ismini ekleyelim<br />
-VirtualDocumentRoot /siteler/%0/belgeler<br />
+# sunucu ismini Host: başlığından elde edelim<br>
+UseCanonicalName Off<br>
+<br>
+# Bu g&uuml;nl&uuml;kleme bi&ccedil;iminde split-logfile aracı kullanılarak<br>
+# ilk alana dayalı sanal konak g&uuml;nl&uuml;kleri ayrıştırılabilir<br>
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br>
+CustomLog logs/access_log vcommon<br>
+<br>
+# istekleri yerine getirmek i&ccedil;in kullanılacak<br>
+# dosya isimlerine sunucu ismini ekleyelim<br>
+VirtualDocumentRoot /siteler/%0/belgeler<br>
 VirtualScriptAlias  /siteler/%0/cgi-bin
 </code></p></div>
 
-    <p>Bu yapılandırmayı IP'ye dayalı sanal konaklar için kullanmak isterseniz
+    <p>Bu yapılandırmayı IP'ye dayalı sanal konaklar i&ccedil;in kullanmak isterseniz
       <code>UseCanonicalName Off</code> yerine <code>UseCanonicalName
-      DNS</code> yazmanız yeterlidir. Böylece dosya ismine eklenecek konak
-      ismi sanal konağın IP adresinden türetilir. <code>%0</code> değişkeni,
+      DNS</code> yazmanız yeterlidir. B&ouml;ylece dosya ismine eklenecek konak
+      ismi sanal konağın IP adresinden t&uuml;retilir. <code>%0</code> değişkeni,
       <code>Host:</code> başlığı ile belirlenen istekteki sunucu isminin
       ifadesidir.</p>
 
-    <p>Kullanım örnekleri için <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>modülünün
+    <p>Kullanım &ouml;rnekleri i&ccedil;in <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>mod&uuml;l&uuml;n&uuml;n
       belgesine bakınız.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="homepages" id="homepages">Basitleştirilmiş Kitlesel Sanal Konaklar</a> <a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
 
     <p>Bu sistem, yukarıdaki yapılandırmanın bir ISS'nin sunucusuna
       uyarlanmasından başka bir şey değildir. <code>%2</code> değişkenini
-      kullanarak, dosya isminde kullanmak üzere sunucu isminin alt dizgelerini
-      seçebiliriz, böylece, örneğin <code>www.user.example.com</code> belgeleri
+      kullanarak, dosya isminde kullanmak &uuml;zere sunucu isminin alt dizgelerini
+      se&ccedil;ebiliriz, b&ouml;ylece, &ouml;rneğin <code>www.user.example.com</code> belgeleri
       <code>/home/user/www</code> dizininde bulunabilir. Farklı olarak her
-      sanal konak için bir tane değil hepsi için bir tane <code>cgi-bin</code>
+      sanal konak i&ccedil;in bir tane değil hepsi i&ccedil;in bir tane <code>cgi-bin</code>
       olacaktır.</p>
 
     <div class="example"><p><code>
-      UseCanonicalName Off<br />
-      <br />
-      LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-      CustomLog logs/access_log vcommon<br />
-      <br />
-      # sunucu ismini içerecek dosya isimlerini oluşturalım<br />
-      VirtualDocumentRoot /home/%2/www<br />
-      <br />
-      # ortak cgi-bin dizini<br />
-      ScriptAlias  /cgi-bin/  /siteler/std-cgi/<br />
+      UseCanonicalName Off<br>
+      <br>
+      LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br>
+      CustomLog logs/access_log vcommon<br>
+      <br>
+      # sunucu ismini i&ccedil;erecek dosya isimlerini oluşturalım<br>
+      VirtualDocumentRoot /home/%2/www<br>
+      <br>
+      # ortak cgi-bin dizini<br>
+      ScriptAlias  /cgi-bin/  /siteler/std-cgi/<br>
     </code></p></div>
 
     <p><code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> belgesinde daha karmaşık
-      <code>VirtualDocumentRoot</code> örnekleri vardır.</p>
+      <code>VirtualDocumentRoot</code> &ouml;rnekleri vardır.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="combinations" id="combinations">Aynı Sunucuda Kişisel ve Kurumsal Sanal Konaklar</a> <a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
 
     <p>Daha karmaşık ayarlamalar yaparak httpd'nin normal
-      <code>&lt;VirtualHost&gt;</code> bölümlerini farklı kitlesel sanal konak
-      yapılandırmaları için kullanabilirsiniz. Örneğin, bireysel
-      müşterileriniz için bir IP adresiniz, kurumsal müşterileriniz için de
-      başka bir IP adresiniz olsun. Her biri için ayrı ayrı sanal konaklar
+      <code>&lt;VirtualHost&gt;</code> b&ouml;l&uuml;mlerini farklı kitlesel sanal konak
+      yapılandırmaları i&ccedil;in kullanabilirsiniz. &Ouml;rneğin, bireysel
+      m&uuml;şterileriniz i&ccedil;in bir IP adresiniz, kurumsal m&uuml;şterileriniz i&ccedil;in de
+      başka bir IP adresiniz olsun. Her biri i&ccedil;in ayrı ayrı sanal konaklar
       ayarlamak yerine aşağıdaki gibi bir yapılandırma kullanabilirsiniz:</p>
 
 <div class="example"><p><code>
-UseCanonicalName Off<br />
-<br />
-LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
-<br />
-&lt;Directory /siteler/kurumsal&gt;<br />
+UseCanonicalName Off<br>
+<br>
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br>
+<br>
+&lt;Directory /siteler/kurumsal&gt;<br>
 <span class="indent">
-    Options FollowSymLinks<br />
-    AllowOverride All<br />
+    Options FollowSymLinks<br>
+    AllowOverride All<br>
 </span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Directory /siteler/bireysel&gt;<br />
+&lt;/Directory&gt;<br>
+<br>
+&lt;Directory /siteler/bireysel&gt;<br>
 <span class="indent">
-    Options FollowSymLinks<br />
-    AllowOverride None<br />
+    Options FollowSymLinks<br>
+    AllowOverride None<br>
 </span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
+&lt;/Directory&gt;<br>
+<br>
+&lt;VirtualHost 111.22.33.44&gt;<br>
 <span class="indent">
-    ServerName kurumsal.example.com<br />
-    <br />
-    CustomLog logs/access_log.kurumsal vcommon<br />
-    <br />
-    VirtualDocumentRoot /siteler/kurumsal/%0/belgeler<br />
-    VirtualScriptAlias  /siteler/kurumsal/%0/cgi-bin<br />
+    ServerName kurumsal.example.com<br>
+    <br>
+    CustomLog logs/access_log.kurumsal vcommon<br>
+    <br>
+    VirtualDocumentRoot /siteler/kurumsal/%0/belgeler<br>
+    VirtualScriptAlias  /siteler/kurumsal/%0/cgi-bin<br>
 </span>
-&lt;/VirtualHost&gt;<br />
-<br />
-&lt;VirtualHost 111.22.33.45&gt;<br />
+&lt;/VirtualHost&gt;<br>
+<br>
+&lt;VirtualHost 111.22.33.45&gt;<br>
 <span class="indent">
-    ServerName bireysel.example.com<br />
-    <br />
-    CustomLog logs/access_log.bireysel vcommon<br />
-    <br />
-    VirtualDocumentRoot /siteler/bireysel/%0/belgeler<br />
-    ScriptAlias         /cgi-bin/ /siteler/std-cgi/<br />
+    ServerName bireysel.example.com<br>
+    <br>
+    CustomLog logs/access_log.bireysel vcommon<br>
+    <br>
+    VirtualDocumentRoot /siteler/bireysel/%0/belgeler<br>
+    ScriptAlias         /cgi-bin/ /siteler/std-cgi/<br>
 </span>
 &lt;/VirtualHost&gt;
 </code></p></div>
 
     <div class="note"><h3>Bilginize</h3>
-      <p>Eğer ilk <code>&lt;VirtualHost&gt;</code> bölümü bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesi içermezse ilgili IP
-        için ters DNS sorgusu yapılır. Eğer sorgudan elde edilen isim
-        sunucunun ismi değilse bu istenmeyen duruma bir çözüm olarak bir
-        bilgilendirme bölümü (örn, <code>ServerName bilgi.example.com</code>)
+      <p>Eğer ilk <code>&lt;VirtualHost&gt;</code> b&ouml;l&uuml;m&uuml; bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> y&ouml;nergesi i&ccedil;ermezse ilgili IP
+        i&ccedil;in ters DNS sorgusu yapılır. Eğer sorgudan elde edilen isim
+        sunucunun ismi değilse bu istenmeyen duruma bir &ccedil;&ouml;z&uuml;m olarak bir
+        bilgilendirme b&ouml;l&uuml;m&uuml; (&ouml;rn, <code>ServerName bilgi.example.com</code>)
         eklenebilir.</p>
     </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ipbased" id="ipbased">IP'ye dayalı sanal konakları daha verimli kılmak</a> <a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
     
 
-    <p><a href="#simple">İlk örnekte</a> IP'ye dayalı sanal konaklar için
+    <p><a href="#simple">İlk &ouml;rnekte</a> IP'ye dayalı sanal konaklar i&ccedil;in
       kullanılmak istenirse yapılandırmada neyin nasıl değiştirileceği
-      belirtilmişti. Her istek için ayrı bir DNS sorgusu gerekeceğinden bu
-      başarım düşmesine yol açar. DNS sorgusu ihtiyacını ortadan kaldırmak
-      için, bir çözüm olarak dosya sistemi, konak isimleri yerine IP
-      adreslerine göre düzenlenebilir. Günlük kayıtları da IP adreslerine göre
+      belirtilmişti. Her istek i&ccedil;in ayrı bir DNS sorgusu gerekeceğinden bu
+      başarım d&uuml;şmesine yol a&ccedil;ar. DNS sorgusu ihtiyacını ortadan kaldırmak
+      i&ccedil;in, bir &ccedil;&ouml;z&uuml;m olarak dosya sistemi, konak isimleri yerine IP
+      adreslerine g&ouml;re d&uuml;zenlenebilir. G&uuml;nl&uuml;k kayıtları da IP adreslerine g&ouml;re
       ayrıştırılacak şekilde ayarlanabilir.</p>
 
 <div class="example"><p><code>
-# Sunucu ismini IP adresinden ters DNS sorgusu ile elde edelim<br />
-UseCanonicalName DNS<br />
-<br />
-# Günlük kayıtları IP adreslerine göre ayrıştırılabilsin<br />
-LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
-CustomLog logs/access_log vcommon<br />
-<br />
-# dosya isimleri IP adreslerini içersin<br />
-VirtualDocumentRootIP /siteler/%0/belgeler<br />
-VirtualScriptAliasIP  /siteler/%0/cgi-bin<br />
+# Sunucu ismini IP adresinden ters DNS sorgusu ile elde edelim<br>
+UseCanonicalName DNS<br>
+<br>
+# G&uuml;nl&uuml;k kayıtları IP adreslerine g&ouml;re ayrıştırılabilsin<br>
+LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br>
+CustomLog logs/access_log vcommon<br>
+<br>
+# dosya isimleri IP adreslerini i&ccedil;ersin<br>
+VirtualDocumentRootIP /siteler/%0/belgeler<br>
+VirtualScriptAliasIP  /siteler/%0/cgi-bin<br>
 </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="simple.rewrite" id="simple.rewrite"><code>mod_rewrite</code> ile Kitlesel Sanal Konaklar</a> <a title="Permanent link" href="#simple.rewrite" class="permalink">&para;</a></h2>
     
 
-    <p>Kitlesel sanal barındırma <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü kullanarak
-      da gerçeklenebilir. Ya basitçe <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergelerini kullanırsınız ya da daha karmaşık
+    <p>Kitlesel sanal barındırma <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml; kullanarak
+      da ger&ccedil;eklenebilir. Ya basit&ccedil;e <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergelerini kullanırsınız ya da daha karmaşık
       olarak sanal konak tanımlarınızı harici bir yerde tutar ve bunlara
-      <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> yönergesini
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> y&ouml;nergesini
       kullanarak erişirsiniz. Bu teknikler ayrıntılı olarak
       <a href="../rewrite/vhosts.html">rewrite belgelerinde</a>
-      açıklanmıştır.</p>
+      a&ccedil;ıklanmıştır.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/mass.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/mass.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/mass.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

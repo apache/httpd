@@ -1,46 +1,44 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Visão Geral das novas funcionalidades do Servidor HTTP Apache 2.0 - Servidor HTTP Apache Versão 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<title>Vis&atilde;o Geral das novas funcionalidades do Servidor HTTP Apache 2.0 - Servidor HTTP Apache Vers&atilde;o 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
-<p class="apache">Servidor HTTP Apache Versão 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.5</a></div><div id="page-content"><div id="preamble"><h1>Visão Geral das novas funcionalidades do Servidor HTTP Apache 2.0</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.5</a></div><div id="page-content"><div id="preamble"><h1>Vis&atilde;o Geral das novas funcionalidades do Servidor HTTP Apache 2.0</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Línguas Disponíveis: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/new_features_2_0.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_0.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/new_features_2_0.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-  <p>Esse documento descreve algumas das mudanças principais entre as
-     versões 1.3 e 2.0 do Servidor HTTP Apache.</p>
+  <p>Esse documento descreve algumas das mudan&ccedil;as principais entre as
+     vers&otilde;es 1.3 e 2.0 do Servidor HTTP Apache.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Principais Melhorias</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#module">Melhorias nos Módulos</a></li>
-</ul><h3>Veja também</h3><ul class="seealso"><li><a href="upgrading.html">Atualizando da versão 1.3 para a 2.0</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#core">Principais Melhorias</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#module">Melhorias nos M&oacute;dulos</a></li>
+</ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="upgrading.html">Atualizando da vers&atilde;o 1.3 para a 2.0</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="core" id="core">Principais Melhorias</a> <a title="Link permanente" href="#core" class="permalink">&para;</a></h2>
     
@@ -49,203 +47,203 @@
       <dt>Threads Unix</dt>
 
       <dd>Em sistemas Unix com suporte a threads POSIX, o Apache httpd agora
-      pode funcionar em um modo híbrido multiprocessos e multithreads. Isto melhora
-      a escalabilidade para muitos mas não para todas as configurações.</dd>
+      pode funcionar em um modo h&iacute;brido multiprocessos e multithreads. Isto melhora
+      a escalabilidade para muitos mas n&atilde;o para todas as configura&ccedil;&otilde;es.</dd>
 
-      <dt>Novo Sistema de Compilação</dt>
+      <dt>Novo Sistema de Compila&ccedil;&atilde;o</dt>
 
-      <dd>O sistema de compilação foi reescrito do zero para utilizar o
+      <dd>O sistema de compila&ccedil;&atilde;o foi reescrito do zero para utilizar o
       <code>autoconf</code> e o <code>libtool</code>, tornando o
-      sistema de configuração do Apache httpd mais similar a
+      sistema de configura&ccedil;&atilde;o do Apache httpd mais similar a
       de outros pacotes.</dd>
 
       <dt>Suporte Multi-protocolo</dt>
 
       <dd>O Servidor HTTP Apache possui agora infraestrutura para
-      suportar múltiplos protocolos. O módulo <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> é
-      exemplo ilustrativo de sua utilização.</dd>
+      suportar m&uacute;ltiplos protocolos. O m&oacute;dulo <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> &eacute;
+      exemplo ilustrativo de sua utiliza&ccedil;&atilde;o.</dd>
 
-      <dt>Suporte aperfeiçoado para plataformas
-      não-Unix</dt>
+      <dt>Suporte aperfei&ccedil;oado para plataformas
+      n&atilde;o-Unix</dt>
 
-      <dd>O Servidor HTTP Apache 2.0 é mais rápido e mas estável em plataformas
-      não-Unix como BeOS, OS/2 e Windows. Com a
-      introdução de <a href="mpm.html">módulos de multi-processamento</a> específicos por plataforma (MPMs) e o
-      Apache Portable Runtime (APR), essas plataformas agora estão
-      implementadas em suas API nativas, evitando as camadas de emulação POSIX que muitas vezes se
+      <dd>O Servidor HTTP Apache 2.0 &eacute; mais r&aacute;pido e mas est&aacute;vel em plataformas
+      n&atilde;o-Unix como BeOS, OS/2 e Windows. Com a
+      introdu&ccedil;&atilde;o de <a href="mpm.html">m&oacute;dulos de multi-processamento</a> espec&iacute;ficos por plataforma (MPMs) e o
+      Apache Portable Runtime (APR), essas plataformas agora est&atilde;o
+      implementadas em suas API nativas, evitando as camadas de emula&ccedil;&atilde;o POSIX que muitas vezes se
       defeituosas e com baixo desempenho.</dd>
 
       <dt>Nova API httpd Apache</dt>
 
-      <dd>A API para módulos mudou significativamente na versão 2.0.
-      Muitos dos problemas de ordenação/prioridade de módulos da versão
-      1.3 foram resolvidos. A 2.0 faz muito disso automaticamente e a ordenação de módulos
-      agora é feita através de ganchos para permitir mais flexibilidade. Além disso, novas chamadas
-      foram adicionadas para fornecer capacidades adicionais de módulos
-      sem a necessidade de se aplicar patches ao núcleo do Servidor HTTP Apache.</dd>
+      <dd>A API para m&oacute;dulos mudou significativamente na vers&atilde;o 2.0.
+      Muitos dos problemas de ordena&ccedil;&atilde;o/prioridade de m&oacute;dulos da vers&atilde;o
+      1.3 foram resolvidos. A 2.0 faz muito disso automaticamente e a ordena&ccedil;&atilde;o de m&oacute;dulos
+      agora &eacute; feita atrav&eacute;s de ganchos para permitir mais flexibilidade. Al&eacute;m disso, novas chamadas
+      foram adicionadas para fornecer capacidades adicionais de m&oacute;dulos
+      sem a necessidade de se aplicar patches ao n&uacute;cleo do Servidor HTTP Apache.</dd>
 
       <dt>Suporte IPv6</dt>
 
-      <dd>Em sistemas onde o IPv6 é suportado pela biblioteca subjacente
+      <dd>Em sistemas onde o IPv6 &eacute; suportado pela biblioteca subjacente
       do Apache Portable Runtime, o httpd Apache monitora sockets
-      IPv6 por padrão. Adicionalmente, as diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> e <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> suportam strings de
-      endereço numérico IPv6 (ex.: "<code>Listen
+      IPv6 por padr&atilde;o. Adicionalmente, as diretivas <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code> e <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> suportam strings de
+      endere&ccedil;o num&eacute;rico IPv6 (ex.: "<code>Listen
       [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtros</dt>
 
-      <dd>Os módulos do Apache agora podem ser escritos como filtros que atuam
-      no fluxo de conteúdo à medida que este é entregue ou recebido do
-      do servidor. Isto permite, por exemplo, que a saída de scripts CGI seja
+      <dd>Os m&oacute;dulos do Apache agora podem ser escritos como filtros que atuam
+      no fluxo de conte&uacute;do &agrave; medida que este &eacute; entregue ou recebido do
+      do servidor. Isto permite, por exemplo, que a sa&iacute;da de scripts CGI seja
       analisada para encontrar diretivas "Server Side Include" usando o
       filtro <code>INCLUDES</code> de <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>. O
-      módulo <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> permite que programas externos
-      atuem como filtros do mesmo modo que aplicações CGI podem atuar como
+      m&oacute;dulo <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> permite que programas externos
+      atuem como filtros do mesmo modo que aplica&ccedil;&otilde;es CGI podem atuar como
       manipuladores.</dd>
 
       <dt>Respostas de Erro Multi-linguais</dt>
 
-      <dd>Mensagens de respostas de erro para o navegador agora são fornecidas em
-      diversas línguas, usando documentos SSI. Podem ser personalizadas
-      pelo administrador para atingir uma aparência consistente.</dd>
+      <dd>Mensagens de respostas de erro para o navegador agora s&atilde;o fornecidas em
+      diversas l&iacute;nguas, usando documentos SSI. Podem ser personalizadas
+      pelo administrador para atingir uma apar&ecirc;ncia consistente.</dd>
 
-      <dt>Configuração Simplificada</dt>
+      <dt>Configura&ccedil;&atilde;o Simplificada</dt>
 
       <dd>Muitas diretivas confusas foram simplificadas. Entre elas,
-      <code>Port</code> e <code>BindAddress</code> não existem
+      <code>Port</code> e <code>BindAddress</code> n&atilde;o existem
       mais; apenas a diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-      é usada para vinculação de endereço IP; a diretiva <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> especifica o
-      nome do servidor e o número da porta apenas para redirecionamento e reconhecimento
+      &eacute; usada para vincula&ccedil;&atilde;o de endere&ccedil;o IP; a diretiva <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> especifica o
+      nome do servidor e o n&uacute;mero da porta apenas para redirecionamento e reconhecimento
       de hosts virtuais.</dd>
 
       <dt>Suporte Nativo ao Unicode do Windows NT</dt>
 
-      <dd>O Apache httpd 2.0 para Windows NT agora usa UTF-8 para codificação
-      de todos os nomes de arquivos que são traduzidos diretamente para o sistemas de Arquivos
+      <dd>O Apache httpd 2.0 para Windows NT agora usa UTF-8 para codifica&ccedil;&atilde;o
+      de todos os nomes de arquivos que s&atilde;o traduzidos diretamente para o sistemas de Arquivos
       Unicode subjacente, fornecendo suporte multi-lingual para todas
-      as versões Windows da família NT, incluindo Windows 2000 e Windows XP.
-      <em>Este suporte não se estende ao Windows 95, 98 ou ME, que
-      continuam usando o código de página local da máquina para
+      as vers&otilde;es Windows da fam&iacute;lia NT, incluindo Windows 2000 e Windows XP.
+      <em>Este suporte n&atilde;o se estende ao Windows 95, 98 ou ME, que
+      continuam usando o c&oacute;digo de p&aacute;gina local da m&aacute;quina para
       acesso ao sistema de arquivos.</em></dd>
 
-      <dt>Biblioteca de Expressões Regulares Atualizada</dt>
+      <dt>Biblioteca de Express&otilde;es Regulares Atualizada</dt>
 
       <dd>O Apache httpd 2.0 inclui a <a href="http://www.pcre.org/">Biblioteca
-      de Expressões Regulares Compatível com Perl</a> (PCRE).  Todas as
-      análises de expressões regulares agoram usam a sintaxe mais poderosa
+      de Express&otilde;es Regulares Compat&iacute;vel com Perl</a> (PCRE).  Todas as
+      an&aacute;lises de express&otilde;es regulares agoram usam a sintaxe mais poderosa
       do Perl 5.</dd>
 
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="module" id="module">Melhorias nos Módulos</a> <a title="Link permanente" href="#module" class="permalink">&para;</a></h2>
+<h2><a name="module" id="module">Melhorias nos M&oacute;dulos</a> <a title="Link permanente" href="#module" class="permalink">&para;</a></h2>
     
 
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0. Este módulo é uma interface
-      para os protocolos de codificação SSL/TLS fornecidos pelo
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0. Este m&oacute;dulo &eacute; uma interface
+      para os protocolos de codifica&ccedil;&atilde;o SSL/TLS fornecidos pelo
       OpenSSL.</dd>
 
       <dt><code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0. Este módulo implementa as
-      especificações de Autoria e Versionamento Distribuídas (DAV) para
-      para publicação e manutenção de conteúdo web.</dd>
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0. Este m&oacute;dulo implementa as
+      especifica&ccedil;&otilde;es de Autoria e Versionamento Distribu&iacute;das (DAV) para
+      para publica&ccedil;&atilde;o e manuten&ccedil;&atilde;o de conte&uacute;do web.</dd>
 
       <dt><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0. Este módulo permite suporte
-      a navegadores que solicitam que o conteúdo seja comprimido antes da entrega,
-      economizando tráfego de rede.</dd>
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0. Este m&oacute;dulo permite suporte
+      a navegadores que solicitam que o conte&uacute;do seja comprimido antes da entrega,
+      economizando tr&aacute;fego de rede.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0.41. Este módulo permite que
-      um banco de dados LDAP seja usados para armazenar credenciais para Autenticação
-      Básica Básica HTTP. Um módulo que o acompanha, <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>,
-      fornece o gerenciamento de grupos de conexões e armazenamento de resultados em cache.</dd>
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0.41. Este m&oacute;dulo permite que
+      um banco de dados LDAP seja usados para armazenar credenciais para Autentica&ccedil;&atilde;o
+      B&aacute;sica B&aacute;sica HTTP. Um m&oacute;dulo que o acompanha, <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>,
+      fornece o gerenciamento de grupos de conex&otilde;es e armazenamento de resultados em cache.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code></dt>
 
-      <dd>Inclui suporte adicional para armazenamento de sessões em cache
-      através de processos que usam memória compartilhada.</dd>
+      <dd>Inclui suporte adicional para armazenamento de sess&otilde;es em cache
+      atrav&eacute;s de processos que usam mem&oacute;ria compartilhada.</dd>
 
       <dt><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0. Este módulo experimental permite
-      tradução ou recodificação de conjuntos de caracteres.</dd>
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0. Este m&oacute;dulo experimental permite
+      tradu&ccedil;&atilde;o ou recodifica&ccedil;&atilde;o de conjuntos de caracteres.</dd>
 
       <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
-      <dd>Novo módulo no Apache httpd 2.0. Esse módulo inclui a
+      <dd>Novo m&oacute;dulo no Apache httpd 2.0. Esse m&oacute;dulo inclui a
       funcionalidade do <code>mod_mmap_static</code> do Servidor HTTP
-      Apache versão 1.3 e disponibiliza outras habilidades de armazenamento em cache.</dd>
+      Apache vers&atilde;o 1.3 e disponibiliza outras habilidades de armazenamento em cache.</dd>
 
       <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
-      <dd>Este módulo é muito mais flexível no Apache httpd 2.0. Ele pode agora
-      modificar cabeçalhos de requisição usados pelo <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> e
-      pode ajustar cabeçalhos de resposta sob certas condições.</dd>
+      <dd>Este m&oacute;dulo &eacute; muito mais flex&iacute;vel no Apache httpd 2.0. Ele pode agora
+      modificar cabe&ccedil;alhos de requisi&ccedil;&atilde;o usados pelo <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code> e
+      pode ajustar cabe&ccedil;alhos de resposta sob certas condi&ccedil;&otilde;es.</dd>
 
       <dt><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></dt>
 
-      <dd>O módulo de proxy foi totalmente reescrito para tomar
+      <dd>O m&oacute;dulo de proxy foi totalmente reescrito para tomar
       vantagem da nova infraestrutura de filtros e para implementar um
-      proxy mais confiável e compatível com o padrão HTTP/1.1. Além disso, novas
-      seções de configuração <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
-      fornecem controles mais legíveis (e internamente
-      mais rápidos) de sites com proxies; configurações
-      sobrecarregadas <code>&lt;Directory "proxy:..."&gt;</code> não são suportadas.
-      O módulo agora é dividido módulos de suporte a protocolos específicos
+      proxy mais confi&aacute;vel e compat&iacute;vel com o padr&atilde;o HTTP/1.1. Al&eacute;m disso, novas
+      se&ccedil;&otilde;es de configura&ccedil;&atilde;o <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+      fornecem controles mais leg&iacute;veis (e internamente
+      mais r&aacute;pidos) de sites com proxies; configura&ccedil;&otilde;es
+      sobrecarregadas <code>&lt;Directory "proxy:..."&gt;</code> n&atilde;o s&atilde;o suportadas.
+      O m&oacute;dulo agora &eacute; dividido m&oacute;dulos de suporte a protocolos espec&iacute;ficos
       incluindo <code>proxy_connect</code>, <code>proxy_ftp</code> e
       <code>proxy_http</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></dt>
 
       <dd>A nova diretiva <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code> pode ser usada para assegurar que
-      o cliente receba um único documento em todos os casos, em vez de
+      o cliente receba um &uacute;nico documento em todos os casos, em vez de
       respostas como "NOT ACCEPTABLE" ou "MULTIPLE CHOICES". Adicionalmente, os algoritmos
-      de negociação e visualizações múltiplas foram organizados para
+      de negocia&ccedil;&atilde;o e visualiza&ccedil;&otilde;es m&uacute;ltiplas foram organizados para
       fornecer resultados mais consistentes e foi disponibilizado uma nova forma de
-      mapa de tipo que pode incluir conteúdo de documentos.</dd>
+      mapa de tipo que pode incluir conte&uacute;do de documentos.</dd>
 
       <dt><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></dt>
 
-      <dd>As listagens de diretórios autoindexadas agora podem ser configuradas
-      para usar tabelas HTML para formatações mais limpas e permitir controles
-      mais finos de ordenação, incluindo ordenação por versão e filtragem da listagem de
-      diretórios através de caracteres-coringa.</dd>
+      <dd>As listagens de diret&oacute;rios autoindexadas agora podem ser configuradas
+      para usar tabelas HTML para formata&ccedil;&otilde;es mais limpas e permitir controles
+      mais finos de ordena&ccedil;&atilde;o, incluindo ordena&ccedil;&atilde;o por vers&atilde;o e filtragem da listagem de
+      diret&oacute;rios atrav&eacute;s de caracteres-coringa.</dd>
 
       <dt><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></dt>
 
-      <dd>Novas diretivas permitem que as tags padrões de início e fim para elementos
-      SSI possam ser alteradas e permitem que a configuração de formato de erro e horário
-      ocorra no arquivo de configuração principal em vez de ocorrerem
-      no documento SSI. Resultados de análises de expressões regulares e agrupamento
-      (agora baseadas na sintaxe de expressões regulares do Perl) podem ser obtidas
-      usando as variáveis do módulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>: <code>$0</code>
+      <dd>Novas diretivas permitem que as tags padr&otilde;es de in&iacute;cio e fim para elementos
+      SSI possam ser alteradas e permitem que a configura&ccedil;&atilde;o de formato de erro e hor&aacute;rio
+      ocorra no arquivo de configura&ccedil;&atilde;o principal em vez de ocorrerem
+      no documento SSI. Resultados de an&aacute;lises de express&otilde;es regulares e agrupamento
+      (agora baseadas na sintaxe de express&otilde;es regulares do Perl) podem ser obtidas
+      usando as vari&aacute;veis do m&oacute;dulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>: <code>$0</code>
       .. <code>$9</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_dbm.html">mod_auth_dbm</a></code></dt>
 
-      <dd>Agora suporta múltiplos tipos de banco de dados similares ao DBM usando a
+      <dd>Agora suporta m&uacute;ltiplos tipos de banco de dados similares ao DBM usando a
       diretiva <code class="directive">AuthDBMType</code>.</dd>
 
     </dl>
   </div></div>
 <div class="bottomlang">
-<p><span>Línguas Disponíveis: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/new_features_2_0.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/new_features_2_0.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/new_features_2_0.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_0.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/new_features_2_0.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

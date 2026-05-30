@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>SSL/TLS Strong Encryption: FAQ - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: FAQ</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_faq.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
 <blockquote>
@@ -36,13 +34,13 @@ he poses the right questions.</p>
 
 </blockquote>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#aboutconfig">Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#aboutcerts">Certificates</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#aboutssl">The SSL Protocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#support">mod_ssl Support</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#installation">Installation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#aboutconfig">Configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#aboutcerts">Certificates</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#aboutssl">The SSL Protocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#support">mod_ssl Support</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="installation" id="installation">Installation</a> <a title="Permanent link" href="#installation" class="permalink">&para;</a></h2>
 <ul>
@@ -81,7 +79,7 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
     be done via the <code class="directive"><a href="../mod/mod_ssl.html#sslrandomseed">SSLRandomSeed</a></code>
     directive.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="aboutconfig" id="aboutconfig">Configuration</a> <a title="Permanent link" href="#aboutconfig" class="permalink">&para;</a></h2>
 <ul>
@@ -122,7 +120,7 @@ relative hyperlinks?</a></li>
 <h3><a name="httpstest" id="httpstest">How do I speak HTTPS manually for testing purposes?</a></h3>
  <p>While you usually just use</p>
 
-    <div class="example"><p><code>$ telnet localhost 80<br />
+    <div class="example"><p><code>$ telnet localhost 80<br>
     GET / HTTP/1.0</code></p></div>
 
     <p>for simple testing of Apache via HTTP, it's not so easy for
@@ -130,7 +128,7 @@ relative hyperlinks?</a></li>
     help of OpenSSL's <code>s_client</code> command, however, you can
     do a similar check via HTTPS:</p>
 
-    <div class="example"><p><code>$ openssl s_client -connect localhost:443 -state -debug<br />
+    <div class="example"><p><code>$ openssl s_client -connect localhost:443 -state -debug<br>
     GET / HTTP/1.0</code></p></div>
 
     <p>Before the actual HTTP response you will receive detailed
@@ -142,7 +140,7 @@ relative hyperlinks?</a></li>
     check that Apache is responding correctly to requests via HTTP and
     HTTPS as follows:</p>
 
-    <div class="example"><p><code>$ curl http://localhost/<br />
+    <div class="example"><p><code>$ curl http://localhost/<br>
     $ curl https://localhost/</code></p></div>
 
 
@@ -189,7 +187,7 @@ RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
     <code>&lt;a href="document.html_SSL"&gt;</code>, to switch to HTTPS
     in a relative link. (Replace SSL with NOSSL to switch to HTTP.)</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="aboutcerts" id="aboutcerts">Certificates</a> <a title="Permanent link" href="#aboutcerts" class="permalink">&para;</a></h2>
 <ul>
@@ -250,13 +248,13 @@ verify my server certificate?</a></li>
 <h3><a name="selfcert" id="selfcert">How do I create a self-signed SSL
 Certificate for testing purposes?</a></h3>
     <ol>
-    <li>Make sure OpenSSL is installed and in your <code>PATH</code>.<br />
-    <br />
+    <li>Make sure OpenSSL is installed and in your <code>PATH</code>.<br>
+    <br>
     </li>
     <li>Run the following command, to create <code>server.key</code> and
-        <code>server.crt</code> files:<br />
+        <code>server.crt</code> files:<br>
         <code><strong>$ openssl req -new -x509 -nodes -out server.crt
-                        -keyout server.key</strong></code><br />
+                        -keyout server.key</strong></code><br>
         These can be used as follows in your <code>httpd.conf</code>
         file:
         <pre class="prettyprint lang-config">SSLCertificateFile    /path/to/this/server.crt
@@ -266,10 +264,10 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <li>It is important that you are aware that this
         <code>server.key</code> does <em>not</em> have any passphrase.
         To add a passphrase to the key, you should run the following
-        command, and enter &amp; verify the passphrase as requested.<br />
+        command, and enter &amp; verify the passphrase as requested.<br>
         <p><code><strong>$ openssl rsa -des3 -in server.key -out
-        server.key.new</strong></code><br />
-        <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
+        server.key.new</strong></code><br>
+        <code><strong>$ mv server.key.new server.key</strong></code><br></p>
         Please backup the <code>server.key</code> file, and the passphrase
         you entered, in a secure location.
     </li>
@@ -280,59 +278,59 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
 <p>Here is a step-by-step description:</p>
     <ol>
     <li>Make sure OpenSSL is installed and in your <code>PATH</code>.
-    <br />
-    <br />
+    <br>
+    <br>
     </li>
     <li>Create a RSA private key for your Apache server
-       (will be Triple-DES encrypted and PEM formatted):<br />
-       <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
-       <br />
+       (will be Triple-DES encrypted and PEM formatted):<br>
+       <br>
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br>
+       <br>
        Please backup this <code>server.key</code> file and the
        pass-phrase you entered in a secure location.
-       You can see the details of this RSA private key by using the command:<br />
+       You can see the details of this RSA private key by using the command:<br>
 
-       <br />
-       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
-       <br />
+       <br>
+       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br>
+       <br>
        If necessary, you can also create a decrypted PEM version (not
-       recommended) of this RSA private key with:<br />
-       <br />
-       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
-       <br />
+       recommended) of this RSA private key with:<br>
+       <br>
+       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br>
+       <br>
 
     </li>
     <li>Create a Certificate Signing Request (CSR) with the server RSA private
-       key (output will be PEM formatted):<br />
-       <br />
-       <code><strong>$ openssl req -new -key server.key -out server.csr</strong></code><br />
-       <br />
+       key (output will be PEM formatted):<br>
+       <br>
+       <code><strong>$ openssl req -new -key server.key -out server.csr</strong></code><br>
+       <br>
        Make sure you enter the FQDN ("Fully Qualified Domain Name") of the
        server when OpenSSL prompts you for the "CommonName", i.e. when you
        generate a CSR for a website which will be later accessed via
        <code>https://www.foo.dom/</code>, enter "www.foo.dom" here.
-       You can see the details of this CSR by using<br />
+       You can see the details of this CSR by using<br>
 
-       <br />
-       <code><strong>$ openssl req -noout -text -in server.csr</strong></code><br />
-       <br />
+       <br>
+       <code><strong>$ openssl req -noout -text -in server.csr</strong></code><br>
+       <br>
     </li>
     <li>You now have to send this Certificate Signing Request (CSR) to
        a Certifying Authority (CA) to be signed. Once the CSR has been
        signed, you will have a real Certificate, which can be used by
        Apache. You can have a CSR signed by a commercial CA, or you can
-       create your own CA to sign it.<br />
+       create your own CA to sign it.<br>
        Commercial CAs usually ask you to post the CSR into a web form,
        pay for the signing, and then send a signed Certificate, which
-       you can store in a server.crt file.<br />
+       you can store in a server.crt file.<br>
 
        For details on how to create your own CA, and use this to sign
-       a CSR, see <a href="#ownca">below</a>.<br />
+       a CSR, see <a href="#ownca">below</a>.<br>
 
        Once your CSR has been signed, you can see the details of the
-       Certificate as follows:<br />
-       <br />
-       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
+       Certificate as follows:<br>
+       <br>
+       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br>
 
     </li>
     <li>You should now have two files: <code>server.key</code> and
@@ -355,34 +353,34 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
 
     <ol>
     <li>Create a RSA private key for your server
-       (will be Triple-DES encrypted and PEM formatted):<br />
-       <br />
-       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br />
-       <br />
+       (will be Triple-DES encrypted and PEM formatted):<br>
+       <br>
+       <code><strong>$ openssl genrsa -des3 -out server.key 2048</strong></code><br>
+       <br>
        Please backup this <code>server.key</code> file and the
        pass-phrase you entered in a secure location.
        You can see the details of this RSA private key by using the
-       command:<br />
-       <br />
-       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
-       <br />
+       command:<br>
+       <br>
+       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br>
+       <br>
        If necessary, you can also create a decrypted PEM version (not
-       recommended) of this RSA private key with:<br />
-       <br />
-       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
-       <br />
+       recommended) of this RSA private key with:<br>
+       <br>
+       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br>
+       <br>
     </li>
     <li>Create a self-signed Certificate (X509 structure)
-       with the RSA key you just created (output will be PEM formatted):<br />
-       <br />
+       with the RSA key you just created (output will be PEM formatted):<br>
+       <br>
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
-                       -key server.key -out server.crt -extensions usr_cert</strong></code><br />
-       <br />
-       This signs the server CSR and results in a <code>server.crt</code> file.<br />
-       You can see the details of this Certificate using:<br />
-       <br />
-       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
-       <br />
+                       -key server.key -out server.crt -extensions usr_cert</strong></code><br>
+       <br>
+       This signs the server CSR and results in a <code>server.crt</code> file.<br>
+       You can see the details of this Certificate using:<br>
+       <br>
+       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br>
+       <br>
     </li>
     </ol>
 
@@ -392,8 +390,8 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     specifying the new pass-phrase. You can accomplish this with the following commands:</p>
 
 
-    <p><code><strong>$ openssl rsa -des3 -in server.key -out server.key.new</strong></code><br />
-    <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
+    <p><code><strong>$ openssl rsa -des3 -in server.key -out server.key.new</strong></code><br>
+    <code><strong>$ mv server.key.new server.key</strong></code><br></p>
 
     <p>The first time you're asked for a PEM pass-phrase, you should
     enter the old pass-phrase. After that, you'll be asked again to
@@ -410,17 +408,17 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     removes a layer of security from your server - proceed with caution!</p>
     <ol>
     <li>Remove the encryption from the RSA private key (while
-       keeping a backup copy of the original file):<br />
-       <br />
-       <code><strong>$ cp server.key server.key.org</strong></code><br />
-       <code><strong>$ openssl rsa -in server.key.org -out server.key</strong></code><br />
+       keeping a backup copy of the original file):<br>
+       <br>
+       <code><strong>$ cp server.key server.key.org</strong></code><br>
+       <code><strong>$ openssl rsa -in server.key.org -out server.key</strong></code><br>
 
-       <br />
+       <br>
     </li>
-    <li>Make sure the server.key file is only readable by root:<br />
-       <br />
-       <code><strong>$ chmod 400 server.key</strong></code><br />
-       <br />
+    <li>Make sure the server.key file is only readable by root:<br>
+       <br>
+       <code><strong>$ chmod 400 server.key</strong></code><br>
+       <br>
     </li>
     </ol>
 
@@ -446,7 +444,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     portion of your private key, you simply need to compare these numbers.
     To view the Certificate and the key run the commands:</p>
 
-    <p><code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
+    <p><code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br>
     <code><strong>$ openssl rsa -noout -text -in server.key</strong></code></p>
 
     <p>The `modulus' and the `public exponent' portions in the key and the
@@ -454,7 +452,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     and it's difficult to visually check that the long modulus numbers
     are the same, you can use the following approach:</p>
 
-    <p><code><strong>$ openssl x509 -noout -modulus -in server.crt | openssl md5</strong></code><br />
+    <p><code><strong>$ openssl x509 -noout -modulus -in server.crt | openssl md5</strong></code><br>
     <code><strong>$ openssl rsa -noout -modulus -in server.key | openssl md5</strong></code></p>
 
     <p>This leaves you with two rather shorter numbers to compare. It is,
@@ -496,7 +494,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></code>
     directive.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="aboutssl" id="aboutssl">The SSL Protocol</a> <a title="Permanent link" href="#aboutssl" class="permalink">&para;</a></h2>
 <ul>
@@ -775,7 +773,7 @@ Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
     <code class="directive"><a href="../mod/mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></code> directive.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="support" id="support">mod_ssl Support</a> <a title="Permanent link" href="#support" class="permalink">&para;</a></h2>
 <ul>
@@ -797,7 +795,7 @@ for my core dump?</a></li>
     <dl>
     <dt>Answers in the User Manual's F.A.Q. List (this)</dt>
     <dd><a href="http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
-        http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
+        http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br>
         First check the F.A.Q. (this text). If your problem is a common
         one, it may have been answered several times before, and been included
         in this doc.
@@ -812,17 +810,17 @@ of mod_ssl problems?</a></h3>
          <em>in this order</em> - don't just pick the one you like the look of. </p>
     <ol>
 
-    <li><em>Send a Problem Report to the Apache httpd Users Support Mailing List</em><br />
+    <li><em>Send a Problem Report to the Apache httpd Users Support Mailing List</em><br>
         <a href="mailto:users@httpd.apache.org">
-        users@httpd.apache.org</a><br />
+        users@httpd.apache.org</a><br>
         This is the second way of submitting your problem report. Again, you must
         subscribe to the list first, but you can then easily discuss your problem
         with the whole Apache httpd user community.
     </li>
 
-    <li><em>Write a Problem Report in the Bug Database</em><br />
+    <li><em>Write a Problem Report in the Bug Database</em><br>
         <a href="http://httpd.apache.org/bug_report.html">
-        http://httpd.apache.org/bug_report.html</a><br />
+        http://httpd.apache.org/bug_report.html</a><br>
         This is the last way of submitting your problem report. You should only
         do this if you've already posted to the mailing lists, and had no success.
         Please follow the instructions on the above page <em>carefully</em>.
@@ -908,9 +906,9 @@ the reason for my core dump?</a></h3>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_faq.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

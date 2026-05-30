@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>SSL/TLS 暗号化: はじめに - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS 暗号化: はじめに</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -66,12 +64,12 @@ Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997
 Apache ドキュメント翻訳プロジェクト</a>
 へお願いします。)</span></p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">暗号化技術</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#certificates">証明書</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#references">参考文献</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#cryptographictech">暗号化技術</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#certificates">証明書</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#references">参考文献</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="cryptographictech" id="cryptographictech">暗号化技術</a> <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
 
@@ -185,7 +183,7 @@ Apache ドキュメント翻訳プロジェクト</a>
 から銀行を守ります。
 彼女だけが署名しえたからです。(否認防止)</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="certificates" id="certificates">証明書</a> <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
 
@@ -251,7 +249,7 @@ Apache ドキュメント翻訳プロジェクト</a>
         <th>例</th></tr>
     <tr><td>Common Name (コモンネーム)</td>
         <td>CN</td>
-        <td>認証される名前<br />
+        <td>認証される名前<br>
         SSL接続するURL</td>
         <td>CN=www.example.com</td></tr>
     <tr><td>Organization or Company (組織名)</td>
@@ -272,7 +270,7 @@ Apache ドキュメント翻訳プロジェクト</a>
         <td>ST=Hokkaido</td></tr>
     <tr><td>Country(国)</td>
         <td>C</td>
-        <td>所在している国名の ISO コード<br />
+        <td>所在している国名の ISO コード<br>
         日本の場合 JP
         </td>
         <td>C=JP</td></tr>
@@ -407,7 +405,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
     
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a> <a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
 
@@ -438,15 +436,15 @@ SSL は、相互認証によってサーバとクライアント間の安全な�
     <tr><td>SSL v2.0</td>
         <td>Vendor Standard (Netscape Corp. より) [<a href="#SSL2">SSL2</a>]</td>
         <td>実装が現存する初めての SSL プロトコル</td>
-        <td>- NS Navigator 1.x/2.x<br />
-        - MS IE 3.x<br />
+        <td>- NS Navigator 1.x/2.x<br>
+        - MS IE 3.x<br>
         - Lynx/2.8+OpenSSL</td></tr>
     <tr><td>SSL v3.0</td>
         <td>Expired Internet Draft (Netscape Corp. より) [<a href="#SSL3">SSL3</a>]</td>
         <td>特定のセキュリティ攻撃を防ぐための改訂、
         非RSA 暗号の追加、証明書階層構造のサポート</td>
-        <td>- NS Navigator 2.x/3.x/4.x<br />
-        - MS IE 3.x/4.x<br />
+        <td>- NS Navigator 2.x/3.x/4.x<br>
+        - MS IE 3.x/4.x<br>
         - Lynx/2.8+OpenSSL</td></tr>
     <tr><td>TLS v1.0</td>
         <td>Proposed Internet Standard (IETF より) [<a href="#TLS1">TLS1</a>]</td>
@@ -494,7 +492,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     </div>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
+    <img src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327"><br>
     <a id="figure1" name="figure1"><dfn>図1</dfn></a>: SSL
     ハンドシェークシークエンス概略</p>
 
@@ -617,7 +615,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     カプセル化されたプロトコルは下層のプロトコルに関して一切関知しません。</p>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig2.gif" alt="" width="428" height="217" /><br />
+    <img src="../images/ssl_intro_fig2.gif" alt="" width="428" height="217"><br>
     <a id="figure2" name="figure2"><dfn>図2</dfn></a>: SSL プロトコルスタック
     </p>
 
@@ -644,7 +642,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     (注意: 現在メジャーな SLL 実装で圧縮をサポートしているものはありません)</p>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig3.gif" alt="" width="423" height="323" /><br />
+    <img src="../images/ssl_intro_fig3.gif" alt="" width="423" height="323"><br>
     <a id="figure3" name="figure3"><dfn>図 3</dfn></a>: SSL レコードプロトコル
     </p>
 
@@ -660,7 +658,7 @@ SSL 3.0 は現在 Internet Engineering Task Force (IETF)
     これが主に <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> が Apache 
     ウェブサーバに提供する機能です。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="references" id="references">参考文献</a> <a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
 
@@ -703,10 +701,10 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

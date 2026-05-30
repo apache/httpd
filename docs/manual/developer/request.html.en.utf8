@@ -1,89 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Request Processing in the Apache HTTP Server 2.x - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Request Processing in the Apache HTTP Server 2.x</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/request.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
-    <div class="warning"><h3>Warning</h3>
-      <p>Warning - this is a first (fast) draft that needs further
-      revision!</p>
-    </div>
+    <p>This document describes how the Apache HTTP Server processes
+    requests internally, covering the full hook sequence from URI
+    translation through content generation and logging. Module authors
+    should understand these phases to correctly insert their processing
+    at the appropriate point in the cycle.</p>
 
-    <p>Several changes in 2.0 and above affect the internal request
-    processing mechanics. Module authors need to be aware of these
-    changes so they may take advantage of the optimizations and
-    security enhancements.</p>
+    <p>All requests pass through
+    <code>ap_process_request_internal()</code> in
+    <code>server/request.c</code>, including subrequests and internal
+    redirects. Do not duplicate this logic elsewhere; doing so will
+    break when the request processing API changes.</p>
 
-    <p>The first major change is to the subrequest and redirect
-    mechanisms. There were a number of different code paths in
-    the Apache HTTP Server 1.3 to attempt to optimize subrequest
-    or redirect behavior. As patches were introduced to 2.0, these
-    optimizations (and the server behavior) were quickly broken due
-    to this duplication of code. All duplicate code has been folded
-    back into <code>ap_process_request_internal()</code> to prevent
-    the code from falling out of sync again.</p>
+    <p>The first major design principle is that all request processing
+    paths (main requests, subrequests, and redirects) share a single
+    code path. Duplicate code was folded back into
+    <code>ap_process_request_internal()</code> in 2.0 to prevent the
+    paths from falling out of sync.</p>
 
-    <p>This means that much of the existing code was 'unoptimized'.
-    It is the Apache HTTP Project's first goal to create a robust
-    and correct implementation of the HTTP server RFC. Additional
-    goals include security, scalability and optimization. New
-    methods were sought to optimize the server (beyond the
-    performance of 1.3) without introducing fragile or
-    insecure code.</p>
+    <p>To streamline requests, module authors can take advantage of
+    the <a href="./modguide.html#hooking">hooks offered</a> to drop
+    out of the request cycle early, or to bypass core hooks which are
+    irrelevant (and costly in terms of CPU).</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#processing">The Request Processing Cycle</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#parsing">The Request Parsing Phase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">The Security Phase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#preparation">The Preparation Phase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handler">The Handler Phase</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#overview">Hook Overview</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#parsing">The Request Parsing Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#quick_handler">Hook: quick_handler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#create_request">Hook: create_request</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#translation">The Translation Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#map_to_storage">Hook: map_to_storage</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#post_perdir_config">Hook: post_perdir_config</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#header_parser">Hook: header_parser</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">The Security Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#preparation">The Preparation Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#handler">The Handler Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logging">The Logging Phase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dirwalk_stat">Hook: dirwalk_stat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#hookorder">Hook Types and Ordering</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="processing" id="processing">The Request Processing Cycle</a> <a title="Permanent link" href="#processing" class="permalink">&para;</a></h2>
-    <p>All requests pass through <code>ap_process_request_internal()</code>
-    in <code>server/request.c</code>, including subrequests and redirects. If a module
-    doesn't pass generated requests through this code, the author is cautioned
-    that the module may be broken by future changes to request
-    processing.</p>
+<h2><a name="overview" id="overview">Hook Overview</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+    <p>The complete request processing cycle involves the following hooks,
+    listed in execution order. Hooks marked with <em>(request.c)</em> are
+    implemented in <code>server/request.c</code>; others are declared
+    in <code>http_config.h</code> or <code>http_protocol.h</code> and
+    run from the MPM or protocol layer.</p>
 
-    <p>To streamline requests, the module author can take advantage
-    of the <a href="./modguide.html#hooking">hooks offered</a> to drop 
-    out of the request cycle early, or to bypass core hooks which are 
-    irrelevant (and costly in terms of CPU.)</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    <ol>
+      <li><strong><a href="#quick_handler">quick_handler</a></strong> &mdash;
+          Short-circuit before the full request cycle (e.g. cache hits)</li>
+      <li><strong><a href="#create_request">create_request</a></strong> &mdash;
+          Initialize request-specific module data</li>
+      <li><strong><a href="#pre_translate_name">pre_translate_name</a></strong> &mdash;
+          Manipulate URI before decoding/translation</li>
+      <li><strong><a href="#translate_name">translate_name</a></strong> &mdash;
+          Map URI to filesystem path</li>
+      <li><strong><a href="#map_to_storage">map_to_storage</a></strong> &mdash;
+          Merge per-directory config, directory/file walks</li>
+      <li><strong><a href="#post_perdir_config">post_perdir_config</a></strong> &mdash;
+          Act on merged per-directory configuration</li>
+      <li><strong><a href="#header_parser">header_parser</a></strong> &mdash;
+          Examine client request headers</li>
+      <li><strong><a href="#token_checker">token_checker</a></strong> &mdash;
+          Parse bearer tokens or other auth metadata (trunk)</li>
+      <li><strong><a href="#access_checker">access_checker</a></strong> &mdash;
+          Host-based or environment-based access control</li>
+      <li><strong><a href="#access_checker_ex">access_checker_ex</a></strong> &mdash;
+          Extended access control with auth bypass capability</li>
+      <li><strong><a href="#force_authn">force_authn</a></strong> &mdash;
+          Force authentication even when not otherwise required</li>
+      <li><strong><a href="#check_user_id">check_user_id</a></strong> &mdash;
+          Authenticate the user (set <code>r-&gt;user</code>)</li>
+      <li><strong><a href="#auth_checker">auth_checker</a></strong> &mdash;
+          Authorize the authenticated user</li>
+      <li><strong><a href="#type_checker">type_checker</a></strong> &mdash;
+          Determine content type, language, encoding</li>
+      <li><strong><a href="#fixups">fixups</a></strong> &mdash;
+          Last chance to adjust request fields before content generation</li>
+      <li><strong><a href="#insert_filter">insert_filter</a></strong> &mdash;
+          Insert content/protocol filters</li>
+      <li><strong><a href="#handler">handler</a></strong> &mdash;
+          Generate the response content</li>
+      <li><strong><a href="#log_transaction">log_transaction</a></strong> &mdash;
+          Log the completed transaction</li>
+    </ol>
+
+    <p>Additionally, the <strong><a href="#dirwalk_stat">dirwalk_stat</a></strong>
+    hook is called during directory walks to allow modules to emulate or
+    override <code>apr_stat()</code> calls.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="parsing" id="parsing">The Request Parsing Phase</a> <a title="Permanent link" href="#parsing" class="permalink">&para;</a></h2>
+    <p>Before hooks run, the server performs URL normalization:</p>
+
     <h3><a name="unescape" id="unescape">Unescapes the URL</a></h3>
       <p>The request's <code>parsed_uri</code> path is unescaped, once and only
       once, at the beginning of internal request processing.</p>
 
       <p>This step is bypassed if the proxyreq flag is set, or the
       <code>parsed_uri.path</code> element is unset. The module has no further
-      control of this one-time unescape operation, either failing to
+      control of this one-time unescape operation; either failing to
       unescape or multiply unescaping the URL leads to security
       repercussions.</p>
     
@@ -91,7 +134,7 @@
     <h3><a name="strip" id="strip">Strips Parent and This Elements from the
     URI</a></h3>
       <p>All <code>/../</code> and <code>/./</code> elements are
-      removed by <code>ap_getparents()</code>, as well as any trailing 
+      removed by <code>ap_getparents()</code>, as well as any trailing
       <code>/.</code> or <code>/..</code> element. This helps to ensure
       the path is (nearly) absolute before the request processing
       continues. (See RFC 1808 section 4 for further discussion.)</p>
@@ -99,7 +142,7 @@
       <p>This step cannot be bypassed.</p>
     
 
-    <h3><a name="inital-location-walk" id="inital-location-walk">Initial URI Location Walk</a></h3>
+    <h3><a name="initial-location-walk" id="initial-location-walk">Initial URI Location Walk</a></h3>
       <p>Every request is subject to an
       <code>ap_location_walk()</code> call. This ensures that
       <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections
@@ -108,66 +151,221 @@
       from the previous or parent request's ap_location_walk, so this step
       is generally very efficient after processing the main request.</p>
     
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="quick_handler" id="quick_handler">Hook: quick_handler</a> <a title="Permanent link" href="#quick_handler" class="permalink">&para;</a></h2>
+    <p>The <code>quick_handler</code> hook runs <em>before</em> any other
+    request processing hooks &mdash; before location walks, directory walks,
+    access checking, and authentication. It provides a fast path for
+    modules that can serve content directly from a URI-keyed cache or
+    similar mechanism without needing per-directory configuration.</p>
 
-    <h3><a name="translate_name" id="translate_name">translate_name</a></h3>
+    <p>This hook is declared in <code>http_config.h</code> and called from
+    the MPM/protocol layer, not from
+    <code>ap_process_request_internal()</code>.</p>
+
+    <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, quick_handler, (request_rec *r, int lookup_uri))</pre>
+
+
+    <p>The <code>lookup_uri</code> parameter is set to 1 when called from
+    <code>ap_sub_req_lookup_uri()</code>, indicating the caller only needs
+    metadata (not actual content delivery).</p>
+
+    <p>Used by: <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></p>
+
+    <p>Return <code>OK</code> to indicate the request has been fully handled.
+    Return <code>DECLINED</code> to fall through to normal processing.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="create_request" id="create_request">Hook: create_request</a> <a title="Permanent link" href="#create_request" class="permalink">&para;</a></h2>
+    <p>Called when a new <code>request_rec</code> is created (for main
+    requests, subrequests, and internal redirects). Modules use this hook
+    to initialize per-request module state and set up private data
+    structures attached to the request pool or request notes.</p>
+
+    <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, create_request, (request_rec *r))</pre>
+
+
+    <p>This is a <code>RUN_ALL</code> hook &mdash; all registered modules get
+    a chance to run. Return <code>OK</code> or <code>DECLINED</code>.</p>
+
+    <p>Used by: <code class="module"><a href="../mod/mod_http.html">mod_http</a></code> (http_core.c),
+    <code class="module"><a href="../mod/mod_firehose.html">mod_firehose</a></code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="translation" id="translation">The Translation Phase</a> <a title="Permanent link" href="#translation" class="permalink">&para;</a></h2>
+
+    <h3><a name="pre_translate_name" id="pre_translate_name">Hook: pre_translate_name</a></h3>
+      <p>Runs before URL decoding happens. Modules can manipulate the
+      raw URI before it is translated to a filesystem path. This is
+      useful for modules that need to operate on the URI before
+      percent-decoding or normalization.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, pre_translate_name, (request_rec *r))</pre>
+
+
+      <p>Return <code>DECLINED</code> to let other modules handle the
+      pre-translation, <code>OK</code> if it was handled, <code>DONE</code>
+      if no further transformation should happen on the URI, or an
+      HTTP error status code.</p>
+
+      <p>Used by: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></p>
+    
+
+    <h3><a name="translate_name" id="translate_name">Hook: translate_name</a></h3>
       <p>Modules can determine the file name, or alter the given URI
       in this step. For example, <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> will
       translate the URI's path into the configured virtual host,
       <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> will translate the path to an alias path,
       and if the request falls back on the core, the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> is prepended to the request resource.</p>
 
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, translate_name, (request_rec *r))</pre>
+
+
       <p>If all modules <code>DECLINE</code> this phase, an error 500 is
       returned to the browser, and a "couldn't translate name" error is logged
       automatically.</p>
     
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="map_to_storage" id="map_to_storage">Hook: map_to_storage</a> <a title="Permanent link" href="#map_to_storage" class="permalink">&para;</a></h2>
+    <p>After the file or correct URI was determined, the
+    appropriate per-dir configurations are merged together. For
+    example, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> compares and merges the appropriate
+    <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> sections.
+    If the URI is nothing more than a local (non-proxy) <code>TRACE</code>
+    request, the core handles the request and returns <code>DONE</code>.</p>
 
-    <h3><a name="map_to_storage" id="map_to_storage">Hook: map_to_storage</a></h3>
-      <p>After the file or correct URI was determined, the
-      appropriate per-dir configurations are merged together. For
-      example, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> compares and merges the appropriate
-      <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> sections.
-      If the URI is nothing more than a local (non-proxy) <code>TRACE</code>
-      request, the core handles the request and returns <code>DONE</code>.
-      If no module answers this hook with <code>OK</code> or <code>DONE</code>,
-      the core will run the request filename against the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections. If the request
-      'filename' isn't an absolute, legal filename, a note is set for
-      later termination.</p>
-    
+    <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, map_to_storage, (request_rec *r))</pre>
 
-    <h3><a name="location-walk" id="location-walk">URI Location Walk</a></h3>
-      <p>Every request is hardened by a second
-      <code>ap_location_walk()</code> call. This reassures that a
-      translated request is still subjected to the configured
-      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections.
-      The request again borrows some or all of the processing from its previous
-      <code>location_walk</code> above, so this step is almost always very
-      efficient unless the translated URI mapped to a substantially different
-      path or Virtual Host.</p>
-    
 
-    <h3><a name="header_parser" id="header_parser">Hook: header_parser</a></h3>
-      <p>The main request then parses the client's headers. This
-      prepares the remaining request processing steps to better serve
-      the client's request.</p>
-    
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    <p>If no module answers this hook with <code>OK</code> or <code>DONE</code>,
+    the core will run the request filename against the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> and <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> sections. If the request
+    'filename' isn't an absolute, legal filename, a note is set for
+    later termination.</p>
+
+    <p>After <code>map_to_storage</code>, a second
+    <code>ap_location_walk()</code> call hardens the request by re-applying
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections
+    to the translated URI.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="post_perdir_config" id="post_perdir_config">Hook: post_perdir_config</a> <a title="Permanent link" href="#post_perdir_config" class="permalink">&para;</a></h2>
+    <p>This hook fires immediately after per-directory configuration has been
+    merged (after both <code>map_to_storage</code> and the second location
+    walk). Modules can use it to act on the fully-merged per-directory
+    configuration before access control runs.</p>
+
+    <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, post_perdir_config, (request_rec *r))</pre>
+
+
+    <p>Return <code>OK</code> to allow processing to continue,
+    <code>DECLINED</code> to let later modules decide, or an HTTP
+    error status code to abort.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="header_parser" id="header_parser">Hook: header_parser</a> <a title="Permanent link" href="#header_parser" class="permalink">&para;</a></h2>
+    <p>The main request then parses the client's headers. This
+    prepares the remaining request processing steps to better serve
+    the client's request. This hook only runs for the initial
+    request (not subrequests).</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="security" id="security">The Security Phase</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
-    <p>Needs Documentation. Code is:</p>
+    <p>The security phase in 2.4+ uses the "new" provider-based
+    authentication/authorization architecture managed by
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>, <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>,
+    and related modules. The hook execution order depends on the
+    <code class="directive"><a href="../mod/mod_authz_core.html#satisfy">Satisfy</a></code> setting
+    and whether access control is required (<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives).</p>
 
-    <pre class="prettyprint lang-c">if ((access_status = ap_run_access_checker(r)) != 0) {
-    return decl_die(access_status, "check access", r);
-}
+    <p>The hooks execute in this order:</p>
 
-if ((access_status = ap_run_check_user_id(r)) != 0) {
-    return decl_die(access_status, "check user", r);
-}
+    <h3><a name="token_checker" id="token_checker">Hook: token_checker</a></h3>
+      <p>Parses any tokens in the request (e.g. bearer tokens, API keys)
+      that contain metadata such as user identities or IP addresses
+      relevant to the request. Runs before the access checker.</p>
 
-if ((access_status = ap_run_auth_checker(r)) != 0) {
-    return decl_die(access_status, "check authorization", r);
-}</pre>
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, token_checker, (request_rec *r))</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+
+      <p>If this hook returns <code>OK</code> under <code>Satisfy any</code>,
+      the request is authorized immediately without running further
+      access/auth hooks.</p>
+
+      <div class="note"><h3>Note</h3>
+      <p>This hook is available in trunk only (not backported to 2.4
+      at the time of writing).</p></div>
+    
+
+    <h3><a name="access_checker" id="access_checker">Hook: access_checker</a></h3>
+      <p>Applies additional access control to the resource. This hook runs
+      <em>before</em> a user is authenticated, so it is for restrictions
+      independent of user identity (e.g. IP-based access, time-of-day
+      restrictions). It runs independent of <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive usage.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, access_checker, (request_rec *r))</pre>
+
+
+      <p>This is a <code>RUN_ALL</code> hook &mdash; all registered modules run.
+      Return <code>OK</code> to allow, or an HTTP error status to deny.</p>
+    
+
+    <h3><a name="access_checker_ex" id="access_checker_ex">Hook: access_checker_ex</a></h3>
+      <p>Extended access control that runs after <code>access_checker</code>
+      but before user authentication. This hook can also <em>bypass</em>
+      authentication entirely by returning <code>OK</code> &mdash; used by
+      <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> to implement the new authorization
+      model where <code>Require</code> directives can grant access
+      without credentials (e.g. <code>Require ip</code>).</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, access_checker_ex, (request_rec *r))</pre>
+
+
+      <p>Return <code>OK</code> to grant access (skipping authn unless
+      <code>force_authn</code> overrides), <code>DECLINED</code> to
+      require authentication, or an HTTP error status to deny.</p>
+    
+
+    <h3><a name="force_authn" id="force_authn">Hook: force_authn</a></h3>
+      <p>Allows a module to force authentication to be required even when
+      <code>access_checker_ex</code> has already granted access. This is
+      useful when a module needs the authenticated user identity for
+      purposes beyond authorization (e.g. logging, personalization).</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, force_authn, (request_rec *r))</pre>
+
+
+      <p>Return <code>OK</code> to force authentication, or
+      <code>DECLINED</code> to let later modules decide.</p>
+    
+
+    <h3><a name="check_user_id" id="check_user_id">Hook: check_user_id (authn)</a></h3>
+      <p>Authenticates the user &mdash; analyzes the request headers, validates
+      credentials, and sets <code>r-&gt;user</code> and
+      <code>r-&gt;ap_auth_type</code>. This hook only runs when Apache
+      determines that authentication is required for this resource.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, check_user_id, (request_rec *r))</pre>
+
+
+      <p>Modules should register using <code>ap_hook_check_authn()</code>
+      rather than hooking <code>check_user_id</code> directly.</p>
+    
+
+    <h3><a name="auth_checker" id="auth_checker">Hook: auth_checker (authz)</a></h3>
+      <p>Checks whether the authenticated user (<code>r-&gt;user</code>)
+      is authorized to access this resource. Runs after
+      <code>check_user_id</code>, and only when a <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive is
+      in effect.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, auth_checker, (request_rec *r))</pre>
+
+
+      <p>Modules should register using <code>ap_hook_check_authz()</code>
+      rather than hooking <code>auth_checker</code> directly.</p>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="preparation" id="preparation">The Preparation Phase</a> <a title="Permanent link" href="#preparation" class="permalink">&para;</a></h2>
     <h3><a name="type_checker" id="type_checker">Hook: type_checker</a></h3>
@@ -180,34 +378,49 @@ if ((access_status = ap_run_auth_checker(r)) != 0) {
       may set up their filters or other request handling parameters at this
       time.</p>
 
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, type_checker, (request_rec *r))</pre>
+
+
       <p>If all modules <code>DECLINE</code> this phase, an error 500 is
       returned to the browser, and a "couldn't find types" error is logged
       automatically.</p>
     
 
     <h3><a name="fixups" id="fixups">Hook: fixups</a></h3>
-      <p>Many modules are 'trounced' by some phase above. The fixups
-      phase is used by modules to 'reassert' their ownership or force
-      the request's fields to their appropriate values. It isn't
-      always the cleanest mechanism, but occasionally it's the only
-      option.</p>
+      <p>Many modules are "trounced" by some phase above. The fixups
+      phase is used by modules to reassert their ownership or force
+      the request's fields to their appropriate values. It is the last
+      hook to run before content generation.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, fixups, (request_rec *r))</pre>
+
+
+      <p>This is a <code>RUN_ALL</code> hook &mdash; all registered modules
+      get a chance to run. Used by <code class="module"><a href="../mod/mod_env.html">mod_env</a></code>,
+      <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>, and others.</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="handler" id="handler">The Handler Phase</a> <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
     <p>This phase is <strong>not</strong> part of the processing in
-    <code>ap_process_request_internal()</code>. Many
-    modules prepare one or more subrequests prior to creating any
-    content at all. After the core, or a module calls
-    <code>ap_process_request_internal()</code> it then calls
+    <code>ap_process_request_internal()</code>. After the core or a module
+    calls <code>ap_process_request_internal()</code>, it then calls
     <code>ap_invoke_handler()</code> to generate the request.</p>
 
     <h3><a name="insert_filter" id="insert_filter">Hook: insert_filter</a></h3>
       <p>Modules that transform the content in some way can insert
       their values and override existing filters, such that if the
       user configured a more advanced filter out-of-order, then the
-      module can move its order as need be.  There is no result code,
-      so actions in this hook better be trusted to always succeed.</p>
+      module can move its order as needed. There is no result code,
+      so actions in this hook must always succeed.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(void, insert_filter, (request_rec *r))</pre>
+
+
+      <p>This is a VOID hook &mdash; no return value. Used by
+      <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>, <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>,
+      <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, and other filter modules to insert
+      themselves into the output filter chain.</p>
     
 
     <h3><a name="hook_handler" id="hook_handler">Hook: handler</a></h3>
@@ -215,16 +428,84 @@ if ((access_status = ap_run_auth_checker(r)) != 0) {
       handler hook. Note that not every prepared request is sent to
       the handler hook. Many modules, such as <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>,
       will create subrequests for a given URI, and then never serve the
-      subrequest, but simply lists it for the user. Remember not to
+      subrequest, but simply list it for the user. Remember not to
       put required teardown from the hooks above into this module,
       but register pool cleanups against the request pool to free
       resources as required.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, handler, (request_rec *r))</pre>
+
     
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">The Logging Phase</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+    <h3><a name="log_transaction" id="log_transaction">Hook: log_transaction</a></h3>
+      <p>After the response has been sent to the client, modules can
+      perform logging activities. This hook is declared in
+      <code>http_protocol.h</code> and runs outside of
+      <code>ap_process_request_internal()</code>.</p>
+
+      <pre class="prettyprint lang-c">AP_DECLARE_HOOK(int, log_transaction, (request_rec *r))</pre>
+
+
+      <p>Used by: <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>,
+      <code class="module"><a href="../mod/mod_log_forensic.html">mod_log_forensic</a></code>, <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code></p>
+
+      <p>Return <code>OK</code> or <code>DECLINED</code>. Errors at
+      this stage do not affect the client response (it has already
+      been sent).</p>
+    
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="dirwalk_stat" id="dirwalk_stat">Hook: dirwalk_stat</a> <a title="Permanent link" href="#dirwalk_stat" class="permalink">&para;</a></h2>
+    <p>This hook is called during directory walks to allow modules to
+    handle or emulate the <code>apr_stat()</code> calls needed to
+    traverse the filesystem. This enables modules to serve content
+    from non-filesystem backends (databases, remote storage, etc.)
+    while still participating in the directory walk mechanism.</p>
+
+    <pre class="prettyprint lang-c">AP_DECLARE_HOOK(apr_status_t, dirwalk_stat,
+                (apr_finfo_t *finfo, request_rec *r, apr_int32_t wanted))</pre>
+
+
+    <p>Return an <code>apr_status_t</code> value, or
+    <code>AP_DECLINED</code> to let later modules (or the default
+    <code>apr_stat()</code> call) decide.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2><a name="hookorder" id="hookorder">Hook Types and Ordering</a> <a title="Permanent link" href="#hookorder" class="permalink">&para;</a></h2>
+    <p>Each hook uses one of the following execution strategies:</p>
+
+    <dl>
+      <dt><code>RUN_FIRST</code></dt>
+      <dd>Hooks stop at the first module that does <em>not</em> return
+      <code>DECLINED</code>. Used by: <code>pre_translate_name</code>,
+      <code>translate_name</code>, <code>map_to_storage</code>,
+      <code>check_user_id</code>, <code>type_checker</code>,
+      <code>access_checker_ex</code>, <code>auth_checker</code>,
+      <code>force_authn</code>, <code>token_checker</code>,
+      <code>dirwalk_stat</code>.</dd>
+
+      <dt><code>RUN_ALL</code></dt>
+      <dd>Every registered module runs unless one returns an error.
+      Used by: <code>fixups</code>, <code>access_checker</code>,
+      <code>create_request</code>, <code>post_perdir_config</code>.</dd>
+
+      <dt><code>VOID</code></dt>
+      <dd>Every registered module runs with no return value.
+      Used by: <code>insert_filter</code>.</dd>
+    </dl>
+
+    <p>Modules control their position in the hook chain using the
+    <code>order</code>, <code>predecessors</code>, and
+    <code>successors</code> arguments to the <code>ap_hook_*</code>
+    registration functions. See <a href="./modguide.html#hooking">the
+    module guide</a> for details.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/request.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

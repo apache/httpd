@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Redirecting and Remapping with mod_rewrite - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Redirecting and Remapping with mod_rewrite</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/remapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
@@ -43,25 +41,25 @@ request. This includes many examples of common uses of <code class="module"><a h
 including detailed descriptions of how each works.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#https-redirect">Forcing HTTPS</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#front-controller">Front Controller / Application Routing</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewrite-query">Rewrite query string</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Userdirs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#old-to-new">From Old to New (internal)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#https-redirect">Forcing HTTPS</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#trailing-slash">Trailing Slash Normalization</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#front-controller">Front Controller / Application Routing</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalhost">Canonical Hostnames</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multipledirs">Search for pages in more than one directory</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#canonicalurl">Canonical URLs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewrite-query">Rewrite query string</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#structuredhomedirs">Structured Userdirs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#redirectanchors">Redirecting Anchors</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a> <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
 
@@ -91,7 +89,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
     </dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="https-redirect" id="https-redirect">Forcing HTTPS</a> <a title="Permanent link" href="#https-redirect" class="permalink">&para;</a></h2>
 
@@ -151,7 +149,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
 
       <div class="note"><h3>Behind a load balancer or SSL terminator</h3>
       <p>The <code>%{HTTPS}</code> variable is not a general-purpose
-      environment variable — it queries <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
+      environment variable &mdash; it queries <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
       directly. If SSL/TLS is terminated at an upstream load balancer
       or reverse proxy, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not handling the
       connection and <code>%{HTTPS}</code> will always report
@@ -180,7 +178,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="acme-exemption" id="acme-exemption">Exempting ACME challenge requests from HTTPS redirect</a> <a title="Permanent link" href="#acme-exemption" class="permalink">&para;</a></h2>
 
@@ -241,7 +239,7 @@ RewriteRule "^(.*)" "https://%{SERVER_NAME}$1" [R=301,L]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="trailing-slash" id="trailing-slash">Trailing Slash Normalization</a> <a title="Permanent link" href="#trailing-slash" class="permalink">&para;</a></h2>
 
@@ -289,7 +287,7 @@ RewriteRule "^" "%1" [R=301,L]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="front-controller" id="front-controller">Front Controller / Application Routing</a> <a title="Permanent link" href="#front-controller" class="permalink">&para;</a></h2>
 
@@ -308,7 +306,7 @@ RewriteRule "^" "%1" [R=301,L]</pre>
   document for an annotated example that also demonstrates
   <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> usage.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="old-to-new-extern" id="old-to-new-extern">Rewriting From Old to New (external)</a> <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
 
@@ -350,7 +348,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="movehomedirs" id="movehomedirs">Resource Moved to Another Server</a> <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
 
@@ -396,7 +394,7 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="backward-compatibility" id="backward-compatibility">Backward Compatibility for file extension change</a> <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
 
@@ -453,7 +451,7 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a> <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
 
@@ -567,7 +565,7 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="multipledirs" id="multipledirs">Search for pages in more than one directory</a> <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
 
@@ -618,7 +616,7 @@ RewriteRule "^"     "-"                                          [PT]</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="canonicalurl" id="canonicalurl">Canonical URLs</a> <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
 
@@ -659,7 +657,7 @@ RewriteRule "^"     "-"                                          [PT]</pre>
      </dd>
       </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="moveddocroot" id="moveddocroot">Moved <code>DocumentRoot</code></a> <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
 
@@ -704,7 +702,7 @@ rather than rewriting URLs.</p>
 </dd>
 </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="rewrite-query" id="rewrite-query">Rewrite query string</a> <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
 
@@ -770,7 +768,7 @@ substitution.</p>
 </dd>
 
 </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="structuredhomedirs" id="structuredhomedirs">Structured Userdirs</a> <a title="Permanent link" href="#structuredhomedirs" class="permalink">&para;</a></h2>
 
@@ -810,7 +808,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="redirectanchors" id="redirectanchors">Redirecting Anchors</a> <a title="Permanent link" href="#redirectanchors" class="permalink">&para;</a></h2>
 
@@ -839,7 +837,7 @@ RewriteRule   "^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)"  "/home/<strong>$2</s
     special characters that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, by default, URL-encodes.</dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="time-dependent" id="time-dependent">Time-Dependent Rewriting</a> <a title="Permanent link" href="#time-dependent" class="permalink">&para;</a></h2>
 
@@ -893,7 +891,7 @@ RewriteRule   "^foo\.html$"             "foo.night.html"</pre>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a> <a title="Permanent link" href="#on-the-fly-content" class="permalink">&para;</a></h2>
 
@@ -949,14 +947,14 @@ RewriteRule "^(.+)\.html$"     "/regenerate_page.cgi"   [PT,L]</pre>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/rewrite/remapping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/remapping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/remapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/remapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/remapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/remapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Creating hooks and scripts with mod_lua - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer</a></div><div id="page-content"><div id="preamble"><h1>Creating hooks and scripts with mod_lua</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/lua.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -31,17 +29,17 @@
 <p>This document expands on the <code class="module"><a href="../mod/mod_lua.html">mod_lua</a></code> documentation and explores
  additional ways of using mod_lua for writing hooks and scripts.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#enabling">Optimizing mod_lua for production servers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic_remap">Example 1: A basic remapping module</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mass_vhost">Example 2: Mass virtual hosting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic_auth">Example 3: A basic authorization hook</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authz">Example 4: Authorization using LuaAuthzProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loadbalancing">Example 5: A rudimentary load balancer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#map_handler">Example 6: Overlays using LuaMapHandler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mod_status_lua">Example 6: Basic Lua scripts</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enabling">Optimizing mod_lua for production servers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic_remap">Example 1: A basic remapping module</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mass_vhost">Example 2: Mass virtual hosting</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic_auth">Example 3: A basic authorization hook</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authz">Example 4: Authorization using LuaAuthzProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loadbalancing">Example 5: A rudimentary load balancer</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#map_handler">Example 6: Overlays using LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mod_status_lua">Example 6: Basic Lua scripts</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_lua.html">mod_lua</a></li><li><a href="modguide.html">Developing modules for Apache 2.4</a></li><li><a href="request.html">Request Processing in Apache 2.4</a></li><li><a href="hooks.html">Apache 2.x Hook Functions</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <h3><a name="what" id="what">What is mod_lua</a></h3>
@@ -70,7 +68,7 @@ and whys of various function calls.
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="enabling" id="enabling">Optimizing mod_lua for production servers</a> <a title="Permanent link" href="#enabling" class="permalink">&para;</a></h2>
 
@@ -150,7 +148,7 @@ end</pre>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="basic_remap" id="basic_remap">Example 1: A basic remapping module</a> <a title="Permanent link" href="#basic_remap" class="permalink">&para;</a></h2>
 <p>
@@ -238,7 +236,7 @@ end</pre>
 <p>
 bla bla
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="mass_vhost" id="mass_vhost">Example 2: Mass virtual hosting</a> <a title="Permanent link" href="#mass_vhost" class="permalink">&para;</a></h2>
 <p>
@@ -335,7 +333,7 @@ end</pre>
 <p>
 
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="basic_auth" id="basic_auth">Example 3: A basic authorization hook</a> <a title="Permanent link" href="#basic_auth" class="permalink">&para;</a></h2>
 <p>
@@ -449,7 +447,7 @@ end</pre>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="authz" id="authz">Example 4: Authorization using LuaAuthzProvider</a> <a title="Permanent link" href="#authz" class="permalink">&para;</a></h2>
 <p>
@@ -496,7 +494,7 @@ function rights_handler(r, what)
     return apache2.AUTHZ_DENIED
 end</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="loadbalancing" id="loadbalancing">Example 5: A rudimentary load balancer</a> <a title="Permanent link" href="#loadbalancing" class="permalink">&para;</a></h2>
 <p>
@@ -547,7 +545,7 @@ function proxy_handler(r)
     return apache2.DECLINED -- let the proxy handler do this instead
 end</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="map_handler" id="map_handler">Example 6: Overlays using LuaMapHandler</a> <a title="Permanent link" href="#map_handler" class="permalink">&para;</a></h2>
 <p>
@@ -555,7 +553,7 @@ Coming soon!
 </p>
 <pre class="prettyprint lang-config">LuaMapHandler ^/portal/([a-z]+)/   /path/to/lua/script.lua handle_$1</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="mod_status_lua" id="mod_status_lua">Example 6: Basic Lua scripts</a> <a title="Permanent link" href="#mod_status_lua" class="permalink">&para;</a></h2>
 <p>
@@ -565,7 +563,7 @@ Also coming soon
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/lua.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

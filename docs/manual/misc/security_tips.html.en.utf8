@@ -1,55 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Security Tips - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Security Tips</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/security_tips.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>Some hints and tips on security issues in setting up a web server.
     Some of the suggestions will be general, others specific to Apache.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Keep up to Date</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dos">Denial of Service (DoS) attacks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI in General</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">Script Aliased CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Other sources of dynamic content</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamicsec">Dynamic content security</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protecting System Settings</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protect Server Files by Default</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Watching Your Logs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#merging">Merging of configuration sections</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#uptodate">Keep up to Date</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dos">Denial of Service (DoS) attacks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverroot">Permissions on ServerRoot Directories</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">CGI in General</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#saliasedcgi">Script Aliased CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamic">Other sources of dynamic content</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamicsec">Dynamic content security</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#systemsettings">Protecting System Settings</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#protectserverfiles">Protect Server Files by Default</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#watchyourlogs">Watching Your Logs</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#merging">Merging of configuration sections</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="uptodate" id="uptodate">Keep up to Date</a> <a title="Permanent link" href="#uptodate" class="permalink">&para;</a></h2>
 
@@ -70,7 +68,7 @@
     Operating System.  You must therefore stay aware of problems and
     updates with all the software on your system.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="dos" id="dos">Denial of Service (DoS) attacks</a> <a title="Permanent link" href="#dos" class="permalink">&para;</a></h2>
 
@@ -146,7 +144,7 @@
 
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="serverroot" id="serverroot">Permissions on ServerRoot Directories</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
 
@@ -162,11 +160,11 @@
     you create that directory as root, with commands like these:</p>
 
     <div class="example"><p><code>
-      mkdir /usr/local/apache <br />
-      cd /usr/local/apache <br />
-      mkdir bin conf logs <br />
-      chown 0 . bin conf logs <br />
-      chgrp 0 . bin conf logs <br />
+      mkdir /usr/local/apache <br>
+      cd /usr/local/apache <br>
+      mkdir bin conf logs <br>
+      chown 0 . bin conf logs <br>
+      chgrp 0 . bin conf logs <br>
       chmod 755 . bin conf logs
     </code></p></div>
 
@@ -176,9 +174,9 @@
     similarly protected:</p>
 
     <div class="example"><p><code>
-      cp httpd /usr/local/apache/bin <br />
-      chown 0 /usr/local/apache/bin/httpd <br />
-      chgrp 0 /usr/local/apache/bin/httpd <br />
+      cp httpd /usr/local/apache/bin <br>
+      chown 0 /usr/local/apache/bin/httpd <br>
+      chgrp 0 /usr/local/apache/bin/httpd <br>
       chmod 511 /usr/local/apache/bin/httpd
     </code></p></div>
 
@@ -196,7 +194,7 @@
     themselves are writeable (by a non-root user), then someone may be
     able to overwrite the log itself with bogus data.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ssi" id="ssi">Server Side Includes</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
@@ -236,7 +234,7 @@
     still use <code>&lt;--#include virtual="..." --&gt;</code> to execute CGI
     scripts if these scripts are in directories designated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="cgi" id="cgi">CGI in General</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
@@ -258,7 +256,7 @@
     popular way of doing this is with
     <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="nsaliasedcgi" id="nsaliasedcgi">Non Script Aliased CGI</a> <a title="Permanent link" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
 
@@ -275,7 +273,7 @@
       <li>You have no users, and nobody ever visits your server.</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="saliasedcgi" id="saliasedcgi">Script Aliased CGI</a> <a title="Permanent link" href="#saliasedcgi" class="permalink">&para;</a></h2>
 
@@ -290,7 +288,7 @@
     <p>Most sites choose this option over the non script aliased CGI
     approach.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="dynamic" id="dynamic">Other sources of dynamic content</a> <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
 
@@ -304,15 +302,15 @@
   the server user can. Some scripting engines may provide restrictions, but
   it is better to be safe and assume not.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="dynamicsec" id="dynamicsec">Dynamic content security</a> <a title="Permanent link" href="#dynamicsec" class="permalink">&para;</a></h2>
 
   
 
-  <p>When you use dynamic content frameworks — whether through
+  <p>When you use dynamic content frameworks &mdash; whether through
   <code>mod_php</code>, <code>mod_perl</code>, <code>mod_python</code>,
-  or any other embedded or external content generator — security
+  or any other embedded or external content generator &mdash; security
   responsibilities extend beyond httpd itself. Each framework has its
   own security model, configuration options, and hardening guides.
   Consult the documentation for whatever technology you use to generate
@@ -323,7 +321,7 @@
   <li>Minimize the privileges available to your scripts and applications.</li>
   <li>Validate and sanitize all user input.</li>
   <li>Keep your content framework and its dependencies patched and current.</li>
-  <li>Review the framework's security configuration — defaults are not
+  <li>Review the framework's security configuration &mdash; defaults are not
   always secure.</li>
   </ul>
 
@@ -332,7 +330,7 @@
   additional layer of defense by inspecting and filtering HTTP traffic
   before it reaches your application.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="systemsettings" id="systemsettings">Protecting System Settings</a> <a title="Permanent link" href="#systemsettings" class="permalink">&para;</a></h2>
 
@@ -354,7 +352,7 @@
 
     <p>Note that this setting is the default since Apache 2.3.9.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="protectserverfiles" id="protectserverfiles">Protect Server Files by Default</a> <a title="Permanent link" href="#protectserverfiles" class="permalink">&para;</a></h2>
 
@@ -368,7 +366,7 @@
     <p>For instance, consider the following example:</p>
 
     <div class="example"><p><code>
-      # cd /; ln -s / public_html <br />
+      # cd /; ln -s / public_html <br>
       Accessing <code>http://localhost/~root/</code>
     </code></p></div>
 
@@ -406,7 +404,7 @@
     <pre class="prettyprint lang-config">UserDir disabled root</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="watchyourlogs" id="watchyourlogs">Watching Your Logs</a> <a title="Permanent link" href="#watchyourlogs" class="permalink">&para;</a></h2>
 
@@ -425,7 +423,7 @@ grep "client denied" error_log | tail -n 10</pre>
 
 
     <p>The first example counts requests that contain path traversal
-    sequences — a common sign of probing for vulnerabilities. The second
+    sequences &mdash; a common sign of probing for vulnerabilities. The second
     lists the ten most recent denied clients, for example:</p>
 
     <div class="example"><p><code>
@@ -437,7 +435,7 @@ grep "client denied" error_log | tail -n 10</pre>
     <p>As you can see, the log files only report what already has happened.
     If the client had been able to access the <code>.env</code> file, you
     would instead see a <code>200</code> response in your
-    <a href="../logs.html#accesslog">Access Log</a> — which means your
+    <a href="../logs.html#accesslog">Access Log</a> &mdash; which means your
     server configuration needs tightening. Make sure you deny access to
     sensitive files:</p>
 
@@ -446,7 +444,7 @@ grep "client denied" error_log | tail -n 10</pre>
 &lt;/FilesMatch&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="merging" id="merging">Merging of configuration sections</a> <a title="Permanent link" href="#merging" class="permalink">&para;</a></h2>
 
@@ -464,12 +462,12 @@ grep "client denied" error_log | tail -n 10</pre>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/misc/security_tips.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/misc/security_tips.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

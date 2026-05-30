@@ -1,165 +1,163 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="es"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Cómo Cifrar su Tráfico - Servidor HTTP Apache Versión 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<title>C&oacute;mo Cifrar su Tr&aacute;fico - Servidor HTTP Apache Versi&oacute;n 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="apache">Versi&oacute;n 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="../">Versión 2.5</a> &gt; <a href="./">How-To /
-Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>Cómo Cifrar su Tráfico</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&oacute;n</a> &gt; <a href="../">Versi&oacute;n 2.5</a> &gt; <a href="./">How-To /
+Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>C&oacute;mo Cifrar su Tr&aacute;fico</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/encrypt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/encrypt.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/encrypt.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/encrypt.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/encrypt.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
  
-    <p>En esta guía se explica cómo hacer que su servidor Apache httpd
+    <p>En esta gu&iacute;a se explica c&oacute;mo hacer que su servidor Apache httpd
     use un cifrado para transferir datos entre el servidor y sus visitantes.
-    En vez de usar enlaces http:, su sitio web usará https:, 
-    si todo está configurado correctamente, toda persona que visite su web, tendrá
-    más privacidad y protección.
+    En vez de usar enlaces http:, su sitio web usar&aacute; https:, 
+    si todo est&aacute; configurado correctamente, toda persona que visite su web, tendr&aacute;
+    m&aacute;s privacidad y protecci&oacute;n.
     </p>
     <p>
-    Este manual está pensado para aquellos que no están muy familiarizados con
-    SSL/TLS y cifrados, junto con toda la jerga técnica incomprensible (Estamos bromeando, este tema es bastante importante, con serios expertos en el tema, y problemas reales que resolver - pero sí, suena a jerga técnica incomprensible para todos aquellos que no hayan tratado con esto). 
-    Personas que han escuchado que su servidor http: no es del todo seguro a día de hoy. Que los espías y los malos están escuchando. Que incluso las empresas legítimas están poniendo datos en sus páginas web y vendiendo perfiles de visitantes. 
+    Este manual est&aacute; pensado para aquellos que no est&aacute;n muy familiarizados con
+    SSL/TLS y cifrados, junto con toda la jerga t&eacute;cnica incomprensible (Estamos bromeando, este tema es bastante importante, con serios expertos en el tema, y problemas reales que resolver - pero s&iacute;, suena a jerga t&eacute;cnica incomprensible para todos aquellos que no hayan tratado con esto). 
+    Personas que han escuchado que su servidor http: no es del todo seguro a d&iacute;a de hoy. Que los esp&iacute;as y los malos est&aacute;n escuchando. Que incluso las empresas leg&iacute;timas est&aacute;n poniendo datos en sus p&aacute;ginas web y vendiendo perfiles de visitantes. 
     </p> 
     <p>
-    En esta guía nos centraremos en ayudarle a migrar su servidor httpd, para que deje de servir enlaces vía http: y los sirva vía https: sin necesidad de que te conviertas en un experto en SSL. Puede que te sientas fascinado con todas estas cosas de criptografía y estudies más sobre el tema y te conviertas en un experto de verdad. Pero también, puede que no esté  ejecutando un servidor web razonablemente seguro, y haga otras cosas buenas para la humanidad con tu tiempo.
+    En esta gu&iacute;a nos centraremos en ayudarle a migrar su servidor httpd, para que deje de servir enlaces v&iacute;a http: y los sirva v&iacute;a https: sin necesidad de que te conviertas en un experto en SSL. Puede que te sientas fascinado con todas estas cosas de criptograf&iacute;a y estudies m&aacute;s sobre el tema y te conviertas en un experto de verdad. Pero tambi&eacute;n, puede que no est&eacute;  ejecutando un servidor web razonablemente seguro, y haga otras cosas buenas para la humanidad con tu tiempo.
     </p>
     <p>
-    Obtendrá una idea aproximada de los roles, que estas cosas misteriosas denominadas "certificados" y el uso de "clave privada", como son usadas para que tus visitantes estén seguros de que contactan con tu servidor.
-  <em>No</em> se comentará en esta documentación <em>cómo</em> funciona esto, 
-  sólo cómo es utilizado: básicamente trataremos los pasaportes.
+    Obtendr&aacute; una idea aproximada de los roles, que estas cosas misteriosas denominadas "certificados" y el uso de "clave privada", como son usadas para que tus visitantes est&eacute;n seguros de que contactan con tu servidor.
+  <em>No</em> se comentar&aacute; en esta documentaci&oacute;n <em>c&oacute;mo</em> funciona esto, 
+  s&oacute;lo c&oacute;mo es utilizado: b&aacute;sicamente trataremos los pasaportes.
  </p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">Pequeña introducción a los Certificados e.j: Pasaporte de Internet</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#buycert">Comprar un Certificado</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#freecert">Obtener un Certificado Gratuito</a></li>
-</ul><h3>Consulte también</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">SSL How-To</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#protocol">Peque&ntilde;a introducci&oacute;n a los Certificados e.j: Pasaporte de Internet</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#buycert">Comprar un Certificado</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#freecert">Obtener un Certificado Gratuito</a></li>
+</ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">SSL How-To</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Pequeña introducción a los Certificados e.j: Pasaporte de Internet</a> <a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2> 
+<h2><a name="protocol" id="protocol">Peque&ntilde;a introducci&oacute;n a los Certificados e.j: Pasaporte de Internet</a> <a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2> 
     
     <p> 
-    El protocolo TLS (anteriormente conocido como SSL) es una forma en la que el servidor y el cliente pueden intercambiar información sin que nadie más intercepte las comunicaciones. Es lo que nuestros navegadores entienden cuando abrimos un enlace <em>https</em>.
+    El protocolo TLS (anteriormente conocido como SSL) es una forma en la que el servidor y el cliente pueden intercambiar informaci&oacute;n sin que nadie m&aacute;s intercepte las comunicaciones. Es lo que nuestros navegadores entienden cuando abrimos un enlace <em>https</em>.
    </p> 
    <p> 
-    Adicionalmente para tener una conversación privada entre entre el servidor y el cliente, nuestro navegador también necesita saber que está hablando con el servidor legitimo, y no con otro que se esté haciendo pasar por él.
-    Esto, después del cifrado, es la otra parte del protocolo TLS.
+    Adicionalmente para tener una conversaci&oacute;n privada entre entre el servidor y el cliente, nuestro navegador tambi&eacute;n necesita saber que est&aacute; hablando con el servidor legitimo, y no con otro que se est&eacute; haciendo pasar por &eacute;l.
+    Esto, despu&eacute;s del cifrado, es la otra parte del protocolo TLS.
   </p>
   <p>
-   Para que tu servidor pueda hacer esto, no sólo necesita el software para
-   TLS, ej.: el módulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, si no también alguna prueba
-   de identidad en Internet. A esto nos referimos comúnmente como <em>certificado</em>.
-   Básicamente, todos tenemos el mismo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> y con él, podemos
-   cifrar, pero solamente tú tienes <em>tu</em> certificado, y con él, tú eres tú.
+   Para que tu servidor pueda hacer esto, no s&oacute;lo necesita el software para
+   TLS, ej.: el m&oacute;dulo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, si no tambi&eacute;n alguna prueba
+   de identidad en Internet. A esto nos referimos com&uacute;nmente como <em>certificado</em>.
+   B&aacute;sicamente, todos tenemos el mismo <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> y con &eacute;l, podemos
+   cifrar, pero solamente t&uacute; tienes <em>tu</em> certificado, y con &eacute;l, t&uacute; eres t&uacute;.
    Es decir es una prueba de identidad de quien es, en este caso, el servidor.
  </p>
  <p> 
   Un certificado es la equivalencia a un pasaporte. Contiene dos cosas:
-  Un sello de aprobación de la persona que ha expedido el pasaporte, y una referencia
-  a tus huellas digitales, ej.: Lo que se llama <em>clave privada</em> en términos de cifrado.
+  Un sello de aprobaci&oacute;n de la persona que ha expedido el pasaporte, y una referencia
+  a tus huellas digitales, ej.: Lo que se llama <em>clave privada</em> en t&eacute;rminos de cifrado.
   </p>
   <p>
   	Cuando se configura Apache httpd para que use enlaces https, necesitas dotarlo de un certificado y su clave privada. Si esta clave privada no es desvelada
-  	a nadie, sólo tú podrás probar que dicho certificado te pertenece. En ese sentido, un navegador hablando con el servidor por segunda vez, puede reconocer que es
+  	a nadie, s&oacute;lo t&uacute; podr&aacute;s probar que dicho certificado te pertenece. En ese sentido, un navegador hablando con el servidor por segunda vez, puede reconocer que es
   	sin duda el mismo servidor con el que se ha estado comunicando previamente.
     </p>
     <p>
-    	Pero, ¿cómo se sabe que es un servidor legítimo la primera vez que se 
-    	comunica con alguien? Aquí es donde entra en juego el sello digital. 
+    	Pero, &iquest;c&oacute;mo se sabe que es un servidor leg&iacute;timo la primera vez que se 
+    	comunica con alguien? Aqu&iacute; es donde entra en juego el sello digital. 
     	Este sello digital lo crea otra entidad o autoridad, utilizando su propia
-    	clave privada. Esta entidad o autoridad, también tiene su propio certificado 
+    	clave privada. Esta entidad o autoridad, tambi&eacute;n tiene su propio certificado 
     	ej.: su propio pasaporte. El navegador puede asegurarse de que este 
-    	pasaporte se basa en la misma clave que se usó para su sello digital.
-    	Ahora, a parte de comprobar si el de nuestro servidor es correcto, también tiene
+    	pasaporte se basa en la misma clave que se us&oacute; para su sello digital.
+    	Ahora, a parte de comprobar si el de nuestro servidor es correcto, tambi&eacute;n tiene
     	que asegurarse que el pasaporte de la entidad o autoridad del sello
     	de <em>nuestro</em> pasaporte es correcta.
     </p>
     <p>
-    	Y ese pasaporte, también esta sellado digitalmente por otro con un certificado y una clave. Por lo que el navegador sólo tendrá que cerciorarse de que <em>ese</em> es un certificado correcto.
+    	Y ese pasaporte, tambi&eacute;n esta sellado digitalmente por otro con un certificado y una clave. Por lo que el navegador s&oacute;lo tendr&aacute; que cerciorarse de que <em>ese</em> es un certificado correcto.
     </p>
     <p>
-    Y ese pasaporte, tendrá también un sello de identidad digital emitido por otro tercero con su clave y su certificado. Por lo tanto, el navegador sólo tendrá que cerciorarse que <em>ese</em> es el correcto, para confiar en el que ofrece nuestro servidor. Este juego de confianza puede llegar desde unos pocos a varios niveles (normalmente menos de 5).
+    Y ese pasaporte, tendr&aacute; tambi&eacute;n un sello de identidad digital emitido por otro tercero con su clave y su certificado. Por lo tanto, el navegador s&oacute;lo tendr&aacute; que cerciorarse que <em>ese</em> es el correcto, para confiar en el que ofrece nuestro servidor. Este juego de confianza puede llegar desde unos pocos a varios niveles (normalmente menos de 5).
     </p>
     <p>
-    Al final, el navegador va ha encontrarse con un certificado sellado con su propia clave. Es un certificado, que como diría Gloria Gaynor, dice "Soy lo que soy". El navegador entonces decidirá si confiar o no en él. Si no, su servidor no será de confianza. De lo contrario, lo será. Así de simple.
+    Al final, el navegador va ha encontrarse con un certificado sellado con su propia clave. Es un certificado, que como dir&iacute;a Gloria Gaynor, dice "Soy lo que soy". El navegador entonces decidir&aacute; si confiar o no en &eacute;l. Si no, su servidor no ser&aacute; de confianza. De lo contrario, lo ser&aacute;. As&iacute; de simple.
     </p>
     <p>
-    Esta comprobación de confianza para Gloria Gaynor en Internet, es fácil: tu navegador (o tu sistema operativo) vienen con una lista de pasaportes en los cuales confiar, es decir preinstalados. En caso de encontrar el certificado de Gloria en la lista, se confiará o no en él. 
+    Esta comprobaci&oacute;n de confianza para Gloria Gaynor en Internet, es f&aacute;cil: tu navegador (o tu sistema operativo) vienen con una lista de pasaportes en los cuales confiar, es decir preinstalados. En caso de encontrar el certificado de Gloria en la lista, se confiar&aacute; o no en &eacute;l. 
     </p>
     <p>
-    Todo esto funcionará correctamente siempre y cuando cada cual mantenga su clave privada para sí, y no la comparta ni publique. 
-    Ya que cualquiera que obtenga dicha clave privada, puede suplantar a la entidad o persona propietaria de dicha clave. Y si el propietario de dicha clave puede firmar certificados (validarlos) el impostor también podrá hacer eso. Así que todos los pasaportes que haya sellado el impostor, serán 100% válidos, e indistinguibles de los reales.
+    Todo esto funcionar&aacute; correctamente siempre y cuando cada cual mantenga su clave privada para s&iacute;, y no la comparta ni publique. 
+    Ya que cualquiera que obtenga dicha clave privada, puede suplantar a la entidad o persona propietaria de dicha clave. Y si el propietario de dicha clave puede firmar certificados (validarlos) el impostor tambi&eacute;n podr&aacute; hacer eso. As&iacute; que todos los pasaportes que haya sellado el impostor, ser&aacute;n 100% v&aacute;lidos, e indistinguibles de los reales.
     </p>
     <p>
-    Este modelo funciona, pero tiene sus limitaciones. Es por eso que los desarrolladores de los navegadores están tan interesados en tener una lista con la correcta Gloria Gaynor, y amenazan con expulsar a cualquiera que sea descuidado con su clave. 
+    Este modelo funciona, pero tiene sus limitaciones. Es por eso que los desarrolladores de los navegadores est&aacute;n tan interesados en tener una lista con la correcta Gloria Gaynor, y amenazan con expulsar a cualquiera que sea descuidado con su clave. 
     </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="buycert" id="buycert">Comprar un Certificado</a> <a title="Enlace permanente" href="#buycert" class="permalink">&para;</a></h2> 
   <p> 
-    Puedes comprar uno. Hay muchas compañías vendiendo pasaportes de 
-  	Internet (certificados) como servicio. En <a href="https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport">esta lista de Mozilla,</a> podrás encontrar todas las compañías en las que el  navegador Firefox confía. Escoge una, visita su página web y te dirán los diferentes precios, y cómo hacer para demostrar que eres quien dices ser, y así podrán marcar tu certificado con un sello de confianza.
+    Puedes comprar uno. Hay muchas compa&ntilde;&iacute;as vendiendo pasaportes de 
+  	Internet (certificados) como servicio. En <a href="https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport">esta lista de Mozilla,</a> podr&aacute;s encontrar todas las compa&ntilde;&iacute;as en las que el  navegador Firefox conf&iacute;a. Escoge una, visita su p&aacute;gina web y te dir&aacute;n los diferentes precios, y c&oacute;mo hacer para demostrar que eres quien dices ser, y as&iacute; podr&aacute;n marcar tu certificado con un sello de confianza.
   </p>
 
    <p>
-   	Todos tienen sus propios métodos,también dependiendo de qué tipo de pasaporte pidas, puedes configurarlo normalmente a base de clics en su web. Una vez que hayas terminado te enviarán un email con los pasos siguientes. Al fin y al cabo ellos te enseñarán como generar tu propio certificado, así como tu propia clave privada y ellos te expedirán un certificado sellado que coincida.
+   	Todos tienen sus propios m&eacute;todos,tambi&eacute;n dependiendo de qu&eacute; tipo de pasaporte pidas, puedes configurarlo normalmente a base de clics en su web. Una vez que hayas terminado te enviar&aacute;n un email con los pasos siguientes. Al fin y al cabo ellos te ense&ntilde;ar&aacute;n como generar tu propio certificado, as&iacute; como tu propia clave privada y ellos te expedir&aacute;n un certificado sellado que coincida.
   </p>  
-   <p>Finalmente tendrás que poner tu clave en un fichero y tu certificado en otro. Ponerlos en tu servidor, cerciorarte de que solo un usuario de confianza tiene acceso a estos ficheros (comprobando los permisos), y que dicho usuario pueda añadirlo a la configuración de httpd. Todo esto se describe en <a href="../ssl/ssl_howto.html">SSL How-To</a>.     
+   <p>Finalmente tendr&aacute;s que poner tu clave en un fichero y tu certificado en otro. Ponerlos en tu servidor, cerciorarte de que solo un usuario de confianza tiene acceso a estos ficheros (comprobando los permisos), y que dicho usuario pueda a&ntilde;adirlo a la configuraci&oacute;n de httpd. Todo esto se describe en <a href="../ssl/ssl_howto.html">SSL How-To</a>.     
 </p>     
 <p>     
 </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="freecert" id="freecert">Obtener un Certificado Gratuito</a> <a title="Enlace permanente" href="#freecert" class="permalink">&para;</a></h2>
     
     <p>
-    	También hay compañías que ofrecen certificados para servidores web 
+    	Tambi&eacute;n hay compa&ntilde;&iacute;as que ofrecen certificados para servidores web 
     	totalmente gratuitos. La empresa pionera en esto es 
     	<a href="https://letsencrypt.org">Let's Encrypt</a>que es un servicio de
-    	 la organización sin animo de lucro
+    	 la organizaci&oacute;n sin animo de lucro
     <a href="https://www.abetterinternet.org/">Internet Security Research Group (ISRG)</a>, 
-    para "reducir las barreras financieras, tecnológicas y educacionales para 
+    para "reducir las barreras financieras, tecnol&oacute;gicas y educacionales para 
     securizar las comunicaciones en Internet"
     </p>
 
     <p>
-    	No sólo ofrecen certificados, también han desarrollado una interfaz que
+    	No s&oacute;lo ofrecen certificados, tambi&eacute;n han desarrollado una interfaz que
     	puede ser usada con tu Apache httpd para obtener un certificado. Es
-    	aquí donde cabe mencionar a <code class="module"><a href="../mod/mod_md.html">mod_md</a></code>
+    	aqu&iacute; donde cabe mencionar a <code class="module"><a href="../mod/mod_md.html">mod_md</a></code>
     </p>
     <p>
-    (Puedes alejar el zoom y mirar cómo se configuran el módulo <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> y 
+    (Puedes alejar el zoom y mirar c&oacute;mo se configuran el m&oacute;dulo <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> y 
     los <a href="https://httpd.apache.org/docs/2.4/vhosts/">hosts virtuales</a>...)
     </p>
   </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="../en/howto/encrypt.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/encrypt.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/encrypt.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/encrypt.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/encrypt.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

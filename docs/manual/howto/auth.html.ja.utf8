@@ -1,36 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>認証、承認、アクセス制御 - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>認証、承認、アクセス制御</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -42,19 +40,19 @@
     誰かが行きたい場所に行けるように、あるいは欲しい情報を
     得ることができるようにするための全過程を指します。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">関連するモジュールとディレクティブ</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#introduction">はじめに</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#theprerequisites">準備</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#gettingitworking">動作させる</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">関連するモジュールとディレクティブ</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#introduction">はじめに</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#theprerequisites">準備</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#gettingitworking">動作させる</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#lettingmorethanonepersonin">
 複数の人が入れるようにする</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">起こりえる問題</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">パスワードの保存形式を変える</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">複数のプロバイダを使用する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#beyond">単純な承認のその先</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">追加情報</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#possibleproblems">起こりえる問題</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dbmdbd">パスワードの保存形式を変える</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multprovider">複数のプロバイダを使用する</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#beyond">単純な承認のその先</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#moreinformation">追加情報</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連するモジュールとディレクティブ</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 <p>認証と承認の処理に関連する 3 種類のモジュールがあります。
@@ -112,7 +110,7 @@
   <p>様々なアクセス制御の行ない方については、
   <a href="access.html">アクセス制御</a>の方法をご覧ください。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">はじめに</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>もし機密の情報や、ごくごく少数グループの人向けの情報を
@@ -128,7 +126,7 @@
     <p>データが本当に機密なのであれば、認証に加えてさらに
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> を使うと良いでしょう。</p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="theprerequisites" id="theprerequisites">準備</a> <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>この文書で取り扱われるディレクティブは、
@@ -171,7 +169,7 @@
     なりません。これらの二つのモジュールは、設定ファイルのなかで非常に
     重要でウェブサーバの認証と承認で使用されるコアディレクティブと
     その機能を提供しています。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">動作させる</a> <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>では、サーバ上のあるディレクトリをパスワードで保護する
@@ -206,9 +204,9 @@
     確認のためにもう一度入力するように要求してきます。</p>
 
     <div class="example"><p><code>
-      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
-      New password: mypassword<br />
-      Re-type new password: mypassword<br />
+      # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br>
+      New password: mypassword<br>
+      Re-type new password: mypassword<br>
       Adding password for user rbowen
     </code></p></div>
 
@@ -231,11 +229,11 @@
     配置して、次のディレクティブを使うことができます。</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Restricted Files"<br />
-      # (Following line optional)<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      AuthType Basic<br>
+      AuthName "Restricted Files"<br>
+      # (Following line optional)<br>
+      AuthBasicProvider file<br>
+      AuthUserFile /usr/local/apache/passwd/passwords<br>
       Require user rbowen
     </code></p></div>
 
@@ -302,7 +300,7 @@
     指定することによって、プロセスの承認部分を提供します。
     次のセクションでは、<code class="directive"><a href="../mod/core.html#require">Require</a></code>
     ディレクティブの様々な用法について述べます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">
 複数の人が入れるようにする</a> <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
@@ -342,12 +340,12 @@
     修正する必要があります。</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "By Invitation Only"<br />
-      # Optional line:<br />
-      AuthBasicProvider file<br />
-      AuthUserFile /usr/local/apache/passwd/passwords<br />
-      AuthGroupFile /usr/local/apache/passwd/groups<br />
+      AuthType Basic<br>
+      AuthName "By Invitation Only"<br>
+      # Optional line:<br>
+      AuthBasicProvider file<br>
+      AuthUserFile /usr/local/apache/passwd/passwords<br>
+      AuthGroupFile /usr/local/apache/passwd/groups<br>
       Require group GroupName
     </code></p></div>
 
@@ -373,7 +371,7 @@
     欠点は、たくさんのパスワードファイルを管理して、その中から
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
     ディレクティブに正しいファイルを参照させなければならない点です。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="possibleproblems" id="possibleproblems">起こりえる問題</a> <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Basic 認証が指定されている場合は、
@@ -394,7 +392,7 @@
     この限界はサーバマシンの性能に依存して変わりますが、
     数百のエントリを越えたあたりから速度低下が見られると予期されています。
     その時は他の認証方法を考慮に入れた方が良いでしょう。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="dbmdbd" id="dbmdbd">パスワードの保存形式を変える</a> <a title="Permanent link" href="#dbmdbd" class="permalink">&para;</a></h2>
 
@@ -411,18 +409,18 @@
     <p>テキストファイルの代わりに dbm ファイルを選択する場合は、たとえば次のようにします。</p>
 
     <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider dbm<br />
-    AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user<br />
+    &lt;Directory /www/docs/private&gt;<br>
+    AuthName "Private"<br>
+    AuthType Basic<br>
+    AuthBasicProvider dbm<br>
+    AuthDBMUserFile /www/passwords/passwd.dbm<br>
+    Require valid-user<br>
     &lt;/Directory&gt;
     </code></p></div>
 
     <p>この他のオプションも存在します。詳細に関しては
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> のドキュメントをご覧ください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="multprovider" id="multprovider">複数のプロバイダを使用する</a> <a title="Permanent link" href="#multprovider" class="permalink">&para;</a></h2>
 
@@ -433,12 +431,12 @@
     組み合わせています。</p>
 
     <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file ldap<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
-    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
+    &lt;Directory /www/docs/private&gt;<br>
+    AuthName "Private"<br>
+    AuthType Basic<br>
+    AuthBasicProvider file ldap<br>
+    AuthUserFile /usr/local/apache/passwd/passwords<br>
+    AuthLDAPURL ldap://ldaphost/o=yourorg<br>
     Require valid-user
     </code></p></div>
 
@@ -454,25 +452,25 @@
     この例では file グループ承認と ldap グループ承認を使っています。</p>
 
     <div class="example"><p><code>
-    &lt;Directory /www/docs/private&gt;<br />
-    AuthName "Private"<br />
-    AuthType Basic<br />
-    AuthBasicProvider file<br />
-    AuthUserFile /usr/local/apache/passwd/passwords<br />
+    &lt;Directory /www/docs/private&gt;<br>
+    AuthName "Private"<br>
+    AuthType Basic<br>
+    AuthBasicProvider file<br>
+    AuthUserFile /usr/local/apache/passwd/passwords<br>
     AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile /usr/local/apache/passwd/groups<br />
-    Require group GroupName<br />
+    AuthGroupFile /usr/local/apache/passwd/groups<br>
+    Require group GroupName<br>
     Require ldap-group cn=mygroup,o=yourorg
     </code></p></div>
 
     <p>承認をより細かく制御したい場合は、
-    <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code> と
-    <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code> 
+    <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyall>">&lt;SatisfyAll&gt;</a></code> と
+    <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyone>">&lt;SatisfyOne&gt;</a></code> 
     ディレクティブを使って AND/OR ロジックで指定し、設定ファイルで
     承認の処理順番の制御ができるようになっています。
     これらのディレクティブをどのように使えるか、網羅した例をご覧ください。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="beyond" id="beyond">単純な承認のその先</a> <a title="Permanent link" href="#beyond" class="permalink">&para;</a></h2>
 
@@ -498,41 +496,41 @@
         現れた順序と同じになります。</p>
 
         <p>追加で導入された
-        <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code>,
-        <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code>
+        <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyall>">&lt;SatisfyAll&gt;</a></code>,
+        <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyone>">&lt;SatisfyOne&gt;</a></code>
         ディレクティブを使って、承認手法がいつ呼び出され、アクセスが許可された際に
         どの手続きが適用されるか指定することができます。
         たとえば、次の承認ブロックのロジックを見てみましょう:</p>
 
         <div class="example"><p><code>
-          # if ((user == "John") ||<br />
-          # &nbsp;&nbsp; ((Group == "admin")<br />
-          # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br />
-          # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br />
-          # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br />
-          # then<br />
-          # &nbsp; auth_granted<br />
-          # else<br />
-          # &nbsp; auth_denied<br />
-          #<br />
-          &lt;Directory /www/mydocs&gt;<br />
+          # if ((user == "John") ||<br>
+          # &nbsp;&nbsp; ((Group == "admin")<br>
+          # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br>
+          # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br>
+          # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br>
+          # then<br>
+          # &nbsp; auth_granted<br>
+          # else<br>
+          # &nbsp; auth_denied<br>
+          #<br>
+          &lt;Directory /www/mydocs&gt;<br>
           <span class="indent">
-            Authname ...<br />
-            AuthBasicProvider ...<br />
-            ...<br />
-            Require user John<br />
-            &lt;SatisfyAll&gt;<br />
+            Authname ...<br>
+            AuthBasicProvider ...<br>
+            ...<br>
+            Require user John<br>
+            &lt;SatisfyAll&gt;<br>
             <span class="indent">
-              Require Group admins<br />
-              Require ldap-group cn=mygroup,o=foo<br />
-              &lt;SatisfyOne&gt;<br />
+              Require Group admins<br>
+              Require ldap-group cn=mygroup,o=foo<br>
+              &lt;SatisfyOne&gt;<br>
               <span class="indent">
-                Require ldap-attribute dept="sales"<br />
-                Require file-group<br />
+                Require ldap-attribute dept="sales"<br>
+                Require file-group<br>
               </span>
-              &lt;/SatisfyOne&gt;<br />
+              &lt;/SatisfyOne&gt;<br>
             </span>
-            &lt;/SatisfyAll&gt;<br />
+            &lt;/SatisfyAll&gt;<br>
           </span>
           &lt;/Directory&gt;
         </code></p></div>
@@ -541,7 +539,7 @@
         ディレクティブは OR 操作として扱われます。つまり、もし指定した承認手法の
         ひとつでも合格すれば、承認されます。
         <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> ディレクティブのセットを
-        ひとつの <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code>
+        ひとつの <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyall>">&lt;SatisfyAll&gt;</a></code>
         ブロックで囲むとAND 操作となり、全ての承認手法で合格しなければ許可されません。</p>
 
     
@@ -599,19 +597,19 @@
         IP アドレスの一部や、ドメイン名が指定できます :</p>
     
         <div class="example"><p><code>
-          &lt;SatisfyAll&gt;<br />
+          &lt;SatisfyAll&gt;<br>
           <span class="indent">
-            Reject ip <var>192.168.205</var><br />
-            Reject host <var>phishers.example.com</var> <var>moreidiots.example</var><br />           Reject host ke<br />
+            Reject ip <var>192.168.205</var><br>
+            Reject host <var>phishers.example.com</var> <var>moreidiots.example</var><br>           Reject host ke<br>
           </span>
           &lt;/SatisfyAll&gt;
         </code></p></div>
     
         <p><code class="directive"><a href="../mod/mod_authz_host.html#reject">Reject</a></code> ディレクティブを
-        <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code> ブロックの中で使うと、
+        <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyall>">&lt;SatisfyAll&gt;</a></code> ブロックの中で使うと、
         許可したいグループにのみアクセスができるように確認できます。</p>
     
-        <p>上記の例では <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code>
+        <p>上記の例では <code class="directive"><a href="../mod/mod_authz_core.html#<satisfyall>">&lt;SatisfyAll&gt;</a></code>
         を使って、アクセスに合格する前段階で、全ての 
         <code class="directive"><a href="../mod/mod_authz_host.html#reject">Reject</a></code> ディレクティブが
         満たされていることを確認しています。</p>
@@ -646,14 +644,14 @@
 
     
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">追加情報</a> <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p>これら全てがどのように動作するかについて
     もっと多くの情報が書かれている <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> と
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
     の文書も読むとよいでしょう。
-    <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authn_core.html#<authnprovideralias>">&lt;AuthnProviderAlias&gt;</a></code>
     ディレクティブを使うと、特定の認証設定が簡単に書けるようになります。</p>
 
     <p><a href="access.html">アクセス制御</a>の方法も、
@@ -662,13 +660,13 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/auth.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/auth.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/auth.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/auth.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

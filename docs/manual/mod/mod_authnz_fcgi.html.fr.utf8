@@ -1,96 +1,94 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_authnz_fcgi - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_authnz_fcgi</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authnz_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authnz_fcgi.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet Ã&nbsp; une application d'autorisation FastCGI de gÃ©rer
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet &Atilde;&nbsp; une application d'autorisation FastCGI de g&Atilde;&copy;rer
 l'authentification et l'autorisation httpd.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authnz_fcgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authnz_fcgi.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible Ã&nbsp; partir de la version 2.4.10 du serveur HTTP
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>authnz_fcgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_authnz_fcgi.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &Atilde;&nbsp; partir de la version 2.4.10 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet aux applications d'autorisation FastCGI
-    d'authentifier les utilisateurs et de contrÃ´ler leur accÃ¨s aux
-    ressources. Il supporte les systÃ¨mes d'autorisation FastCGI
-    gÃ©nÃ©riques qui participent en une seule phase Ã&nbsp; l'authentification
-    et Ã&nbsp; l'autorisation, ainsi que les processus d'authentification et
-    d'autorisation spÃ©cifiques Ã&nbsp; Apache httpd qui interviennent en une
+    d'authentifier les utilisateurs et de contr&Atilde;&acute;ler leur acc&Atilde;&uml;s aux
+    ressources. Il supporte les syst&Atilde;&uml;mes d'autorisation FastCGI
+    g&Atilde;&copy;n&Atilde;&copy;riques qui participent en une seule phase &Atilde;&nbsp; l'authentification
+    et &Atilde;&nbsp; l'autorisation, ainsi que les processus d'authentification et
+    d'autorisation sp&Atilde;&copy;cifiques &Atilde;&nbsp; Apache httpd qui interviennent en une
     ou plusieurs phases.</p>
 
     <p>Les processus d'autorisation FastCGI peuvent authentifier un
     utilisateur via son identificateur et son mot de passe comme dans le
-    processus d'authentification basique, ou via un mÃ©canisme
+    processus d'authentification basique, ou via un m&Atilde;&copy;canisme
     arbitraire.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#invocations">Modes d'invocation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples supplÃ©mentaires</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitations">Limitations</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#invocations">Modes d'invocation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Exemples suppl&Atilde;&copy;mentaires</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitations">Limitations</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logging">Journalisation</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authnz_fcgi">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authnz_fcgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_authnz_fcgi">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_authnz_fcgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><a href="../howto/auth.html">Authentification, autorisation et
-contrÃ´le d'accÃ¨s</a></li>
+contr&Atilde;&acute;le d'acc&Atilde;&uml;s</a></li>
 <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
 <li><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="invocations" id="invocations">Modes d'invocation</a> <a title="Lien permanent" href="#invocations" class="permalink">&para;</a></h2>
 
     <p>Les modes d'invocation des processus d'autorisation FastCGI que
-    ce module supporte se distinguent par deux caractÃ©ristiques : le
-    <em>type</em> et le <em>mÃ©canisme</em> d'authentification.</p>
+    ce module supporte se distinguent par deux caract&Atilde;&copy;ristiques : le
+    <em>type</em> et le <em>m&Atilde;&copy;canisme</em> d'authentification.</p>
 
     <p>Le <em>Type</em> est simplement <code>authn</code> pour
     l'authentification, <code>authz</code> pour l'autorisation et
     <code>authnz</code> l'authentification et l'autorisation.</p>
 
-    <p>Le <em>mÃ©canisme</em> d'authentification fait rÃ©fÃ©rence aux
-    mÃ©canismes d'authentification et aux phases de traitement de la
-    configuration de Apache httpd, et peut Ãªtre
+    <p>Le <em>m&Atilde;&copy;canisme</em> d'authentification fait r&Atilde;&copy;f&Atilde;&copy;rence aux
+    m&Atilde;&copy;canismes d'authentification et aux phases de traitement de la
+    configuration de Apache httpd, et peut &Atilde;&ordf;tre
     <code>AuthBasicProvider</code>, <code>Require</code>, ou
-    <code>check_user_id</code>. Les deux premiers mÃ©canismes
-    correspondent aux directives utilisÃ©es pour participer aux phases de
-    traitement appropriÃ©es.</p>
+    <code>check_user_id</code>. Les deux premiers m&Atilde;&copy;canismes
+    correspondent aux directives utilis&Atilde;&copy;es pour participer aux phases de
+    traitement appropri&Atilde;&copy;es.</p>
 
     <p>Description de chaque mode:</p>
 
@@ -98,13 +96,13 @@ contrÃ´le d'accÃ¨s</a></li>
       <dt><em>Type</em> <code>authn</code>, <em>mechanism</em>
       <code>AuthBasicProvider</code></dt>
 
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est dÃ©finie Ã&nbsp;
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&Atilde;&copy;finie &Atilde;&nbsp;
       <code>AUTHORIZER</code>, et la variable
-      <code>FCGI_APACHE_ROLE</code> Ã&nbsp; <code>AUTHENTICATOR</code>.
-      L'application doit Ãªtre spÃ©cifiÃ©e en tant que fournisseur de type
+      <code>FCGI_APACHE_ROLE</code> &Atilde;&nbsp; <code>AUTHENTICATOR</code>.
+      L'application doit &Atilde;&ordf;tre sp&Atilde;&copy;cifi&Atilde;&copy;e en tant que fournisseur de type
       <em>authn</em> via la directive <code class="directive"><a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></code>, et
-      activÃ©e via la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>. Lorsqu'elle
-      est invoquÃ©e, l'application est censÃ©e authentifier le client Ã&nbsp;
+      activ&Atilde;&copy;e via la directive <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>. Lorsqu'elle
+      est invoqu&Atilde;&copy;e, l'application est cens&Atilde;&copy;e authentifier le client &Atilde;&nbsp;
       l'aide de l'identifiant et du mot de passe de l'utilisateur.
       Exemple d'application :
 
@@ -145,13 +143,13 @@ while ($request-&gt;Accept() &gt;= 0) {
 
       <dt><em>Type</em> <code>authz</code>, <em>mechanism</em>
       <code>Require</code></dt>
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est dÃ©finie Ã&nbsp;
-      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> Ã&nbsp;
-      <code>AUTHORIZER</code>. L'application doit Ãªtre spÃ©cifiÃ©e en tant
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&Atilde;&copy;finie &Atilde;&nbsp;
+      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> &Atilde;&nbsp;
+      <code>AUTHORIZER</code>. L'application doit &Atilde;&ordf;tre sp&Atilde;&copy;cifi&Atilde;&copy;e en tant
       que fournisseur de type <em>authz</em> via la directive <code class="directive"><a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></code>.
-      Lorsqu'elle est invoquÃ©e, l'application est censÃ©e contrÃ´ler les
-      accÃ¨s du client Ã&nbsp; l'aide de l'identifiant utilisateur et d'autres
-      donnÃ©es contenues dans la requÃªte. Exemple d'application :
+      Lorsqu'elle est invoqu&Atilde;&copy;e, l'application est cens&Atilde;&copy;e contr&Atilde;&acute;ler les
+      acc&Atilde;&uml;s du client &Atilde;&nbsp; l'aide de l'identifiant utilisateur et d'autres
+      donn&Atilde;&copy;es contenues dans la requ&Atilde;&ordf;te. Exemple d'application :
 <pre class="prettyprint lang-perl">#!/usr/bin/perl
 use FCGI;
 my $request = FCGI::Request();
@@ -190,16 +188,16 @@ while ($request-&gt;Accept() &gt;= 0) {
 
       <dd>Dans ce mode qui supporte le protocole d'autorisation web
       server-agnostic FastCGI, la variable <code>FCGI_ROLE</code> est
-      dÃ©finie Ã&nbsp; <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code>
-      n'est pas dÃ©finie. L'application doit Ãªtre spÃ©cifiÃ©e en tant que
+      d&Atilde;&copy;finie &Atilde;&nbsp; <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code>
+      n'est pas d&Atilde;&copy;finie. L'application doit &Atilde;&ordf;tre sp&Atilde;&copy;cifi&Atilde;&copy;e en tant que
       fournisseur de type <em>authnz</em> via la directive <code class="directive"><a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></code>.
-      L'application est censÃ©e assurer l'authentification et
-      l'autorisation au cours d'une mÃªme invocation Ã&nbsp; l'aide de
+      L'application est cens&Atilde;&copy;e assurer l'authentification et
+      l'autorisation au cours d'une m&Atilde;&ordf;me invocation &Atilde;&nbsp; l'aide de
       l'identifiant et du mot de passe de l'utilisateur et d'autres
-      donnÃ©es contenues dans la requÃªte. L'invocation de l'application
+      donn&Atilde;&copy;es contenues dans la requ&Atilde;&ordf;te. L'invocation de l'application
       intervient au cours de la phase d'authentification de l'API Apache
-      httpd. Si l'application renvoie le code 200, et si le mÃªme
-      fournisseur est invoquÃ© au cours de la phase d'autorisation (via
+      httpd. Si l'application renvoie le code 200, et si le m&Atilde;&ordf;me
+      fournisseur est invoqu&Atilde;&copy; au cours de la phase d'autorisation (via
       une directive <code class="directive">Require</code>), mod_authnz_fcgi
       renverra un code de type success pour la phase d'autorisation sans
       invoquer l'application. Exemple d'application :
@@ -242,9 +240,9 @@ while ($request-&gt;Accept() &gt;= 0) {
       <dt><em>Type</em> <code>authn</code>, <em>mechanism</em>
       <code>check_user_id</code></dt>
 
-      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est dÃ©finie Ã&nbsp;
-      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> Ã&nbsp;
-      <code>AUTHENTICATOR</code>. L'application doit Ãªtre spÃ©cifiÃ©e en
+      <dd>Dans ce mode, la variable <code>FCGI_ROLE</code> est d&Atilde;&copy;finie &Atilde;&nbsp;
+      <code>AUTHORIZER</code> et <code>FCGI_APACHE_ROLE</code> &Atilde;&nbsp;
+      <code>AUTHENTICATOR</code>. L'application doit &Atilde;&ordf;tre sp&Atilde;&copy;cifi&Atilde;&copy;e en
       tant que fournisseur de type <em>authn</em> via une directive
       <code class="directive"><a href="#authnzfcgidefineprovider">AuthnzFcgiDefineProvider</a></code>. La
       directive <code class="directive"><a href="#authnzfcgicheckauthnprovider">AuthnzFcgiCheckAuthnProvider</a></code>
@@ -294,21 +292,21 @@ while ($request-&gt;Accept() &gt;= 0) {
 
     </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples supplÃ©mentaires</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2><a name="examples" id="examples">Exemples suppl&Atilde;&copy;mentaires</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
   <ol>
-    <li>Si votre application supporte sÃ©parÃ©ment les rÃ´les
+    <li>Si votre application supporte s&Atilde;&copy;par&Atilde;&copy;ment les r&Atilde;&acute;les
     d'authentification et d'autorisation (<code>AUTHENTICATOR</code> et
-    <code>AUTHORIZER</code>), vous pouvez dÃ©finir des fournisseurs
-    sÃ©parÃ©s comme suit, mÃªme s'ils correspondent Ã&nbsp; la mÃªme application :
+    <code>AUTHORIZER</code>), vous pouvez d&Atilde;&copy;finir des fournisseurs
+    s&Atilde;&copy;par&Atilde;&copy;s comme suit, m&Atilde;&ordf;me s'ils correspondent &Atilde;&nbsp; la m&Atilde;&ordf;me application :
 
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authn  FooAuthn  fcgi://localhost:10102/
 AuthnzFcgiDefineProvider authz  FooAuthz  fcgi://localhost:10102/</pre>
 
 
-    SpÃ©cifie le fournisseur authn via la directive
+    Sp&Atilde;&copy;cifie le fournisseur authn via la directive
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     et le fournisseur authz via la directive
     <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>:
@@ -320,15 +318,15 @@ Require FooAuthz</pre>
 
     </li>
 
-    <li>Si votre application supporte le rÃ´le gÃ©nÃ©rique
+    <li>Si votre application supporte le r&Atilde;&acute;le g&Atilde;&copy;n&Atilde;&copy;rique
     <code>AUTHORIZER</code> (authentification et autorisation en une
-    seule invocation), vous pouvez dÃ©finir un fournisseur unique comme
+    seule invocation), vous pouvez d&Atilde;&copy;finir un fournisseur unique comme
     suit :
 
 <pre class="prettyprint lang-config">AuthnzFcgiDefineProvider authnz FooAuthnz fcgi://localhost:10103/</pre>
 
 
-    SpÃ©cifie le fournisseur authnz via les directives
+    Sp&Atilde;&copy;cifie le fournisseur authnz via les directives
     <code class="directive">AuthBasicProvider</code> et
     <code class="directive">Require</code> :
 
@@ -339,223 +337,223 @@ Require FooAuthnz</pre>
 
     </li>
 </ol>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="limitations" id="limitations">Limitations</a> <a title="Lien permanent" href="#limitations" class="permalink">&para;</a></h2>
 
-    <p>Les fonctionnalitÃ©s suivantes ne sont pas encore implÃ©mentÃ©es :</p>
+    <p>Les fonctionnalit&Atilde;&copy;s suivantes ne sont pas encore impl&Atilde;&copy;ment&Atilde;&copy;es :</p>
 
     <dl>
-      <dt>VÃ©rificateur d'accÃ¨s d'Apache httpd</dt>
+      <dt>V&Atilde;&copy;rificateur d'acc&Atilde;&uml;s d'Apache httpd</dt>
       <dd>La phase <em>access check</em> de l'API Apache httpd est
       distincte des phases d'authentification et d'autorisation.
-      Certaines autres implÃ©mentations de FastCGI supportent cette phase
+      Certaines autres impl&Atilde;&copy;mentations de FastCGI supportent cette phase
       et lorsque c'est le cas, la variable <code>FCGI_APACHE_ROLE</code>
-      est dÃ©finie Ã&nbsp; <code>ACCESS_CHECKER</code>.</dd>
+      est d&Atilde;&copy;finie &Atilde;&nbsp; <code>ACCESS_CHECKER</code>.</dd>
 
       <dt>Redirections (pipes) ou sockets locaux (Unix)</dt>
-      <dd>Seuls les sockets TCP sont actuellement supportÃ©s.</dd>
+      <dd>Seuls les sockets TCP sont actuellement support&Atilde;&copy;s.</dd>
 
       <dt>Support de mod_authn_socache</dt>
       <dd>Le support de l'interaction avec mod_authn_socache pour les
       applications qui interviennent dans le processus
       d'authentification d'Apache httpd serait souhaitable.</dd>
 
-      <dt>Support de l'authentification de type digest Ã&nbsp; l'aide de AuthDigestProvider</dt>
+      <dt>Support de l'authentification de type digest &Atilde;&nbsp; l'aide de AuthDigestProvider</dt>
       <dd>Cette limitation ne sera probablement jamais franchie car il
-      n'existe aucun flux de donnÃ©es d'autorisation capable de lire dans
-      un condensÃ© de type hash.</dd>
+      n'existe aucun flux de donn&Atilde;&copy;es d'autorisation capable de lire dans
+      un condens&Atilde;&copy; de type hash.</dd>
 
       <dt>Gestion des processus applicatifs</dt>
-      <dd>Cette fonctionnalitÃ© restera probablement hors de portÃ©e de ce
-      module. Il faudra donc gÃ©rer les processus applicatifs d'une autre
-      maniÃ¨re ; par exemple, <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> permet de
-      les dÃ©marrer.</dd>
+      <dd>Cette fonctionnalit&Atilde;&copy; restera probablement hors de port&Atilde;&copy;e de ce
+      module. Il faudra donc g&Atilde;&copy;rer les processus applicatifs d'une autre
+      mani&Atilde;&uml;re ; par exemple, <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> permet de
+      les d&Atilde;&copy;marrer.</dd>
 
       <dt>AP_AUTH_INTERNAL_PER_URI</dt>
-      <dd>Tous les fournisseurs sont actuellement enregistrÃ©s en tant
+      <dd>Tous les fournisseurs sont actuellement enregistr&Atilde;&copy;s en tant
       que AP_AUTH_INTERNAL_PER_CONF, ce qui signifie que les
-      vÃ©rifications ne sont pas effectuÃ©es pour les
-      sous-requÃªtes internes avec la mÃªme configuration de contrÃ´le
-      d'accÃ¨s que la requÃªte initiale.</dd>
+      v&Atilde;&copy;rifications ne sont pas effectu&Atilde;&copy;es pour les
+      sous-requ&Atilde;&ordf;tes internes avec la m&Atilde;&ordf;me configuration de contr&Atilde;&acute;le
+      d'acc&Atilde;&uml;s que la requ&Atilde;&ordf;te initiale.</dd>
 
-      <dt>Conversion du jeu de caractÃ¨res des donnÃ©es de protocole</dt>
-      <dd>Si mod_authnz_fcgi s'exÃ©cute dans un environnement de
-      compilation EBCDIC, toutes les donnÃ©es de protocole FastCGI sont
-      Ã©crites en EBCDIC et doivent Ãªtre disponibles en EBCDIC.</dd>
+      <dt>Conversion du jeu de caract&Atilde;&uml;res des donn&Atilde;&copy;es de protocole</dt>
+      <dd>Si mod_authnz_fcgi s'ex&Atilde;&copy;cute dans un environnement de
+      compilation EBCDIC, toutes les donn&Atilde;&copy;es de protocole FastCGI sont
+      &Atilde;&copy;crites en EBCDIC et doivent &Atilde;&ordf;tre disponibles en EBCDIC.</dd>
 
-      <dt>Plusieurs requÃªtes pour une connexion</dt>
+      <dt>Plusieurs requ&Atilde;&ordf;tes pour une connexion</dt>
       <dd>Actuellement, la connexion au fournisseur d'autorisation
-      FastCGI est fermÃ©e aprÃ¨s chaque phase de traitement. Par exemple,
-      si le fournisseur d'autorisation gÃ¨re sÃ©parÃ©ment les phases
+      FastCGI est ferm&Atilde;&copy;e apr&Atilde;&uml;s chaque phase de traitement. Par exemple,
+      si le fournisseur d'autorisation g&Atilde;&uml;re s&Atilde;&copy;par&Atilde;&copy;ment les phases
       <em>authn</em> et <em>authz</em>, deux connexions seront
-      nÃ©cessaires.</dd>
+      n&Atilde;&copy;cessaires.</dd>
 
       <dt>Redirection de certains URIs</dt>
-      <dd>Les URIs en provenance des clients ne peuvent pas Ãªtre
-      redirigÃ©s selon une table de redirection, comme avec la directive
-      <code class="directive">ProxyPass</code> utilisÃ©e avec les rÃ©pondeurs
+      <dd>Les URIs en provenance des clients ne peuvent pas &Atilde;&ordf;tre
+      redirig&Atilde;&copy;s selon une table de redirection, comme avec la directive
+      <code class="directive">ProxyPass</code> utilis&Atilde;&copy;e avec les r&Atilde;&copy;pondeurs
       FastCGI.</dd>
 
     </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
     <ol>
-        <li>Les erreurs de traitement sont journalisÃ©es Ã&nbsp; un niveau
-	<code>error</code> ou supÃ©rieur.</li>
-        <li>Les messages envoyÃ©s par l'application sont journalisÃ©s au
+        <li>Les erreurs de traitement sont journalis&Atilde;&copy;es &Atilde;&nbsp; un niveau
+	<code>error</code> ou sup&Atilde;&copy;rieur.</li>
+        <li>Les messages envoy&Atilde;&copy;s par l'application sont journalis&Atilde;&copy;s au
 	niveau <code>warn</code>.</li>
-        <li>Les messages de deboguage Ã&nbsp; caractÃ¨re gÃ©nÃ©ral sont
-	journalisÃ©s au niveau <code>debug</code>.</li>
-        <li>Les variables d'environnement transmises Ã&nbsp; l'application
-	sont journalisÃ©es au niveau <code>trace2</code>. La valeur de la
-	variable <code>REMOTE_PASSWD</code> sera occultÃ©e, mais
-	<strong>toute autre donnÃ©e sensible sera visible dans le
+        <li>Les messages de deboguage &Atilde;&nbsp; caract&Atilde;&uml;re g&Atilde;&copy;n&Atilde;&copy;ral sont
+	journalis&Atilde;&copy;s au niveau <code>debug</code>.</li>
+        <li>Les variables d'environnement transmises &Atilde;&nbsp; l'application
+	sont journalis&Atilde;&copy;es au niveau <code>trace2</code>. La valeur de la
+	variable <code>REMOTE_PASSWD</code> sera occult&Atilde;&copy;e, mais
+	<strong>toute autre donn&Atilde;&copy;e sensible sera visible dans le
 	journal</strong>.</li>
-        <li>Toutes les entrÃ©es/sorties entre le module et l'application
+        <li>Toutes les entr&Atilde;&copy;es/sorties entre le module et l'application
 	FastCGI, y compris les variables d'environnement, seront
-	journalisÃ©es au format imprimable et hexadÃ©cimal au niveau
-	<code>trace5</code>. <strong>Toutes les donnÃ©es sensibles seront
+	journalis&Atilde;&copy;es au format imprimable et hexad&Atilde;&copy;cimal au niveau
+	<code>trace5</code>. <strong>Toutes les donn&Atilde;&copy;es sensibles seront
 	visibles dans le journal.</strong></li>
     </ol>
 
     <p>La directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> permet
-    de configurer un niveau de journalisation spÃ©cifique Ã&nbsp;
+    de configurer un niveau de journalisation sp&Atilde;&copy;cifique &Atilde;&nbsp;
     mod_authnz_fcgi. Par exemple :</p>
 
 <pre class="prettyprint lang-config">LogLevel info authnz_fcgi:trace8</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a> <a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a title="Lien permanent" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet Ã&nbsp; une application FastCGI de gÃ©rer l'accroche
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet &Atilde;&nbsp; une application FastCGI de g&Atilde;&copy;rer l'accroche
 d'authentification check_authn.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthnzFcgiCheckAuthnProvider <em>provider-name</em>|<code>None</code>
 <em>option</em> ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
 </table>
-    <p>Cette directive permet de confier Ã&nbsp; une application FastCGI la
-    gestion d'une phase spÃ©cifique du processus d'authentification ou
+    <p>Cette directive permet de confier &Atilde;&nbsp; une application FastCGI la
+    gestion d'une phase sp&Atilde;&copy;cifique du processus d'authentification ou
     d'autorisation.</p>
 
-    <p>Certaines fonctionnalitÃ©s des fournisseurs d'autorisation FastCGI
-    nÃ©cessitent cette directive en lieu et place de
-    <code class="directive">AuthBasicProvider</code> pour pouvoir Ãªtre activÃ©es :</p>
+    <p>Certaines fonctionnalit&Atilde;&copy;s des fournisseurs d'autorisation FastCGI
+    n&Atilde;&copy;cessitent cette directive en lieu et place de
+    <code class="directive">AuthBasicProvider</code> pour pouvoir &Atilde;&ordf;tre activ&Atilde;&copy;es :</p>
 
     <ul>
-      <li>L'authentification de type autre que basique ; en gÃ©nÃ©ral,
-      dÃ©termination de l'identifiant utilisateur et renvoi de sa valeur
+      <li>L'authentification de type autre que basique ; en g&Atilde;&copy;n&Atilde;&copy;ral,
+      d&Atilde;&copy;termination de l'identifiant utilisateur et renvoi de sa valeur
       depuis le fournisseur d'autorisation ; voir l'option
       <code>UserExpr</code> ci-dessous</li>
-      <li>SÃ©lection d'un code de rÃ©ponse personnalisÃ© ; en cas de
-      code de rÃ©ponse autre que 200 en provenance du fournisseur
-      d'autorisation, c'est ce code qui sera utilisÃ© comme code d'Ã©tat
-      de la rÃ©ponse</li>
-      <li>DÃ©finition du corps d'une rÃ©ponse autre que 200 ; si le
-      fournisseur d'autorisation renvoie un corps de rÃ©ponse avec un
-      code autre que 200, c'est ce corps de rÃ©ponse qui sera renvoyÃ© au
-      client ; la longueur du texte est limitÃ©e Ã&nbsp; 8192 octets</li>
+      <li>S&Atilde;&copy;lection d'un code de r&Atilde;&copy;ponse personnalis&Atilde;&copy; ; en cas de
+      code de r&Atilde;&copy;ponse autre que 200 en provenance du fournisseur
+      d'autorisation, c'est ce code qui sera utilis&Atilde;&copy; comme code d'&Atilde;&copy;tat
+      de la r&Atilde;&copy;ponse</li>
+      <li>D&Atilde;&copy;finition du corps d'une r&Atilde;&copy;ponse autre que 200 ; si le
+      fournisseur d'autorisation renvoie un corps de r&Atilde;&copy;ponse avec un
+      code autre que 200, c'est ce corps de r&Atilde;&copy;ponse qui sera renvoy&Atilde;&copy; au
+      client ; la longueur du texte est limit&Atilde;&copy;e &Atilde;&nbsp; 8192 octets</li>
     </ul>
 
     <dl>
       <dt><em>provider-name</em></dt>
-      <dd>C'est le nom du fournisseur dÃ©fini au prÃ©alable via la
+      <dd>C'est le nom du fournisseur d&Atilde;&copy;fini au pr&Atilde;&copy;alable via la
       directive <code class="directive">AuthnzFcgiDefineProvider</code>.</dd>
 
       <dt><code>None</code></dt>
-      <dd>SpÃ©cifiez <code>None</code> pour dÃ©sactiver un fournisseur
-      activÃ© avec cette mÃªme directive dans une autre portÃ©e, par
-      exemple dans un rÃ©pertoire parent.</dd>
+      <dd>Sp&Atilde;&copy;cifiez <code>None</code> pour d&Atilde;&copy;sactiver un fournisseur
+      activ&Atilde;&copy; avec cette m&Atilde;&ordf;me directive dans une autre port&Atilde;&copy;e, par
+      exemple dans un r&Atilde;&copy;pertoire parent.</dd>
 
       <dt><em>option</em></dt>
-      <dd>Les options suivantes sont supportÃ©es :
+      <dd>Les options suivantes sont support&Atilde;&copy;es :
 
       <dl>
-         <dt>Authoritative On|Off (par dÃ©faut On)</dt>
-         <dd>Cette option permet de dÃ©finir si l'appel Ã&nbsp; d'autres
-	 modules est autorisÃ© lorsqu'un fournisseur d'autorisation FastCGI a
-	 Ã©tÃ© configurÃ© et si la requÃªte Ã©choue.</dd>
+         <dt>Authoritative On|Off (par d&Atilde;&copy;faut On)</dt>
+         <dd>Cette option permet de d&Atilde;&copy;finir si l'appel &Atilde;&nbsp; d'autres
+	 modules est autoris&Atilde;&copy; lorsqu'un fournisseur d'autorisation FastCGI a
+	 &Atilde;&copy;t&Atilde;&copy; configur&Atilde;&copy; et si la requ&Atilde;&ordf;te &Atilde;&copy;choue.</dd>
 
          <dt>DefaultUser <em>id utilisateur</em></dt>
          <dd>Lorsque le fournisseur d'autorisation donne son accord, et
-	 si <code>UserExpr</code> est dÃ©fini et correspond Ã&nbsp; une chaÃ®ne
+	 si <code>UserExpr</code> est d&Atilde;&copy;fini et correspond &Atilde;&nbsp; une cha&Atilde;&reg;ne
 	 vide, (par exemple, si le fournisseur d'autorisation ne renvoie
-	 aucune variable), c'est cette valeur qui sera utilisÃ©e comme id
-	 utilisateur par dÃ©faut. Cela se produit souvent lorsqu'on se trouve dans
-	 un contexte d'invitÃ©, ou d'utilisateur non authentifiÃ© ;
-	 les utilisateurs et invitÃ©s se voient alors attribuÃ© un id
-	 utilisateur spÃ©cifique qui permettra de se connecter et
-	 d'accÃ©der Ã&nbsp; certaines ressources.</dd>
+	 aucune variable), c'est cette valeur qui sera utilis&Atilde;&copy;e comme id
+	 utilisateur par d&Atilde;&copy;faut. Cela se produit souvent lorsqu'on se trouve dans
+	 un contexte d'invit&Atilde;&copy;, ou d'utilisateur non authentifi&Atilde;&copy; ;
+	 les utilisateurs et invit&Atilde;&copy;s se voient alors attribu&Atilde;&copy; un id
+	 utilisateur sp&Atilde;&copy;cifique qui permettra de se connecter et
+	 d'acc&Atilde;&copy;der &Atilde;&nbsp; certaines ressources.</dd>
 
-         <dt>RequireBasicAuth On|Off (par dÃ©faut Off)</dt>
-         <dd>Cette option permet de dÃ©finir si l'authentification
-	 basique est requise avant de transmettre la requÃªte au
+         <dt>RequireBasicAuth On|Off (par d&Atilde;&copy;faut Off)</dt>
+         <dd>Cette option permet de d&Atilde;&copy;finir si l'authentification
+	 basique est requise avant de transmettre la requ&Atilde;&ordf;te au
 	 fournisseur d'autorisation. Dans l'affirmative, le fournisseur
-	 d'autorisation ne sera invoquÃ© qu'en prÃ©sence d'un id
-	 utilisateur et d'un mot de passe ; si ces deux Ã©lÃ©ments ne sont
-	 pas prÃ©sents, un code d'erreur 401 sera renvoyÃ©</dd>
+	 d'autorisation ne sera invoqu&Atilde;&copy; qu'en pr&Atilde;&copy;sence d'un id
+	 utilisateur et d'un mot de passe ; si ces deux &Atilde;&copy;l&Atilde;&copy;ments ne sont
+	 pas pr&Atilde;&copy;sents, un code d'erreur 401 sera renvoy&Atilde;&copy;</dd>
 
-         <dt>UserExpr <em>expr</em> (pas de valeur par dÃ©faut)</dt>
+         <dt>UserExpr <em>expr</em> (pas de valeur par d&Atilde;&copy;faut)</dt>
          <dd>Lorsque le client ne fournit pas l'authentification basique
-	 et si le fournisseur d'autorisation dÃ©termine l'id utilisateur,
-	 cette expression, Ã©valuÃ©e aprÃ¨s l'appel au fournisseur
-	 d'autorisation, permet de dÃ©terminer l'id utilisateur. Cette
-	 expression se conforme Ã&nbsp; la <a href="../expr.html">syntaxe
-	 ap_expr</a> et doit correspondre Ã&nbsp; une chaÃ®ne de caractÃ¨res.
-	 Une utilisation courante consiste Ã&nbsp; rÃ©fÃ©rencer la dÃ©finition
-	 d'une <code>Variable-<em>XXX</em></code> renvoyÃ©e par le
+	 et si le fournisseur d'autorisation d&Atilde;&copy;termine l'id utilisateur,
+	 cette expression, &Atilde;&copy;valu&Atilde;&copy;e apr&Atilde;&uml;s l'appel au fournisseur
+	 d'autorisation, permet de d&Atilde;&copy;terminer l'id utilisateur. Cette
+	 expression se conforme &Atilde;&nbsp; la <a href="../expr.html">syntaxe
+	 ap_expr</a> et doit correspondre &Atilde;&nbsp; une cha&Atilde;&reg;ne de caract&Atilde;&uml;res.
+	 Une utilisation courante consiste &Atilde;&nbsp; r&Atilde;&copy;f&Atilde;&copy;rencer la d&Atilde;&copy;finition
+	 d'une <code>Variable-<em>XXX</em></code> renvoy&Atilde;&copy;e par le
 	 fournisseur d'autorisation via une option du style
 	 <code>UserExpr "%{reqenv:<em>XXX</em>}"</code>. Si cette option
-	 est spÃ©cifiÃ©e, et si l'id utilisateur ne peut pas Ãªtre dÃ©finie
-	 via l'expression aprÃ¨s une authentification rÃ©ussie, la requÃªte
-	 sera rejetÃ©e avec un code d'erreur 500.</dd>
+	 est sp&Atilde;&copy;cifi&Atilde;&copy;e, et si l'id utilisateur ne peut pas &Atilde;&ordf;tre d&Atilde;&copy;finie
+	 via l'expression apr&Atilde;&uml;s une authentification r&Atilde;&copy;ussie, la requ&Atilde;&ordf;te
+	 sera rejet&Atilde;&copy;e avec un code d'erreur 500.</dd>
 
        </dl>
       </dd>
      </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a> <a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a title="Lien permanent" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>DÃ©finit une application FastCGI en tant que fournisseur
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&Atilde;&copy;finit une application FastCGI en tant que fournisseur
 d'authentification et/ou autorisation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthnzFcgiDefineProvider <em>type</em> <em>provider-name</em>
 <em>backend-address</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_fcgi</td></tr>
 </table>
-    <p>Cette directive permet de dÃ©finir une application FastCGI en tant
-    que fournisseur pour une phase particuliÃ¨re d'authentification ou
+    <p>Cette directive permet de d&Atilde;&copy;finir une application FastCGI en tant
+    que fournisseur pour une phase particuli&Atilde;&uml;re d'authentification ou
     d'autorisation.</p>
 
     <dl>
       <dt><em>type</em></dt>
-      <dd>Les valeurs de ce paramÃ¨tre sont <em>authn</em> pour
+      <dd>Les valeurs de ce param&Atilde;&uml;tre sont <em>authn</em> pour
       l'authentification, <em>authz</em> pour l'autorisation, ou
-      <em>authnz</em> pour un fournisseur d'autorisation gÃ©nÃ©rique
-      FastCGI qui effectue les deux vÃ©rifications.</dd>
+      <em>authnz</em> pour un fournisseur d'autorisation g&Atilde;&copy;n&Atilde;&copy;rique
+      FastCGI qui effectue les deux v&Atilde;&copy;rifications.</dd>
 
       <dt><em>provider-name</em></dt>
-      <dd>Ce paramÃ¨tre permet d'associer un nom au fournisseur ; ce nom
-      pourra Ãªtre utilisÃ© dans des directives comme <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> et
+      <dd>Ce param&Atilde;&uml;tre permet d'associer un nom au fournisseur ; ce nom
+      pourra &Atilde;&ordf;tre utilis&Atilde;&copy; dans des directives comme <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> et
       <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><em>backend-address</em></dt>
-      <dd>Ce paramÃ¨tre permet de spÃ©cifier l'adresse de l'application
+      <dd>Ce param&Atilde;&uml;tre permet de sp&Atilde;&copy;cifier l'adresse de l'application
       sous la forme <em>fcgi://hostname:port/</em>. Le ou les processus
-      de l'application doivent Ãªtre gÃ©rÃ©s indÃ©pendamment comme avec
+      de l'application doivent &Atilde;&ordf;tre g&Atilde;&copy;r&Atilde;&copy;s ind&Atilde;&copy;pendamment comme avec
       <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code>.</dd>
     </dl>
 
@@ -563,9 +561,9 @@ d'authentification et/ou autorisation</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authnz_fcgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_authnz_fcgi.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_authnz_fcgi.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

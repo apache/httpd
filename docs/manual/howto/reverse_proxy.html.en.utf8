@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Reverse Proxy Guide - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>Reverse Proxy Guide</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/reverse_proxy.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>In addition to being a "basic" web server, and providing static and
@@ -52,24 +50,24 @@
     the reverse proxy server <em>is</em> the sole source of all content.</p>
 
     <p>A typical implementation is below:</p>
-    <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch" /></p>
+    <p class="centered"><img src="../images/reverse-proxy-arch.png" alt="reverse-proxy-arch"></p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Reverse Proxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple">Simple reverse proxying</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cluster">Clusters and Balancers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">Balancer and BalancerMember configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#failover">Failover</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#manager">Balancer Manager</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#health-check">Dynamic Health Checks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#status">BalancerMember status flags</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">Reverse Proxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple">Simple reverse proxying</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cluster">Clusters and Balancers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Balancer and BalancerMember configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#failover">Failover</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#manager">Balancer Manager</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#health-check">Dynamic Health Checks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#status">BalancerMember status flags</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="related" id="related">Reverse Proxy</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
   
   <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="simple" id="simple">Simple reverse proxying</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
     
@@ -106,7 +104,7 @@ ProxyPassReverse "/images"  "http://www.example.com/"</pre>
       path with be proxied to the specified backend, otherwise it will be handled
       locally.
     </p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="cluster" id="cluster">Clusters and Balancers</a> <a title="Permanent link" href="#cluster" class="permalink">&para;</a></h2>
     
@@ -150,7 +148,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       </p>
    </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="config" id="config">Balancer and BalancerMember configuration</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     
@@ -174,7 +172,7 @@ ProxyPass "/images"  "balancer://myset/"
 ProxyPassReverse "/images"  "balancer://myset/"</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="failover" id="failover">Failover</a> <a title="Permanent link" href="#failover" class="permalink">&para;</a></h2>
     
@@ -233,7 +231,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       standbys) are always tried in order from lowest to highest.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="manager" id="manager">Balancer Manager</a> <a title="Permanent link" href="#manager" class="permalink">&para;</a></h2>
     
@@ -267,26 +265,26 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       (eg: <code>http://rproxy.example.com/balancer-manager/</code>, you will see a
       page similar to the below:
     </p>
-    <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page"></p>
 
     <p>
       This form allows the devops admin to adjust various parameters, take
       workers offline, change load balancing methods and add new works. For
       example, clicking on the balancer itself, you will get the following page:
     </p>
-    <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page"></p>
 
     <p>
       Whereas clicking on a worker, displays this page:
     </p>
-    <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page" /></p>
+    <p class="centered"><img src="../images/bal-man-w.png" alt="balancer-manager page"></p>
 
     <p>
       To have these changes persist restarts of the reverse proxy, ensure that
       <code class="directive"><a href="../mod/mod_proxy.html#balancerpersist">BalancerPersist</a></code> is enabled.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="health-check" id="health-check">Dynamic Health Checks</a> <a title="Permanent link" href="#health-check" class="permalink">&para;</a></h2>
     
@@ -300,7 +298,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
       <code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> module.
     </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="status" id="status">BalancerMember status flags</a> <a title="Permanent link" href="#status" class="permalink">&para;</a></h2>
     
@@ -335,10 +333,10 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/reverse_proxy.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/reverse_proxy.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

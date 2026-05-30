@@ -1,79 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Adresleri ve Portları Dinleme - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<title>Adresleri ve Portları Dinleme - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.5</a></div><div id="page-content"><div id="preamble"><h1>Adresleri ve Portları Dinleme</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">S&uuml;r&uuml;m 2.5</a></div><div id="page-content"><div id="preamble"><h1>Adresleri ve Portları Dinleme</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/bind.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
-    <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek üzere
+    <p>Apache HTTPD sunucusunun belli adresleri ve portları dinlemek &uuml;zere
     yapılandırılması.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Genel Bakış</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#reload">Yeniden başlatmada dinleme yapılandırmasının değiştirilmesi</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ipv6">IPv6 Adreslerin Durumu</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#protocol">Protokolü Listen ile Belirtme</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Sanal Konaklarla Nasıl Çalışır?</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">Genel Bakış</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#reload">Yeniden başlatmada dinleme yapılandırmasının değiştirilmesi</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#ipv6">IPv6 Adreslerin Durumu</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#protocol">Protokol&uuml; Listen ile Belirtme</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">Sanal Konaklarla Nasıl &Ccedil;alışır?</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="vhosts/">Sanal Konaklar</a></li><li><a href="dns-caveats.html">DNS Konuları</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Genel Bakış</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
     <p>httpd başlatıldığında yerel makinedeki bazı adres ve portları kendine
-      bağlar ve gelecek istekleri bekler. Öntanımlı olarak makine üzerindeki
-      tüm adresleri dinler. Bununla birlikte, belli portları veya sadece
-      seçilmiş bazı adresleri ya da her ikisini de dinlemesi için bunun
-      belirtilmesi gerekebilir. Bu çoğunlukla, httpd'nin farklı IP
+      bağlar ve gelecek istekleri bekler. &Ouml;ntanımlı olarak makine &uuml;zerindeki
+      t&uuml;m adresleri dinler. Bununla birlikte, belli portları veya sadece
+      se&ccedil;ilmiş bazı adresleri ya da her ikisini de dinlemesi i&ccedil;in bunun
+      belirtilmesi gerekebilir. Bu &ccedil;oğunlukla, httpd'nin farklı IP
       adreslerine, konak isimlerine ve portlarına nasıl yanıt vereceğinin
-      belirlendiği <a href="vhosts/">sanal konak</a> özelliği ile birlikte
-      yürür.</p>
+      belirlendiği <a href="vhosts/">sanal konak</a> &ouml;zelliği ile birlikte
+      y&uuml;r&uuml;r.</p>
 
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi sunucuya
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi sunucuya
       gelen istekleri sadece belli port(lar)dan veya belli adres ve port
-      birleşimlerinden kabul etmesini söyler. <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinde sadece port
-      numarası belirtilmişse sunucu tüm arabirimlerin belirtilen portunu
+      birleşimlerinden kabul etmesini s&ouml;yler. <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesinde sadece port
+      numarası belirtilmişse sunucu t&uuml;m arabirimlerin belirtilen portunu
       dinleyecektir. Portla birlikte bir IP adresi de belirtilmişse sunucu
-      belirtilen portu ve arabirimi dinleyecektir. Çok sayıda adres ve portu
-      dinlemek için çok sayıda <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi kullanılabilir. Sunucu
-      böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
+      belirtilen portu ve arabirimi dinleyecektir. &Ccedil;ok sayıda adres ve portu
+      dinlemek i&ccedil;in &ccedil;ok sayıda <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi kullanılabilir. Sunucu
+      b&ouml;yle bir durumda belirtilen b&uuml;t&uuml;n adres ve portlardan gelen isteklere
       yanıt verecektir.</p>
 
-    <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
-      bağlantıları kabul etmesini sağlamak için,</p>
+    <p>&Ouml;rneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
+      bağlantıları kabul etmesini sağlamak i&ccedil;in,</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 80
 Listen 8000</pre>
@@ -81,75 +79,75 @@ Listen 8000</pre>
 
     <p>yapılandırmasını kullanabilirsiniz. Sunucunun 80 portuna gelen
       bağlantıları bir arabirimden 8000 portuna gelenleri ise başka bir
-      arabirimden kabul etmesini sağlamak için ise,</p>
+      arabirimden kabul etmesini sağlamak i&ccedil;in ise,</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 192.0.2.1:80
 Listen 192.0.2.5:8000</pre>
 </div>
 
-    <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki örnekteki
-      gibi köşeli ayraçlar içine alınarak belirtilmelidir:</p>
+    <p>yapılandırmasını kullanabilirsiniz. IPv6 adresleri aşağıdaki &ouml;rnekteki
+      gibi k&ouml;şeli ayra&ccedil;lar i&ccedil;ine alınarak belirtilmelidir:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen [2001:db8::a00:20ff:fea7:ccea]:80</pre>
 </div>
 
-    <div class="warning"><p>Bir <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinin
-    aynısının tekrarı sunucunun başlatılmasını engelleyen ölümcül bir hatayla
-    sonuçlanacaktır.</p>
+    <div class="warning"><p>Bir <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesinin
+    aynısının tekrarı sunucunun başlatılmasını engelleyen &ouml;l&uuml;mc&uuml;l bir hatayla
+    sonu&ccedil;lanacaktır.</p>
 
     <div class="example"><p><code>
       (48)Address already in use: make_sock: could not bind to address [::]:80
     </code></p></div>
 
-    <p>Sorun giderme ipuçları için <a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki
+    <p>Sorun giderme ipu&ccedil;ları i&ccedil;in <a href="https://cwiki.apache.org/confluence/display/httpd/CouldNotBindToAddress">wiki
     sayfasına bakınız</a>.</p>
 
 </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="reload" id="reload">Yeniden başlatmada dinleme yapılandırmasının değiştirilmesi</a> <a title="Permanent link" href="#reload" class="permalink">&para;</a></h2>
     
 
-    <p>httpd yeniden başlatıldığında, <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergelerindeki değişiklikler için
-    özel olarak dikkat edilmelidir. Yeniden başlatma sırasında httpd, portları
-    (özgün yapılandırmadaki gibi) bağlı tutar ve sunucuya yeni bağlantı
-    girişimleri için "Connection refused" hatalarının oluşmasını engeller.
-    Kullanılan <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergeleri
-    kümesinde eski yapılandırmayla çelişen değişiklikler yapılırsa,
+    <p>httpd yeniden başlatıldığında, <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergelerindeki değişiklikler i&ccedil;in
+    &ouml;zel olarak dikkat edilmelidir. Yeniden başlatma sırasında httpd, portları
+    (&ouml;zg&uuml;n yapılandırmadaki gibi) bağlı tutar ve sunucuya yeni bağlantı
+    girişimleri i&ccedil;in "Connection refused" hatalarının oluşmasını engeller.
+    Kullanılan <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergeleri
+    k&uuml;mesinde eski yapılandırmayla &ccedil;elişen değişiklikler yapılırsa,
     yapılandırma başarısız olur ve sunucu sonlandırılır.</p>
 
-    <p>Örneğin, yapılandırmanın:</p>
+    <p>&Ouml;rneğin, yapılandırmanın:</p>
     
     <div class="example"><pre class="prettyprint lang-config">Listen 127.0.0.1:80</pre>
 </div>
 
-    <p>aşağıdaki gibi değiştirilmesi başarısız olabilir, çünkü tüm
-    adreslerde 80 portuna bağlanmak sadece 127.0.0.1 üzerinde 80 portuna
-    bağlanmakla çelişir.</p>
+    <p>aşağıdaki gibi değiştirilmesi başarısız olabilir, &ccedil;&uuml;nk&uuml; t&uuml;m
+    adreslerde 80 portuna bağlanmak sadece 127.0.0.1 &uuml;zerinde 80 portuna
+    bağlanmakla &ccedil;elişir.</p>
     
     <div class="example"><pre class="prettyprint lang-config">Listen 80</pre>
 </div>
 
-    <p>Bu tür yapılandırma değişikliklerinin etkili olması için sunucunun
+    <p>Bu t&uuml;r yapılandırma değişikliklerinin etkili olması i&ccedil;in sunucunun
     durdurulması ve sonra başlatılması gerekir.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ipv6" id="ipv6">IPv6 Adreslerin Durumu</a> <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
     
 
-    <p>IPv6'yı gerçekleyen platformların sayısı giderek artmaktadır. Bu
-      platformların çoğunda <a class="glossarylink" href="./glossary.html#apr" title="sözlüğe bakınız">APR</a>, httpd'nin IPv6
-      soketleri ayırmasını mümkün kılarak IPv6'yı desteklemekte ve IPv6
-      üzerinden gönderilmiş istekleri elde etmektedir.</p>
+    <p>IPv6'yı ger&ccedil;ekleyen platformların sayısı giderek artmaktadır. Bu
+      platformların &ccedil;oğunda <a class="glossarylink" href="./glossary.html#apr" title="s&ouml;zl&uuml;ğe bakınız">APR</a>, httpd'nin IPv6
+      soketleri ayırmasını m&uuml;mk&uuml;n kılarak IPv6'yı desteklemekte ve IPv6
+      &uuml;zerinden g&ouml;nderilmiş istekleri elde etmektedir.</p>
 
-    <p>httpd yöneticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
+    <p>httpd y&ouml;neticilerinin kafasını karıştırıran tek şey IPv6 soketlerin
       hem IPv4 hem de IPv6 bağlantılarını kabul edip etmeyeceğidir. IPv4
       bağlantılarını kabul eden IPv6 soketleri IPv4 eşlemli IPv6 adresleri
-      kullanırlar. Bu çoğu sistemde öntanımlı olarak böyleyken, FreeBSD,
+      kullanırlar. Bu &ccedil;oğu sistemde &ouml;ntanımlı olarak b&ouml;yleyken, FreeBSD,
       NetBSD ve OpenBSD'de sistem geneline uygulanan kurallar gereğince
-      öntanımlı olarak buna izin verilmez; bu sistemlerde özel bir
+      &ouml;ntanımlı olarak buna izin verilmez; bu sistemlerde &ouml;zel bir
       <code class="program"><a href="./programs/configure.html">configure</a></code> parametresi ile <code>httpd</code>'nin
       davranışı değiştirilebilir.</p>
 
@@ -158,16 +156,16 @@ Listen 192.0.2.5:8000</pre>
       kullanmaktır. <code>httpd</code>'nin IPv4 ve IPv6 adresleri, IPv4 eşlemli
       IPv6 adreslerin kullanımını gerektiren en az sayıda soketle kabul etmesini
       istiyorsanız, <code class="program"><a href="./programs/configure.html">configure</a></code> betiğine
-      <code>--enable-v4-mapped</code> seçeneğini belirtiniz.</p>
+      <code>--enable-v4-mapped</code> se&ccedil;eneğini belirtiniz.</p>
 
-    <p><code>--enable-v4-mapped</code> seçeneği, FreeBSD, NetBSD ve OpenBSD
-      hariç tüm platformlarda öntanımlıdır. Muhtemelen siz de
-      <code>httpd</code>'nin böyle derlenmesini isterdiniz.</p>
+    <p><code>--enable-v4-mapped</code> se&ccedil;eneği, FreeBSD, NetBSD ve OpenBSD
+      hari&ccedil; t&uuml;m platformlarda &ouml;ntanımlıdır. Muhtemelen siz de
+      <code>httpd</code>'nin b&ouml;yle derlenmesini isterdiniz.</p>
 
     <p>Platformunuzun ve APR'nin neyi desteklediğine bakmaksızın
       <code>httpd</code>'nin sadece IPv4 adresleri kabul etmesini istiyorsanız,
-      tüm <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergelerinde
-      örnekteki gibi IPv4 adresleri belirtiniz:</p>
+      t&uuml;m <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergelerinde
+      &ouml;rnekteki gibi IPv4 adresleri belirtiniz:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 0.0.0.0:80
 Listen 192.0.2.1:80</pre>
@@ -176,55 +174,55 @@ Listen 192.0.2.1:80</pre>
     <p>Platformunuz IPv4 ve IPv6 adresleri ayrı soketlerden kabul ediyorsa ve
       <code>httpd</code>'nin de buna uygun davranmasını (yani IPv4 eşlemli IPv6
       adreslerin iptalini)  istiyorsanız <code class="program"><a href="./programs/configure.html">configure</a></code>
-      betiğine <code>--disable-v4-mapped</code> seçeneğini belirtiniz. Bu
-      seçenek FreeBSD, NetBSD ve OpenBSD'de öntanımlıdır.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+      betiğine <code>--disable-v4-mapped</code> se&ccedil;eneğini belirtiniz. Bu
+      se&ccedil;enek FreeBSD, NetBSD ve OpenBSD'de &ouml;ntanımlıdır.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Protokolü Listen ile Belirtme</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<h2><a name="protocol" id="protocol">Protokol&uuml; Listen ile Belirtme</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesinin isteğe
-      bağlı ikinci değiştirgesi <var>protokol</var> çoğu yapılandırmada gerekli
-      olmaz. Belirtilmediği takdirde, <code>https</code> için 443,
-      <code>http</code> için ise diğer bütün portlar öntanımlıdır. Protokol,
-      isteğin hangi modül tarafından işleneceğini ve <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code> yönergesi ile uygulanacak
-      protokole özgü en iyilemeleri belirlemekte kullanılır.</p>
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesinin isteğe
+      bağlı ikinci değiştirgesi <var>protokol</var> &ccedil;oğu yapılandırmada gerekli
+      olmaz. Belirtilmediği takdirde, <code>https</code> i&ccedil;in 443,
+      <code>http</code> i&ccedil;in ise diğer b&uuml;t&uuml;n portlar &ouml;ntanımlıdır. Protokol,
+      isteğin hangi mod&uuml;l tarafından işleneceğini ve <code class="directive"><a href="./mod/core.html#acceptfilter">AcceptFilter</a></code> y&ouml;nergesi ile uygulanacak
+      protokole &ouml;zg&uuml; en iyilemeleri belirlemekte kullanılır.</p>
 
-    <p>Sadece standartdışı bir port kullanmak isterseniz protokolü belirtmeniz
-      gerekir. Örneğin, bir<code>https</code> sitesini port 8443 üzerinde
-      çalıştırmak isterseniz:</p>
+    <p>Sadece standartdışı bir port kullanmak isterseniz protokol&uuml; belirtmeniz
+      gerekir. &Ouml;rneğin, bir<code>https</code> sitesini port 8443 &uuml;zerinde
+      &ccedil;alıştırmak isterseniz:</p>
 
     <div class="example"><pre class="prettyprint lang-config">Listen 192.170.2.1:8443 https</pre>
 </div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Sanal Konaklarla Nasıl Çalışır?</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Sanal Konaklarla Nasıl &Ccedil;alışır?</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergesi sanal
-      konaklar için gerçeklenmemiştir; sadece ana sunucuya hangi adresleri ve
-      portları dinleyeceğini söyler. Hiç <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesi kullanılmamışsa sunucu
-      kabul edilen tüm isteklere aynı şekilde davranacaktır. Eğer bir veya
-      daha fazla adres ve port için farklı bir davranış belirtmek
+    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> y&ouml;nergesi sanal
+      konaklar i&ccedil;in ger&ccedil;eklenmemiştir; sadece ana sunucuya hangi adresleri ve
+      portları dinleyeceğini s&ouml;yler. Hi&ccedil; <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> y&ouml;nergesi kullanılmamışsa sunucu
+      kabul edilen t&uuml;m isteklere aynı şekilde davranacaktır. Eğer bir veya
+      daha fazla adres ve port i&ccedil;in farklı bir davranış belirtmek
       istiyorsanız <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> kullanabilirsiniz. Bir sanal
-      konağı gerçeklemek için önce sunucunun sanal konak için kullanacağı
+      konağı ger&ccedil;eklemek i&ccedil;in &ouml;nce sunucunun sanal konak i&ccedil;in kullanacağı
       adres ve portu dinleyeceğini belirtmek gerekir. Bundan sonra bu sanal
-      konağın davranışını ayarlamak üzere belirtilen adres ve port için bir
-      <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü
-      oluşturulmalıdır. Yalnız dikkat edin, eğer <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> için belirtilen adres ve port
+      konağın davranışını ayarlamak &uuml;zere belirtilen adres ve port i&ccedil;in bir
+      <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> b&ouml;l&uuml;m&uuml;
+      oluşturulmalıdır. Yalnız dikkat edin, eğer <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> i&ccedil;in belirtilen adres ve port
       sunucu tarafından dinlenmiyorsa ona erişemezsiniz.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./de/bind.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/bind.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/bind.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/bind.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/bind.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/bind.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

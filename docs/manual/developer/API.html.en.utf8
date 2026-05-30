@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache 1.3 API notes - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache 1.3 API notes</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/API.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -108,12 +106,12 @@
       </li>
     </ul>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#basics">Basic concepts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#handlers">How handlers work</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#pools">Resource allocation and resource pools</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#config">Configuration, commands and the like</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#basics">Basic concepts</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#handlers">How handlers work</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#pools">Resource allocation and resource pools</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Configuration, commands and the like</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="basics" id="basics">Basic concepts</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     <p>We begin with an overview of the basic concepts behind the API, and how
@@ -211,45 +209,45 @@
       module itself:</p>
 
       <div class="example"><p><code>
-        /* Declarations of handlers. */<br />
-        <br />
-        int translate_scriptalias (request_rec *);<br />
-        int type_scriptalias (request_rec *);<br />
-        int cgi_handler (request_rec *);<br />
-        <br />
-        /* Subsidiary dispatch table for response-phase <br />
-        &nbsp;* handlers, by MIME type */<br />
-        <br />
-        handler_rec cgi_handlers[] = {<br />
+        /* Declarations of handlers. */<br>
+        <br>
+        int translate_scriptalias (request_rec *);<br>
+        int type_scriptalias (request_rec *);<br>
+        int cgi_handler (request_rec *);<br>
+        <br>
+        /* Subsidiary dispatch table for response-phase <br>
+        &nbsp;* handlers, by MIME type */<br>
+        <br>
+        handler_rec cgi_handlers[] = {<br>
         <span class="indent">
-          { "application/x-httpd-cgi", cgi_handler },<br />
-          { NULL }<br />
+          { "application/x-httpd-cgi", cgi_handler },<br>
+          { NULL }<br>
         </span>
-        };<br />
-        <br />
-        /* Declarations of routines to manipulate the <br />
-        &nbsp;* module's configuration info.  Note that these are<br />
-        &nbsp;* returned, and passed in, as void *'s; the server<br />
-        &nbsp;* core keeps track of them, but it doesn't, and can't,<br />
-        &nbsp;* know their internal structure.<br />
-        &nbsp;*/<br />
-        <br />
-        void *make_cgi_server_config (pool *);<br />
-        void *merge_cgi_server_config (pool *, void *, void *);<br />
-        <br />
-        /* Declarations of routines to handle config-file commands */<br />
-        <br />
+        };<br>
+        <br>
+        /* Declarations of routines to manipulate the <br>
+        &nbsp;* module's configuration info.  Note that these are<br>
+        &nbsp;* returned, and passed in, as void *'s; the server<br>
+        &nbsp;* core keeps track of them, but it doesn't, and can't,<br>
+        &nbsp;* know their internal structure.<br>
+        &nbsp;*/<br>
+        <br>
+        void *make_cgi_server_config (pool *);<br>
+        void *merge_cgi_server_config (pool *, void *, void *);<br>
+        <br>
+        /* Declarations of routines to handle config-file commands */<br>
+        <br>
         extern char *script_alias(cmd_parms *, void *per_dir_config, char *fake,
-                                  char *real);<br />
-        <br />
-        command_rec cgi_cmds[] = {<br />
+                                  char *real);<br>
+        <br>
+        command_rec cgi_cmds[] = {<br>
         <span class="indent">
-          { "ScriptAlias", script_alias, NULL, RSRC_CONF, TAKE2,<br />
-          <span class="indent">"a fakename and a realname"},<br /></span>
-          { NULL }<br />
+          { "ScriptAlias", script_alias, NULL, RSRC_CONF, TAKE2,<br>
+          <span class="indent">"a fakename and a realname"},<br></span>
+          { NULL }<br>
         </span>
-        };<br />
-        <br />
+        };<br>
+        <br>
         module cgi_module = {
 </code></p><pre>  STANDARD_MODULE_STUFF,
   NULL,                     /* initializer */
@@ -269,7 +267,7 @@
   NULL                      /* header parser */
 };</pre></div>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="handlers" id="handlers">How handlers work</a> <a title="Permanent link" href="#handlers" class="permalink">&para;</a></h2>
     <p>The sole argument to handlers is a <code>request_rec</code> structure.
@@ -322,66 +320,66 @@
       used:</p>
 
       <div class="example"><p><code>
-        struct request_rec {<br />
-        <br />
-        pool *pool;<br />
-        conn_rec *connection;<br />
-        server_rec *server;<br />
-        <br />
-        /* What object is being requested */<br />
-        <br />
-        char *uri;<br />
-        char *filename;<br />
+        struct request_rec {<br>
+        <br>
+        pool *pool;<br>
+        conn_rec *connection;<br>
+        server_rec *server;<br>
+        <br>
+        /* What object is being requested */<br>
+        <br>
+        char *uri;<br>
+        char *filename;<br>
         char *path_info;
 </code></p><pre>char *args;           /* QUERY_ARGS, if any */
 struct stat finfo;    /* Set by server core;
                        * st_mode set to zero if no such file */</pre><p><code>
-        char *content_type;<br />
-        char *content_encoding;<br />
-        <br />
-        /* MIME header environments, in and out. Also, <br />
-        &nbsp;* an array containing environment variables to<br />
-        &nbsp;* be passed to subprocesses, so people can write<br />
-        &nbsp;* modules to add to that environment.<br />
-        &nbsp;*<br />
-        &nbsp;* The difference between headers_out and <br />
-        &nbsp;* err_headers_out is that the latter are printed <br />
-        &nbsp;* even on error, and persist across internal<br />
-        &nbsp;* redirects (so the headers printed for <br />
+        char *content_type;<br>
+        char *content_encoding;<br>
+        <br>
+        /* MIME header environments, in and out. Also, <br>
+        &nbsp;* an array containing environment variables to<br>
+        &nbsp;* be passed to subprocesses, so people can write<br>
+        &nbsp;* modules to add to that environment.<br>
+        &nbsp;*<br>
+        &nbsp;* The difference between headers_out and <br>
+        &nbsp;* err_headers_out is that the latter are printed <br>
+        &nbsp;* even on error, and persist across internal<br>
+        &nbsp;* redirects (so the headers printed for <br>
         &nbsp;* <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> handlers will have
-         them).<br />
-        &nbsp;*/<br />
-         <br />
-        table *headers_in;<br />
-        table *headers_out;<br />
-        table *err_headers_out;<br />
-        table *subprocess_env;<br />
-        <br />
-        /* Info about the request itself... */<br />
-        <br />
+         them).<br>
+        &nbsp;*/<br>
+         <br>
+        table *headers_in;<br>
+        table *headers_out;<br>
+        table *err_headers_out;<br>
+        table *subprocess_env;<br>
+        <br>
+        /* Info about the request itself... */<br>
+        <br>
 </code></p><pre>int header_only;     /* HEAD request, as opposed to GET */
 char *protocol;      /* Protocol, as given to us, or HTTP/0.9 */
 char *method;        /* GET, HEAD, POST, <em>etc.</em> */
 int method_number;   /* M_GET, M_POST, <em>etc.</em> */</pre><p><code>
-        /* Info for logging */<br />
-        <br />
-        char *the_request;<br />
-        int bytes_sent;<br />
-        <br />
-        /* A flag which modules can set, to indicate that<br />
-        &nbsp;* the data being returned is volatile, and clients<br />
-        &nbsp;* should be told not to cache it.<br />
-        &nbsp;*/<br />
-        <br />
-        int no_cache;<br />
-        <br />
-        /* Various other config info which may change<br />
-        &nbsp;* with .htaccess files<br />
-        &nbsp;* These are config vectors, with one void*<br />
-        &nbsp;* pointer for each module (the thing pointed<br />
-        &nbsp;* to being the module's business).<br />
-        &nbsp;*/<br />
-        <br />
+        /* Info for logging */<br>
+        <br>
+        char *the_request;<br>
+        int bytes_sent;<br>
+        <br>
+        /* A flag which modules can set, to indicate that<br>
+        &nbsp;* the data being returned is volatile, and clients<br>
+        &nbsp;* should be told not to cache it.<br>
+        &nbsp;*/<br>
+        <br>
+        int no_cache;<br>
+        <br>
+        /* Various other config info which may change<br>
+        &nbsp;* with .htaccess files<br>
+        &nbsp;* These are config vectors, with one void*<br>
+        &nbsp;* pointer for each module (the thing pointed<br>
+        &nbsp;* to being the module's business).<br>
+        &nbsp;*/<br>
+        <br>
 </code></p><pre>void *per_dir_config;   /* Options set in config files, <em>etc.</em> */
 void *request_config;   /* Notes on *this* request */</pre><p><code>
         };
@@ -482,35 +480,35 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       symmetry.</p>
 
       <div class="example"><p><code>
-        int default_handler (request_rec *r)<br />
-        {<br />
+        int default_handler (request_rec *r)<br>
+        {<br>
         <span class="indent">
-          int errstatus;<br />
-          FILE *f;<br />
-          <br />
-          if (r-&gt;method_number != M_GET) return DECLINED;<br />
-          if (r-&gt;finfo.st_mode == 0) return NOT_FOUND;<br />
-          <br />
-          if ((errstatus = ap_set_content_length (r, r-&gt;finfo.st_size))<br />
+          int errstatus;<br>
+          FILE *f;<br>
+          <br>
+          if (r-&gt;method_number != M_GET) return DECLINED;<br>
+          if (r-&gt;finfo.st_mode == 0) return NOT_FOUND;<br>
+          <br>
+          if ((errstatus = ap_set_content_length (r, r-&gt;finfo.st_size))<br>
           &nbsp;&nbsp;&nbsp;&nbsp;||
-             (errstatus = ap_set_last_modified (r, r-&gt;finfo.st_mtime)))<br />
-          return errstatus;<br />
-          <br />
-          f = fopen (r-&gt;filename, "r");<br />
-          <br />
-          if (f == NULL) {<br />
+             (errstatus = ap_set_last_modified (r, r-&gt;finfo.st_mtime)))<br>
+          return errstatus;<br>
+          <br>
+          f = fopen (r-&gt;filename, "r");<br>
+          <br>
+          if (f == NULL) {<br>
           <span class="indent">
-            log_reason("file permissions deny server access", r-&gt;filename, r);<br />
-            return FORBIDDEN;<br />
+            log_reason("file permissions deny server access", r-&gt;filename, r);<br>
+            return FORBIDDEN;<br>
           </span>
-          }<br />
-          <br />
-          register_timeout ("send", r);<br />
-          ap_send_http_header (r);<br />
-          <br />
-          if (!r-&gt;header_only) send_fd (f, r);<br />
-          ap_pfclose (r-&gt;pool, f);<br />
-          return OK;<br />
+          }<br>
+          <br>
+          register_timeout ("send", r);<br>
+          ap_send_http_header (r);<br>
+          <br>
+          if (!r-&gt;header_only) send_fd (f, r);<br>
+          ap_pfclose (r-&gt;pool, f);<br>
+          return OK;<br>
         </span>
         }
       </code></p></div>
@@ -562,7 +560,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       correct in the last request in the chain (the one for which a response was
       actually sent).</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="pools" id="pools">Resource allocation and resource pools</a> <a title="Permanent link" href="#pools" class="permalink">&para;</a></h2>
     <p>One of the problems of writing and designing a server-pool server is
@@ -619,13 +617,13 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       the repeated appearance of the following idiom in module code:</p>
 
       <div class="example"><p><code>
-        int my_handler(request_rec *r)<br />
-        {<br />
+        int my_handler(request_rec *r)<br>
+        {<br>
         <span class="indent">
-          struct my_structure *foo;<br />
-          ...<br />
-          <br />
-          foo = (foo *)ap_palloc (r-&gt;pool, sizeof(my_structure));<br />
+          struct my_structure *foo;<br>
+          ...<br>
+          <br>
+          foo = (foo *)ap_palloc (r-&gt;pool, sizeof(my_structure));<br>
         </span>
         }
       </code></p></div>
@@ -798,10 +796,10 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       the typical arguments to <code>fopen</code>, <em>e.g.</em>,</p>
 
       <div class="example"><p><code>
-        ...<br />
-        FILE *f = ap_pfopen (r-&gt;pool, r-&gt;filename, "r");<br />
-        <br />
-        if (f == NULL) { ... } else { ... }<br />
+        ...<br>
+        FILE *f = ap_pfopen (r-&gt;pool, r-&gt;filename, "r");<br>
+        <br>
+        if (f == NULL) { ... } else { ... }<br>
       </code></p></div>
 
       <p>There is also a <code>ap_popenf</code> routine, which parallels the
@@ -878,7 +876,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       single main request that you should seriously consider the
       <code>ap_destroy_...</code> functions).</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="config" id="config">Configuration, commands and the like</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     <p>One of the design goals for this server was to maintain external
@@ -960,18 +958,18 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       tables to fill it. That looks like this:</p>
 
       <div class="example"><p><code>
-        void *create_mime_dir_config (pool *p, char *dummy)<br />
-        {<br />
+        void *create_mime_dir_config (pool *p, char *dummy)<br>
+        {<br>
         <span class="indent">
-          mime_dir_config *new =<br />
+          mime_dir_config *new =<br>
           <span class="indent">
-           (mime_dir_config *) ap_palloc (p, sizeof(mime_dir_config));<br />
+           (mime_dir_config *) ap_palloc (p, sizeof(mime_dir_config));<br>
           </span>
-          <br />
-          new-&gt;forced_types = ap_make_table (p, 4);<br />
-          new-&gt;encoding_types = ap_make_table (p, 4);<br />
-          <br />
-          return new;<br />
+          <br>
+          new-&gt;forced_types = ap_make_table (p, 4);<br>
+          new-&gt;encoding_types = ap_make_table (p, 4);<br>
+          <br>
+          return new;<br>
         </span>
         }
       </code></p></div>
@@ -993,26 +991,26 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       parent:</p>
 
       <div class="example"><p><code>
-        void *merge_mime_dir_configs (pool *p, void *parent_dirv, void *subdirv)<br />
-        {<br />
+        void *merge_mime_dir_configs (pool *p, void *parent_dirv, void *subdirv)<br>
+        {<br>
         <span class="indent">
-          mime_dir_config *parent_dir = (mime_dir_config *)parent_dirv;<br />
-          mime_dir_config *subdir = (mime_dir_config *)subdirv;<br />
-          mime_dir_config *new =<br />
+          mime_dir_config *parent_dir = (mime_dir_config *)parent_dirv;<br>
+          mime_dir_config *subdir = (mime_dir_config *)subdirv;<br>
+          mime_dir_config *new =<br>
           <span class="indent">
-            (mime_dir_config *)ap_palloc (p, sizeof(mime_dir_config));<br />
+            (mime_dir_config *)ap_palloc (p, sizeof(mime_dir_config));<br>
           </span>
-          <br />
-          new-&gt;forced_types = ap_overlay_tables (p, subdir-&gt;forced_types,<br />
+          <br>
+          new-&gt;forced_types = ap_overlay_tables (p, subdir-&gt;forced_types,<br>
           <span class="indent">
-            parent_dir-&gt;forced_types);<br />
+            parent_dir-&gt;forced_types);<br>
           </span>
-          new-&gt;encoding_types = ap_overlay_tables (p, subdir-&gt;encoding_types,<br />
+          new-&gt;encoding_types = ap_overlay_tables (p, subdir-&gt;encoding_types,<br>
           <span class="indent">
-            parent_dir-&gt;encoding_types);<br />
+            parent_dir-&gt;encoding_types);<br>
           </span>
-          <br />
-          return new;<br />
+          <br>
+          return new;<br>
         </span>
         }
       </code></p></div>
@@ -1038,12 +1036,12 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       shown here):</p>
 
       <div class="example"><p><code>
-        char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)<br />
-        {<br />
+        char *add_type(cmd_parms *cmd, mime_dir_config *m, char *ct, char *ext)<br>
+        {<br>
         <span class="indent">
-          if (*ext == '.') ++ext;<br />
-          ap_table_set (m-&gt;forced_types, ext, ct);<br />
-          return NULL;<br />
+          if (*ext == '.') ++ext;<br>
+          ap_table_set (m-&gt;forced_types, ext, ct);<br>
+          return NULL;<br>
         </span>
         }
       </code></p></div>
@@ -1072,15 +1070,15 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       look like this:</p>
 
       <div class="example"><p><code>
-        command_rec mime_cmds[] = {<br />
+        command_rec mime_cmds[] = {<br>
         <span class="indent">
-          { "AddType", add_type, NULL, OR_FILEINFO, TAKE2,<br />
-          <span class="indent">"a mime type followed by a file extension" },<br /></span>
-          { "AddEncoding", add_encoding, NULL, OR_FILEINFO, TAKE2,<br />
+          { "AddType", add_type, NULL, OR_FILEINFO, TAKE2,<br>
+          <span class="indent">"a mime type followed by a file extension" },<br></span>
+          { "AddEncoding", add_encoding, NULL, OR_FILEINFO, TAKE2,<br>
           <span class="indent">
-          "an encoding (<em>e.g.</em>, gzip), followed by a file extension" },<br />
+          "an encoding (<em>e.g.</em>, gzip), followed by a file extension" },<br>
           </span>
-          { NULL }<br />
+          { NULL }<br>
         </span>
         };
       </code></p></div>
@@ -1133,46 +1131,46 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       <code>ap_get_module_config</code> function.</p>
 
       <div class="example"><p><code>
-        int find_ct(request_rec *r)<br />
-        {<br />
+        int find_ct(request_rec *r)<br>
+        {<br>
         <span class="indent">
-          int i;<br />
-          char *fn = ap_pstrdup (r-&gt;pool, r-&gt;filename);<br />
-          mime_dir_config *conf = (mime_dir_config *)<br />
+          int i;<br>
+          char *fn = ap_pstrdup (r-&gt;pool, r-&gt;filename);<br>
+          mime_dir_config *conf = (mime_dir_config *)<br>
           <span class="indent">
-            ap_get_module_config(r-&gt;per_dir_config, &amp;mime_module);<br />
+            ap_get_module_config(r-&gt;per_dir_config, &amp;mime_module);<br>
           </span>
-          char *type;<br />
-          <br />
-          if (S_ISDIR(r-&gt;finfo.st_mode)) {<br />
+          char *type;<br>
+          <br>
+          if (S_ISDIR(r-&gt;finfo.st_mode)) {<br>
           <span class="indent">
-            r-&gt;content_type = DIR_MAGIC_TYPE;<br />
-            return OK;<br />
+            r-&gt;content_type = DIR_MAGIC_TYPE;<br>
+            return OK;<br>
           </span>
-          }<br />
-          <br />
-          if((i=ap_rind(fn,'.')) &lt; 0) return DECLINED;<br />
-          ++i;<br />
-          <br />
-          if ((type = ap_table_get (conf-&gt;encoding_types, &amp;fn[i])))<br />
-          {<br />
+          }<br>
+          <br>
+          if((i=ap_rind(fn,'.')) &lt; 0) return DECLINED;<br>
+          ++i;<br>
+          <br>
+          if ((type = ap_table_get (conf-&gt;encoding_types, &amp;fn[i])))<br>
+          {<br>
           <span class="indent">
-            r-&gt;content_encoding = type;<br />
-            <br />
-            /* go back to previous extension to try to use it as a type */<br />
-            fn[i-1] = '\0';<br />
-            if((i=ap_rind(fn,'.')) &lt; 0) return OK;<br />
-            ++i;<br />
+            r-&gt;content_encoding = type;<br>
+            <br>
+            /* go back to previous extension to try to use it as a type */<br>
+            fn[i-1] = '\0';<br>
+            if((i=ap_rind(fn,'.')) &lt; 0) return OK;<br>
+            ++i;<br>
           </span>
-          }<br />
-          <br />
-          if ((type = ap_table_get (conf-&gt;forced_types, &amp;fn[i])))<br />
-          {<br />
+          }<br>
+          <br>
+          if ((type = ap_table_get (conf-&gt;forced_types, &amp;fn[i])))<br>
+          {<br>
           <span class="indent">
-            r-&gt;content_type = type;<br />
+            r-&gt;content_type = type;<br>
           </span>
-          }<br />
-          <br />
+          }<br>
+          <br>
           return OK;
         </span>
         }
@@ -1199,20 +1197,20 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       per-directory config data):</p>
 
       <div class="example"><p><code>
-        char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)<br />
-        {<br />
+        char *add_redirect(cmd_parms *cmd, void *dummy, char *f, char *url)<br>
+        {<br>
         <span class="indent">
-          server_rec *s = cmd-&gt;server;<br />
-          alias_server_conf *conf = (alias_server_conf *)<br />
+          server_rec *s = cmd-&gt;server;<br>
+          alias_server_conf *conf = (alias_server_conf *)<br>
           <span class="indent">
-            ap_get_module_config(s-&gt;module_config,&amp;alias_module);<br />
+            ap_get_module_config(s-&gt;module_config,&amp;alias_module);<br>
           </span>
-          alias_entry *new = ap_push_array (conf-&gt;redirects);<br />
-          <br />
-          if (!ap_is_url (url)) return "Redirect to non-URL";<br />
-          <br />
-          new-&gt;fake = f; new-&gt;real = url;<br />
-          return NULL;<br />
+          alias_entry *new = ap_push_array (conf-&gt;redirects);<br>
+          <br>
+          if (!ap_is_url (url)) return "Redirect to non-URL";<br>
+          <br>
+          new-&gt;fake = f; new-&gt;real = url;<br>
+          return NULL;<br>
         </span>
         }
       </code></p></div>
@@ -1221,7 +1219,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/API.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

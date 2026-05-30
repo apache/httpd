@@ -1,48 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="es"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Primeros Pasos - Servidor HTTP Apache Versión 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<title>Primeros Pasos - Servidor HTTP Apache Versi&oacute;n 2.5</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
-<p class="apache">Versión 2.5 del Servidor HTTP Apache</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p>
+<p class="apache">Versi&oacute;n 2.5 del Servidor HTTP Apache</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentación</a> &gt; <a href="./">Versión 2.5</a></div><div id="page-content"><div id="preamble"><h1>Primeros Pasos</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentaci&oacute;n</a> &gt; <a href="./">Versi&oacute;n 2.5</a></div><div id="page-content"><div id="preamble"><h1>Primeros Pasos</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/getting-started.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/getting-started.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
 <p>Si es tu primera vez con el servidor Apache HTTTP, o incluso para llevar 
-un sitio web, puede que no sepas por dónde empezar, o qué preguntas hacer.
-hacer. Este documento le guiará a través de los conceptos básicos.</p>
+un sitio web, puede que no sepas por d&oacute;nde empezar, o qu&eacute; preguntas hacer.
+hacer. Este documento le guiar&aacute; a trav&eacute;s de los conceptos b&aacute;sicos.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#clientserver">Clientes, Servidores y URLs</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#dns">Nombres de Host y DNS</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configuration">Ficheros de Configuración y Directivas</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#content">Contenido del Sitio Web</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#logs">Ficheros de Log y Solución de Problemas</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">¿Qué viene a continuación?</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#clientserver">Clientes, Servidores y URLs</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#dns">Nombres de Host y DNS</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#configuration">Ficheros de Configuraci&oacute;n y Directivas</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#content">Contenido del Sitio Web</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#logs">Ficheros de Log y Soluci&oacute;n de Problemas</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">&iquest;Qu&eacute; viene a continuaci&oacute;n?</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="clientserver" id="clientserver">Clientes, Servidores y URLs</a> <a title="Enlace permanente" href="#clientserver" class="permalink">&para;</a></h2>
 
@@ -52,168 +50,168 @@ Las direcciones en la Web se expresan con URLs - Uniform Resource Locators
 - que especifican un protocolo (p.ej. <code>http</code>), un nombre de servidor (e.g.
 <code>www.apache.org</code>), una URL-path (p.ej.
 <code>/docs/current/getting-started.html</code>), y posiblemente una query
-string (p.ej. <code>?arg=value</code>) utilizada para pasar parámetros adicionales
+string (p.ej. <code>?arg=value</code>) utilizada para pasar par&aacute;metros adicionales
 al servidor.
 </p>
 
 <p>Un cliente (p.ej., un navegador web) conecta al servidor (p.ej., tu Servidor Apache HTTP),
-con el protocolo especificado, y hace una <strong>petición</strong> de un recurso utilizando 
+con el protocolo especificado, y hace una <strong>petici&oacute;n</strong> de un recurso utilizando 
 una URL-path.</p>
 
-<p>La URL-path puede representar varias cosas en el servidor. Podría ser un fichero 
-(como <code>getting-started.html</code>) un handler (como <a href="mod/mod_status.html">server-status</a>) or algún tipo de fichero de programa
-(como <code>index.php</code>). Revisaremos esto más adelante en la sección 
+<p>La URL-path puede representar varias cosas en el servidor. Podr&iacute;a ser un fichero 
+(como <code>getting-started.html</code>) un handler (como <a href="mod/mod_status.html">server-status</a>) or alg&uacute;n tipo de fichero de programa
+(como <code>index.php</code>). Revisaremos esto m&aacute;s adelante en la secci&oacute;n 
 <a href="#content">Contenido de Sitio Web</a>.</p>
 
 <p>
-El servidor enviará una <strong>respuesta</strong> que consiste en un código de estado
+El servidor enviar&aacute; una <strong>respuesta</strong> que consiste en un c&oacute;digo de estado
 y, opcionalmente, un cuerpo del mensaje.
-El código de estado indica si una petición tuvo éxito, y si no, qué tipo de condición
-de error se ha dado. Esto le dice al cliente qué debe hacer con la respuesta. Puedes
-leer sobre los códigos de respuesta posibles en
+El c&oacute;digo de estado indica si una petici&oacute;n tuvo &eacute;xito, y si no, qu&eacute; tipo de condici&oacute;n
+de error se ha dado. Esto le dice al cliente qu&eacute; debe hacer con la respuesta. Puedes
+leer sobre los c&oacute;digos de respuesta posibles en
 <a href="https://cwiki.apache.org/confluence/display/httpd/CommonHTTPStatusCodes">La Wiki del Seridor
 Apache</a>.</p>
 
-<p>Detalles de la transacción, y cualquier condición de error, se escriben en los ficheros
-de log. Esto se comenta en mayor detalle más abajo en la sección <a href="#logs">Ficheros de Log y Solución de Problemas</a>.</p>
+<p>Detalles de la transacci&oacute;n, y cualquier condici&oacute;n de error, se escriben en los ficheros
+de log. Esto se comenta en mayor detalle m&aacute;s abajo en la secci&oacute;n <a href="#logs">Ficheros de Log y Soluci&oacute;n de Problemas</a>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="dns" id="dns">Nombres de Host y DNS</a> <a title="Enlace permanente" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>Para conectar con un servidor, el cliente debe primero resolver
-el nombre del servidor a una dirección IP - la ubicación en Internet donde reside el
-servidor. Así, para que tu servidor sea accesible, es necesario que el nombre del
-servidor está en DNS.</p>
+el nombre del servidor a una direcci&oacute;n IP - la ubicaci&oacute;n en Internet donde reside el
+servidor. As&iacute;, para que tu servidor sea accesible, es necesario que el nombre del
+servidor est&aacute; en DNS.</p>
 
-<p>Si no sabes cómo hacer esto, necesitarás contactar con el administrador de tu red,
-o proveedor de Internet, para realizar este paso por tí.</p>
+<p>Si no sabes c&oacute;mo hacer esto, necesitar&aacute;s contactar con el administrador de tu red,
+o proveedor de Internet, para realizar este paso por t&iacute;.</p>
 
-<p>Más de un nombre de host puede apuntar a la misma dirección IP, y más de una
-dirección IP puede apuntar al mismo servidor físico. Así puedes gestionar más
-de un sitio web en el mismo servidor físico, usando una característica llamada
+<p>M&aacute;s de un nombre de host puede apuntar a la misma direcci&oacute;n IP, y m&aacute;s de una
+direcci&oacute;n IP puede apuntar al mismo servidor f&iacute;sico. As&iacute; puedes gestionar m&aacute;s
+de un sitio web en el mismo servidor f&iacute;sico, usando una caracter&iacute;stica llamada
 <a href="vhosts/">hosts virtuales</a>.</p>
 
-<p>Si está haciendo pruebas con un servidor que no está accesible desde Internet,
-puedes usar nombres de host en tu fichero hosts para hacer resolución de nombres
-local. Por ejemplo, podrías querer poner en tu registro en tu fichero de hosts
-para apuntar una petición hacia <code>www.example.com</code> en tu sistema local, 
-para hacer pruebas. Esta entrada sería parecida a esto:</p>
+<p>Si est&aacute; haciendo pruebas con un servidor que no est&aacute; accesible desde Internet,
+puedes usar nombres de host en tu fichero hosts para hacer resoluci&oacute;n de nombres
+local. Por ejemplo, podr&iacute;as querer poner en tu registro en tu fichero de hosts
+para apuntar una petici&oacute;n hacia <code>www.example.com</code> en tu sistema local, 
+para hacer pruebas. Esta entrada ser&iacute;a parecida a esto:</p>
 
 <div class="example"><p><code>
 127.0.0.1 www.example.com
 </code></p></div>
 
-<p>Un fichero de hosts probablemente esté ubicado en <code>/etc/hosts</code> or
+<p>Un fichero de hosts probablemente est&eacute; ubicado en <code>/etc/hosts</code> or
 <code>C:\Windows\system32\drivers\etc\hosts</code>.</p>
 
-<p>Puedes leer más sobre ficheros de hosts en <a href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, 
-y más sobre DNS en <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<p>Puedes leer m&aacute;s sobre ficheros de hosts en <a href="http://en.wikipedia.org/wiki/Hosts_(file)">Wikipedia.org/wiki/Hosts_(file)</a>, 
+y m&aacute;s sobre DNS en <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Ficheros de Configuración y Directivas</a> <a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
+<h2><a name="configuration" id="configuration">Ficheros de Configuraci&oacute;n y Directivas</a> <a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>El Servidor Apache HTTP se configura con ficheros de texto.
 Estos ficheros pueden estar ubicados en distintos sitios, dependiendo de 
-cómo se haya instalado exactamente tu servidor. Las ubicaciones comunes
+c&oacute;mo se haya instalado exactamente tu servidor. Las ubicaciones comunes
 para estos ficheros pueden encontrarse en <a href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">
-la wiki de httpd</a>. Is instalaste httpd desde el código fuente, la
-ubicación por defecto para estos ficheros se encuentra en
-<code>/usr/local/apache2/conf</code>. El fichero de configuración por
-defecto se llama generalmente <code>httpd.conf</code>. Esto también, puede
+la wiki de httpd</a>. Is instalaste httpd desde el c&oacute;digo fuente, la
+ubicaci&oacute;n por defecto para estos ficheros se encuentra en
+<code>/usr/local/apache2/conf</code>. El fichero de configuraci&oacute;n por
+defecto se llama generalmente <code>httpd.conf</code>. Esto tambi&eacute;n, puede
 variar en distribuciones de terceros del servidor.</p>
 
-<p>La configuración a menudo se separa en distintos ficheros más pequeños
-para facilitar la gestión. Estos ficheros se cargan con la directiva <code class="directive"><a href="./mod/core.html#include">Include</a></code>. Los nombres o las ubicaciones de estos
-sub-ficheros no es mágica, puede variar en gran manera de una instalación
-a otra. Ordena y subdivide estos ficheros de la manera que tenga más sentido
-para <strong>tí</strong>. Si la organicación de los ficheros por defecto
-no tiene sentido para tí, siéntete libre de reorganizarla.</p>
+<p>La configuraci&oacute;n a menudo se separa en distintos ficheros m&aacute;s peque&ntilde;os
+para facilitar la gesti&oacute;n. Estos ficheros se cargan con la directiva <code class="directive"><a href="./mod/core.html#include">Include</a></code>. Los nombres o las ubicaciones de estos
+sub-ficheros no es m&aacute;gica, puede variar en gran manera de una instalaci&oacute;n
+a otra. Ordena y subdivide estos ficheros de la manera que tenga m&aacute;s sentido
+para <strong>t&iacute;</strong>. Si la organicaci&oacute;n de los ficheros por defecto
+no tiene sentido para t&iacute;, si&eacute;ntete libre de reorganizarla.</p>
 
-<p>El servidor se configura colocando <a href="mod/quickreference.html">directivas de configuración</a> en estos
-ficheros de configuración. Una directiva es una palabra clave seguida de
-uno o más parámetros para definir su valor.</p>
+<p>El servidor se configura colocando <a href="mod/quickreference.html">directivas de configuraci&oacute;n</a> en estos
+ficheros de configuraci&oacute;n. Una directiva es una palabra clave seguida de
+uno o m&aacute;s par&aacute;metros para definir su valor.</p>
 
-<p>La pregunta "<em>¿Dónde debo poner esta directiva?</em>" se contesta 
-generalmente considerando dónde una directiva es efectiva. Si es una configuración
-global, debería aparecer en el fichero de configuración, fuera de cualquier
-sección <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, u otra sección. Si es para
-aplicar una configuración a un directorio en particular, debería ir dentro
-de una sección 
+<p>La pregunta "<em>&iquest;D&oacute;nde debo poner esta directiva?</em>" se contesta 
+generalmente considerando d&oacute;nde una directiva es efectiva. Si es una configuraci&oacute;n
+global, deber&iacute;a aparecer en el fichero de configuraci&oacute;n, fuera de cualquier
+secci&oacute;n <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, u otra secci&oacute;n. Si es para
+aplicar una configuraci&oacute;n a un directorio en particular, deber&iacute;a ir dentro
+de una secci&oacute;n 
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> haciendo referencia
-a ese directorio, y así con todas. Vea el documento de <a href="sections.html">Secciones 
-de Configuración</a> para obtener más detalle sobre estas secciones.</p>
+a ese directorio, y as&iacute; con todas. Vea el documento de <a href="sections.html">Secciones 
+de Configuraci&oacute;n</a> para obtener m&aacute;s detalle sobre estas secciones.</p>
 
-<p>Además de los ficheros de configuración principales, ciertas directivas podría 
+<p>Adem&aacute;s de los ficheros de configuraci&oacute;n principales, ciertas directivas podr&iacute;a 
 information en ficheros <code>.htaccess</code> ubicados en directorios de contenido.
 Los ficheros <code>.htaccess</code> son principalmente para personas que no tienen
-acceso a lo fichero(s) de configuración del servidor. Puedes leer más sobre los
+acceso a lo fichero(s) de configuraci&oacute;n del servidor. Puedes leer m&aacute;s sobre los
 ficheros <code>.htaccess</code> en el <a href="howto/htaccess.html"><code>.htaccess</code> howto</a>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="content" id="content">Contenido del Sitio Web</a> <a title="Enlace permanente" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>El contenido del sitio web puede tener distintas formas, pero puede dividirse
-generalmente entre contenido estático y dinámico.</p>
+generalmente entre contenido est&aacute;tico y din&aacute;mico.</p>
 
-<p>Contenido estático son cosas como ficheros HTML, ficheros de imágenes, ficheros CSS,
-y otros ficheros que residen en el sistema de ficheros. La directiva <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> especifica dónde en el filesystem deberías
-ubicar estos ficheros. Esta directiva está o bien configurada globalmente, o por
-host virtual. Mira en tus ficheros de configuración para determinar como está esto
+<p>Contenido est&aacute;tico son cosas como ficheros HTML, ficheros de im&aacute;genes, ficheros CSS,
+y otros ficheros que residen en el sistema de ficheros. La directiva <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> especifica d&oacute;nde en el filesystem deber&iacute;as
+ubicar estos ficheros. Esta directiva est&aacute; o bien configurada globalmente, o por
+host virtual. Mira en tus ficheros de configuraci&oacute;n para determinar como est&aacute; esto
 configurado en tu servidor.</p>
 
-<p>Típicamente, un documento llamado <code>index.html</code> será servidor cuando
+<p>T&iacute;picamente, un documento llamado <code>index.html</code> ser&aacute; servidor cuando
 se solicita un directorio sin especificar un fichero. Por ejemplo si 
 <code>DocumentRoot</code> se especifica con
-<code>/var/www/html</code> y se hace una petición a 
+<code>/var/www/html</code> y se hace una petici&oacute;n a 
 <code>http://www.example.com/work/</code>, el fichero
-<code>/var/www/html/work/index.html</code> será servido al cliente.</p>
+<code>/var/www/html/work/index.html</code> ser&aacute; servido al cliente.</p>
 
-<p>El contenido dinámico es cualquier cosa que se genera en tiempo de petición,
-y puede cambiar de una petición a otra. Hay muchas formas de generar contenido
-podría generarse. Varios <a href="handler.html">handlers</a> están disponibles para generar contenido. <a href="howto/cgi.html">programas CGI</a> podrían escribirse para generar contenido
+<p>El contenido din&aacute;mico es cualquier cosa que se genera en tiempo de petici&oacute;n,
+y puede cambiar de una petici&oacute;n a otra. Hay muchas formas de generar contenido
+podr&iacute;a generarse. Varios <a href="handler.html">handlers</a> est&aacute;n disponibles para generar contenido. <a href="howto/cgi.html">programas CGI</a> podr&iacute;an escribirse para generar contenido
 para su sitio web.</p>
 
-<p>Módulos de terceros como mod_php podrían usarse para escribir este código
+<p>M&oacute;dulos de terceros como mod_php podr&iacute;an usarse para escribir este c&oacute;digo
 que puede hacer variedad de cosas. Muchas aplicaciones de terceros, escritas
-usanndo distintos lenguajes y herramientas, están disponibles para descarga e
-instalación en su Servidor Apache HTTP. El soporte para estos elementos de
-terceros está fuera el ámbito de esta documentación, y deberías encontrarse
-su documentación en otros foros de soporte para responder a preguntas sobre
+usanndo distintos lenguajes y herramientas, est&aacute;n disponibles para descarga e
+instalaci&oacute;n en su Servidor Apache HTTP. El soporte para estos elementos de
+terceros est&aacute; fuera el &aacute;mbito de esta documentaci&oacute;n, y deber&iacute;as encontrarse
+su documentaci&oacute;n en otros foros de soporte para responder a preguntas sobre
 ellas.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Ficheros de Log y Solución de Problemas</a> <a title="Enlace permanente" href="#logs" class="permalink">&para;</a></h2>
+<h2><a name="logs" id="logs">Ficheros de Log y Soluci&oacute;n de Problemas</a> <a title="Enlace permanente" href="#logs" class="permalink">&para;</a></h2>
 
-<p>Como administrador de un Servidor Apache HTTP, tus activos más valiosos
+<p>Como administrador de un Servidor Apache HTTP, tus activos m&aacute;s valiosos
 son los ficheros de log, y en el particular, el log de errores. Intentar hacer
-Solución de Problemas sin el log de errores es como conducir con los ojos
+Soluci&oacute;n de Problemas sin el log de errores es como conducir con los ojos
 cerrados.</p>
 
-<p>La ubicación del log de errores se define con la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, que puede configurarse 
+<p>La ubicaci&oacute;n del log de errores se define con la directiva <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>, que puede configurarse 
 globalmnente o por host virtual. Entradas en el log de errores te indican
-qué fue mal, y cuándo. A menudo también te indican cómo corregirlo. Cada 
-mensaje de error contiene un código de error, que puedes buscar en línea
-para obtener descripciones aún más detalladas sobre cómo resolver el 
-problema. También puedes configurar el log de errores para que incluya
+qu&eacute; fue mal, y cu&aacute;ndo. A menudo tambi&eacute;n te indican c&oacute;mo corregirlo. Cada 
+mensaje de error contiene un c&oacute;digo de error, que puedes buscar en l&iacute;nea
+para obtener descripciones a&uacute;n m&aacute;s detalladas sobre c&oacute;mo resolver el 
+problema. Tambi&eacute;n puedes configurar el log de errores para que incluya
 un id de LOG que luego puedes correlacionar a una entrada en el 
-log de accesos, y así poder determinar qué petición causó la condición 
+log de accesos, y as&iacute; poder determinar qu&eacute; petici&oacute;n caus&oacute; la condici&oacute;n 
 de error.</p>
 
-<p>Puedes leer más sobre el registro de logs en la <a href="logs.html">
-documentación de logs</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<p>Puedes leer m&aacute;s sobre el registro de logs en la <a href="logs.html">
+documentaci&oacute;n de logs</a>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">¿Qué viene a continuación?</a> <a title="Enlace permanente" href="#other" class="permalink">&para;</a></h2>
+<h2><a name="other" id="other">&iquest;Qu&eacute; viene a continuaci&oacute;n?</a> <a title="Enlace permanente" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>Una vez que cumples los pre-requisitos es hora de avanzar.</p>
 
-<p>Esto documento sólo cubre el mínimo básico. Esperamos que esto
+<p>Esto documento s&oacute;lo cubre el m&iacute;nimo b&aacute;sico. Esperamos que esto
 te ayude a comenzar, pero hay muchas otras cosas que puede que necesites
 aprender.</p>
 
@@ -228,12 +226,12 @@ aprender.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Idiomas disponibles: </span><a href="./en/getting-started.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/getting-started.html" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/getting-started.html" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/getting-started.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

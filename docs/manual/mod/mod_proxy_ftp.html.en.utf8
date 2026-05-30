@@ -1,41 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_ftp - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy_ftp</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_ftp.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ftp.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_ftp.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_ftp_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_ftp.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_ftp_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_ftp.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the proxying
@@ -54,28 +52,28 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#mimetypes">Why doesn't file type <var>xxx</var>
+<li><img alt="" src="../images/down.gif"> <a href="#mimetypes">Why doesn't file type <var>xxx</var>
     download via FTP?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#type">How can I force an FTP ASCII download of
+<li><img alt="" src="../images/down.gif"> <a href="#type">How can I force an FTP ASCII download of
     file <var>xxx</var>?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ftpnonget">How can I do FTP upload?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#percent2fhck">How can I access FTP files outside
+<li><img alt="" src="../images/down.gif"> <a href="#ftpnonget">How can I do FTP upload?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#percent2fhck">How can I access FTP files outside
     of my home directory?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ftppass">How can I hide the FTP cleartext password
+<li><img alt="" src="../images/down.gif"> <a href="#ftppass">How can I hide the FTP cleartext password
     in my browser's URL line?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#wildcard">Why do I get a file listing when I expected
+<li><img alt="" src="../images/down.gif"> <a href="#wildcard">Why do I get a file listing when I expected
         a file to be downloaded?</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpdircharset">ProxyFtpDirCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyftpdircharset">ProxyFtpDirCharset</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_ftp">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_ftp">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="mimetypes" id="mimetypes">Why doesn't file type <var>xxx</var>
     download via FTP?</a> <a title="Permanent link" href="#mimetypes" class="permalink">&para;</a></h2>
@@ -88,7 +86,7 @@
       directive to default everything to binary:</p>
       <div class="example"><pre class="prettyprint lang-config">ForceType application/octet-stream</pre>
 </div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="type" id="type">How can I force an FTP ASCII download of
     file <var>xxx</var>?</a> <a title="Permanent link" href="#type" class="permalink">&para;</a></h2>
@@ -98,12 +96,12 @@
       default by suffixing the request with <code>;type=a</code> to force an
       ASCII transfer. (FTP Directory listings are always executed in ASCII mode,
       however.)</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ftpnonget" id="ftpnonget">How can I do FTP upload?</a> <a title="Permanent link" href="#ftpnonget" class="permalink">&para;</a></h2>
     <p>Currently, only GET is supported for FTP in <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.  You can
     of course use HTTP upload (POST or PUT) through an Apache proxy.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="percent2fhck" id="percent2fhck">How can I access FTP files outside
     of my home directory?</a> <a title="Permanent link" href="#percent2fhck" class="permalink">&para;</a></h2>
@@ -121,7 +119,7 @@
       <div class="example"><p><code>
         ftp://<var>user</var>@<var>host</var>/%2f/etc/motd
       </code></p></div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="ftppass" id="ftppass">How can I hide the FTP cleartext password
     in my browser's URL line?</a> <a title="Permanent link" href="#ftppass" class="permalink">&para;</a></h2>
@@ -131,7 +129,7 @@
       <em>i.e.</em>,</p>
 
       <div class="example"><p><code>
-        user: anonymous<br />
+        user: anonymous<br>
         password: apache-proxy@
       </code></p></div>
 
@@ -175,7 +173,7 @@
         files via FTP at all!) When using insecure channels, an eavesdropper
         might intercept your password on its way.</p>
       </div>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="wildcard" id="wildcard">Why do I get a file listing when I expected
         a file to be downloaded?</a> <a title="Permanent link" href="#wildcard" class="permalink">&para;</a></h2>
@@ -187,7 +185,7 @@
         See the <code class="directive"><a href="#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></code> directive.
       </p>
     </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a> <a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a title="Permanent link" href="#proxyftpdircharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the character set for proxied FTP listings</td></tr>
@@ -203,7 +201,7 @@
     <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a> <a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a title="Permanent link" href="#proxyftpescapewildcards" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
@@ -225,7 +223,7 @@
     escaping.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a> <a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a title="Permanent link" href="#proxyftplistonwildcard" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether wildcards in requested filenames trigger a file listing</td></tr>
@@ -248,9 +246,9 @@
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_ftp.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ftp.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_ftp.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

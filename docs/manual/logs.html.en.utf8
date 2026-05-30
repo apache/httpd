@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Log Files - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Log Files</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>In order to effectively manage a web server, it is necessary
@@ -40,22 +38,22 @@
     logging capabilities, and how to understand what the logs
     contain.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#security">Security Warning</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Error Log</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#permodule">Per-module logging</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Access Log</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rotation">Log Rotation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#piped">Piped Logs</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Virtual Hosts</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Other Log Files</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#overview">Overview</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#security">Security Warning</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#errorlog">Error Log</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#permodule">Per-module logging</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#accesslog">Access Log</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rotation">Log Rotation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#piped">Piped Logs</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#virtualhost">Virtual Hosts</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">Other Log Files</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Overview</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
     
 
-  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td /></tr></table>
+  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td></td></tr></table>
 
   <p>
   The Apache HTTP Server provides a variety of different mechanisms for
@@ -73,7 +71,7 @@
   part of the http server.
   </p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="security" id="security">Security Warning</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
@@ -91,7 +89,7 @@
     possible for malicious clients to insert control-characters in
     the log files, so care must be taken in dealing with raw
     logs.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="errorlog" id="errorlog">Error Log</a> <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
     
@@ -158,7 +156,7 @@
     <div class="example"><p><code>
       tail -f error_log
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="permodule" id="permodule">Per-module logging</a> <a title="Permanent link" href="#permodule" class="permalink">&para;</a></h2>
     
@@ -185,7 +183,7 @@
     <div class="note">This replaces the per-module logging directives, such as
     <code>RewriteLog</code>, that were present in earlier versions of
     the server.</div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="accesslog" id="accesslog">Access Log</a> <a title="Permanent link" href="#accesslog" class="permalink">&para;</a></h2>
     
@@ -308,13 +306,13 @@ CustomLog "logs/access_log" common</pre>
           The format is:
 
           <p class="indent">
-            <code>[day/month/year:hour:minute:second zone]<br />
-             day = 2*digit<br />
-             month = 3*letter<br />
-             year = 4*digit<br />
-             hour = 2*digit<br />
-             minute = 2*digit<br />
-             second = 2*digit<br />
+            <code>[day/month/year:hour:minute:second zone]<br>
+             day = 2*digit<br>
+             month = 3*letter<br>
+             year = 4*digit<br>
+             hour = 2*digit<br>
+             minute = 2*digit<br>
+             second = 2*digit<br>
              zone = (`+' | `-') 4*digit</code>
           </p>
           <p>It is possible to have the time displayed in another format
@@ -491,7 +489,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
       easier to simply post-process the log files to remove requests
       that you do not want to consider.</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="rotation" id="rotation">Log Rotation</a> <a title="Permanent link" href="#rotation" class="permalink">&para;</a></h2>
     
@@ -517,16 +515,16 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     logs to save space is:</p>
 
     <div class="example"><p><code>
-      mv access_log access_log.old<br />
-      mv error_log error_log.old<br />
-      apachectl graceful<br />
-      sleep 600<br />
+      mv access_log access_log.old<br>
+      mv error_log error_log.old<br>
+      apachectl graceful<br>
+      sleep 600<br>
       gzip access_log.old error_log.old
     </code></p></div>
 
     <p>Another way to perform log rotation is using <a href="#piped">piped logs</a> as discussed in the next
     section.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="piped" id="piped">Piped Logs</a> <a title="Permanent link" href="#piped" class="permalink">&para;</a></h2>
     
@@ -593,7 +591,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     caveats for changing the Windows registry apply, but you might also exhaust
     the desktop heap pool if the number is adjusted too high.</p>
     </div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="virtualhost" id="virtualhost">Virtual Hosts</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
     
@@ -635,7 +633,7 @@ CustomLog "logs/access_log" commonvhost</pre>
     host that is serving the request. Then a program like <a href="programs/split-logfile.html">split-logfile</a> can be used to
     post-process the access log in order to split it into one file
     per virtual host.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="other" id="other">Other Log Files</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
     
@@ -695,12 +693,12 @@ CustomLog "logs/access_log" commonvhost</pre>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/logs.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/logs.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/logs.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

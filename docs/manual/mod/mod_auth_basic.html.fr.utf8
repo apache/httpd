@@ -1,62 +1,60 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_auth_basic - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_auth_basic</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_basic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_auth_basic.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_auth_basic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_auth_basic.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_auth_basic.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification HTTP de base</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_basic_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_auth_basic.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>auth_basic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_auth_basic.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Ce module permet d'utiliser l'authentification basique HTTP pour
-    restreindre l'accès en recherchant les utilisateurs dans les
-    fournisseurs d'authentification spécifiés. Il est en général
-    combiné avec au moins un module d'authentification comme
+    restreindre l'acc&egrave;s en recherchant les utilisateurs dans les
+    fournisseurs d'authentification sp&eacute;cifi&eacute;s. Il est en g&eacute;n&eacute;ral
+    combin&eacute; avec au moins un module d'authentification comme
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> et un module d'autorisation comme
-    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>. L'authentification HTTP à
-    base de condensé (digest), quant à elle, est fournie par le module
+    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>. L'authentification HTTP &agrave;
+    base de condens&eacute; (digest), quant &agrave; elle, est fournie par le module
     <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. </p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authbasicfake">AuthBasicFake</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authbasicprovider">AuthBasicProvider</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authbasicfake">AuthBasicFake</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authbasicprovider">AuthBasicProvider</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#authbasicusedigestalgorithm">AuthBasicUseDigestAlgorithm</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_basic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_basic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_auth_basic">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_auth_basic">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
 <li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
@@ -65,126 +63,126 @@
 l'authentification</a></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a> <a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a title="Lien permanent" href="#authbasicauthoritative" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les processus d'autorisation et
-d'authentification peuvent être confiés à des modules de plus bas
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si les processus d'autorisation et
+d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plus bas
 niveau</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthBasicAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AuthBasicAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
 </table>
-    <p>Normalement, chaque module d'autorisation énuméré dans la
+    <p>Normalement, chaque module d'autorisation &eacute;num&eacute;r&eacute; dans la
     directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> va tenter de
-    vérifier l'utilisateur, et si ce dernier n'est trouvé dans aucun des
-    fournisseurs, l'accès sera refusé. Définir explicitement la
-    directive <code class="directive">AuthBasicAuthoritative</code> à
+    v&eacute;rifier l'utilisateur, et si ce dernier n'est trouv&eacute; dans aucun des
+    fournisseurs, l'acc&egrave;s sera refus&eacute;. D&eacute;finir explicitement la
+    directive <code class="directive">AuthBasicAuthoritative</code> &agrave;
     <code>Off</code> permet de confier l'autorisation et
-    l'authentification à d'autres modules non basés sur les fournisseurs
+    l'authentification &agrave; d'autres modules non bas&eacute;s sur les fournisseurs
     si <strong>aucun identifiant utilisateur</strong> ou aucune
-    <strong>règle</strong> ne correspondent à l'identifiant utilisateur
-    spécifié. Ceci ne peut s'avérer nécessaire que lorsque
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> est combiné avec des modules tiers
-    qui n'ont pas été configurés à l'aide de la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code>. Lorsqu'on
+    <strong>r&egrave;gle</strong> ne correspondent &agrave; l'identifiant utilisateur
+    sp&eacute;cifi&eacute;. Ceci ne peut s'av&eacute;rer n&eacute;cessaire que lorsque
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> est combin&eacute; avec des modules tiers
+    qui n'ont pas &eacute;t&eacute; configur&eacute;s &agrave; l'aide de la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code>. Lorsqu'on
     utilise de tels modules, l'ordre dans lequel s'effectue le
-    traitement est défini dans le code source des modules et n'est pas
+    traitement est d&eacute;fini dans le code source des modules et n'est pas
     configurable.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authbasicfake" id="authbasicfake">Directive</a> <a name="AuthBasicFake" id="AuthBasicFake">AuthBasicFake</a> <a title="Lien permanent" href="#authbasicfake" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Authentification de base simulée à l'aide des nom
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Authentification de base simul&eacute;e &agrave; l'aide des nom
 d'utilisateur et mot de passe fournis</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicFake off|<var>username</var> [<var>password</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr>
 </table>
-    <p>Les nom d'utilisateur et mot de passe spécifiés sont rassemblés
-    dans un en-tête d'autorisation qui est transmis au serveur ou au
+    <p>Les nom d'utilisateur et mot de passe sp&eacute;cifi&eacute;s sont rassembl&eacute;s
+    dans un en-t&ecirc;te d'autorisation qui est transmis au serveur ou au
     service sous-jacent au serveur. Ces nom d'utilisateur et mot de
-    passe sont interprétés par l'<a href="../expr.html">interpréteur
-    d'expression</a>, ce qui permet de les définir en fonction de
-    paramètres de la requête.</p>
+    passe sont interpr&eacute;t&eacute;s par l'<a href="../expr.html">interpr&eacute;teur
+    d'expression</a>, ce qui permet de les d&eacute;finir en fonction de
+    param&egrave;tres de la requ&ecirc;te.</p>
 
-    <p>Si aucun mot de passe n'est spécifié, la valeur par défaut
-    "password" sera utilisée. Pour désactiver l'authentification de base
-    simulée pour un espace d'URL, définissez AuthBasicFake à "off".</p>
+    <p>Si aucun mot de passe n'est sp&eacute;cifi&eacute;, la valeur par d&eacute;faut
+    "password" sera utilis&eacute;e. Pour d&eacute;sactiver l'authentification de base
+    simul&eacute;e pour un espace d'URL, d&eacute;finissez AuthBasicFake &agrave; "off".</p>
 
     <div class="note">
-    L'en-tête Authorization ajouté par cette directive <em>ne constitue pas</em>
-    une donnée d'authentification ou d'autorisation au sein du serveur local. Il
-    est destiné à être transmis aux serveurs en amont.
+    L'en-t&ecirc;te Authorization ajout&eacute; par cette directive <em>ne constitue pas</em>
+    une donn&eacute;e d'authentification ou d'autorisation au sein du serveur local. Il
+    est destin&eacute; &agrave; &ecirc;tre transmis aux serveurs en amont.
     </div>
 
     <p>Dans l'exemple suivant, un nom d'utilisateur et un mot de passe
-    prédéfinis sont transmis à un serveur d'arrière-plan :</p>
+    pr&eacute;d&eacute;finis sont transmis &agrave; un serveur d'arri&egrave;re-plan :</p>
 
     <div class="example"><h3>Exemple de transmission d'un nom d'utilisateur et
-    d'un mot de passe prédéfinis</h3><pre class="prettyprint lang-config">&lt;Location "/demo"&gt;
+    d'un mot de passe pr&eacute;d&eacute;finis</h3><pre class="prettyprint lang-config">&lt;Location "/demo"&gt;
     AuthBasicFake demo demopass
 &lt;/Location&gt;</pre>
 </div>
 
     <p>Dans l'exemple suivant, l'adresse email extraite d'un certificat
-    client est transmise au serveur, étendant par là-même la
-    fonctionnalité de l'option FakeBasicAuth de la directive <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. Comme avec l'option
-    FakeBasicAuth, le mot de passe se voit attribué le contenu fixe de
-    la chaîne "password".</p>
+    client est transmise au serveur, &eacute;tendant par l&agrave;-m&ecirc;me la
+    fonctionnalit&eacute; de l'option FakeBasicAuth de la directive <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. Comme avec l'option
+    FakeBasicAuth, le mot de passe se voit attribu&eacute; le contenu fixe de
+    la cha&icirc;ne "password".</p>
 
     <div class="example"><h3>Exemple d'utilisation avec un certificat</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthBasicFake "%{SSL_CLIENT_S_DN_Email}"
 &lt;/Location&gt;</pre>
 </div>
 
-    <p>Pour compléter l'exemple précédent, il est possible de générer la
-    valeur du mot de passe en procédant à un hashage de l'adresse email
-    à partir d'un mot d'une passphrase initial fixée, puis de transmettre le
-    résultat obtenu au serveur d'arrière-plan. Ceci peut s'avérer utile
-    pour donner accès à des serveurs anciens qui ne supportent pas les
+    <p>Pour compl&eacute;ter l'exemple pr&eacute;c&eacute;dent, il est possible de g&eacute;n&eacute;rer la
+    valeur du mot de passe en proc&eacute;dant &agrave; un hashage de l'adresse email
+    &agrave; partir d'un mot d'une passphrase initial fix&eacute;e, puis de transmettre le
+    r&eacute;sultat obtenu au serveur d'arri&egrave;re-plan. Ceci peut s'av&eacute;rer utile
+    pour donner acc&egrave;s &agrave; des serveurs anciens qui ne supportent pas les
     certificats clients.</p>
 
-    <div class="example"><h3>Exemple de génération de mot de passe par hashage de
+    <div class="example"><h3>Exemple de g&eacute;n&eacute;ration de mot de passe par hashage de
     l'adresse email</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
     AuthBasicFake "%{SSL_CLIENT_S_DN_Email}" "%{sha1:passphrase-%{SSL_CLIENT_S_DN_Email}}"
 &lt;/Location&gt;</pre>
 </div>
 
-    <div class="example"><h3>Désactivation de l'authentification simulée</h3><pre class="prettyprint lang-config">&lt;Location "/public"&gt;
+    <div class="example"><h3>D&eacute;sactivation de l'authentification simul&eacute;e</h3><pre class="prettyprint lang-config">&lt;Location "/public"&gt;
     AuthBasicFake off
 &lt;/Location&gt;</pre>
 </div>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authbasicprovider" id="authbasicprovider">Directive</a> <a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a title="Lien permanent" href="#authbasicprovider" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(les) fournisseur(s) d'authentification pour
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le(les) fournisseur(s) d'authentification pour
 cette zone du site web</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicProvider <var>nom fournisseur</var>
 [<var>nom fournisseur</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthBasicProvider file</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AuthBasicProvider file</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
 </table>
     <p>La directive <code class="directive">AuthBasicProvider</code> permet de
-    définir le fournisseur utilisé pour authentifier les utilisateurs
-    pour la zone du site web concernée. Le fournisseur par défaut
-    <code>file</code> est implémenté par le module
+    d&eacute;finir le fournisseur utilis&eacute; pour authentifier les utilisateurs
+    pour la zone du site web concern&eacute;e. Le fournisseur par d&eacute;faut
+    <code>file</code> est impl&eacute;ment&eacute; par le module
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Assurez-vous que le module
-    implémentant le fournisseur choisi soit bien présent dans le
+    impl&eacute;mentant le fournisseur choisi soit bien pr&eacute;sent dans le
     serveur.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Location "/secure"&gt;
@@ -196,107 +194,107 @@ cette zone du site web</td></tr>
     Require            valid-user
 &lt;/Location&gt;</pre>
 </div>
-    <p>Les fournisseurs sont sollicités dans l'ordre jusqu'à ce que l'un
+    <p>Les fournisseurs sont sollicit&eacute;s dans l'ordre jusqu'&agrave; ce que l'un
     d'entre eux trouve une correspondance pour le nom d'utilisateur de
-    la requête ; alors, ce dernier fournisseur sera le seul à vérifier
-    le mot de passe. Un échec dans la vérification du mot de passe
-    n'entraîne pas le passage du contrôle au fournisseur suivant.</p>
+    la requ&ecirc;te ; alors, ce dernier fournisseur sera le seul &agrave; v&eacute;rifier
+    le mot de passe. Un &eacute;chec dans la v&eacute;rification du mot de passe
+    n'entra&icirc;ne pas le passage du contr&ocirc;le au fournisseur suivant.</p>
 
-    <p>Les différents fournisseurs disponibles sont implémentés par les
+    <p>Les diff&eacute;rents fournisseurs disponibles sont impl&eacute;ment&eacute;s par les
     modules <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>,
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> et <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="authbasicusedigestalgorithm" id="authbasicusedigestalgorithm">Directive</a> <a name="AuthBasicUseDigestAlgorithm" id="AuthBasicUseDigestAlgorithm">AuthBasicUseDigestAlgorithm</a> <a title="Lien permanent" href="#authbasicusedigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Vérifie les mots de passe auprès des fournisseurs
-d'authentification à la manière de l'authentification de type Digest.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>V&eacute;rifie les mots de passe aupr&egrave;s des fournisseurs
+d'authentification &agrave; la mani&egrave;re de l'authentification de type Digest.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicUseDigestAlgorithm MD5|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthBasicUseDigestAlgorithm Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AuthBasicUseDigestAlgorithm Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.7 du serveur HTTP
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.7 du serveur HTTP
 Apache</td></tr>
 </table>
     <p>Normalement, lorsqu'on utilise l'authentification basique, les
-    fournisseurs spécifiés via la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> tentent de
-    contrôler l'identité d'un utilisateur en recherchant dans leurs
-    bases de données l'existence d'un couple utilisateur/mot de passe
-    correspondant. Les mots de passe enregistrés sont en général
-    chiffrés, mais ce n'est pas systématique ; chaque fournisseur peut
+    fournisseurs sp&eacute;cifi&eacute;s via la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> tentent de
+    contr&ocirc;ler l'identit&eacute; d'un utilisateur en recherchant dans leurs
+    bases de donn&eacute;es l'existence d'un couple utilisateur/mot de passe
+    correspondant. Les mots de passe enregistr&eacute;s sont en g&eacute;n&eacute;ral
+    chiffr&eacute;s, mais ce n'est pas syst&eacute;matique ; chaque fournisseur peut
     choisir son propre mode de stockage des mots de passe.</p>
 
     <p>Lorsqu'on utilise l'authentification de type Digest, les fournisseurs
-    spécifiés par la directive <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> effectuent une
-    recherche similaire dans leurs bases de données pour trouver un couple
-    utilisateur/mot de passe correspondant. Cependant, à la différence de
-    l'authentification basique, les données associées à chaque utilisateur et
+    sp&eacute;cifi&eacute;s par la directive <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> effectuent une
+    recherche similaire dans leurs bases de donn&eacute;es pour trouver un couple
+    utilisateur/mot de passe correspondant. Cependant, &agrave; la diff&eacute;rence de
+    l'authentification basique, les donn&eacute;es associ&eacute;es &agrave; chaque utilisateur et
     comportant le nom d'utilisateur, le domaine de protection (realm) et le mot
-    de passe doivent être contenues dans une chaîne chiffrée (Voir le document
-    <a href="https://www.rfc-editor.org/rfc/rfc2617#section-3.2.2.2">RFC 2617</a> pour plus de détails à propos du type de
-    chiffrement utilisé pour cette chaîne).</p>
+    de passe doivent &ecirc;tre contenues dans une cha&icirc;ne chiffr&eacute;e (Voir le document
+    <a href="https://www.rfc-editor.org/rfc/rfc2617#section-3.2.2.2">RFC 2617</a> pour plus de d&eacute;tails &agrave; propos du type de
+    chiffrement utilis&eacute; pour cette cha&icirc;ne).</p>
 
-    <p>A cause de la différence entre les méthodes de stockage des
-    données des authentifications de type basique et digest, le passage
-    d'une méthode d'authentification de type digest à une méthode
+    <p>A cause de la diff&eacute;rence entre les m&eacute;thodes de stockage des
+    donn&eacute;es des authentifications de type basique et digest, le passage
+    d'une m&eacute;thode d'authentification de type digest &agrave; une m&eacute;thode
     d'authentification de type basique requiert l'attribution de
     nouveaux
-    mots de passe à chaque utilisateur, car leur mots de passe existant
-    ne peut pas être extrait à partir du schéma de stockage utilisé
+    mots de passe &agrave; chaque utilisateur, car leur mots de passe existant
+    ne peut pas &ecirc;tre extrait &agrave; partir du sch&eacute;ma de stockage utilis&eacute;
     par les fournisseurs d'authentification de type digest.</p>
 
     <p>Si la directive <code class="directive">AuthBasicUseDigestAlgorithm</code> est
-    définie à la valeur <code>MD5</code>, le mot de passe d'un
-    utilisateur dans le cas de l'authentification basique sera vérifié
-    en utilisant le même format de chiffrement que dans le cas de
-    l'authentification de type digest. Tout d'abord, une chaîne
+    d&eacute;finie &agrave; la valeur <code>MD5</code>, le mot de passe d'un
+    utilisateur dans le cas de l'authentification basique sera v&eacute;rifi&eacute;
+    en utilisant le m&ecirc;me format de chiffrement que dans le cas de
+    l'authentification de type digest. Tout d'abord, une cha&icirc;ne
     comportant le nom d'utilisateur, le domaine de protection (realm) et
-    le mot de passe est générée sous forme de condensé (hash) en
+    le mot de passe est g&eacute;n&eacute;r&eacute;e sous forme de condens&eacute; (hash) en
     utilisant l'algorithme MD5 ; puis le nom d'utilisateur et cette
-    chaîne chiffrée sont transmis aux fournisseurs spécifiés via la
+    cha&icirc;ne chiffr&eacute;e sont transmis aux fournisseurs sp&eacute;cifi&eacute;s via la
     directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> comme si la
     directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>
-    était définie à <code>Digest</code> et si l'authentification de type
-    Digest était utilisée.
+    &eacute;tait d&eacute;finie &agrave; <code>Digest</code> et si l'authentification de type
+    Digest &eacute;tait utilis&eacute;e.
     </p>
 
-    <p>Grâce à cette directive, un site peut basculer d'une
-    authentification de type digest à basique sans devoir changer les
+    <p>Gr&acirc;ce &agrave; cette directive, un site peut basculer d'une
+    authentification de type digest &agrave; basique sans devoir changer les
     mots de passe des utilisateurs. </p>
 
     <div class="note">
-      Le processus inverse consistant à passer d'une authentification de
-      type basique à digest sans changer les mots de passe n'est en
-      général pas possible. Les mots de passe enregistrés dans le cas
-      d'une authentification de type basique ne pourront être extraits
-      et chiffrés à nouveau selon le schéma de l'authentification de
-      type digest, que s'ils ont été stockés en clair ou selon un schéma de
-      chiffrement réversible.
+      Le processus inverse consistant &agrave; passer d'une authentification de
+      type basique &agrave; digest sans changer les mots de passe n'est en
+      g&eacute;n&eacute;ral pas possible. Les mots de passe enregistr&eacute;s dans le cas
+      d'une authentification de type basique ne pourront &ecirc;tre extraits
+      et chiffr&eacute;s &agrave; nouveau selon le sch&eacute;ma de l'authentification de
+      type digest, que s'ils ont &eacute;t&eacute; stock&eacute;s en clair ou selon un sch&eacute;ma de
+      chiffrement r&eacute;versible.
     </div>
 
     <div class="note">
       Seuls les fournisseurs qui supportent l'authentification de type
       digest pourront authentifier les utilisateurs lorsque la directive
       <code class="directive">AuthBasicUseDigestAlgorithm</code>
-      est définie à <code>MD5</code>. L'utilisation d'un autre
+      est d&eacute;finie &agrave; <code>MD5</code>. L'utilisation d'un autre
       fournisseur provoquera un message d'erreur et le client se verra
-      refuser l'accès.</div>
+      refuser l'acc&egrave;s.</div>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_basic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/mod_auth_basic.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/mod_auth_basic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/mod_auth_basic.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/mod_auth_basic.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

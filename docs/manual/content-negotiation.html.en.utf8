@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Content Negotiation - Apache HTTP Server Version 2.5</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
 <script src="./style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.5</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -45,17 +43,17 @@
     <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module, which is compiled in
     by default.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in httpd</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#better">Fiddling with Quality
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#about">About Content Negotiation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#negotiation">Negotiation in httpd</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#methods">The Negotiation Methods</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#better">Fiddling with Quality
     Values</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
+<li><img alt="" src="./images/down.gif"> <a href="#extensions">Extensions to Transparent Content
 Negotiation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#caching">Note on Caching</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#naming">Note on hyperlinks and naming conventions</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#caching">Note on Caching</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="about" id="about">About Content Negotiation</a> <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
@@ -109,7 +107,7 @@ Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, im
     representations is termed a <strong>variant</strong>. The ways
     in which the variants for a negotiable resource vary are called
     the <strong>dimensions</strong> of negotiation.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="negotiation" id="negotiation">Negotiation in httpd</a> <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
@@ -277,7 +275,7 @@ Content-type: text/plain; qs=0.01</pre>
     directive determines whether handlers, filters, and other
     extension types can participate in MultiViews negotiation.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="methods" id="methods">The Negotiation Methods</a> <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
@@ -443,7 +441,7 @@ Content-type: text/plain; qs=0.01</pre>
       indicate the dimensions of variance.</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="better" id="better">Fiddling with Quality
     Values</a> <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
@@ -553,7 +551,7 @@ Content-type: text/plain; qs=0.01</pre>
 Header append Vary cookie</pre>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="extensions" id="extensions">Extensions to Transparent Content
 Negotiation</a> <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2>
@@ -567,7 +565,7 @@ to use them as candidate variants whenever their encodings are
 acceptable according to the <code>Accept-Encoding</code> request
 header. The RVSA/1.0 implementation does not round computed quality
 factors to 5 decimal places before choosing the best variant.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a> <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
@@ -609,7 +607,7 @@ factors to 5 decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.en</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
         <td>-</td>
@@ -626,10 +624,10 @@ factors to 5 decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.en.gz</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
-        <td>foo.gz<br />
+        <td>foo.gz<br>
          foo.html.gz</td>
       </tr>
 
@@ -638,16 +636,16 @@ factors to 5 decimal places before choosing the best variant.</p>
 
         <td>foo</td>
 
-        <td>foo.html<br />
-         foo.html.gz<br />
+        <td>foo.html<br>
+         foo.html.gz<br>
          foo.gz</td>
       </tr>
 
       <tr>
         <td><em>foo.gz.html.en</em></td>
 
-        <td>foo<br />
-         foo.gz<br />
+        <td>foo<br>
+         foo.gz<br>
          foo.gz.html</td>
 
         <td>foo.html</td>
@@ -656,8 +654,8 @@ factors to 5 decimal places before choosing the best variant.</p>
       <tr>
         <td><em>foo.html.gz.en</em></td>
 
-        <td>foo<br />
-         foo.html<br />
+        <td>foo<br>
+         foo.html<br>
          foo.html.gz</td>
 
         <td>foo.gz</td>
@@ -677,7 +675,7 @@ factors to 5 decimal places before choosing the best variant.</p>
     extension (including an encoding extension if there is one)
     must be on the right hand side of the MIME-type extension
     (<em>e.g.</em>, <code>foo.html.en</code>).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2><a name="caching" id="caching">Note on Caching</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
@@ -709,12 +707,12 @@ factors to 5 decimal places before choosing the best variant.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_info - Apache HTTP サーバ バージョン 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.5</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_info</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_info.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_info.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_info.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_info.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
@@ -47,9 +45,9 @@
     ファイルに加えます。</p>
 
     <div class="example"><p><code>
-      &lt;Location /server-info&gt;<br />
+      &lt;Location /server-info&gt;<br>
       <span class="indent">
-        SetHandler server-info<br />
+        SetHandler server-info<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -59,12 +57,12 @@
     アクセスを制限したいと思うかもしれません :</p>
 
     <div class="example"><p><code>
-      &lt;Location /server-info&gt;<br />
+      &lt;Location /server-info&gt;<br>
       <span class="indent">
-        SetHandler server-info<br />
-        Order deny,allow<br />
-        Deny from all<br />
-        Allow from yourcompany.com<br />
+        SetHandler server-info<br>
+        Order deny,allow<br>
+        Deny from all<br>
+        Allow from yourcompany.com<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -74,15 +72,15 @@
 </div>
 <div id="quickview"><h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Issues</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#queries">表示される情報の選択</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#limitations">既知の制限</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">Security Issues</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#queries">表示される情報の選択</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#limitations">既知の制限</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#addmoduleinfo">AddModuleInfo</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#addmoduleinfo">AddModuleInfo</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_info">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_info">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="security" id="security">Security Issues</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>一旦 <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> がサーバに読み込まれると、
@@ -101,18 +99,18 @@
     使うのが良いでしょう。</p>
       
     <div class="example"><h3>アクセス制御</h3><p><code>
-      &lt;Location /server-info&gt;<br />
+      &lt;Location /server-info&gt;<br>
       <span class="indent">
-        SetHandler server-info<br />
-        Order allow,deny<br />
-        # Allow access from server itself<br />
-        Allow from 127.0.0.1<br />
-        # Additionally, allow access from local workstation<br />
-        Allow from 192.168.1.17<br />
+        SetHandler server-info<br>
+        Order allow,deny<br>
+        # Allow access from server itself<br>
+        Allow from 127.0.0.1<br>
+        # Additionally, allow access from local workstation<br>
+        Allow from 192.168.1.17<br>
       </span>
       &lt;/Location&gt;
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="queries" id="queries">表示される情報の選択</a> <a title="Permanent link" href="#queries" class="permalink">&para;</a></h2>
     <p>デフォルトでは、サーバ情報はすべての有効なモジュールと、
@@ -137,7 +135,7 @@
         <dt><code>?server</code></dt>
             <dd>基本サーバ情報のみ</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="limitations" id="limitations">既知の制限</a> <a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は、元の設定ファイルを読むのではなく、
@@ -150,22 +148,22 @@
           <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>,
           <code class="directive"><a href="../mod/mod_so.html#loadfile">LoadFile</a></code> があります。</li>
       <li><code class="directive"><a href="../mod/core.html#include">Include</a></code>,
-          <code class="directive"><a href="../mod/core.html#&lt;ifmodule&gt;">&lt;IfModule&gt;</a></code>,
-          <code class="directive"><a href="../mod/core.html#&lt;ifdefine&gt;">&lt;IfDefine&gt;</a></code>,
+          <code class="directive"><a href="../mod/core.html#<ifmodule>">&lt;IfModule&gt;</a></code>,
+          <code class="directive"><a href="../mod/core.html#<ifdefine>">&lt;IfDefine&gt;</a></code>,
           のような設定ファイル自身を制御するディレクティブは表示されません。
           そのディレクティブの中にあり、有効になっているディレクティブは
           表示されます。</li>
       <li>コメントは表示されません。(これは仕様だと思ってください。)</li>
       <li><code>.htaccess</code> ファイルの設定ディレクティブは表示されません
           (永久的なサーバ設定の一部ではないからです)。</li>
-      <li><code class="directive"><a href="../mod/core.html#&lt;directory&gt;">&lt;Directory&gt;</a></code>
+      <li><code class="directive"><a href="../mod/core.html#<directory>">&lt;Directory&gt;</a></code>
           のようなコンテナディレクティブは普通に表示されますが、
-          <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は閉じタグの <code class="directive"><a href="../mod/core.html#&lt;/directory&gt;">&lt;/Directory&gt;</a></code> などの数を知ることはできません。</li>
+          <code class="module"><a href="../mod/mod_info.html">mod_info</a></code> は閉じタグの <code class="directive"><a href="../mod/core.html#</directory>">&lt;/Directory&gt;</a></code> などの数を知ることはできません。</li>
       <li><code class="module"><a href="../mod/mod_perl.html">mod_perl</a></code> のようなサードパーティモジュール
            のディレクティブは表示されないかもしれません。</li>
     </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="AddModuleInfo" id="AddModuleInfo">AddModuleInfo</a> <a name="addmoduleinfo" id="addmoduleinfo">ディレクティブ</a> <a title="Permanent link" href="#addmoduleinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>server-info ハンドラにより表示されるモジュールの情報に
@@ -181,9 +179,9 @@
     として解釈され、表示されるようにします。例:</p>
 
     <div class="example"><p><code>
-      AddModuleInfo mod_deflate.c 'See &lt;a \<br />
+      AddModuleInfo mod_deflate.c 'See &lt;a \<br>
       <span class="indent">
-        href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\<br />
+        href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\<br>
         http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
       </span>
     </code></p></div>
@@ -192,11 +190,11 @@
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_info.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_info.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_info.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_info.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

@@ -1,34 +1,32 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 성능향상 - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>아파치 성능향상</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -47,12 +45,12 @@
     하는 반면, 어떤 옵션은 속도를 위해 기능을 희생한다.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#hardware">하드웨어와 운영체제에 대해서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#runtime">실행시 설정에 대해서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#compiletime">컴파일시 설정에 대해서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#trace">부록: 시스템호출 기록을 자세히 분석하기</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#hardware">하드웨어와 운영체제에 대해서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#runtime">실행시 설정에 대해서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#compiletime">컴파일시 설정에 대해서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#trace">부록: 시스템호출 기록을 자세히 분석하기</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="hardware" id="hardware">하드웨어와 운영체제에 대해서</a> <a title="Permanent link" href="#hardware" class="permalink">&para;</a></h2>
 
@@ -92,7 +90,7 @@
       </li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="runtime" id="runtime">실행시 설정에 대해서</a> <a title="Permanent link" href="#runtime" class="permalink">&para;</a></h2>
 
@@ -131,10 +129,10 @@
       하는 예제다:</p>
 
       <div class="example"><p><code>
-        HostnameLookups off<br />
-        &lt;Files ~ "\.(html|cgi)$"&gt;<br />
+        HostnameLookups off<br>
+        &lt;Files ~ "\.(html|cgi)$"&gt;<br>
         <span class="indent">
-          HostnameLookups on<br />
+          HostnameLookups on<br>
         </span>
         &lt;/Files&gt;
       </code></p></div>
@@ -156,10 +154,10 @@
       한다. 예를 들어, 설정이 다음과 같고:</p>
 
       <div class="example"><p><code>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
+        DocumentRoot /www/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          Options SymLinksIfOwnerMatch<br />
+          Options SymLinksIfOwnerMatch<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -173,16 +171,16 @@
       같이 할 수 있다:</p>
 
       <div class="example"><p><code>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
+        DocumentRoot /www/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          Options FollowSymLinks<br />
+          Options FollowSymLinks<br>
         </span>
-        &lt;/Directory&gt;<br />
-        <br />
-        &lt;Directory /www/htdocs&gt;<br />
+        &lt;/Directory&gt;<br>
+        <br>
+        &lt;Directory /www/htdocs&gt;<br>
         <span class="indent">
-          Options -FollowSymLinks +SymLinksIfOwnerMatch<br />
+          Options -FollowSymLinks +SymLinksIfOwnerMatch<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -205,10 +203,10 @@
       <code>.htaccess</code>를 열길 시도한다. 예를 들어,</p>
 
       <div class="example"><p><code>
-        DocumentRoot /www/htdocs<br />
-        &lt;Directory /&gt;<br />
+        DocumentRoot /www/htdocs<br>
+        &lt;Directory /&gt;<br>
         <span class="indent">
-          AllowOverride all<br />
+          AllowOverride all<br>
         </span>
         &lt;/Directory&gt;
       </code></p></div>
@@ -367,7 +365,7 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="compiletime" id="compiletime">컴파일시 설정에 대해서</a> <a title="Permanent link" href="#compiletime" class="permalink">&para;</a></h2>
 
@@ -451,7 +449,7 @@
       옵션을 사용하여 더 빠른 atomic 구현을 선택할 수 있다:</p>
 
       <div class="example"><p><code>
-        ./buildconf<br />
+        ./buildconf<br>
         ./configure --with-mpm=worker --enable-nonportable-atomics=yes
       </code></p></div>
 
@@ -460,7 +458,7 @@
 
       <ul>
 
-        <li>SPARC에서 Solaris<br />
+        <li>SPARC에서 Solaris<br>
             기본적으로 APR은 Solaris/SPARC에서 mutex기반 atomic을
             사용한다. 그러나 구성할때
             <code>--enable-nonportable-atomics</code>를 사용하면
@@ -471,7 +469,7 @@
             칩에서만 실행할 수 있다.
         </li>
 
-        <li>Linux on x86<br />
+        <li>Linux on x86<br>
             기본적으로 APR은 리눅스에서 mutex기반 atomic을
             사용한다. 그러나 구성할때
             <code>--enable-nonportable-atomics</code>를 사용하면
@@ -520,35 +518,35 @@
       단지 설명하기위한 용도로 만들었다.):</p>
 
       <div class="example"><p><code>
-        for (;;) {<br />
+        for (;;) {<br>
         <span class="indent">
-          for (;;) {<br />
+          for (;;) {<br>
           <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            fd_set accept_fds;<br>
+            <br>
+            FD_ZERO (&amp;accept_fds);<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
+              FD_SET (i, &amp;accept_fds);<br>
             </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            }<br>
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br>
+            if (rc &lt; 1) continue;<br>
+            new_connection = -1;<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              if (FD_ISSET (i, &amp;accept_fds)) {<br>
               <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
+                new_connection = accept (i, NULL, NULL);<br>
+                if (new_connection != -1) break;<br>
               </span>
-              }<br />
+              }<br>
             </span>
-            }<br />
-            if (new_connection != -1) break;<br />
+            }<br>
+            if (new_connection != -1) break;<br>
           </span>
-          }<br />
-          process the new_connection;<br />
+          }<br>
+          process the new_connection;<br>
         </span>
         }
       </code></p></div>
@@ -583,37 +581,37 @@
       강조했음):</p>
 
       <div class="example"><p><code>
-        for (;;) {<br />
+        for (;;) {<br>
         <span class="indent">
-          <strong>accept_mutex_on ();</strong><br />
-          for (;;) {<br />
+          <strong>accept_mutex_on ();</strong><br>
+          for (;;) {<br>
           <span class="indent">
-            fd_set accept_fds;<br />
-            <br />
-            FD_ZERO (&amp;accept_fds);<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            fd_set accept_fds;<br>
+            <br>
+            FD_ZERO (&amp;accept_fds);<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              FD_SET (i, &amp;accept_fds);<br />
+              FD_SET (i, &amp;accept_fds);<br>
             </span>
-            }<br />
-            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br />
-            if (rc &lt; 1) continue;<br />
-            new_connection = -1;<br />
-            for (i = first_socket; i &lt;= last_socket; ++i) {<br />
+            }<br>
+            rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);<br>
+            if (rc &lt; 1) continue;<br>
+            new_connection = -1;<br>
+            for (i = first_socket; i &lt;= last_socket; ++i) {<br>
             <span class="indent">
-              if (FD_ISSET (i, &amp;accept_fds)) {<br />
+              if (FD_ISSET (i, &amp;accept_fds)) {<br>
               <span class="indent">
-                new_connection = accept (i, NULL, NULL);<br />
-                if (new_connection != -1) break;<br />
+                new_connection = accept (i, NULL, NULL);<br>
+                if (new_connection != -1) break;<br>
               </span>
-              }<br />
+              }<br>
             </span>
-            }<br />
-            if (new_connection != -1) break;<br />
+            }<br>
+            if (new_connection != -1) break;<br>
           </span>
-          }<br />
-          <strong>accept_mutex_off ();</strong><br />
-          process the new_connection;<br />
+          }<br>
+          <strong>accept_mutex_off ();</strong><br>
+          process the new_connection;<br>
         </span>
         }
       </code></p></div>
@@ -762,35 +760,35 @@
       대충 다음과 같다:</p>
 
       <div class="example"><p><code>
-        void lingering_close (int s)<br />
-        {<br />
+        void lingering_close (int s)<br>
+        {<br>
         <span class="indent">
-          char junk_buffer[2048];<br />
-          <br />
-          /* shutdown the sending side */<br />
-          shutdown (s, 1);<br />
-          <br />
-          signal (SIGALRM, lingering_death);<br />
-          alarm (30);<br />
-          <br />
-          for (;;) {<br />
+          char junk_buffer[2048];<br>
+          <br>
+          /* shutdown the sending side */<br>
+          shutdown (s, 1);<br>
+          <br>
+          signal (SIGALRM, lingering_death);<br>
+          alarm (30);<br>
+          <br>
+          for (;;) {<br>
           <span class="indent">
-            select (s for reading, 2 second timeout);<br />
-            if (error) break;<br />
-            if (s is ready for reading) {<br />
+            select (s for reading, 2 second timeout);<br>
+            if (error) break;<br>
+            if (s is ready for reading) {<br>
             <span class="indent">
-              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br />
+              if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {<br>
               <span class="indent">
-                break;<br />
+                break;<br>
               </span>
-              }<br />
-              /* just toss away whatever is here */<br />
+              }<br>
+              /* just toss away whatever is here */<br>
             </span>
-            }<br />
+            }<br>
           </span>
-          }<br />
-          <br />
-          close (s);<br />
+          }<br>
+          <br>
+          close (s);<br>
         </span>
         }
       </code></p></div>
@@ -846,7 +844,7 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="trace" id="trace">부록: 시스템호출 기록을 자세히 분석하기</a> <a title="Permanent link" href="#trace" class="permalink">&para;</a></h2>
 
@@ -978,11 +976,11 @@
   </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/misc/perf-tuning.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/misc/perf-tuning.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/perf-tuning.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

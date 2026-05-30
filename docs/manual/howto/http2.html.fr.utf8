@@ -1,166 +1,162 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Guide HTTP/2 - Serveur HTTP Apache Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">How-To / Tutoriels</a></div><div id="page-content"><div id="preamble"><h1>Guide HTTP/2</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
-    <p>Ce document est le guide de l'utilisateur de l'implémentation de HTTP/2
-    dans Apache httpd. Cette fonctionnalité en est au stade
-    <em>de production</em>, et les interfaces et directives devraient donc être
-    dorénavant relativement stables.
+    <p>Ce document est le guide de l'utilisateur de l'impl&eacute;mentation de HTTP/2
+    dans Apache httpd. Cette fonctionnalit&eacute; en est au stade
+    <em>de production</em>, et les interfaces et directives devraient donc &ecirc;tre
+    dor&eacute;navant relativement stables.
     </p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">Le protocole HTTP/2</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#implementation">HTTP/2 dans Apache httpd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#building">Compilation de httpd avec le support de HTTP/2</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic-config">Configuration de base</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mpm-config">Configuration du MPM</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#clients">Clients</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tools">Outils efficaces pour déboguer HTTP/2</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#push">Push serveur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#earlyhints">Suggestions précoces</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#protocol">Le protocole HTTP/2</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#implementation">HTTP/2 dans Apache httpd</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#building">Compilation de httpd avec le support de HTTP/2</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic-config">Configuration de base</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mpm-config">Configuration du MPM</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#clients">Clients</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#tools">Outils efficaces pour d&eacute;boguer HTTP/2</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#push">Push serveur</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#earlyhints">Suggestions pr&eacute;coces</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="protocol" id="protocol">Le protocole HTTP/2</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
     
-    <p>HTTP/2 est une évolution du protocole de la couche application le plus
-    utilisé au monde, HTTP. Cette évolution permet en particulier une utilisation
-    plus efficace des ressources réseau. Il ne modifie pas les aspects
-    fondamentaux de HTTP (sa sémantique). Entre autres, il y a toujours des
-    requêtes, des réponses et des en-têtes. Par conséquent, si vous connaissez
-    HTTP/1, vous connaissez déjà 95% de HTTP/2.</p>
-    <p>Beaucoup a déjà été écrit à propos de HTTP/2 et de son fonctionnement. La
-    documentation la plus officielle est bien entendu sa <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> (ou <a href="http://httpwg.org/specs/rfc7540.html">cette version au format plus
-    lisible</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
-    leurs moindres détails.</p>
-    <p>Le premier document à lire lorsqu'on ne connaît pas un mécanisme n'est
-    cependant pas sa RFC. Il est préférable de comprendre tout d'abord <em>ce
-    que</em> ce mécanisme est censé faire, et seulement ensuite de lire sa RFC
+    <p>HTTP/2 est une &eacute;volution du protocole de la couche application le plus
+    utilis&eacute; au monde, HTTP. Cette &eacute;volution permet en particulier une utilisation
+    plus efficace des ressources r&eacute;seau. Il ne modifie pas les aspects
+    fondamentaux de HTTP (sa s&eacute;mantique). Entre autres, il y a toujours des
+    requ&ecirc;tes, des r&eacute;ponses et des en-t&ecirc;tes. Par cons&eacute;quent, si vous connaissez
+    HTTP/1, vous connaissez d&eacute;j&agrave; 95% de HTTP/2.</p>
+    <p>Beaucoup a d&eacute;j&agrave; &eacute;t&eacute; &eacute;crit &agrave; propos de HTTP/2 et de son fonctionnement. La
+    documentation la plus officielle est bien entendu sa <a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a> (ou cette version au format plus
+    lisible : YMMV (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
+    leurs moindres d&eacute;tails.</p>
+    <p>Le premier document &agrave; lire lorsqu'on ne conna&icirc;t pas un m&eacute;canisme n'est
+    cependant pas sa RFC. Il est pr&eacute;f&eacute;rable de comprendre tout d'abord <em>ce
+    que</em> ce m&eacute;canisme est cens&eacute; faire, et seulement ensuite de lire sa RFC
     pour comprendre <em>comment</em> il fonctionne. <a href="https://daniel.haxx.se/http2/">http2  explained</a> de Daniel Stenberg
     (l'auteur de <a href="https://curl.haxx.se">curl</a>)
-    est un bien meilleur document pour démarrer l'étude de HTTP/2. En outre, de
-    nouveaux langages s'ajoutent régulièrement à sa liste de traductions
+    est un bien meilleur document pour d&eacute;marrer l'&eacute;tude de HTTP/2. En outre, de
+    nouveaux langages s'ajoutent r&eacute;guli&egrave;rement &agrave; sa liste de traductions
     disponibles !</p>
     <p>Si vous n'avez pas envie de le lire parce que vous le trouvez trop long,
-    voici certains pièges à éviter et nouveaux termes à connaître avant de lire
+    voici certains pi&egrave;ges &agrave; &eacute;viter et nouveaux termes &agrave; conna&icirc;tre avant de lire
     ce document :</p>
     <ul>
-        <li>A la différence de HTTP/1 qui est en texte pur, HTTP/2 est un
+        <li>A la diff&eacute;rence de HTTP/1 qui est en texte pur, HTTP/2 est un
 	<strong>protocole binaire</strong>, et alors que le premier est lisible par
-	un humain (par exemple pour sniffer le trafic réseau), le second ne
+	un humain (par exemple pour sniffer le trafic r&eacute;seau), le second ne
 	l'est pas. Voir la <a href="https://http2.github.io/faq/#why-is-http2-binary">FAQ
-	officielle</a> pour plus de détails.</li>
-        <li><strong>h2</strong> correspond à HTTP/2 sur TLS (négociation de
+	officielle</a> pour plus de d&eacute;tails.</li>
+        <li><strong>h2</strong> correspond &agrave; HTTP/2 sur TLS (n&eacute;gociation de
 	protocole via ALPN).</li>
-        <li><strong>h2c</strong> correspond à HTTP/2 sur TCP.</li>
-	<li>Une <strong>frame</strong> ou trame est la plus petite unité de
-	communication au sein d'une connexion HTTP/2 et comporte une en-tête et
-	une séquence d'octets de longueur variable dont la structure correspond
-	au type de trame. Voir la <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer">section
-	correspondante</a> de la documentation officielle pour plus de
-	détails.</li>
-        <li>Un <strong>stream</strong> est un flux bidirectionnel de frames au
-	sein d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
-	échange de messages de type requête et réponse. Voir la <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">section
-	correspondante</a> de la documentation officielle pour plus de détails.</li>
-        <li>HTTP/2 peut gérer <strong>plusieurs streams</strong> de données sur
-	la même connexion TCP, ce qui permet d'éviter le point de blocage
-	classique de HTTP/1 pour les requêtes lentes, et de ne pas avoir à
-	ouvrir de nouvelles connexions TCP pour chaque requête/réponse (les
-	connexions persistantes ou KeepAlive avaient contourné le problème dans
-	HTTP/1 mais ne l'avaient pas entièrement résolu)</li>
+        <li><strong>h2c</strong> correspond &agrave; HTTP/2 sur TCP.</li>
+	<li>Une <strong>frame</strong> ou trame est la plus petite unit&eacute; de
+	communication au sein d'une connexion HTTP/2 et comporte une en-t&ecirc;te et
+	une s&eacute;quence d'octets de longueur variable dont la structure correspond
+	au type de trame. Voir la section correspondante de la documentation
+	officielle pour plus de d&eacute;tails (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</li> <li>Un
+	<strong>stream</strong> est un flux bidirectionnel de frames au sein
+	d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
+	&eacute;change de messages de type requ&ecirc;te et r&eacute;ponse. Voir la section
+	correspondante de la documentation officielle pour plus de d&eacute;tails
+	(<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</li>
+        <li>HTTP/2 peut g&eacute;rer <strong>plusieurs streams</strong> de donn&eacute;es sur
+	la m&ecirc;me connexion TCP, ce qui permet d'&eacute;viter le point de blocage
+	classique de HTTP/1 pour les requ&ecirc;tes lentes, et de ne pas avoir &agrave;
+	ouvrir de nouvelles connexions TCP pour chaque requ&ecirc;te/r&eacute;ponse (les
+	connexions persistantes ou KeepAlive avaient contourn&eacute; le probl&egrave;me dans
+	HTTP/1 mais ne l'avaient pas enti&egrave;rement r&eacute;solu)</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="implementation" id="implementation">HTTP/2 dans Apache httpd</a> <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
     
-    <p>Le protocole HTTP/2 est implémenté dans Apache httpd via un module
-    propre, pertinemment nommé <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. Ce
-    module implémente toutes les fonctionnalités décrites par la RFC 7540 et
-    supporte les connexions en texte pur (http:), ou sécurisées (https:).
-    La variante texte pur se nomme '<code>h2c</code>', et la variante sécurisée
-    '<code>h2</code>'. <code>h2c</code> peut être en mode <em>direct</em> ou
-    <code>Upgrade:</code> via une requête initiale en HTTP/1.</p>
-    <p><a href="#push">Server Push</a> est une nouvelle fonctionnalité offerte
-    aux développeurs web par HTTP/2. La section correspondante de ce document
+    <p>Le protocole HTTP/2 est impl&eacute;ment&eacute; dans Apache httpd via un module
+    propre, pertinemment nomm&eacute; <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. Ce
+    module impl&eacute;mente toutes les fonctionnalit&eacute;s d&eacute;crites par la RFC 7540 et
+    supporte les connexions en texte pur (http:), ou s&eacute;curis&eacute;es (https:).
+    La variante texte pur se nomme '<code>h2c</code>', et la variante s&eacute;curis&eacute;e
+    '<code>h2</code>'. <code>h2c</code> peut &ecirc;tre en mode <em>direct</em> ou
+    <code>Upgrade:</code> via une requ&ecirc;te initiale en HTTP/1.</p>
+    <p><a href="#push">Server Push</a> est une nouvelle fonctionnalit&eacute; offerte
+    aux d&eacute;veloppeurs web par HTTP/2. La section correspondante de ce document
     vous indiquera comment votre application peut en tirer parti.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="building" id="building">Compilation de httpd avec le support de HTTP/2</a> <a title="Lien permanent" href="#building" class="permalink">&para;</a></h2>
     
-    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> se base sur la bibliothèque
-    de <a href="https://nghttp2.org">nghttp2</a> pour son implémentation. Pour
+    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> se base sur la biblioth&egrave;que
+    de <a href="https://nghttp2.org">nghttp2</a> pour son impl&eacute;mentation. Pour
     pouvoir compiler <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>, <code>libnghttp2</code> version
-    1.2.1. ou supérieure doit être installée dans votre système.</p>
-    <p>Pour déclencher la compilation de <code>mod_http2</code>, vous devez
+    1.2.1. ou sup&eacute;rieure doit &ecirc;tre install&eacute;e dans votre syst&egrave;me.</p>
+    <p>Pour d&eacute;clencher la compilation de <code>mod_http2</code>, vous devez
     ajouter l'argument '<code>--enable-http2</code>' au script
-    <code>./configure</code> que vous exécutez à la racine de l'arborescence des
-    sources de httpd. Si <code>libnghttp2</code> est installée dans un
-    répertoire non connu du chemin de vos bibliothèques, vous devez indiquer ce
-    répertoire au script <code>./configure</code> via l'argument
+    <code>./configure</code> que vous ex&eacute;cutez &agrave; la racine de l'arborescence des
+    sources de httpd. Si <code>libnghttp2</code> est install&eacute;e dans un
+    r&eacute;pertoire non connu du chemin de vos biblioth&egrave;ques, vous devez indiquer ce
+    r&eacute;pertoire au script <code>./configure</code> via l'argument
     '<code>--with-nghttp2=&lt;path&gt;</code>'.</p>
-    <p>Alors que cette méthode de compilation conviendra à la plupart, certains
-    préféreront lier statiquement <code>nghttp2</code> à ce module. Pour ce
+    <p>Alors que cette m&eacute;thode de compilation conviendra &agrave; la plupart, certains
+    pr&eacute;f&eacute;reront lier statiquement <code>nghttp2</code> &agrave; ce module. Pour ce
     faire, utilisez l'argument <code>--enable-nghttp2-staticlib-deps</code>.
-    Cette méthode est pratiquement la même que celle utilisée pour lier
-    statiquement openssl à <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
+    Cette m&eacute;thode est pratiquement la m&ecirc;me que celle utilis&eacute;e pour lier
+    statiquement openssl &agrave; <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
     <p>En parlant de SSL, vous devez savoir que la plupart des navigateurs ne
-    communiqueront en HTTP/2 que sur des URLs sécurisées de type
+    communiqueront en HTTP/2 que sur des URLs s&eacute;curis&eacute;es de type
     <code>https:</code> ; votre serveur doit donc supporter SSL. Mais de plus,
-    votre bibliothèque SSL devra supporter l'extension <code>ALPN</code>. Enfin,
-    si la bibliothèque que vous utilisez est OpenSSL, sa version devra être
-    1.0.2. ou supérieure.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    votre biblioth&egrave;que SSL devra supporter l'extension <code>ALPN</code>. Enfin,
+    si la biblioth&egrave;que que vous utilisez est OpenSSL, sa version devra &ecirc;tre
+    1.0.2. ou sup&eacute;rieure.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="basic-config" id="basic-config">Configuration de base</a> <a title="Lien permanent" href="#basic-config" class="permalink">&para;</a></h2>
     
 
-    <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compilé avec le
-    module <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>, l'activation de ce dernier nécessite un
-    minimum de configuration supplémentaire. En premier lieu, comme pour tout
+    <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compil&eacute; avec le
+    module <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>, l'activation de ce dernier n&eacute;cessite un
+    minimum de configuration suppl&eacute;mentaire. En premier lieu, comme pour tout
     module Apache, vous devez le charger :</p>
     <pre class="prettyprint lang-config">LoadModule http2_module modules/mod_http2.so</pre>
 
 
-    <p>La seconde directive que vous devez ajouter à votre fichier de
+    <p>La seconde directive que vous devez ajouter &agrave; votre fichier de
     configuration est</p>
     <pre class="prettyprint lang-config">Protocols h2 http/1.1</pre>
 
-    <p>Ceci permet de définir h2, la variante sécurisée, comme le protocole
-    préféré pour les connexions à votre serveur. Si vous souhaitez que toutes les
+    <p>Ceci permet de d&eacute;finir h2, la variante s&eacute;curis&eacute;e, comme le protocole
+    pr&eacute;f&eacute;r&eacute; pour les connexions &agrave; votre serveur. Si vous souhaitez que toutes les
     variantes soient disponibles, utilisez la directive suivante :</p>
     <pre class="prettyprint lang-config">Protocols h2 h2c http/1.1</pre>
 
-    <p>Selon l'endroit où vous placez cette directive, elle affectera l'ensemble
+    <p>Selon l'endroit o&ugrave; vous placez cette directive, elle affectera l'ensemble
     de votre serveur, ou seulement un ou plusieurs serveurs virtuels. Vous
     pouvez aussi l'imbriquer comme dans l'exemple suivant :</p>
     <pre class="prettyprint lang-config">Protocols http/1.1
@@ -173,78 +169,78 @@
     <p>Seules les connexions en HTTP/1 seront alors permises, sauf pour le serveur
     virtuel <code>test.example.org</code> qui acceptera aussi les connexions SSL
     en HTTP/2.</p>
-    <div class="note"><h3>Utilisez une chaîne d'algorithmes de chiffrement forte</h3>
+    <div class="note"><h3>Utilisez une cha&icirc;ne d'algorithmes de chiffrement forte</h3>
     <p>La directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> doit
-    être définie avec une chaîne d'algorithmes de chiffrement TLS forte. Même si
+    &ecirc;tre d&eacute;finie avec une cha&icirc;ne d'algorithmes de chiffrement TLS forte. M&ecirc;me si
     la version actuelle de <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> n'impose pas d'algorithmes
     de chiffrement particuliers, la plupart des clients le font. Faire pointer
-    un navigateur vers un serveur où <code>h2</code> est activé avec une chaîne
-    d'algorithmes de chiffrement inappropriée entraînera un rejet et une
+    un navigateur vers un serveur o&ugrave; <code>h2</code> est activ&eacute; avec une cha&icirc;ne
+    d'algorithmes de chiffrement inappropri&eacute;e entra&icirc;nera un rejet et une
     retrogradation vers HTTP 1.1. C'est une erreur que l'on fait couramment
-    lorsqu'on configure httpd pour HTTP/2 pour la première fois ; donc gardez la
-    à l'esprit si vous voulez éviter de longues sessions de débogage ! Si vous
-    voulez être sûr de définir une chaîne d'algorithmes de chiffrement
-    appropriée, évitez ceux qui sont listés dans la <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites">liste des
-    algorithmes de chiffrement TLS HTTP/2 à proscrire</a>.</p>
+    lorsqu'on configure httpd pour HTTP/2 pour la premi&egrave;re fois ; donc gardez la
+    &agrave; l'esprit si vous voulez &eacute;viter de longues sessions de d&eacute;bogage ! Si vous
+    voulez &ecirc;tre s&ucirc;r de d&eacute;finir une cha&icirc;ne d'algorithmes de chiffrement
+    appropri&eacute;e, &eacute;vitez ceux qui sont list&eacute;s dans la liste des
+    algorithmes de chiffrement TLS HTTP/2 &agrave; proscrire (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</p>
     </div>
-    <p>L'ordre des protocoles indiqués est aussi important. Par défaut, le
-    premier sera le protocole préféré. Lorsqu'un client offre plusieurs choix,
-    c'est le plus à gauche qui sera sélectionné. Dans</p>
+    <p>L'ordre des protocoles indiqu&eacute;s est aussi important. Par d&eacute;faut, le
+    premier sera le protocole pr&eacute;f&eacute;r&eacute;. Lorsqu'un client offre plusieurs choix,
+    c'est le plus &agrave; gauche qui sera s&eacute;lectionn&eacute;. Dans</p>
     <pre class="prettyprint lang-config">Protocols http/1.1 h2</pre>
 
-    <p>le protocole préféré sera HTTP/1 et il sera toujours sélectionné sauf si
+    <p>le protocole pr&eacute;f&eacute;r&eacute; sera HTTP/1 et il sera toujours s&eacute;lectionn&eacute; sauf si
     un client ne supporte <em>que</em> h2. Comme nous souhaitons communiquer en
-    HTTP/2 avec les clients qui le supportent, la meilleure définition de la
+    HTTP/2 avec les clients qui le supportent, la meilleure d&eacute;finition de la
     directive est</p>
     <pre class="prettyprint lang-config">Protocols h2 h2c http/1.1</pre>
 
 
-    <p>Toujours à propos de l'ordre des protocoles, le client a lui aussi ses
-    propres préférences en la matière. À ce titre, si vous le souhaitez, vous
-    pouvez configurer votre serveur pour qu'il sélectionne non plus son
-    protocole préféré, mais au contraire le protocole préféré
+    <p>Toujours &agrave; propos de l'ordre des protocoles, le client a lui aussi ses
+    propres pr&eacute;f&eacute;rences en la mati&egrave;re. &Agrave; ce titre, si vous le souhaitez, vous
+    pouvez configurer votre serveur pour qu'il s&eacute;lectionne non plus son
+    protocole pr&eacute;f&eacute;r&eacute;, mais au contraire le protocole pr&eacute;f&eacute;r&eacute;
     du client :</p>
     <pre class="prettyprint lang-config">ProtocolsHonorOrder Off</pre>
 
     <p>Avec cette directive, l'ordre des protocoles que <em>vous</em> avez
-    défini devient caduque et seul l'ordre défini par le client sera pris en
+    d&eacute;fini devient caduque et seul l'ordre d&eacute;fini par le client sera pris en
     compte.</p>
-    <p>Une dernière chose : les protocoles que vous définissez ne sont pas
-    vérifiés quant à leurs validité ou orthographe. Vous pouvez très bien
-    définir des protocoles qui n'existent pas, et il n'est donc pas nécessaire
-    de filtrer le contenu de la directive <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> avec des vérifications de type
+    <p>Une derni&egrave;re chose : les protocoles que vous d&eacute;finissez ne sont pas
+    v&eacute;rifi&eacute;s quant &agrave; leurs validit&eacute; ou orthographe. Vous pouvez tr&egrave;s bien
+    d&eacute;finir des protocoles qui n'existent pas, et il n'est donc pas n&eacute;cessaire
+    de filtrer le contenu de la directive <code class="directive"><a href="../mod/core.html#protocols">Protocols</a></code> avec des v&eacute;rifications de type
     <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>.</p>
-    <p>Pour des conseils plus avancés à propos de la configuration, voir la <a href="../mod/mod_http2.html">Documentation de mod_http2</a>, et en particulier
-    la section à propos de la <a href="../mod/mod_http2.html#dimensioning">consommation supplémentaire de
-    ressources</a>, ainsi que la section expliquant comment gérer les <a href="../mod/mod_http2.html#misdirected">serveurs multiples avec certificat
+    <p>Pour des conseils plus avanc&eacute;s &agrave; propos de la configuration, voir la <a href="../mod/mod_http2.html">Documentation de mod_http2</a>, et en particulier
+    la section &agrave; propos de la <a href="../mod/mod_http2.html#dimensioning">consommation suppl&eacute;mentaire de
+    ressources</a>, ainsi que la section expliquant comment g&eacute;rer les <a href="../mod/mod_http2.html#misdirected">serveurs multiples avec certificat
     commun</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="mpm-config" id="mpm-config">Configuration du MPM</a> <a title="Lien permanent" href="#mpm-config" class="permalink">&para;</a></h2>
     
 
     <p>Tous les modules multiprocessus (MPM) fournis avec httpd supportent
     HTTP/2. Cependant, si vous utilisez le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code>, vous allez
-    faire face à de sévères restrictions.</p>
+    faire face &agrave; de s&eacute;v&egrave;res restrictions.</p>
     <p>Avec le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ne traitera
-    qu'une requête à la fois par connexion alors que les clients tels que les
-    navigateurs internet envoient de nombreuses requêtes au même moment. Si
-    l'une d'entre elles est longue à traiter (ou implique une longue
-    interrogation), les autres requêtes seront mises en attente.</p>
-    <p>Par défaut, <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ne passe pas outre cette limitation pour
+    qu'une requ&ecirc;te &agrave; la fois par connexion alors que les clients tels que les
+    navigateurs internet envoient de nombreuses requ&ecirc;tes au m&ecirc;me moment. Si
+    l'une d'entre elles est longue &agrave; traiter (ou implique une longue
+    interrogation), les autres requ&ecirc;tes seront mises en attente.</p>
+    <p>Par d&eacute;faut, <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ne passe pas outre cette limitation pour
     la simple et bonne raison que le MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code> n'est aujourd'hui
-    choisi que si vous exécutez des moteurs de traitement qui ne sont pas préparés
+    choisi que si vous ex&eacute;cutez des moteurs de traitement qui ne sont pas pr&eacute;par&eacute;s
     pour le multithreading (par exemple qui se crashent lorsque plusieurs
-    requêtes arrivent).</p>
+    requ&ecirc;tes arrivent).</p>
     <p>Si votre plateforme et votre installation de httpd le supportent, la
-    meilleur solution consiste actuellement à utiliser le MPM
+    meilleur solution consiste actuellement &agrave; utiliser le MPM
     <code class="module"><a href="../mod/event.html">event</a></code>.
     </p>
     <p>Si vous n'avez pas d'autre choix que d'utiliser le MPM
-    <code class="module"><a href="../mod/prefork.html">prefork</a></code>, mais souhaitez tout de même traiter plusieurs requêtes
-    simultanément, vous pouvez jouer avec la directive <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code>, sans garantie que cela
+    <code class="module"><a href="../mod/prefork.html">prefork</a></code>, mais souhaitez tout de m&ecirc;me traiter plusieurs requ&ecirc;tes
+    simultan&eacute;ment, vous pouvez jouer avec la directive <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code>, sans garantie que cela
     fonctionne.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="clients" id="clients">Clients</a> <a title="Lien permanent" href="#clients" class="permalink">&para;</a></h2>
     
@@ -252,19 +248,19 @@
     des connexions SSL : Firefox v43, Chrome v45, Safari v9, iOS Safari v9,
     Opera v35, Chrome pour Android v49 et
     Internet Explorer v11 sous Windows10 (selon cette <a href="http://caniuse.com/#search=http2">source</a>).</p>
-    <p>D'autres clients et serveurs sont listés dans le <a href="https://github.com/http2/http2-spec/wiki/Implementations">wiki des
-    implémentations</a> ; entre autres des implémentations pour c, c++, common
+    <p>D'autres clients et serveurs sont list&eacute;s dans le <a href="https://github.com/http2/http2-spec/wiki/Implementations">wiki des
+    impl&eacute;mentations</a> ; entre autres des impl&eacute;mentations pour c, c++, common
     lisp, dart, erlang, haskell, java, nodejs, php, python, perl, ruby, rust,
     scala et swift.</p>
-    <p>De nombreuses implémentations clientes autres que les navigateurs
+    <p>De nombreuses impl&eacute;mentations clientes autres que les navigateurs
     supportent HTTP/2 en texte pur, h2c. L'une des plus efficaces d'entre elles
     est <a href="https://curl.haxx.se">curl</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Outils efficaces pour déboguer HTTP/2</a> <a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
+<h2><a name="tools" id="tools">Outils efficaces pour d&eacute;boguer HTTP/2</a> <a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
     
-    <p>Le premier d'entre eux est bien entendu <a href="https://curl.haxx.se">curl</a>. Assurez-vous au préalable que votre
-    version supporte HTTP/2 en vérifiant ses <code>Fonctionnalités</code> :</p>
+    <p>Le premier d'entre eux est bien entendu <a href="https://curl.haxx.se">curl</a>. Assurez-vous au pr&eacute;alable que votre
+    version supporte HTTP/2 en v&eacute;rifiant ses <code>Fonctionnalit&eacute;s</code> :</p>
     <pre class="prettyprint lang-config">    $ curl -V
     curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
     Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...]
@@ -280,134 +276,134 @@
     <ul>
         <li><a href="https://nghttp2.org/documentation/nghttp.1.html">nghttp</a>
 	- permet de visualiser les trames HTTP/2 et ainsi de se faire une meilleure
-	  idée du protocole.</li>
+	  id&eacute;e du protocole.</li>
         <li><a href="https://nghttp2.org/documentation/h2load-howto.html">h2load</a> -
 	permet de tester votre serveur dans des conditions extremes.</li>
     </ul>
-    <p>Chrome fournit des journaux détaillés des connexions HTTP/2 via la page
+    <p>Chrome fournit des journaux d&eacute;taill&eacute;s des connexions HTTP/2 via la page
     <a href="chrome://net-internals/#http2">special net-internals page</a>. Il y
-    a aussi cette extension intéressante pour <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a>
+    a aussi cette extension int&eacute;ressante pour <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a>
     et <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a>
     qui permet d'indiquer que votre navigateur utilise HTTP/2.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="push" id="push">Push serveur</a> <a title="Lien permanent" href="#push" class="permalink">&para;</a></h2>
     
-    <p>Le protocole HTTP/2 permet au serveur de proposer (PUSH) des réponses
-    pour lesquelles le client n'a rien demandé. La communication autour de ces
-    réponses est du style : "voici une requête que vous n'avez jamais
-    envoyée, et la réponse vous parviendra bientôt tout de même ..."</p>
-    <p>Il y a cependant des conditions : le client peut désactiver cette
-    fonctionnalité et le serveur ne pourra alors lui proposer des réponses que
-    pour les requêtes qu'il a effectivement envoyées.</p>
-    <p>Cette fonctionnalité a pour but de permettre au serveur d'envoyer au
+    <p>Le protocole HTTP/2 permet au serveur de proposer (PUSH) des r&eacute;ponses
+    pour lesquelles le client n'a rien demand&eacute;. La communication autour de ces
+    r&eacute;ponses est du style : "voici une requ&ecirc;te que vous n'avez jamais
+    envoy&eacute;e, et la r&eacute;ponse vous parviendra bient&ocirc;t tout de m&ecirc;me ..."</p>
+    <p>Il y a cependant des conditions : le client peut d&eacute;sactiver cette
+    fonctionnalit&eacute; et le serveur ne pourra alors lui proposer des r&eacute;ponses que
+    pour les requ&ecirc;tes qu'il a effectivement envoy&eacute;es.</p>
+    <p>Cette fonctionnalit&eacute; a pour but de permettre au serveur d'envoyer au
     client des ressources dont il va probablement avoir besoin : par exemple une
-    ressource css ou javascript appartenant à une page html que le client a
-    demandée, un jeu d'images référencé par un css, etc...</p>
-    <p>Cette anticipation a pour avantage de permettre au client d'économiser le
-    temps qu'il lui aurait fallu pour envoyer une requête, quelques
-    millisecondes à une demi-seconde en fonction de l'éloignement du serveur.
-    Elle a cependant pour inconvénient d'imposer au client le téléchargement de
-    ressources qu'il possède peut-être déjà dans son cache. Bien entendu, HTTP/2
-    permet d'annuler prématurément de telles requêtes, mais des ressources sont
-    tout de même gaspillées.</p>
-    <p>En résumé : il n'existe pas encore de stratégie efficace pour faire le
-    meilleur usage de cette fonctionnalité de HTTP/2 et tout le monde en est
-    encore au stade de l'expérimentation. À ce titre, voici des conseils pour
-    procéder vous-même à ces expérimentations :</p>
-    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> inspecte l'en-tête de la réponse et recherche les
-    en-têtes <code>Link</code> sous un certain format :</p>
+    ressource css ou javascript appartenant &agrave; une page html que le client a
+    demand&eacute;e, un jeu d'images r&eacute;f&eacute;renc&eacute; par un css, etc...</p>
+    <p>Cette anticipation a pour avantage de permettre au client d'&eacute;conomiser le
+    temps qu'il lui aurait fallu pour envoyer une requ&ecirc;te, quelques
+    millisecondes &agrave; une demi-seconde en fonction de l'&eacute;loignement du serveur.
+    Elle a cependant pour inconv&eacute;nient d'imposer au client le t&eacute;l&eacute;chargement de
+    ressources qu'il poss&egrave;de peut-&ecirc;tre d&eacute;j&agrave; dans son cache. Bien entendu, HTTP/2
+    permet d'annuler pr&eacute;matur&eacute;ment de telles requ&ecirc;tes, mais des ressources sont
+    tout de m&ecirc;me gaspill&eacute;es.</p>
+    <p>En r&eacute;sum&eacute; : il n'existe pas encore de strat&eacute;gie efficace pour faire le
+    meilleur usage de cette fonctionnalit&eacute; de HTTP/2 et tout le monde en est
+    encore au stade de l'exp&eacute;rimentation. &Agrave; ce titre, voici des conseils pour
+    proc&eacute;der vous-m&ecirc;me &agrave; ces exp&eacute;rimentations :</p>
+    <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> inspecte l'en-t&ecirc;te de la r&eacute;ponse et recherche les
+    en-t&ecirc;tes <code>Link</code> sous un certain format :</p>
     <pre class="prettyprint lang-config">Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload</pre>
 
-    <p>Si la connexion supporte PUSH, ces deux ressources seront envoyées au
-    client. En tant que développeur web vous pouvez définir ces en-têtes soit
-    directement au niveau de la réponse de votre application, soit en
+    <p>Si la connexion supporte PUSH, ces deux ressources seront envoy&eacute;es au
+    client. En tant que d&eacute;veloppeur web vous pouvez d&eacute;finir ces en-t&ecirc;tes soit
+    directement au niveau de la r&eacute;ponse de votre application, soit en
     configurant votre serveur via</p>
     <pre class="prettyprint lang-config">&lt;Location /xxx.html&gt;
     Header add Link "&lt;/xxx.css&gt;;rel=preload"
     Header add Link "&lt;/xxx.js&gt;;rel=preload"
 &lt;/Location&gt;</pre>
 
-    <p>Si vous souhaitez utiliser des liens <code>preload</code> sans déclencher
-    de PUSH, vous pouvez utiliser le paramètre <code>nopush</code> comme suit :</p>
+    <p>Si vous souhaitez utiliser des liens <code>preload</code> sans d&eacute;clencher
+    de PUSH, vous pouvez utiliser le param&egrave;tre <code>nopush</code> comme suit :</p>
     <pre class="prettyprint lang-config">Link &lt;/xxx.css&gt;;rel=preload;nopush</pre>
 
-    <p>Vous pouvez aussi désactiver les PUSHes pour l'ensemble de votre
+    <p>Vous pouvez aussi d&eacute;sactiver les PUSHes pour l'ensemble de votre
     serveur via la directive</p>
     <pre class="prettyprint lang-config">H2Push Off</pre>
 
-    <p>À savoir aussi :</p>
+    <p>&Agrave; savoir aussi :</p>
     <p>Le module maintient un journal des ressources ayant fait l'objet d'un
-    PUSH pour chaque connexion (en général des condensés hash des URLs), et
-    n'effectuera pas deux fois un PUSH pour la même ressource. Cependant,
-    lorsque la connexion est fermée, le journal de ses PUSHes est supprimé.</p>
-    <p>Certains développeurs planchent sur la manière de permettre au client
-    d'informer le serveur des ressources qu'il possède déjà dans son cache afin
-    d'éviter les PUSHes pour ces dernières, mais ceci n'en est actuellement qu'à
-    un stade très expérimental.</p>
-    <p>L'<a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
-    en-tête Accept-Push-Policy</a> est un autre dispositif expérimental
-    implémenté dans <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ; il permet au client de définir pour
-    chaque requête quels genres de PUSHes il accepte.</p>
+    PUSH pour chaque connexion (en g&eacute;n&eacute;ral des condens&eacute;s hash des URLs), et
+    n'effectuera pas deux fois un PUSH pour la m&ecirc;me ressource. Cependant,
+    lorsque la connexion est ferm&eacute;e, le journal de ses PUSHes est supprim&eacute;.</p>
+    <p>Certains d&eacute;veloppeurs planchent sur la mani&egrave;re de permettre au client
+    d'informer le serveur des ressources qu'il poss&egrave;de d&eacute;j&agrave; dans son cache afin
+    d'&eacute;viter les PUSHes pour ces derni&egrave;res, mais ceci n'en est actuellement qu'&agrave;
+    un stade tr&egrave;s exp&eacute;rimental.</p>
+    <p>L'<a href="https://datatracker.ietf.org/doc/html/draft-ruellan-http-accept-push-policy-00">
+    en-t&ecirc;te Accept-Push-Policy</a> est un autre dispositif exp&eacute;rimental
+    impl&eacute;ment&eacute; dans <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ; il permet au client de d&eacute;finir pour
+    chaque requ&ecirc;te quels genres de PUSHes il accepte.</p>
   
 
     <p>
-    La fonctionnalité PUSH n'apportera pas toujours le gain de performances dans
-    l'obtention de réponses aux requêtes. Vous trouverez plusieurs études sur ce
-    sujet sur internet qui en expliquent les avantages et inconvénients et
-    comment les particularités des clients et du réseau en influencent le
+    La fonctionnalit&eacute; PUSH n'apportera pas toujours le gain de performances dans
+    l'obtention de r&eacute;ponses aux requ&ecirc;tes. Vous trouverez plusieurs &eacute;tudes sur ce
+    sujet sur internet qui en expliquent les avantages et inconv&eacute;nients et
+    comment les particularit&eacute;s des clients et du r&eacute;seau en influencent le
     fonctionnement. Par exemple, le seul fait que le serveur PUSHes une
-    ressource n'implique pas forcément que le navigateur l'utilisera.</p>
-    <p>Ce qui influence le plus la réponse PUSHed, c'est la requête qui a été
-    simulée. En effet, l'URL de la requête pour un PUSH est fournie par
-    l'application, mais d'où viennent les en-têtes ? Par exemple, La requête
-    PUSH requiert-elle un en-tête <code>accept-language</code> et si oui, quelle
+    ressource n'implique pas forc&eacute;ment que le navigateur l'utilisera.</p>
+    <p>Ce qui influence le plus la r&eacute;ponse PUSHed, c'est la requ&ecirc;te qui a &eacute;t&eacute;
+    simul&eacute;e. En effet, l'URL de la requ&ecirc;te pour un PUSH est fournie par
+    l'application, mais d'o&ugrave; viennent les en-t&ecirc;tes ? Par exemple, La requ&ecirc;te
+    PUSH requiert-elle un en-t&ecirc;te <code>accept-language</code> et si oui, quelle
     sera sa valeur ?</p>
-    <p>httpd va consulter la requête originale (celle qui a déclenché le PUSH)
-    et copier les en-têtes suivants vers la requête PUSH :
+    <p>httpd va consulter la requ&ecirc;te originale (celle qui a d&eacute;clench&eacute; le PUSH)
+    et copier les en-t&ecirc;tes suivants vers la requ&ecirc;te PUSH :
     <code>user-agent</code>, <code>accept</code>, <code>accept-encoding</code>,
     <code>accept-language</code> et <code>cache-control</code>.</p>
-    <p>Tous les autres en-têtes sont ignorés. Les cookies eux non plus ne seront
-    pas copiés. PUSHer des ressources qui requièrent la présence d'un cookie ne
-    fonctionnera pas. Ceci peut être sujet à débat, mais tant que ce ne sera pas
-    clairement discuté avec les navigateurs, restons prudents et évitons
-    d'exposer les cookies là où ils ne sont pas censés être visibles.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    <p>Tous les autres en-t&ecirc;tes sont ignor&eacute;s. Les cookies eux non plus ne seront
+    pas copi&eacute;s. PUSHer des ressources qui requi&egrave;rent la pr&eacute;sence d'un cookie ne
+    fonctionnera pas. Ceci peut &ecirc;tre sujet &agrave; d&eacute;bat, mais tant que ce ne sera pas
+    clairement discut&eacute; avec les navigateurs, restons prudents et &eacute;vitons
+    d'exposer les cookies l&agrave; o&ugrave; ils ne sont pas cens&eacute;s &ecirc;tre visibles.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="earlyhints" id="earlyhints">Suggestions précoces</a> <a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
+<h2><a name="earlyhints" id="earlyhints">Suggestions pr&eacute;coces</a> <a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
     
-    <p>A l'instar des ressources PUSHées, une autre méthode consiste à envoyer
-    des en-têtes <code>Link</code> au client avant même que la réponse ne soit
-    prête. Cette méthode utilise la fonctionnalité appelée "Suggestions
-    précoces" (Early Hints) décrite dans la <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
-    <p>Pour utiliser cette fonctionnalité, vous devez l'activer explicitement
+    <p>A l'instar des ressources PUSH&eacute;es, une autre m&eacute;thode consiste &agrave; envoyer
+    des en-t&ecirc;tes <code>Link</code> au client avant m&ecirc;me que la r&eacute;ponse ne soit
+    pr&ecirc;te. Cette m&eacute;thode utilise la fonctionnalit&eacute; appel&eacute;e "Suggestions
+    pr&eacute;coces" (Early Hints) d&eacute;crite dans la <a href="https://www.rfc-editor.org/rfc/rfc8297">RFC 8297</a>.</p>
+    <p>Pour utiliser cette fonctionnalit&eacute;, vous devez l'activer explicitement
     sur le serveur via :</p>
     <pre class="prettyprint lang-config">H2EarlyHints on</pre>
 
-    <p>Elle n'est en effet pas activée par défaut car certains navigateurs
-    anciens perdent pied avec de telles réponses.</p>
-    <p>Une fois cette fonctionnalité activée, vous pouvez utiliser la directive
-    <code class="directive"><a href="../mod/mod_http2.html#h2pushresource">H2PushResource</a></code> pour déclencher les
-    suggestions précoces et les PUSHes de ressources :</p>
+    <p>Elle n'est en effet pas activ&eacute;e par d&eacute;faut car certains navigateurs
+    anciens perdent pied avec de telles r&eacute;ponses.</p>
+    <p>Une fois cette fonctionnalit&eacute; activ&eacute;e, vous pouvez utiliser la directive
+    <code class="directive"><a href="../mod/mod_http2.html#h2pushresource">H2PushResource</a></code> pour d&eacute;clencher les
+    suggestions pr&eacute;coces et les PUSHes de ressources :</p>
     <pre class="prettyprint lang-config">&lt;Location /xxx.html&gt;
     H2PushResource /xxx.css
     H2PushResource /xxx.js
 &lt;/Location&gt;</pre>
 
-    <p>Le serveur enverra alors au client une réponse <code>"103 Early
-    Hints"</code> dès qu'il <em>commencera</em> à traiter la requête. Selon
-    votre application web, cet envoi peut intervenir beaucoup plus tôt que le
-    moment où les premiers en-têtes de réponse auront été déterminés.</p>
-    <p>Si <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> est activé, ceci
-    déclenchera aussi le PUSH juste après la réponse 103. Mais si <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> n'est pas activé, la réponse 103 sera
-    quand-même envoyée au client.</p>
+    <p>Le serveur enverra alors au client une r&eacute;ponse <code>"103 Early
+    Hints"</code> d&egrave;s qu'il <em>commencera</em> &agrave; traiter la requ&ecirc;te. Selon
+    votre application web, cet envoi peut intervenir beaucoup plus t&ocirc;t que le
+    moment o&ugrave; les premiers en-t&ecirc;tes de r&eacute;ponse auront &eacute;t&eacute; d&eacute;termin&eacute;s.</p>
+    <p>Si <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> est activ&eacute;, ceci
+    d&eacute;clenchera aussi le PUSH juste apr&egrave;s la r&eacute;ponse 103. Mais si <code class="directive"><a href="../mod/mod_http2.html#h2push">H2Push</a></code> n'est pas activ&eacute;, la r&eacute;ponse 103 sera
+    quand-m&ecirc;me envoy&eacute;e au client.</p>
     </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/http2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

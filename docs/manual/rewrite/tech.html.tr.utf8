@@ -1,114 +1,112 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Apache mod_rewrite Teknik Ayrıntıları - Apache HTTP Sunucusu Sürüm 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<title>Apache mod_rewrite Teknik Ayrıntıları - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Teknik Ayrıntıları</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Teknik Ayrıntıları</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/tech.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
 <p>Bu belge, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ve URL eşleştirmesinin bazı
 teknik ayrıntılarını tartışır.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">API Aşamaları</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Kural Kümesi İşleme</a></li>
-</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Modül belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden yönlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#InternalAPI">API Aşamaları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#InternalRuleset">Kural K&uuml;mesi İşleme</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="InternalAPI" id="InternalAPI">API Aşamaları</a> <a title="Permanent link" href="#InternalAPI" class="permalink">&para;</a></h2>
 
-    <p>Apache HTTP Sunucusu, istekleri birkaç aşamada işler. Bu
-    aşamaların her birinde, istek yaşam döngüsünün o bölümünü
-    işlemek üzere bir veya daha fazla modül çağrılabilir. Aşamalar
-    URL-dosyaadı çevirisi, kimlik doğrulama, yetkilendirme, içerik
-    ve günlükleme gibi şeyleri içerir. (Bu kapsamlı bir liste
+    <p>Apache HTTP Sunucusu, istekleri birka&ccedil; aşamada işler. Bu
+    aşamaların her birinde, istek yaşam d&ouml;ng&uuml;s&uuml;n&uuml;n o b&ouml;l&uuml;m&uuml;n&uuml;
+    işlemek &uuml;zere bir veya daha fazla mod&uuml;l &ccedil;ağrılabilir. Aşamalar
+    URL-dosyaadı &ccedil;evirisi, kimlik doğrulama, yetkilendirme, i&ccedil;erik
+    ve g&uuml;nl&uuml;kleme gibi şeyleri i&ccedil;erir. (Bu kapsamlı bir liste
     değildir.)</p>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, URL'lerin nasıl yeniden
-    yazılabileceğini etkilemek için bu aşamalardan ikisinde (veya
-    sıklıkla çağrıldıkları şekliyle "kancalarda") çalışır.</p>
+    yazılabileceğini etkilemek i&ccedil;in bu aşamalardan ikisinde (veya
+    sıklıkla &ccedil;ağrıldıkları şekliyle "kancalarda") &ccedil;alışır.</p>
 
     <p>İlk olarak, HTTP isteği okunduktan sonra ancak herhangi bir
-    yetkilendirme başlamadan önce gerçekleşen URL-dosyaadı çevirisi
+    yetkilendirme başlamadan &ouml;nce ger&ccedil;ekleşen URL-dosyaadı &ccedil;evirisi
     kancasını kullanır. İkinci olarak, yetkilendirme aşamalarından
     sonra ve dizin başına yapılandırma dosyaları
-    (<code>.htaccess</code> dosyaları) okunduktan sonra ancak içerik
-    işleyicisi çağrılmadan önce gerçekleşen Düzeltme (Fixup)
+    (<code>.htaccess</code> dosyaları) okunduktan sonra ancak i&ccedil;erik
+    işleyicisi &ccedil;ağrılmadan &ouml;nce ger&ccedil;ekleşen D&uuml;zeltme (Fixup)
     kancasını kullanır.</p>
 
     <p>Bir istek geldikten ve karşılık gelen sunucu veya sanal konak
     belirlendikten sonra, yeniden yazma motoru sunucu başına
-    yapılandırmada görünen <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> yönergelerini
+    yapılandırmada g&ouml;r&uuml;nen <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> y&ouml;nergelerini
     işlemeye başlar. (Yani ana sunucu yapılandırma dosyası ve
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;Virtualhost&gt;</a></code>
-    bölümleri.) Bu, URL-dosyaadı aşamasında gerçekleşir.</p>
+    b&ouml;l&uuml;mleri.) Bu, URL-dosyaadı aşamasında ger&ccedil;ekleşir.</p>
 
-    <p>Birkaç adım sonra, son veri dizinleri bulunduktan sonra dizin
-    başına yapılandırma yönergeleri (<code>.htaccess</code> dosyaları
+    <p>Birka&ccedil; adım sonra, son veri dizinleri bulunduktan sonra dizin
+    başına yapılandırma y&ouml;nergeleri (<code>.htaccess</code> dosyaları
     ve <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-    blokları) uygulanır. Bu, Düzeltme aşamasında gerçekleşir.</p>
+    blokları) uygulanır. Bu, D&uuml;zeltme aşamasında ger&ccedil;ekleşir.</p>
 
     <p>Bu durumların her birinde <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>,
     <code>REQUEST_URI</code>'yi ya yeni bir URL'ye ya da bir dosya
     adına yeniden yazar.</p>
 
     <p>Dizin başına bağlamda (yani <code>.htaccess</code> dosyaları ve
-    <code>Directory</code> blokları içinde) bu kurallar, bir URL
-    zaten bir dosya adına çevrilmiş olduktan sonra uygulanır. Bu
-    nedenle, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergelerini
-    başlangıçta karşılaştırdığı URL yolu, çevrilen dosya adının tam
-    dosya sistemi yolu olup geçerli dizin yolu (sondaki eğik çizgi
-    dahil) öndeki kısımdan çıkarılmıştır.</p>
+    <code>Directory</code> blokları i&ccedil;inde) bu kurallar, bir URL
+    zaten bir dosya adına &ccedil;evrilmiş olduktan sonra uygulanır. Bu
+    nedenle, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergelerini
+    başlangı&ccedil;ta karşılaştırdığı URL yolu, &ccedil;evrilen dosya adının tam
+    dosya sistemi yolu olup ge&ccedil;erli dizin yolu (sondaki eğik &ccedil;izgi
+    dahil) &ouml;ndeki kısımdan &ccedil;ıkarılmıştır.</p>
 
-    <p>Göstermek gerekirse: Kurallar /var/www/foo/.htaccess içindeyse
+    <p>G&ouml;stermek gerekirse: Kurallar /var/www/foo/.htaccess i&ccedil;indeyse
     ve /foo/bar/baz isteği işleniyorsa, ^bar/baz$ gibi bir ifade
     eşleşecektir.</p>
 
     <p>Dizin başına bağlamda bir değiştirme yapılırsa, yeni URL ile
     yeni bir dahili alt istek verilir ve bu da istek aşamalarının
-    işlenmesini yeniden başlatır. Değiştirme göreli bir yolsa,
-    <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> yönergesi
-    değiştirmenin önüne eklenen URL yolu önekini belirler. Dizin
-    başına bağlamda, döngüyü önlemek için sonunda (gelecekteki bir
+    işlenmesini yeniden başlatır. Değiştirme g&ouml;reli bir yolsa,
+    <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> y&ouml;nergesi
+    değiştirmenin &ouml;n&uuml;ne eklenen URL yolu &ouml;nekini belirler. Dizin
+    başına bağlamda, d&ouml;ng&uuml;y&uuml; &ouml;nlemek i&ccedil;in sonunda (gelecekteki bir
     dizin başına yeniden yazma işleme "turunda") değiştirme yapmayan
     kurallar oluşturmaya dikkat edilmelidir. (Bu sorunun daha ayrıntılı
-    tartışması için <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
+    tartışması i&ccedil;in <a href="https://cwiki.apache.org/confluence/display/httpd/RewriteLooping">RewriteLooping</a>
     sayfasına bakın.)</p>
 
     <p>Dizin başına bağlamda URL'nin bu ek işlenmesi nedeniyle, bu
     bağlamda yeniden yazma kurallarınızı farklı şekilde oluşturmaya
-    dikkat etmeniz gerekecektir. Özellikle, baştaki dizin yolunun
-    yeniden yazma kurallarınızın göreceği URL'den çıkarılacağını
-    unutmayın. Daha fazla açıklama için aşağıdaki örneklere bakın.</p>
+    dikkat etmeniz gerekecektir. &Ouml;zellikle, baştaki dizin yolunun
+    yeniden yazma kurallarınızın g&ouml;receği URL'den &ccedil;ıkarılacağını
+    unutmayın. Daha fazla a&ccedil;ıklama i&ccedil;in aşağıdaki &ouml;rneklere bakın.</p>
 
     <table class="bordered">
 
@@ -118,12 +116,12 @@ teknik ayrıntılarını tartışır.</p>
         </tr>
 
         <tr>
-            <td>VirtualHost bölümü</td>
+            <td>VirtualHost b&ouml;l&uuml;m&uuml;</td>
             <td>RewriteRule "^/images/(.+)\.jpg" "/images/$1.gif"</td>
         </tr>
 
         <tr>
-            <td>Belge kökündeki .htaccess dosyası</td>
+            <td>Belge k&ouml;k&uuml;ndeki .htaccess dosyası</td>
             <td>RewriteRule "^images/(.+)\.jpg" "images/$1.gif"</td>
         </tr>
 
@@ -134,55 +132,55 @@ teknik ayrıntılarını tartışır.</p>
 
     </table>
 
-    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülünün farklı bağlamlarda
-    URL'leri nasıl değiştirdiği hakkında daha fazla bilgi için,
-    yeniden yazma sırasında oluşturulan <a href="../mod/mod_rewrite.html#logging">günlük kayıtlarına</a>
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n farklı bağlamlarda
+    URL'leri nasıl değiştirdiği hakkında daha fazla bilgi i&ccedil;in,
+    yeniden yazma sırasında oluşturulan <a href="../mod/mod_rewrite.html#logging">g&uuml;nl&uuml;k kayıtlarına</a>
     başvurmalısınız.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalRuleset" id="InternalRuleset">Kural Kümesi İşleme</a> <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
+<h2><a name="InternalRuleset" id="InternalRuleset">Kural K&uuml;mesi İşleme</a> <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
       <p>Şimdi <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> bu iki API aşamasında
-      tetiklendiğinde, yapılandırılmış kural kümelerini yapılandırma
-      yapısından okur (bu yapı sunucu başına bağlam için başlangıçta
-      veya dizin başına bağlam için Apache çekirdeğinin dizin
-      yürüyüşü sırasında oluşturulmuştur). Ardından URL yeniden
-      yazma motoru içerilen kural kümesiyle (bir veya daha fazla kural
+      tetiklendiğinde, yapılandırılmış kural k&uuml;melerini yapılandırma
+      yapısından okur (bu yapı sunucu başına bağlam i&ccedil;in başlangı&ccedil;ta
+      veya dizin başına bağlam i&ccedil;in Apache &ccedil;ekirdeğinin dizin
+      y&uuml;r&uuml;y&uuml;ş&uuml; sırasında oluşturulmuştur). Ardından URL yeniden
+      yazma motoru i&ccedil;erilen kural k&uuml;mesiyle (bir veya daha fazla kural
       ve bunların koşulları birlikte) başlatılır. URL yeniden yazma
-      motorunun çalışması her iki yapılandırma bağlamı için de
-      tamamen aynıdır. Yalnızca nihai sonuç işleme farklıdır.</p>
+      motorunun &ccedil;alışması her iki yapılandırma bağlamı i&ccedil;in de
+      tamamen aynıdır. Yalnızca nihai sonu&ccedil; işleme farklıdır.</p>
 
-      <p>Kural kümesindeki kuralların sırası önemlidir; çünkü yeniden
-      yazma motoru bunları özel (ve çok belirgin olmayan) bir sırada
-      işler. Kural şudur: Yeniden yazma motoru kural kümesini kural
+      <p>Kural k&uuml;mesindeki kuralların sırası &ouml;nemlidir; &ccedil;&uuml;nk&uuml; yeniden
+      yazma motoru bunları &ouml;zel (ve &ccedil;ok belirgin olmayan) bir sırada
+      işler. Kural şudur: Yeniden yazma motoru kural k&uuml;mesini kural
       kural (<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-      yönergeleri) döner ve belirli bir kural eşleştiğinde isteğe
+      y&ouml;nergeleri) d&ouml;ner ve belirli bir kural eşleştiğinde isteğe
       bağlı olarak karşılık gelen koşulları (<code>RewriteCond</code>
-      yönergeleri) döner. Tarihsel nedenlerle koşullar önce verilir
-      ve bu nedenle kontrol akışı biraz dolambaçlıdır. Daha fazla
-      ayrıntı için Şekil 1'e bakın.</p>
+      y&ouml;nergeleri) d&ouml;ner. Tarihsel nedenlerle koşullar &ouml;nce verilir
+      ve bu nedenle kontrol akışı biraz dolamba&ccedil;lıdır. Daha fazla
+      ayrıntı i&ccedil;in Şekil 1'e bakın.</p>
 <p class="figure">
-      <img src="../images/rewrite_process_uri.png" alt="RewriteRule ve RewriteCond eşleştirme akışı" /><br />
-      <dfn>Şekil 1:</dfn>Yeniden yazma kural kümesindeki kontrol akışı
+      <img src="../images/rewrite_process_uri.png" alt="RewriteRule ve RewriteCond eşleştirme akışı"><br>
+      <dfn>Şekil 1:</dfn>Yeniden yazma kural k&uuml;mesindeki kontrol akışı
 </p>
       <p>İlk olarak URL, her kuralın <em>Kalıp</em>'ıyla eşleştirilir.
       Başarısız olursa <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> bu kuralı hemen
       işlemeyi durdurur ve sonraki kuralla devam eder. <em>Kalıp</em>
       eşleşirse <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> karşılık gelen kural
-      koşullarını (yapılandırmada RewriteRule'un hemen üstünde görünen
-      RewriteCond yönergeleri) arar. Hiçbiri yoksa, URL'yi
+      koşullarını (yapılandırmada RewriteRule'un hemen &uuml;st&uuml;nde g&ouml;r&uuml;nen
+      RewriteCond y&ouml;nergeleri) arar. Hi&ccedil;biri yoksa, URL'yi
       <em>Değiştirme</em> dizgesinden oluşturulan yeni bir değerle
-      değiştirir ve kural döngüsüne devam eder. Ancak koşullar
-      varsa, listelenme sırasına göre bunları işlemek için bir iç
-      döngü başlatır. Koşullar için mantık farklıdır: geçerli URL'ye
-      karşı bir kalıp eşleştirmeyiz. Bunun yerine, önce değişkenleri,
+      değiştirir ve kural d&ouml;ng&uuml;s&uuml;ne devam eder. Ancak koşullar
+      varsa, listelenme sırasına g&ouml;re bunları işlemek i&ccedil;in bir i&ccedil;
+      d&ouml;ng&uuml; başlatır. Koşullar i&ccedil;in mantık farklıdır: ge&ccedil;erli URL'ye
+      karşı bir kalıp eşleştirmeyiz. Bunun yerine, &ouml;nce değişkenleri,
       geri başvuruları, eşlem aramalarını <em>vb.</em> genişleterek
       bir <em>SınamaDizgesi</em> oluştururuz ve ardından
-      <em>KoşulKalıbı</em>'nı bununla eşleştirmeye çalışırız. Kalıp
+      <em>KoşulKalıbı</em>'nı bununla eşleştirmeye &ccedil;alışırız. Kalıp
       eşleşmezse, koşulların tamamı ve karşılık gelen kural başarısız
       olur. Kalıp eşleşirse, daha fazla koşul kalmayana kadar bir
-      sonraki koşul işlenir. Tüm koşullar eşleşirse, URL'nin
+      sonraki koşul işlenir. T&uuml;m koşullar eşleşirse, URL'nin
       <em>Değiştirme</em> ile değiştirilmesiyle işleme devam
       eder.</p>
 
@@ -190,15 +188,15 @@ teknik ayrıntılarını tartışır.</p>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../de/rewrite/tech.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/tech.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/tech.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/tech.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/tech.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/tech.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/tech.html" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/tech.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

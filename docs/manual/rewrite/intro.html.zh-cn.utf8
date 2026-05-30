@@ -1,37 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zh-cn"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache mod_rewrite 简介 - Apache HTTP 服务器 版本 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP 服务器版本 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="https://httpd.apache.org/docs/">文档</a> &gt; <a href="../">版本 2.5</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite 简介</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>可用语言: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/intro.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
@@ -42,15 +40,15 @@
 其他文档会更详细地介绍，但本文档应该能帮助初学者入门。
 </p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">介绍</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#regex">正则表达式</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule 基础</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flags">重写标志</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">重写条件</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">重写映射</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess 文件</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">介绍</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#regex">正则表达式</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriterule">RewriteRule 基础</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flags">重写标志</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritecond">重写条件</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap">重写映射</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#htaccess">.htaccess 文件</a></li>
 </ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">介绍</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Apache 模块 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 是一个非常强大且复杂的模块，
@@ -72,7 +70,7 @@
 虽然这可能会产生大量信息，但在调试 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 配置问题时它是不可或缺的，因为它会告诉你每条规则是如何被处理的。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="regex" id="regex">正则表达式</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
@@ -146,19 +144,19 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 <tr>
     <td><code>( )</code></td>
     <td>将多个字符组合为一个单元，并捕获匹配以用于反向引用</td>
-    <td><code>(ab)+</code> 匹配 <code>ababab</code>——即
+    <td><code>(ab)+</code> 匹配 <code>ababab</code>&mdash;&mdash;即
       <code>+</code> 应用于整个组。关于反向引用的更多信息见
       <a href="#InternalBackRefs">下文</a></td>
 </tr>
 <tr>
     <td><code>[ ]</code></td>
-    <td>字符类——匹配其中一个字符</td>
+    <td>字符类&mdash;&mdash;匹配其中一个字符</td>
     <td><code>c[uoa]t</code> 匹配 <code>cut</code>、<code>cot</code> 或
       <code>cat</code></td>
 </tr>
 <tr>
     <td><code>[^ ]</code></td>
-    <td>否定字符类——匹配未指定的任意字符</td>
+    <td>否定字符类&mdash;&mdash;匹配未指定的任意字符</td>
     <td><code>c[^/]t</code> 匹配 <code>cat</code> 或 <code>c=t</code>
       但不匹配 <code>c/t</code></td></tr>
 </table>
@@ -192,13 +190,13 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
       </p>
 
 <p class="figure">
-      <img src="../images/rewrite_backreferences.png" alt="RewriteRule 和 RewriteCond 匹配流程" /><br />
-      <dfn>图 1：</dfn>反向引用在规则中的流向。<br />
+      <img src="../images/rewrite_backreferences.png" alt="RewriteRule 和 RewriteCond 匹配流程"><br>
+      <dfn>图 1：</dfn>反向引用在规则中的流向。<br>
       在此示例中，对 <code>/test/1234</code> 的请求将被转换为 <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>。
 </p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="rewriterule" id="rewriterule">RewriteRule 基础</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -217,7 +215,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 </p>
 
 <p class="figure">
-      <img src="../images/syntax_rewriterule.png" alt="RewriteRule 指令的语法" /><br />
+      <img src="../images/syntax_rewriterule.png" alt="RewriteRule 指令的语法"><br>
       <dfn>图 2：</dfn>RewriteRule 指令的语法。
 </p>
 
@@ -272,7 +270,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 <code>$1</code>、<code>$2</code>、<code>$3</code> 等中。</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="flags" id="flags">重写标志</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -286,7 +284,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 <p>有关可用标志、其含义和示例的更多详细信息，
 请参阅<a href="flags.html">重写标志</a>文档。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="rewritecond" id="rewritecond">重写条件</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>一个或多个 <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
@@ -297,7 +295,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 第三个可选参数是修改匹配评估方式的标志列表。</p>
 
 <p class="figure">
-      <img src="../images/syntax_rewritecond.png" alt="RewriteCond 指令的语法" /><br />
+      <img src="../images/syntax_rewritecond.png" alt="RewriteCond 指令的语法"><br>
       <dfn>图 3：</dfn>RewriteCond 指令的语法
 </p>
 
@@ -334,14 +332,14 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="rewritemap" id="rewritemap">重写映射</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 指令提供了一种调用外部函数来为你执行重写的方法。
 这在 <a href="rewritemap.html">RewriteMap 补充文档</a>中有更详细的讨论。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess 文件</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
@@ -367,14 +365,14 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="../de/rewrite/intro.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/rewrite/intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/rewrite/intro.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/rewrite/intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/rewrite/intro.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/rewrite/intro.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/intro.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
 <p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

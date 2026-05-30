@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_imagemap - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">모듈</a></div>
 <div id="page-content">
 <div id="preamble"><h1>아파치 모듈 mod_imagemap</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
@@ -59,18 +57,18 @@
 </div>
 <div id="quickview"><h3>주제</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#features">새로운 기능</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#imapfile">이미지맵 파일</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">맵파일 예제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#referencing">맵파일 사용하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#features">새로운 기능</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#imapfile">이미지맵 파일</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#example">맵파일 예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#referencing">맵파일 사용하기</a></li>
 </ul><h3 class="directives">지시어들</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#imapbase">ImapBase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#imapdefault">ImapDefault</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#imapmenu">ImapMenu</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#imapbase">ImapBase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#imapdefault">ImapDefault</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#imapmenu">ImapMenu</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="features" id="features">새로운 기능</a> <a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
 
@@ -89,16 +87,16 @@
 
       <li>이미지맵 메뉴 조정 가능.</li>
     </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="imapfile" id="imapfile">이미지맵 파일</a> <a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
 
     <p>이미지맵 파일은 아래와 같은 형식으로 작성한다.</p>
 
     <div class="example"><p><code>
-      directive value [<var>x</var>,<var>y</var> ...]<br />
+      directive value [<var>x</var>,<var>y</var> ...]<br>
       directive value "<var>Menu text</var>" [<var>x</var>,<var>y</var>
-      ...]<br />
+      ...]<br>
       directive value <var>x</var>,<var>y</var> ... "<var>Menu text</var>"
     </code></p></div>
 
@@ -241,45 +239,45 @@
       </dl>
 
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="example" id="example">맵파일 예제</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
-      #'formatted'나 'semiformatted' 메뉴는 주석을 출력한다.<br />
-      #그리고 주석에 html 태그를 쓸 수 있다. &lt;hr&gt;<br />
-      base referer<br />
-      poly map "메뉴를 보여주세요." 0,0 0,10 10,10 10,0<br />
-      rect .. 0,0 77,27 "참조 문서가 있는 디렉토리"<br />
-      circle http://www.inetnebr.com/lincoln/feedback/ 195,0 305,27<br />
-      rect another_file "참조 문서와 같은 디렉토리에 있는" 306,0 419,27<br />
-      point http://www.zyzzyva.com/ 100,100<br />
-      point http://www.tripod.com/ 200,200<br />
-      rect mailto:nate@tripod.com 100,150 200,0 "버그?"<br />
+      #'formatted'나 'semiformatted' 메뉴는 주석을 출력한다.<br>
+      #그리고 주석에 html 태그를 쓸 수 있다. &lt;hr&gt;<br>
+      base referer<br>
+      poly map "메뉴를 보여주세요." 0,0 0,10 10,10 10,0<br>
+      rect .. 0,0 77,27 "참조 문서가 있는 디렉토리"<br>
+      circle http://www.inetnebr.com/lincoln/feedback/ 195,0 305,27<br>
+      rect another_file "참조 문서와 같은 디렉토리에 있는" 306,0 419,27<br>
+      point http://www.zyzzyva.com/ 100,100<br>
+      point http://www.tripod.com/ 200,200<br>
+      rect mailto:nate@tripod.com 100,150 200,0 "버그?"<br>
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2><a name="referencing" id="referencing">맵파일 사용하기</a> <a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
 
     <div class="example"><h3>HTML 에제</h3><p><code>
-      &lt;a href="/maps/imagemap1.map"&gt;<br />
+      &lt;a href="/maps/imagemap1.map"&gt;<br>
       <span class="indent">
-        &lt;img ismap src="/images/imagemap1.gif"&gt;<br />
+        &lt;img ismap src="/images/imagemap1.gif"&gt;<br>
       </span>
       &lt;/a&gt;
     </code></p></div>
 
     <div class="example"><h3>XHTML 예제</h3><p><code>
-      &lt;a href="/maps/imagemap1.map"&gt;<br />
+      &lt;a href="/maps/imagemap1.map"&gt;<br>
       <span class="indent">
-        &lt;img ismap="ismap" src="/images/imagemap1.gif" /&gt;<br />
+        &lt;img ismap="ismap" src="/images/imagemap1.gif" /&gt;<br>
       </span>
       &lt;/a&gt;
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">지시어</a> <a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>이미지맵 파일에서 <code>base</code> 기본값</td></tr>
@@ -301,7 +299,7 @@
 <li><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">지시어</a> <a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>이미지맵에 어느 영역에도 해당하지 않는 좌표를 준
@@ -322,7 +320,7 @@
     그대로 보여줘야 한다.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">지시어</a> <a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>좌표없이 이미지맵 요청시 취할 행동</td></tr>
@@ -364,10 +362,10 @@
 </div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_imagemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_imagemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_imagemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();

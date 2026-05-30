@@ -1,42 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_md - Apache HTTP Server Version 2.5</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
 <script src="../style/scripts/prettify.min.js" type="text/javascript">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.5</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_md</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_md.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_md.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_md.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Managing domains across virtual hosts, certificate provisioning 
         via the ACME protocol
     </td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>md_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_md.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>md_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_md.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.30 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -288,56 +286,56 @@
     </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#mdactivationdelay">MDActivationDelay</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdbaseserver">MDBaseServer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcacertificatefile">MDCACertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcachallenges">MDCAChallenges</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatecheck">MDCertificateCheck</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatefile">MDCertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatekeyfile">MDCertificateKeyFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatemonitor">MDCertificateMonitor</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcheckinterval">MDCheckInterval</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdcontactemail">MDContactEmail</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mddrivemode">MDDriveMode</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdhttpproxy">MDHttpProxy</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdinitialdelay">MDInitialDelay</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdmatchnames">MDMatchNames</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdmember">MDMember</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdmembers">MDMembers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdmessagecmd">MDMessageCmd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdmuststaple">MDMustStaple</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdnotifycmd">MDNotifyCmd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdomain">MDomain</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdomainsetsection">&lt;MDomainSet&gt;</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdportmap">MDPortMap</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdprofile">MDProfile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewmode">MDRenewMode</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewviaari">MDRenewViaARI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdrenewwindow">MDRenewWindow</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdrequirehttps">MDRequireHttps</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdretrydelay">MDRetryDelay</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdretryfailover">MDRetryFailover</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdserverstatus">MDServerStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstapleothers">MDStapleOthers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstapling">MDStapling</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstoredir">MDStoreDir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdstorelocks">MDStoreLocks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mdwarnwindow">MDWarnWindow</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdactivationdelay">MDActivationDelay</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdbaseserver">MDBaseServer</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcacertificatefile">MDCACertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcachallenges">MDCAChallenges</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificateagreement">MDCertificateAgreement</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificateauthority">MDCertificateAuthority</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificatecheck">MDCertificateCheck</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificatefile">MDCertificateFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificatekeyfile">MDCertificateKeyFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificatemonitor">MDCertificateMonitor</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificateprotocol">MDCertificateProtocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcertificatestatus">MDCertificateStatus</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdchallengedns01">MDChallengeDns01</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdchallengedns01version">MDChallengeDns01Version</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcheckinterval">MDCheckInterval</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdcontactemail">MDContactEmail</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mddrivemode">MDDriveMode</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdinitialdelay">MDInitialDelay</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdmatchnames">MDMatchNames</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdmember">MDMember</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdmembers">MDMembers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdmessagecmd">MDMessageCmd</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdmuststaple">MDMustStaple</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdnotifycmd">MDNotifyCmd</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdomain">MDomain</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdomainsetsection">&lt;MDomainSet&gt;</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdportmap">MDPortMap</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdprivatekeys">MDPrivateKeys</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdprofile">MDProfile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdprofilemandatory">MDProfileMandatory</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdrenewmode">MDRenewMode</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdrenewviaari">MDRenewViaARI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdrenewwindow">MDRenewWindow</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdrequirehttps">MDRequireHttps</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdretrydelay">MDRetryDelay</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdretryfailover">MDRetryFailover</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdserverstatus">MDServerStatus</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstapleothers">MDStapleOthers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstapling">MDStapling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstaplingkeepresponse">MDStaplingKeepResponse</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstaplingrenewwindow">MDStaplingRenewWindow</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstoredir">MDStoreDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdstorelocks">MDStoreLocks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdwarnwindow">MDWarnWindow</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Report a bug</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a title="Permanent link" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long to delay activation of new certificates</td></tr>
@@ -351,7 +349,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a name="mdbaseserver" id="mdbaseserver">Directive</a> <a title="Permanent link" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if base server may be managed or only virtual hosts.</td></tr>
@@ -369,7 +367,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCACertificateFile" id="MDCACertificateFile">MDCACertificateFile</a> <a name="mdcacertificatefile" id="mdcacertificatefile">Directive</a> <a title="Permanent link" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File containing x509 trust anchors to verify ACME servers.</td></tr>
@@ -390,7 +388,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a name="mdcachallenges" id="mdcachallenges">Directive</a> <a title="Permanent link" href="#mdcachallenges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of ACME challenge used to prove domain ownership.</td></tr>
@@ -422,7 +420,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a name="mdcertificateagreement" id="mdcertificateagreement">Directive</a> <a title="Permanent link" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>You confirm that you accepted the Terms of Service of the Certificate
@@ -438,7 +436,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a> <a title="Permanent link" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL(s) of the ACME Certificate Authority to use.</td></tr>
@@ -472,7 +470,7 @@
 </div>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a title="Permanent link" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set name and URL pattern for a certificate monitoring site.</td></tr>
@@ -486,7 +484,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateFile" id="MDCertificateFile">MDCertificateFile</a> <a name="mdcertificatefile" id="mdcertificatefile">Directive</a> <a title="Permanent link" href="#mdcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a static certificate file for the MD.</td></tr>
@@ -530,7 +528,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateKeyFile" id="MDCertificateKeyFile">MDCertificateKeyFile</a> <a name="mdcertificatekeyfile" id="mdcertificatekeyfile">Directive</a> <a title="Permanent link" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a static private key for for the static cerrtificate.</td></tr>
@@ -549,7 +547,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateMonitor" id="MDCertificateMonitor">MDCertificateMonitor</a> <a name="mdcertificatemonitor" id="mdcertificatemonitor">Directive</a> <a title="Permanent link" href="#mdcertificatemonitor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The URL of a certificate log monitor.</td></tr>
@@ -576,7 +574,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a name="mdcertificateprotocol" id="mdcertificateprotocol">Directive</a> <a title="Permanent link" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The protocol to use with the Certificate Authority.</td></tr>
@@ -591,7 +589,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCertificateStatus" id="MDCertificateStatus">MDCertificateStatus</a> <a name="mdcertificatestatus" id="mdcertificatestatus">Directive</a> <a title="Permanent link" href="#mdcertificatestatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Exposes public certificate information in JSON.</td></tr>
@@ -617,7 +615,7 @@
 </div>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a title="Permanent link" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the command for setup/teardown of dns-01 challenges</td></tr>
@@ -646,7 +644,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a title="Permanent link" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the type of arguments to call MDChallengeDns01 with</td></tr>
@@ -665,7 +663,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a title="Permanent link" href="#mdcheckinterval" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how often certificates are checked</td></tr>
@@ -690,7 +688,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a name="mdcontactemail" id="mdcontactemail">Directive</a> <a title="Permanent link" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Email address used for account registration</td></tr>
@@ -710,7 +708,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a name="mddrivemode" id="mddrivemode">Directive</a> <a title="Permanent link" href="#mddrivemode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>former name of MDRenewMode.</td></tr>
@@ -725,7 +723,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a title="Permanent link" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the external account binding keyid and hmac values to use at CA</td></tr>
@@ -766,7 +764,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a name="mdhttpproxy" id="mdhttpproxy">Directive</a> <a title="Permanent link" href="#mdhttpproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a proxy for outgoing connections.</td></tr>
@@ -780,7 +778,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a name="mdinitialdelay" id="mdinitialdelay">Directive</a> <a title="Permanent link" href="#mdinitialdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long to delay the first certificate check.</td></tr>
@@ -797,7 +795,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a name="mdmatchnames" id="mdmatchnames">Directive</a> <a title="Permanent link" href="#mdmatchnames" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines how DNS names are matched to vhosts</td></tr>
@@ -826,7 +824,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDMember" id="MDMember">MDMember</a> <a name="mdmember" id="mdmember">Directive</a> <a title="Permanent link" href="#mdmember" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Additional hostname for the managed domain.</td></tr>
@@ -853,7 +851,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDMembers" id="MDMembers">MDMembers</a> <a name="mdmembers" id="mdmembers">Directive</a> <a title="Permanent link" href="#mdmembers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if the alias domain names are automatically added.</td></tr>
@@ -869,7 +867,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDMessageCmd" id="MDMessageCmd">MDMessageCmd</a> <a name="mdmessagecmd" id="mdmessagecmd">Directive</a> <a title="Permanent link" href="#mdmessagecmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Handle events for Manage Domains</td></tr>
@@ -939,7 +937,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a name="mdmuststaple" id="mdmuststaple">Directive</a> <a title="Permanent link" href="#mdmuststaple" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if new certificates carry the OCSP Must Staple flag.</td></tr>
@@ -957,7 +955,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a name="mdnotifycmd" id="mdnotifycmd">Directive</a> <a title="Permanent link" href="#mdnotifycmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Run a program when a Managed Domain is ready.</td></tr>
@@ -974,7 +972,7 @@
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDomain" id="MDomain">MDomain</a> <a name="mdomain" id="mdomain">Directive</a> <a title="Permanent link" href="#mdomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define list of domain names that belong to one group.</td></tr>
@@ -1056,7 +1054,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a name="mdomainsetsection" id="mdomainsetsection">Directive</a> <a title="Permanent link" href="#mdomainsetsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Container for directives applied to the same managed domains.</td></tr>
@@ -1088,7 +1086,7 @@ MDomain example2.org auto
 </div>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a name="mdportmap" id="mdportmap">Directive</a> <a title="Permanent link" href="#mdportmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map external to internal ports for domain ownership verification.</td></tr>
@@ -1131,7 +1129,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a name="mdprivatekeys" id="mdprivatekeys">Directive</a> <a title="Permanent link" href="#mdprivatekeys" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set type and size of the private keys generated.</td></tr>
@@ -1171,7 +1169,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDProfile" id="MDProfile">MDProfile</a> <a name="mdprofile" id="mdprofile">Directive</a> <a title="Permanent link" href="#mdprofile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use a specific ACME profile from the CA</td></tr>
@@ -1207,7 +1205,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a> <a name="mdprofilemandatory" id="mdprofilemandatory">Directive</a> <a title="Permanent link" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if an MDProfile is mandatory.</td></tr>
@@ -1229,7 +1227,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRenewMode" id="MDRenewMode">MDRenewMode</a> <a name="mdrenewmode" id="mdrenewmode">Directive</a> <a title="Permanent link" href="#mdrenewmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls if certificates shall be renewed.</td></tr>
@@ -1261,7 +1259,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a name="mdrenewviaari" id="mdrenewviaari">Directive</a> <a title="Permanent link" href="#mdrenewviaari" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>usage of the ACME ARI extension (rfc9773).</td></tr>
@@ -1283,7 +1281,7 @@ MDomain example2.org auto
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a name="mdrenewwindow" id="mdrenewwindow">Directive</a> <a title="Permanent link" href="#mdrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when a certificate will be renewed.</td></tr>
@@ -1317,7 +1315,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a name="mdrequirehttps" id="mdrequirehttps">Directive</a> <a title="Permanent link" href="#mdrequirehttps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirects http: traffic to https: for Managed Domains.</td></tr>
@@ -1373,7 +1371,7 @@ MDRenewWindow 10%</pre>
 </div>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a name="mdretrydelay" id="mdretrydelay">Directive</a> <a title="Permanent link" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time length for first retry, doubled on every consecutive error.</td></tr>
@@ -1399,7 +1397,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a name="mdretryfailover" id="mdretryfailover">Directive</a> <a title="Permanent link" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The number of errors before a failover to another CA is triggered</td></tr>
@@ -1418,7 +1416,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDServerStatus" id="MDServerStatus">MDServerStatus</a> <a name="mdserverstatus" id="mdserverstatus">Directive</a> <a title="Permanent link" href="#mdserverstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if Managed Domain information is added to server-status.</td></tr>
@@ -1437,7 +1435,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStapleOthers" id="MDStapleOthers">MDStapleOthers</a> <a name="mdstapleothers" id="mdstapleothers">Directive</a> <a title="Permanent link" href="#mdstapleothers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable stapling for certificates not managed by mod_md.</td></tr>
@@ -1455,7 +1453,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStapling" id="MDStapling">MDStapling</a> <a name="mdstapling" id="mdstapling">Directive</a> <a title="Permanent link" href="#mdstapling" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable stapling for all or a particular MDomain.</td></tr>
@@ -1485,7 +1483,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStaplingKeepResponse" id="MDStaplingKeepResponse">MDStaplingKeepResponse</a> <a name="mdstaplingkeepresponse" id="mdstaplingkeepresponse">Directive</a> <a title="Permanent link" href="#mdstaplingkeepresponse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls when old responses should be removed.</td></tr>
@@ -1505,7 +1503,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStaplingRenewWindow" id="MDStaplingRenewWindow">MDStaplingRenewWindow</a> <a name="mdstaplingrenewwindow" id="mdstaplingrenewwindow">Directive</a> <a title="Permanent link" href="#mdstaplingrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control when the stapling responses will be renewed.</td></tr>
@@ -1545,7 +1543,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a name="mdstoredir" id="mdstoredir">Directive</a> <a title="Permanent link" href="#mdstoredir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Path on the local file system to store the Managed Domains data.</td></tr>
@@ -1567,7 +1565,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a name="mdstorelocks" id="mdstorelocks">Directive</a> <a title="Permanent link" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure locking of store for updates</td></tr>
@@ -1601,7 +1599,7 @@ MDRenewWindow 10%</pre>
             </p>
         
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2><a name="MDWarnWindow" id="MDWarnWindow">MDWarnWindow</a> <a name="mdwarnwindow" id="mdwarnwindow">Directive</a> <a title="Permanent link" href="#mdwarnwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the time window when you want to be warned about an expiring certificate.</td></tr>
@@ -1628,9 +1626,9 @@ MDRenewWindow 10%</pre>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_md.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_md.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_md.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
