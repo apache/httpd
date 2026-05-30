@@ -26,7 +26,7 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!--                                                                      -->
 <!-- Please, don't hard-code output strings! Use the language             -->
@@ -106,8 +106,6 @@
 <xsl:template name="head">
 <head>
     &lf;
-    <meta http-equiv="Content-Type"
-          content="text/html; charset={$output-encoding}" />&lf;
     <meta name="viewport" content="width=device-width, initial-scale=1" />&lf;
     <xsl:if test="not($is-chm or $is-zip)">
         <xsl:comment>

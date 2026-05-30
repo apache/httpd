@@ -22,14 +22,14 @@
 ]>
 <xsl:stylesheet version="1.0"
               xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                  xmlns="http://www.w3.org/1999/xhtml">
+                  xmlns="">
 
 <!-- ==================================================================== -->
 <!-- <faq>                                                                -->
 <!-- Process an entire document into an HTML page                         -->
 <!-- ==================================================================== -->
 <xsl:template match="faq">
-<html xml:lang="{$doclang}" lang="{$doclang}">
+<html lang="{$doclang}">
     <xsl:call-template name="head"/>&lf;
 
     <body id="manual-page">
