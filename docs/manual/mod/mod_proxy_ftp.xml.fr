@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1838314:1933683 (outdated) -->
+<!-- English Revision: 1933683 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -81,12 +81,10 @@
       mode ASCII).</p>
     </section> <!-- /type -->
 
-    <section id="ftpnonget"><title>Comment puis-je effectuer un
-    chargement FTP ?</title>
-    <p>Actuellement, seule la méthode GET est supportée pour FTP dans
-    <module>mod_proxy</module>. Vous pouvez par contre utiliser le chargement HTTP (POST
-    or PUT) via un mandataire Apache.</p>
-    </section>
+    <section id="ftpnonget"><title>Comment puis-je effectuer un chargement FTP
+    ?</title> <p>Actuellement, seule la méthode GET est supportée pour FTP dans
+    <module>mod_proxy</module>. Vous pouvez par contre utiliser le chargement
+    HTTP (POST or PUT) via un mandataire Apache.</p> </section>
 
     <section id="percent2fhck"><title>Comment puis-je accéder par FTP à
     des fichiers situés en dehors de mon répertoire home ?</title>
@@ -134,6 +132,15 @@
       <example>
         ftp://<var>nom-utilisateur</var>@<var>serveur</var>/mon-fichier
       </example>
+
+      <note><title>HttpProtocolOptions</title>
+        <p>Par défaut, la directive <directive
+	module="core">HttpProtocolOptions</directive> est définie à
+	<code>Strict</code>, ce qui a pour effet de rejeter les URLs contenant
+	des informations sur l’utilisateur (nom ou mot de passe), en accord avec
+	la RFC 7230. Pour utiliser des données d’authentification dans les URLs
+	FTP, vous devez spécifier <code>HttpProtocolOptions Unsafe</code>.</p>
+      </note>
 
       <p>Si le serveur FTP demande un mot de passe pour ce nom
       d'utilisateur (ce qu'il est censé faire), Apache va renvoyer au

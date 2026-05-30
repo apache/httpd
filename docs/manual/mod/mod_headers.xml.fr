@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1844475:1933740 (outdated) -->
+<!-- English Revision: 1933740 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,7 +47,7 @@ HTTP</description>
     <p>La chronologie du traitement est importante et est affectée par
     l'ordre d'apparition des directives dans le fichier de configuration
     et par leur placement dans les <a
-    href="../sections.html#mergin">sections de configuration</a>. Ainsi,
+    href="../sections.html#merging">sections de configuration</a>. Ainsi,
     ces deux directives ont un effet différent si leur ordre est inversé
     :</p>
 
@@ -451,7 +451,10 @@ Header always set X-Foo "baz"
     nom. Lorsqu'une nouvelle valeur est ainsi ajoutée, elle est séparée
     de celles qui sont déjà présentes par une virgule. Il s'agit de la
     méthode HTTP standard permettant d'affecter plusieurs valeurs à un
-    en-tête.</dd>
+    en-tête. Notez que l’en-tête <code>Set-Cookie</code> est une exception : la
+    <rfc>6265</rfc> préconise plusieurs en-têtes <code>Set-Cookie</code> au lieu
+    de plusieurs valeurs séparées par des virgules. Utilisez <code>add</code> au
+    lieu de <code>append</code> pour <code>Set-Cookie</code>.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Les en-têtes de la requête possédant le nom spécifié sont
