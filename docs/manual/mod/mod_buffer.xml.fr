@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1330964:1933747 (outdated) -->
+<!-- English Revision: 1933747 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
- contributor license agreements.  See the NOTICE file distributed with
+contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
@@ -83,8 +83,7 @@ d'Apache</compatibility>
 <description>Taille maximale en octets du filtre par tampon</description>
 <syntax>BufferSize entier</syntax>
 <default>BufferSize 131072</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
+<contextlist>
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>

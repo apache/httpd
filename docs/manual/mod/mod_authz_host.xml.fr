@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1903838:1933687 (outdated) -->
+<!-- English Revision: 1933687 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -57,6 +57,8 @@ de la version 2.4.19 du serveur HTTP Apache</compatibility>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></seealso>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="mod_authz_core.html#authzresults">États des résultats
+d’autorisation</a></seealso>
 
 <section id="requiredirectives"><title>Les directives Require</title>
 

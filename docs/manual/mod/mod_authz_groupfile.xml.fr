@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1744983:1933687 (outdated) -->
+<!-- English Revision: 1933687 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,6 +39,8 @@ fonction de leur appartenance à un groupe spécifié. Le module
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="mod_authz_core.html#authzresults">États des résultats
+d’autorisation</a></seealso>
 
 <section id="requiredirectives"><title>Les directives Require</title>
 

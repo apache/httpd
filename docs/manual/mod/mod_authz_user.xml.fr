@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1587032:1933687 (outdated) -->
+<!-- English Revision: 1933687 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -40,6 +40,8 @@
     utilisateurs qui ont été authentifiés avec succès.</p>
 </summary>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="mod_authz_core.html#authzresults">États des résultats
+d’autorisation</a></seealso>
 
 <section id="requiredirectives"><title>The Require Directives</title>
 
