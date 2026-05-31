@@ -52,11 +52,11 @@
     <p>Au démarrage de httpd, un port et une adresse lui sont associés sur
     l'hôte local et le serveur se met en attente de l'arrivée d'une requête.
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
-    Cependant, on peut lui préciser des ports et des adresses spécifiques à
-    écouter, ou une combinaison des deux. Tout ceci est souvent associé avec la
-    fonctionnalité des <a href="vhosts/">serveurs virtuels</a> qui détermine la
-    manière dont <code>httpd</code> répond aux différents ports, noms d'hôtes et
-    adresses IP.</p>
+    Cependant, il est possible de lui préciser des ports et des adresses
+    spécifiques à écouter, ou une combinaison des deux. Tout ceci est souvent
+    associé avec la fonctionnalité des <a href="vhosts/">serveurs virtuels</a>
+    qui détermine la manière dont <code>httpd</code> répond aux différents
+    ports, noms d'hôtes et adresses IP.</p>
 
     <p>La directive <directive module="mpm_common">Listen</directive> permet
     d'indiquer au serveur qu'il ne doit accepter des requêtes que sur le(s)
