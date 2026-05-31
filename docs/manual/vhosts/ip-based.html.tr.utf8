@@ -1,141 +1,139 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>IP'ye Dayalı Sanal Konak Desteği - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>IP'ye Dayalı Sanal Konak Desteği - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>IP'ye Dayalı Sanal Konak Desteği</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>IP'ye Dayalı Sanal Konak Desteği</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#explanation">IP'ye dayalı sanal konak desteği nedir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache nasıl ayarlanır?</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multiple">Çok sayıda sürecin yapılandırılması</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#single">Sanal konaklar tek bir sürecin yapılandırılması</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#explanation">IP'ye dayalı sanal konak desteği nedir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requirements">Sistem gereksinimleri</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#howto">Apache nasıl ayarlanır?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multiple">&Ccedil;ok sayıda s&uuml;recin yapılandırılması</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#single">Sanal konaklar tek bir s&uuml;recin yapılandırılması</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li>
 <a href="name-based.html">İsme Dayalı Sanal Konak Desteği</a>
 </li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="explanation" id="explanation">IP'ye dayalı sanal konak desteği nedir</a> <a title="Permanent link" href="#explanation" class="permalink">&para;</a></h2>
+<h2 id="explanation">IP'ye dayalı sanal konak desteği nedir <a title="Permanent link" href="#explanation" class="permalink">&para;</a></h2>
     <p>IP'ye dayalı sanal konak desteği, bir isteğin alındığı IP adresi ve
-      porta bağlı olarak farklı yönergeleri uygulamak için bir yoldur. Özetle,
-      farklı siteleri farklı portlardan ve arayüzlerden sunmakta
+      porta bağlı olarak farklı y&ouml;nergeleri uygulamak i&ccedil;in bir yoldur. &Ouml;zetle,
+      farklı siteleri farklı portlardan ve aray&uuml;zlerden sunmakta
       kullanılır.</p>
 
-     <p>Çoğu durumda, <a href="name-based.html">isme dayalı sanal konaklar</a>
-       birçok sanal konağın tek bir IP adresi/port çiftini paylaşmasını
-       sağladığından daha kullanışlıdır. Neyi kullanacağınıza karar vermek için
+     <p>&Ccedil;oğu durumda, <a href="name-based.html">isme dayalı sanal konaklar</a>
+       bir&ccedil;ok sanal konağın tek bir IP adresi/port &ccedil;iftini paylaşmasını
+       sağladığından daha kullanışlıdır. Neyi kullanacağınıza karar vermek i&ccedil;in
        <a href="name-based.html#namevip">İsme dayalı ve IP'ye dayalı Sanal
-       Konaklar</a> bölümüne bakınız.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+       Konaklar</a> b&ouml;l&uuml;m&uuml;ne bakınız.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Sistem gereksinimleri</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Sistem gereksinimleri <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP'ye dayalı</cite> deyince, sunucunun <strong>her IP'ye dayalı
-      sanal konak için ayrı bir IP adresi/port çifti</strong>ne sahip olduğunu
-      anlıyoruz. Bunun olması için, makine ya çok sayıda ağ bağlantısına
-      sahiptir ya da makinede, günümüzde çoğu işletim sistemi tarafından
-      desteklenen sanal arabirimler ve/veya çok sayıda port kullanılıyordur.
-      (Sanal arabirimlerle ilgili ayrıntılar için sistem belgelerinize bakınız;
-      bu konu genellikle IP rumuzları (ip aliases) olarak geçer ve ayarlamak
-      için genellikle "ifconfig" komutu kullanılır.)</p>
+      sanal konak i&ccedil;in ayrı bir IP adresi/port &ccedil;ifti</strong>ne sahip olduğunu
+      anlıyoruz. Bunun olması i&ccedil;in, makine ya &ccedil;ok sayıda ağ bağlantısına
+      sahiptir ya da makinede, g&uuml;n&uuml;m&uuml;zde &ccedil;oğu işletim sistemi tarafından
+      desteklenen sanal arabirimler ve/veya &ccedil;ok sayıda port kullanılıyordur.
+      (Sanal arabirimlerle ilgili ayrıntılar i&ccedil;in sistem belgelerinize bakınız;
+      bu konu genellikle IP rumuzları (ip aliases) olarak ge&ccedil;er ve ayarlamak
+      i&ccedil;in genellikle "ifconfig" komutu kullanılır.)</p>
 
-    <p>Apache HTTP Sunucusu terminolojisinde, tek bir IP adresinin çok sayıda
+    <p>Apache HTTP Sunucusu terminolojisinde, tek bir IP adresinin &ccedil;ok sayıda
       TCP portuyla kullanımı IP'ye dayalı sanal konak desteği olarak
       bilinir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">Apache nasıl ayarlanır?</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">Apache nasıl ayarlanır? <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
-    <p>Çok sayıda konağı desteklemek üzere Apache iki şekilde
-      yapılandırılabilir. Ya her konak için ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code>
-      süreci çalıştırırsınız ya da tüm sanal konakları destekleyen tek bir
-      süreciniz olur.</p>
+    <p>&Ccedil;ok sayıda konağı desteklemek &uuml;zere Apache iki şekilde
+      yapılandırılabilir. Ya her konak i&ccedil;in ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code>
+      s&uuml;reci &ccedil;alıştırırsınız ya da t&uuml;m sanal konakları destekleyen tek bir
+      s&uuml;reciniz olur.</p>
 
-    <p>Çok sayıda süreç kullanıyorsanız:</p>
+    <p>&Ccedil;ok sayıda s&uuml;re&ccedil; kullanıyorsanız:</p>
 
     <ul>
-      <li>Güvenli bölgeler oluşturmanız gerekiyordur. Örneğin, şirket2'deki hiç
-        kimse dosya sistemi üzerinden şirket1'e ait verileri okuyamasın, sadece
+      <li>G&uuml;venli b&ouml;lgeler oluşturmanız gerekiyordur. &Ouml;rneğin, şirket2'deki hi&ccedil;
+        kimse dosya sistemi &uuml;zerinden şirket1'e ait verileri okuyamasın, sadece
         herkes gibi tarayıcı kullanarak okuyabilsin istenebilir.  Bu durumda,
         <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>,
         <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>,
         <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> ve
-        <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> yönergeleri farklı
-        değerlerle yapılandırılmış iki ayrı süreç çalıştırmanız gerekir.</li>
+        <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> y&ouml;nergeleri farklı
+        değerlerle yapılandırılmış iki ayrı s&uuml;re&ccedil; &ccedil;alıştırmanız gerekir.</li>
 
-      <li>Makine üzerindeki her IP adresini dinlemek için gereken dosya tanıtıcı
+      <li>Makine &uuml;zerindeki her IP adresini dinlemek i&ccedil;in gereken dosya tanıtıcı
         ve bellek miktarını makul bir seviyede tutabilirsiniz. Bu sadece belli
-        adresleri dinleyerek veya çok sayıda adresle eşleşen adres kalıpları
-        kullanarak mümükün olabilir. Zaten, bir sebeple belli bir adresi dinleme
-        ihtiyacı duyarsanız, diğer tüm adresleri de ayrı ayrı dinlemeniz
+        adresleri dinleyerek veya &ccedil;ok sayıda adresle eşleşen adres kalıpları
+        kullanarak m&uuml;m&uuml;k&uuml;n olabilir. Zaten, bir sebeple belli bir adresi dinleme
+        ihtiyacı duyarsanız, diğer t&uuml;m adresleri de ayrı ayrı dinlemeniz
         gerekir. (Bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> programı N-1 adresi dinlerken
         diğerleri kalan adresleri dinleyebilir.)</li>
     </ul>
 
-    <p>Tek bir süreç kullanıyorsanız:</p>
+    <p>Tek bir s&uuml;re&ccedil; kullanıyorsanız:</p>
 
     <ul>
       <li><code class="program"><a href="../programs/httpd.html">httpd</a></code> yapılandırmasının sanal konaklar arasında
         paylaşılmasına izin veriliyor demektir.</li>
 
-      <li>Makine çok büyük miktarda isteği karşılayabilir ve ayrı ayrı
-        süreçlerin çalışmasından kaynaklanan önemli başarım kayıpları
+      <li>Makine &ccedil;ok b&uuml;y&uuml;k miktarda isteği karşılayabilir ve ayrı ayrı
+        s&uuml;re&ccedil;lerin &ccedil;alışmasından kaynaklanan &ouml;nemli başarım kayıpları
         yaşanmaz.</li>
     </ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">Çok sayıda sürecin yapılandırılması</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
+<h2 id="multiple">&Ccedil;ok sayıda s&uuml;recin yapılandırılması <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
-    <p>Her sanal konak için ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> yapılandırması
-      oluşturulur. Her yapılandırmada, o süreç tarafından sunulacak IP adresi
-      (veya sanal konak) için <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
-      yönergesi kullanılır. Örnek:</p>
+    <p>Her sanal konak i&ccedil;in ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> yapılandırması
+      oluşturulur. Her yapılandırmada, o s&uuml;re&ccedil; tarafından sunulacak IP adresi
+      (veya sanal konak) i&ccedil;in <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
+      y&ouml;nergesi kullanılır. &Ouml;rnek:</p>
 
     <pre class="prettyprint lang-config">Listen 192.0.2.100:80</pre>
 
 
-    <p>Burada konak ismi yerine IP adresi kullanmanız önerilir (ayrıntılar için
+    <p>Burada konak ismi yerine IP adresi kullanmanız &ouml;nerilir (ayrıntılar i&ccedil;in
       <a href="../dns-caveats.html">DNS ile ilgili konular</a> belgesine
       bakınız).</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="single" id="single">Sanal konaklar tek bir sürecin yapılandırılması</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
+<h2 id="single">Sanal konaklar tek bir s&uuml;recin yapılandırılması <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
-    <p>Bu durum için, ana sunucu ve sanal konakların tümüne gelen istekler tek
-      bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> süreci tarafından karşılanır. Yapılandırma
-      dosyasında, her sanal konak için, farklı değerlere sahip <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>, <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>ve<code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>
-      veya <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> yönergeleri
-      içeren ayrı birer <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümü
-      oluşturulur. Örnek:</p>
+    <p>Bu durum i&ccedil;in, ana sunucu ve sanal konakların t&uuml;m&uuml;ne gelen istekler tek
+      bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> s&uuml;reci tarafından karşılanır. Yapılandırma
+      dosyasında, her sanal konak i&ccedil;in, farklı değerlere sahip <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>, <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>ve<code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code>
+      veya <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> y&ouml;nergeleri
+      i&ccedil;eren ayrı birer <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> b&ouml;l&uuml;m&uuml;
+      oluşturulur. &Ouml;rnek:</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.10:80&gt;
     ServerAdmin bilgi@example.com
@@ -154,41 +152,41 @@
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine
-       IP adresi kullanmanız önerilir (ayrıntılar için
+    <p>&lt;VirtualHost&gt; y&ouml;nergesinde konak ismi yerine
+       IP adresi kullanmanız &ouml;nerilir (ayrıntılar i&ccedil;in
        <a href="../dns-caveats.html">DNS ile ilgili konular</a>
        belgesine bakınız).</p>
 
     <p>Belli bir IP adresi veya port kullanımı bunların joker eşdeğerlerine
-      göre daha yüksek öncelik sağlar ve eşleşen bir sanal konak da genel
-      sunucuya göre öncelik alır.</p>
+      g&ouml;re daha y&uuml;ksek &ouml;ncelik sağlar ve eşleşen bir sanal konak da genel
+      sunucuya g&ouml;re &ouml;ncelik alır.</p>
 
-    <p>Süreç oluşturmayı denetleyen yönergeler ve bir kaç başka yönerge dışında
-      hemen hemen tüm yapılandırma yönergeleri <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümleri içinde kullanılabilir.
-      Bir yönergenin <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
-      bölümlerinde kullanılıp kullanılmayacağını öğrenmek için <a href="../mod/quickreference.html">yönerge dizinini</a> kullanarak yönergenin
+    <p>S&uuml;re&ccedil; oluşturmayı denetleyen y&ouml;nergeler ve bir ka&ccedil; başka y&ouml;nerge dışında
+      hemen hemen t&uuml;m yapılandırma y&ouml;nergeleri <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> b&ouml;l&uuml;mleri i&ccedil;inde kullanılabilir.
+      Bir y&ouml;nergenin <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
+      b&ouml;l&uuml;mlerinde kullanılıp kullanılmayacağını &ouml;ğrenmek i&ccedil;in <a href="../mod/quickreference.html">y&ouml;nerge dizinini</a> kullanarak y&ouml;nergenin
       <a href="../mod/directive-dict.html#Context">Bağlam</a>'ına bakınız.</p>
 
     <p><a href="../suexec.html">suEXEC sarmalayıcısı</a> kullanıldığı takdirde
-      <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesi de
-      bir <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümü içinde
+      <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> y&ouml;nergesi de
+      bir <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> b&ouml;l&uuml;m&uuml; i&ccedil;inde
       kullanılabilir.</p>
 
-    <p><em>GÜVENLİK:</em>Günlük dosyalarının yazılacağı yeri belirlerken,
+    <p><em>G&Uuml;VENLİK:</em>G&uuml;nl&uuml;k dosyalarının yazılacağı yeri belirlerken,
       Apache'yi başlatan kullanıcıdan başka kimsenin yazamayacağı bir yerin
-      seçilmesi bazı güvenlik risklerini ortadan kaldırmak bakımından
-      önemlidir. Ayrıntılar için <a href="../misc/security_tips.html">güvenlik
-      ipuçları</a> belgesine bakınız.</p>
+      se&ccedil;ilmesi bazı g&uuml;venlik risklerini ortadan kaldırmak bakımından
+      &ouml;nemlidir. Ayrıntılar i&ccedil;in <a href="../misc/security_tips.html">g&uuml;venlik
+      ipu&ccedil;ları</a> belgesine bakınız.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

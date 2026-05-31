@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache mod_rewrite Introduction - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Introduction</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
@@ -36,18 +34,18 @@ describes the basic concepts necessary for use of
 but this doc should help the beginner get their feet wet.
 </p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#regex">Regular Expressions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule Basics</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flags">Rewrite Flags</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite Conditions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Security Considerations</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#regex">Regular Expressions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriterule">RewriteRule Basics</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flags">Rewrite Flags</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritecond">Rewrite Conditions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap">Rewrite maps</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#htaccess">.htaccess files</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">Security Considerations</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>The Apache module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a very powerful and
 sophisticated module which provides a way to do URL manipulations. With
 it, you can do nearly all types of URL rewriting that you may need. It
@@ -72,9 +70,9 @@ can give an overwhelming amount of information, it is indispensable in
 debugging problems with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> configuration, since
 it will tell you exactly how each rule is processed.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">Regular Expressions</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">Regular Expressions <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> uses the <a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">Perl Compatible
 Regular Expressions</a> vocabulary, via the PCRE2 library. In this document, we do not attempt
@@ -91,7 +89,7 @@ to get you started, without being overwhelming, in the hope that
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s will be scientific
 formulae, rather than magical incantations.</p>
 
-<h3><a name="regexvocab" id="regexvocab">Regex vocabulary</a></h3>
+<h3 id="regexvocab">Regex vocabulary</h3>
 
 <p>The following are the minimal building blocks you will need, in order
 to write regular expressions and <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s. They certainly do not
@@ -185,7 +183,7 @@ pattern does not match.</p>
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">Regex Back-Reference Availability</a></h3>
+<h3 id="InternalBackRefs">Regex Back-Reference Availability</h3>
 
       <p>One important thing here has to be remembered: Whenever you
       use parentheses in <em>Pattern</em> or in one of the
@@ -211,17 +209,17 @@ pattern does not match.</p>
       </p>
 
 <p class="figure">
-      <img src="../images/rewrite_backreferences.png" alt="Flow of RewriteRule and RewriteCond matching" /><br />
-      <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
+      <img src="../images/rewrite_backreferences.png" alt="Flow of RewriteRule and RewriteCond matching"><br>
+      <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br>
       In this example, a request for <code>/test/1234</code> to host <code>admin.example.com</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>, provided that <code>%{DOCUMENT_ROOT}/test</code> is not an existing file.
 </p>
       <p>See also <a href="tech.html#InternalRuleset">Technical Details</a>
       for a diagram showing backreference flow with multiple conditions.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule Basics</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">RewriteRule Basics <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>A <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consists
 of three arguments separated by spaces. The arguments are</p>
 <ol>
@@ -233,12 +231,12 @@ of three arguments separated by spaces. The arguments are</p>
 <p>The <var>Pattern</var> is a <a href="#regex">regular expression</a>.
 In server or virtualhost context, it is matched against the
 %-decoded <a href="../directive-dict.html#Syntax">URL-path</a>
-of the incoming request — the part after the hostname and port,
+of the incoming request &mdash; the part after the hostname and port,
 and not including the query string (e.g., <code>/app/index.html</code>).
 In <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>,
 the pattern is matched against the request's path relative to the
 directory for which the rule is defined (with the directory prefix
-stripped — see <a href="htaccess.html#path-stripping">Per-directory
+stripped &mdash; see <a href="htaccess.html#path-stripping">Per-directory
 Rewrites</a> for details).
 </p>
 
@@ -246,7 +244,7 @@ Rewrites</a> for details).
 matched against the substituted value.</p>
 
 <p>The <var>Pattern</var> is matched only against the URL-path
-— not the hostname, port, or query string. To match against
+&mdash; not the hostname, port, or query string. To match against
 those, use a
 <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> with the
 <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
@@ -259,7 +257,7 @@ content, handle that in your application logic or use a module such
 as <code class="module"><a href="../mod/mod_request.html">mod_request</a></code> paired with a custom filter.</div>
 
 <p class="figure">
-      <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
+      <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive"><br>
       <dfn>Figure 2:</dfn> Syntax of the RewriteRule directive.
 </p>
 
@@ -313,9 +311,9 @@ variables <code>$1</code>, <code>$2</code>, <code>$3</code>, and so
 on.</p>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Rewrite Flags</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">Rewrite Flags <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p>The behavior of a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can be modified by the
 application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
@@ -327,9 +325,9 @@ application of the <code>[NC]</code> flag:
 <p>For more details on the available flags, their meanings, and
 examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Rewrite Conditions</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">Rewrite Conditions <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>One or more <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 directives can be used to restrict the types of requests that will be
 subject to the
@@ -340,7 +338,7 @@ expression</a> that must match the variable, and a third optional
 argument is a list of flags that modify how the match is evaluated.</p>
 
 <p class="figure">
-      <img src="../images/syntax_rewritecond.png" alt="Syntax of the RewriteCond directive" /><br />
+      <img src="../images/syntax_rewritecond.png" alt="Syntax of the RewriteCond directive"><br>
       <dfn>Figure 3:</dfn> Syntax of the RewriteCond directive
 </p>
 
@@ -379,40 +377,40 @@ and <code>$1</code> would contain <code>foo/bar</code>.</p>
 
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Rewrite maps</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">Rewrite maps <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
 provides a way to call an external function, so to speak, to do your
 rewriting for you. This is discussed in greater detail in the <a href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess files</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess files <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>It is possible to use rewrite rules in
 <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context
 (<a href="../howto/htaccess.html"><code>.htaccess</code> files</a> and
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> blocks),
-but the rules behave differently there — in particular, the directory
+but the rules behave differently there &mdash; in particular, the directory
 prefix is stripped from the URL before matching. See the
 <a href="htaccess.html#path-stripping">Per-directory Rewrites</a>
 document for full details. Note that
 <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> and
 <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> blocks
-also trigger per-directory behavior — see
+also trigger per-directory behavior &mdash; see
 <a href="htaccess.html#context-restrictions">Which contexts support rewrite rules?</a>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Security Considerations</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Security Considerations <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is a powerful URL manipulation tool, and
 with that power comes the potential for security mistakes. This section
 highlights the most common security pitfalls to watch for when writing
 rewrite rules.</p>
 
-<h3><a name="security-redirect" id="security-redirect">Open Redirects</a></h3>
+<h3 id="security-redirect">Open Redirects</h3>
 
 <p>If a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 constructs a redirect URL using unvalidated user input, an attacker
@@ -435,7 +433,7 @@ allowing a full URL from user input.</p>
 
 
 
-<h3><a name="security-ssrf" id="security-ssrf">Server-Side Request Forgery (SSRF)</a></h3>
+<h3 id="security-ssrf">Server-Side Request Forgery (SSRF)</h3>
 
 <p>When using the <a href="flags.html#flag_p">[P] (proxy) flag</a>,
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> causes the server to make an HTTP request
@@ -458,7 +456,7 @@ component only.</p>
 
 
 
-<h3><a name="security-path" id="security-path">Path Traversal</a></h3>
+<h3 id="security-path">Path Traversal</h3>
 
 <p>Rewrite rules that map user-supplied path components directly to
 the filesystem can allow path traversal attacks if the input is not
@@ -482,10 +480,10 @@ restrictions) as defense in depth.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

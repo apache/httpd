@@ -1,43 +1,41 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_headers - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_headers</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_headers.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Customization of HTTP request and response
 headers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_headers.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>headers_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_headers.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides directives to control and modify HTTP
@@ -46,18 +44,18 @@ headers</td></tr>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#order">Order of Processing</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#early">Early and Late Processing</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">Order of Processing</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#early">Early and Late Processing</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Examples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#header">Header</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requestheader">RequestHeader</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#header">Header</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requestheader">RequestHeader</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_headers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_headers">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Order of Processing</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Order of Processing <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
     occur almost anywhere within the server configuration, and can be
@@ -73,9 +71,9 @@ RequestHeader unset MirrorID</pre>
 
     <p>This way round, the <code>MirrorID</code> header is not set. If
     reversed, the MirrorID header is set to "mirror 12".</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="early" id="early">Early and Late Processing</a> <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
+<h2 id="early">Early and Late Processing <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
     in the request.  The normal mode is late, when <em>Request</em> Headers are
     set immediately before running the content generator and <em>Response</em>
@@ -95,9 +93,9 @@ RequestHeader unset MirrorID</pre>
     on a request path, so they will fail in contexts such as
     <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> or
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
@@ -207,8 +205,8 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
 
     </ol>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a> <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="header"><span id="Header">Header</span> Directive <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
@@ -363,7 +361,7 @@ Header always set X-Foo "baz"</pre>
     <dd>The value of the named response <var>header</var> is copied into an
     internal note whose name is given by <var>value</var>.  This is useful
     if a header sent by a CGI or proxied resource is configured to be unset
-    but should also be logged.<br />
+    but should also be logged.<br>
     Available in 2.4.7 and later.</dd>
 
     </dl>
@@ -404,17 +402,17 @@ Header always set X-Foo "baz"</pre>
         designed to expose the values obtained by <code>getloadavg()</code>
         and this represents the current load average, the 5 minute average, and
         the 15 minute average. The value is preceded by <code>l=</code> with each
-        average separated by <code>/</code>.<br />
+        average separated by <code>/</code>.<br>
         Available in 2.4.4 and later.
         </td></tr>
 <tr><td><code>%i</code></td>
         <td>The current idle percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>i=</code>.<br />
+        processes and threads. The value is preceded by <code>i=</code>.<br>
         Available in 2.4.4 and later.
         </td></tr>
 <tr class="odd"><td><code>%b</code></td>
         <td>The current busy percentage of httpd (0 to 100) based on available
-        processes and threads. The value is preceded by <code>b=</code>.<br />
+        processes and threads. The value is preceded by <code>b=</code>.<br>
         Available in 2.4.4 and later.
         </td></tr>
 <tr><td><code>%{VARNAME}e</code></td>
@@ -485,8 +483,8 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a> <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requestheader"><span id="RequestHeader">RequestHeader</span> Directive <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
@@ -549,7 +547,7 @@ available in 2.4.10 and later</td></tr>
 
     <dt><code>setifempty</code></dt>
     <dd>The request header is set, but only if there is no previous header
-    with this name.<br />
+    with this name.<br>
     Available in 2.4.7 and later.</dd>
 
     <dt><code>unset</code></dt>
@@ -597,12 +595,12 @@ available in 2.4.10 and later</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_headers.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_headers.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_headers.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

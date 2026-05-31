@@ -1,127 +1,125 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_cgi - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_cgi</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cgi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cgi.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Exécution des scripts CGI</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ex&eacute;cution des scripts CGI</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cgi_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_cgi.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>cgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_cgi.c</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Tout fichier pris en compte par le gestionnaire
-    <code>cgi-script</code> sera traité en tant que script CGI et
-    exécuté par le serveur, sa sortie étant renvoyée au client. Les
-    fichiers sont associés à ce gestionnaire soit parce qu'ils possèdent
-    un nom contenant une extension définie par la directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>, soit parce qu'ils se
-    situent dans un répertoire défini par une directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>.</p>
+    <code>cgi-script</code> sera trait&eacute; en tant que script CGI et
+    ex&eacute;cut&eacute; par le serveur, sa sortie &eacute;tant renvoy&eacute;e au client. Les
+    fichiers sont associ&eacute;s &agrave; ce gestionnaire soit parce qu'ils poss&egrave;dent
+    un nom contenant une extension d&eacute;finie par la directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code>, soit parce qu'ils se
+    situent dans un r&eacute;pertoire d&eacute;fini par une directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>.</p>
 
-    <p>Comme introduction à l'utilisation des scripts CGI avec Apache,
+    <p>Comme introduction &agrave; l'utilisation des scripts CGI avec Apache,
     voir notre tutoriel <a href="../howto/cgi.html">Les contenus
     dynamiques avec CGI</a>.</p>
 
-    <p>Il est recommandé d'utiliser le module <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
-    à la place de <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> lorsqu'on utilise un module MPM
-    multi-threadé sous Unix. Vus de l'utilisateur, les deux modules
+    <p>Il est recommand&eacute; d'utiliser le module <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
+    &agrave; la place de <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> lorsqu'on utilise un module MPM
+    multi-thread&eacute; sous Unix. Vus de l'utilisateur, les deux modules
     sont pratiquement identiques.</p>
 
-    <p>À des fins de compatibilité ascendante, le gestionnaire
-    cgi-script sera aussi activé pour tout fichier possédant le type
+    <p>&Agrave; des fins de compatibilit&eacute; ascendante, le gestionnaire
+    cgi-script sera aussi activ&eacute; pour tout fichier poss&eacute;dant le type
     MIME <code>application/x-httpd-cgi</code>. L'utilisation du type
-    MIME magic est obsolète.</p>
+    MIME magic est obsol&egrave;te.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#env">Les variables d'environnement CGI</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi-debug">Débogage des scripts CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#env">Les variables d'environnement CGI</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi-debug">D&eacute;bogage des scripts CGI</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#cgiscripttimeout">CGIScriptTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#scriptlog">ScriptLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#scriptloglength">ScriptLogLength</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgiscripttimeout">CGIScriptTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#scriptlog">ScriptLog</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#scriptloglength">ScriptLogLength</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgi">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cgi">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cgi">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code></li>
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code> ExecCGI</li>
 <li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
-<li><a href="../suexec.html">Exécuter des programmes CGI sous des
-utilisateurs différents</a></li>
-<li>La spécification CGI (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>)</li>
+<li><a href="../suexec.html">Ex&eacute;cuter des programmes CGI sous des
+utilisateurs diff&eacute;rents</a></li>
+<li>La sp&eacute;cification CGI (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>)</li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Les variables d'environnement CGI</a> <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
-    <p>Le serveur va définir les variables d'environnement CGI comme
-    décrit dans la spécification CGI (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>), de la
-    manière suivante :</p>
+<h2 id="env">Les variables d'environnement CGI <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
+    <p>Le serveur va d&eacute;finir les variables d'environnement CGI comme
+    d&eacute;crit dans la sp&eacute;cification CGI (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>), de la
+    mani&egrave;re suivante :</p>
 
     <dl>
       <dt>PATH_INFO</dt>
 
       <dd>Cette variable ne sera pas disponible si la directive
       <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> est
-      explicitement définie à <code>off</code>. Par défaut, si la
-      directive <code class="directive">AcceptPathInfo</code> n'est pas définie,
+      explicitement d&eacute;finie &agrave; <code>off</code>. Par d&eacute;faut, si la
+      directive <code class="directive">AcceptPathInfo</code> n'est pas d&eacute;finie,
       <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> acceptera des informations de chemin (en
-      ajoutant /infos/chemin après le nom du script dans l'URI), alors
+      ajoutant /infos/chemin apr&egrave;s le nom du script dans l'URI), alors
       que le serveur de base retournera une erreur 404 NOT FOUND pour
-      les requêtes contenant des informations de chemin supplémentaires.
-      Ne pas définir la directive <code class="directive">AcceptPathInfo</code>
-      a le même effet sur les requêtes avec <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> que
-      de la définir à <code>On</code>.</dd>
+      les requ&ecirc;tes contenant des informations de chemin suppl&eacute;mentaires.
+      Ne pas d&eacute;finir la directive <code class="directive">AcceptPathInfo</code>
+      a le m&ecirc;me effet sur les requ&ecirc;tes avec <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> que
+      de la d&eacute;finir &agrave; <code>On</code>.</dd>
 
       <dt>REMOTE_HOST</dt>
 
-      <dd>Cette variable ne sera définie que si la directive <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est définie à
-      <code>on</code> (elle est à <code>off</code> par défaut), et si
-      une recherche DNS inverse sur l'adresse IP de l'hôte client
-      aboutit effectivement à un nom d'hôte.</dd>
+      <dd>Cette variable ne sera d&eacute;finie que si la directive <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> est d&eacute;finie &agrave;
+      <code>on</code> (elle est &agrave; <code>off</code> par d&eacute;faut), et si
+      une recherche DNS inverse sur l'adresse IP de l'h&ocirc;te client
+      aboutit effectivement &agrave; un nom d'h&ocirc;te.</dd>
 
       <dt>REMOTE_IDENT</dt>
 
-      <dd>Cette variable ne sera définie que si la directive <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>
-      est définie à <code>on</code>, et si l'hôte client supporte le
+      <dd>Cette variable ne sera d&eacute;finie que si la directive <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>
+      est d&eacute;finie &agrave; <code>on</code>, et si l'h&ocirc;te client supporte le
       protocole ident. Notez que l'on ne peut accorder une confiance
-      aveugle au contenu de cette variable car il peut être aisément
-      falsifié, et si un mandataire s'intercale entre le client et le
+      aveugle au contenu de cette variable car il peut &ecirc;tre ais&eacute;ment
+      falsifi&eacute;, et si un mandataire s'intercale entre le client et le
       serveur, il est totalement inutilisable.</dd>
 
       <dt>REMOTE_USER</dt>
 
-      <dd>Cette variable ne sera définie que si le script CGI fait
+      <dd>Cette variable ne sera d&eacute;finie que si le script CGI fait
       l'objet d'une authentification.</dd>
 
     </dl>
@@ -131,97 +129,97 @@ utilisateurs différents</a></li>
        <dl>
            <dt>DOCUMENT_ROOT</dt>
 
-           <dd>Prend la valeur définie par la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</dd>
+           <dd>Prend la valeur d&eacute;finie par la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>.</dd>
 
            <dt>SERVER_NAME</dt>
 
-           <dd>Le nom de domaine pleinement qualifié pour la requête considérée</dd>
+           <dd>Le nom de domaine pleinement qualifi&eacute; pour la requ&ecirc;te consid&eacute;r&eacute;e</dd>
 
            <dt>SERVER_ADDR</dt>
 
-           <dd>L'adresse IP du serveur virtuel qui traite la requête</dd>
+           <dd>L'adresse IP du serveur virtuel qui traite la requ&ecirc;te</dd>
 
            <dt>SERVER_ADMIN</dt>
 
-           <dd>Prend la valeur définie par la directive <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>.</dd>
+           <dd>Prend la valeur d&eacute;finie par la directive <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>.</dd>
       </dl>
-    <p>Pour une liste exhaustive de ces variables, vous pouvez écrire un script
-    CGI basique qui extrait toutes les variables d'environnement passées par
-    Apache selon un format adapté.
+    <p>Pour une liste exhaustive de ces variables, vous pouvez &eacute;crire un script
+    CGI basique qui extrait toutes les variables d'environnement pass&eacute;es par
+    Apache selon un format adapt&eacute;.
     </p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi-debug" id="cgi-debug">Débogage des scripts CGI</a> <a title="Lien permanent" href="#cgi-debug" class="permalink">&para;</a></h2>
-    <p>Le débogage des scripts CGI était difficile par le passé,
-    principalement parce qu'il n'était pas possible d'étudier la sortie
-    (sortie standard et erreurs) des scripts dont l'exécution échouait.
-    Les directives qui suivent permettent une journalisation plus détaillée des
+<h2 id="cgi-debug">D&eacute;bogage des scripts CGI <a title="Lien permanent" href="#cgi-debug" class="permalink">&para;</a></h2>
+    <p>Le d&eacute;bogage des scripts CGI &eacute;tait difficile par le pass&eacute;,
+    principalement parce qu'il n'&eacute;tait pas possible d'&eacute;tudier la sortie
+    (sortie standard et erreurs) des scripts dont l'ex&eacute;cution &eacute;chouait.
+    Les directives qui suivent permettent une journalisation plus d&eacute;taill&eacute;e des
     erreurs.</p>
 
     <h3>Format du fichier journal CGI</h3>
-      <p>Lorsqu'il est configuré, le journal des erreurs CGI enregistre
-      la sortie de tout programme CGI dont l'exécution ne s'effectue pas
-      correctement. Un script CGI dont l'exécution échoue provoque la
-      journalisation d'une grande quantité d'informations. Les deux
-      premières lignes possèdent toujours le format suivant :</p>
+      <p>Lorsqu'il est configur&eacute;, le journal des erreurs CGI enregistre
+      la sortie de tout programme CGI dont l'ex&eacute;cution ne s'effectue pas
+      correctement. Un script CGI dont l'ex&eacute;cution &eacute;choue provoque la
+      journalisation d'une grande quantit&eacute; d'informations. Les deux
+      premi&egrave;res lignes poss&egrave;dent toujours le format suivant :</p>
 
       <div class="example"><p><code>
-        %% [<var>date</var>] <var>requête</var><br />
-        %% <var>état HTTP</var> <var>nom du script CGI</var>
+        %% [<var>date</var>] <var>requ&ecirc;te</var><br>
+        %% <var>&eacute;tat HTTP</var> <var>nom du script CGI</var>
       </code></p></div>
 
-      <p>Si le script CGI n'a pas pu démarrer, le fichier journal
-      contiendra les deux lignes supplémentaires suivantes :</p>
+      <p>Si le script CGI n'a pas pu d&eacute;marrer, le fichier journal
+      contiendra les deux lignes suppl&eacute;mentaires suivantes :</p>
 
       <div class="example"><p><code>
-        %%erreur<br />
+        %%erreur<br>
         <var>message d'erreur</var>
       </code></p></div>
 
       <p>Par contre, si l'erreur provient du renvoi par le script
-      d'informations incorrectes dans les en-têtes (dû souvent à une
-      bogue du script), les informations suivantes sont journalisées
+      d'informations incorrectes dans les en-t&ecirc;tes (d&ucirc; souvent &agrave; une
+      bogue du script), les informations suivantes sont journalis&eacute;es
       :</p>
 
       <div class="example"><p><code>
-        %requête<br />
-        <var>Tous les en-têtes de requête HTTP reçus</var><br />
-        <var>Les entités POST ou PUT (s'il en existe)</var><br />
-        %réponse<br />
-        <var>Tous les en-têtes générés par le script CGI</var><br />
-        %stdout<br />
-        <var>la sortie standard CGI</var><br />
-        %stderr<br />
-        <var>la sortie d'erreurs standard CGI</var><br />
+        %requ&ecirc;te<br>
+        <var>Tous les en-t&ecirc;tes de requ&ecirc;te HTTP re&ccedil;us</var><br>
+        <var>Les entit&eacute;s POST ou PUT (s'il en existe)</var><br>
+        %r&eacute;ponse<br>
+        <var>Tous les en-t&ecirc;tes g&eacute;n&eacute;r&eacute;s par le script CGI</var><br>
+        %stdout<br>
+        <var>la sortie standard CGI</var><br>
+        %stderr<br>
+        <var>la sortie d'erreurs standard CGI</var><br>
       </code></p></div>
 
       <p>(Les parties %stdout et %stderr seront absentes si le script
-      n'a rien envoyé sur la sortie standard ou la sortie
+      n'a rien envoy&eacute; sur la sortie standard ou la sortie
       d'erreurs).</p>
     
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="cgiscripttimeout" id="cgiscripttimeout">Directive</a> <a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a> <a title="Lien permanent" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="cgiscripttimeout">Directive <span id="CGIScriptTimeout">CGIScriptTimeout</span> <a title="Lien permanent" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps d'attente maximum pour une sortie du programme CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>La valeur par défaut de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> lorsqu'elle n'est pas définie</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>La valeur par d&eacute;faut de la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> lorsqu'elle n'est pas d&eacute;finie</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cgi</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.59 du serveur HTTP Apache.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.59 du serveur HTTP Apache.</td></tr>
 </table>
-    <p>Cette directive permet de limiter le temps d'attente jusqu'à une
-    prochaine sortie du programme CGI. Si ce temps est dépassé, le traitement de
-    la requête et l'exécution du programme CGI sont terminés. </p>
+    <p>Cette directive permet de limiter le temps d'attente jusqu'&agrave; une
+    prochaine sortie du programme CGI. Si ce temps est d&eacute;pass&eacute;, le traitement de
+    la requ&ecirc;te et l'ex&eacute;cution du programme CGI sont termin&eacute;s. </p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">CGIScriptTimeout 20</pre>
 </div>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a title="Lien permanent" href="#scriptlog" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="scriptlog">Directive <span id="ScriptLog">ScriptLog</span> <a title="Lien permanent" href="#scriptlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
 CGI</td></tr>
@@ -230,87 +228,87 @@ CGI</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
-    <p>La directive <code class="directive">ScriptLog</code> permet de définir
+    <p>La directive <code class="directive">ScriptLog</code> permet de d&eacute;finir
     le chemin du fichier journal des erreurs du script CGI. Si cette
-    directive n'est pas définie, aucune journalisation des erreurs n'est
-    effectuée. Si elle est définie, toute erreur CGI sera enregistrée
+    directive n'est pas d&eacute;finie, aucune journalisation des erreurs n'est
+    effectu&eacute;e. Si elle est d&eacute;finie, toute erreur CGI sera enregistr&eacute;e
     dans le fichier dont le nom est fourni en argument. S'il s'agit d'un
-    chemin de fichier relatif, il est considéré par rapport au
-    répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
+    chemin de fichier relatif, il est consid&eacute;r&eacute; par rapport au
+    r&eacute;pertoire d&eacute;fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>.
     </p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">ScriptLog logs/cgi_log</pre>
 </div>
 
     <p>Ce journal sera ouvert par l'utilisateur sous lequel les
-    processus enfants s'exécutent, c'est à dire l'utilisateur spécifié
+    processus enfants s'ex&eacute;cutent, c'est &agrave; dire l'utilisateur sp&eacute;cifi&eacute;
     par la directive du serveur <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>. Ceci implique que le
-    répertoire dans lequel se trouve le journal doit être accessible en
-    écriture pour cet utilisateur, ou bien que le fichier est créé
-    manuellement et accessible en écriture pour cet utilisateur. Si vous
-    placez le journal du script dans votre répertoire principal des
+    r&eacute;pertoire dans lequel se trouve le journal doit &ecirc;tre accessible en
+    &eacute;criture pour cet utilisateur, ou bien que le fichier est cr&eacute;&eacute;
+    manuellement et accessible en &eacute;criture pour cet utilisateur. Si vous
+    placez le journal du script dans votre r&eacute;pertoire principal des
     journaux, ne modifiez <strong>JAMAIS</strong> les permissions de ce
-    dernier afin de le le rendre accessible en écriture par
-    l'utilisateur sous lequel les processus enfants s'exécutent.</p>
+    dernier afin de le le rendre accessible en &eacute;criture par
+    l'utilisateur sous lequel les processus enfants s'ex&eacute;cutent.</p>
 
     <p>Notez que l'on ne doit activer la journalisation des scripts
-    qu'à des fins de débogage lors de l'écriture de scripts CGI, et non
-    de manière permanente sur un serveur en production. Elle n'est pas
-    optimisée en terme de performances et d'efficacité, et peut
-    présenter des problèmes de sécurité si on l'utilise dans un cadre
-    autre que celui pour lequel elle a été conçue.</p>
+    qu'&agrave; des fins de d&eacute;bogage lors de l'&eacute;criture de scripts CGI, et non
+    de mani&egrave;re permanente sur un serveur en production. Elle n'est pas
+    optimis&eacute;e en terme de performances et d'efficacit&eacute;, et peut
+    pr&eacute;senter des probl&egrave;mes de s&eacute;curit&eacute; si on l'utilise dans un cadre
+    autre que celui pour lequel elle a &eacute;t&eacute; con&ccedil;ue.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a title="Lien permanent" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="scriptlogbuffer">Directive <span id="ScriptLogBuffer">ScriptLogBuffer</span> <a title="Lien permanent" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requêtes PUT ou POST qui seront
-enregistrées dans le journal du script</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requ&ecirc;tes PUT ou POST qui seront
+enregistr&eacute;es dans le journal du script</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogBuffer <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ScriptLogBuffer 1024</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
     <p>Cette directive permet de limiter la taille du corps de toute
-    entité PUT ou POST qui sera enregistrée dans le journal, afin
-    de prévenir une croissance trop importante et trop rapide du fichier
-    journal due à la réception de corps de requête de grandes tailles.
+    entit&eacute; PUT ou POST qui sera enregistr&eacute;e dans le journal, afin
+    de pr&eacute;venir une croissance trop importante et trop rapide du fichier
+    journal due &agrave; la r&eacute;ception de corps de requ&ecirc;te de grandes tailles.
     Cette directive permet de modifier cette taille maximale, dont la
-    valeur par défaut est de 1024 octets.</p>
+    valeur par d&eacute;faut est de 1024 octets.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a title="Lien permanent" href="#scriptloglength" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="scriptloglength">Directive <span id="ScriptLogLength">ScriptLogLength</span> <a title="Lien permanent" href="#scriptloglength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
 CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ScriptLogLength <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ScriptLogLength 10385760</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></td></tr>
 </table>
     <p>La directive <code class="directive">ScriptLogLength</code> permet de
-    définir la taille maximale du fichier journal des scripts CGI. Comme
-    le fichier journal accumule une grande quantité d'informations par
-    erreur CGI (tous les en-têtes de la requête, toutes les sorties du
+    d&eacute;finir la taille maximale du fichier journal des scripts CGI. Comme
+    le fichier journal accumule une grande quantit&eacute; d'informations par
+    erreur CGI (tous les en-t&ecirc;tes de la requ&ecirc;te, toutes les sorties du
     script), il peut vite atteindre une grande taille. En limitant la
-    taille du fichier, cette directive permet d'éviter les problèmes que
+    taille du fichier, cette directive permet d'&eacute;viter les probl&egrave;mes que
     causerait sa croissance sans limites. Lorsque le fichier a atteint
     cette taille maximale, plus aucune information n'y est
-    enregistrée.</p>
+    enregistr&eacute;e.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cgi.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cgi.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

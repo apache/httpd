@@ -1,186 +1,184 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Atualizando da versão 2.2 para 2.4 - Servidor HTTP Apache Versão 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Atualizando da vers&atilde;o 2.2 para 2.4 - Servidor HTTP Apache Vers&atilde;o 2.4</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
-<p class="apache">Servidor HTTP Apache Versão 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.4</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.4</a></div><div id="page-content"><div id="preamble"><h1>Atualizando da versão 2.2 para 2.4</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.4</a></div><div id="page-content"><div id="preamble"><h1>Atualizando da vers&atilde;o 2.2 para 2.4</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Línguas Disponíveis: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
-<a href="./pt-br/upgrading.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/upgrading.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 
-  <p>Para auxiliar os usuários na atualização, mantemos um documento
-  que descreve informações essenciais para usuários existentes do Servidor HTTP
-  Apache. Estas notas são breves e você poderá encontrar
-  mais informações no documento <a href="new_features_2_4.html">Novas Funcionalidades</a> ou no
-  arquivo <code>src/CHANGES</code>. Desenvolvedores de aplicações e módulos
-  podem encontrar um resumo das alterações da API na <a href="developer/new_api_2_4.html">Visão geral de atualizações da API</a>.</p>
+  <p>Para auxiliar os usu&aacute;rios na atualiza&ccedil;&atilde;o, mantemos um documento
+  que descreve informa&ccedil;&otilde;es essenciais para usu&aacute;rios existentes do Servidor HTTP
+  Apache. Estas notas s&atilde;o breves e voc&ecirc; poder&aacute; encontrar
+  mais informa&ccedil;&otilde;es no documento <a href="new_features_2_4.html">Novas Funcionalidades</a> ou no
+  arquivo <code>src/CHANGES</code>. Desenvolvedores de aplica&ccedil;&otilde;es e m&oacute;dulos
+  podem encontrar um resumo das altera&ccedil;&otilde;es da API na <a href="developer/new_api_2_4.html">Vis&atilde;o geral de atualiza&ccedil;&otilde;es da API</a>.</p>
 
-  <p>Este documento descreve alterações no comportamento do servidor que podem
-   exigir que você altere sua configuração ou a forma como usa o servidor
-   para continuar usando a versão 2.4 da mesma forma que usa a versão 2.2.
-   Para aproveitar os novos recursos da versão 2.4, consulte o documento sobre Novas
+  <p>Este documento descreve altera&ccedil;&otilde;es no comportamento do servidor que podem
+   exigir que voc&ecirc; altere sua configura&ccedil;&atilde;o ou a forma como usa o servidor
+   para continuar usando a vers&atilde;o 2.4 da mesma forma que usa a vers&atilde;o 2.2.
+   Para aproveitar os novos recursos da vers&atilde;o 2.4, consulte o documento sobre Novas
    Funcionalidades.</p>
 
-  <p>Este documento descreve apenas as alterações da versão 2.2 para a 2.4. Se você
-  estiver atualizando da versão 2.0, também deverá consultar o <a href="http://http://httpd.apache.org/docs/2.2/upgrading.html">Documento de Atualização
-  da versão 2.0 para 2.2</a>.</p>
+  <p>Este documento descreve apenas as altera&ccedil;&otilde;es da vers&atilde;o 2.2 para a 2.4. Se voc&ecirc;
+  estiver atualizando da vers&atilde;o 2.0, tamb&eacute;m dever&aacute; consultar o <a href="http://http://httpd.apache.org/docs/2.2/upgrading.html">Documento de Atualiza&ccedil;&atilde;o
+  da vers&atilde;o 2.0 para 2.2</a>.</p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Alterações na Configuração no Momento da Compilação</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Alterações na Configuração no Momento da Execução</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#misc">Alterações Miscelâneas</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#third-party">Módulos de Terceiros</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#commonproblems">Problemas comuns ao atualizar</a></li>
-</ul><h3>Veja também</h3><ul class="seealso"><li><a href="new_features_2_4.html">Visão geral das novas funcionalidades
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#compile-time">Altera&ccedil;&otilde;es na Configura&ccedil;&atilde;o no Momento da Compila&ccedil;&atilde;o</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#run-time">Altera&ccedil;&otilde;es na Configura&ccedil;&atilde;o no Momento da Execu&ccedil;&atilde;o</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#misc">Altera&ccedil;&otilde;es Miscel&acirc;neas</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#third-party">M&oacute;dulos de Terceiros</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#commonproblems">Problemas comuns ao atualizar</a></li>
+</ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="new_features_2_4.html">Vis&atilde;o geral das novas funcionalidades
   no Servidor HTTP Apache 2.4</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Alterações na Configuração no Momento da Compilação</a> <a title="Link permanente" href="#compile-time" class="permalink">&para;</a></h2>
+<h2 id="compile-time">Altera&ccedil;&otilde;es na Configura&ccedil;&atilde;o no Momento da Compila&ccedil;&atilde;o <a title="Link permanente" href="#compile-time" class="permalink">&para;</a></h2>
     
 
-    <p>O processo de compilação é muito semelhante ao usado na
-    versão 2.2. Sua antiga linha de comando <code>configure</code>
-    (encontrada em <code>build/config.nice</code> no diretório do servidor
-    instalado) pode ser usada na maioria dos casos. Há algumas alterações nas
-    configurações padrão. Alguns detalhes das alterações:</p>
+    <p>O processo de compila&ccedil;&atilde;o &eacute; muito semelhante ao usado na
+    vers&atilde;o 2.2. Sua antiga linha de comando <code>configure</code>
+    (encontrada em <code>build/config.nice</code> no diret&oacute;rio do servidor
+    instalado) pode ser usada na maioria dos casos. H&aacute; algumas altera&ccedil;&otilde;es nas
+    configura&ccedil;&otilde;es padr&atilde;o. Alguns detalhes das altera&ccedil;&otilde;es:</p>
 
     <ul>
-      <li>Estes módulos foram removidos: mod_authn_default,
-      mod_authz_default, mod_mem_cache. Se você estava usando
-      mod_mem_cache na versão 2.2, consulte <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
-      na versão 2.4.</li>
+      <li>Estes m&oacute;dulos foram removidos: mod_authn_default,
+      mod_authz_default, mod_mem_cache. Se voc&ecirc; estava usando
+      mod_mem_cache na vers&atilde;o 2.2, consulte <code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code>
+      na vers&atilde;o 2.4.</li>
 
-      <li>Todas as implementações de balanceamento de carga foram movidas para
-      submódulos individuais e independentes do mod_proxy, por exemplo:
-      <code class="module"><a href="./mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code>. Você pode precisar
-      compilar e carregar qualquer um desses que sua configuração
+      <li>Todas as implementa&ccedil;&otilde;es de balanceamento de carga foram movidas para
+      subm&oacute;dulos individuais e independentes do mod_proxy, por exemplo:
+      <code class="module"><a href="./mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code>. Voc&ecirc; pode precisar
+      compilar e carregar qualquer um desses que sua configura&ccedil;&atilde;o
       utiliza.</li>
 
-      <li>O suporte à plataforma foi removido para BeOS, TPF e
-      até mesmo plataformas mais antigas, como A/UX, Next e Tandem. Acredita-se
-      que estas já não estivessem funcionando corretamente.</li>
+      <li>O suporte &agrave; plataforma foi removido para BeOS, TPF e
+      at&eacute; mesmo plataformas mais antigas, como A/UX, Next e Tandem. Acredita-se
+      que estas j&aacute; n&atilde;o estivessem funcionando corretamente.</li>
 
-      <li>configure: módulos dinâmicos (DSO) são compilados por padrão.</li>
+      <li>configure: m&oacute;dulos din&acirc;micos (DSO) s&atilde;o compilados por padr&atilde;o.</li>
 
-      <li>configure: por padrão, apenas um conjunto básico de módulos é carregado. As
-      outras diretivas <code class="directive">LoadModule</code> estão comentadas
-      no arquivo de configuração.</li>
+      <li>configure: por padr&atilde;o, apenas um conjunto b&aacute;sico de m&oacute;dulos &eacute; carregado. As
+      outras diretivas <code class="directive">LoadModule</code> est&atilde;o comentadas
+      no arquivo de configura&ccedil;&atilde;o.</li>
 
-      <li>configure: o conjunto de módulos "most" ("maioria") é compilado por padrão</li>
+      <li>configure: o conjunto de m&oacute;dulos "most" ("maioria") &eacute; compilado por padr&atilde;o</li>
 
-      <li>configure: o conjunto de módutos "reallyall" ("realmente todos") adiciona os módulos de desenvolvedor
+      <li>configure: o conjunto de m&oacute;dutos "reallyall" ("realmente todos") adiciona os m&oacute;dulos de desenvolvedor
       ao conjunto "all" ("todos")</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Alterações na Configuração no Momento da Execução</a> <a title="Link permanente" href="#run-time" class="permalink">&para;</a></h2>
+<h2 id="run-time">Altera&ccedil;&otilde;es na Configura&ccedil;&atilde;o no Momento da Execu&ccedil;&atilde;o <a title="Link permanente" href="#run-time" class="permalink">&para;</a></h2>
     
-    <p>Houve mudanças significativas na configuração de autorização e outras
-    pequenas alterações de configuração que podem exigir alterações em seus arquivos
-    de configuração da versão 2.2 antes de usá-los na versão 2.4.</p>
+    <p>Houve mudan&ccedil;as significativas na configura&ccedil;&atilde;o de autoriza&ccedil;&atilde;o e outras
+    pequenas altera&ccedil;&otilde;es de configura&ccedil;&atilde;o que podem exigir altera&ccedil;&otilde;es em seus arquivos
+    de configura&ccedil;&atilde;o da vers&atilde;o 2.2 antes de us&aacute;-los na vers&atilde;o 2.4.</p>
 
-    <h3><a name="authz" id="authz">Autorização</a></h3>
+    <h3 id="authz">Autoriza&ccedil;&atilde;o</h3>
       
 
-      <p>Qualquer arquivo de configuração que utilize autorização provavelmente
-      precisará de alterações.</p>
+      <p>Qualquer arquivo de configura&ccedil;&atilde;o que utilize autoriza&ccedil;&atilde;o provavelmente
+      precisar&aacute; de altera&ccedil;&otilde;es.</p>
 
-    <p>Você deve revisar a seção <a href="howto/auth.html">Como Fazer: Autenticação,
-    Autorização e Controle de Acesso</a>, especialmente a parte
-    <a href="howto/auth.html#beyond">Além da simples autorização</a>
+    <p>Voc&ecirc; deve revisar a se&ccedil;&atilde;o <a href="howto/auth.html">Como Fazer: Autentica&ccedil;&atilde;o,
+    Autoriza&ccedil;&atilde;o e Controle de Acesso</a>, especialmente a parte
+    <a href="howto/auth.html#beyond">Al&eacute;m da simples autoriza&ccedil;&atilde;o</a>
     que explica os novos mecanismos para controlar a ordem
-    em que as diretivas de autorização são aplicadas.</p>
+    em que as diretivas de autoriza&ccedil;&atilde;o s&atilde;o aplicadas.</p>
 
-    <p>As diretivas que controlam como os módulos de autorização respondem quando
-    não correspondem ao usuário autenticado foram removidas: Isso inclui
+    <p>As diretivas que controlam como os m&oacute;dulos de autoriza&ccedil;&atilde;o respondem quando
+    n&atilde;o correspondem ao usu&aacute;rio autenticado foram removidas: Isso inclui
     AuthzLDAPAuthoritative, AuthzDBDAuthoritative, AuthzDBMAuthoritative,
     AuthzGroupFileAuthoritative, AuthzUserAuthoritative,
-    e AuthzOwnerAuthoritative. Essas diretivas foram substituídas pelas
+    e AuthzOwnerAuthoritative. Essas diretivas foram substitu&iacute;das pelas
     diretivas mais expressivas <code class="directive"><a href="./mod/mod_authz_core.html#requireany">RequireAny</a></code>,
     <code class="directive"><a href="./mod/mod_authz_core.html#requirenone">RequireNone</a></code> e
     <code class="directive"><a href="./mod/mod_authz_core.html#requireall">RequireAll</a></code>.</p>
 
-    <p>Se você usa <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, você deve migrar sua
-    configuração para usar <code>Require dbm-group ...</code> em vez de
+    <p>Se voc&ecirc; usa <code class="module"><a href="./mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, voc&ecirc; deve migrar sua
+    configura&ccedil;&atilde;o para usar <code>Require dbm-group ...</code> em vez de
     <code>Require group ...</code>.</p>
 
-    <h4><a name="access" id="access">Controle de acesso</a></h4>
+    <h4 id="access">Controle de acesso</h4>
       
 
-      <p>Na versão 2.2, o controle de acesso baseado no nome do host do cliente, no endereço IP,
-      e em outras características das solicitações do cliente era feito usando as
+      <p>Na vers&atilde;o 2.2, o controle de acesso baseado no nome do host do cliente, no endere&ccedil;o IP,
+      e em outras caracter&iacute;sticas das solicita&ccedil;&otilde;es do cliente era feito usando as
       diretivas <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code> e <code class="directive"><a href="./mod/mod_access_compat.html#satisfy">Satisfy</a></code>.</p>
 
-      <p>Na versão 2.4, esse controle de acesso é feito da mesma forma que outras
-      verificações de autorização, usando o novo módulo
-      <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>. Os antigos padrões de controle de acesso
-      devem ser substituídos pelos novos mecanismos de autenticação,
-      embora, para compatibilidade com configurações antigas, o novo
-      módulo <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> seja fornecido.</p>
+      <p>Na vers&atilde;o 2.4, esse controle de acesso &eacute; feito da mesma forma que outras
+      verifica&ccedil;&otilde;es de autoriza&ccedil;&atilde;o, usando o novo m&oacute;dulo
+      <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>. Os antigos padr&otilde;es de controle de acesso
+      devem ser substitu&iacute;dos pelos novos mecanismos de autentica&ccedil;&atilde;o,
+      embora, para compatibilidade com configura&ccedil;&otilde;es antigas, o novo
+      m&oacute;dulo <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> seja fornecido.</p>
 
       <div class="note"><h3>Misturando diretivas antigas com novas</h3>
       <p>Misturar diretivas antigas como <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code> ou <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code> com novas como
-      <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> é possível tecnicamente porém
-      não é recomendado. <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> foi criado para suportar
-      configurações que contêm somente diretivas antigas para facilitar a migração para a versão 2.4.
+      <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> &eacute; poss&iacute;vel tecnicamente por&eacute;m
+      n&atilde;o &eacute; recomendado. <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> foi criado para suportar
+      configura&ccedil;&otilde;es que cont&ecirc;m somente diretivas antigas para facilitar a migra&ccedil;&atilde;o para a vers&atilde;o 2.4.
       Favor verificar os exemplos abaixo para ter uma ideia melhor sobre os problemas que podem surgir.
       </p>
       </div>
 
-      <p>Aqui estão alguns exemplos de maneiras antigas e novas de fazer o mesmo
+      <p>Aqui est&atilde;o alguns exemplos de maneiras antigas e novas de fazer o mesmo
       controle de acesso.</p>
 
-      <p>Neste exemplo, não há autenticação e todas as solicitações são negadas.</p>
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config">Order deny,allow
+      <p>Neste exemplo, n&atilde;o h&aacute; autentica&ccedil;&atilde;o e todas as solicita&ccedil;&otilde;es s&atilde;o negadas.</p>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config">Order deny,allow
 Deny from all</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config">Require all denied</pre>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config">Require all denied</pre>
 </div>
 
-      <p>Neste exemplo, não há autenticação e todas as solicitações são permitidas.</p>
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
+      <p>Neste exemplo, n&atilde;o h&aacute; autentica&ccedil;&atilde;o e todas as solicita&ccedil;&otilde;es s&atilde;o permitidas.</p>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
 Allow from all</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config">Require all granted</pre>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config">Require all granted</pre>
 </div>
 
-      <p>No exemplo a seguir, não há autenticação e todos os hosts no domínio example.org
-      têm acesso permitido; todos os outros têm acesso negado.</p>
+      <p>No exemplo a seguir, n&atilde;o h&aacute; autentica&ccedil;&atilde;o e todos os hosts no dom&iacute;nio example.org
+      t&ecirc;m acesso permitido; todos os outros t&ecirc;m acesso negado.</p>
 
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config">Order Deny,Allow
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config">Order Deny,Allow
 Deny from all
 Allow from example.org</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config">Require host example.org</pre>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config">Require host example.org</pre>
 </div>
 
       <p>No exemplo a seguir, misturar diretivas antigas e novas leva a
       resultados inesperados.</p>
 
-      <div class="example"><h3>Misturando diretivas antigas e novas: NÃO FUNCIONA COMO ESPERADO</h3><pre class="prettyprint lang-config">DocumentRoot "/var/www/html"
+      <div class="example"><h3>Misturando diretivas antigas e novas: N&Atilde;O FUNCIONA COMO ESPERADO</h3><pre class="prettyprint lang-config">DocumentRoot "/var/www/html"
 
 &lt;Directory "/"&gt;
     AllowOverride None
@@ -196,10 +194,10 @@ Allow from example.org</pre>
 access.log - GET /server-status 403 127.0.0.1
 error.log - AH01797: client denied by server configuration: /var/www/html/server-status</pre>
 </div>
-      <p>Por que o httpd nega acesso a server-status mesmo quando a configuração parece permitir?
-        Porque as diretivas <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> tem precedência
-        sobre as <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code> neste cenário de
-        <a href="sections.html#merging">mesclagem</a> de configurações.</p>
+      <p>Por que o httpd nega acesso a server-status mesmo quando a configura&ccedil;&atilde;o parece permitir?
+        Porque as diretivas <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> tem preced&ecirc;ncia
+        sobre as <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code> neste cen&aacute;rio de
+        <a href="sections.html#merging">mesclagem</a> de configura&ccedil;&otilde;es.</p>
 
       <p>Este exemplo, por outro lado, funciona como esperado:</p>
 
@@ -219,17 +217,17 @@ error.log - AH01797: client denied by server configuration: /var/www/html/server
 
 access.log - GET /server-status 200 127.0.0.1</pre>
 </div>
-      <p>Portanto, mesmo se a mistura de configurações ainda seja
-        possível, tente evitar na atualizaçao: mantenha diretivas antigas e somente
-        migre para as novas em um estágio posterior ou migre tudo de uma vez.
+      <p>Portanto, mesmo se a mistura de configura&ccedil;&otilde;es ainda seja
+        poss&iacute;vel, tente evitar na atualiza&ccedil;ao: mantenha diretivas antigas e somente
+        migre para as novas em um est&aacute;gio posterior ou migre tudo de uma vez.
       </p>
     
 
-     <p>Em muitas configurações com autenticação, onde o valor de
-     <code class="directive">Satisfy</code> tinha o padrão de <em>ALL</em>, trechos
-     que simplesmente desligavam o controle de acesso baseado em host são omitidos:</p>
+     <p>Em muitas configura&ccedil;&otilde;es com autentica&ccedil;&atilde;o, onde o valor de
+     <code class="directive">Satisfy</code> tinha o padr&atilde;o de <em>ALL</em>, trechos
+     que simplesmente desligavam o controle de acesso baseado em host s&atilde;o omitidos:</p>
 
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config"># configuração na versão 2.2 que desliga o controle de acesso baseado em host e usa somente autenticação
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config"># configura&ccedil;&atilde;o na vers&atilde;o 2.2 que desliga o controle de acesso baseado em host e usa somente autentica&ccedil;&atilde;o
 Order Deny,Allow
 Allow from all
 AuthType Basic
@@ -238,7 +236,7 @@ AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config"># Não é necessário substituir o controle de acesso baseado em host
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config"># N&atilde;o &eacute; necess&aacute;rio substituir o controle de acesso baseado em host
 AuthType Basic
 AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
@@ -246,9 +244,9 @@ AuthName secure
 Require valid-user</pre>
 </div>
 
-     <p>Em configurações onde a autenticação e o controle de acesso eram adequadamente combinados, as
-        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicitações atendam a <em>ambos</em> os critérios:</p>
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
+     <p>Em configura&ccedil;&otilde;es onde a autentica&ccedil;&atilde;o e o controle de acesso eram adequadamente combinados, as
+        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicita&ccedil;&otilde;es atendam a <em>ambos</em> os crit&eacute;rios:</p>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
 Deny from all
 # Satisfy ALL is the default
 Satisfy ALL
@@ -259,7 +257,7 @@ AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config">AuthType Basic
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config">AuthType Basic
 AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
@@ -269,9 +267,9 @@ AuthName secure
 &lt;/RequireAll&gt;</pre>
 </div>
 
-     <p>Em configurações onde a autenticação e o controle de acesso eram adequadamente combinados, as
-        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicitações atendam a <em>qualquer</em> um dos critérios:</p>
-      <div class="example"><h3>Configuração na versão 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
+     <p>Em configura&ccedil;&otilde;es onde a autentica&ccedil;&atilde;o e o controle de acesso eram adequadamente combinados, as
+        diretivas de controle de acesso devem ser migradas. Este exemplo permite que as solicita&ccedil;&otilde;es atendam a <em>qualquer</em> um dos crit&eacute;rios:</p>
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.2:</h3><pre class="prettyprint lang-config">Order allow,deny
 Deny from all
 Satisfy any
 Allow from 127.0.0.1
@@ -281,55 +279,55 @@ AuthUserFile /example.com/conf/users.passwd
 AuthName secure
 Require valid-user</pre>
 </div>
-      <div class="example"><h3>Configuração na versão 2.4:</h3><pre class="prettyprint lang-config">AuthType Basic
+      <div class="example"><h3>Configura&ccedil;&atilde;o na vers&atilde;o 2.4:</h3><pre class="prettyprint lang-config">AuthType Basic
 AuthBasicProvider file
 AuthUserFile /example.com/conf/users.passwd
 AuthName secure
-# &lt;RequireAny&gt; (implícito)
+# &lt;RequireAny&gt; (impl&iacute;cito)
 Require valid-user
 Require ip 127.0.0.1</pre>
 </div>
 
     
 
-    <h3><a name="config" id="config">Outras mudanças na configuração</a></h3>
+    <h3 id="config">Outras mudan&ccedil;as na configura&ccedil;&atilde;o</h3>
       
 
-      <p>Alguns outros pequenos ajustes podem ser necessários para configurações
+      <p>Alguns outros pequenos ajustes podem ser necess&aacute;rios para configura&ccedil;&otilde;es
       em particular como discutido abaixo.</p>
 
       <ul>
         <li><code class="directive">MaxRequestsPerChild</code> foi renomeada para
         <code class="directive"><a href="./mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>,
-        descrevendo com maior precisão o que ela faz. O nome antigo ainda
-        é suportado.</li>
+        descrevendo com maior precis&atilde;o o que ela faz. O nome antigo ainda
+        &eacute; suportado.</li>
 
         <li><code class="directive">MaxClients</code> foi renomeada para
         <code class="directive"><a href="./mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>,
-        que descreve melhor o que ela faz. Para MPMs assíncronos, como
-        <code class="module"><a href="./mod/event.html">event</a></code>, o número máximo de clientes não é
-        equivalente ao número de threads. O nome antigo ainda
-        é suportado.</li>
+        que descreve melhor o que ela faz. Para MPMs ass&iacute;ncronos, como
+        <code class="module"><a href="./mod/event.html">event</a></code>, o n&uacute;mero m&aacute;ximo de clientes n&atilde;o &eacute;
+        equivalente ao n&uacute;mero de threads. O nome antigo ainda
+        &eacute; suportado.</li>
 
         <li>A diretiva <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
-        não tem mais nenhum efeito além de emitir um
+        n&atilde;o tem mais nenhum efeito al&eacute;m de emitir um
         alerta se for usada com algum valor diferente de
-        <code>none</code>. É necessário usar outras configurações
-        para substituí-la na versão 2.4.
+        <code>none</code>. &Eacute; necess&aacute;rio usar outras configura&ccedil;&otilde;es
+        para substitu&iacute;-la na vers&atilde;o 2.4.
         </li>
 
-        <li>O padrão para <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
-        agora é <code>None</code>.</li>
+        <li>O padr&atilde;o para <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code>
+        agora &eacute; <code>None</code>.</li>
 
-        <li>O padrão para <code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code>
-        agora é Off.</li>
+        <li>O padr&atilde;o para <code class="directive"><a href="./mod/core.html#enablesendfile">EnableSendfile</a></code>
+        agora &eacute; Off.</li>
 
-        <li>O padrão para <code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code>
-        agora é "MTime Size" (sem INode).</li>
+        <li>O padr&atilde;o para <code class="directive"><a href="./mod/core.html#fileetag">FileETag</a></code>
+        agora &eacute; "MTime Size" (sem INode).</li>
 
         <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: O formato do arquivo de <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> foi alterado para
         sistemas com inodes. o arquivos antigo de <code class="directive"><a href="./mod/mod_dav_fs.html#davlockdb">DavLockDB</a></code> precisa ser apagado na
-        atualização.
+        atualiza&ccedil;&atilde;o.
         </li>
 
         <li><code class="directive"><a href="./mod/core.html#keepalive">KeepAlive</a></code> somente
@@ -338,187 +336,187 @@ Require ip 127.0.0.1</pre>
         "On".</li>
 
         <li>As diretivas AcceptMutex, LockFile, RewriteLock, SSLMutex,
-        SSLStaplingMutex e WatchdogMutexPath foram substituídas
-        por uma única diretiva <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.
-        É necessário avaliar o uso dessas diretivas
-        removidas na configuração 2.2 para determinar se elas podem
-        ser apenas removidas ou se precisam ser substituídas usando <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
+        SSLStaplingMutex e WatchdogMutexPath foram substitu&iacute;das
+        por uma &uacute;nica diretiva <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.
+        &Eacute; necess&aacute;rio avaliar o uso dessas diretivas
+        removidas na configura&ccedil;&atilde;o 2.2 para determinar se elas podem
+        ser apenas removidas ou se precisam ser substitu&iacute;das usando <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
 
         <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: <code class="directive"><a href="./mod/mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
-        agora faz uma correspondência exata com a string de consulta em vez de
-        um correspondência parcial. Se a configuração estava usando strings
+        agora faz uma correspond&ecirc;ncia exata com a string de consulta em vez de
+        um correspond&ecirc;ncia parcial. Se a configura&ccedil;&atilde;o estava usando strings
         parciais, por exemplo, usando <code>sessionid</code> para corresponder a
         <code>/someapplication/image.gif;jsessionid=123456789</code>,
-        então será necessário alterar para a string completa
+        ent&atilde;o ser&aacute; necess&aacute;rio alterar para a string completa
         <code>jsessionid</code>.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: O segundo parâmetro para
+        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: O segundo par&acirc;metro para
         <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> somente
-        corresponde ao conteúdo do proxy direto se ele começar com o protocolo
-        correto. Na versão 2.2 e anteriores, um parâmetro de '/' correspondia a todo o
-        conteúdo.</li>
+        corresponde ao conte&uacute;do do proxy direto se ele come&ccedil;ar com o protocolo
+        correto. Na vers&atilde;o 2.2 e anteriores, um par&acirc;metro de '/' correspondia a todo o
+        conte&uacute;do.</li>
 
-        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> agora é,
-        consistentemente, uma configuração apenas por diretório. Se esta diretiva
-        for usada, revise a configuração para garantir que ela está
-        presente em todos os contextos de diretório necessários.</li>
+        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: <code class="directive"><a href="./mod/mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> agora &eacute;,
+        consistentemente, uma configura&ccedil;&atilde;o apenas por diret&oacute;rio. Se esta diretiva
+        for usada, revise a configura&ccedil;&atilde;o para garantir que ela est&aacute;
+        presente em todos os contextos de diret&oacute;rio necess&aacute;rios.</li>
 
         <li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>: a sintaxe de <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code> foi alterada e
-        agora usa uma expressão booleana para determinar se um filtro está aplicado.
+        agora usa uma express&atilde;o booleana para determinar se um filtro est&aacute; aplicado.
         </li>
 
         <li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>:
             <ul>
-            <li>O elemento <code>#if expr</code> agora usa o novo <a href="expr.html">analisador de expressões</a>. A sintaxe antiga pode ser
+            <li>O elemento <code>#if expr</code> agora usa o novo <a href="expr.html">analisador de express&otilde;es</a>. A sintaxe antiga pode ser
             restaurada com a nova diretiva <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code>.
             </li>
-            <li>Uma diretiva de configuração SSI* em escopo de diretório não faz mais
-            com que todas as outras diretivas SSI* por diretório sejam redefinidas para seus
-            valores padrão.</li>
+            <li>Uma diretiva de configura&ccedil;&atilde;o SSI* em escopo de diret&oacute;rio n&atilde;o faz mais
+            com que todas as outras diretivas SSI* por diret&oacute;rio sejam redefinidas para seus
+            valores padr&atilde;o.</li>
             </ul>
         </li>
 
-        <li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>: A opção <code>DebugLevel</code>
-        foi removida em favor da configuração <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> por módulo.
+        <li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>: A op&ccedil;&atilde;o <code>DebugLevel</code>
+        foi removida em favor da configura&ccedil;&atilde;o <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> por m&oacute;dulo.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>: A opção <code>DebugLevel</code>
-        foi removida em favor da configuração <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> por módulo.
+        <li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>: A op&ccedil;&atilde;o <code>DebugLevel</code>
+        foi removida em favor da configura&ccedil;&atilde;o <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> por m&oacute;dulo.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: A configuração padrão para
-        <code>PATH_INFO</code> foi alterada em relação à versão 2.2 e
-        algumas aplicações web não irão mais operar adequadamente com a
-        nova configuração de <code>PATH_INFO</code>. A configuração anterior
-        pode ser restaurada através da configuração da variável
+        <li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: A configura&ccedil;&atilde;o padr&atilde;o para
+        <code>PATH_INFO</code> foi alterada em rela&ccedil;&atilde;o &agrave; vers&atilde;o 2.2 e
+        algumas aplica&ccedil;&otilde;es web n&atilde;o ir&atilde;o mais operar adequadamente com a
+        nova configura&ccedil;&atilde;o de <code>PATH_INFO</code>. A configura&ccedil;&atilde;o anterior
+        pode ser restaurada atrav&eacute;s da configura&ccedil;&atilde;o da vari&aacute;vel
         <code>proxy-scgi-pathinfo</code>.</li>
 
-        <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: A verificação de revogação baseada em CRL
-        agora precisa ser configurada explicitamente através de <code class="directive"><a href="./mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></code>.
+        <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: A verifica&ccedil;&atilde;o de revoga&ccedil;&atilde;o baseada em CRL
+        agora precisa ser configurada explicitamente atrav&eacute;s de <code class="directive"><a href="./mod/mod_ssl.html#sslcarevocationcheck">SSLCARevocationCheck</a></code>.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>: O comprimento máximo de linha agora
-        é limitado a 1MB.
+        <li><code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code>: O comprimento m&aacute;ximo de linha agora
+        &eacute; limitado a 1MB.
         </li>
 
-        <li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code>: Se o módulo for carregado, ele
-        agora definirá alguns limites de tempo padrões.</li>
+        <li><code class="module"><a href="./mod/mod_reqtimeout.html">mod_reqtimeout</a></code>: Se o m&oacute;dulo for carregado, ele
+        agora definir&aacute; alguns limites de tempo padr&otilde;es.</li>
 
         <li><code class="module"><a href="./mod/mod_dumpio.html">mod_dumpio</a></code>: <code class="directive">DumpIOLogLevel</code>
-        não é mais suportado. Os dados são sempre registrados com <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> no nível <code>trace7</code>.</li>
+        n&atilde;o &eacute; mais suportado. Os dados s&atilde;o sempre registrados com <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> no n&iacute;vel <code>trace7</code>.</li>
 
         <li>Em plataformas Unix, comandos de registro encadeados configurados com
         <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> ou
         <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> eram chamados usando
-        <code>/bin/sh -c</code> na versão 2.2 e anteriores.  Na versão 2.4 e posteriores,
-        comandos de registro encadeados são executados diretamente. Para restaurar o
-        comportamento antigo, consulte a <a href="logs.html#piped">documentação sobre
+        <code>/bin/sh -c</code> na vers&atilde;o 2.2 e anteriores.  Na vers&atilde;o 2.4 e posteriores,
+        comandos de registro encadeados s&atilde;o executados diretamente. Para restaurar o
+        comportamento antigo, consulte a <a href="logs.html#piped">documenta&ccedil;&atilde;o sobre
         registros encadeados</a>.</li>
 
       </ul>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="misc" id="misc">Alterações Miscelâneas</a> <a title="Link permanente" href="#misc" class="permalink">&para;</a></h2>
+<h2 id="misc">Altera&ccedil;&otilde;es Miscel&acirc;neas <a title="Link permanente" href="#misc" class="permalink">&para;</a></h2>
     
 
     <ul>
-      <li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code>: agora extrai títulos e
-      exibe descrições para arquivos .xhtml, que antes eram
+      <li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code>: agora extrai t&iacute;tulos e
+      exibe descri&ccedil;&otilde;es para arquivos .xhtml, que antes eram
       ignorados.</li>
 
-      <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: O formato padrão das variáveis ​​<code>*_DN</code>
+      <li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: O formato padr&atilde;o das vari&aacute;veis ​​<code>*_DN</code>
       foi alterado. O formato antigo ainda pode ser usado com o novo argumento
       <code>LegacyDNStringFormat</code> da diretiva <code class="directive"><a href="./mod/mod_ssl.html#ssloptions">SSLOptions</a></code>. O protocolo SSLv2
-      não é mais suportado. <code class="directive"><a href="./mod/mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN
+      n&atilde;o &eacute; mais suportado. <code class="directive"><a href="./mod/mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN
       </a></code> e <code class="directive"><a href="./mod/mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire
-      </a></code> agora são ativadas por padrão, fazendo com que as solicitações de proxy para hosts HTTPS
-      com certificados inválidos ou desatualizados falhem com código de status 502 (Bad
+      </a></code> agora s&atilde;o ativadas por padr&atilde;o, fazendo com que as solicita&ccedil;&otilde;es de proxy para hosts HTTPS
+      com certificados inv&aacute;lidos ou desatualizados falhem com c&oacute;digo de status 502 (Bad
       gateway)</li>
 
-      <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> agora usa hash MD5 por padrão em
+      <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> agora usa hash MD5 por padr&atilde;o em
       todas as plataformas.</li>
 
       <li>A diretiva <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code>
-      não tem mais efeito, além de emitir um
-      alerta. Qualquer combinação de endereço/porta que apareça em vários
-      hosts virtuais é implicitamente tratada como um host virtual baseado em nome.
+      n&atilde;o tem mais efeito, al&eacute;m de emitir um
+      alerta. Qualquer combina&ccedil;&atilde;o de endere&ccedil;o/porta que apare&ccedil;a em v&aacute;rios
+      hosts virtuais &eacute; implicitamente tratada como um host virtual baseado em nome.
       </li>
 
-      <li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> agora irá ignorar a compressão se souber
-      que a sobrecarga de tamanho adicionada pela compressão será maior que os dados
+      <li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> agora ir&aacute; ignorar a compress&atilde;o se souber
+      que a sobrecarga de tamanho adicionada pela compress&atilde;o ser&aacute; maior que os dados
       a serem comprimidos.
       </li>
 
-      <li>Documentos de erro multilíngues da versão 2.2.x podem não funcionar a menos que
-      sejam ajustados à nova sintaxe do elemento <code>#if expr=</code> do
-      módulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> ou que a diretiva
+      <li>Documentos de erro multil&iacute;ngues da vers&atilde;o 2.2.x podem n&atilde;o funcionar a menos que
+      sejam ajustados &agrave; nova sintaxe do elemento <code>#if expr=</code> do
+      m&oacute;dulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> ou que a diretiva
       <code class="directive"><a href="./mod/mod_include.html#ssilegacyexprparser">SSILegacyExprParser</a></code> esteja
-      habilitada para o diretório que contém os documentos de erro.
+      habilitada para o diret&oacute;rio que cont&eacute;m os documentos de erro.
       </li>
 
       <li>A funcionalidade fornecida por <code>mod_authn_alias</code>
-      em versões anteriores (ou seja, a diretiva <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>)
+      em vers&otilde;es anteriores (ou seja, a diretiva <code class="directive"><a href="./mod/mod_authn_core.html#authnprovideralias">AuthnProviderAlias</a></code>)
       foi movida para <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.
       </li>
 
       <li>As diretivas RewriteLog e RewriteLogLevel foram removidas.
-      Esta funcionalidade agora é disponibilizada configurando o nível adequado
-      de registro para o módulo <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> usando a
+      Esta funcionalidade agora &eacute; disponibilizada configurando o n&iacute;vel adequado
+      de registro para o m&oacute;dulo <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> usando a
       diretiva <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code>.
-      Consulte também a seção sobre <a href="mod/mod_rewrite.html#logging">registros de
+      Consulte tamb&eacute;m a se&ccedil;&atilde;o sobre <a href="mod/mod_rewrite.html#logging">registros de
       mod_rewrite</a>.</li>
 
-      <li>A etiqueta <code>&lt;set&gt;</code> do módulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> não
-      realiza mais a decodificação de entidades no valor que está sendo definido.</li>
+      <li>A etiqueta <code>&lt;set&gt;</code> do m&oacute;dulo <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> n&atilde;o
+      realiza mais a decodifica&ccedil;&atilde;o de entidades no valor que est&aacute; sendo definido.</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">Módulos de Terceiros</a> <a title="Link permanente" href="#third-party" class="permalink">&para;</a></h2>
+<h2 id="third-party">M&oacute;dulos de Terceiros <a title="Link permanente" href="#third-party" class="permalink">&para;</a></h2>
     
-    <p>Todos os módulos devem ser recompilados para a versão 2.4 antes de serem carregados.</p>
+    <p>Todos os m&oacute;dulos devem ser recompilados para a vers&atilde;o 2.4 antes de serem carregados.</p>
 
-    <p>Muitos módulos de terceiros projetados para a versão 2.2
-    funcionarão sem alterações com a versão 2.4 do Apache HTTP Server.
-    Alguns exigirão alterações; consulte a <a href="developer/new_api_2_4.html">Visão geral da
-    atualização da API</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Muitos m&oacute;dulos de terceiros projetados para a vers&atilde;o 2.2
+    funcionar&atilde;o sem altera&ccedil;&otilde;es com a vers&atilde;o 2.4 do Apache HTTP Server.
+    Alguns exigir&atilde;o altera&ccedil;&otilde;es; consulte a <a href="developer/new_api_2_4.html">Vis&atilde;o geral da
+    atualiza&ccedil;&atilde;o da API</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="commonproblems" id="commonproblems">Problemas comuns ao atualizar</a> <a title="Link permanente" href="#commonproblems" class="permalink">&para;</a></h2>
+<h2 id="commonproblems">Problemas comuns ao atualizar <a title="Link permanente" href="#commonproblems" class="permalink">&para;</a></h2>
     
-    <ul><li>Erros na inicialização:
+    <ul><li>Erros na inicializa&ccedil;&atilde;o:
     <ul>
-      <li><code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</code> - carregue o módulo <code class="module"><a href="./mod/mod_unixd.html">mod_unixd</a></code></li>
+      <li><code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</code> - carregue o m&oacute;dulo <code class="module"><a href="./mod/mod_unixd.html">mod_unixd</a></code></li>
       <li><code>Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration</code>, ou
 <code>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</code>
- - carregue o módulo <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> ou atualize a configuração para as diretivas de autorização da versão 2.4.</li>
+ - carregue o m&oacute;dulo <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> ou atualize a configura&ccedil;&atilde;o para as diretivas de autoriza&ccedil;&atilde;o da vers&atilde;o 2.4.</li>
       <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remova a diretiva <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
-      e substitua por outra configuração.</li>
+      e substitua por outra configura&ccedil;&atilde;o.</li>
       <li><code>Invalid command 'AddOutputFilterByType', perhaps misspelled
       or defined by a module not included in the server configuration
       </code> - <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
-      foi movida do núcleo para o módulo mod_filter, que precisa ser carregado.</li>
+      foi movida do n&uacute;cleo para o m&oacute;dulo mod_filter, que precisa ser carregado.</li>
     </ul></li>
-    <li>Erros ao servir requisições:
+    <li>Erros ao servir requisi&ccedil;&otilde;es:
     <ul>
       <li><code>configuration error:  couldn't check user: /path</code> -
-      carregue o módulo <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.</li>
-      <li>arquivos <code>.htaccess</code> são estão sendo processados - Verifique uma
+      carregue o m&oacute;dulo <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.</li>
+      <li>arquivos <code>.htaccess</code> s&atilde;o est&atilde;o sendo processados - Verifique uma
       diretiva <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> apropriada;
-      o padrão mudou para <code>None</code> na versão 2.4.</li>
+      o padr&atilde;o mudou para <code>None</code> na vers&atilde;o 2.4.</li>
     </ul>
     </li>
 </ul>
   </div></div>
 <div class="bottomlang">
-<p><span>Línguas Disponíveis: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
-<a href="./pt-br/upgrading.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="./pt-br/upgrading.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>バーチャルホストの例 - Apache HTTP サーバ バージョン 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a> &gt; <a href="./">バーチャルホスト</a></div><div id="page-content"><div id="preamble"><h1>バーチャルホストの例</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -43,31 +41,31 @@
     </p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">一つの IP アドレスでいくつかの名前ベースの
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#purename">一つの IP アドレスでいくつかの名前ベースの
     ウェブサイトを実行する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#twoips">複数の IP アドレスのあるホストで名前ベースの
+<li><img alt="" src="../images/down.gif"> <a href="#twoips">複数の IP アドレスのあるホストで名前ベースの
     ホスティングを行なう</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">違う IP アドレス (例えば、内部と外部アドレス)
+<li><img alt="" src="../images/down.gif"> <a href="#intraextra">違う IP アドレス (例えば、内部と外部アドレス)
     で同じコンテンツを送る</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#port">違うポートで違うサイトを運営する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP ベースのバーチャルホスティング</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">ポートベースと IP ベースの混ざった
+<li><img alt="" src="../images/down.gif"> <a href="#port">違うポートで違うサイトを運営する</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ip">IP ベースのバーチャルホスティング</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ipport">ポートベースと IP ベースの混ざった
     バーチャルホスト</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">名前ベースと IP ベースを混ぜた
+<li><img alt="" src="../images/down.gif"> <a href="#mixed">名前ベースと IP ベースを混ぜた
     バーチャルホスト</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy"><code>Virtual_host</code> と
+<li><img alt="" src="../images/down.gif"> <a href="#proxy"><code>Virtual_host</code> と
     mod_proxy を併用する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#default"><code>_default_</code> のバーチャルホストを
+<li><img alt="" src="../images/down.gif"> <a href="#default"><code>_default_</code> のバーチャルホストを
     使う</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#migrate">名前ベースのバーチャルホストから IP ベースの
+<li><img alt="" src="../images/down.gif"> <a href="#migrate">名前ベースのバーチャルホストから IP ベースの
     バーチャルホストに移行する</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverpath"><code>ServerPath</code> ディレクティブを
+<li><img alt="" src="../images/down.gif"> <a href="#serverpath"><code>ServerPath</code> ディレクティブを
     使う</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">一つの IP アドレスでいくつかの名前ベースの
-    ウェブサイトを実行する</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">一つの IP アドレスでいくつかの名前ベースの
+    ウェブサイトを実行する <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
     <p>サーバは IP アドレスを一つ割り当てられていて、DNS でマシンに
     複数の名前 (CNAME) が指定されています。このマシンで
@@ -88,29 +86,29 @@
     <div class="example"><h3>サーバ設定</h3><p><code>
     
 
-    # Ensure that Apache listens on port 80<br />
-    Listen 80<br />
-    <br />
-    # Listen for virtual host requests on all IP addresses<br />
-    NameVirtualHost *:80<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
+    # Ensure that Apache listens on port 80<br>
+    Listen 80<br>
+    <br>
+    # Listen for virtual host requests on all IP addresses<br>
+    NameVirtualHost *:80<br>
+    <br>
+    &lt;VirtualHost *:80&gt;<br>
     <span class="indent">
-      DocumentRoot /www/example1<br />
-      ServerName www.example.com<br />
-      <br />
-      # Other directives here<br />
-      <br />
+      DocumentRoot /www/example1<br>
+      ServerName www.example.com<br>
+      <br>
+      # Other directives here<br>
+      <br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost *:80&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost *:80&gt;<br>
     <span class="indent">
-      DocumentRoot /www/example2<br />
-      ServerName www.example.org<br />
-      <br />
-      # Other directives here<br />
-      <br />
+      DocumentRoot /www/example2<br>
+      ServerName www.example.org<br>
+      <br>
+      # Other directives here<br>
+      <br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -130,9 +128,9 @@
           </em>:</p>
 
             <div class="example"><p><code>
-            NameVirtualHost 172.20.30.40<br />
-            <br />
-            &lt;VirtualHost 172.20.30.40&gt;<br />
+            NameVirtualHost 172.20.30.40<br>
+            <br>
+            &lt;VirtualHost 172.20.30.40&gt;<br>
              # etc ...
             </code></p></div>
 
@@ -149,10 +147,10 @@
     実際この設定が動作しないのは、IP アドレスやポートの違いによって
     違うコンテンツを送るときだけです。</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">複数の IP アドレスのあるホストで名前ベースの
-    ホスティングを行なう</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">複数の IP アドレスのあるホストで名前ベースの
+    ホスティングを行なう <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
  
     <div class="note">
     <h3>注</h3><p>ここで説明されている方法は IP アドレスが
@@ -168,32 +166,32 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    Listen 80<br />
-    <br />
-    # This is the "main" server running on 172.20.30.40<br />
-    ServerName server.domain.com<br />
-    DocumentRoot /www/mainserver<br />
-    <br />
-    # This is the other address<br />
-    NameVirtualHost 172.20.30.50<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
+    Listen 80<br>
+    <br>
+    # This is the "main" server running on 172.20.30.40<br>
+    ServerName server.domain.com<br>
+    DocumentRoot /www/mainserver<br>
+    <br>
+    # This is the other address<br>
+    NameVirtualHost 172.20.30.50<br>
+    <br>
+    &lt;VirtualHost 172.20.30.50&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
-        <br />
-        # Other directives here ...<br />
-        <br />
+        DocumentRoot /www/example1<br>
+        ServerName www.example.com<br>
+        <br>
+        # Other directives here ...<br>
+        <br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.50&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-        <br />
-        # Other directives here ...<br />
-        <br />
+        DocumentRoot /www/example2<br>
+        ServerName www.example.org<br>
+        <br>
+        # Other directives here ...<br>
+        <br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -203,10 +201,10 @@
     <code>Host:</code> ヘッダなしのリクエストは <code>www.example.com</code>
     が扱います。</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">違う IP アドレス (例えば、内部と外部アドレス)
-    で同じコンテンツを送る</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+<h2 id="intraextra">違う IP アドレス (例えば、内部と外部アドレス)
+    で同じコンテンツを送る <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>サーバマシンは IP アドレスを二つ (<code>192.168.1.1</code>
     と <code>172.20.30.40</code>) 持っています。このマシンは内部
@@ -222,14 +220,14 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    NameVirtualHost 192.168.1.1<br />
-    NameVirtualHost 172.20.30.40<br />
-    <br />
-    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
+    NameVirtualHost 192.168.1.1<br>
+    NameVirtualHost 172.20.30.40<br>
+    <br>
+    &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/server1<br />
-        ServerName server.example.com<br />
-        ServerAlias server<br />
+        DocumentRoot /www/server1<br>
+        ServerName server.example.com<br>
+        ServerAlias server<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -245,9 +243,9 @@
            同じコンテンツで応答する <code>*</code> に置き換えられます。</p>
     </div>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">違うポートで違うサイトを運営する</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">違うポートで違うサイトを運営する <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>同じ IP に複数のドメインがあり、さらに複数のポートを使って
     リクエストを扱いたいときがあります。"NameVirtualHost" タグの中で
@@ -258,44 +256,44 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    Listen 80<br />
-    Listen 8080<br />
-    <br />
-    NameVirtualHost 172.20.30.40:80<br />
-    NameVirtualHost 172.20.30.40:8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
+    Listen 80<br>
+    Listen 8080<br>
+    <br>
+    NameVirtualHost 172.20.30.40:80<br>
+    NameVirtualHost 172.20.30.40:8080<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:80&gt;<br>
     <span class="indent">
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-80<br />
+        ServerName www.example.com<br>
+        DocumentRoot /www/domain-80<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:8080&gt;<br>
     <span class="indent">
-        ServerName www.example.com<br />
-        DocumentRoot /www/domain-8080<br />
+        ServerName www.example.com<br>
+        DocumentRoot /www/domain-8080<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:80&gt;<br>
     <span class="indent">
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-80<br />
+        ServerName www.example.org<br>
+        DocumentRoot /www/otherdomain-80<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:8080&gt;<br>
     <span class="indent">
-        ServerName www.example.org<br />
-        DocumentRoot /www/otherdomain-8080<br />
+        ServerName www.example.org<br>
+        DocumentRoot /www/otherdomain-8080<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP ベースのバーチャルホスティング</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">IP ベースのバーチャルホスティング <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>サーバは <code>www.example.com</code> と <code>www.example.org</code>
     にそれぞれ解決される、二つの IP アドレス (<code>172.20.30.40</code> と
@@ -304,19 +302,19 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    Listen 80<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    Listen 80<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
+        DocumentRoot /www/example1<br>
+        ServerName www.example.com<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.50&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
+        DocumentRoot /www/example2<br>
+        ServerName www.example.org<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -325,10 +323,10 @@
     指定されていないアドレス (例えば <code>localhost</code>) は、
     主サーバがあればそこに行きます。</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">ポートベースと IP ベースの混ざった
-    バーチャルホスト</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">ポートベースと IP ベースの混ざった
+    バーチャルホスト <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>サーバマシンはそれぞれ <code>www.example.com</code> と
     <code>www.example.org</code> にそれぞれ解決される、IP アドレスを二つ
@@ -338,44 +336,44 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    Listen 172.20.30.40:80<br />
-    Listen 172.20.30.40:8080<br />
-    Listen 172.20.30.50:80<br />
-    Listen 172.20.30.50:8080<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:80&gt;<br />
+    Listen 172.20.30.40:80<br>
+    Listen 172.20.30.40:8080<br>
+    Listen 172.20.30.50:80<br>
+    Listen 172.20.30.50:8080<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:80&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example1-80<br />
-        ServerName www.example.com<br />
+        DocumentRoot /www/example1-80<br>
+        ServerName www.example.com<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40:8080&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40:8080&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example1-8080<br />
-        ServerName www.example.com<br />
+        DocumentRoot /www/example1-8080<br>
+        ServerName www.example.com<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:80&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.50:80&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2-80<br />
-        ServerName www.example.org<br />
+        DocumentRoot /www/example2-80<br>
+        ServerName www.example.org<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.50:8080&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.50:8080&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2-8080<br />
-        ServerName www.example.org<br />
+        DocumentRoot /www/example2-8080<br>
+        ServerName www.example.org<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">名前ベースと IP ベースを混ぜた
-    バーチャルホスト</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">名前ベースと IP ベースを混ぜた
+    バーチャルホスト <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>いくつかのマシンでは名前ベースの、その他では IP ベースのバーチャル
     ホストをします。</p>
@@ -383,51 +381,51 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    Listen 80<br />
-    <br />
-    NameVirtualHost 172.20.30.40<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    Listen 80<br>
+    <br>
+    NameVirtualHost 172.20.30.40<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example1<br />
-        ServerName www.example.com<br />
+        DocumentRoot /www/example1<br>
+        ServerName www.example.com<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
+        DocumentRoot /www/example2<br>
+        ServerName www.example.org<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example3<br />
-        ServerName www.example3.net<br />
+        DocumentRoot /www/example3<br>
+        ServerName www.example3.net<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    # IP-based<br />
-    &lt;VirtualHost 172.20.30.50&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    # IP-based<br>
+    &lt;VirtualHost 172.20.30.50&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example4<br />
-        ServerName www.example4.edu<br />
+        DocumentRoot /www/example4<br>
+        ServerName www.example4.edu<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.60&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.60&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example5<br />
-        ServerName www.example5.gov<br />
+        DocumentRoot /www/example5<br>
+        ServerName www.example5.gov<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy"><code>Virtual_host</code> と
-    mod_proxy を併用する</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy"><code>Virtual_host</code> と
+    mod_proxy を併用する <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>次の例は、フロント側のバーチャルホストで他のマシンへプロクシします。
     例では <code>192.168.111.2</code> のマシンではバーチャルホスト名は
@@ -437,21 +435,21 @@
     </p>
 
     <div class="example"><p><code>
-    &lt;VirtualHost *:*&gt;<br />
-        ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2/<br />
-        ProxyPassReverse / http://192.168.111.2/<br />
-        ServerName hostname.example.com<br />
+    &lt;VirtualHost *:*&gt;<br>
+        ProxyPreserveHost On<br>
+        ProxyPass / http://192.168.111.2/<br>
+        ProxyPassReverse / http://192.168.111.2/<br>
+        ServerName hostname.example.com<br>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> のバーチャルホストを
-    使う</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2> 
+<h2 id="default"><code>_default_</code> のバーチャルホストを
+    使う <a title="Permanent link" href="#default" class="permalink">&para;</a></h2> 
 
-    <h3><a name="defaultallports" id="defaultallports">すべてのポートに対する
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultallports">すべてのポートに対する
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>未指定の IP アドレスとポート、<em>つまり</em>他のバーチャルホストに
     使われていないアドレスとポートの組み合わせ、への<em>すべての</em>リクエストを
@@ -460,9 +458,9 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    &lt;VirtualHost _default_:*&gt;<br />
+    &lt;VirtualHost _default_:*&gt;<br>
     <span class="indent">
-        DocumentRoot /www/default<br />
+        DocumentRoot /www/default<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -482,8 +480,8 @@
     単一の情報ページ (やスクリプト) に書き換えることができます。</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">違うポートのための
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultdifferentports">違うポートのための
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>一つめの設定とほぼ同じですが、サーバは複数のポートを listen しており、
     80 番ポートに対して二つめの <code>_default_</code> バーチャルホストを
@@ -492,17 +490,17 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    &lt;VirtualHost _default_:80&gt;<br />
+    &lt;VirtualHost _default_:80&gt;<br>
     <span class="indent">
-        DocumentRoot /www/default80<br />
-        # ...<br />
+        DocumentRoot /www/default80<br>
+        # ...<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost _default_:*&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost _default_:*&gt;<br>
     <span class="indent">
-        DocumentRoot /www/default<br />
-        # ...<br />
+        DocumentRoot /www/default<br>
+        # ...<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -513,8 +511,8 @@
     主サーバはリクエストを扱いません。</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">一つのポートに対してだけの
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultoneport">一つのポートに対してだけの
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>80 番ポートにはデフォルトのバーチャルホストが必要で、他の
     バーチャルホストはデフォルトが必要ない場合です。</p>
@@ -522,9 +520,9 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    &lt;VirtualHost _default_:80&gt;<br />
-    DocumentRoot /www/default<br />
-    ...<br />
+    &lt;VirtualHost _default_:80&gt;<br>
+    DocumentRoot /www/default<br>
+    ...<br>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
@@ -533,10 +531,10 @@
     主サーバから送られます。</p>
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">名前ベースのバーチャルホストから IP ベースの
-    バーチャルホストに移行する</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">名前ベースのバーチャルホストから IP ベースの
+    バーチャルホストに移行する <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>ホスト名が名前 <code>www.example.org</code> のバーチャルホスト
     (<a href="#name">名前ベース</a>の例の 2 番目の設定) が専用の IP アドレスを
@@ -551,26 +549,26 @@
     <div class="example"><h3>サーバ設定</h3><p><code>
     
 
-    Listen 80<br />
-    ServerName www.example.com<br />
-    DocumentRoot /www/example1<br />
-    <br />
-    NameVirtualHost 172.20.30.40<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
+    Listen 80<br>
+    ServerName www.example.com<br>
+    DocumentRoot /www/example1<br>
+    <br>
+    NameVirtualHost 172.20.30.40<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example2<br />
-        ServerName www.example.org<br />
-        # ...<br />
+        DocumentRoot /www/example2<br>
+        ServerName www.example.org<br>
+        # ...<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/example3<br />
-        ServerName www.example.net<br />
-        ServerAlias *.example.net<br />
-        # ...<br />
+        DocumentRoot /www/example3<br>
+        ServerName www.example.net<br>
+        ServerAlias *.example.net<br>
+        # ...<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -579,10 +577,10 @@
     と古いアドレス(名前ベースのバーチャルホストとして) の両方から
     アクセスできます。</p>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath"><code>ServerPath</code> ディレクティブを
-    使う</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath"><code>ServerPath</code> ディレクティブを
+    使う <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>名前ベースのバーチャルホストが二つあるサーバがあるとします。
     正しいバーチャルホストを得るためにはクライアントは正しい
@@ -597,37 +595,37 @@
     <div class="example"><h3>サーバの設定</h3><p><code>
     
 
-    NameVirtualHost 172.20.30.40<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    NameVirtualHost 172.20.30.40<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        # primary vhost<br />
-        DocumentRoot /www/subdomain<br />
-        RewriteEngine On<br />
-        RewriteRule ^/.* /www/subdomain/index.html<br />
-        # ...<br />
+        # primary vhost<br>
+        DocumentRoot /www/subdomain<br>
+        RewriteEngine On<br>
+        RewriteRule ^/.* /www/subdomain/index.html<br>
+        # ...<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
-    DocumentRoot /www/subdomain/sub1<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
+    DocumentRoot /www/subdomain/sub1<br>
     <span class="indent">
-        ServerName www.sub1.domain.tld<br />
-        ServerPath /sub1/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub1/.*) /www/subdomain$1<br />
-        # ...<br />
+        ServerName www.sub1.domain.tld<br>
+        ServerPath /sub1/<br>
+        RewriteEngine On<br>
+        RewriteRule ^(/sub1/.*) /www/subdomain$1<br>
+        # ...<br>
     </span>
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost 172.20.30.40&gt;<br />
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost 172.20.30.40&gt;<br>
     <span class="indent">
-        DocumentRoot /www/subdomain/sub2<br />
-        ServerName www.sub2.domain.tld<br />
-        ServerPath /sub2/<br />
-        RewriteEngine On<br />
-        RewriteRule ^(/sub2/.*) /www/subdomain$1<br />
-        # ...<br />
+        DocumentRoot /www/subdomain/sub2<br>
+        ServerName www.sub2.domain.tld<br>
+        ServerPath /sub2/<br>
+        RewriteEngine On<br>
+        RewriteRule ^(/sub2/.*) /www/subdomain$1<br>
+        # ...<br>
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -651,13 +649,13 @@
   </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

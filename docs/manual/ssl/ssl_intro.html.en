@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>SSL/TLS Strong Encryption: An Introduction - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: An Introduction</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
@@ -39,14 +37,14 @@ important legal issues of patents and import and export restrictions.
 Rather, it is intended to provide a common background to <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> users by pulling together various concepts, definitions,
 and examples as a starting point for further exploration.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cryptographictech">Cryptographic Techniques</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#certificates">Certificates</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#references">References</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#cryptographictech">Cryptographic Techniques</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#certificates">Certificates</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssl">Secure Sockets Layer (SSL)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#references">References</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">Cryptographic Techniques</a> <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
+<h2 id="cryptographictech">Cryptographic Techniques <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>Understanding SSL requires an understanding of cryptographic
 algorithms, message digest functions (aka. one-way or hash functions), and
@@ -54,7 +52,7 @@ digital signatures. These techniques are the subject of entire books (see
 for instance [<a href="#AC96">AC96</a>]) and provide the basis for privacy,
 integrity, and authentication.</p>
 
-<h3><a name="cryptographicalgo" id="cryptographicalgo">Cryptographic Algorithms</a></h3>
+<h3 id="cryptographicalgo">Cryptographic Algorithms</h3>
 
     <p>Suppose Alice wants to send a message to her bank to transfer some
     money. Alice would like the message to be private, since it will
@@ -97,7 +95,7 @@ integrity, and authentication.</p>
     decrypt them.</p>
 
 
-<h3><a name="messagedigests" id="messagedigests">Message Digests</a></h3>
+<h3 id="messagedigests">Message Digests</h3>
 
     <p>Although Alice may encrypt her message to make it private, there
     is still a concern that someone might modify her original message or
@@ -129,7 +127,7 @@ integrity, and authentication.</p>
     signature.</p>
 
 
-<h3><a name="digitalsignatures" id="digitalsignatures">Digital Signatures</a></h3>
+<h3 id="digitalsignatures">Digital Signatures</h3>
 <p>When Alice sends a message to the bank, the bank needs to ensure that the
 message is really from her, so an intruder cannot request a transaction
 involving her account. A <em>digital signature</em>, created by Alice and
@@ -147,9 +145,9 @@ later date, the signature contains a unique sequence number. This protects
 the bank from a fraudulent claim from Alice that she did not send the message
 -- only she could have signed it (non-repudiation).</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">Certificates</a> <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
+<h2 id="certificates">Certificates <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>Although Alice could have sent a private message to the bank, signed
 it and ensured the integrity of the message, she still needs to be sure
@@ -164,7 +162,7 @@ can be assured that they are communicating with whom they think they are.
 Such a trusted agency is called a <em>Certificate Authority</em> and
 certificates are used for authentication.</p>
 
-<h3><a name="certificatecontents" id="certificatecontents">Certificate Contents</a></h3>
+<h3 id="certificatecontents">Certificate Contents</h3>
 
     <p>A certificate associates a public key with the real identity of
     an individual, server, or other entity, known as the subject. As
@@ -176,7 +174,7 @@ certificates are used for authentication.</p>
     information (or extensions) as well as administrative information
     for the Certificate Authority's use, such as a serial number.</p>
 
-    <h4><a name="table1" id="table1">Table 1: Certificate Information</a></h4>
+    <h4 id="table1">Table 1: Certificate Information</h4>
     
     <table>
     
@@ -200,7 +198,7 @@ certificates are used for authentication.</p>
     abbreviations used to refer to the fields (see <a href="#table2">Table
     2</a>).</p>
 
-    <h4><a name="table2" id="table2">Table 2: Distinguished Name Information</a></h4>
+    <h4 id="table2">Table 2: Distinguished Name Information</h4>
     
     <table class="bordered">
     
@@ -214,11 +212,11 @@ certificates are used for authentication.</p>
         <td>CN=Joe Average</td></tr>
     <tr><td>Organization or Company</td>
         <td>O</td>
-        <td>Name is associated with this<br />organization</td>
+        <td>Name is associated with this<br>organization</td>
         <td>O=Snake Oil, Ltd.</td></tr>
     <tr><td>Organizational Unit</td>
         <td>OU</td>
-        <td>Name is associated with this <br />organization unit, such
+        <td>Name is associated with this <br>organization unit, such
         as a department</td>
         <td>OU=Research Institute</td></tr>
     <tr><td>City/Locality</td>
@@ -276,7 +274,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 -----END CERTIFICATE-----</pre></div>
 
 
-<h3><a name="certificateauthorities" id="certificateauthorities">Certificate Authorities</a></h3>
+<h3 id="certificateauthorities">Certificate Authorities</h3>
 
     <p>By verifying the information in a certificate request
     before granting the certificate, the Certificate Authority assures
@@ -285,7 +283,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
     Certificate Authority must first make sure that Alice really is the
     person the certificate request claims she is.</p>
 
-    <h4><a name="certificatechains" id="certificatechains">Certificate Chains</a></h4>
+    <h4 id="certificatechains">Certificate Chains</h4>
     
         <p>A Certificate Authority may also issue a certificate for
         another Certificate Authority. When examining a certificate,
@@ -296,7 +294,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
         in the chain.</p>
     
 
-    <h4><a name="rootlevelca" id="rootlevelca">Creating a Root-Level CA</a></h4>
+    <h4 id="rootlevelca">Creating a Root-Level CA</h4>
     
         <p>As noted earlier, each certificate requires an issuer to assert
         the validity of the identity of the certificate subject, up to
@@ -327,7 +325,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
         identities of individuals and servers.</p>
     
 
-    <h4><a name="certificatemanagement" id="certificatemanagement">Certificate Management</a></h4>
+    <h4 id="certificatemanagement">Certificate Management</h4>
     
         <p>Establishing a Certificate Authority is a responsibility which
         requires a solid administrative, technical and management
@@ -359,9 +357,9 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
     
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a> <a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
+<h2 id="ssl">Secure Sockets Layer (SSL) <a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>The Secure Sockets Layer protocol is a protocol layer which may be
 placed between a reliable connection-oriented network layer protocol
@@ -377,7 +375,7 @@ or other concerns and also enables the protocol to take advantage of new
 algorithms. Choices are negotiated between client and server when
 establishing a protocol session.</p>
 
-<h3><a name="table4" id="table4">Table 4: Versions of the SSL protocol</a></h3>
+<h3 id="table4">Table 4: Versions of the SSL protocol</h3>
 
     <table class="bordered">
     
@@ -430,7 +428,7 @@ certificate chain. SSL 3.0 is the basis for the Transport Layer Security
 [<a href="#TLS1">TLS</a>] protocol standard, currently in development by
 the Internet Engineering Task Force (IETF).</p>
 
-<h3><a name="session" id="session">Establishing a Session</a></h3>
+<h3 id="session">Establishing a Session</h3>
 
     <p>The SSL session is established by following a handshake sequence
     between client and server, as shown in <a href="#figure1">Figure 1</a>. This sequence may vary, depending on whether the server
@@ -450,7 +448,7 @@ the Internet Engineering Task Force (IETF).</p>
     </div>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
+    <img src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327"><br>
     <a id="figure1" name="figure1"><dfn>Figure 1</dfn></a>: Simplified SSL
     Handshake Sequence</p>
 
@@ -478,7 +476,7 @@ the Internet Engineering Task Force (IETF).</p>
     <p>These three elements are described in the sections that follow.</p>
 
 
-<h3><a name="keyexchange" id="keyexchange">Key Exchange Method</a></h3>
+<h3 id="keyexchange">Key Exchange Method</h3>
 
     <p>The key exchange method defines how the shared secret symmetric
     cryptography key used for application data transfer will be agreed
@@ -495,7 +493,7 @@ the Internet Engineering Task Force (IETF).</p>
     used to generating the shared key [<a href="#AC96">AC96</a>, p516].</p>
 
 
-<h3><a name="ciphertransfer" id="ciphertransfer">Cipher for Data Transfer</a></h3>
+<h3 id="ciphertransfer">Cipher for Data Transfer</h3>
 
     <p>SSL uses conventional symmetric cryptography, as described earlier,
     for encrypting messages in a session.
@@ -528,7 +526,7 @@ the Internet Engineering Task Force (IETF).</p>
     and "RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfunction" id="digestfunction">Digest Function</a></h3>
+<h3 id="digestfunction">Digest Function</h3>
 
     <p>The choice of digest function determines how a digest is created
     from a record unit. SSL supports the following:</p>
@@ -544,7 +542,7 @@ the Internet Engineering Task Force (IETF).</p>
     protect against replay attacks.</p>
 
 
-<h3><a name="handshake" id="handshake">Handshake Sequence Protocol</a></h3>
+<h3 id="handshake">Handshake Sequence Protocol</h3>
 
     <p>The handshake sequence uses three protocols:</p>
 
@@ -565,7 +563,7 @@ the Internet Engineering Task Force (IETF).</p>
     underlying protocol.</p>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig2.gif" alt="" width="428" height="217" /><br />
+    <img src="../images/ssl_intro_fig2.gif" alt="" width="428" height="217"><br>
     <a id="figure2" name="figure2"><dfn>Figure 2</dfn></a>: SSL Protocol Stack
     </p>
 
@@ -577,7 +575,7 @@ the Internet Engineering Task Force (IETF).</p>
     established.</p>
 
 
-<h3><a name="datatransfer" id="datatransfer">Data Transfer</a></h3>
+<h3 id="datatransfer">Data Transfer</h3>
 
     <p>The SSL Record Protocol, shown in <a href="#figure3">Figure 3</a>,
     is used to transfer application and SSL Control data between the
@@ -589,12 +587,12 @@ the Internet Engineering Task Force (IETF).</p>
     for compression).</p>
 
     <p class="figure">
-    <img src="../images/ssl_intro_fig3.gif" alt="" width="423" height="323" /><br />
+    <img src="../images/ssl_intro_fig3.gif" alt="" width="423" height="323"><br>
     <a id="figure3" name="figure3"><dfn>Figure 3</dfn></a>: SSL Record Protocol
     </p>
 
 
-<h3><a name="securehttp" id="securehttp">Securing HTTP Communication</a></h3>
+<h3 id="securehttp">Securing HTTP Communication</h3>
 
     <p>One common use of SSL is to secure Web HTTP communication between
     a browser and a webserver. This does not preclude the use of
@@ -603,9 +601,9 @@ the Internet Engineering Task Force (IETF).</p>
     rather than <code>http</code>, and a different server port (by default,
     port 443). This functionality is a large part of what <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> provides for the Apache webserver.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="references" id="references">References</a> <a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
+<h2 id="references">References <a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
@@ -655,11 +653,11 @@ Version 3.0</q>, 1996. See <a href="https://www.rfc-editor.org/rfc/rfc6101">RFC 
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,41 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_rewrite - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_rewrite</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>rewrite_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_rewrite.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>rewrite_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_rewrite.c</td></tr></table>
 <h3>Summary</h3>
 
 	<p>The <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> module uses a rule-based rewriting
@@ -65,20 +63,20 @@ URLs on the fly</td></tr>
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#logging">Logging</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriteengine">RewriteEngine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">RewriteMap</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriteoptions">RewriteOptions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritebase">RewriteBase</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritecond">RewriteCond</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriteengine">RewriteEngine</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap">RewriteMap</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriteoptions">RewriteOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewriterule">RewriteRule</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Logging <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offers detailed logging of its actions
     at the <code>trace1</code> to <code>trace8</code> log levels. The
@@ -113,8 +111,8 @@ URLs on the fly</td></tr>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase">Directive</a> <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewritebase"><span id="RewriteBase">RewriteBase</span> Directive <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the base URL for per-directory rewrites</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteBase <em>URL-path</em></code></td></tr>
@@ -148,8 +146,8 @@ URLs on the fly</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteCond" id="RewriteCond">RewriteCond</a> <a name="rewritecond" id="rewritecond">Directive</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewritecond"><span id="RewriteCond">RewriteCond</span> Directive <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a condition under which rewriting will take place
 </td></tr>
@@ -217,38 +215,38 @@ URLs on the fly</td></tr>
           <table>
           
             <tr>
-              <th>HTTP headers:</th> <th>connection &amp; request:</th> <th />
+              <th>HTTP headers:</th> <th>connection &amp; request:</th> <th></th>
             </tr>
 
             <tr>
               <td>
-                 HTTP_ACCEPT<br />
-                 HTTP_COOKIE<br />
-                 HTTP_FORWARDED<br />
-                 HTTP_HOST<br />
-                 HTTP_PROXY_CONNECTION<br />
-                 HTTP_REFERER<br />
-                 HTTP_USER_AGENT<br />
+                 HTTP_ACCEPT<br>
+                 HTTP_COOKIE<br>
+                 HTTP_FORWARDED<br>
+                 HTTP_HOST<br>
+                 HTTP_PROXY_CONNECTION<br>
+                 HTTP_REFERER<br>
+                 HTTP_USER_AGENT<br>
               </td>
 
               <td>
-                 AUTH_TYPE<br />
-                 CONN_REMOTE_ADDR<br />
-                 CONTEXT_PREFIX<br />
-                 CONTEXT_DOCUMENT_ROOT<br />
-                 IPV6<br />
-                 PATH_INFO<br />
-                 QUERY_STRING<br />
-                 REMOTE_ADDR<br />
-                 REMOTE_HOST<br />
-                 REMOTE_IDENT<br />
-                 REMOTE_PORT<br />
-                 REMOTE_USER<br />
-                 REQUEST_METHOD<br />
-                 SCRIPT_FILENAME<br />
+                 AUTH_TYPE<br>
+                 CONN_REMOTE_ADDR<br>
+                 CONTEXT_PREFIX<br>
+                 CONTEXT_DOCUMENT_ROOT<br>
+                 IPV6<br>
+                 PATH_INFO<br>
+                 QUERY_STRING<br>
+                 REMOTE_ADDR<br>
+                 REMOTE_HOST<br>
+                 REMOTE_IDENT<br>
+                 REMOTE_PORT<br>
+                 REMOTE_USER<br>
+                 REQUEST_METHOD<br>
+                 SCRIPT_FILENAME<br>
               </td>
 
-              <td />
+              <td></td>
             </tr>
 
             <tr>
@@ -257,38 +255,38 @@ URLs on the fly</td></tr>
 
             <tr>
               <td>
-                 DOCUMENT_ROOT<br />
-                 SCRIPT_GROUP<br />
-                 SCRIPT_USER<br />
-                 SERVER_ADDR<br />
-                 SERVER_ADMIN<br />
-                 SERVER_NAME<br />
-                 SERVER_PORT<br />
-                 SERVER_PROTOCOL<br />
-                 SERVER_SOFTWARE<br />
+                 DOCUMENT_ROOT<br>
+                 SCRIPT_GROUP<br>
+                 SCRIPT_USER<br>
+                 SERVER_ADDR<br>
+                 SERVER_ADMIN<br>
+                 SERVER_NAME<br>
+                 SERVER_PORT<br>
+                 SERVER_PROTOCOL<br>
+                 SERVER_SOFTWARE<br>
               </td>
 
               <td>
-                 TIME_YEAR<br />
-                 TIME_MON<br />
-                 TIME_DAY<br />
-                 TIME_HOUR<br />
-                 TIME_MIN<br />
-                 TIME_SEC<br />
-                 TIME_WDAY<br />
-                 TIME<br />
+                 TIME_YEAR<br>
+                 TIME_MON<br>
+                 TIME_DAY<br>
+                 TIME_HOUR<br>
+                 TIME_MIN<br>
+                 TIME_SEC<br>
+                 TIME_WDAY<br>
+                 TIME<br>
               </td>
 
               <td>
-                 API_VERSION<br />
-                 CONN_REMOTE_ADDR<br />
-                 HTTPS<br />
-                 IS_SUBREQ<br />
-                 REMOTE_ADDR<br />
-                 REQUEST_FILENAME<br />
-                 REQUEST_SCHEME<br />
-                 REQUEST_URI<br />
-                 THE_REQUEST<br />
+                 API_VERSION<br>
+                 CONN_REMOTE_ADDR<br>
+                 HTTPS<br>
+                 IS_SUBREQ<br>
+                 REMOTE_ADDR<br>
+                 REQUEST_FILENAME<br>
+                 REQUEST_SCHEME<br>
+                 REQUEST_URI<br>
+                 THE_REQUEST<br>
               </td>
             </tr>
           </table>
@@ -507,21 +505,21 @@ URLs on the fly</td></tr>
 
           <dl>
             <dt><strong>&lt;CondPattern</strong></dt>
-            <dd>Lexicographically precedes<br />
+            <dd>Lexicographically precedes<br>
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically precedes
             <em>CondPattern</em>.</dd>
 
             <dt><strong>&gt;CondPattern</strong></dt>
-            <dd>Lexicographically follows<br />
+            <dd>Lexicographically follows<br>
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically follows
             <em>CondPattern</em>.</dd>
 
             <dt><strong>=CondPattern</strong></dt>
-            <dd>Lexicographically equal<br />
+            <dd>Lexicographically equal<br>
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> is lexicographically equal to
@@ -531,7 +529,7 @@ URLs on the fly</td></tr>
             compares <em>TestString</em> to the empty string.</dd>
 
             <dt><strong>&lt;=CondPattern</strong></dt>
-            <dd>Lexicographically less than or equal to<br />
+            <dd>Lexicographically less than or equal to<br>
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically precedes
@@ -539,7 +537,7 @@ URLs on the fly</td></tr>
             (the two strings are equal, character for character).</dd>
 
             <dt><strong>&gt;=CondPattern</strong></dt>
-            <dd>Lexicographically greater than or equal to<br />
+            <dd>Lexicographically greater than or equal to<br>
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True
             if <em>TestString</em> lexicographically follows
@@ -561,27 +559,27 @@ URLs on the fly</td></tr>
           <dl>
 
             <dt><strong>-eq</strong></dt>
-            <dd>Is numerically <strong>eq</strong>ual to<br />
+            <dd>Is numerically <strong>eq</strong>ual to<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the two are numerically equal.</dd>
 
             <dt><strong>-ge</strong></dt>
-            <dd>Is numerically <strong>g</strong>reater than or <strong>e</strong>qual to<br />
+            <dd>Is numerically <strong>g</strong>reater than or <strong>e</strong>qual to<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than or equal
             to the <em>CondPattern</em>.</dd>
 
             <dt><strong>-gt</strong></dt>
-            <dd>Is numerically <strong>g</strong>reater <strong>t</strong>han<br />
+            <dd>Is numerically <strong>g</strong>reater <strong>t</strong>han<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically greater than
             the <em>CondPattern</em>.</dd>
 
             <dt><strong>-le</strong></dt>
-            <dd>Is numerically <strong>l</strong>ess than or <strong>e</strong>qual to<br />
+            <dd>Is numerically <strong>l</strong>ess than or <strong>e</strong>qual to<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than or equal
@@ -590,7 +588,7 @@ URLs on the fly</td></tr>
             <strong>-h</strong> variant.</dd>
 
             <dt><strong>-lt</strong></dt>
-            <dd>Is numerically <strong>l</strong>ess <strong>t</strong>han<br />
+            <dd>Is numerically <strong>l</strong>ess <strong>t</strong>han<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the <em>TestString</em> is numerically less than
@@ -599,7 +597,7 @@ URLs on the fly</td></tr>
             <strong>-h</strong> variant.</dd>
 
             <dt><strong>-ne</strong></dt>
-            <dd>Is numerically <strong>n</strong>ot <strong>e</strong>qual to<br />
+            <dd>Is numerically <strong>n</strong>ot <strong>e</strong>qual to<br>
             The <em>TestString</em> is treated as an integer, and is
             numerically compared to the <em>CondPattern</em>. True if
             the two are numerically different. This is equivalent to
@@ -615,14 +613,14 @@ URLs on the fly</td></tr>
 
           <dt><strong>-d</strong></dt>
 
-          <dd>Is <strong>d</strong>irectory.<br />
+          <dd>Is <strong>d</strong>irectory.<br>
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a directory.
           </dd>
 
           <dt><strong>-f</strong></dt>
 
-          <dd>Is regular <strong>f</strong>ile.<br />
+          <dd>Is regular <strong>f</strong>ile.<br>
 
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file.
@@ -630,7 +628,7 @@ URLs on the fly</td></tr>
 
            <dt><strong>-F</strong></dt>
 
-           <dd>Is existing file, via subrequest.<br />
+           <dd>Is existing file, via subrequest.<br>
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -639,13 +637,13 @@ URLs on the fly</td></tr>
            </dd>
 
             <dt><strong>-h</strong></dt>
-            <dd>Is symbolic link, bash convention.<br />
+            <dd>Is symbolic link, bash convention.<br>
             See <strong>-l</strong>.
             </dd>
 
             <dt><strong>-l</strong></dt>
 
-            <dd>Is symbolic <strong>l</strong>ink.<br />
+            <dd>Is symbolic <strong>l</strong>ink.<br>
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
             use the bash convention of <strong>-L</strong> or
@@ -655,17 +653,17 @@ URLs on the fly</td></tr>
             </dd>
 
             <dt><strong>-L</strong></dt>
-            <dd>Is symbolic link, bash convention.<br />
+            <dd>Is symbolic link, bash convention.<br>
             See <strong>-l</strong>.</dd>
 
             <dt><strong>-s</strong></dt>
-            <dd>Is regular file, with <strong>s</strong>ize.<br />
+            <dd>Is regular file, with <strong>s</strong>ize.<br>
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file with size greater
             than zero.</dd>
 
             <dt><strong>-U</strong></dt>
-            <dd><p>Is existing URL, via subrequest.<br />
+            <dd><p>Is existing URL, via subrequest.<br>
             Checks whether or not <em>TestString</em> is a valid URL,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
@@ -678,7 +676,7 @@ URLs on the fly</td></tr>
             returned.</p> </dd>
 
             <dt><strong>-x</strong></dt>
-            <dd>Has e<strong>x</strong>ecutable permissions.<br />
+            <dd>Has e<strong>x</strong>ecutable permissions.<br>
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and has executable permissions.
             These permissions are determined according to
@@ -719,7 +717,7 @@ RewriteRule "^/images" "-" [F]</pre>
       
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
-        (<strong>n</strong>o <strong>c</strong>ase)<br />
+        (<strong>n</strong>o <strong>c</strong>ase)<br>
         This makes the test case-insensitive - differences
         between 'A-Z' and 'a-z' are ignored, both in the
         expanded <em>TestString</em> and the <em>CondPattern</em>.
@@ -729,7 +727,7 @@ RewriteRule "^/images" "-" [F]</pre>
 
         <li>
           '<strong><code>ornext|OR</code></strong>'
-          (<strong>or</strong> next condition)<br />
+          (<strong>or</strong> next condition)<br>
           Use this to combine rule conditions with a local OR
           instead of the implicit AND. Typical example:
 
@@ -744,9 +742,9 @@ RewriteRule ...some special stuff for any of these hosts...</pre>
         </li>
 
         <li>'<strong><code>novary|NV</code></strong>'
-        (<strong>n</strong>o <strong>v</strong>ary)<br />
+        (<strong>n</strong>o <strong>v</strong>ary)<br>
         If a HTTP header is used in the condition, this flag prevents
-        this header from being added to the Vary header of the response. <br />
+        this header from being added to the Vary header of the response. <br>
         Using this flag might break proper caching of the response if
         the representation of this response varies on the value of this header.
         So this flag should be only used if the meaning of the Vary header
@@ -781,8 +779,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a> <a name="rewriteengine" id="rewriteengine">Directive</a> <a title="Permanent link" href="#rewriteengine" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewriteengine"><span id="RewriteEngine">RewriteEngine</span> Directive <a title="Permanent link" href="#rewriteengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables or disables runtime rewriting engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteEngine on|off</code></td></tr>
@@ -814,8 +812,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <code>on</code></p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteMap" id="RewriteMap">RewriteMap</a> <a name="rewritemap" id="rewritemap">Directive</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewritemap"><span id="RewriteMap">RewriteMap</span> Directive <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
@@ -840,7 +838,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
       <p class="indent">
         <strong><code>${</code> <em>MapName</em> <code>:</code>
-        <em>LookupKey</em> <code>}</code><br />
+        <em>LookupKey</em> <code>}</code><br>
          <code>${</code> <em>MapName</em> <code>:</code>
         <em>LookupKey</em> <code>|</code> <em>DefaultValue</em>
         <code>}</code></strong>
@@ -908,8 +906,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions" id="rewriteoptions">Directive</a> <a title="Permanent link" href="#rewriteoptions" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewriteoptions"><span id="RewriteOptions">RewriteOptions</span> Directive <a title="Permanent link" href="#rewriteoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets some special options for the rewrite engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
@@ -952,7 +950,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <dt><code>InheritBefore</code></dt>
       <dd>
       <p> Like <code>Inherit</code> above, but the rules from the parent scope
-      are applied <strong>before</strong> rules specified in the child scope.<br />
+      are applied <strong>before</strong> rules specified in the child scope.<br>
       Available in Apache HTTP Server 2.3.10 and later.</p>
       </dd>
 
@@ -963,7 +961,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       the configuration of the current configuration. It is equivalent to
       specifying <code>RewriteOptions Inherit</code> in all child
       configurations. See the <code>Inherit</code> option for more details
-      on how the parent-child relationships are handled.<br />
+      on how the parent-child relationships are handled.<br>
       Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
@@ -972,7 +970,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
       <p>Like <code>InheritDown</code> above, but the rules from the current
       scope are applied <strong>before</strong> rules specified in any child's
-      scope.<br />
+      scope.<br>
       Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
@@ -981,7 +979,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
       <p>This option forces the current and child configurations to ignore
       all rules that would be inherited from a parent specifying
-      <code>InheritDown</code> or <code>InheritDownBefore</code>.<br />
+      <code>InheritDown</code> or <code>InheritDownBefore</code>.<br>
       Available in Apache HTTP Server 2.4.8 and later.</p>
       </dd>
 
@@ -996,7 +994,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       is set to off, the <code>AllowNoSlash</code> option can be enabled to ensure
       that rewrite rules are no longer ignored. This option makes it possible to
       apply rewrite rules within .htaccess files that match the directory without
-      a trailing slash, if so desired.<br />
+      a trailing slash, if so desired.<br>
       Available in Apache HTTP Server 2.4.0 and later.</p>
       </dd>
 
@@ -1014,7 +1012,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       <code>AllowAnyURI</code> option can be enabled, and
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> will apply the rule set to any
       request URI string, regardless of whether that string matches
-      the URL-path grammar required by the HTTP specification.<br />
+      the URL-path grammar required by the HTTP specification.<br>
       Available in Apache HTTP Server 2.4.3 and later.</p>
 
       <div class="warning">
@@ -1072,8 +1070,8 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
       </dl>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteRule" id="RewriteRule">RewriteRule</a> <a name="rewriterule" id="rewriterule">Directive</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="rewriterule"><span id="RewriteRule">RewriteRule</span> Directive <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines rules for the rewriting engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteRule
@@ -1494,14 +1492,14 @@ sections and consider both set of statements, rather than only the last one.</li
 <tr>
         <td>UnsafePrefixStat</td>
         <td>Allows potentially unsafe substitutions from a leading variable or backreference to a filesystem path.
-        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em><br />
+        <em><a href="../rewrite/flags.html#flag_unsafe_prefix_stat">details ...</a></em><br>
         Available in Apache HTTP Server 2.4.60 and later.
         </td>
     </tr>
 <tr class="odd">
         <td>UNC</td>
         <td>Prevents the merging of multiple leading slashes, as used by Windows UNC paths.
-        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em><br />
+        <em><a href="../rewrite/flags.html#flag_unc">details ...</a></em><br>
         Available in Apache HTTP Server 2.4.62 and later.
         </td>
     </tr>
@@ -1523,9 +1521,9 @@ directive.</p>
       form, context, and the [R] and [P] flags, and their
       meanings:</p>
 
-      <p><strong>Outside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration<br />
+      <p><strong>Outside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration<br>
        for request ``<code>GET
-      /somepath/pathinfo</code>'':</strong><br />
+      /somepath/pathinfo</code>'':</strong><br>
       </p>
 
 <table class="bordered"><tr class="header">
@@ -1583,11 +1581,11 @@ directive.</p>
 </table>
 
       <p><strong>Inside <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> configuration for
-      <code>/somepath</code><br />
+      <code>/somepath</code><br>
        (e.g., <code>.htaccess</code> or <code>&lt;Directory&gt;</code>, with
-      <code>RewriteBase "/somepath"</code>)<br />
+      <code>RewriteBase "/somepath"</code>)<br>
        for request ``<code>GET
-      /somepath/localpath/pathinfo</code>'':</strong><br />
+      /somepath/localpath/pathinfo</code>'':</strong><br>
      </p>
 
 <table class="bordered"><tr class="header">
@@ -1650,10 +1648,10 @@ redirection</td>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_rewrite.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

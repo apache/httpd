@@ -1,54 +1,52 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Sunucu ve Destek Programları - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>Sunucu ve Destek Programları - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="../"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Sunucu ve Destek Programları</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a></div><div id="page-content"><div id="preamble"><h1>Sunucu ve Destek Programları</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-    <p>Bu sayfada Apache HTTP Sunucusuna dahil tüm çalıştırılabilir programlar
+    <p>Bu sayfada Apache HTTP Sunucusuna dahil t&uuml;m &ccedil;alıştırılabilir programlar
       tanıtılmıştır.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="index" id="index">Dizin</a> <a title="Permanent link" href="#index" class="permalink">&para;</a></h2>
+<h2 id="index">Dizin <a title="Permanent link" href="#index" class="permalink">&para;</a></h2>
 
     <dl>
       <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
-      <dd>Apache hiper metin aktarım protokolü sunucusu.</dd>
+      <dd>Apache hiper metin aktarım protokol&uuml; sunucusu.</dd>
 
       <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
-      <dd>Apache HTTP Sunucusu denetim arayüzü.</dd>
+      <dd>Apache HTTP Sunucusu denetim aray&uuml;z&uuml;.</dd>
 
       <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
-      <dd>Apache HTTP Sunucusu  başarım ölçme aracı.</dd>
+      <dd>Apache HTTP Sunucusu  başarım &ouml;l&ccedil;me aracı.</dd>
 
       <dt><code class="program"><a href="../programs/apxs.html">apxs</a></code></dt>
       <dd>Apache HTTP Sunucusu eklenti aracı (APache eXtenSion tool).</dd>
@@ -57,59 +55,59 @@
       <dd>Kaynak ağacını yapılandırır.</dd>
 
       <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
-      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması için
-        DBM biçeminde oluşturur ve günceller.</dd>
+      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması i&ccedil;in
+        DBM bi&ccedil;eminde oluşturur ve g&uuml;nceller.</dd>
 
       <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
-      <dd>Bir FastCGI programını çalıştırır.</dd>
+      <dd>Bir FastCGI programını &ccedil;alıştırır.</dd>
 
       <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
       <dd>Disk arabelleğini temizler.</dd>
 
       <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
-      <dd>Kullanıcı kimlik doğrulama dosyalarını özet kimlik doğrulaması için
-        oluşturur ve günceller.</dd>
+      <dd>Kullanıcı kimlik doğrulama dosyalarını &ouml;zet kimlik doğrulaması i&ccedil;in
+        oluşturur ve g&uuml;nceller.</dd>
 
       <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
       <dd>DBM parola veritabanlarını idare eder.</dd>
 
       <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
-      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması için
-        oluşturur ve günceller.</dd>
+      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması i&ccedil;in
+        oluşturur ve g&uuml;nceller.</dd>
 
       <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
       <dd><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ile kullanmak
-        üzere DBM dosyaları oluşturur.</dd>
+        &uuml;zere DBM dosyaları oluşturur.</dd>
 
       <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
-      <dd>Apache günlük dosyalarındaki IP adreslerini konak isimlerine
-        dönüştürür.</dd>
+      <dd>Apache g&uuml;nl&uuml;k dosyalarındaki IP adreslerini konak isimlerine
+        d&ouml;n&uuml;şt&uuml;r&uuml;r.</dd>
 
       <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
-      <dd>Sunucunun durumunu düzenli aralıklarla günlüğe kaydeder.</dd>
+      <dd>Sunucunun durumunu d&uuml;zenli aralıklarla g&uuml;nl&uuml;ğe kaydeder.</dd>
 
       <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
-      <dd>Sunucuyu öldürmek gerekmeksizin günlük dosyalarının döndürülmesini
+      <dd>Sunucuyu &ouml;ld&uuml;rmek gerekmeksizin g&uuml;nl&uuml;k dosyalarının d&ouml;nd&uuml;r&uuml;lmesini
         sağlar.</dd>
 
       <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
-      <dd>Bir çok konaklı günlük dosyasını konak başına bir günlük dosyası düşecek şekilde böler.</dd>
+      <dd>Bir &ccedil;ok konaklı g&uuml;nl&uuml;k dosyasını konak başına bir g&uuml;nl&uuml;k dosyası d&uuml;şecek şekilde b&ouml;ler.</dd>
 
       <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
-      <dd>Bir dosyayı belli bir kullanıcı adına çalıştırır.</dd>
+      <dd>Bir dosyayı belli bir kullanıcı adına &ccedil;alıştırır.</dd>
     </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

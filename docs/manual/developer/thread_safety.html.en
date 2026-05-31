@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache HTTP Server 2.x Thread Safety Issues - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Developer Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache HTTP Server 2.x Thread Safety Issues</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/developer/thread_safety.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -35,15 +33,15 @@
     either as thread safety problems can lead to subtle race conditions that
     may only show up in certain conditions under heavy load.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#variables">Global and static variables</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#errno">errno</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#functions">Common standard troublesome functions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#commonlibs">Common 3rd Party Libraries</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#liblist">Library List</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#variables">Global and static variables</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#errno">errno</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#functions">Common standard troublesome functions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#commonlibs">Common 3rd Party Libraries</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#liblist">Library List</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="variables" id="variables">Global and static variables</a> <a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
+<h2 id="variables">Global and static variables <a title="Permanent link" href="#variables" class="permalink">&para;</a></h2>
     <p>When writing your module or when trying to determine if a module or
     3rd party library is thread safe there are some common things to keep in
     mind.</p>
@@ -69,9 +67,9 @@
     at the <code>apr_atomic_<var>*</var></code> functions and the
     <code>apr_thread_mutex_<var>*</var></code> functions.</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errno" id="errno">errno</a> <a title="Permanent link" href="#errno" class="permalink">&para;</a></h2>
+<h2 id="errno">errno <a title="Permanent link" href="#errno" class="permalink">&para;</a></h2>
     <p>This is a common global variable that holds the error number of the
     last error that occurred. If one thread calls a low-level function that
     sets errno and then another thread checks it, we are bleeding error
@@ -94,9 +92,9 @@
     addition to <code>_REENTRANT</code> the symbols that may affect this are
     <code>_POSIX_C_SOURCE</code>, <code>_THREAD_SAFE</code>,
     <code>_SVID_SOURCE</code>, and <code>_BSD_SOURCE</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="functions" id="functions">Common standard troublesome functions</a> <a title="Permanent link" href="#functions" class="permalink">&para;</a></h2>
+<h2 id="functions">Common standard troublesome functions <a title="Permanent link" href="#functions" class="permalink">&para;</a></h2>
     <p>Not only do things have to be thread safe, but they also have to be
     reentrant. <code>strtok()</code> is an obvious one. You call it the first
     time with your delimiter which it then remembers and on each subsequent
@@ -113,9 +111,9 @@
     your system has <code>crypt_r()</code> chances are you should be using
     that, or if possible simply avoid the whole mess by using md5 instead.</p>
     
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="commonlibs" id="commonlibs">Common 3rd Party Libraries</a> <a title="Permanent link" href="#commonlibs" class="permalink">&para;</a></h2>
+<h2 id="commonlibs">Common 3rd Party Libraries <a title="Permanent link" href="#commonlibs" class="permalink">&para;</a></h2>
     <p>The following is a list of common libraries that are used by 3rd party
     Apache modules.  You can check to see if your module is using a potentially
     unsafe library by using tools such as <code>ldd(1)</code> and
@@ -123,33 +121,33 @@
     try this:</p>
 
     <div class="example"><p><code>
-      % ldd libphp4.so<br />
-      libsablot.so.0 =&gt; /usr/local/lib/libsablot.so.0 (0x401f6000)<br />
-      libexpat.so.0 =&gt; /usr/lib/libexpat.so.0 (0x402da000)<br />
-      libsnmp.so.0 =&gt; /usr/lib/libsnmp.so.0 (0x402f9000)<br />
-      libpdf.so.1 =&gt; /usr/local/lib/libpdf.so.1 (0x40353000)<br />
-      libz.so.1 =&gt; /usr/lib/libz.so.1 (0x403e2000)<br />
-      libpng.so.2 =&gt; /usr/lib/libpng.so.2 (0x403f0000)<br />
-      libmysqlclient.so.11 =&gt; /usr/lib/libmysqlclient.so.11 (0x40411000)<br />
-      libm.so.6 =&gt; /lib/libm.so.6 (0x40487000)<br />
-      libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0x404a8000)<br />
-      libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0x404e7000)<br />
-      libcrypt.so.1 =&gt; /lib/libcrypt.so.1 (0x40505000)<br />
-      libssl.so.2 =&gt; /lib/libssl.so.2 (0x40532000)<br />
-      libcrypto.so.2 =&gt; /lib/libcrypto.so.2 (0x40560000)<br />
-      libresolv.so.2 =&gt; /lib/libresolv.so.2 (0x40624000)<br />
-      libdl.so.2 =&gt; /lib/libdl.so.2 (0x40634000)<br />
-      libnsl.so.1 =&gt; /lib/libnsl.so.1 (0x40637000)<br />
-      libc.so.6 =&gt; /lib/libc.so.6 (0x4064b000)<br />
+      % ldd libphp4.so<br>
+      libsablot.so.0 =&gt; /usr/local/lib/libsablot.so.0 (0x401f6000)<br>
+      libexpat.so.0 =&gt; /usr/lib/libexpat.so.0 (0x402da000)<br>
+      libsnmp.so.0 =&gt; /usr/lib/libsnmp.so.0 (0x402f9000)<br>
+      libpdf.so.1 =&gt; /usr/local/lib/libpdf.so.1 (0x40353000)<br>
+      libz.so.1 =&gt; /usr/lib/libz.so.1 (0x403e2000)<br>
+      libpng.so.2 =&gt; /usr/lib/libpng.so.2 (0x403f0000)<br>
+      libmysqlclient.so.11 =&gt; /usr/lib/libmysqlclient.so.11 (0x40411000)<br>
+      libm.so.6 =&gt; /lib/libm.so.6 (0x40487000)<br>
+      libfreetype.so.6 =&gt; /usr/lib/libfreetype.so.6 (0x404a8000)<br>
+      libjpeg.so.62 =&gt; /usr/lib/libjpeg.so.62 (0x404e7000)<br>
+      libcrypt.so.1 =&gt; /lib/libcrypt.so.1 (0x40505000)<br>
+      libssl.so.2 =&gt; /lib/libssl.so.2 (0x40532000)<br>
+      libcrypto.so.2 =&gt; /lib/libcrypto.so.2 (0x40560000)<br>
+      libresolv.so.2 =&gt; /lib/libresolv.so.2 (0x40624000)<br>
+      libdl.so.2 =&gt; /lib/libdl.so.2 (0x40634000)<br>
+      libnsl.so.1 =&gt; /lib/libnsl.so.1 (0x40637000)<br>
+      libc.so.6 =&gt; /lib/libc.so.6 (0x4064b000)<br>
       /lib/ld-linux.so.2 =&gt; /lib/ld-linux.so.2 (0x80000000)
     </code></p></div>
 
     <p>In addition to these libraries you will need to have a look at any
     libraries linked statically into the module. You can use <code>nm(1)</code>
     to look for individual symbols in the module.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="liblist" id="liblist">Library List</a> <a title="Permanent link" href="#liblist" class="permalink">&para;</a></h2>
+<h2 id="liblist">Library List <a title="Permanent link" href="#liblist" class="permalink">&para;</a></h2>
     <p>Please drop a note to <a href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a>
     if you have additions or corrections to this list.</p>
 
@@ -274,8 +272,8 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/developer/thread_safety.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

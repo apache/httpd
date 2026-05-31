@@ -1,80 +1,78 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Sanal Konak Örnekleri - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>Sanal Konak &Ouml;rnekleri - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Sanal Konak Örnekleri</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Sanal Konak &Ouml;rnekleri</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
     <p>Bu belgede <a href="index.html">sanal konaklarla</a> ile ilgili olarak
-      karşılaşılması olası tüm  senaryolara yer verilmeye çalışılmıştır.
-      Buradaki senaryolar, tek bir  sunucu üzerinde  <a href="name-       based.html">isme dayalı</a> veya <a href="ip-based.html">IP'ye dayalı</a>
-      sanal konaklar aracılığıyla çok sayıda sitenin sunumu ile ilgilidir.
+      karşılaşılması olası t&uuml;m  senaryolara yer verilmeye &ccedil;alışılmıştır.
+      Buradaki senaryolar, tek bir  sunucu &uuml;zerinde  <a href="name-       based.html">isme dayalı</a> veya <a href="ip-based.html">IP'ye dayalı</a>
+      sanal konaklar aracılığıyla &ccedil;ok sayıda sitenin sunumu ile ilgilidir.
     </p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#purename">Tek bir IP ile çok sayıda isme dayalı site</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#twoips">IP adresleri farklı çok sayıda isme dayalı site</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#intraextra">Aynı içeriği farklı IP adresleriyle sunmak
-    (örn., dahili ve harici ağlara)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#port">Farklı portlarla farklı siteler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ip">IP'ye dayalı sanal konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipport">Hem IP'ye hem de porta dayalı sanal konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mixed">Hem isme hem de IP'ye dayalı sanal konaklar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy"><code>Virtualhost</code> ve
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#purename">Tek bir IP ile &ccedil;ok sayıda isme dayalı site</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#twoips">IP adresleri farklı &ccedil;ok sayıda isme dayalı site</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#intraextra">Aynı i&ccedil;eriği farklı IP adresleriyle sunmak
+    (&ouml;rn., dahili ve harici ağlara)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#port">Farklı portlarla farklı siteler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ip">IP'ye dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ipport">Hem IP'ye hem de porta dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mixed">Hem isme hem de IP'ye dayalı sanal konaklar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxy"><code>Virtualhost</code> ve
     <code>mod_proxy</code>'nin birlikte kullanımı</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#default"><code>_default_</code> sanal konakları</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
+<li><img alt="" src="../images/down.gif"> <a href="#default"><code>_default_</code> sanal konakları</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
     sanal konakla yansılamak</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#serverpath"><code>ServerPath</code> yönergesinin kullanımı</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#serverpath"><code>ServerPath</code> y&ouml;nergesinin kullanımı</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">Tek bir IP ile çok sayıda isme dayalı site</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">Tek bir IP ile &ccedil;ok sayıda isme dayalı site <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
     
 
-    <p>Bu örnekte, makinenizin tek bir IP adresine çözümlenen çok sayıda konak 
+    <p>Bu &ouml;rnekte, makinenizin tek bir IP adresine &ccedil;&ouml;z&uuml;mlenen &ccedil;ok sayıda konak 
       adına sahip olduğunu, <code>example.com</code> ve 
       <code>example.org</code> gibi farklı isimlere farklı yanıtlar vermek 
       istediğinizi varsayalım.</p>
     
-    <div class="note"><h3>Bilginize</h3><p>Apache sunucusu üzerinde sanal konakları
-      yapılandırmakla bu konak isimleri için sihirli bir şekilde DNS
-      kayıtlarının da oluşturulmasını sağlamış olmazsınız. Bu isimler için
-      ilgili DNS kayıtlarında sizin IP adresinize çözümlenen A kayıtlarının
+    <div class="note"><h3>Bilginize</h3><p>Apache sunucusu &uuml;zerinde sanal konakları
+      yapılandırmakla bu konak isimleri i&ccedil;in sihirli bir şekilde DNS
+      kayıtlarının da oluşturulmasını sağlamış olmazsınız. Bu isimler i&ccedil;in
+      ilgili DNS kayıtlarında sizin IP adresinize &ccedil;&ouml;z&uuml;mlenen A kayıtlarının
       olması gerekir, yoksa sitenize kimse erişemez. Sitelere erişimi yerel
       olarak denemek isterseniz, bu girdileri <code>hosts</code> dosyanıza
-      yazabilirsiniz. Fakat bu sadece sizin makinenizde çalışır. Yerel
+      yazabilirsiniz. Fakat bu sadece sizin makinenizde &ccedil;alışır. Yerel
       ağınızdaki her makinenin <code>hosts</code> dosyasına bu girdileri
       yazarak yerel ağdan erişimi bu yolla sağlayabilirsiniz ama dış ağdan
-      gelecek ziyaretçileriniz için DNS kayıtlarınızın olması şarttır.</p>
+      gelecek ziyaret&ccedil;ileriniz i&ccedil;in DNS kayıtlarınızın olması şarttır.</p>
     </div>
 
     <pre class="prettyprint lang-config"># Apache'nin 80. portu dinlediğinden emin olalım
@@ -83,36 +81,36 @@ Listen 80
   DocumentRoot "/siteler/ecom"
   ServerName example.com
 
-  # Diğer yönergeler, burada ...
+  # Diğer y&ouml;nergeler, burada ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost *:80&gt;
   DocumentRoot "/siteler/eorg"
   ServerName example.org
 
-  # Diğer yönergeler, burada ...
+  # Diğer y&ouml;nergeler, burada ...
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Yıldız imleri tüm adreslerle eşleşmeyi sağladığından ana sunucu
+    <p>Yıldız imleri t&uuml;m adreslerle eşleşmeyi sağladığından ana sunucu
       (yapılandırma dosyası genelindeki yapılandırma - sunucu geneli)
       erişilebilir olmayacaktır. Yapılandırma
-      dosyasındaki <code>ServerName example.com</code> yönergeli konak, ilk
-      sanal konak olduğundan en yüksek önceliğe sahiptir ve
-      <cite>öntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
-      Yani, hiçbir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> yönergesi 
+      dosyasındaki <code>ServerName example.com</code> y&ouml;nergeli konak, ilk
+      sanal konak olduğundan en y&uuml;ksek &ouml;nceliğe sahiptir ve
+      <cite>&ouml;ntanımlı</cite> veya <cite>baskın</cite> site olarak davranır.
+      Yani, hi&ccedil;bir <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> y&ouml;nergesi 
       ile eşleşmeyen bir istek alındığında bu istek ilk <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yapılandırması ile
       karşılanır.</p>
     
-    <p>Yukarıdaki yapılandırmayı hemen hemen tüm isme dayalı sanal konaklar
-      için kullanabilirsiniz. Bu yapılandırmanın çalışmayacağı tek durum,
-      farklı içerikleri farklı IP adres veya portlardan sunma gereğiyle
+    <p>Yukarıdaki yapılandırmayı hemen hemen t&uuml;m isme dayalı sanal konaklar
+      i&ccedil;in kullanabilirsiniz. Bu yapılandırmanın &ccedil;alışmayacağı tek durum,
+      farklı i&ccedil;erikleri farklı IP adres veya portlardan sunma gereğiyle
       karşılaşmaktır.</p>
 
     <div class="note"><h3>Bilginize</h3>
       <p><code>*</code> yerine sisteminizdeki belli bir IP adresini 
-        yazabilirsiniz. Böyle sanal konaklar sadece, HTTP isteklerinin sadece 
-        belirtilen IP adreslerinden alınması için kullanilabilir.</p>
+        yazabilirsiniz. B&ouml;yle sanal konaklar sadece, HTTP isteklerinin sadece 
+        belirtilen IP adreslerinden alınması i&ccedil;in kullanilabilir.</p>
 
       <pre class="prettyprint lang-config">NameVirtualHost 192.168.1.22
 
@@ -121,22 +119,22 @@ Listen 80
 &lt;/VirtualHost&gt;</pre>
 
 
-      <p>Bununla birlikte, IP adresinin önceden kestirilebilir olmadığı
-        sistemlerde, örneğin, hizmet sağlayıcınıza çevirmeli ağ ile bağlanıyor
-        ve onun rasgele atadığı bir IP adresi için bir devingen DNS çözümü
-        kullanıyorsanız, IP adresi değil de <code>*</code> kullanmak daha çok
+      <p>Bununla birlikte, IP adresinin &ouml;nceden kestirilebilir olmadığı
+        sistemlerde, &ouml;rneğin, hizmet sağlayıcınıza &ccedil;evirmeli ağ ile bağlanıyor
+        ve onun rasgele atadığı bir IP adresi i&ccedil;in bir devingen DNS &ccedil;&ouml;z&uuml;m&uuml;
+        kullanıyorsanız, IP adresi değil de <code>*</code> kullanmak daha &ccedil;ok
         işinize yarayacaktır. Yıldız imi her IP adresi ile eşleşeceğinden IP
         adresiniz değişse bile bu yapılandırmayı değiştirmeden
         kullanabilirsiniz.</p>
     </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">IP adresleri farklı çok sayıda isme dayalı site</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">IP adresleri farklı &ccedil;ok sayıda isme dayalı site <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
     
 
     <div class="note"><h3>Bilginize</h3>
-      <p>Burada açıklanan teknikler istendiği kadar çok IP adresine
+      <p>Burada a&ccedil;ıklanan teknikler istendiği kadar &ccedil;ok IP adresine
         genişletilebilir.</p>
     </div>
 
@@ -155,34 +153,34 @@ DocumentRoot "/siteler/anasunucu"
     DocumentRoot "/siteler/ecom"
     ServerName example.com
 
-    # Diğer yönergeler, burada ...
+    # Diğer y&ouml;nergeler, burada ...
 &lt;/VirtualHost&gt;
 
 &lt;VirtualHost 192.168.1.20&gt;
     DocumentRoot "/siteler/eorg"
     ServerName example.org
 
-    # Diğer yönergeler, burada ...
+    # Diğer y&ouml;nergeler, burada ...
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p><code>192.168.1.20</code> adresinden gelmeyen tüm isteklere ana sunucu
+    <p><code>192.168.1.20</code> adresinden gelmeyen t&uuml;m isteklere ana sunucu
       (<code>sunucu.example.com</code>), <code>192.168.1.20</code> adresinden
       gelen sunucu ismi belirtmeyenler ile <code>Host:</code> başlığı
       belirtmeyenlere ise  <code>example.com</code> hizmet verecektir.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">Aynı içeriği farklı IP adresleriyle sunmak
-    (örn., dahili ve harici ağlara)</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+<h2 id="intraextra">Aynı i&ccedil;eriği farklı IP adresleriyle sunmak
+    (&ouml;rn., dahili ve harici ağlara) <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
-    <p>Sunucu makine iki IP adresine sahip olsun. Biri iç ağa
+    <p>Sunucu makine iki IP adresine sahip olsun. Biri i&ccedil; ağa
       (<code>192.168.1.1</code>) diğeri dış ağa (<code>172.20.30.40</code>)
       bakıyor olsun. <code>sunucu.example.com</code> ismi dış ağda dış ağa
-      bakan IP'ye, iç ağda ise iç ağa bakan IP'ye çözümleniyor olsun.</p>
+      bakan IP'ye, i&ccedil; ağda ise i&ccedil; ağa bakan IP'ye &ccedil;&ouml;z&uuml;mleniyor olsun.</p>
 
-    <p>Bu durumda, sunucu hem iç hem de dış ağdan gelen isteklere aynı içerik,
-      dolayısıyla aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümü ile hizmet verebilir.</p>
+    <p>Bu durumda, sunucu hem i&ccedil; hem de dış ağdan gelen isteklere aynı i&ccedil;erik,
+      dolayısıyla aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> b&ouml;l&uuml;m&uuml; ile hizmet verebilir.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 192.168.1.1 172.20.30.40&gt;
     DocumentRoot "/siteler/sunucu"
@@ -191,29 +189,29 @@ DocumentRoot "/siteler/anasunucu"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Artık, hem iç hem de dış ağdan gelen isteklere aynı
+    <p>Artık, hem i&ccedil; hem de dış ağdan gelen isteklere aynı
       <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
-      bölümünden hizmet sunulacaktır.</p>
+      b&ouml;l&uuml;m&uuml;nden hizmet sunulacaktır.</p>
 
     <div class="note"><h3>Bilginize:</h3>
-      <p>İç ağdan istek yapan biri, tam nitelenmiş konak ismi
+      <p>İ&ccedil; ağdan istek yapan biri, tam nitelenmiş konak ismi
         <code>sunucu.example.com</code> yerine makine ismini
         (<code>sunucu</code>) kullanabilir (<code>ServerAlias sunucu</code>
         satırına dikkat).</p>
 
       <p>Ayrıca, yukarıdaki gibi iki ayrı IP adresi belirtmek yerine sadece
-        <code>*</code> belirtmekle sunucunun tüm IP adreslerine yine aynı
-        içerikle yanıt vereceğine dikkat ediniz.</p>
+        <code>*</code> belirtmekle sunucunun t&uuml;m IP adreslerine yine aynı
+        i&ccedil;erikle yanıt vereceğine dikkat ediniz.</p>
     </div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">Farklı portlarla farklı siteler</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">Farklı portlarla farklı siteler <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
-    <p>Aynı IP adresine sahip çok sayıda konak ismine sahip olduğunuzu ve
+    <p>Aynı IP adresine sahip &ccedil;ok sayıda konak ismine sahip olduğunuzu ve
       bunların bazılarının farklı portları kullanmasını istediğinizi
-      varsayalım. Aşağıdaki örnekte, isim eşleşmesinin, en iyi eşleşen IP
-      adresi ve port çifti saptandıktan sonra yer alması gösterilmiştir. </p>
+      varsayalım. Aşağıdaki &ouml;rnekte, isim eşleşmesinin, en iyi eşleşen IP
+      adresi ve port &ccedil;ifti saptandıktan sonra yer alması g&ouml;sterilmiştir. </p>
 
     <pre class="prettyprint lang-config">Listen 80
 Listen 8080
@@ -239,13 +237,13 @@ Listen 8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP'ye dayalı sanal konaklar</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">IP'ye dayalı sanal konaklar <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
-    <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
+    <p>Sunucu makinenin, biri <code>example.com</code> adından &ccedil;&ouml;z&uuml;mlenen
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
-      çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun.</p>
+      &ccedil;&ouml;z&uuml;mlenen <code>172.20.30.50</code> diye iki IP adresi olsun.</p>
 
     <pre class="prettyprint lang-config">Listen 80
 
@@ -260,18 +258,18 @@ Listen 8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p><code>&lt;VirtualHost&gt;</code> yönergelerinde belirtilmeyen
-      adreslerle yapılan isteklere (örneğin, <code>localhost</code>) sunucu
+    <p><code>&lt;VirtualHost&gt;</code> y&ouml;nergelerinde belirtilmeyen
+      adreslerle yapılan isteklere (&ouml;rneğin, <code>localhost</code>) sunucu
       genelindeki yapılandırma ile ana sunucu yanıt verecektir.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">Hem IP'ye hem de porta dayalı sanal konaklar</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">Hem IP'ye hem de porta dayalı sanal konaklar <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
     
 
-    <p>Sunucu makinenin, biri <code>example.com</code> adından çözümlenen
+    <p>Sunucu makinenin, biri <code>example.com</code> adından &ccedil;&ouml;z&uuml;mlenen
       <code>172.20.30.40</code>, diğeri <code>example.org</code> adından
-      çözümlenen <code>172.20.30.50</code> diye iki IP adresi olsun ve iki
-      konak da hem 80 hem de 8080 portlarında çalışsınlar istiyoruz.</p>
+      &ccedil;&ouml;z&uuml;mlenen <code>172.20.30.50</code> diye iki IP adresi olsun ve iki
+      konak da hem 80 hem de 8080 portlarında &ccedil;alışsınlar istiyoruz.</p>
 
     <pre class="prettyprint lang-config">Listen 172.20.30.40:80
 Listen 172.20.30.40:8080
@@ -299,13 +297,13 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">Hem isme hem de IP'ye dayalı sanal konaklar</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">Hem isme hem de IP'ye dayalı sanal konaklar <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
     
 
-    <p>Bir <code>VirtualHost</code> yönergesinde belirtilen bir IP adresi başka
-      bir sanal konakta görünmüyorsa bu sankon kesinlikle IP'ye dayalı bir
+    <p>Bir <code>VirtualHost</code> y&ouml;nergesinde belirtilen bir IP adresi başka
+      bir sanal konakta g&ouml;r&uuml;nm&uuml;yorsa bu sankon kesinlikle IP'ye dayalı bir
       sanal konaktır.</p>
 
     <pre class="prettyprint lang-config">Listen 80
@@ -337,18 +335,18 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy"><code>Virtualhost</code> ve
-    <code>mod_proxy</code>'nin birlikte kullanımı</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy"><code>Virtualhost</code> ve
+    <code>mod_proxy</code>'nin birlikte kullanımı <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
-    <p>Bu örnekte bir arabirimi dışarıya bakan bir makinede, başka bir
-      makinede çalışan bir sunucuya sanal konak olarak, bir vekil sunucu
-      çalıştırmak istediğimizi varsayıyoruz. <code>192.168.111.2</code> IP
+    <p>Bu &ouml;rnekte bir arabirimi dışarıya bakan bir makinede, başka bir
+      makinede &ccedil;alışan bir sunucuya sanal konak olarak, bir vekil sunucu
+      &ccedil;alıştırmak istediğimizi varsayıyoruz. <code>192.168.111.2</code> IP
       adresli bir makinede aynı isimde bir sanal konak yapılandırılmış olsun.
-      Çok sayıda konak ismi için vekil olarak tek bir makine kullandığımızdan
+      &Ccedil;ok sayıda konak ismi i&ccedil;in vekil olarak tek bir makine kullandığımızdan
       ve konak isminin de aktarılmasını arzuladığımızdan <code class="directive"><a href="../mod/mod_proxy.html#proxypreservehost">ProxyPreserveHost
-      On</a></code> yönergesini kullandık.</p>
+      On</a></code> y&ouml;nergesini kullandık.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost *:*&gt;
     ProxyPreserveHost On
@@ -358,14 +356,14 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> sanal konakları</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
+<h2 id="default"><code>_default_</code> sanal konakları <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
 
-    <h3><a name="defaultallports" id="defaultallports">Tüm portlar için <code>_default_</code></a></h3>
+    <h3 id="defaultallports">T&uuml;m portlar i&ccedil;in <code>_default_</code></h3>
       
 
-    <p>Bir IP adresi ve port belirtilmeyen veya hiçbir sanal konağın hiçbir
+    <p>Bir IP adresi ve port belirtilmeyen veya hi&ccedil;bir sanal konağın hi&ccedil;bir
       adresi/portu ile eşleşmeyen istekleri yakalamak istersek...</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:*&gt;
@@ -373,25 +371,25 @@ Listen 172.20.30.50:8080
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Bütün portlarla eşleşen böyle bir öntanımlı sanal konağın kullanımı
-      hiçbir isteğin ana sunucuya gitmemesi sonucunu doğurur.</p>
+    <p>B&uuml;t&uuml;n portlarla eşleşen b&ouml;yle bir &ouml;ntanımlı sanal konağın kullanımı
+      hi&ccedil;bir isteğin ana sunucuya gitmemesi sonucunu doğurur.</p>
 
-    <p>Bir öntanımlı sanal konak, asla, isme dayalı sanal konaklar için
-      kullanılmış bir adrese/porta gönderilmiş bir isteğe hizmet sunmaz. Eğer
-      istek bilinmeyen bir <code>Host:</code> başlığına sahipse veya hiç
-      <code>Host:</code> başlığı içermiyorsa isteğe daima ilk (yapılandırma
+    <p>Bir &ouml;ntanımlı sanal konak, asla, isme dayalı sanal konaklar i&ccedil;in
+      kullanılmış bir adrese/porta g&ouml;nderilmiş bir isteğe hizmet sunmaz. Eğer
+      istek bilinmeyen bir <code>Host:</code> başlığına sahipse veya hi&ccedil;
+      <code>Host:</code> başlığı i&ccedil;ermiyorsa isteğe daima ilk (yapılandırma
       dosyasındaki ilk) isme dayalı sanal konak hizmet sunar.</p>
 
-    <p>Her isteği tek bir bilgilendirme sayfasına (veya betiğe) yönlendirmek
+    <p>Her isteği tek bir bilgilendirme sayfasına (veya betiğe) y&ouml;nlendirmek
       isterseniz <code class="directive"><a href="../mod/mod_alias.html#aliasmatch">AliasMatch</a></code> veya
-      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesini
+      <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesini
       kullanabilirsiniz.</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">Farklı portlardan <code>_default_</code></a></h3>
+    <h3 id="defaultdifferentports">Farklı portlardan <code>_default_</code></h3>
       
 
-    <p>Önceki yapılandırmaya ek olarak 80. portta ayrı bir
+    <p>&Ouml;nceki yapılandırmaya ek olarak 80. portta ayrı bir
       <code>_default_</code> sanal konağı kullanmak istersek...</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost _default_:80&gt;
@@ -406,12 +404,12 @@ Listen 172.20.30.50:8080
 
 
     <p>80. porttan hizmet sunan <code>_default_</code> sanal konağı IP adresi
-      belirtilmeyen tüm istekleri yakalar, bunu yapabilmesi için yapılandırma
-      dosyasında tüm portlara hizmet sunan benzerinden önce yer almalıdır. Bu
-      durumda ana sunucu hiçbir isteğe yanıt vermeyecektir.</p>
+      belirtilmeyen t&uuml;m istekleri yakalar, bunu yapabilmesi i&ccedil;in yapılandırma
+      dosyasında t&uuml;m portlara hizmet sunan benzerinden &ouml;nce yer almalıdır. Bu
+      durumda ana sunucu hi&ccedil;bir isteğe yanıt vermeyecektir.</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">Tek portluk <code>_default_</code></a></h3>
+    <h3 id="defaultoneport">Tek portluk <code>_default_</code></h3>
       
 
     <p><code>_default_</code> sanal konağının sadece 80. porttan hizmet
@@ -428,23 +426,23 @@ Listen 172.20.30.50:8080
       belirtilmemiş isteklere ise ana sunucu hizmet verecektir.</p>
 
     <p>Bir sanal konak bildiriminde <code>*</code> kullanımı
-      <code>_default_</code> kullanımından daha yüksek öncelik sağlar.</p>
+      <code>_default_</code> kullanımından daha y&uuml;ksek &ouml;ncelik sağlar.</p>
    
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
-    sanal konakla yansılamak</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">Bir isme dayalı sanal konağı bir IP'ye dayalı
+    sanal konakla yansılamak <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
-    <p>İsme dayalı sanal konak örneklerinin <a href="#twoips">2. sinde</a> adı
-      geçen <code>example.org</code> bu örnekte kendi IP adresinden hizmet
+    <p>İsme dayalı sanal konak &ouml;rneklerinin <a href="#twoips">2. sinde</a> adı
+      ge&ccedil;en <code>example.org</code> bu &ouml;rnekte kendi IP adresinden hizmet
       veriyor olsun. İsme dayalı sanal konağı eski IP adresiyle kaydetmiş
-      vekiller ve isim sunucularından kaynaklanacak olası sorunlardan kaçınmak
-      için yansılama sırasında sanal konağı hem eski hem de yeni IP adresiyle
+      vekiller ve isim sunucularından kaynaklanacak olası sorunlardan ka&ccedil;ınmak
+      i&ccedil;in yansılama sırasında sanal konağı hem eski hem de yeni IP adresiyle
       sunmamız lazım.</p>
 
-    <p>Çözüm kolay, çünkü yapacağımız sadece <code>VirtualHost</code>
-      yönergesine yeni IP adresini (<code>192.168.1.2</code>) eklemek
+    <p>&Ccedil;&ouml;z&uuml;m kolay, &ccedil;&uuml;nk&uuml; yapacağımız sadece <code>VirtualHost</code>
+      y&ouml;nergesine yeni IP adresini (<code>192.168.1.2</code>) eklemek
       olacak.</p>
 
     <pre class="prettyprint lang-config">Listen 80
@@ -465,22 +463,22 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p>Böylece sanal konağa hem yeni (bir IP'ye dayalı sanal konak olarak)
+    <p>B&ouml;ylece sanal konağa hem yeni (bir IP'ye dayalı sanal konak olarak)
       hem de eski adresinden (bir isme dayalı sanal konak olarak)
       erişilebilecektir.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath"><code>ServerPath</code> yönergesinin kullanımı</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath"><code>ServerPath</code> y&ouml;nergesinin kullanımı <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
     
 
     <p>İsme dayalı iki sanal konağı olan bir sunucumuz olsun. Doğru sanal
-      konağa erişebilmek için istemcinin doğru <code>Host:</code> başlığı
-      göndermesi gerekir. Eski HTTP/1.0 istemcileri böyle bir başlık
-      göndermedikleri için Apache istemcinin hangi sanal konağa erişmek
+      konağa erişebilmek i&ccedil;in istemcinin doğru <code>Host:</code> başlığı
+      g&ouml;ndermesi gerekir. Eski HTTP/1.0 istemcileri b&ouml;yle bir başlık
+      g&ouml;ndermedikleri i&ccedil;in Apache istemcinin hangi sanal konağa erişmek
       istediğini bilemez (ve isteğe ilk sanal konaktan hizmet sunar). Daha iyi
-      bir geriye uyumluluk sağlamak için isme dayalı sanal konağa bir önek
-      bağlantısı içeren bir bilgilendirme sayfası sunmak üzere yeni bir sanal
+      bir geriye uyumluluk sağlamak i&ccedil;in isme dayalı sanal konağa bir &ouml;nek
+      bağlantısı i&ccedil;eren bir bilgilendirme sayfası sunmak &uuml;zere yeni bir sanal
       konak oluşturabiliriz.</p>
 
     <pre class="prettyprint lang-config">&lt;VirtualHost 172.20.30.40&gt;
@@ -510,36 +508,36 @@ DocumentRoot "/siteler/ecom"
 &lt;/VirtualHost&gt;</pre>
 
 
-    <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> yönergesinden dolayı
+    <p><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> y&ouml;nergesinden dolayı
       <code>http://bir.baska.tld/bir/</code> şeklinde yapılan isteklere
       <em>daima</em> "bir" sanal konağı hizmet sunacaktır.</p>
 
     <p><code>http://bir.baska.tld/</code> şeklinde yapılan isteklere ise
-      istemcinin doğru <code>Host:</code> başlığı göndermesi şartıyla
+      istemcinin doğru <code>Host:</code> başlığı g&ouml;ndermesi şartıyla
       "bir" sanal konağı hizmet sunacaktır. İstemci, bir
-      <code>Host:</code> başlığı göndermediği takdirde ilk konaktan bir
+      <code>Host:</code> başlığı g&ouml;ndermediği takdirde ilk konaktan bir
       bilgilendirme sayfası alacaktır.</p>
 
     <p>Yalnız buradaki bir tuhaflığa dikkat edin: Eğer istemci bir
-      <code>Host:</code> başlığı göndermeden
+      <code>Host:</code> başlığı g&ouml;ndermeden
       <code>http://iki.baska.tld/bir/</code> şeklinde bir istek yaparsa bu
       isteğe de "bir" sanal konağı hizmet sunacaktır.</p>
 
-    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> yönergesi, bir
-      istemcinin, bir URL öneki belirtsin ya da belirtmesin doğru
-      <code>Host:</code> başlığı gönderdiğinden emin olmak için
+    <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesi, bir
+      istemcinin, bir URL &ouml;neki belirtsin ya da belirtmesin doğru
+      <code>Host:</code> başlığı g&ouml;nderdiğinden emin olmak i&ccedil;in
       kullanılmıştır.</p>
 
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/vhosts/examples.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/examples.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/examples.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/examples.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/examples.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

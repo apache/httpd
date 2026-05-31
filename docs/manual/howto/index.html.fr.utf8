@@ -1,66 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>How-To / Tutoriels - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="../"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>How-To / Tutoriels</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">How-To / Tutoriels</a> <a title="Lien permanent" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">How-To / Tutoriels <a title="Lien permanent" href="#howto" class="permalink">&para;</a></h2>
 
     
 
     <dl>
       <dt>Authentification et autorisation</dt>
       <dd>
-        <p>L'authentification représente tout processus par lequel vous
-	vérifiez si quelqu'un correspond bien à la personne qu'il
-	prétend être. L'autorisation représente tout processus
-	permettant de savoir si une personne est autorisée à aller là où
-	elle veut aller, ou à obtenir les informations qu'elle demande.</p>
+        <p>L'authentification repr&eacute;sente tout processus par lequel vous
+	v&eacute;rifiez si quelqu'un correspond bien &agrave; la personne qu'il
+	pr&eacute;tend &ecirc;tre. L'autorisation repr&eacute;sente tout processus
+	permettant de savoir si une personne est autoris&eacute;e &agrave; aller l&agrave; o&ugrave;
+	elle veut aller, ou &agrave; obtenir les informations qu'elle demande.</p>
 
         <p>Voir <a href="auth.html">Authentification, Autorisation</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Contrôle d'accès</dt>
+      <dt>Contr&ocirc;le d'acc&egrave;s</dt>
       <dd>
-        <p>Le contrôle d'accès se réfère au processus permettant
-	d'interdire ou d'accorder l'accès à une ressource en fonction de
-	certains critères, et il existe de nombreuses façons d'y
+        <p>Le contr&ocirc;le d'acc&egrave;s se r&eacute;f&egrave;re au processus permettant
+	d'interdire ou d'accorder l'acc&egrave;s &agrave; une ressource en fonction de
+	certains crit&egrave;res, et il existe de nombreuses fa&ccedil;ons d'y
 	parvenir.</p>
 
-        <p>Voir <a href="access.html">Contrôle d'accès</a></p>
+        <p>Voir <a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></p>
       </dd>
     </dl>
 
@@ -68,13 +66,13 @@
       <dt>Contenu dynamique avec CGI</dt>
       <dd>
         <p>L'interface CGI (Common Gateway Interface)
-	fournit au serveur web une méthode d'interaction avec des
-	programmes externes générateurs de contenu, souvent nommés
-	programmes CGI ou scripts CGI. Il s'agit d'une méthode
+	fournit au serveur web une m&eacute;thode d'interaction avec des
+	programmes externes g&eacute;n&eacute;rateurs de contenu, souvent nomm&eacute;s
+	programmes CGI ou scripts CGI. Il s'agit d'une m&eacute;thode
 	simple permettant d'ajouter du contenu
-	dynamique à votre site web. Ce document se veut une introduction
-	à la configuration de CGI sur votre serveur web Apache et à
-	l'écriture de programmes CGI.</p>
+	dynamique &agrave; votre site web. Ce document se veut une introduction
+	&agrave; la configuration de CGI sur votre serveur web Apache et &agrave;
+	l'&eacute;criture de programmes CGI.</p>
 
         <p>Voir <a href="cgi.html">CGI : contenu dynamique</a></p>
       </dd>
@@ -84,10 +82,10 @@
       <dt>Fichiers <code>.htaccess</code></dt>
       <dd>
         <p>Les fichiers <code>.htaccess</code> permettent de modifier la
-	configuration du serveur au niveau de chaque répertoire. À cet
-	effet, un fichier est placé dans un répertoire particulier du site
-	web, et les directives de configuration qu'il contient s'appliquent à ce
-	répertoire et à tous ses sous-répertoires.</p>
+	configuration du serveur au niveau de chaque r&eacute;pertoire. &Agrave; cet
+	effet, un fichier est plac&eacute; dans un r&eacute;pertoire particulier du site
+	web, et les directives de configuration qu'il contient s'appliquent &agrave; ce
+	r&eacute;pertoire et &agrave; tous ses sous-r&eacute;pertoires.</p>
 
         <p>Voir <a href="htaccess.html">Fichiers <code>.htaccess</code></a></p>
       </dd>
@@ -96,11 +94,11 @@
     <dl>
       <dt>HTTP/2 avec httpd</dt>
       <dd>
-      <p>HTTP/2 est une évolution du protocole de la couche application le plus
-      connu au monde, HTTP. Les efforts se sont concentrés sur une amélioration
-      de l'efficacité de l'utilisation des ressources réseau sans modifier la
-      sémantique de HTTP. Ce guide explique la manière dont HTTP/2 est
-      implémenté dans httpd, donne des conseils pour une configuration de base
+      <p>HTTP/2 est une &eacute;volution du protocole de la couche application le plus
+      connu au monde, HTTP. Les efforts se sont concentr&eacute;s sur une am&eacute;lioration
+      de l'efficacit&eacute; de l'utilisation des ressources r&eacute;seau sans modifier la
+      s&eacute;mantique de HTTP. Ce guide explique la mani&egrave;re dont HTTP/2 est
+      impl&eacute;ment&eacute; dans httpd, donne des conseils pour une configuration de base
       ainsi qu'une liste de recommandations.
       </p>
 
@@ -109,14 +107,14 @@
     </dl>
 
     <dl>
-      <dt>Introduction au Inclusions côté Serveur (Server Side Includes
+      <dt>Introduction au Inclusions c&ocirc;t&eacute; Serveur (Server Side Includes
       ou SSI)</dt>
       <dd>
         <p>Les SSI sont des directives que l'on place dans des pages
-	HTML, et qui sont évaluées par le serveur lorsque ces pages sont
-	servies. Elles vous permettent d'ajouter du contenu généré
-	dynamiquement à une page HTML existante, sans avoir à servir
-	l'intégralité de la page via un programme CGI, ou toute autre
+	HTML, et qui sont &eacute;valu&eacute;es par le serveur lorsque ces pages sont
+	servies. Elles vous permettent d'ajouter du contenu g&eacute;n&eacute;r&eacute;
+	dynamiquement &agrave; une page HTML existante, sans avoir &agrave; servir
+	l'int&eacute;gralit&eacute; de la page via un programme CGI, ou toute autre
 	technologie dynamique.</p>
 
         <p>Voir <a href="ssi.html">Server Side Includes (SSI)</a></p>
@@ -124,40 +122,40 @@
     </dl>
 
     <dl>
-      <dt>Répertoires web de l'utilisateur</dt>
+      <dt>R&eacute;pertoires web de l'utilisateur</dt>
       <dd>
-        <p>Sur les systèmes multi-utilisateurs, vous pouvez permettre à
-	chaque utilisateur d'avoir un site web dans son répertoire home
+        <p>Sur les syst&egrave;mes multi-utilisateurs, vous pouvez permettre &agrave;
+	chaque utilisateur d'avoir un site web dans son r&eacute;pertoire home
 	via la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Les visiteurs de l'URL
 	<code>http://example.com/~nom-utilisateur/</code> vont recevoir
-	du contenu situé dans le répertoire home de l'utilisateur
-	"<code>nom-utilisateur</code>", et dans le sous-répertoire
-	spécifié par la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
+	du contenu situ&eacute; dans le r&eacute;pertoire home de l'utilisateur
+	"<code>nom-utilisateur</code>", et dans le sous-r&eacute;pertoire
+	sp&eacute;cifi&eacute; par la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
 
-        <p>Voir <a href="public_html.html">Répertoires web des utilisateurs (<code>public_html</code>)</a></p>
+        <p>Voir <a href="public_html.html">R&eacute;pertoires web des utilisateurs (<code>public_html</code>)</a></p>
       </dd>
     </dl>
     <dl>
       <dt>Mandataires inverses</dt>
       <dd>
-        <p>Apache httpd possède des fonctionnalités évoluées de serveur
+        <p>Apache httpd poss&egrave;de des fonctionnalit&eacute;s &eacute;volu&eacute;es de serveur
 	mandataire inverse via ses directives <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> qui permettent
-	d'implémenter un système de mandataire inverse sophistiqué garantissant
-	une haute disponibilité, une répartition et une réattribution de charge,
-	un regroupement de serveurs en grappe (clustering) basé sur le cloud et
-	une reconfiguration dynamique à la volée.</p>
+	d'impl&eacute;menter un syst&egrave;me de mandataire inverse sophistiqu&eacute; garantissant
+	une haute disponibilit&eacute;, une r&eacute;partition et une r&eacute;attribution de charge,
+	un regroupement de serveurs en grappe (clustering) bas&eacute; sur le cloud et
+	une reconfiguration dynamique &agrave; la vol&eacute;e.</p>
 
-        <p>Voir le <a href="reverse_proxy.html" />Guide de configuration des
+        <p>Voir le <a href="reverse_proxy.html"></a>Guide de configuration des
 	mandataires inverses</p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Réécriture d'URLs avec mod_rewrite</dt>
+      <dt>R&eacute;&eacute;criture d'URLs avec mod_rewrite</dt>
       <dd>
-        <p>La réécriture d'URLs avec (ou sans) <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> devient
-	l'une des questions les plus fréquentes posées dans nos listes de
-	diffusion et nos canaux IRC. C'est pourquoi nous avons dédié une <a href="../rewrite/">section entière de notre documentation</a> à des
+        <p>La r&eacute;&eacute;criture d'URLs avec (ou sans) <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> devient
+	l'une des questions les plus fr&eacute;quentes pos&eacute;es dans nos listes de
+	diffusion et nos canaux IRC. C'est pourquoi nous avons d&eacute;di&eacute; une <a href="../rewrite/">section enti&egrave;re de notre documentation</a> &agrave; des
 	howtos et recettes sur ce sujet.</p>
       </dd>
     </dl>
@@ -165,14 +163,14 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../zh-cn/howto/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

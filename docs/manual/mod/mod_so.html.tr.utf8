@@ -1,211 +1,209 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_so - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_so - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Mod&uuml;ller</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Modülü mod_so</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div id="preamble"><h1>Apache Mod&uuml;l&uuml; mod_so</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
-yeniden başlatılması sırasında yüklenmesini sağlar.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>Mod&uuml;llerin ve &ccedil;alıştırılabilir kodun sunucunun başlatılması veya
+yeniden başlatılması sırasında y&uuml;klenmesini sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>so_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_so.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Uyumluluk:</a></th><td>Windows için bu bir temel modüldür (sunucu bunu daima içerir).</td></tr></table>
-<h3>Özet</h3>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>so_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak&nbsp;Dosyası:</a></th><td>mod_so.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Uyumluluk:</a></th><td>Windows i&ccedil;in bu bir temel mod&uuml;ld&uuml;r (sunucu bunu daima i&ccedil;erir).</td></tr></table>
+<h3>&Ouml;zet</h3>
 
 
-    <p>Seçilen işletim sistemleri üzerinde bu modül Apache HTTP Sunucusunun
-      yeniden derlenmesini gerektirmeden modüllerin <a href="../dso.html">Devingen Paylaşımlı Nesne</a> (DSO) mekanizması üzerinden
+    <p>Se&ccedil;ilen işletim sistemleri &uuml;zerinde bu mod&uuml;l Apache HTTP Sunucusunun
+      yeniden derlenmesini gerektirmeden mod&uuml;llerin <a href="../dso.html">Devingen Paylaşımlı Nesne</a> (DSO) mekanizması &uuml;zerinden
       kullanılabilmesini sağlar.</p>
 
-    <p>Unix'te yüklenen kod genellikle paylaşımlı nesne dosyalarından
+    <p>Unix'te y&uuml;klenen kod genellikle paylaşımlı nesne dosyalarından
       (<code>.so</code> uzantılı dosyalar), Windows'ta ise ya <code>.so</code>
       ya da <code>.dll</code> uzantılı dosyalardan gelir.</p>
 
     <div class="warning"><h3>Uyarı</h3>
-    <p>Apache HTTP Sunucusunun ana sürümlerinden biri (1.3, 2.0, 2.2, 2.4 gibi)
-      için derlenmiş modüller genelde bir diğerinde çalışmaz. Genellikle
-      aralarında API değişikliği sözkonusu olduğundan çalışması için modüllerde
-      yeni sürüme göre değişiklik yapılması gerekir.</p>
+    <p>Apache HTTP Sunucusunun ana s&uuml;r&uuml;mlerinden biri (1.3, 2.0, 2.2, 2.4 gibi)
+      i&ccedil;in derlenmiş mod&uuml;ller genelde bir diğerinde &ccedil;alışmaz. Genellikle
+      aralarında API değişikliği s&ouml;zkonusu olduğundan &ccedil;alışması i&ccedil;in mod&uuml;llerde
+      yeni s&uuml;r&uuml;me g&ouml;re değişiklik yapılması gerekir.</p>
     </div>
 </div>
 <div id="quickview"><h3>Konular</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a></li>
-</ul><h3 class="directives">Yönergeler</h3>
+<li><img alt="" src="../images/down.gif"> <a href="#windows">Y&uuml;klenebilir Mod&uuml;llerin Windows i&ccedil;in Oluşturulması</a></li>
+</ul><h3 class="directives">Y&ouml;nergeler</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#loadfile">LoadFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#loadmodule">LoadModule</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loadfile">LoadFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loadmodule">LoadModule</a></li>
 </ul>
-<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_so">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_so">Hata bildir</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd g&uuml;nl&uuml;ğ&uuml;</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_so">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_so">Hata bildir</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="windows" id="windows">Yüklenebilir Modüllerin Windows için Oluşturulması</a> <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
+<h2 id="windows">Y&uuml;klenebilir Mod&uuml;llerin Windows i&ccedil;in Oluşturulması <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
     
 
     <div class="note"><h3>Bilginize</h3>
-    <p>Windows üzeinde yüklenebilir dosyalar genelde <code>.dll</code> sonekini
-      alırlar. Apache httpd modülleri ise diğer platformlardaki gibi
-      <code>mod_filanca.so</code> biçeminde isimlendirilmektedir. Bununla
-      birlikte, üçüncü parti modüllerden bazılarının (PHP gibi) hala
-      <code>.dll</code> sonekini kullandığı görülmektedir.</p>
+    <p>Windows &uuml;zeinde y&uuml;klenebilir dosyalar genelde <code>.dll</code> sonekini
+      alırlar. Apache httpd mod&uuml;lleri ise diğer platformlardaki gibi
+      <code>mod_filanca.so</code> bi&ccedil;eminde isimlendirilmektedir. Bununla
+      birlikte, &uuml;&ccedil;&uuml;nc&uuml; parti mod&uuml;llerden bazılarının (PHP gibi) hala
+      <code>.dll</code> sonekini kullandığı g&ouml;r&uuml;lmektedir.</p>
 
-    <p><code>mod_so</code> modülü  <code>ApacheModuleFoo.dll</code> biçeminde
-      isimlendirilmiş modülleri hala yüklemekteyse de yeni adlandırma uzlaşımı
-      tercih edilmelidir. Yüklenebilir modülleri 2.0'a dönüştürüyorsanız,
-      lütfen isimlerini de 2.0 uzlaşımına uygun hale getiriniz.</p></div>
+    <p><code>mod_so</code> mod&uuml;l&uuml;  <code>ApacheModuleFoo.dll</code> bi&ccedil;eminde
+      isimlendirilmiş mod&uuml;lleri hala y&uuml;klemekteyse de yeni adlandırma uzlaşımı
+      tercih edilmelidir. Y&uuml;klenebilir mod&uuml;lleri 2.0'a d&ouml;n&uuml;şt&uuml;r&uuml;yorsanız,
+      l&uuml;tfen isimlerini de 2.0 uzlaşımına uygun hale getiriniz.</p></div>
 
-    <p>Apache httpd modül programlama arayüzü Unix ve Windows sürümleri
-      arasında değişiklik göstermez. Unix için kullanılan çoğu modül hiç
-      değişiklik yapmadan ya da çok küçük bir değişiklikle Windows'ta da
-      çalışmaktadır. Çalışmayanlar Unix platformunun sahip olduğu ancak Windows
-      platformunun sahip olmadığı nitelikleri kullanan modüllerdir.</p>
+    <p>Apache httpd mod&uuml;l programlama aray&uuml;z&uuml; Unix ve Windows s&uuml;r&uuml;mleri
+      arasında değişiklik g&ouml;stermez. Unix i&ccedil;in kullanılan &ccedil;oğu mod&uuml;l hi&ccedil;
+      değişiklik yapmadan ya da &ccedil;ok k&uuml;&ccedil;&uuml;k bir değişiklikle Windows'ta da
+      &ccedil;alışmaktadır. &Ccedil;alışmayanlar Unix platformunun sahip olduğu ancak Windows
+      platformunun sahip olmadığı nitelikleri kullanan mod&uuml;llerdir.</p>
 
-    <p>Bir modül Windows'ta çalıştığı zaman, sunucuya iki şekilde
-      yüklenebilir. Unix'te olduğu gibi, doğrudan sunucunun içinde
-      derlenebilir. Windows için hazırlanan Apache httpd paketi, Unix için
-      geçerli olan  <code>Configure</code> betiğini içermediğinden modülün
+    <p>Bir mod&uuml;l Windows'ta &ccedil;alıştığı zaman, sunucuya iki şekilde
+      y&uuml;klenebilir. Unix'te olduğu gibi, doğrudan sunucunun i&ccedil;inde
+      derlenebilir. Windows i&ccedil;in hazırlanan Apache httpd paketi, Unix i&ccedil;in
+      ge&ccedil;erli olan  <code>Configure</code> betiğini i&ccedil;ermediğinden mod&uuml;l&uuml;n
       kaynak dosyası ApacheCore proje dosyasına, sembolleri de
       <code>os\win32\modules.c</code> dosyasına eklenmelidir.</p>
 
-    <p>İkinci yol ise modülü bir paylaşımlı kütüphane olarak çalışma anında
-      <code class="directive"><a href="#loadmodule">LoadModule</a></code> yönergesi ile yüklemek
-      için bir DLL olarak derlemektir. Bu DLL modüller dağıtılabilir ve
-      sunucuyu yeniden derlemek gerekmeksizin her Windows için Apache httpd
-      kurulumunda çalışabilir.</p>
+    <p>İkinci yol ise mod&uuml;l&uuml; bir paylaşımlı k&uuml;t&uuml;phane olarak &ccedil;alışma anında
+      <code class="directive"><a href="#loadmodule">LoadModule</a></code> y&ouml;nergesi ile y&uuml;klemek
+      i&ccedil;in bir DLL olarak derlemektir. Bu DLL mod&uuml;ller dağıtılabilir ve
+      sunucuyu yeniden derlemek gerekmeksizin her Windows i&ccedil;in Apache httpd
+      kurulumunda &ccedil;alışabilir.</p>
 
-    <p>Bir modül DLL'i oluşturmak için modülün kaynak dosyasında küçük bir
-      değişiklik yapmak gerekir: Modül kaydının daha sonra oluşturulacak olan
-      DLL'den ihraç edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak için
-      modülün modül kaydı tanımına (Apache httpd başlık dosyalarında
+    <p>Bir mod&uuml;l DLL'i oluşturmak i&ccedil;in mod&uuml;l&uuml;n kaynak dosyasında k&uuml;&ccedil;&uuml;k bir
+      değişiklik yapmak gerekir: Mod&uuml;l kaydının daha sonra oluşturulacak olan
+      DLL'den ihra&ccedil; edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak i&ccedil;in
+      mod&uuml;l&uuml;n mod&uuml;l kaydı tanımına (Apache httpd başlık dosyalarında
       tanımlanmış olan) <code>AP_MODULE_DECLARE_DATA</code> eklenmelidir.
-      Örneğin, modülünüz</p>
+      &Ouml;rneğin, mod&uuml;l&uuml;n&uuml;z</p>
 
     <div class="example"><p><code>
         module foo_module;
     </code></p></div>
 
-    <p>diye bir satır içeriyorsa bunu,</p>
+    <p>diye bir satır i&ccedil;eriyorsa bunu,</p>
 
     <div class="example"><p><code>
         module AP_MODULE_DECLARE_DATA foo_module;
     </code></p></div>
 
-    <p>olarak değiştirmelisiniz. Bunun yalnız Windows üzerinde etkili olduğunu
-      ve Unix için modül kodunda bir değişiklik gerekmediğini unutmayınız.
-      Ayrıca, <code>.DEF</code> dosyaları hakkında bilgi sahibi iseniz modül
-      kodunda değişiklik yapmak yerine modül kaydını bu yöntemle de ihraç
+    <p>olarak değiştirmelisiniz. Bunun yalnız Windows &uuml;zerinde etkili olduğunu
+      ve Unix i&ccedil;in mod&uuml;l kodunda bir değişiklik gerekmediğini unutmayınız.
+      Ayrıca, <code>.DEF</code> dosyaları hakkında bilgi sahibi iseniz mod&uuml;l
+      kodunda değişiklik yapmak yerine mod&uuml;l kaydını bu y&ouml;ntemle de ihra&ccedil;
       edebilirsiniz.</p>
 
-    <p>Artık modülü içeren bir DLL oluşturmaya hazırsınız. Bunu, libhttpd.dll
-      paylaşımlı kütüphanesi derlenirken oluşturulan libhttpd.lib ihraç
-      kütüphanesi ile ilintilemeniz gerekecektir. Ayrıca, Apache httpd başlık
-      dosyalarının doğru konumlandığından emin olmak için derleyici
-      seçeneklerinde değişiklik yapmanız gerekebilir. Bu kütüphaneyi
-      sunucunuzun kök dizini altındaki <code>modules</code> dizininde
+    <p>Artık mod&uuml;l&uuml; i&ccedil;eren bir DLL oluşturmaya hazırsınız. Bunu, libhttpd.dll
+      paylaşımlı k&uuml;t&uuml;phanesi derlenirken oluşturulan libhttpd.lib ihra&ccedil;
+      k&uuml;t&uuml;phanesi ile ilintilemeniz gerekecektir. Ayrıca, Apache httpd başlık
+      dosyalarının doğru konumlandığından emin olmak i&ccedil;in derleyici
+      se&ccedil;eneklerinde değişiklik yapmanız gerekebilir. Bu k&uuml;t&uuml;phaneyi
+      sunucunuzun k&ouml;k dizini altındaki <code>modules</code> dizininde
       bulabilirsiniz. En iyisi derleme ortamının doğru yapılandırıldığından
-      emin olmak için ya ağaçta mevcut modüllerden birinin <code>.dsp</code>
+      emin olmak i&ccedil;in ya ağa&ccedil;ta mevcut mod&uuml;llerden birinin <code>.dsp</code>
       dosyasını gaspedersiniz ya da kendi <code>.dsp</code> dosyanızın
-      ilintileme seçenekleriyle derleyicininkileri karşılaştırırsınız.</p>
+      ilintileme se&ccedil;enekleriyle derleyicininkileri karşılaştırırsınız.</p>
 
-    <p>Artık modülünüzün DLL sürümünü oluşturmalısınız. DLL'i sunucunuzun kök
+    <p>Artık mod&uuml;l&uuml;n&uuml;z&uuml;n DLL s&uuml;r&uuml;m&uuml;n&uuml; oluşturmalısınız. DLL'i sunucunuzun k&ouml;k
       dizininin altında bulunan <code>modules</code> dizinine yerleştirdikten
-      sonra <code class="directive">LoadModule</code> yönergesi ile sunucunuza
-      yükleyebilirsiniz.</p>
+      sonra <code class="directive">LoadModule</code> y&ouml;nergesi ile sunucunuza
+      y&uuml;kleyebilirsiniz.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Yönergesi</a> <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="loadfile"><span id="LoadFile">LoadFile</span> Y&ouml;nergesi <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belirtilen nesne dosyasını veya k&uuml;t&uuml;phaneyi sunucu ile ilintiler.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_so</td></tr>
 </table>
 
-    <p><code class="directive">LoadFile</code> yönergesi ismi belirtilen kütüphaneleri
+    <p><code class="directive">LoadFile</code> y&ouml;nergesi ismi belirtilen k&uuml;t&uuml;phaneleri
       veya nesne dosyalarını sunucu başlatılırken veya yeniden başlatılırken
-      sunucu ile ilintiler. Yönerge, bazı modüllerin çalışması sırasında
-      gereken ek kodların yüklenmesi için kullanılır.
+      sunucu ile ilintiler. Y&ouml;nerge, bazı mod&uuml;llerin &ccedil;alışması sırasında
+      gereken ek kodların y&uuml;klenmesi i&ccedil;in kullanılır.
       <code><em>dosya-ismi</em></code> olarak mutlak bir dosya yolu
       belirtilebileceği gibi <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>'a
-      göreli bir dosya yolu da  belirtilebilir.</p>
+      g&ouml;reli bir dosya yolu da  belirtilebilir.</p>
 
-    <p>Örnek:</p>
+    <p>&Ouml;rnek:</p>
 
     <pre class="prettyprint lang-config">LoadFile libexec/libxmlparse.so</pre>
 
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Yönergesi</a> <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="loadmodule"><span id="LoadModule">LoadModule</span> Y&ouml;nergesi <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
-ve etkin modül listesine ekler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>LoadModule <em>modül dosya-ismi</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belirtilen nesne dosyasını veya k&uuml;t&uuml;phaneyi sunucu ile ilintiler
+ve etkin mod&uuml;l listesine ekler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>LoadModule <em>mod&uuml;l dosya-ismi</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_so</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_so</td></tr>
 </table>
-    <p><code class="directive">LoadModule</code> yönergesi
+    <p><code class="directive">LoadModule</code> y&ouml;nergesi
       <code><em>dosya-ismi</em></code> ile belirtilen nesne dosyasını veya
-      kütüphaneyi sunucu ile ilintiler ve etkin modül listesine belirtilen
-      <code><em>modül</em></code> ismiyle ekler. <code><em>modül</em></code>,
-      modülün kaynak dosyasında <code>module</code> türündeki tek harici
-      değişkenin ismi olup modül belgelerinde <a href="module-dict.html#ModuleIdentifier">Modül Betimleyici</a> olarak
-      geçer.</p>
+      k&uuml;t&uuml;phaneyi sunucu ile ilintiler ve etkin mod&uuml;l listesine belirtilen
+      <code><em>mod&uuml;l</em></code> ismiyle ekler. <code><em>mod&uuml;l</em></code>,
+      mod&uuml;l&uuml;n kaynak dosyasında <code>module</code> t&uuml;r&uuml;ndeki tek harici
+      değişkenin ismi olup mod&uuml;l belgelerinde <a href="module-dict.html#ModuleIdentifier">Mod&uuml;l Betimleyici</a> olarak
+      ge&ccedil;er.</p>
     
-    <p>Örneğin,</p>
+    <p>&Ouml;rneğin,</p>
 
     <pre class="prettyprint lang-config">LoadModule status_module modules/mod_status.so</pre>
 
 
     <p>satırı ile ismi belirtilen dosya <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini altındaki
-      <code>modules</code> alt dizininden yüklenir.</p>
+      <code>modules</code> alt dizininden y&uuml;klenir.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_so.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_so.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_so.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_so.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

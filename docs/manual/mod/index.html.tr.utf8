@@ -1,78 +1,76 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Modül Dizini - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>Mod&uuml;l Dizini - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="module-index"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>Modül Dizini</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a></div><div id="page-content"><div id="preamble"><h1>Mod&uuml;l Dizini</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
-    <p>Apache HTTP Sunucusu dağıtımının parçası olarak gelen modüllerin tamamı
-    aşağıda listelenmiştir. Ayrıca, tüm Apache HTTP Sunucusu yönergelerinin
-    alfabetik olarak listelendiği bir <a href="directives.html">Yönerge
+    <p>Apache HTTP Sunucusu dağıtımının par&ccedil;ası olarak gelen mod&uuml;llerin tamamı
+    aşağıda listelenmiştir. Ayrıca, t&uuml;m Apache HTTP Sunucusu y&ouml;nergelerinin
+    alfabetik olarak listelendiği bir <a href="directives.html">Y&ouml;nerge
       Dizini</a> de mevcuttur.</p>
   </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#core">Temel Özellikler ve Çoklu İşlem Modülleri</a></li><li><img alt="" src="../images/down.gif" /> <a href="#other">Diğer Modüller</a></li></ul><h3>Ayrıca bakınız:</h3>
+<li><img alt="" src="../images/down.gif"> <a href="#core">Temel &Ouml;zellikler ve &Ccedil;oklu İşlem Mod&uuml;lleri</a></li><li><img alt="" src="../images/down.gif"> <a href="#other">Diğer Mod&uuml;ller</a></li></ul><h3>Ayrıca bakınız:</h3>
 <ul class="seealso">
-<li><a href="../mpm.html">Çok Süreçlilik Modülleri (MPM'ler)</a>
+<li><a href="../mpm.html">&Ccedil;ok S&uuml;re&ccedil;lilik Mod&uuml;lleri (MPM'ler)</a>
   </li>
-<li><a href="quickreference.html">Hızlı Yönerge Kılavuzu</a>
+<li><a href="quickreference.html">Hızlı Y&ouml;nerge Kılavuzu</a>
   </li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="core" name="core">Temel Özellikler ve Çoklu İşlem Modülleri</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section"><h2><a id="core" name="core">Temel &Ouml;zellikler ve &Ccedil;oklu İşlem Mod&uuml;lleri</a></h2>
 <dl>
-<dt><a href="core.html">core</a></dt><dd>Apache HTTP Sunucusunda daima mevcut olan çekirdek
- özellikler</dd>
-<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
-  yönergeler bütünü.</dd>
+<dt><a href="core.html">core</a></dt><dd>Apache HTTP Sunucusunda daima mevcut olan &ccedil;ekirdek
+ &ouml;zellikler</dd>
+<dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">Birden fazla &Ccedil;ok S&uuml;re&ccedil;lilik Mod&uuml;l&uuml; (MPM) tarafından ger&ccedil;eklenmiş
+  y&ouml;nergeler b&uuml;t&uuml;n&uuml;.</dd>
 <dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
 of consuming threads only for connections with active processing</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
-<dt><a href="prefork.html">prefork</a></dt><dd>Evresiz ön çatallamalı HTTP sunucusu oluşturur</dd>
+<dt><a href="prefork.html">prefork</a></dt><dd>Evresiz &ouml;n &ccedil;atallamalı HTTP sunucusu oluşturur</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Multi-Processing Module optimized for Windows NT.</dd>
-<dt><a href="worker.html">worker</a></dt><dd>Çok evreli ve çok süreçli melez bir HTTP sunucusu oluşturan çok
-süreçlilik modülü.</dd>
+<dt><a href="worker.html">worker</a></dt><dd>&Ccedil;ok evreli ve &ccedil;ok s&uuml;re&ccedil;li melez bir HTTP sunucusu oluşturan &ccedil;ok
+s&uuml;re&ccedil;lilik mod&uuml;l&uuml;.</dd>
 </dl></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section"><h2><a id="other" name="other">Diğer Modüller</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section"><h2><a id="other" name="other">Diğer Mod&uuml;ller</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></p>
 <dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
 <dt><a href="mod_actions.html">mod_actions</a></dt><dd>Execute CGI scripts based on media type or request method.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Belge ağacının parçalarının dosya sisteminin parçalarıyla
-eşlenmesini sağlar ve URL yönlendirmesi yapar.</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Belge ağacının par&ccedil;alarının dosya sisteminin par&ccedil;alarıyla
+eşlenmesini sağlar ve URL y&ouml;nlendirmesi yapar.</dd>
 <dt><a href="mod_allowmethods.html">mod_allowmethods</a></dt><dd>Easily restrict what HTTP methods can be used on the server</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
@@ -101,7 +99,7 @@ address)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
-yaptığı gibi dizin içeriğini listeler.</dd>
+yaptığı gibi dizin i&ccedil;eriğini listeler.</dd>
 <dt><a href="mod_brotli.html" id="B" name="B">mod_brotli</a></dt><dd>Compress content via Brotli before it is delivered to the
 client</dd>
 <dt><a href="mod_buffer.html">mod_buffer</a></dt><dd>Support for request buffering</dd>
@@ -123,12 +121,12 @@ HTTP caching filter.</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
 <dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
-<dt><a href="mod_dir.html">mod_dir</a></dt><dd>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</dd>
+<dt><a href="mod_dir.html">mod_dir</a></dt><dd>B&ouml;l&uuml; &ccedil;izgisiyle biten y&ouml;nlendirmeleri yapar ve dizin i&ccedil;eriği dosyalarını sunar.</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol
 modules</dd>
-<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere müdahale
-etmek için kullanılır.</dd>
+<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere m&uuml;dahale
+etmek i&ccedil;in kullanılır.</dd>
 <dt><a href="mod_example_hooks.html">mod_example_hooks</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> and
 <code>Cache-Control</code> HTTP headers according to user-specified
@@ -154,11 +152,11 @@ configuration</dd>
 <dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd>Heartbeat Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Sunucuya yapılan isteklerin g&uuml;nl&uuml;k kayıtlarının tutulması
 </dd>
 <dt><a href="mod_log_debug.html">mod_log_debug</a></dt><dd>Additional configurable debug logging</dd>
-<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Sunucuya yapılan isteklerin adli günlük kayıtlarının tutulması</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
+<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Sunucuya yapılan isteklerin adli g&uuml;nl&uuml;k kayıtlarının tutulması</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Her isteğin girdi ve &ccedil;ıktı uzunluklarının g&uuml;nl&uuml;klenmesi.
 </dd>
 <dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
 request processing</dd>
@@ -210,7 +208,7 @@ via the request headers.
 </dd>
 <dt><a href="mod_reqtimeout.html">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
 </dd>
-<dt><a href="mod_request.html">mod_request</a></dt><dd>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</dd>
+<dt><a href="mod_request.html">mod_request</a></dt><dd>HTTP istek g&ouml;vdelerini işleme sokup kullanılabilir kılan s&uuml;zge&ccedil;ler</dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filter Input (request) and Output (response) content using <code>sed</code> syntax</dd>
@@ -218,11 +216,11 @@ URLs on the fly</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
-<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</dd>
+<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Ortam değişkenlerinin isteğin &ouml;zelliklerine uygun olarak atanmasını sağlar</dd>
 <dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_so.html">mod_so</a></dt><dd>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
-yeniden başlatılması sırasında yüklenmesini sağlar.</dd>
+<dt><a href="mod_so.html">mod_so</a></dt><dd>Mod&uuml;llerin ve &ccedil;alıştırılabilir kodun sunucunun başlatılması veya
+yeniden başlatılması sırasında y&uuml;klenmesini sağlar.</dd>
 <dt><a href="mod_socache_dbm.html">mod_socache_dbm</a></dt><dd>DBM based shared object cache provider.</dd>
 <dt><a href="mod_socache_dc.html">mod_socache_dc</a></dt><dd>Distcache based shared object cache provider.</dd>
 <dt><a href="mod_socache_memcache.html">mod_socache_memcache</a></dt><dd>Memcache based shared object cache provider.</dd>
@@ -236,12 +234,12 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>CGI betiklerinin belli bir kullanıcı ve grubun aidiyetinde
-çalışmasını mümkün kılar.</dd>
+&ccedil;alışmasını m&uuml;mk&uuml;n kılar.</dd>
 <dt><a href="mod_systemd.html">mod_systemd</a></dt><dd>Provides better support for systemd integration</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
 identifier for each request</dd>
-<dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Unix ailesi platformlar için temel (gerekli) güvenlik.</dd>
-<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>Kullanıcılara özel dizinler</dd>
+<dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Unix ailesi platformlar i&ccedil;in temel (gerekli) g&uuml;venlik.</dd>
+<dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>Kullanıcılara &ouml;zel dizinler</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
@@ -255,15 +253,15 @@ filter modules</dd>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/mod/" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/mod/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

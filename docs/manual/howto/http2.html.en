@@ -1,33 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>HTTP/2 guide - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>HTTP/2 guide</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/howto/http2.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 
     <p>This is the howto guide for the HTTP/2 implementation in Apache httpd. This
@@ -35,19 +33,19 @@
     remain consistent releases.
     </p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#protocol">The HTTP/2 protocol</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#implementation">HTTP/2 in Apache httpd</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#building">Build httpd with HTTP/2 support</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basic-config">Basic Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mpm-config">MPM Configuration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#clients">Clients</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tools">Useful tools to debug HTTP/2</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#push">Server Push</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#earlyhints">Early Hints</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#protocol">The HTTP/2 protocol</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#implementation">HTTP/2 in Apache httpd</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#building">Build httpd with HTTP/2 support</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basic-config">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mpm-config">MPM Configuration</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#clients">Clients</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#tools">Useful tools to debug HTTP/2</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#push">Server Push</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#earlyhints">Early Hints</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">The HTTP/2 protocol</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">The HTTP/2 protocol <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>HTTP/2 is the evolution of the world's most successful application layer protocol, HTTP.
     It focuses on making more efficient use of network resources. It does not change the fundamentals
@@ -71,9 +69,9 @@
         <li>A <strong>stream</strong> is a bidirectional flow of frames within the HTTP/2 connection. The correspondent concept in HTTP 1.1 is a request/response message exchange. More info in the official documentation <a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>.</li>
         <li>HTTP/2 is able to run <strong>multiple streams</strong> of data over the same TCP connection, avoiding the classic HTTP 1.1 head of blocking slow request and avoiding to re-instantiate TCP connections for each request/response (KeepAlive patched the problem in HTTP 1.1 but did not fully solve it).</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 in Apache httpd</a> <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
+<h2 id="implementation">HTTP/2 in Apache httpd <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>The HTTP/2 protocol is implemented by its own httpd module, aptly named
     <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. It implements the complete set
@@ -84,9 +82,9 @@
     <p>One feature of HTTP/2 that offers new capabilities for web developers is
     <a href="#push">Server Push</a>. See that section on how your web application
     can make use of it.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="building" id="building">Build httpd with HTTP/2 support</a> <a title="Permanent link" href="#building" class="permalink">&para;</a></h2>
+<h2 id="building">Build httpd with HTTP/2 support <a title="Permanent link" href="#building" class="permalink">&para;</a></h2>
     
     <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> uses the library of <a href="https://nghttp2.org">nghttp2</a>
     as its implementation base. In order to build <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> you need at least version 1.2.1 of
@@ -103,9 +101,9 @@
     URLs, so you need a server with SSL support. But not only that, you will need a SSL library
     that supports the <code>ALPN</code> extension. If OpenSSL is the library you use, you need
     at least version 1.0.2.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Basic Configuration</a> <a title="Permanent link" href="#basic-config" class="permalink">&para;</a></h2>
+<h2 id="basic-config">Basic Configuration <a title="Permanent link" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>When you have a <code>httpd</code> built with <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> you need some
@@ -166,9 +164,9 @@
     <p>For more advanced tips on configuration, see the <a href="../mod/mod_http2.html#dimensioning">
     modules section about dimensioning</a> and <a href="../mod/mod_http2.html#misdirected">
     how to manage multiple hosts with the same certificate</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">MPM Configuration</a> <a title="Permanent link" href="#mpm-config" class="permalink">&para;</a></h2>
+<h2 id="mpm-config">MPM Configuration <a title="Permanent link" href="#mpm-config" class="permalink">&para;</a></h2>
     
     
     <p>HTTP/2 is supported in all multi-processing modules that come with httpd. However, if
@@ -185,9 +183,9 @@
     <p>If you are really stuck with <code class="module"><a href="../mod/prefork.html">prefork</a></code> and want multiple requests,
     you can tweak the <code class="directive"><a href="../mod/mod_http2.html#h2minworkers">H2MinWorkers</a></code> to make
     that possible. If it breaks, however, you own both parts.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clients</a> <a title="Permanent link" href="#clients" class="permalink">&para;</a></h2>
+<h2 id="clients">Clients <a title="Permanent link" href="#clients" class="permalink">&para;</a></h2>
     
     <p>Almost all modern browsers support HTTP/2, but only over SSL connections: Firefox (v43),
     Chrome (v45), Safari (since v9), iOS Safari (v9), Opera (v35), Chrome for Android (v49)
@@ -198,9 +196,9 @@
     python, perl, ruby, rust, scala and swift.</p>
     <p>Several of the non-browser client implementations support HTTP/2 over cleartext, h2c. The
     most versatile being <a href="https://curl.haxx.se">curl</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Useful tools to debug HTTP/2</a> <a title="Permanent link" href="#tools" class="permalink">&para;</a></h2>
+<h2 id="tools">Useful tools to debug HTTP/2 <a title="Permanent link" href="#tools" class="permalink">&para;</a></h2>
     
     <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
     your version supports HTTP/2 checking its <code>Features</code>:</p>
@@ -224,9 +222,9 @@
     interesting extension for <a href="https://chrome.google.com/webstore/detail/http2-and-spdy-indicator/mpbpobfflnpcgagjijhmgnchggcjblin?hl=en">Chrome</a>
     and <a href="https://addons.mozilla.org/en-us/firefox/addon/spdy-indicator/">Firefox</a>
     to visualize when your browser is using HTTP/2.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="push" id="push">Server Push</a> <a title="Permanent link" href="#push" class="permalink">&para;</a></h2>
+<h2 id="push">Server Push <a title="Permanent link" href="#push" class="permalink">&para;</a></h2>
     
     <p>The HTTP/2 protocol allows the server to PUSH responses to a client it never
     asked for. The tone of the conversation is: "here is a request that you
@@ -291,9 +289,9 @@
     that require a cookie to be present will not work. This can be a matter of debate. But 
     unless this is more clearly discussed with browser, let's err on the side of caution and
     not expose cookie where they might ordinarily not be visible.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="earlyhints" id="earlyhints">Early Hints</a> <a title="Permanent link" href="#earlyhints" class="permalink">&para;</a></h2>
+<h2 id="earlyhints">Early Hints <a title="Permanent link" href="#earlyhints" class="permalink">&para;</a></h2>
     
     <p>An alternative to PUSHing resources is to send <code>Link</code> headers to the
     client before the response is even ready. This uses the HTTP feature called "Early Hints" and
@@ -319,11 +317,11 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/http2.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/http2.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

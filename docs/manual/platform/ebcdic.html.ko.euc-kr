@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 EBCDIC 포팅 - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>아파치 EBCDIC 포팅</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/platform/ebcdic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/ebcdic.html" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -38,17 +36,17 @@
     </div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">아파치 EBCDIC 포팅 개요</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#design">설계 목표</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#technical">기술적 해결책</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#porting">포팅에 대해서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#document">문서 저장에 대해서</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modules">아파치 모듈의 상태</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#third-party">제삼자가 만든 모듈의 상태</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#overview">아파치 EBCDIC 포팅 개요</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#design">설계 목표</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#technical">기술적 해결책</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#porting">포팅에 대해서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#document">문서 저장에 대해서</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#modules">아파치 모듈의 상태</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#third-party">제삼자가 만든 모듈의 상태</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">아파치 EBCDIC 포팅 개요</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">아파치 EBCDIC 포팅 개요 <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     
 
@@ -77,9 +75,9 @@
 
     <p>이 문서는 포팅시 여러 설계상 결정의 이유를 설명한다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="design" id="design">설계 목표</a> <a title="Permanent link" href="#design" class="permalink">&para;</a></h2>
+<h2 id="design">설계 목표 <a title="Permanent link" href="#design" class="permalink">&para;</a></h2>
 
     
 
@@ -94,9 +92,9 @@
     (아래 참고). 다음 버전에서는 변환해야할 모든 문서에
     "ebcdic-handler"를 정의하는 방법으로 문제를 해결할 것이다.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="technical" id="technical">기술적 해결책</a> <a title="Permanent link" href="#technical" class="permalink">&para;</a></h2>
+<h2 id="technical">기술적 해결책 <a title="Permanent link" href="#technical" class="permalink">&para;</a></h2>
 
     
 
@@ -122,9 +120,9 @@
       바이너리 파일이기때문에)</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="porting" id="porting">포팅에 대해서</a> <a title="Permanent link" href="#porting" class="permalink">&para;</a></h2>
+<h2 id="porting">포팅에 대해서 <a title="Permanent link" href="#porting" class="permalink">&para;</a></h2>
 
     
 
@@ -217,7 +215,7 @@
         사용한다:</p>
 
         <div class="example"><p><code>
-          AddType  text/x-ascii-html  .ahtml <br />
+          AddType  text/x-ascii-html  .ahtml <br>
           AddType  text/x-ascii-plain .ascii
         </code></p></div>
 
@@ -249,13 +247,13 @@
 
     </ol>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="document" id="document">문서 저장에 대해서</a> <a title="Permanent link" href="#document" class="permalink">&para;</a></h2>
+<h2 id="document">문서 저장에 대해서 <a title="Permanent link" href="#document" class="permalink">&para;</a></h2>
 
     
 
-    <h3><a name="binary" id="binary">바이너리 파일</a></h3>
+    <h3 id="binary">바이너리 파일</h3>
 
       
 
@@ -272,7 +270,7 @@
 
     
 
-    <h3><a name="text" id="text">문자 문서</a></h3>
+    <h3 id="text">문자 문서</h3>
 
       
 
@@ -283,7 +281,7 @@
 
     
 
-    <h3><a name="ssi" id="ssi">Server Side Include 문서</a></h3>
+    <h3 id="ssi">Server Side Include 문서</h3>
 
       
 
@@ -292,9 +290,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="modules" id="modules">아파치 모듈의 상태</a> <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
+<h2 id="modules">아파치 모듈의 상태 <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
 
     
 
@@ -308,43 +306,43 @@
       <tr>
         <td><code class="module"><a href="../mod/core.html">core</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_access.html">mod_access</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -356,31 +354,31 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></td>
         <td class="centered">?</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_digest</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -392,7 +390,7 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_env.html">mod_env</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -404,55 +402,55 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_info.html">mod_info</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_log_agent</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_log_config</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_log_referer.html">mod_log_referer</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -464,13 +462,13 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -482,31 +480,31 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -516,9 +514,9 @@
       </tr>
     </table>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">제삼자가 만든 모듈의 상태</a> <a title="Permanent link" href="#third-party" class="permalink">&para;</a></h2>
+<h2 id="third-party">제삼자가 만든 모듈의 상태 <a title="Permanent link" href="#third-party" class="permalink">&para;</a></h2>
 
     
 
@@ -561,8 +559,8 @@
 <p><span>가능한 언어: </span><a href="../en/platform/ebcdic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/ebcdic.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

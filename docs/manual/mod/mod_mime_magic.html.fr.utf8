@@ -1,92 +1,90 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_mime_magic - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_mime_magic</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime_magic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime_magic.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_mime_magic.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Détermine le type MIME d'un fichier à partir de quelques
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>D&eacute;termine le type MIME d'un fichier &agrave; partir de quelques
 octets de son contenu</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mime_magic_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_mime_magic.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>mime_magic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_mime_magic.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de déterminer le <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type
-    MIME</a> des fichiers de la même manière que la commande Unix
-    <code>file(1)</code>, à savoir en se basant sur les premiers octets
-    du fichier. Il est conçu comme une "seconde ligne de défense" pour
-    les cas où <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> ne parvient pas à déterminer le
+    <p>Ce module permet de d&eacute;terminer le <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">type
+    MIME</a> des fichiers de la m&ecirc;me mani&egrave;re que la commande Unix
+    <code>file(1)</code>, &agrave; savoir en se basant sur les premiers octets
+    du fichier. Il est con&ccedil;u comme une "seconde ligne de d&eacute;fense" pour
+    les cas o&ugrave; <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> ne parvient pas &agrave; d&eacute;terminer le
     type du fichier.</p>
 
-    <p>Ce module est dérivé d'une version libre de la commande Unix
+    <p>Ce module est d&eacute;riv&eacute; d'une version libre de la commande Unix
     <code>file(1)</code> qui utilise des "nombres magiques" et autres
     marques distinctives issus du contenu du fichier pour essayer de
-    déterminer le type de contenu. Ce module n'est activé que si le
-    fichier magique est spécifié par la directive <code class="directive"><a href="#mimemagicfile">MimeMagicFile</a></code>.</p>
+    d&eacute;terminer le type de contenu. Ce module n'est activ&eacute; que si le
+    fichier magique est sp&eacute;cifi&eacute; par la directive <code class="directive"><a href="#mimemagicfile">MimeMagicFile</a></code>.</p>
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#format">Format du fichier magique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#performance">Problèmes liés aux performances</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#notes">Notes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#format">Format du fichier magique</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#performance">Probl&egrave;mes li&eacute;s aux performances</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#notes">Notes</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#mimemagicfile">MimeMagicFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mimemagicfile">MimeMagicFile</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du fichier magique</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
+<h2 id="format">Format du fichier magique <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
 
-    <p>Le fichier contient du texte ASCII sur 4 à 5 colonnes. Les lignes
-    vides sont autorisées mais ignorées. Toute ligne commençant par un
-    dièse (<code>#</code>) est un commentaire. Les autres lignes sont
-    interprétées en colonnes comme suit :</p>
+    <p>Le fichier contient du texte ASCII sur 4 &agrave; 5 colonnes. Les lignes
+    vides sont autoris&eacute;es mais ignor&eacute;es. Toute ligne commen&ccedil;ant par un
+    di&egrave;se (<code>#</code>) est un commentaire. Les autres lignes sont
+    interpr&eacute;t&eacute;es en colonnes comme suit :</p>
 
     <table class="bordered"><tr class="header"><th>Colonne</th><th>Description</th></tr>
 <tr><td>1</td>
-        <td>numéro de l'octet à partir duquel la vérification débute<br />
-         "<code>&gt;</code>" indique une dépendance par rapport à la
-	 dernière ligne non-"<code>&gt;</code>"</td></tr>
+        <td>num&eacute;ro de l'octet &agrave; partir duquel la v&eacute;rification d&eacute;bute<br>
+         "<code>&gt;</code>" indique une d&eacute;pendance par rapport &agrave; la
+	 derni&egrave;re ligne non-"<code>&gt;</code>"</td></tr>
 <tr class="odd"><td>2</td>
-        <td><p>type de donnée à rechercher</p>
+        <td><p>type de donn&eacute;e &agrave; rechercher</p>
         <table class="bordered">
         
         <tr><td><code>byte</code></td>
-            <td>caractère unique</td></tr>
+            <td>caract&egrave;re unique</td></tr>
         <tr><td><code>short</code></td>
             <td>entier sur 16 bits selon l'ordre de la machine</td></tr>
         <tr><td><code>long</code></td>
             <td>entier sur 32 bits selon l'ordre de la machine</td></tr>
         <tr><td><code>string</code></td>
-            <td>chaîne de taille choisie</td></tr>
+            <td>cha&icirc;ne de taille choisie</td></tr>
         <tr><td><code>date</code></td>
             <td>date au format entier long (secondes depuis le temps Unix epoch/1970)</td></tr>
         <tr><td><code>beshort</code></td>
@@ -103,7 +101,7 @@ octets de son contenu</td></tr>
             <td>date au format entier 32 bits little-endian</td></tr>
         </table></td></tr>
 <tr><td>3</td>
-        <td>contenu des données à rechercher</td></tr>
+        <td>contenu des donn&eacute;es &agrave; rechercher</td></tr>
 <tr class="odd"><td>4</td>
         <td>type MIME si correspondance</td></tr>
 <tr><td>5</td>
@@ -111,7 +109,7 @@ octets de son contenu</td></tr>
 </table>
 
     <p>Par exemple, les lignes du fichier magique suivantes
-    permettraient de reconnaître certains formats audio :</p>
+    permettraient de reconna&icirc;tre certains formats audio :</p>
 
     <div class="example"><pre># Sun/NeXT audio data
 0      string      .snd
@@ -124,10 +122,10 @@ octets de son contenu</td></tr>
 &gt;12    belong      7       audio/basic
 &gt;12    belong     23       audio/x-adpcm</pre></div>
 
-    <p>Et celles-ci permettraient de reconnaître la différence entre les
+    <p>Et celles-ci permettraient de reconna&icirc;tre la diff&eacute;rence entre les
     fichiers <code>*.doc</code> qui contiennent des documents Microsoft
     Word et les documents FrameMaker (ce sont des formats de fichiers
-    incompatibles qui possèdent le même suffixe).</p>
+    incompatibles qui poss&egrave;dent le m&ecirc;me suffixe).</p>
 
     <div class="example"><pre># Frame
 0  string  \&lt;MakerFile        application/x-frame
@@ -143,46 +141,46 @@ octets de son contenu</td></tr>
 0  string  \320\317\021\340\241\261  application/msword
 0  string  \333\245-\0\0\0           application/msword</pre></div>
 
-    <p>Un champ optionnel codage MIME peut être ajouté dans la cinquième
-    colonne. Par exemple, cette ligne permet de reconnaître les fichiers
-    compressés par gzip et définissent le type de codage.</p>
+    <p>Un champ optionnel codage MIME peut &ecirc;tre ajout&eacute; dans la cinqui&egrave;me
+    colonne. Par exemple, cette ligne permet de reconna&icirc;tre les fichiers
+    compress&eacute;s par gzip et d&eacute;finissent le type de codage.</p>
 
-    <div class="example"><pre># gzip (GNU zip, à ne pas confondre avec
+    <div class="example"><pre># gzip (GNU zip, &agrave; ne pas confondre avec
 #       l'archiveur zip [Info-ZIP/PKWARE])
 
 0  string  \037\213  application/octet-stream  x-gzip</pre></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="performance" id="performance">Problèmes liés aux performances</a> <a title="Lien permanent" href="#performance" class="permalink">&para;</a></h2>
-    <p>Ce module n'est pas fait pour tous les systèmes. Si votre système
-    parvient à peine à supporter sa charge, ou si vous testez les
-    performances d'un serveur web, il est déconseillé d'utiliser ce
-    module car son fonctionnement a un prix en matière de ressources
-    consommées.</p>
+<h2 id="performance">Probl&egrave;mes li&eacute;s aux performances <a title="Lien permanent" href="#performance" class="permalink">&para;</a></h2>
+    <p>Ce module n'est pas fait pour tous les syst&egrave;mes. Si votre syst&egrave;me
+    parvient &agrave; peine &agrave; supporter sa charge, ou si vous testez les
+    performances d'un serveur web, il est d&eacute;conseill&eacute; d'utiliser ce
+    module car son fonctionnement a un prix en mati&egrave;re de ressources
+    consomm&eacute;es.</p>
 
-    <p>Des efforts ont cependant été fournis pour améliorer les
+    <p>Des efforts ont cependant &eacute;t&eacute; fournis pour am&eacute;liorer les
     performances du code original de la commande <code>file(1)</code> en
-    l'adaptant pour fonctionner sur un serveur web à forte charge. Il a
-    été conçu pour un serveur sur lequel des milliers d'utilisateurs
-    publient leurs propres documents, ce qui est probablement très
-    courant sur un intranet. Il s'avère souvent bénéfique qu'un serveur
-    puisse prendre des décisions plus pertinentes à propos du contenu
+    l'adaptant pour fonctionner sur un serveur web &agrave; forte charge. Il a
+    &eacute;t&eacute; con&ccedil;u pour un serveur sur lequel des milliers d'utilisateurs
+    publient leurs propres documents, ce qui est probablement tr&egrave;s
+    courant sur un intranet. Il s'av&egrave;re souvent b&eacute;n&eacute;fique qu'un serveur
+    puisse prendre des d&eacute;cisions plus pertinentes &agrave; propos du contenu
     d'un fichier que celles se basant sur le nom du fichier seul, ne
     serait-ce que pour diminuer le nombre d'appels du type "pourquoi ma
     page ne s'affiche-t-elle pas ?" survenant lorsque les utilisateurs
-    nomment leurs fichiers incorrectement. Vous devez déterminer si la
-    charge supplémentaire convient à votre environnement.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    nomment leurs fichiers incorrectement. Vous devez d&eacute;terminer si la
+    charge suppl&eacute;mentaire convient &agrave; votre environnement.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Notes</a> <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Notes <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
     <p>Les notes suivantes s'appliquent au module
     <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> et sont incluses ici pour
-    conformité avec les restrictions de copyright des contributeurs
-    qui requièrent de les accepter.</p>
-    <p>Note de traduction : ces informations de type légal ne sont pas traductibles</p>
+    conformit&eacute; avec les restrictions de copyright des contributeurs
+    qui requi&egrave;rent de les accepter.</p>
+    <p>Note de traduction : ces informations de type l&eacute;gal ne sont pas traductibles</p>
 
     <div class="note">
-      <p>mod_mime_magic: MIME type lookup via file magic numbers<br />
+      <p>mod_mime_magic: MIME type lookup via file magic numbers<br>
       Copyright (c) 1996-1997 Cisco Systems, Inc.</p>
 
       <p>This software was submitted by Cisco Systems to the Apache Group
@@ -258,24 +256,24 @@ octets de son contenu</td></tr>
       </ul>
     </div>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mimemagicfile">Directive <span id="MimeMagicFile">MimeMagicFile</span> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la détermination du type MIME en se basant sur le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la d&eacute;termination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique
-spécifié</td></tr>
+sp&eacute;cifi&eacute;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MimeMagicFile <var>chemin-fichier</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mime_magic</td></tr>
 </table>
     <p>La directive <code class="directive">MimeMagicFile</code> permet
-    d'activer ce module, le fichier par défaut fourni étant
-    <code>conf/magic</code>. Les chemins sans slash '/' de début sont
-    relatifs au répertoire défini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Les serveurs virtuels
-    utilisent le même fichier que le serveur principal sauf si un
-    fichier spécifique a été défini pour ce serveur virtuel, auquel cas
-    c'est ce dernier fichier qui sera utilisé.</p>
+    d'activer ce module, le fichier par d&eacute;faut fourni &eacute;tant
+    <code>conf/magic</code>. Les chemins sans slash '/' de d&eacute;but sont
+    relatifs au r&eacute;pertoire d&eacute;fini par la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. Les serveurs virtuels
+    utilisent le m&ecirc;me fichier que le serveur principal sauf si un
+    fichier sp&eacute;cifique a &eacute;t&eacute; d&eacute;fini pour ce serveur virtuel, auquel cas
+    c'est ce dernier fichier qui sera utilis&eacute;.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">MimeMagicFile conf/magic</pre>
 </div>
@@ -284,10 +282,10 @@ spécifié</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_mime_magic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_mime_magic.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_mime_magic.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

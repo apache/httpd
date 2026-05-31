@@ -1,150 +1,148 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Négociation de contenu - Serveur HTTP Apache Version 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>N&eacute;gociation de contenu - Serveur HTTP Apache Version 2.4</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Négociation de contenu</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>N&eacute;gociation de contenu</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
 
-    <p>Apache HTTPD prend en charge la négociation de
-    contenu telle qu'elle est décrite
-    dans la spécification HTTP/1.1. Il peut choisir la meilleure représentation
-    d'une ressource en fonction des préférences du navigateur pour ce qui
-    concerne le type de media, les langages, le jeu de caractères et son
-    encodage. Il implémente aussi quelques fonctionnalités pour traiter de
-    manière plus intelligente les requêtes en provenance de navigateurs qui
-    envoient des informations de négociation incomplètes.</p>
+    <p>Apache HTTPD prend en charge la n&eacute;gociation de
+    contenu telle qu'elle est d&eacute;crite
+    dans la sp&eacute;cification HTTP/1.1. Il peut choisir la meilleure repr&eacute;sentation
+    d'une ressource en fonction des pr&eacute;f&eacute;rences du navigateur pour ce qui
+    concerne le type de media, les langages, le jeu de caract&egrave;res et son
+    encodage. Il impl&eacute;mente aussi quelques fonctionnalit&eacute;s pour traiter de
+    mani&egrave;re plus intelligente les requ&ecirc;tes en provenance de navigateurs qui
+    envoient des informations de n&eacute;gociation incompl&egrave;tes.</p>
 
-    <p>La négociation de contenu est assurée par le module
-    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> qui est compilé par défaut
+    <p>La n&eacute;gociation de contenu est assur&eacute;e par le module
+    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> qui est compil&eacute; par d&eacute;faut
     dans le serveur.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">À propos de la négociation de contenu</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">La négociation avec httpd</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#methods">Les méthodes de négociation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#better">Ajustement des valeurs de qualité</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions à la négociation de contenu
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#about">&Agrave; propos de la n&eacute;gociation de contenu</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#negotiation">La n&eacute;gociation avec httpd</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#methods">Les m&eacute;thodes de n&eacute;gociation</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#better">Ajustement des valeurs de qualit&eacute;</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#extensions">Extensions &agrave; la n&eacute;gociation de contenu
 transparente</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#naming">Remarques à propos des liens hypertextes et des
+<li><img alt="" src="./images/down.gif"> <a href="#naming">Remarques &agrave; propos des liens hypertextes et des
 conventions de nommage</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#caching">Remarque sur la mise en cache</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#caching">Remarque sur la mise en cache</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="about" id="about">À propos de la négociation de contenu</a> <a title="Lien permanent" href="#about" class="permalink">&para;</a></h2>
+<h2 id="about">&Agrave; propos de la n&eacute;gociation de contenu <a title="Lien permanent" href="#about" class="permalink">&para;</a></h2>
 
-    <p>Une ressource peut être disponible selon différentes représentations.
-    Par exemple, elle peut être disponible en différents langages ou pour
-    différents types de média, ou une combinaison des deux.
-    Pour faire le meilleur choix, on peut fournir à l'utilisateur une page
+    <p>Une ressource peut &ecirc;tre disponible selon diff&eacute;rentes repr&eacute;sentations.
+    Par exemple, elle peut &ecirc;tre disponible en diff&eacute;rents langages ou pour
+    diff&eacute;rents types de m&eacute;dia, ou une combinaison des deux.
+    Pour faire le meilleur choix, on peut fournir &agrave; l'utilisateur une page
     d'index, et le laisser choisir. Cependant, le serveur peut souvent faire
     ce choix automatiquement. Cela est possible car les navigateurs peuvent
     envoyer des informations sur les
-    représentations qu'ils préfèrent à l'intérieur de chaque requête.
+    repr&eacute;sentations qu'ils pr&eacute;f&egrave;rent &agrave; l'int&eacute;rieur de chaque requ&ecirc;te.
     Par exemple, un navigateur peut indiquer
-    qu'il préfère voir les informations en français, mais qu'en cas
-    d'impossibilité l'anglais peut convenir. Les navigateurs indiquent leurs
-    préférences à l'aide d'en-têtes dans la requête. Pour ne demander que des
-    représentations en français, le navigateur peut utiliser l'en-tête :</p>
+    qu'il pr&eacute;f&egrave;re voir les informations en fran&ccedil;ais, mais qu'en cas
+    d'impossibilit&eacute; l'anglais peut convenir. Les navigateurs indiquent leurs
+    pr&eacute;f&eacute;rences &agrave; l'aide d'en-t&ecirc;tes dans la requ&ecirc;te. Pour ne demander que des
+    repr&eacute;sentations en fran&ccedil;ais, le navigateur peut utiliser l'en-t&ecirc;te :</p>
 
 <div class="example"><p><code>Accept-Language: fr</code></p></div>
 
-    <p>Notez qu'il ne sera tenu compte de cette préférence que s'il existe un
-    choix de représentations et que ces dernières varient en fonction
+    <p>Notez qu'il ne sera tenu compte de cette pr&eacute;f&eacute;rence que s'il existe un
+    choix de repr&eacute;sentations et que ces derni&egrave;res varient en fonction
     du langage.</p>
 
-    <p>À titre d'exemple d'une requête plus complexe, ce navigateur a été
-    configuré pour accepter le français et l'anglais, avec une préférence pour
-    le français, et accepter différents types de média, avec une préférence
-    pour HTML par rapport à au texte plat («&nbsp;plain text&nbsp;») ou autres types de fichiers texte, et
-    avec une préférence pour GIF ou JPEG par rapport à tout autre type de
-    média, mais autorisant tout autre type de média en dernier ressort :</p>
+    <p>&Agrave; titre d'exemple d'une requ&ecirc;te plus complexe, ce navigateur a &eacute;t&eacute;
+    configur&eacute; pour accepter le fran&ccedil;ais et l'anglais, avec une pr&eacute;f&eacute;rence pour
+    le fran&ccedil;ais, et accepter diff&eacute;rents types de m&eacute;dia, avec une pr&eacute;f&eacute;rence
+    pour HTML par rapport &agrave; au texte plat (&laquo;&nbsp;plain text&nbsp;&raquo;) ou autres types de fichiers texte, et
+    avec une pr&eacute;f&eacute;rence pour GIF ou JPEG par rapport &agrave; tout autre type de
+    m&eacute;dia, mais autorisant tout autre type de m&eacute;dia en dernier ressort :</p>
 
 <div class="example"><pre class="prettyprint lang-config">Accept-Language: fr; q=1.0, en; q=0.5
 Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1</pre>
 </div>
 
-    <p>httpd prend en charge la négociation de contenu «&nbsp;server driven&nbsp;» (telle qu'elle
-    est définie dans la spécification HTTP/1.1), où c'est le serveur qui
-    décide quelle est la meilleure représentation à renvoyer pour la ressource
-    demandée. Il prend entièrement en charge les en-têtes de requête
+    <p>httpd prend en charge la n&eacute;gociation de contenu &laquo;&nbsp;server driven&nbsp;&raquo; (telle qu'elle
+    est d&eacute;finie dans la sp&eacute;cification HTTP/1.1), o&ugrave; c'est le serveur qui
+    d&eacute;cide quelle est la meilleure repr&eacute;sentation &agrave; renvoyer pour la ressource
+    demand&eacute;e. Il prend enti&egrave;rement en charge les en-t&ecirc;tes de requ&ecirc;te
     <code>Accept</code>, <code>Accept-Language</code>,
     <code>Accept-Charset</code> et <code>Accept-Encoding</code>.
-    httpd prend aussi en charge la négociation de contenu transparente, qui est un
-    protocole de négociation expérimental défini dans les RFC 2295 et 2296.
-    Il ne prend pas en charge la négociation de fonctionnalité (feature negotiation)
-    telle qu'elle est définie dans ces RFCs.</p>
+    httpd prend aussi en charge la n&eacute;gociation de contenu transparente, qui est un
+    protocole de n&eacute;gociation exp&eacute;rimental d&eacute;fini dans les RFC 2295 et 2296.
+    Il ne prend pas en charge la n&eacute;gociation de fonctionnalit&eacute; (feature negotiation)
+    telle qu'elle est d&eacute;finie dans ces RFCs.</p>
 
-    <p>Une <strong>ressource</strong> est une entité conceptuelle identifiée
+    <p>Une <strong>ressource</strong> est une entit&eacute; conceptuelle identifi&eacute;e
     par un URI (RFC 2396). Un serveur HTTP comme le serveur HTTP Apache
-    propose l'accès à des
-    <strong>représentations</strong> de la ressource à l'intérieur de son
-    espace de nommage, chaque représentation étant composée d'une séquence
-    d'octets avec la définition d'un type de media, d'un jeu de caractères,
-    d'un encodage, etc. À un instant donné, chaque ressource peut être
-    associée avec zéro, une ou plusieurs représentations. Si plusieurs
-    représentations sont disponibles, la ressource est qualifiée de
-    <strong>négociable</strong> et chacune de ses représentations se nomme
-    <strong>variante</strong>. Les différences entre les
-    variantes disponibles d'une ressource négociable constituent les
-    <strong>dimensions</strong> de la négociation.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    propose l'acc&egrave;s &agrave; des
+    <strong>repr&eacute;sentations</strong> de la ressource &agrave; l'int&eacute;rieur de son
+    espace de nommage, chaque repr&eacute;sentation &eacute;tant compos&eacute;e d'une s&eacute;quence
+    d'octets avec la d&eacute;finition d'un type de media, d'un jeu de caract&egrave;res,
+    d'un encodage, etc. &Agrave; un instant donn&eacute;, chaque ressource peut &ecirc;tre
+    associ&eacute;e avec z&eacute;ro, une ou plusieurs repr&eacute;sentations. Si plusieurs
+    repr&eacute;sentations sont disponibles, la ressource est qualifi&eacute;e de
+    <strong>n&eacute;gociable</strong> et chacune de ses repr&eacute;sentations se nomme
+    <strong>variante</strong>. Les diff&eacute;rences entre les
+    variantes disponibles d'une ressource n&eacute;gociable constituent les
+    <strong>dimensions</strong> de la n&eacute;gociation.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="negotiation" id="negotiation">La négociation avec httpd</a> <a title="Lien permanent" href="#negotiation" class="permalink">&para;</a></h2>
+<h2 id="negotiation">La n&eacute;gociation avec httpd <a title="Lien permanent" href="#negotiation" class="permalink">&para;</a></h2>
 
-    <p>Pour négocier une ressource, on doit fournir au serveur des
-    informations à propos de chacune des variantes. Il y a deux manières
+    <p>Pour n&eacute;gocier une ressource, on doit fournir au serveur des
+    informations &agrave; propos de chacune des variantes. Il y a deux mani&egrave;res
     d'y parvenir :</p>
 
     <ul>
-      <li>Utiliser une liste de correspondances de type («&nbsp;type-map&nbsp;») (<em>c'est à dire</em>
+      <li>Utiliser une liste de correspondances de type (&laquo;&nbsp;type-map&nbsp;&raquo;) (<em>c'est &agrave; dire</em>
       un fichier <code>*.var</code>) qui nomme explicitement les fichiers
       contenant les variantes, ou</li>
 
-      <li>Utiliser une recherche «&nbsp;multivues&nbsp;», où le serveur effectue une
+      <li>Utiliser une recherche &laquo;&nbsp;multivues&nbsp;&raquo;, o&ugrave; le serveur effectue une
       recherche de correspondance sur un motif de nom de fichier implicite et
-      fait son choix parmi les différents résultats.</li>
+      fait son choix parmi les diff&eacute;rents r&eacute;sultats.</li>
     </ul>
 
-   <h3><a name="type-map" id="type-map">Utilisation d'un fichier de
-   correspondances de types (type-map)</a></h3>
+   <h3 id="type-map">Utilisation d'un fichier de
+   correspondances de types (type-map)</h3>
 
-    <p>Une liste de correspondances de types est un document associé au
-    gestionnaire <code>type-map</code> (ou, dans un souci de compatibilité
+    <p>Une liste de correspondances de types est un document associ&eacute; au
+    gestionnaire <code>type-map</code> (ou, dans un souci de compatibilit&eacute;
     ascendante avec des configurations de httpd plus anciennes, le
     <a class="glossarylink" href="./glossary.html#type mime" title="voir glossaire">type MIME</a>
     <code>application/x-type-map</code>). Notez que pour utiliser cette
-    fonctionnalité, vous devez, dans le fichier de configuration, définir un
-    gestionnaire qui associe un suffixe de fichier à une <code>type-map</code>,
+    fonctionnalit&eacute;, vous devez, dans le fichier de configuration, d&eacute;finir un
+    gestionnaire qui associe un suffixe de fichier &agrave; une <code>type-map</code>,
     ce qui se fait simplement en ajoutant</p>
 
 <pre class="prettyprint lang-config">AddHandler type-map .var</pre>
@@ -152,27 +150,27 @@ Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, im
 
     <p>dans le fichier de configuration du serveur.</p>
 
-    <p>Les fichiers de correspondances de types doivent posséder le même nom que
-    la ressource qu'ils décrivent, avec pour extension
+    <p>Les fichiers de correspondances de types doivent poss&eacute;der le m&ecirc;me nom que
+    la ressource qu'ils d&eacute;crivent, avec pour extension
     <code>.var</code>. Dans l'exemple ci-dessous, la ressource a pour
     nom <code>foo</code>, et le fichier de correspondances se nomme donc
     <code>foo.var</code>.</p>
 
-    <p>Ce fichier doit comporter une entrée pour chaque variante
-    disponible ; chaque entrée consiste en une ligne contiguë d'en-têtes au
-    format HTTP. Les entrées sont séparées par des lignes vides. Les lignes
-    vides à l'intérieur d'une entrée sont interdites. Par convention, le
-    fichier de correspondances de types débute par une entrée concernant l'entité
-    considérée dans son ensemble (bien que ce ne soit pas obligatoire, et
-    ignoré si présent). Un exemple de fichier de
+    <p>Ce fichier doit comporter une entr&eacute;e pour chaque variante
+    disponible ; chaque entr&eacute;e consiste en une ligne contigu&euml; d'en-t&ecirc;tes au
+    format HTTP. Les entr&eacute;es sont s&eacute;par&eacute;es par des lignes vides. Les lignes
+    vides &agrave; l'int&eacute;rieur d'une entr&eacute;e sont interdites. Par convention, le
+    fichier de correspondances de types d&eacute;bute par une entr&eacute;e concernant l'entit&eacute;
+    consid&eacute;r&eacute;e dans son ensemble (bien que ce ne soit pas obligatoire, et
+    ignor&eacute; si pr&eacute;sent). Un exemple de fichier de
     correspondances de types est fourni
     ci-dessous.</p>
 
-    <p>Les URIs de ce fichier sont relatifs à la localisation du fichier
-    de correspondances de types. En général, ces fichiers se trouveront dans le
-    même répertoire que le fichier de correspondances de types, mais ce
+    <p>Les URIs de ce fichier sont relatifs &agrave; la localisation du fichier
+    de correspondances de types. En g&eacute;n&eacute;ral, ces fichiers se trouveront dans le
+    m&ecirc;me r&eacute;pertoire que le fichier de correspondances de types, mais ce
     n'est pas obligatoire. Vous pouvez utiliser des URIs absolus ou
-    relatifs pour tout fichier situé sur le même serveur que le fichier
+    relatifs pour tout fichier situ&eacute; sur le m&ecirc;me serveur que le fichier
     de correspondances.</p>
 
 <div class="example"><pre class="prettyprint lang-config">URI: foo
@@ -187,27 +185,27 @@ Content-language: fr, de</pre>
 </div>
 
     <p>Notez aussi qu'un fichier de correspondances de types prend le pas sur
-    les extensions de noms de fichier, même si les Multivues sont activées. Si
-    un fichier de correspondances de types <code>.var</code> est trouvé au cours
-    d'un balayage de répertoire de Multivues, le serveur n'utilisera
-    <em>que</em> les variantes listées dans ce fichier de correspondances de
-    types. Tout autre fichier du répertoire qui correspond au nom de base mais
-    n'est pas listé dans les correspondances de types sera totalement ignoré.
+    les extensions de noms de fichier, m&ecirc;me si les Multivues sont activ&eacute;es. Si
+    un fichier de correspondances de types <code>.var</code> est trouv&eacute; au cours
+    d'un balayage de r&eacute;pertoire de Multivues, le serveur n'utilisera
+    <em>que</em> les variantes list&eacute;es dans ce fichier de correspondances de
+    types. Tout autre fichier du r&eacute;pertoire qui correspond au nom de base mais
+    n'est pas list&eacute; dans les correspondances de types sera totalement ignor&eacute;.
     Par exemple, si <code>foo.var</code> existe et ne liste que
     <code>foo.en.html</code> et <code>foo.fr.de.html</code>, un fichier
-    <code>foo.mn.html</code> présent dans le même répertoire ne sera jamais
-    servi après négociation, même si le client demande «&nbsp;Mongolian&nbsp;». Pour
-    qu'une telle variante soit disponible, elle doit être ajoutée au fichier de
+    <code>foo.mn.html</code> pr&eacute;sent dans le m&ecirc;me r&eacute;pertoire ne sera jamais
+    servi apr&egrave;s n&eacute;gociation, m&ecirc;me si le client demande &laquo;&nbsp;Mongolian&nbsp;&raquo;. Pour
+    qu'une telle variante soit disponible, elle doit &ecirc;tre ajout&eacute;e au fichier de
     correspondances de types.</p>
 
-    <p>Ce comportement est intéressant pour les sites qui ajoutent de nouvelles
+    <p>Ce comportement est int&eacute;ressant pour les sites qui ajoutent de nouvelles
     variantes linguistiques au cours du temps. Si vous avez une ressource
     existante <code>foo.html</code> et ajoutez par la suite des variantes
     traduites avec des extensions de langue, vous devez lister toutes les
     variantes (y compris l'original) dans le fichier de
     correspondances de types. Il est possible d'assigner sa langue au fichier
     original dans le fichier de
-    correspondances de types sans avoir à le renommer&nbsp;:</p>
+    correspondances de types sans avoir &agrave; le renommer&nbsp;:</p>
 
    <div class="example"><pre class="prettyprint lang-config">URI: foo
 
@@ -220,8 +218,8 @@ Content-type: text/html
 Content-language: fr</pre>
 </div> 
 
-    <p>Si les variantes possèdent des qualités de source différentes, elles
-    peuvent être indiquées par l'ajout du paramètre «&nbsp;qs&nbsp;» au type de média,
+    <p>Si les variantes poss&egrave;dent des qualit&eacute;s de source diff&eacute;rentes, elles
+    peuvent &ecirc;tre indiqu&eacute;es par l'ajout du param&egrave;tre &laquo;&nbsp;qs&nbsp;&raquo; au type de m&eacute;dia,
     comme pour cette image (disponible en JPEG, GIF ou ASCII-art)&nbsp;:</p>
 
 <div class="example"><pre class="prettyprint lang-config">URI: foo
@@ -236,102 +234,102 @@ URI: foo.txt
 Content-type: text/plain; qs=0.01</pre>
 </div>
 
-    <p>Les valeurs de qs peuvent varier de 0.000 à 1.000. Notez que toute
-    variante possédant une valeur de qs de 0.000 ne sera jamais choisie.
-    Les variantes qui n'ont pas de paramètre qs défini se voient attribuer
-    une valeur de 1.0. Le paramètre qs indique la qualité relative de la
-    variante comparée à celle des autres variantes disponibles, sans tenir
-    compte des capacités du client. Par exemple, un fichier JPEG possède
-    en général une qualité supérieure à celle d'un fichier ASCII s'il
-    représente une photographie. Cependant, si la ressource représentée est
-    un ASCII art original, la représentation ASCII sera de meilleure qualité
-    que la représentation JPEG. Ainsi une valeur de qs est associée à une
-    variante en fonction de la nature de la ressource qu'elle représente.</p>
+    <p>Les valeurs de qs peuvent varier de 0.000 &agrave; 1.000. Notez que toute
+    variante poss&eacute;dant une valeur de qs de 0.000 ne sera jamais choisie.
+    Les variantes qui n'ont pas de param&egrave;tre qs d&eacute;fini se voient attribuer
+    une valeur de 1.0. Le param&egrave;tre qs indique la qualit&eacute; relative de la
+    variante compar&eacute;e &agrave; celle des autres variantes disponibles, sans tenir
+    compte des capacit&eacute;s du client. Par exemple, un fichier JPEG poss&egrave;de
+    en g&eacute;n&eacute;ral une qualit&eacute; sup&eacute;rieure &agrave; celle d'un fichier ASCII s'il
+    repr&eacute;sente une photographie. Cependant, si la ressource repr&eacute;sent&eacute;e est
+    un ASCII art original, la repr&eacute;sentation ASCII sera de meilleure qualit&eacute;
+    que la repr&eacute;sentation JPEG. Ainsi une valeur de qs est associ&eacute;e &agrave; une
+    variante en fonction de la nature de la ressource qu'elle repr&eacute;sente.</p>
 
-    <p>La liste complète des en-têtes reconnus est disponible dans la
+    <p>La liste compl&egrave;te des en-t&ecirc;tes reconnus est disponible dans la
     documentation sur les <a href="mod/mod_negotiation.html#typemaps">correspondances de types du
     module mod_negotiation</a>.</p>
 
 
-<h3><a name="multiviews" id="multiviews">Multivues (option Multiviews)</a></h3>
+<h3 id="multiviews">Multivues (option Multiviews)</h3>
 
-    <p><code>MultiViews</code> est une option qui s'applique à un répertoire,
-    ce qui signifie qu'elle peut être activée à l'aide d'une directive
-    <code class="directive"><a href="./mod/core.html#options">Options</a></code> à l'intérieur d'une section
+    <p><code>MultiViews</code> est une option qui s'applique &agrave; un r&eacute;pertoire,
+    ce qui signifie qu'elle peut &ecirc;tre activ&eacute;e &agrave; l'aide d'une directive
+    <code class="directive"><a href="./mod/core.html#options">Options</a></code> &agrave; l'int&eacute;rieur d'une section
     <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> dans
-    <code>httpd.conf</code>, ou (si <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est correctement positionnée) dans
+    <code>httpd.conf</code>, ou (si <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est correctement positionn&eacute;e) dans
     des fichiers
     <code>.htaccess</code>. Notez que <code>Options All</code>
     n'active pas <code>MultiViews</code> ; vous devez activer cette option en
     la nommant explicitement.</p>
 
-    <p>L'effet de <code>MultiViews</code> est le suivant : si le serveur reçoit
-    une requête pour <code>/tel/répertoire/foo</code>, si
-    <code>MultiViews</code> est activée pour
-    <code>/tel/répertoire</code> et si
-    <code>/tel/répertoire/foo</code> n'existe <em>pas</em>, le serveur parcourt
-    le répertoire à la recherche de fichiers nommés foo.*, et simule
-    littéralement une correspondance de types (type map) qui liste tous ces
-    fichiers, en leur associant les mêmes types de média et encodages de
-    contenu qu'ils auraient eu si le client avait demandé l'accès à l'un
+    <p>L'effet de <code>MultiViews</code> est le suivant : si le serveur re&ccedil;oit
+    une requ&ecirc;te pour <code>/tel/r&eacute;pertoire/foo</code>, si
+    <code>MultiViews</code> est activ&eacute;e pour
+    <code>/tel/r&eacute;pertoire</code> et si
+    <code>/tel/r&eacute;pertoire/foo</code> n'existe <em>pas</em>, le serveur parcourt
+    le r&eacute;pertoire &agrave; la recherche de fichiers nomm&eacute;s foo.*, et simule
+    litt&eacute;ralement une correspondance de types (type map) qui liste tous ces
+    fichiers, en leur associant les m&ecirc;mes types de m&eacute;dia et encodages de
+    contenu qu'ils auraient eu si le client avait demand&eacute; l'acc&egrave;s &agrave; l'un
     d'entre eux par son nom. Il choisit ensuite ce qui correspond le mieux
     aux besoins du client.</p>
 
-    <p><code>MultiViews</code> peut aussi s'appliquer à la recherche du fichier
-    nommé par la directive <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, si le serveur tente d'indexer
-    un répertoire. Si les fichiers de configuration spécifient</p>
+    <p><code>MultiViews</code> peut aussi s'appliquer &agrave; la recherche du fichier
+    nomm&eacute; par la directive <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>, si le serveur tente d'indexer
+    un r&eacute;pertoire. Si les fichiers de configuration sp&eacute;cifient</p>
 <pre class="prettyprint lang-config">DirectoryIndex index</pre>
 
     <p>le serveur va choisir entre <code>index.html</code>
-    et <code>index.html3</code> si les deux fichiers sont présents. Si aucun
-    n'est présent, alors qu'<code>index.cgi</code> existe,
-    le serveur l'exécutera.</p>
+    et <code>index.html3</code> si les deux fichiers sont pr&eacute;sents. Si aucun
+    n'est pr&eacute;sent, alors qu'<code>index.cgi</code> existe,
+    le serveur l'ex&eacute;cutera.</p>
 
     <p>Si, parcequ'elle n'est pas reconnue par <code>mod_mime</code>,
-    l'extension d'un des fichiers du répertoire ne permet pas de
-    déterminer son jeu de caractères, son type de contenu, son langage, ou son
+    l'extension d'un des fichiers du r&eacute;pertoire ne permet pas de
+    d&eacute;terminer son jeu de caract&egrave;res, son type de contenu, son langage, ou son
     encodage,
-    le résultat dépendra de la définition de la directive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>. Cette directive détermine
+    le r&eacute;sultat d&eacute;pendra de la d&eacute;finition de la directive <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code>. Cette directive d&eacute;termine
     si les gestionnaires (handlers), les filtres et autres types d'extensions
-    peuvent participer à la négociation MultiVues.</p>
+    peuvent participer &agrave; la n&eacute;gociation MultiVues.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="methods" id="methods">Les méthodes de négociation</a> <a title="Lien permanent" href="#methods" class="permalink">&para;</a></h2>
+<h2 id="methods">Les m&eacute;thodes de n&eacute;gociation <a title="Lien permanent" href="#methods" class="permalink">&para;</a></h2>
 
-    <p>Une fois obtenue la liste des variantes pour une ressource donnée,
-    httpd dispose de deux méthodes pour choisir la meilleure variante à
-    renvoyer, s'il y a lieu, soit à partir d'un fichier de
+    <p>Une fois obtenue la liste des variantes pour une ressource donn&eacute;e,
+    httpd dispose de deux m&eacute;thodes pour choisir la meilleure variante &agrave;
+    renvoyer, s'il y a lieu, soit &agrave; partir d'un fichier de
     correspondances de types, soit en se basant sur les noms de fichier du
-    répertoire. Il n'est pas nécessaire de connaître en détails comment la
-    négociation fonctionne réellement pour pouvoir utiliser les fonctionnalités
-    de négociation de contenu de httpd. La suite de ce document explique
-    cependant les méthodes utilisées pour ceux ou celles qui sont
-    intéressés(ées). </p>
+    r&eacute;pertoire. Il n'est pas n&eacute;cessaire de conna&icirc;tre en d&eacute;tails comment la
+    n&eacute;gociation fonctionne r&eacute;ellement pour pouvoir utiliser les fonctionnalit&eacute;s
+    de n&eacute;gociation de contenu de httpd. La suite de ce document explique
+    cependant les m&eacute;thodes utilis&eacute;es pour ceux ou celles qui sont
+    int&eacute;ress&eacute;s(&eacute;es). </p>
 
-    <p>Il existe deux méthodes de négociation :</p>
+    <p>Il existe deux m&eacute;thodes de n&eacute;gociation :</p>
 
     <ol>
-      <li><strong>La négociation effectuée par le serveur selon l'algorithme
-      de httpd</strong> est utilisée par défaut. L'algorithme de
+      <li><strong>La n&eacute;gociation effectu&eacute;e par le serveur selon l'algorithme
+      de httpd</strong> est utilis&eacute;e par d&eacute;faut. L'algorithme de
       httpd est
-      expliqué plus en détails ci-dessous. Quand cet algorithme est utilisé,
-      httpd peut parfois «&nbsp;bricoler&nbsp;» le facteur de qualité (qs) d'une dimension
-      particulière afin d'obtenir un meilleur résultat.
-      La manière dont httpd peut modifier les facteurs de qualité est
-      expliquée plus en détails ci-dessous.</li>
+      expliqu&eacute; plus en d&eacute;tails ci-dessous. Quand cet algorithme est utilis&eacute;,
+      httpd peut parfois &laquo;&nbsp;bricoler&nbsp;&raquo; le facteur de qualit&eacute; (qs) d'une dimension
+      particuli&egrave;re afin d'obtenir un meilleur r&eacute;sultat.
+      La mani&egrave;re dont httpd peut modifier les facteurs de qualit&eacute; est
+      expliqu&eacute;e plus en d&eacute;tails ci-dessous.</li>
 
-      <li><strong>La négociation de contenu transparente</strong> est utilisée
-      quand le navigateur le demande explicitement selon le mécanisme défini
-      dans la RFC 2295. Cette méthode de négociation donne au navigateur le
-      contrôle total du choix de la meilleure variante ; le résultat dépend
-      cependant de la spécificité des algorithmes utilisés par le navigateur.
-      Au cours du processus de négociation transparente, le navigateur peut
-      demander à httpd d'exécuter l'«&nbsp;algorithme de sélection de variante à
-      distance&nbsp;» défini dans la RFC 2296.</li>
+      <li><strong>La n&eacute;gociation de contenu transparente</strong> est utilis&eacute;e
+      quand le navigateur le demande explicitement selon le m&eacute;canisme d&eacute;fini
+      dans la RFC 2295. Cette m&eacute;thode de n&eacute;gociation donne au navigateur le
+      contr&ocirc;le total du choix de la meilleure variante ; le r&eacute;sultat d&eacute;pend
+      cependant de la sp&eacute;cificit&eacute; des algorithmes utilis&eacute;s par le navigateur.
+      Au cours du processus de n&eacute;gociation transparente, le navigateur peut
+      demander &agrave; httpd d'ex&eacute;cuter l'&laquo;&nbsp;algorithme de s&eacute;lection de variante &agrave;
+      distance&nbsp;&raquo; d&eacute;fini dans la RFC 2296.</li>
     </ol>
 
-<h3><a name="dimensions" id="dimensions">Les dimensions de la négociation</a></h3>
+<h3 id="dimensions">Les dimensions de la n&eacute;gociation</h3>
 
     <table>
       
@@ -342,274 +340,274 @@ Content-type: text/plain; qs=0.01</pre>
       </tr>
 
       <tr valign="top">
-        <td>Type de média</td>
+        <td>Type de m&eacute;dia</td>
 
-        <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
-	<code>Accept</code>. Chaque type de média peut se voir associé un facteur de
-	qualité. La description de la variante peut aussi avoir un facteur de
-	qualité (le paramètre «&nbsp;qs&nbsp;»).</td>
+        <td>Le navigateur affiche ses pr&eacute;f&eacute;rences &agrave; l'aide du champ d'en-t&ecirc;te
+	<code>Accept</code>. Chaque type de m&eacute;dia peut se voir associ&eacute; un facteur de
+	qualit&eacute;. La description de la variante peut aussi avoir un facteur de
+	qualit&eacute; (le param&egrave;tre &laquo;&nbsp;qs&nbsp;&raquo;).</td>
       </tr>
 
       <tr valign="top">
         <td>Langage</td>
 
-        <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
-        <code>Accept-Language</code>. Chaque langue peut se voir associé un facteur de
-	qualité. Les variantes peuvent être associées avec zéro, un ou
+        <td>Le navigateur affiche ses pr&eacute;f&eacute;rences &agrave; l'aide du champ d'en-t&ecirc;te
+        <code>Accept-Language</code>. Chaque langue peut se voir associ&eacute; un facteur de
+	qualit&eacute;. Les variantes peuvent &ecirc;tre associ&eacute;es avec z&eacute;ro, un ou
 	plusieurs langages.</td>
       </tr>
 
       <tr valign="top">
         <td>Encodage</td>
 
-        <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
-        <code>Accept-Encoding</code>. Chaque encodage peut se voir associé un facteur de
-	qualité.</td>
+        <td>Le navigateur affiche ses pr&eacute;f&eacute;rences &agrave; l'aide du champ d'en-t&ecirc;te
+        <code>Accept-Encoding</code>. Chaque encodage peut se voir associ&eacute; un facteur de
+	qualit&eacute;.</td>
       </tr>
 
       <tr valign="top">
-        <td>Jeu de caractères</td>
+        <td>Jeu de caract&egrave;res</td>
 
-        <td>Le navigateur affiche ses préférences à l'aide du champ d'en-tête
-        <code>Accept-Charset</code>. Chaque jeu de caractère peut se voir associé un facteur de
-	qualité. Les variantes peuvent préciser un jeu de caractères comme
-	paramètre du type de média.</td>
+        <td>Le navigateur affiche ses pr&eacute;f&eacute;rences &agrave; l'aide du champ d'en-t&ecirc;te
+        <code>Accept-Charset</code>. Chaque jeu de caract&egrave;re peut se voir associ&eacute; un facteur de
+	qualit&eacute;. Les variantes peuvent pr&eacute;ciser un jeu de caract&egrave;res comme
+	param&egrave;tre du type de m&eacute;dia.</td>
       </tr>
     </table>
 
 
-<h3><a name="algorithm" id="algorithm">L'algorithme de négociation de
-httpd</a></h3>
+<h3 id="algorithm">L'algorithme de n&eacute;gociation de
+httpd</h3>
 
-    <p>httpd peut utiliser l'algorithme suivant pour choisir la «&nbsp;meilleure&nbsp;»
-    variante (s'il y en a une) à renvoyer au navigateur. Cet algorithme n'est pas
+    <p>httpd peut utiliser l'algorithme suivant pour choisir la &laquo;&nbsp;meilleure&nbsp;&raquo;
+    variante (s'il y en a une) &agrave; renvoyer au navigateur. Cet algorithme n'est pas
     configurable. Il fonctionne comme suit :</p>
 
     <ol>
-      <li>En premier lieu, pour chaque dimension de la négociation, consulter
-      le champ d'en-tête <em>Accept*</em> approprié et assigner une qualité à
-      chaque variante. Si l'en-tête <em>Accept*</em> pour toute dimension
-      implique que la variante n'est pas acceptable, éliminer cette dernière.
-      S'il ne reste plus de variante, aller à l'étape 4.</li>
+      <li>En premier lieu, pour chaque dimension de la n&eacute;gociation, consulter
+      le champ d'en-t&ecirc;te <em>Accept*</em> appropri&eacute; et assigner une qualit&eacute; &agrave;
+      chaque variante. Si l'en-t&ecirc;te <em>Accept*</em> pour toute dimension
+      implique que la variante n'est pas acceptable, &eacute;liminer cette derni&egrave;re.
+      S'il ne reste plus de variante, aller &agrave; l'&eacute;tape 4.</li>
 
       <li>
-        Choisir la «&nbsp;meilleure&nbsp;» variante par élimination. Chacun des tests
-	suivants est effectué dans cet ordre. Toute variante non sélectionnée
-	à l'issue d'un test est éliminée. Après chaque test, s'il reste une
-	seule variante, choisir cette dernière comme celle qui correspond le
-	mieux puis aller à l'étape 3. S'il reste plusieurs variantes, passer
+        Choisir la &laquo;&nbsp;meilleure&nbsp;&raquo; variante par &eacute;limination. Chacun des tests
+	suivants est effectu&eacute; dans cet ordre. Toute variante non s&eacute;lectionn&eacute;e
+	&agrave; l'issue d'un test est &eacute;limin&eacute;e. Apr&egrave;s chaque test, s'il reste une
+	seule variante, choisir cette derni&egrave;re comme celle qui correspond le
+	mieux puis aller &agrave; l'&eacute;tape 3. S'il reste plusieurs variantes, passer
 	au test suivant.
 
         <ol>
-          <li>Multiplier le facteur de qualité de l'en-tête
-	  <code>Accept</code> par le facteur de qualité «&nbsp;qs&nbsp;» pour le type de
-	  média de ces variantes, et choisir la variante qui possède la valeur
+          <li>Multiplier le facteur de qualit&eacute; de l'en-t&ecirc;te
+	  <code>Accept</code> par le facteur de qualit&eacute; &laquo;&nbsp;qs&nbsp;&raquo; pour le type de
+	  m&eacute;dia de ces variantes, et choisir la variante qui poss&egrave;de la valeur
 	  la plus importante.</li>
 
-          <li>Sélectionner les variantes qui possèdent le facteur de qualité
+          <li>S&eacute;lectionner les variantes qui poss&egrave;dent le facteur de qualit&eacute;
 	  de langage le plus haut.</li>
 
-          <li>Sélectionner les variantes dont le langage correspond le mieux,
-          en se basant sur l'ordre des langages de l'en-tête
+          <li>S&eacute;lectionner les variantes dont le langage correspond le mieux,
+          en se basant sur l'ordre des langages de l'en-t&ecirc;te
           <code>Accept-Language</code> (s'il existe), ou de la directive
 	  <code>LanguagePriority</code> (si elle existe).</li>
 
-          <li>Sélectionner les variantes possédant le paramètre de média
-	  «&nbsp;level&nbsp;» le plus élevé (utilisé pour préciser la version des types de
-	  média text/html).</li>
+          <li>S&eacute;lectionner les variantes poss&eacute;dant le param&egrave;tre de m&eacute;dia
+	  &laquo;&nbsp;level&nbsp;&raquo; le plus &eacute;lev&eacute; (utilis&eacute; pour pr&eacute;ciser la version des types de
+	  m&eacute;dia text/html).</li>
 
-          <li>Sélectionner les variantes possédant le paramètre de média
-	  «&nbsp;charset&nbsp;» (jeu de caractères) qui correspond le mieux, en se basant
-	  sur la ligne d'en-tête <code>Accept-Charset</code> . Le jeu de
-	  caractères ISO-8859-1 est acceptable sauf s'il est explicitement
-	  exclus. Les variantes avec un type de média <code>text/*</code>
-          mais non explicitement associées avec un jeu de caractères
-	  particulier sont supposées être en ISO-8859-1.</li>
+          <li>S&eacute;lectionner les variantes poss&eacute;dant le param&egrave;tre de m&eacute;dia
+	  &laquo;&nbsp;charset&nbsp;&raquo; (jeu de caract&egrave;res) qui correspond le mieux, en se basant
+	  sur la ligne d'en-t&ecirc;te <code>Accept-Charset</code> . Le jeu de
+	  caract&egrave;res ISO-8859-1 est acceptable sauf s'il est explicitement
+	  exclus. Les variantes avec un type de m&eacute;dia <code>text/*</code>
+          mais non explicitement associ&eacute;es avec un jeu de caract&egrave;res
+	  particulier sont suppos&eacute;es &ecirc;tre en ISO-8859-1.</li>
 
-          <li>Sélectionner les variantes dont le paramètre de média «&nbsp;charset&nbsp;»
-	  associé n'est <em>pas</em> ISO-8859-1. S'il n'en existe pas,
-	  sélectionner toutes les variantes.</li>
+          <li>S&eacute;lectionner les variantes dont le param&egrave;tre de m&eacute;dia &laquo;&nbsp;charset&nbsp;&raquo;
+	  associ&eacute; n'est <em>pas</em> ISO-8859-1. S'il n'en existe pas,
+	  s&eacute;lectionner toutes les variantes.</li>
 
-          <li>Sélectionner les variantes avec le meilleur encodage. S'il existe
+          <li>S&eacute;lectionner les variantes avec le meilleur encodage. S'il existe
 	  des variantes avec un encodage acceptable pour le client,
-	  sélectionner celles-ci. Sinon, s'il existe des variantes encodées et
-	  des variantes non encodées, ne sélectionner que les variantes non
-	  encodées. Si toutes les variantes sont encodées ou si aucune
-	  ne l'est, sélectionner toutes les variantes.</li>
+	  s&eacute;lectionner celles-ci. Sinon, s'il existe des variantes encod&eacute;es et
+	  des variantes non encod&eacute;es, ne s&eacute;lectionner que les variantes non
+	  encod&eacute;es. Si toutes les variantes sont encod&eacute;es ou si aucune
+	  ne l'est, s&eacute;lectionner toutes les variantes.</li>
 
-          <li>Sélectionner les variantes dont le contenu a la longueur
+          <li>S&eacute;lectionner les variantes dont le contenu a la longueur
 	  la plus courte.</li>
 
-          <li>Sélectionner la première des variantes restantes. Il s'agira
-	  soit de la première variante listée dans le fichier de
+          <li>S&eacute;lectionner la premi&egrave;re des variantes restantes. Il s'agira
+	  soit de la premi&egrave;re variante list&eacute;e dans le fichier de
 	  correspondances de types, soit, quand les variantes sont lues depuis
-	  le répertoire, la première par ordre alphabétique quand elles sont
-	  triées selon le code ASCII.</li>
+	  le r&eacute;pertoire, la premi&egrave;re par ordre alphab&eacute;tique quand elles sont
+	  tri&eacute;es selon le code ASCII.</li>
         </ol>
       </li>
 
-      <li>L'algorithme a maintenant sélectionné une variante considérée comme
-      la «&nbsp;meilleure&nbsp;», il la renvoie donc au client en guise de réponse.
-      L'en-tête HTTP <code>Vary</code> de la réponse est renseigné de façon à
-      indiquer les dimensions de la négociation (les navigateurs et les caches
+      <li>L'algorithme a maintenant s&eacute;lectionn&eacute; une variante consid&eacute;r&eacute;e comme
+      la &laquo;&nbsp;meilleure&nbsp;&raquo;, il la renvoie donc au client en guise de r&eacute;ponse.
+      L'en-t&ecirc;te HTTP <code>Vary</code> de la r&eacute;ponse est renseign&eacute; de fa&ccedil;on &agrave;
+      indiquer les dimensions de la n&eacute;gociation (les navigateurs et les caches
       peuvent utiliser cette information lors de la mise en cache de la
-      ressource).  Travail terminé.</li>
+      ressource).  Travail termin&eacute;.</li>
 
-      <li>Le passage par cette étape signifie qu'aucune variante n'a été
-      sélectionnée (parce qu'aucune n'est acceptable pour le navigateur).
-      Envoyer une réponse avec un code de statut 406 (qui signifie «&nbsp;Aucune
-      représentation acceptable&nbsp;») et un corps comportant un document HTML qui
-      affiche les variantes disponibles. Renseigner aussi l'en-tête HTTP
-      <code>Vary</code> de façon à indiquer les dimensions de la variante.</li>
+      <li>Le passage par cette &eacute;tape signifie qu'aucune variante n'a &eacute;t&eacute;
+      s&eacute;lectionn&eacute;e (parce qu'aucune n'est acceptable pour le navigateur).
+      Envoyer une r&eacute;ponse avec un code de statut 406 (qui signifie &laquo;&nbsp;Aucune
+      repr&eacute;sentation acceptable&nbsp;&raquo;) et un corps comportant un document HTML qui
+      affiche les variantes disponibles. Renseigner aussi l'en-t&ecirc;te HTTP
+      <code>Vary</code> de fa&ccedil;on &agrave; indiquer les dimensions de la variante.</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="better" id="better">Ajustement des valeurs de qualité</a> <a title="Lien permanent" href="#better" class="permalink">&para;</a></h2>
+<h2 id="better">Ajustement des valeurs de qualit&eacute; <a title="Lien permanent" href="#better" class="permalink">&para;</a></h2>
 
-    <p>Parfois httpd modifie les valeurs de qualité par rapport à celles qui
-    découleraient d'une stricte interprétation de l'algorithme de négociation
-    de httpd ci-dessus, cela afin d'améliorer les résultats de l'algorithme pour
-    les navigateurs qui envoient des informations incomplètes ou inappropriées.
+    <p>Parfois httpd modifie les valeurs de qualit&eacute; par rapport &agrave; celles qui
+    d&eacute;couleraient d'une stricte interpr&eacute;tation de l'algorithme de n&eacute;gociation
+    de httpd ci-dessus, cela afin d'am&eacute;liorer les r&eacute;sultats de l'algorithme pour
+    les navigateurs qui envoient des informations incompl&egrave;tes ou inappropri&eacute;es.
     Certains des navigateurs les plus populaires envoient des informations dans
-    l'en-tête <code>Accept</code> qui, sans ce traitement, provoqueraient la
-    sélection d'une variante inappropriée dans de nombreux cas. Quand un
-    navigateur envoie des informations complètes et correctes ces ajustements
-    ne sont pas effectués.</p>
+    l'en-t&ecirc;te <code>Accept</code> qui, sans ce traitement, provoqueraient la
+    s&eacute;lection d'une variante inappropri&eacute;e dans de nombreux cas. Quand un
+    navigateur envoie des informations compl&egrave;tes et correctes ces ajustements
+    ne sont pas effectu&eacute;s.</p>
 
-<h3><a name="wildcards" id="wildcards">Types de média et caractères génériques</a></h3>
+<h3 id="wildcards">Types de m&eacute;dia et caract&egrave;res g&eacute;n&eacute;riques</h3>
 
-    <p>L'en-tête de requête <code>Accept:</code> indique les types de média
-    souhaités. Il peut aussi contenir des types de média avec caractères
-    génériques, comme «&nbsp;image/*&nbsp;» ou «&nbsp;*/*&nbsp;» où * correspond à n'importe quelle
-    chaîne de caractères. Ainsi une requête contenant :</p>
+    <p>L'en-t&ecirc;te de requ&ecirc;te <code>Accept:</code> indique les types de m&eacute;dia
+    souhait&eacute;s. Il peut aussi contenir des types de m&eacute;dia avec caract&egrave;res
+    g&eacute;n&eacute;riques, comme &laquo;&nbsp;image/*&nbsp;&raquo; ou &laquo;&nbsp;*/*&nbsp;&raquo; o&ugrave; * correspond &agrave; n'importe quelle
+    cha&icirc;ne de caract&egrave;res. Ainsi une requ&ecirc;te contenant :</p>
 
 <div class="example"><p><code>Accept: image/*, */*</code></p></div>
 
-    <p>indiquerait que tout type de média est acceptable, avec une préférence
-    pour les types commençant par «&nbsp;image/&nbsp;».
-    Certains navigateurs ajoutent par défaut des types de média avec caractères
-    génériques aux types explicitement nommés qu'ils peuvent gérer.
+    <p>indiquerait que tout type de m&eacute;dia est acceptable, avec une pr&eacute;f&eacute;rence
+    pour les types commen&ccedil;ant par &laquo;&nbsp;image/&nbsp;&raquo;.
+    Certains navigateurs ajoutent par d&eacute;faut des types de m&eacute;dia avec caract&egrave;res
+    g&eacute;n&eacute;riques aux types explicitement nomm&eacute;s qu'ils peuvent g&eacute;rer.
     Par exemple :</p>
 
 <div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
 </code></p></div>
-    <p>Cela indique que les types explicitement listés sont préférés, mais
-    qu'une représentation avec un type différent de ces derniers conviendra
-    aussi.  Les valeurs de qualités explicites,
-    afin de préciser ce que veut vraiment le navigateur, s'utilisent
+    <p>Cela indique que les types explicitement list&eacute;s sont pr&eacute;f&eacute;r&eacute;s, mais
+    qu'une repr&eacute;sentation avec un type diff&eacute;rent de ces derniers conviendra
+    aussi.  Les valeurs de qualit&eacute;s explicites,
+    afin de pr&eacute;ciser ce que veut vraiment le navigateur, s'utilisent
     comme suit :</p>
 <div class="example"><p><code>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
 </code></p></div>
-    <p>Les types explicites n'ont pas de facteur de qualité, la valeur par
-    défaut de leur préférence est donc de 1.0 (la plus haute). Le type avec
-    caractères génériques */* se voit attribuer une préférence basse de 0.01,
-    si bien que les types autres que ceux explicitement listés ne seront
-    renvoyés
-    que s'il n'existe pas de variante correspondant à un type explicitement
-    listé.</p>
+    <p>Les types explicites n'ont pas de facteur de qualit&eacute;, la valeur par
+    d&eacute;faut de leur pr&eacute;f&eacute;rence est donc de 1.0 (la plus haute). Le type avec
+    caract&egrave;res g&eacute;n&eacute;riques */* se voit attribuer une pr&eacute;f&eacute;rence basse de 0.01,
+    si bien que les types autres que ceux explicitement list&eacute;s ne seront
+    renvoy&eacute;s
+    que s'il n'existe pas de variante correspondant &agrave; un type explicitement
+    list&eacute;.</p>
 
-    <p>Si l'en-tête <code>Accept:</code> ne contient <em>pas</em> de
-    facteur de qualité, httpd positionne la valeur de qualité de
-    «&nbsp;*/*&nbsp;», si présent, à 0.01 pour simuler l'effet désiré. Il positionne aussi
-    la valeur de qualité des types avec caractères génériques au format
-    «&nbsp;type/*&nbsp;» à 0.02 (ils sont donc préférés à ceux correspondant à «&nbsp;*/*&nbsp;»). Si
-    un type de média dans l'en-tête <code>Accept:</code> contient un facteur de
-    qualité, ces valeurs spéciales ne seront <em>pas</em> appliquées, de façon
-    à ce que les requêtes de navigateurs qui envoient les informations
-    explicites à prendre en compte fonctionnent comme souhaité.</p>
+    <p>Si l'en-t&ecirc;te <code>Accept:</code> ne contient <em>pas</em> de
+    facteur de qualit&eacute;, httpd positionne la valeur de qualit&eacute; de
+    &laquo;&nbsp;*/*&nbsp;&raquo;, si pr&eacute;sent, &agrave; 0.01 pour simuler l'effet d&eacute;sir&eacute;. Il positionne aussi
+    la valeur de qualit&eacute; des types avec caract&egrave;res g&eacute;n&eacute;riques au format
+    &laquo;&nbsp;type/*&nbsp;&raquo; &agrave; 0.02 (ils sont donc pr&eacute;f&eacute;r&eacute;s &agrave; ceux correspondant &agrave; &laquo;&nbsp;*/*&nbsp;&raquo;). Si
+    un type de m&eacute;dia dans l'en-t&ecirc;te <code>Accept:</code> contient un facteur de
+    qualit&eacute;, ces valeurs sp&eacute;ciales ne seront <em>pas</em> appliqu&eacute;es, de fa&ccedil;on
+    &agrave; ce que les requ&ecirc;tes de navigateurs qui envoient les informations
+    explicites &agrave; prendre en compte fonctionnent comme souhait&eacute;.</p>
 
 
-<h3><a name="exceptions" id="exceptions">Exceptions dans la négociation du
-langage</a></h3>
+<h3 id="exceptions">Exceptions dans la n&eacute;gociation du
+langage</h3>
 
-    <p>A partir de la version 2.0 de httpd, certaines exceptions ont été
-    ajoutées à l'algorithme de négociation afin de ménager une issue de secours
-    quand la négociation ne trouve aucun langage correspondant.</p>
+    <p>A partir de la version 2.0 de httpd, certaines exceptions ont &eacute;t&eacute;
+    ajout&eacute;es &agrave; l'algorithme de n&eacute;gociation afin de m&eacute;nager une issue de secours
+    quand la n&eacute;gociation ne trouve aucun langage correspondant.</p>
 
     <p>Quand un client demande une page sur votre serveur, si ce dernier ne
-    parvient pas à trouver une page dont la langue correspond à l'en-tête
-    <code>Accept-language</code> envoyé par le navigateur, il enverra au client
-    une réponse «&nbsp;Aucune variante acceptable&nbsp;» ou «&nbsp;Plusieurs choix possibles&nbsp;».
-    Pour éviter ces
-    messages d'erreur, il est possible de configurer httpd de façon que,
-    dans ces cas, il ignore l'en-tête <code>Accept-language</code> et fournisse
-    tout de même un document, même s'il ne correspond pas exactement à la
+    parvient pas &agrave; trouver une page dont la langue correspond &agrave; l'en-t&ecirc;te
+    <code>Accept-language</code> envoy&eacute; par le navigateur, il enverra au client
+    une r&eacute;ponse &laquo;&nbsp;Aucune variante acceptable&nbsp;&raquo; ou &laquo;&nbsp;Plusieurs choix possibles&nbsp;&raquo;.
+    Pour &eacute;viter ces
+    messages d'erreur, il est possible de configurer httpd de fa&ccedil;on que,
+    dans ces cas, il ignore l'en-t&ecirc;te <code>Accept-language</code> et fournisse
+    tout de m&ecirc;me un document, m&ecirc;me s'il ne correspond pas exactement &agrave; la
     demande explicite du client. La directive <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
-    peut être utilisée pour éviter ces messages d'erreur et leur substituer une
-    page dont le langage sera déterminé en fonction du contenu de la directive
+    peut &ecirc;tre utilis&eacute;e pour &eacute;viter ces messages d'erreur et leur substituer une
+    page dont le langage sera d&eacute;termin&eacute; en fonction du contenu de la directive
     <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>.</p>
 
-    <p>Le serveur va aussi essayer d'étendre sa recherche de correspondance aux
-    sous-ensembles de langages quand aucune correspondance exacte ne peut être
-    trouvée. Par exemple, si un client demande des documents possédant le
-    langage <code>en-GB</code>, c'est à dire anglais britannique, le standard
-    HTTP/1.1 n'autorise normalement pas le serveur à faire correspondre cette
-    demande à un document dont le langage est simplement <code>en</code>
-    (notez qu'inclure <code>en-GB</code> et non <code>en</code> dans l'en-tête
+    <p>Le serveur va aussi essayer d'&eacute;tendre sa recherche de correspondance aux
+    sous-ensembles de langages quand aucune correspondance exacte ne peut &ecirc;tre
+    trouv&eacute;e. Par exemple, si un client demande des documents poss&eacute;dant le
+    langage <code>en-GB</code>, c'est &agrave; dire anglais britannique, le standard
+    HTTP/1.1 n'autorise normalement pas le serveur &agrave; faire correspondre cette
+    demande &agrave; un document dont le langage est simplement <code>en</code>
+    (notez qu'inclure <code>en-GB</code> et non <code>en</code> dans l'en-t&ecirc;te
     <code>Accept-Language</code> constitue une quasi-erreur de configuration,
-    car il est très peu probable qu'un lecteur qui comprend l'anglais
-    britannique, ne comprenne pas l'anglais en général. Malheureusement, de
-    nombreux clients ont réellement des configurations par défaut de ce type).
+    car il est tr&egrave;s peu probable qu'un lecteur qui comprend l'anglais
+    britannique, ne comprenne pas l'anglais en g&eacute;n&eacute;ral. Malheureusement, de
+    nombreux clients ont r&eacute;ellement des configurations par d&eacute;faut de ce type).
     Cependant, si aucune autre correspondance de langage n'est possible, et si le
-    serveur est sur le point de renvoyer une erreur «&nbsp;Aucune variable
-    acceptable&nbsp;» ou de choisir le langage défini par la directive <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, le serveur ignorera
-    la spécification du sous-ensemble de langage et associera la demande en
-    <code>en-GB</code> à des documents en <code>en</code>.  Implicitement,
-    httpd ajoute le langage parent à la liste de langages acceptés par le
-    client avec une valeur de qualité très basse. Notez cependant que si le
-    client demande «&nbsp;en-GB; q=0.9, fr; q=0.8&nbsp;», et si le serveur dispose de
-    documents estampillés «&nbsp;en&nbsp;» et «&nbsp;fr&nbsp;», c'est le document «&nbsp;fr&nbsp;» qui sera
-    renvoyé, tout cela dans un souci de compatibilité avec la spécification
+    serveur est sur le point de renvoyer une erreur &laquo;&nbsp;Aucune variable
+    acceptable&nbsp;&raquo; ou de choisir le langage d&eacute;fini par la directive <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, le serveur ignorera
+    la sp&eacute;cification du sous-ensemble de langage et associera la demande en
+    <code>en-GB</code> &agrave; des documents en <code>en</code>.  Implicitement,
+    httpd ajoute le langage parent &agrave; la liste de langages accept&eacute;s par le
+    client avec une valeur de qualit&eacute; tr&egrave;s basse. Notez cependant que si le
+    client demande &laquo;&nbsp;en-GB; q=0.9, fr; q=0.8&nbsp;&raquo;, et si le serveur dispose de
+    documents estampill&eacute;s &laquo;&nbsp;en&nbsp;&raquo; et &laquo;&nbsp;fr&nbsp;&raquo;, c'est le document &laquo;&nbsp;fr&nbsp;&raquo; qui sera
+    renvoy&eacute;, tout cela dans un souci de compatibilit&eacute; avec la sp&eacute;cification
     HTTP/1.1 et afin de fonctionner efficacement avec les clients
-    correctement configurés.</p>
+    correctement configur&eacute;s.</p>
 
-    <p>Pour prendre en charge les techniques avancées (comme les cookies ou les chemins
-    d'URL spéciaux) afin de déterminer le langage préféré de l'utilisateur, le
-    module <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> reconnaît la
+    <p>Pour prendre en charge les techniques avanc&eacute;es (comme les cookies ou les chemins
+    d'URL sp&eacute;ciaux) afin de d&eacute;terminer le langage pr&eacute;f&eacute;r&eacute; de l'utilisateur, le
+    module <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> reconna&icirc;t la
     <a href="env.html">variable d'environnement</a>
     <code>prefer-language</code>
-    depuis la version 2.0.47 de httpd. Si elle est définie et contient un
-    symbole de langage approprié, <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> va essayer
-    de sélectionner une variante correspondante. S'il n'existe pas de telle
-    variante, le processus normal de négociation sera lancé.</p>
+    depuis la version 2.0.47 de httpd. Si elle est d&eacute;finie et contient un
+    symbole de langage appropri&eacute;, <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> va essayer
+    de s&eacute;lectionner une variante correspondante. S'il n'existe pas de telle
+    variante, le processus normal de n&eacute;gociation sera lanc&eacute;.</p>
 
     <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">SetEnvIf Cookie "language=(.+)" prefer-language=$1
 Header append Vary cookie</pre>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extensions" id="extensions">Extensions à la négociation de contenu
-transparente</a> <a title="Lien permanent" href="#extensions" class="permalink">&para;</a></h2>
+<h2 id="extensions">Extensions &agrave; la n&eacute;gociation de contenu
+transparente <a title="Lien permanent" href="#extensions" class="permalink">&para;</a></h2>
 
-<p>httpd étend le protocole de négociation de contenu transparente (RFC
-2295) comme suit. Un nouvel élément <code>{encodage ..}</code> est utilisé dans
+<p>httpd &eacute;tend le protocole de n&eacute;gociation de contenu transparente (RFC
+2295) comme suit. Un nouvel &eacute;l&eacute;ment <code>{encodage ..}</code> est utilis&eacute; dans
 les listes de variantes pour marquer celles qui ne sont disponibles qu'avec un
-encodage de contenu spécifique. L'implémentation de l'algorithme
-RVSA/1.0 (RFC 2296) est étendue à la reconnaissance de variantes encodées dans
-la liste, et à leur utilisation en tant que variantes candidates à partir du
-moment où leur encodage satisfait au contenu de l'en-tête de requête
-<code>Accept-Encoding</code>. L'implémentation RVSA/1.0 n'arrondit pas les
-facteurs de qualité calculés à 5 décimales avant d'avoir choisi la meilleure
+encodage de contenu sp&eacute;cifique. L'impl&eacute;mentation de l'algorithme
+RVSA/1.0 (RFC 2296) est &eacute;tendue &agrave; la reconnaissance de variantes encod&eacute;es dans
+la liste, et &agrave; leur utilisation en tant que variantes candidates &agrave; partir du
+moment o&ugrave; leur encodage satisfait au contenu de l'en-t&ecirc;te de requ&ecirc;te
+<code>Accept-Encoding</code>. L'impl&eacute;mentation RVSA/1.0 n'arrondit pas les
+facteurs de qualit&eacute; calcul&eacute;s &agrave; 5 d&eacute;cimales avant d'avoir choisi la meilleure
 variante.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="naming" id="naming">Remarques à propos des liens hypertextes et des
-conventions de nommage</a> <a title="Lien permanent" href="#naming" class="permalink">&para;</a></h2>
+<h2 id="naming">Remarques &agrave; propos des liens hypertextes et des
+conventions de nommage <a title="Lien permanent" href="#naming" class="permalink">&para;</a></h2>
 
-    <p>Si vous utilisez la négociation de langage, vous avez le choix entre
-    différentes conventions de nommage, car les fichiers peuvent posséder
-    plusieurs extensions, et l'ordre dans lequel ces dernières apparaissent
-    est en général sans rapport (voir la documentation sur le module <a href="mod/mod_mime.html#multipleext">mod_mime</a>
-    pour plus de détails).</p>
+    <p>Si vous utilisez la n&eacute;gociation de langage, vous avez le choix entre
+    diff&eacute;rentes conventions de nommage, car les fichiers peuvent poss&eacute;der
+    plusieurs extensions, et l'ordre dans lequel ces derni&egrave;res apparaissent
+    est en g&eacute;n&eacute;ral sans rapport (voir la documentation sur le module <a href="mod/mod_mime.html#multipleext">mod_mime</a>
+    pour plus de d&eacute;tails).</p>
 
-    <p>Un fichier type possède une extension liée au type MIME
+    <p>Un fichier type poss&egrave;de une extension li&eacute;e au type MIME
     (<em>par exemple</em>, <code>html</code>), mais parfois aussi une
-    extension liée à l'encodage (<em>par exemple</em>, <code>gz</code>),
-    et bien sûr une extension liée au langage
+    extension li&eacute;e &agrave; l'encodage (<em>par exemple</em>, <code>gz</code>),
+    et bien s&ucirc;r une extension li&eacute;e au langage
     (<em>par exemple</em>, <code>en</code>) quand plusieurs variantes de
     langage sont disponibles pour ce fichier.</p>
 
@@ -639,7 +637,7 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
       <tr>
         <td><em>foo.html.en</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
         <td>-</td>
@@ -656,10 +654,10 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
       <tr>
         <td><em>foo.html.en.gz</em></td>
 
-        <td>foo<br />
+        <td>foo<br>
          foo.html</td>
 
-        <td>foo.gz<br />
+        <td>foo.gz<br>
          foo.html.gz</td>
       </tr>
 
@@ -668,16 +666,16 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
 
         <td>foo</td>
 
-        <td>foo.html<br />
-         foo.html.gz<br />
+        <td>foo.html<br>
+         foo.html.gz<br>
          foo.gz</td>
       </tr>
 
       <tr>
         <td><em>foo.gz.html.en</em></td>
 
-        <td>foo<br />
-         foo.gz<br />
+        <td>foo<br>
+         foo.gz<br>
          foo.gz.html</td>
 
         <td>foo.html</td>
@@ -686,8 +684,8 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
       <tr>
         <td><em>foo.html.gz.en</em></td>
 
-        <td>foo<br />
-         foo.html<br />
+        <td>foo<br>
+         foo.html<br>
          foo.html.gz</td>
 
         <td>foo.gz</td>
@@ -697,60 +695,60 @@ conventions de nommage</a> <a title="Lien permanent" href="#naming" class="perma
     <p>En regardant la table ci-dessus, vous remarquerez qu'il est toujours
     possible d'utiliser le nom de fichier sans extension dans un lien
     (<em>par exemple</em>, <code>foo</code>). L'avantage est de pouvoir
-    dissimuler le type réel du fichier associé à un document et de pouvoir
+    dissimuler le type r&eacute;el du fichier associ&eacute; &agrave; un document et de pouvoir
     le modifier
-    ultérieurement, <em>par exemple</em>, de <code>html</code> à
-    <code>shtml</code> ou <code>cgi</code> sans avoir à
-    mettre à jour aucun lien.</p>
+    ult&eacute;rieurement, <em>par exemple</em>, de <code>html</code> &agrave;
+    <code>shtml</code> ou <code>cgi</code> sans avoir &agrave;
+    mettre &agrave; jour aucun lien.</p>
 
-    <p>Si vous souhaitez continuer à utiliser un type MIME dans vos liens
-    (<em>par exemple </em> <code>foo.html</code>), l'extension liée au langage
-    (y compris une extension liée à l'encodage s'il en existe une)
-    doit se trouver à droite de l'extension liée au type MIME
+    <p>Si vous souhaitez continuer &agrave; utiliser un type MIME dans vos liens
+    (<em>par exemple </em> <code>foo.html</code>), l'extension li&eacute;e au langage
+    (y compris une extension li&eacute;e &agrave; l'encodage s'il en existe une)
+    doit se trouver &agrave; droite de l'extension li&eacute;e au type MIME
     (<em>par exemple</em>, <code>foo.html.en</code>).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">Remarque sur la mise en cache</a> <a title="Lien permanent" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">Remarque sur la mise en cache <a title="Lien permanent" href="#caching" class="permalink">&para;</a></h2>
 
-    <p>Quand un cache stocke une représentation, il l'associe avec l'URL de la
-    requête. Lorsque cette URL est à nouveau demandée, le cache peut utiliser
-    la représentation stockée. Cependant, si la ressource est négociable au
-    niveau du serveur, il se peut que seule la première variante demandée soit
+    <p>Quand un cache stocke une repr&eacute;sentation, il l'associe avec l'URL de la
+    requ&ecirc;te. Lorsque cette URL est &agrave; nouveau demand&eacute;e, le cache peut utiliser
+    la repr&eacute;sentation stock&eacute;e. Cependant, si la ressource est n&eacute;gociable au
+    niveau du serveur, il se peut que seule la premi&egrave;re variante demand&eacute;e soit
     mise en cache et de ce fait, la correspondance positive du cache peut
-    entraîner une réponse inappropriée. Pour
-    éviter cela, httpd marque par
-    défaut toutes les réponses qui sont renvoyées après une négociation de
-    contenu comme «&nbsp;non-cachables&nbsp;» par les clients HTTP/1.0. httpd prend
-    aussi en charge les fonctionnalités du protocole HTTP/1.1 afin de permettre la mise
-    en cache des réponses négociées.</p>
+    entra&icirc;ner une r&eacute;ponse inappropri&eacute;e. Pour
+    &eacute;viter cela, httpd marque par
+    d&eacute;faut toutes les r&eacute;ponses qui sont renvoy&eacute;es apr&egrave;s une n&eacute;gociation de
+    contenu comme &laquo;&nbsp;non-cachables&nbsp;&raquo; par les clients HTTP/1.0. httpd prend
+    aussi en charge les fonctionnalit&eacute;s du protocole HTTP/1.1 afin de permettre la mise
+    en cache des r&eacute;ponses n&eacute;goci&eacute;es.</p>
 
-    <p>Pour les requêtes en provenance d'un client compatible HTTP/1.0
-    (un navigateur ou un cache), la directive <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> peut être utilisée
-    pour permettre la mise en cache des réponses qui ont fait l'objet d'une
-    négociation. Cette directive peut intervenir dans la configuration au
-    niveau du serveur ou de l'hôte virtuel, et n'accepte aucun argument. Elle
-    n'a aucun effet sur les requêtes en provenance de clients HTTP/1.1.</p>
+    <p>Pour les requ&ecirc;tes en provenance d'un client compatible HTTP/1.0
+    (un navigateur ou un cache), la directive <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> peut &ecirc;tre utilis&eacute;e
+    pour permettre la mise en cache des r&eacute;ponses qui ont fait l'objet d'une
+    n&eacute;gociation. Cette directive peut intervenir dans la configuration au
+    niveau du serveur ou de l'h&ocirc;te virtuel, et n'accepte aucun argument. Elle
+    n'a aucun effet sur les requ&ecirc;tes en provenance de clients HTTP/1.1.</p>
 
-    <p>Pour les clients HTTP/1.1, httpd envoie un en-tête de réponse HTTP
-    <code>Vary</code> afin d'indiquer les dimensions de la négociation pour
-    cette réponse. Les caches peuvent
-    utiliser cette information afin de déterminer
-    si une requête peut être servie à partir de la copie locale. Pour inciter
-    un cache à utiliser la copie locale sans tenir compte des dimensions de la
-    négociation, définissez la
+    <p>Pour les clients HTTP/1.1, httpd envoie un en-t&ecirc;te de r&eacute;ponse HTTP
+    <code>Vary</code> afin d'indiquer les dimensions de la n&eacute;gociation pour
+    cette r&eacute;ponse. Les caches peuvent
+    utiliser cette information afin de d&eacute;terminer
+    si une requ&ecirc;te peut &ecirc;tre servie &agrave; partir de la copie locale. Pour inciter
+    un cache &agrave; utiliser la copie locale sans tenir compte des dimensions de la
+    n&eacute;gociation, d&eacute;finissez la
     <a href="env.html#special">variable d'environnement</a>
     <code>force-no-vary</code>.</p>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/content-negotiation.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/content-negotiation.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,60 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Hébergement virtuel de masse avec mod_rewrite - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>H&eacute;bergement virtuel de masse avec mod_rewrite - Serveur HTTP Apache Version 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Hébergement virtuel de masse avec mod_rewrite</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>H&eacute;bergement virtuel de masse avec mod_rewrite</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/vhosts.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/vhosts.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
 
-<p>Ce document est un complément à la <a href="../mod/mod_rewrite.html">documentation de référence</a> du module
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit comment créer des serveurs
-virtuels dynamiquement configurés en utilisant
+<p>Ce document est un compl&eacute;ment &agrave; la <a href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il d&eacute;crit comment cr&eacute;er des serveurs
+virtuels dynamiquement configur&eacute;s en utilisant
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 <div class="warning">L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est pas la
-meilleure méthode pour configurer des serveurs virtuels. Vous devez dans un
-premier temps tenter de résoudre votre problème via ces  <a href="../vhosts/mass.html">d'autres méthodes</a> avant d'avoir recours à
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Voir aussi le document <a href="avoid.html#vhosts">Comment éviter
+meilleure m&eacute;thode pour configurer des serveurs virtuels. Vous devez dans un
+premier temps tenter de r&eacute;soudre votre probl&egrave;me via ces  <a href="../vhosts/mass.html">d'autres m&eacute;thodes</a> avant d'avoir recours &agrave;
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Voir aussi le document <a href="avoid.html#vhosts">Comment &eacute;viter
 il'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a>.</div>
 
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#per-hostname">Serveurs virtuels pour des noms d'hôtes arbitraires</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite">Configuration dynamique de serveurs
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#per-hostname">Serveurs virtuels pour des noms d'h&ocirc;tes arbitraires</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple.rewrite">Configuration dynamique de serveurs
 virtuels via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xtra-conf">Utilisation d'un fichier de configuration
-du serveur virtuel séparé</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avancées</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<li><img alt="" src="../images/down.gif"> <a href="#xtra-conf">Utilisation d'un fichier de configuration
+du serveur virtuel s&eacute;par&eacute;</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avanc&eacute;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="per-hostname" id="per-hostname">Serveurs virtuels pour des noms d'hôtes arbitraires</a> <a title="Lien permanent" href="#per-hostname" class="permalink">&para;</a></h2>
+<h2 id="per-hostname">Serveurs virtuels pour des noms d'h&ocirc;tes arbitraires <a title="Lien permanent" href="#per-hostname" class="permalink">&para;</a></h2>
 
   
 
@@ -62,11 +60,11 @@ correspondance</a></li><li><a href="access.html">Contrôle d'accès</a></li><li>
     <dt>Description :</dt>
 
     <dd>
-    <p>Nous voulons créer automatiquement un serveur virtuel pour tout
-    nom d'hôte qui peut être résolu dans notre domaine, sans avoir à
-    créer de nouvelle section VirtualHost.</p>
+    <p>Nous voulons cr&eacute;er automatiquement un serveur virtuel pour tout
+    nom d'h&ocirc;te qui peut &ecirc;tre r&eacute;solu dans notre domaine, sans avoir &agrave;
+    cr&eacute;er de nouvelle section VirtualHost.</p>
 
-    <p>Dans cet exemple, nous supposons que nous utilisons le nom d'hôte
+    <p>Dans cet exemple, nous supposons que nous utilisons le nom d'h&ocirc;te
     <code>www.<strong>SITE</strong>.example.com</code> pour chaque
     utilisateur, et que nous servons leur contenu depuis
     <code>/home/<strong>SITE</strong>/www</code>.</p>
@@ -88,56 +86,56 @@ RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"</pre>
 <dt>Discussion</dt>
     <dd>
 
-    <div class="warning">Vous devez vérifier le bon fonctionnement de la
-    résolution DNS - Apache ne gère pas la résolution de nom. Vous
-    devrez créer soit des enregistrements CNAME pour chaque nom d'hôte,
-    soit un enregistrement DNS avec caractères génériques. La création
+    <div class="warning">Vous devez v&eacute;rifier le bon fonctionnement de la
+    r&eacute;solution DNS - Apache ne g&egrave;re pas la r&eacute;solution de nom. Vous
+    devrez cr&eacute;er soit des enregistrements CNAME pour chaque nom d'h&ocirc;te,
+    soit un enregistrement DNS avec caract&egrave;res g&eacute;n&eacute;riques. La cr&eacute;ation
     des enregistrements DNS est en dehors du sujet de ce document.</div>
 
 <p>La directive RewriteMap interne <code>tolower</code> permet de
-s'assurer que les noms d'hôtes utilisés seront tous en minuscules, de
-façon à éviter toute ambiguité dans la structure des répertoires qui
-doit être créée.</p>
+s'assurer que les noms d'h&ocirc;tes utilis&eacute;s seront tous en minuscules, de
+fa&ccedil;on &agrave; &eacute;viter toute ambiguit&eacute; dans la structure des r&eacute;pertoires qui
+doit &ecirc;tre cr&eacute;&eacute;e.</p>
 
-<p>Les contenus des parenthèses utilisées dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> sont enregistrés dans les
-références arrières <code>%1</code>, <code>%2</code>, etc..., alors que
-les contenus des parenthèses utilisées dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> le sont dans les
-références arrières <code>$1</code>, <code>$2</code>, etc...</p>
+<p>Les contenus des parenth&egrave;ses utilis&eacute;es dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> sont enregistr&eacute;s dans les
+r&eacute;f&eacute;rences arri&egrave;res <code>%1</code>, <code>%2</code>, etc..., alors que
+les contenus des parenth&egrave;ses utilis&eacute;es dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> le sont dans les
+r&eacute;f&eacute;rences arri&egrave;res <code>$1</code>, <code>$2</code>, etc...</p>
 
 <p>
-Comme c'est le cas pour de nombreuses techniques discutées dans ce
-document, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est vraiment pas la meilleure méthode pour
-accomplir cette tâche. Vous devez plutôt vous tourner vers
-<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>, car ce dernier sera bien plus à même
-de gérer tout ce qui est au delà du domaine des fichiers statiques,
-comme les contenus dynamiques et la résolution des alias.
+Comme c'est le cas pour de nombreuses techniques discut&eacute;es dans ce
+document, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est vraiment pas la meilleure m&eacute;thode pour
+accomplir cette t&acirc;che. Vous devez plut&ocirc;t vous tourner vers
+<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>, car ce dernier sera bien plus &agrave; m&ecirc;me
+de g&eacute;rer tout ce qui est au del&agrave; du domaine des fichiers statiques,
+comme les contenus dynamiques et la r&eacute;solution des alias.
 </p>
     </dd>
   </dl>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="simple.rewrite" id="simple.rewrite">Configuration dynamique de serveurs
-virtuels via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a> <a title="Lien permanent" href="#simple.rewrite" class="permalink">&para;</a></h2>
+<h2 id="simple.rewrite">Configuration dynamique de serveurs
+virtuels via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> <a title="Lien permanent" href="#simple.rewrite" class="permalink">&para;</a></h2>
 
     <p>Cet extrait du fichier <code>httpd.conf</code> permet d'obtenir
-    le même résultat que <a href="#per-hostname">le premier exemple</a>.
-    La première moitié est très similaire à la partie correspondante
-    ci-dessus, excepté quelques modifications requises à des fins de
-    compatibilité ascendante et pour faire en sorte que la partie
-    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> fonctionne correctement ; la seconde moitié
+    le m&ecirc;me r&eacute;sultat que <a href="#per-hostname">le premier exemple</a>.
+    La premi&egrave;re moiti&eacute; est tr&egrave;s similaire &agrave; la partie correspondante
+    ci-dessus, except&eacute; quelques modifications requises &agrave; des fins de
+    compatibilit&eacute; ascendante et pour faire en sorte que la partie
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> fonctionne correctement ; la seconde moiti&eacute;
     configure <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour effectuer le travail
     proprement dit.</p>
 
-    <p>Comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> s'exécute avant tout autre module
+    <p>Comme <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> s'ex&eacute;cute avant tout autre module
     de traduction d'URI (comme <code>mod_alias</code>), il faut lui
-    ordonner explicitement d'ignorer toute URL susceptible d'être
-    traitée par ces autres modules. Et comme ces règles auraient sinon
-    court-circuité toute directive <code>ScriptAlias</code>, nous devons
-    faire en sorte que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> déclare explicitement
+    ordonner explicitement d'ignorer toute URL susceptible d'&ecirc;tre
+    trait&eacute;e par ces autres modules. Et comme ces r&egrave;gles auraient sinon
+    court-circuit&eacute; toute directive <code>ScriptAlias</code>, nous devons
+    faire en sorte que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> d&eacute;clare explicitement
     ces correspondances.</p>
 
-<pre class="prettyprint lang-config"># extrait le nom de serveur de l'en-tête Host:
+<pre class="prettyprint lang-config"># extrait le nom de serveur de l'en-t&ecirc;te Host:
 UseCanonicalName Off
 
 # journaux dissociables
@@ -145,19 +143,19 @@ LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon
 CustomLog "logs/access_log" vcommon
 
 &lt;Directory "/www/hosts"&gt;
-    # ExecCGI est nécessaire ici car on ne peut pas forcer l'exécution
-    # des CGI à la manière de ScriptAlias
+    # ExecCGI est n&eacute;cessaire ici car on ne peut pas forcer l'ex&eacute;cution
+    # des CGI &agrave; la mani&egrave;re de ScriptAlias
     Options FollowSymLinks ExecCGI
 &lt;/Directory&gt;
 
 RewriteEngine On
 
-# un nom de serveur extrait d'un en-tête Host: peut être dans n'importe
+# un nom de serveur extrait d'un en-t&ecirc;te Host: peut &ecirc;tre dans n'importe
 # quelle casse
 RewriteMap  lowercase  int:tolower
 
-## on s'occupe tout d'abord des documents normaux :<br />
-# permet à Alias "/icons/" de fonctionner - répéter pour les autres
+## on s'occupe tout d'abord des documents normaux :<br>
+# permet &agrave; Alias "/icons/" de fonctionner - r&eacute;p&eacute;ter pour les autres
 RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # permet aux CGIs de fonctionner
 RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
@@ -170,40 +168,40 @@ RewriteCond  "%{REQUEST_URI}"  "^/cgi-bin/"
 RewriteRule  "^/(.*)$" "/www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1"  [H=cgi-script]</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="xtra-conf" id="xtra-conf">Utilisation d'un fichier de configuration
-du serveur virtuel séparé</a> <a title="Lien permanent" href="#xtra-conf" class="permalink">&para;</a></h2>
+<h2 id="xtra-conf">Utilisation d'un fichier de configuration
+du serveur virtuel s&eacute;par&eacute; <a title="Lien permanent" href="#xtra-conf" class="permalink">&para;</a></h2>
 
-    <p>Cette construction utilise des fonctionnalités plus avancées de
+    <p>Cette construction utilise des fonctionnalit&eacute;s plus avanc&eacute;es de
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour effectuer la traduction depuis le
-    serveur virtuel vers la racine des documents, à partir d'un fichier
-    de configuration séparé. Elle est plus souple mais nécessite une
-    configuration plus compliquée.</p>
+    serveur virtuel vers la racine des documents, &agrave; partir d'un fichier
+    de configuration s&eacute;par&eacute;. Elle est plus souple mais n&eacute;cessite une
+    configuration plus compliqu&eacute;e.</p>
 
-    <p>Le fichier <code>vhost.map</code> devrait ressembler à ceci :</p>
+    <p>Le fichier <code>vhost.map</code> devrait ressembler &agrave; ceci :</p>
 
 <div class="example"><p><code>
-www.client-1.example.com  /www/clients/1<br />
-www.client-2.example.com  /www/clients/2<br />
-# ...<br />
-www.client-N.example.com  /www/clients/N<br />
+www.client-1.example.com  /www/clients/1<br>
+www.client-2.example.com  /www/clients/2<br>
+# ...<br>
+www.client-N.example.com  /www/clients/N<br>
 </code></p></div>
 
-    <p>On doit ajouter à <code>httpd.conf</code> :</p>
+    <p>On doit ajouter &agrave; <code>httpd.conf</code> :</p>
 
 <pre class="prettyprint lang-config">RewriteEngine on
 
 RewriteMap   lowercase  int:tolower
 
-# définit le fichier de correspondances
+# d&eacute;finit le fichier de correspondances
 RewriteMap   vhost      "txt:/www/conf/vhost.map"
 
 # on s'occupe des alias comme ci-dessus
 RewriteCond  "%{REQUEST_URI}"               "!^/icons/"
 RewriteCond  "%{REQUEST_URI}"               "!^/cgi-bin/"
 RewriteCond  "${lowercase:%{SERVER_NAME}}"  "^(.+)$"
-# on effectue ici la remise en correspondance à base de fichier
+# on effectue ici la remise en correspondance &agrave; base de fichier
 RewriteCond  "${vhost:%1}"                  "^(/.*)$"
 RewriteRule  "^/(.*)$"                      "%1/docs/$1"
 
@@ -216,10 +214,10 @@ RewriteRule  "^/cgi-bin/(.*)$"              "%1/cgi-bin/$1" [H=cgi-script]</pre>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/vhosts.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/rewrite/vhosts.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

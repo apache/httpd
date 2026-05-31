@@ -1,52 +1,50 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache の IP ベースのバーチャルホストサポート - Apache HTTP サーバ バージョン 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a> &gt; <a href="./">バーチャルホスト</a></div><div id="page-content"><div id="preamble"><h1>Apache の IP ベースのバーチャルホストサポート</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
             最近更新された内容を見るには英語版をご覧下さい。
         </div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">システム要件</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache の設定方法</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multiple">複数デーモンの設定</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#single">複数のバーチャルホストの設定をした
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#requirements">システム要件</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#howto">Apache の設定方法</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multiple">複数デーモンの設定</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#single">複数のバーチャルホストの設定をした
 デーモンを一つ設定する</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li>
 <a href="name-based.html">名前ベースのバーチャルホストサポート</a>
 </li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">システム要件</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">システム要件 <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP ベース</cite> という名前が示すように、サーバには
     <strong>IP ベースのバーチャルホストそれぞれにつき、別々の IP アドレスが
@@ -55,9 +53,9 @@
     インタフェース (詳細はシステムの説明書を読んでください。たいていは
     "ip エイリアス" と呼ばれていて、設定には普通 "ifconfig" コマンドを
     使います) を使うかで実現できます。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">Apache の設定方法</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">Apache の設定方法 <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     <p>複数のホストをサポートするように Apache を設定する方法は
     二通りあります。別の <code class="program"><a href="../programs/httpd.html">httpd</a></code> デーモンを各ホスト毎に実行するか、
@@ -89,9 +87,9 @@
       性能の低下の影響が著しいとき。</li>
     </ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">複数デーモンの設定</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
+<h2 id="multiple">複数デーモンの設定 <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
     <p>各バーチャルホストに対して別の <code class="program"><a href="../programs/httpd.html">httpd</a></code> のインストールを行ないます。
     設定ファイル中の <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 
@@ -107,10 +105,10 @@
     注意しておいてください
     (<a href="../dns-caveats.html">DNS の注意事項</a> 参照)。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="single" id="single">複数のバーチャルホストの設定をした
-デーモンを一つ設定する</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
+<h2 id="single">複数のバーチャルホストの設定をした
+デーモンを一つ設定する <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
     <p>この場合は、一つの <code class="program"><a href="../programs/httpd.html">httpd</a></code> が主サーバとすべてのバーチャルホストのリクエストを
     処理します。設定ファイルの <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> ディレクティブを使って、
@@ -120,20 +118,20 @@
     例えば</p>
 
     <div class="example"><p><code>
-    &lt;VirtualHost www.smallco.com&gt;<br />
-    ServerAdmin webmaster@mail.smallco.com<br />
-    DocumentRoot /groups/smallco/www<br />
-    ServerName www.smallco.com<br />
-    ErrorLog /groups/smallco/logs/error_log<br />
-    TransferLog /groups/smallco/logs/access_log<br />
-    &lt;/VirtualHost&gt;<br />
-    <br />
-    &lt;VirtualHost www.baygroup.org&gt;<br />
-    ServerAdmin webmaster@mail.baygroup.org<br />
-    DocumentRoot /groups/baygroup/www<br />
-    ServerName www.baygroup.org<br />
-    ErrorLog /groups/baygroup/logs/error_log<br />
-    TransferLog /groups/baygroup/logs/access_log<br />
+    &lt;VirtualHost www.smallco.com&gt;<br>
+    ServerAdmin webmaster@mail.smallco.com<br>
+    DocumentRoot /groups/smallco/www<br>
+    ServerName www.smallco.com<br>
+    ErrorLog /groups/smallco/logs/error_log<br>
+    TransferLog /groups/smallco/logs/access_log<br>
+    &lt;/VirtualHost&gt;<br>
+    <br>
+    &lt;VirtualHost www.baygroup.org&gt;<br>
+    ServerAdmin webmaster@mail.baygroup.org<br>
+    DocumentRoot /groups/baygroup/www<br>
+    ServerName www.baygroup.org<br>
+    ErrorLog /groups/baygroup/logs/error_log<br>
+    TransferLog /groups/baygroup/logs/access_log<br>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
@@ -161,13 +159,13 @@
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

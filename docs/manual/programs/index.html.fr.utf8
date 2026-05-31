@@ -1,44 +1,42 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Le serveur et ses utilitaires - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page" class="no-sidebar"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="../"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="../"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Le serveur et ses utilitaires</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 
     <p>Cette page documente tous les utilitaires inclus
     dans le serveur HTTP Apache.</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="index" id="index">Index</a> <a title="Lien permanent" href="#index" class="permalink">&para;</a></h2>
+<h2 id="index">Index <a title="Lien permanent" href="#index" class="permalink">&para;</a></h2>
 
     <dl>
       <dt><code class="program"><a href="../programs/httpd.html">httpd</a></code></dt>
@@ -47,7 +45,7 @@
 
       <dt><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></dt>
 
-      <dd>L'interface de contrôle du serveur HTTP Apache</dd>
+      <dd>L'interface de contr&ocirc;le du serveur HTTP Apache</dd>
 
       <dt><code class="program"><a href="../programs/ab.html">ab</a></code></dt>
 
@@ -63,7 +61,7 @@
 
       <dt><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification utilisateurs au
+      <dd>Cr&eacute;e et met &agrave; jour les fichiers d'authentification utilisateurs au
       format DBM pour une authentification basique</dd>
 
       <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
@@ -76,57 +74,57 @@
 
       <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification pour une
+      <dd>Cr&eacute;e et met &agrave; jour les fichiers d'authentification pour une
       authentification sommaire</dd>
 
       <dt><code class="program"><a href="../programs/htdbm.html">htdbm</a></code></dt>
 
-      <dd>Manipulation des bases de données DBM des mots de passe.</dd>
+      <dd>Manipulation des bases de donn&eacute;es DBM des mots de passe.</dd>
 
       <dt><code class="program"><a href="../programs/htpasswd.html">htpasswd</a></code></dt>
 
-      <dd>Crée et met à jour les fichiers d'authentification pour une
+      <dd>Cr&eacute;e et met &agrave; jour les fichiers d'authentification pour une
       authentification basique</dd>
 
       <dt><code class="program"><a href="../programs/httxt2dbm.html">httxt2dbm</a></code></dt>
 
-      <dd>Crée des fichiers dbm destinés à être utilisés avec
+      <dd>Cr&eacute;e des fichiers dbm destin&eacute;s &agrave; &ecirc;tre utilis&eacute;s avec
       RewriteMap</dd>
 
       <dt><code class="program"><a href="../programs/logresolve.html">logresolve</a></code></dt>
 
-      <dd>Résolution des noms d'hôtes en adresses IP dans les fichiers
+      <dd>R&eacute;solution des noms d'h&ocirc;tes en adresses IP dans les fichiers
       de traces d'Apache</dd>
 
       <dt><code class="program"><a href="../programs/log_server_status.html">log_server_status</a></code></dt>
 
-       <dd>Journalisation périodique du statut du serveur</dd>
+       <dd>Journalisation p&eacute;riodique du statut du serveur</dd>
 
       <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
-      <dd>Rotation des traces d'Apache sans devoir arrêter le serveur</dd>
+      <dd>Rotation des traces d'Apache sans devoir arr&ecirc;ter le serveur</dd>
 
       <dt><code class="program"><a href="../programs/split-logfile.html">split-logfile</a></code></dt>
 
-       <dd>Divise un journal pour plusieurs hôtes virtuels en journaux
-       spécifiques à chaque hôte</dd>
+       <dd>Divise un journal pour plusieurs h&ocirc;tes virtuels en journaux
+       sp&eacute;cifiques &agrave; chaque h&ocirc;te</dd>
 
       <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
 
-      <dd>Change d'utilisateur pour l'exécution de certains programmes</dd>
+      <dd>Change d'utilisateur pour l'ex&eacute;cution de certains programmes</dd>
 
     </dl>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/programs/" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/programs/" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../es/programs/" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/programs/" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/programs/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/programs/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="../tr/programs/" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/programs/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

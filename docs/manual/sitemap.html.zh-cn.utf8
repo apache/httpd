@@ -1,39 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn" xml:lang="zh-cn"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="zh-cn"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>站点导航 - Apache HTTP 服务器 版本 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">模块</a> | <a href="./mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP 服务器版本 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP 服务器</a> &gt; <a href="https://httpd.apache.org/docs/">文档</a> &gt; <a href="./">版本 2.4</a></div>
 <div id="page-content"><div id="preamble"><h1>站点导航</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>可用语言: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
 <div class="outofdate">此翻译可能过期。要了解最近的更改，请阅读英文版。</div>
@@ -43,21 +41,21 @@
 的全部文档</a>。</p>
 </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="./images/down.gif" /> <a href="#release">发行说明</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#using">使用 Apache HTTP 服务器</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache 虚拟主机文档</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">URL 改写指南</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache SSL/TLS 加密</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#howto">指南与教程</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#platform">平台相关说明</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP 服务器与支持程序</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache 杂项文档</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache 模块</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">开发者文档</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#index">术语与索引</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#release">发行说明</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#using">使用 Apache HTTP 服务器</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#vhosts">Apache 虚拟主机文档</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rewrite">URL 改写指南</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#ssl">Apache SSL/TLS 加密</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#howto">指南与教程</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#platform">平台相关说明</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#programs">Apache HTTP 服务器与支持程序</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#misc">Apache 杂项文档</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#modules">Apache 模块</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#developer">开发者文档</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#index">术语与索引</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="release" id="release">发行说明</a></h2>
 <ul><li><a href="upgrading.html">从 2.2 升级到 2.4</a></li>
 <li><a href="new_features_2_4.html">Apache 2.3/2.4 的新特性</a></li>
@@ -65,7 +63,7 @@
 <li><a href="new_features_2_0.html">Apache 2.0 的新特性</a></li>
 <li><a href="license.html">Apache 许可证</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="using" id="using">使用 Apache HTTP 服务器</a></h2>
 <ul><li><a href="install.html">编译与安装 Apache</a></li>
 <li><a href="invoking.html">启动 Apache</a></li>
@@ -89,7 +87,7 @@
 <li><a href="misc/perf-tuning.html">性能调谐</a></li>
 <li><a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache 虚拟主机文档</a></h2>
 <ul><li class="separate"><a href="vhosts/">概述</a></li>
 <li><a href="vhosts/name-based.html">基于名称的虚拟主机</a></li>
@@ -100,7 +98,7 @@
 <li><a href="vhosts/fd-limits.html">文件句柄限制</a></li>
 <li><a href="dns-caveats.html">Apache 的 DNS 相关问题</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="rewrite" id="rewrite">URL 改写指南</a></h2>
 <ul><li class="separate"><a href="rewrite/">概述</a></li>
 <li><a href="mod/mod_rewrite.html">mod_rewrite 参考文档</a></li>
@@ -111,7 +109,7 @@
 <li><a href="rewrite/access.html">访问控制</a></li>
 <li><a href="rewrite/advanced.html">高级技术</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS 加密</a></h2>
 <ul><li class="separate"><a href="ssl/">概述</a></li>
 <li><a href="ssl/ssl_intro.html">SSL/TLS 加密: 简介</a></li>
@@ -119,7 +117,7 @@
 <li><a href="ssl/ssl_howto.html">SSL/TLS 加密: 常见操作</a></li>
 <li><a href="ssl/ssl_faq.html">SSL/TLS 加密: 常见问题</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="howto" id="howto">指南与教程</a></h2>
 <ul><li class="separate"><a href="howto/">概述</a></li>
 <li><a href="howto/auth.html">认证，授权与访问控制</a></li>
@@ -128,7 +126,7 @@
 <li><a href="howto/htaccess.html">.htaccess 文件</a></li>
 <li><a href="howto/public_html.html">用户私人网站目录(public_html)</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="platform" id="platform">平台相关说明</a></h2>
 <ul><li class="separate"><a href="platform/">概述</a></li>
 <li><a href="platform/windows.html">在 Microsoft Windows 中使用 Apache</a></li>
@@ -137,7 +135,7 @@
 <li><a href="platform/perf-hp.html">在 HPUX 中运行高性能 web 服务器</a></li>
 <li><a href="platform/ebcdic.html">Apache 与 EBCDIC 系统</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="programs" id="programs">Apache HTTP 服务器与支持程序</a></h2>
 <ul><li class="separate"><a href="programs/">概述</a></li>
 <li><a href="programs/httpd.html">手册: httpd</a></li>
@@ -155,12 +153,12 @@
 <li><a href="programs/suexec.html">手册: suexec</a></li>
 <li><a href="programs/other.html">其它程序</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache 杂项文档</a></h2>
 <ul><li class="separate"><a href="misc/">概述</a></li>
 <li><a href="misc/relevant_standards.html">相关标准</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache 模块</a></h2>
 <ul><li><a href="mod/module-dict.html">描述模块的术语</a></li>
 <li><a href="mod/directive-dict.html">描述指令的术语</a></li>
@@ -297,7 +295,7 @@
 <li><a href="mod/mod_watchdog.html">Apache 模块 mod_watchdog</a></li>
 <li><a href="mod/mod_xml2enc.html">Apache 模块 mod_xml2enc</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="developer" id="developer">开发者文档</a></h2>
 <ul><li class="separate"><a href="developer/">概述</a></li>
 <li><a href="developer/API.html">Apache API 说明</a></li>
@@ -308,7 +306,7 @@
 <li><a href="developer/request.html">Apache 2.x 中的请求处理</a></li>
 <li><a href="developer/filters.html">Apache 2.x 中的过滤器</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section"><h2><a name="index" id="index">术语与索引</a></h2>
 <ul><li><a href="glossary.html">术语</a></li>
 <li><a href="mod/">模块索引</a></li>
@@ -319,15 +317,15 @@
 <div class="bottomlang">
 <p><span>可用语言: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/sitemap.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
+<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

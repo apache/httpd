@@ -1,73 +1,71 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_reqtimeout - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_reqtimeout</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reqtimeout.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_reqtimeout.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_reqtimeout.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Définit le délai maximum et le taux minimum de transfert des
-données pour la réception des requêtes
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>D&eacute;finit le d&eacute;lai maximum et le taux minimum de transfert des
+donn&eacute;es pour la r&eacute;ception des requ&ecirc;tes
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>reqtimeout_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_reqtimeout.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.15 du serveur HTTP Apache</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>reqtimeout_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_reqtimeout.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible depuis la version 2.2.15 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de définir aisément le délai maximum et le taux de
-    transfert des données minimum pour la réception des requêtes. Si ce délai
-    est dépassé ou ce taux trop faible, la connexion concernée sera fermée par
+    <p>Ce module permet de d&eacute;finir ais&eacute;ment le d&eacute;lai maximum et le taux de
+    transfert des donn&eacute;es minimum pour la r&eacute;ception des requ&ecirc;tes. Si ce d&eacute;lai
+    est d&eacute;pass&eacute; ou ce taux trop faible, la connexion concern&eacute;e sera ferm&eacute;e par
     le serveur.</p>
 
-    <p>Cet évènement sera alors enregistré dans le journal au niveau de <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>.</p>
+    <p>Cet &eacute;v&egrave;nement sera alors enregistr&eacute; dans le journal au niveau de <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>info</code>.</p>
     
     <p>Au besoin, la directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
-    peut être modifiée pour un enregistrement dans le journal plus explicite :</p>
+    peut &ecirc;tre modifi&eacute;e pour un enregistrement dans le journal plus explicite :</p>
     <pre class="prettyprint lang-config">LogLevel reqtimeout:info</pre>
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Exemples</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Exemples</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#requestreadtimeout">RequestReadTimeout</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#requestreadtimeout">RequestReadTimeout</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_reqtimeout">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_reqtimeout">Signaler un bug</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_reqtimeout">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_reqtimeout">Signaler un bug</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
-	Accorde 5 secondes pour terminer la négociation TLS, 10 secondes pour la
-	réception des en-têtes de la requête et 30 secondes pour la réception du
+	Accorde 5 secondes pour terminer la n&eacute;gociation TLS, 10 secondes pour la
+	r&eacute;ception des en-t&ecirc;tes de la requ&ecirc;te et 30 secondes pour la r&eacute;ception du
 	corps :
 
         <pre class="prettyprint lang-config">RequestReadTimeout handshake=5 header=10 body=30</pre>
@@ -75,31 +73,31 @@ données pour la réception des requêtes
       </li>
 
       <li>
-        Accorde au moins 10 secondes pour la réception du corps de
-	la requête. Si le client envoie des données, augmente ce délai
-	d'une seconde pour chaque paquet de 1000 octets reçus, sans
-	limite supérieure (sauf si une limite a été
-	spécifiée via la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>) :
+        Accorde au moins 10 secondes pour la r&eacute;ception du corps de
+	la requ&ecirc;te. Si le client envoie des donn&eacute;es, augmente ce d&eacute;lai
+	d'une seconde pour chaque paquet de 1000 octets re&ccedil;us, sans
+	limite sup&eacute;rieure (sauf si une limite a &eacute;t&eacute;
+	sp&eacute;cifi&eacute;e via la directive <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>) :
 
         <pre class="prettyprint lang-config">RequestReadTimeout body=10,MinRate=1000</pre>
 
       </li>
 
       <li>
-        Accorde au moins 10 secondes pour la réception des en-têtes de la
-	requête. Si le client envoie des données, augmente ce délai
-	d'une seconde pour chaque paquet de 500 octets reçus, mais
-	n'alloue que 30 secondes pour les en-têtes de la requête :
+        Accorde au moins 10 secondes pour la r&eacute;ception des en-t&ecirc;tes de la
+	requ&ecirc;te. Si le client envoie des donn&eacute;es, augmente ce d&eacute;lai
+	d'une seconde pour chaque paquet de 500 octets re&ccedil;us, mais
+	n'alloue que 30 secondes pour les en-t&ecirc;tes de la requ&ecirc;te :
 
         <pre class="prettyprint lang-config">RequestReadTimeout header=10-30,MinRate=500</pre>
 
       </li>
 
       <li>
-        En général, un serveur doit avoir ses délais d'en-tête et de
-	corps configurés. Si les serveurs virtuels http et https
-	utilisent une configuration commune, les délais ne doivent pas
-	être définis trop bas :
+        En g&eacute;n&eacute;ral, un serveur doit avoir ses d&eacute;lais d'en-t&ecirc;te et de
+	corps configur&eacute;s. Si les serveurs virtuels http et https
+	utilisent une configuration commune, les d&eacute;lais ne doivent pas
+	&ecirc;tre d&eacute;finis trop bas :
 
         <pre class="prettyprint lang-config">RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500</pre>
 
@@ -107,93 +105,93 @@ données pour la réception des requêtes
 
     </ol>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="requestreadtimeout" id="requestreadtimeout">Directive</a> <a name="RequestReadTimeout" id="RequestReadTimeout">RequestReadTimeout</a> <a title="Lien permanent" href="#requestreadtimeout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="requestreadtimeout">Directive <span id="RequestReadTimeout">RequestReadTimeout</span> <a title="Lien permanent" href="#requestreadtimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit des délais maximums pour la négociation TLS, la réception
-des en-têtes et/ou corps des requêtes en provenance du client.
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit des d&eacute;lais maximums pour la n&eacute;gociation TLS, la r&eacute;ception
+des en-t&ecirc;tes et/ou corps des requ&ecirc;tes en provenance du client.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestReadTimeout
 [handshake=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>rate</var>]
 [header=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>MinRate</var>]
 [body=<var>timeout</var>[-<var>maxtimeout</var>][,MinRate=<var>MinRate</var>]
 </code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>RequestReadTimeout handshake=0 header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>RequestReadTimeout handshake=0 header=20-40,MinRate=500 body=20,MinRate=500</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.15 du serveur HTTP
-Apache ; désactivée par défaut depuis la version 2.3.14. La phase de
-<code>négociation</code> est prise en compte à partir de la version 2.4.39.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible depuis la version 2.2.15 du serveur HTTP
+Apache ; d&eacute;sactiv&eacute;e par d&eacute;faut depuis la version 2.3.14. La phase de
+<code>n&eacute;gociation</code> est prise en compte &agrave; partir de la version 2.4.39.</td></tr>
 </table>
-    <p>Cette directive permet de définir différents timeouts pour la négociation
-    TLS, la réception des en-têtes et/ou corps des requêtes en provenance du
-    client. Si le client ne parvient pas à respecter ces timeouts, un code
-    d'erreur <code>408 REQUEST TIME OUT</code> est envoyé.</p>
+    <p>Cette directive permet de d&eacute;finir diff&eacute;rents timeouts pour la n&eacute;gociation
+    TLS, la r&eacute;ception des en-t&ecirc;tes et/ou corps des requ&ecirc;tes en provenance du
+    client. Si le client ne parvient pas &agrave; respecter ces timeouts, un code
+    d'erreur <code>408 REQUEST TIME OUT</code> est envoy&eacute;.</p>
 
     <p>Pour les serveurs virtuels SSL, la valeur de timeout pour la
-    <code>négociation</code> correspond au temps nécessaire pour la négociation
-    SSL initiale. Si le navigateur du client est configuré pour demander des
-    listes de révocations de certificats, et si le serveur correspondant n'est
+    <code>n&eacute;gociation</code> correspond au temps n&eacute;cessaire pour la n&eacute;gociation
+    SSL initiale. Si le navigateur du client est configur&eacute; pour demander des
+    listes de r&eacute;vocations de certificats, et si le serveur correspondant n'est
     pas disponible, le timeout avant lequel le navigateur va abandonner son
-    attente de CRL au cours de la négociation SSL initiale peut être assez
-    important. Par conséquent, les valeurs de timeouts pour la
-    <code>négociation</code> doivent prendre en compte un temps supplémentaire
-    pour les serveurs virtuels SSL (si nécessaire). Le timeout concernant le
-    corps inclut le temps nécessaire à la renégociation SSL (si elle est
-    nécessaire).</p>
+    attente de CRL au cours de la n&eacute;gociation SSL initiale peut &ecirc;tre assez
+    important. Par cons&eacute;quent, les valeurs de timeouts pour la
+    <code>n&eacute;gociation</code> doivent prendre en compte un temps suppl&eacute;mentaire
+    pour les serveurs virtuels SSL (si n&eacute;cessaire). Le timeout concernant le
+    corps inclut le temps n&eacute;cessaire &agrave; la ren&eacute;gociation SSL (si elle est
+    n&eacute;cessaire).</p>
 
     <p>Lorsqu'une directive <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code>
-    est active (ce qui est en général le cas sous Linux et FreeBSD), la socket
-    n'est envoyée au processus du serveur qu'après la réception du premier octet
-    (ou de l'ensemble de la requête si <code>httpready</code> est défini). Les
-    timeouts configurés pour la négociation et les en-têtes via la directive
+    est active (ce qui est en g&eacute;n&eacute;ral le cas sous Linux et FreeBSD), la socket
+    n'est envoy&eacute;e au processus du serveur qu'apr&egrave;s la r&eacute;ception du premier octet
+    (ou de l'ensemble de la requ&ecirc;te si <code>httpready</code> est d&eacute;fini). Les
+    timeouts configur&eacute;s pour la n&eacute;gociation et les en-t&ecirc;tes via la directive
     <code class="directive">RequestReadTimeout</code> n'entrent en ligne de compte
-    qu'une fois le socket reçu par le processus du serveur.</p>
+    qu'une fois le socket re&ccedil;u par le processus du serveur.</p>
 
-    <p>Il existe trois méthodes pour spécifier le timeout pour chacune des trois
-    phases (négociation, en-tête ou corps) :
+    <p>Il existe trois m&eacute;thodes pour sp&eacute;cifier le timeout pour chacune des trois
+    phases (n&eacute;gociation, en-t&ecirc;te ou corps) :
     </p>
 
     <ul>
 
-    <li><strong>Valeur de timeout fixe</strong>:<br />
+    <li><strong>Valeur de timeout fixe</strong>:<br>
 
     <div class="example"><p><code><var>phase</var>=<var>timeout</var></code></p></div>
 
-    <p>Le temps en secondes alloué pour terminer l'ensemble de la phase
-    (négociation, lecture de tous les en-têtes de la requête ou du corps de
-    cette dernière). La valeur 0 signifie aucune limite.</p>
+    <p>Le temps en secondes allou&eacute; pour terminer l'ensemble de la phase
+    (n&eacute;gociation, lecture de tous les en-t&ecirc;tes de la requ&ecirc;te ou du corps de
+    cette derni&egrave;re). La valeur 0 signifie aucune limite.</p>
     </li>
 
-    <li><strong>Désactivation du module pour un serveur virtuel</strong>:<br />
+    <li><strong>D&eacute;sactivation du module pour un serveur virtuel</strong>:<br>
 
     <div class="example"><p><code>handshake=0 header=0 body=0</code></p></div>
 
     <p>Avec cet exemple, le module <code class="module"><a href="../mod/mod_reqtimeout.html">mod_reqtimeout</a></code> est
-    complètement désactivé (notez que <code>handshake=0</code> correspond à la
-    valeur par défaut et peut donc être omis).</p>
+    compl&egrave;tement d&eacute;sactiv&eacute; (notez que <code>handshake=0</code> correspond &agrave; la
+    valeur par d&eacute;faut et peut donc &ecirc;tre omis).</p>
     </li>
 
-    <li><strong>La valeur du timeout qui est augmentée lorsque des données
-    sont reçues</strong> :<br />
+    <li><strong>La valeur du timeout qui est augment&eacute;e lorsque des donn&eacute;es
+    sont re&ccedil;ues</strong> :<br>
     <div class="example"><p><code>
-    <var>phase</var>=<var>timeout</var>,MinRate=<var>débit</var>
+    <var>phase</var>=<var>timeout</var>,MinRate=<var>d&eacute;bit</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais chaque fois que des données sont
-    reçues, la valeur du timeout est augmentée en fonction du MinRate
-    spécifié (en octets par seconde).</p>
+    <p>Identique &agrave; ce qui pr&eacute;c&egrave;de, mais chaque fois que des donn&eacute;es sont
+    re&ccedil;ues, la valeur du timeout est augment&eacute;e en fonction du MinRate
+    sp&eacute;cifi&eacute; (en octets par seconde).</p>
     </li>
 
-    <li><strong>La valeur du timeout augmente lorsque des données sont
-    reçues, jusqu'à une limite supérieure</strong>:<br />
+    <li><strong>La valeur du timeout augmente lorsque des donn&eacute;es sont
+    re&ccedil;ues, jusqu'&agrave; une limite sup&eacute;rieure</strong>:<br>
     <div class="example"><p><code>
-    <var>phase</var>=<var>timeout</var>-<var>maxtimeout</var>,MinRate=<var>débit</var>
+    <var>phase</var>=<var>timeout</var>-<var>maxtimeout</var>,MinRate=<var>d&eacute;bit</var>
     </code></p></div>
 
-    <p>Identique à ce qui précède, mais le timeout n'augmentera pas au
-    delà de la borne supérieure du timeout spécifiée.</p>
+    <p>Identique &agrave; ce qui pr&eacute;c&egrave;de, mais le timeout n'augmentera pas au
+    del&agrave; de la borne sup&eacute;rieure du timeout sp&eacute;cifi&eacute;e.</p>
     </li>
 
     </ul>
@@ -206,10 +204,10 @@ Apache ; désactivée par défaut depuis la version 2.3.14. La phase de
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_reqtimeout.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_reqtimeout.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_reqtimeout.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

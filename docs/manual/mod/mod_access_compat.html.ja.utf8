@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_access_compat - Apache HTTP サーバ バージョン 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_access_compat</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_access_compat.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_access_compat.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -85,10 +83,10 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#allow">Allow</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#deny">Deny</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">Order</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#satisfy">Satisfy</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_access_compat">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_access_compat">Report a bug</a></li></ul><h3>参照</h3>
 <ul class="seealso">
@@ -97,8 +95,8 @@
 <li><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a> <a title="Permanent link" href="#allow" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="allow"><span id="Allow">Allow</span> ディレクティブ <a title="Permanent link" href="#allow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -129,7 +127,7 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from apache.org<br />
+        Allow from apache.org<br>
         Allow from .net example.edu
       </code></p></div>
       <p>この文字列に合うか、これで終わる名前のホストのアクセスが許可されます。
@@ -148,7 +146,7 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from 10.1.2.3<br />
+        Allow from 10.1.2.3<br>
         Allow from 192.168.1.104 192.168.1.205
       </code></p></div>
       <p>アクセスを許可する IP アドレスです。</p></dd>
@@ -157,7 +155,7 @@
 
       <dd>
       <div class="example"><h3>例</h3><p><code>
-        Allow from 10.1<br />
+        Allow from 10.1<br>
         Allow from 10 172.20 192.168.2
       </code></p></div>
       <p>サブネットの制限用の、IP
@@ -188,7 +186,7 @@
     <p>IPv6 アドレスと IPv6 のサブネットは以下のように指定できます:</p>
 
     <div class="example"><p><code>
-       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br>
        Allow from 2001:db8::a00:20ff:fea7:ccea/10
     </code></p></div>
 
@@ -211,12 +209,12 @@
     </p>
 
     <div class="example"><h3>Example:</h3><p><code>
-      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br />
-      &lt;Directory /docroot&gt;<br />
+      SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in<br>
+      &lt;Directory /docroot&gt;<br>
       <span class="indent">
-        Order Deny,Allow<br />
-        Deny from all<br />
-        Allow from env=let_me_in<br />
+        Order Deny,Allow<br>
+        Deny from all<br>
+        Allow from env=let_me_in<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -227,8 +225,8 @@
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a> <a title="Permanent link" href="#deny" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="deny"><span id="Deny">Deny</span> ディレクティブ <a title="Permanent link" href="#deny" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
@@ -244,8 +242,8 @@
     ディレクティブとまったく同じです。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">ディレクティブ</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="order"><span id="Order">Order</span> ディレクティブ <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>デフォルトのアクセス可能な状態と、<code class="directive">Allow</code> と
 <code class="directive">Deny</code> が評価される順番を制御する</td></tr>
@@ -333,8 +331,8 @@
     他のすべてのホストはアクセスを拒否されます。</p>
 
     <div class="example"><p><code>
-      Order Deny,Allow<br />
-      Deny from all<br />
+      Order Deny,Allow<br>
+      Deny from all<br>
       Allow from apache.org
     </code></p></div>
 
@@ -345,8 +343,8 @@
     サーバへのアクセスを拒否されます。</p>
 
     <div class="example"><p><code>
-      Order Allow,Deny<br />
-      Allow from apache.org<br />
+      Order Allow,Deny<br>
+      Allow from apache.org<br>
       Deny from foo.apache.org
     </code></p></div>
 
@@ -368,9 +366,9 @@
     たとえば、</p>
 
     <div class="example"><p><code>
-      &lt;Directory /www&gt;<br />
+      &lt;Directory /www&gt;<br>
       <span class="indent">
-        Order Allow,Deny<br />
+        Order Allow,Deny<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -396,8 +394,8 @@
     セクションの動作方法</a> を参照してください。</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">ディレクティブ</a> <a title="Permanent link" href="#satisfy" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="satisfy"><span id="Satisfy">Satisfy</span> ディレクティブ <a title="Permanent link" href="#satisfy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ホストレベルのアクセス制御とユーザ認証との相互作用を指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Satisfy Any|All</code></td></tr>
@@ -428,8 +426,8 @@
     できます:</p>
 
     <div class="example"><p><code>
-    Require valid-user<br />
-    Allow from 192.168.1<br />
+    Require valid-user<br>
+    Allow from 192.168.1<br>
     Satisfy Any
     </code></p></div>
    
@@ -449,11 +447,11 @@
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_access_compat.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_access_compat.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

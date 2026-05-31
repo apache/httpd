@@ -1,71 +1,69 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de"><head>
-<meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="de"><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Beenden und Neustarten - Apache HTTP Server Version 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP-Server</a> &gt; <a href="https://httpd.apache.org/docs/">Dokumentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>Beenden und Neustarten</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/stopping.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/stopping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese &#220;bersetzung ist m&#246;glicherweise
-            nicht mehr aktuell. Bitte pr&#252;fen Sie die englische Version auf
-            die neuesten &#196;nderungen.</div>
+<div class="outofdate">Diese &Uuml;bersetzung ist m&ouml;glicherweise
+            nicht mehr aktuell. Bitte pr&uuml;fen Sie die englische Version auf
+            die neuesten &Auml;nderungen.</div>
 
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
-    Apache auf Unix-&#228;hnlichen Systemen. Anwender von Windows NT, 2000
+    Apache auf Unix-&auml;hnlichen Systemen. Anwender von Windows NT, 2000
     und XP sollten <a href="platform/windows.html#winsvc">Betreiben
-    des Apache als Dienst</a> lesen, w&#228;hrend hingegen Anwender von
+    des Apache als Dienst</a> lesen, w&auml;hrend hingegen Anwender von
     Windows 9x sowie ME <a href="platform/windows.html#wincons">Betreiben
     des Apache als Konsolenanwendung</a> lesen sollten, um mehr Informationen
     zur Handhabung des Apache auf diesen Systemen zu erhalten.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Einleitung</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#term">Beenden</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#graceful">Unterbrechungsfreier Neustart</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#hup">Neustarten</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">Anhang: Signale und Wettkampfsituationen</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#introduction">Einleitung</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#term">Beenden</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#graceful">Unterbrechungsfreier Neustart</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#hup">Neustarten</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#race">Anhang: Signale und Wettkampfsituationen</a></li>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einleitung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Einleitung <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
-    <p>Um den Apache zu stoppen oder neu zu starten, m&#252;ssen Sie
+    <p>Um den Apache zu stoppen oder neu zu starten, m&uuml;ssen Sie
     ein Signal an den laufenden <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Prozess senden. Es gibt
-    zwei M&#246;glichkeiten, diese Signale zu senden. Zum einen k&#246;nnen
+    zwei M&ouml;glichkeiten, diese Signale zu senden. Zum einen k&ouml;nnen
     Sie den Unix-Befehl <code>kill</code> verwenden, um den Prozessen
     direkt Signale zu senden. Sie werden feststellen, dass auf Ihrem
     System mehrere <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Programme laufen. Sie sollten
     jedoch nicht jedem dieser Prozesse ein Signal senden, sondern nur dem
-    Elternprozess, dessen PID im <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> steht. Das hei&#223;t, Sie
-    sollten es niemals n&#246;tig haben, einem anderen Prozess, als dem
+    Elternprozess, dessen PID im <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> steht. Das hei&szlig;t, Sie
+    sollten es niemals n&ouml;tig haben, einem anderen Prozess, als dem
     Elternprozess, ein Signal zu senden. Es gibt drei Signale, die Sie an den
-    Elternprozess senden k&#246;nnen: <code><a href="#term">TERM</a></code>,
+    Elternprozess senden k&ouml;nnen: <code><a href="#term">TERM</a></code>,
     <code><a href="#hup">HUP</a></code> und
     <code><a href="#graceful">USR1</a></code>, die nachfolgend beschrieben
     werden.</p>
@@ -82,15 +80,15 @@
     empfohlen, sie unter Verwendung des Steuerskripts <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> zu senden, welches diese
     an <code class="program"><a href="./programs/httpd.html">httpd</a></code> durchreicht.</p>
 
-    <p>Nachdem Sie <code class="program"><a href="./programs/httpd.html">httpd</a></code> signalisiert haben, k&#246;nnen Sie
+    <p>Nachdem Sie <code class="program"><a href="./programs/httpd.html">httpd</a></code> signalisiert haben, k&ouml;nnen Sie
     dessen Fortschritt beobachten, indem Sie eingeben:</p>
 
     <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
 
     <p>Passen Sie diese Beispiele entsprechend Ihren <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>- und <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>-Einstellungen an.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="term" id="term">Beenden</a> <a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
+<h2 id="term">Beenden <a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
 
     <dl><dt>Signal: TERM</dt>
       <dd><code>apachectl -k stop</code></dd>
@@ -102,9 +100,9 @@
     Kindprozesse komplett beendet sind. Danach beendet sich der Elternprozess
     selbst. Alle gerade bearbeiteten Anfragen werden abgebrochen.
     Es werden keine weiteren Anfragen mehr bedient.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">Unterbrechungsfreier Neustart</a> <a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
+<h2 id="graceful">Unterbrechungsfreier Neustart <a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
 
     <dl><dt>Signal: USR1</dt>
       <dd><code>apachectl -k graceful</code></dd>
@@ -112,23 +110,23 @@
 
     <p>Das <code>USR1</code>- oder <code>graceful</code>-Signal
     veranlasst den Elternprozess, die Kinder <em>anzuweisen</em>, sich
-    nach Abschlu&#223; ihrer momentanen bearbeiteten Anfrage zu beenden
+    nach Abschlu&szlig; ihrer momentanen bearbeiteten Anfrage zu beenden
     (oder sich sofort zu beenden, wenn sie gerade keine Anfrage bedienen).
     Der Elternprozess liest seine Konfigurationsdateien erneut ein und
-    &#246;ffnet seine Logdateien neu. Wenn ein Kindprozess stirbt,
+    &ouml;ffnet seine Logdateien neu. Wenn ein Kindprozess stirbt,
     ersetzt der Elternprozess ihn durch ein Kind der neuen
     Konfigurations-<em>Generation</em>. Dieses beginnt sofort damit,
     neue Anfragen zu bedienen.</p>
 
     <div class="note">Auf bestimmten Plattformen, welche kein <code>USR1</code>
-    f&#252;r einen unterbrechungsfreien Neustart erlauben, kann ein
+    f&uuml;r einen unterbrechungsfreien Neustart erlauben, kann ein
     alternatives Signal verwendet werden (wie z.B.
     <code>WINCH</code>). Der Befehl <code>apachectl graceful</code>
-    sendet das jeweils richtige Signal f&#252;r Ihre Platform.</div>
+    sendet das jeweils richtige Signal f&uuml;r Ihre Platform.</div>
 
-    <p>Der Code ist daf&#252;r ausgelegt, stets die MPM-Direktiven
+    <p>Der Code ist daf&uuml;r ausgelegt, stets die MPM-Direktiven
     zur Prozesssteuerung zu beachten, so dass die Anzahl der Prozesse
-    und Threads, die zur Bedienung der Clients bereitstehen, w&#228;hrend
+    und Threads, die zur Bedienung der Clients bereitstehen, w&auml;hrend
     des Neustarts auf die entsprechenden Werte gesetzt werden.
     Weiterhin wird <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code>
     auf folgende Art und Weise interpretiert: Wenn nach einer Sekunde
@@ -136,71 +134,71 @@
     neue Kindprozesse erstellt wurden, dann werden, um den Durchsatz zu
     beschleunigen, entsprechend weitere erstellt. Auf diese Weise versucht
     der Code sowohl die Anzahl der Kinder entsprechend der Serverlast
-    anzupassen als auch Ihre W&#252;nsche hinsichtlich des Parameters
+    anzupassen als auch Ihre W&uuml;nsche hinsichtlich des Parameters
     <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> zu
-    ber&#252;cksichtigen.</p>
+    ber&uuml;cksichtigen.</p>
 
     <p>Benutzer von <code class="module"><a href="./mod/mod_status.html">mod_status</a></code> werden feststellen,
     dass die Serverstatistiken <strong>nicht</strong> auf Null
-    zur&#252;ckgesetzt werden, wenn ein <code>USR1</code> gesendet
+    zur&uuml;ckgesetzt werden, wenn ein <code>USR1</code> gesendet
     wurde. Der Code wurde so geschrieben, dass sowohl die Zeit minimiert
     wird, in der der Server nicht in der Lage ist, neue Anfragen zu
     bedienen (diese werden vom Betriebssystem in eine Warteschlange
     gestellt, so dass sie auf keinen Fall verloren gehen) als auch
-    Ihre Parameter zur Feinabstimmung ber&#252;cksichtigt werden.
+    Ihre Parameter zur Feinabstimmung ber&uuml;cksichtigt werden.
     Um dies zu erreichen, muss die <em>Statustabelle</em> (Scoreboard),
-    die dazu verwendet wird, alle Kinder &#252;ber mehrere Generationen
+    die dazu verwendet wird, alle Kinder &uuml;ber mehrere Generationen
     zu verfolgen, erhalten bleiben.</p>
 
-    <p>Das Statusmodul benutzt au&#223;erdem ein <code>G</code>, um
+    <p>Das Statusmodul benutzt au&szlig;erdem ein <code>G</code>, um
     diejenigen Kinder zu kennzeichen, die noch immer Anfragen bedienen,
     welche gestartet wurden, bevor ein unterbrechungsfreier Neustart
-    veranla&#223;t wurde.</p>
+    veranla&szlig;t wurde.</p>
 
-    <p>Derzeit gibt es keine M&#246;glichkeit f&#252;r ein
+    <p>Derzeit gibt es keine M&ouml;glichkeit f&uuml;r ein
     Log-Rotationsskript, das <code>USR1</code> verwendet, sicher
     festzustellen, dass alle Kinder, die in ein vor dem Neustart
-    ge&#246;ffnetes Log schreiben, beendet sind. Wir schlagen vor, dass
+    ge&ouml;ffnetes Log schreiben, beendet sind. Wir schlagen vor, dass
     Sie nach dem Senden des Signals <code>USR1</code> eine angemessene
     Zeitspanne warten, bevor Sie das alte Log anfassen. Wenn beispielsweise
     die meisten Ihrer Zugriffe bei Benutzern mit niedriger Bandbreite
-    weniger als 10 Minuten f&#252;r eine vollst&#228;ndige Antwort
-    ben&#246;tigen, dann k&#246;nnten Sie 15 Minuten warten, bevor Sie auf
+    weniger als 10 Minuten f&uuml;r eine vollst&auml;ndige Antwort
+    ben&ouml;tigen, dann k&ouml;nnten Sie 15 Minuten warten, bevor Sie auf
     das alte Log zugreifen.</p>
 
-    <div class="note">Wenn Ihre Konfigurationsdatei Fehler enth&#228;lt, w&#228;hrend
+    <div class="note">Wenn Ihre Konfigurationsdatei Fehler enth&auml;lt, w&auml;hrend
     Sie einen Neustart anweisen, dann wird Ihr Elternprozess nicht neu starten,
     sondern sich mit einem Fehler beenden. Im Falle eines unterbrechungsfreien
-    Neustarts l&#228;&#223;t er die Kinder weiterlaufen, wenn er sich beendet.
+    Neustarts l&auml;&szlig;t er die Kinder weiterlaufen, wenn er sich beendet.
     (Dies sind die Kinder, die sich "sanft beenden", indem sie ihre letzte
     Anfrage erledigen.) Das verursacht Probleme, wenn Sie versuchen,
     den Server neu zu starten -- er ist nicht in der Lage, sich an die Ports zu
     binden, an denen er lauschen soll. Bevor Sie einen Neustart
-    durchf&#252;hren, k&#246;nnen Sie die Syntax der Konfigurationsdateien
-    mit dem Befehlszeilenargument <code>-t</code> &#252;berpr&#252;fen
+    durchf&uuml;hren, k&ouml;nnen Sie die Syntax der Konfigurationsdateien
+    mit dem Befehlszeilenargument <code>-t</code> &uuml;berpr&uuml;fen
     (siehe auch <code class="program"><a href="./programs/httpd.html">httpd</a></code>). Das garantiert
     allerdings nicht, dass der Server korrekt starten wird. Um sowohl die
-    Syntax als auch die Semantik der Konfigurationsdateien zu pr&#252;fen,
-    k&#246;nnen Sie versuchen, <code class="program"><a href="./programs/httpd.html">httpd</a></code> als nicht-root-Benutzer
+    Syntax als auch die Semantik der Konfigurationsdateien zu pr&uuml;fen,
+    k&ouml;nnen Sie versuchen, <code class="program"><a href="./programs/httpd.html">httpd</a></code> als nicht-root-Benutzer
     zu starten. Wenn dabei keine Fehler auftreten, wird er versuchen, seine
-    Sockets und Logdateien zu &#246;ffnen und fehlschlagen, da er nicht root
-    ist (oder weil sich der gegenw&#228;rtig laufende <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    Sockets und Logdateien zu &ouml;ffnen und fehlschlagen, da er nicht root
+    ist (oder weil sich der gegenw&auml;rtig laufende <code class="program"><a href="./programs/httpd.html">httpd</a></code>
     bereits diese Ports gebunden hat). Wenn er aus einem anderen Grund
-    fehlschl&#228;gt, dann liegt wahrscheinlich ein Konfigurationsfehler vor.
+    fehlschl&auml;gt, dann liegt wahrscheinlich ein Konfigurationsfehler vor.
     Der Fehler sollte behoben werden, bevor der unterbrechungsfreie Neustart
     angewiesen wird.</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">Neustarten</a> <a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
+<h2 id="hup">Neustarten <a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
 
     <dl><dt>Signal: HUP</dt>
       <dd><code>apachectl -k restart</code></dd>
     </dl>
 
     <p>Das Senden des Signals <code>HUP</code> oder <code>restart</code>
-    veranla&#223;t den Elternprozess, wie bei <code>TERM</code> alle seine
+    veranla&szlig;t den Elternprozess, wie bei <code>TERM</code> alle seine
     Kinder zu beenden. Der Elternprozess beendet sich jedoch nicht. Er liest
-    seine Konfigurationsdateien neu ein und &#246;ffnet alle Logdateien
+    seine Konfigurationsdateien neu ein und &ouml;ffnet alle Logdateien
     erneut. Dann erzeugt er einen neuen Satz Kindprozesse und setzt die
     Bedienung von Zugriffen fort.</p>
 
@@ -208,18 +206,18 @@
     die Serverstatistiken auf Null gesetzt werden, wenn ein <code>HUP</code>
     gesendet wurde.</p>
 
-    <div class="note">Wenn Ihre Konfigurationsdatei einen Fehler enth&#228;lt,
-    w&#228;hrend Sie einen Neustart anweisen, dann wird Ihr Elternprozess
+    <div class="note">Wenn Ihre Konfigurationsdatei einen Fehler enth&auml;lt,
+    w&auml;hrend Sie einen Neustart anweisen, dann wird Ihr Elternprozess
     nicht neu starten, sondern sich mit einem Fehler beenden. Lesen Sie oben,
-    wie Sie das vermeiden k&#246;nnen.</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    wie Sie das vermeiden k&ouml;nnen.</div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="race" id="race">Anhang: Signale und Wettkampfsituationen</a> <a title="Permanent link" href="#race" class="permalink">&para;</a></h2>
+<h2 id="race">Anhang: Signale und Wettkampfsituationen <a title="Permanent link" href="#race" class="permalink">&para;</a></h2>
 
     <p>Vor der Version 1.2b9 des Apache existierten verschiedene
     <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
-    die Signale beeinflu&#223;t haben. (Einfach erkl&#228;rt ist eine
-    Wettkampfsituation ein zeitabh&#228;ngiges Problem - wenn
+    die Signale beeinflu&szlig;t haben. (Einfach erkl&auml;rt ist eine
+    Wettkampfsituation ein zeitabh&auml;ngiges Problem - wenn
     etwas zum falschen Zeitpunkt erfolgt oder Dinge in der falschen
     Reihenfolge passieren, ist unerwartetes Verhalten die Folge. Wenn die
     gleichen Dinge zur richtigen Zeit geschehen, funktioniert alles korrekt.)
@@ -229,43 +227,43 @@
     bestimmten Architekturen existieren.</p>
 
     <p>Bei Architekturen, die ein <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> auf Platte verwenden,
-    besteht die Gefahr, dass die Statustabelle besch&#228;digt wird.
+    besteht die Gefahr, dass die Statustabelle besch&auml;digt wird.
     Das kann zu "bind: Address already in use" ("bind: Adresse wird
     bereits verwendet", nach einem <code>HUP</code>) oder "long lost
     child came home!" ("Der verlorene Sohn ist heimgekehrt", nach einem
-    <code>USR1</code>) f&#252;hren. Ersteres ist ein schwerer Fehler,
-    w&#228;rend letzteres lediglich bewirkt, dass der Server einen Eintrag
+    <code>USR1</code>) f&uuml;hren. Ersteres ist ein schwerer Fehler,
+    w&auml;rend letzteres lediglich bewirkt, dass der Server einen Eintrag
     in der Statustabelle verliert. So kann es ratsam sein, unterbrechungsfreie
     Neustarts zusammen mit einem gelegentlichen harten Neustart zu verwenden.
     Diese Probleme lassen sich nur sehr schwer umgehen, aber
-    gl&#252;cklicherweise ben&#246;tigen die meisten Architekturen keine
-    Statustabelle in Form einer Datei. Bitte lesen Sie f&#252;r Architekturen,
-    die sie ben&#246;tigen, die Dokumentation zu <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>.</p>
+    gl&uuml;cklicherweise ben&ouml;tigen die meisten Architekturen keine
+    Statustabelle in Form einer Datei. Bitte lesen Sie f&uuml;r Architekturen,
+    die sie ben&ouml;tigen, die Dokumentation zu <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>.</p>
 
     <p>Alle Architekturen haben in jedem Kindprozess eine kleine
     Wettkampfsituation, welche die zweite und nachfolgende Anfragen
-    einer persistenten HTTP-Verbindung (KeepAlive) umfa&#223;t. Der Prozess
+    einer persistenten HTTP-Verbindung (KeepAlive) umfa&szlig;t. Der Prozess
     kann nach dem Lesen der Anfragezeile aber vor dem Lesen der Anfrage-Header
-    enden. Es existiert eine Korrektur, die f&#252;r 1.2 zu sp&#228;t kam.
+    enden. Es existiert eine Korrektur, die f&uuml;r 1.2 zu sp&auml;t kam.
     Theoretisch sollte das kein Problem darstellen, da
     der KeepAlive-Client derartige Ereignisse aufgrund von
     Netzwerk-Latenzzeiten und Auszeiten des Servers erwarten sollte.
-    In der Praxis scheint keiner von beiden beeinflu&#223;t zu werden
+    In der Praxis scheint keiner von beiden beeinflu&szlig;t zu werden
     -- in einem Testfall wurde der Server zwanzig mal
-    pro Sekunde neu gestartet, w&#228;hrend Clients das Angebot abgegrast
+    pro Sekunde neu gestartet, w&auml;hrend Clients das Angebot abgegrast
     haben, ohne kaputte Bilder oder leere Dokumente zu erhalten.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Verf&#252;gbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>Verf&uuml;gbare Sprachen: </span><a href="./de/stopping.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/stopping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="./fr/stopping.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/stopping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

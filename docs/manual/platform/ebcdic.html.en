@@ -1,29 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>The Apache EBCDIC Port - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>The Apache EBCDIC Port</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/ebcdic.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/ebcdic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
@@ -37,17 +35,17 @@
     </div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#overview">Overview of the Apache EBCDIC Port</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#design">Design Goals</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#technical">Technical Solution</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#porting">Porting Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#document">Document Storage Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modules">Apache Modules' Status</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#third-party">Third Party Modules' Status</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#overview">Overview of the Apache EBCDIC Port</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#design">Design Goals</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#technical">Technical Solution</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#porting">Porting Notes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#document">Document Storage Notes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#modules">Apache Modules' Status</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#third-party">Third Party Modules' Status</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Overview of the Apache EBCDIC Port</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Overview of the Apache EBCDIC Port <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     
 
@@ -77,9 +75,9 @@
     <p>This document serves as a rationale to describe some of the
     design decisions of the port to this machine.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="design" id="design">Design Goals</a> <a title="Permanent link" href="#design" class="permalink">&para;</a></h2>
+<h2 id="design">Design Goals <a title="Permanent link" href="#design" class="permalink">&para;</a></h2>
 
     
 
@@ -97,9 +95,9 @@
     might solve the problem by defining an "ebcdic-handler" for all
     documents which must be converted.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="technical" id="technical">Technical Solution</a> <a title="Permanent link" href="#technical" class="permalink">&para;</a></h2>
+<h2 id="technical">Technical Solution <a title="Permanent link" href="#technical" class="permalink">&para;</a></h2>
 
     
 
@@ -130,9 +128,9 @@
       the response body may contain text or a binary file)</li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="porting" id="porting">Porting Notes</a> <a title="Permanent link" href="#porting" class="permalink">&para;</a></h2>
+<h2 id="porting">Porting Notes <a title="Permanent link" href="#porting" class="permalink">&para;</a></h2>
 
     
 
@@ -237,7 +235,7 @@
         <code>text/plain</code>), use the directives:</p>
 
         <div class="example"><p><code>
-          AddType  text/x-ascii-html  .ahtml <br />
+          AddType  text/x-ascii-html  .ahtml <br>
           AddType  text/x-ascii-plain .ascii
         </code></p></div>
 
@@ -271,13 +269,13 @@
 
     </ol>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="document" id="document">Document Storage Notes</a> <a title="Permanent link" href="#document" class="permalink">&para;</a></h2>
+<h2 id="document">Document Storage Notes <a title="Permanent link" href="#document" class="permalink">&para;</a></h2>
 
     
 
-    <h3><a name="binary" id="binary">Binary Files</a></h3>
+    <h3 id="binary">Binary Files</h3>
 
       
 
@@ -296,7 +294,7 @@
 
     
 
-    <h3><a name="text" id="text">Text Documents</a></h3>
+    <h3 id="text">Text Documents</h3>
 
       
 
@@ -307,7 +305,7 @@
 
     
 
-    <h3><a name="ssi" id="ssi">Server Side Included Documents</a></h3>
+    <h3 id="ssi">Server Side Included Documents</h3>
 
       
 
@@ -317,9 +315,9 @@
 
     
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="modules" id="modules">Apache Modules' Status</a> <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
+<h2 id="modules">Apache Modules' Status <a title="Permanent link" href="#modules" class="permalink">&para;</a></h2>
 
     
 
@@ -333,43 +331,43 @@
       <tr>
         <td><code class="module"><a href="../mod/core.html">core</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module">mod_access</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module">mod_auth</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -387,31 +385,31 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></td>
         <td class="centered">?</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_digest</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -423,7 +421,7 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_env.html">mod_env</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -435,55 +433,55 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_info.html">mod_info</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_log_agent</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code>mod_log_config</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module">mod_log_referer</code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -495,13 +493,13 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -513,31 +511,31 @@
       <tr>
         <td><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_unique_id.html">mod_unique_id</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
         <td><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></td>
         <td class="centered">+</td>
-        <td />
+        <td></td>
       </tr>
 
       <tr>
@@ -547,9 +545,9 @@
       </tr>
     </table>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">Third Party Modules' Status</a> <a title="Permanent link" href="#third-party" class="permalink">&para;</a></h2>
+<h2 id="third-party">Third Party Modules' Status <a title="Permanent link" href="#third-party" class="permalink">&para;</a></h2>
 
     
 
@@ -592,8 +590,8 @@
 <p><span>Available Languages: </span><a href="../en/platform/ebcdic.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/ebcdic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

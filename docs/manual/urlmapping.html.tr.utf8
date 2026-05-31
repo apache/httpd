@@ -1,77 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>URL'lerin Dosya Sistemi ile Eşleştirilmesi - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>URL'lerin Dosya Sistemi ile Eşleştirilmesi - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.4</a></div><div id="page-content"><div id="preamble"><h1>URL'lerin Dosya Sistemi ile Eşleştirilmesi</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">S&uuml;r&uuml;m 2.4</a></div><div id="page-content"><div id="preamble"><h1>URL'lerin Dosya Sistemi ile Eşleştirilmesi</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/urlmapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/urlmapping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/urlmapping.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p>Bu belgede, bir istekte belirtilen URL'nin sunulacak dosyanın dosya
-      sistemindeki yerini bulmak için Apache HTTP Sunucusu tarafından nasıl
-      kullanıldığı açıklanmaktadır.</p>
+      sistemindeki yerini bulmak i&ccedil;in Apache HTTP Sunucusu tarafından nasıl
+      kullanıldığı a&ccedil;ıklanmaktadır.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#related">İlgili Modüller ve Yönergeler</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#documentroot"><code>DocumentRoot</code></a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#outside">Belge Kök Dizini Dışındaki Dosyalar</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#user">Kullanıcı Dizinleri</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#redirect">URL Yönlendirme</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#proxy">Karşı Vekil</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">Yeniden Yazma Motoru</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#notfound">Dosya orada yok</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#other">Diğer URL Eşleme Modülleri</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#related">İlgili Mod&uuml;ller ve Y&ouml;nergeler</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#documentroot"><code>DocumentRoot</code></a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#outside">Belge K&ouml;k Dizini Dışındaki Dosyalar</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#user">Kullanıcı Dizinleri</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#redirect">URL Y&ouml;nlendirme</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#proxy">Karşı Vekil</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#rewrite">Yeniden Yazma Motoru</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#notfound">Dosya orada yok</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#other">Diğer URL Eşleme Mod&uuml;lleri</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">İlgili Modüller ve Yönergeler</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">İlgili Mod&uuml;ller ve Y&ouml;nergeler <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 
-<table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></li><li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></li><li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="documentroot" id="documentroot"><code>DocumentRoot</code></a> <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
+<h2 id="documentroot"><code>DocumentRoot</code> <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 
     <p>Yapılan bir isteğe hangi dosyanın sunulacağına karar verirken
-      httpd'nin öntanımlı davranışı istek için URL yolunu (URL'den konak ismi
+      httpd'nin &ouml;ntanımlı davranışı istek i&ccedil;in URL yolunu (URL'den konak ismi
       ve port ayrıldıktan sonra kalan kısım) alıp bunu yapılandırma dosyasında
-      <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> yönergesi ile
+      <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> y&ouml;nergesi ile
       belirtilen dizinin sonuna eklemektir. Bu nedenle, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altındaki dizinler ve dosyalar
-      sitenin dışardan görünen temel belge ağacını oluştururlar.</p>
+      sitenin dışardan g&ouml;r&uuml;nen temel belge ağacını oluştururlar.</p>
 
-    <p>Örneğin, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> yönergesine
+    <p>&Ouml;rneğin, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> y&ouml;nergesine
       <code>/var/http/html</code> atanmış olsun.
       <code>http://example.com/balıklar/zargana.html</code> şeklindeki bir
-      istek için istemciye <code>/var/http/html/balıklar/zargana.html</code>
+      istek i&ccedil;in istemciye <code>/var/http/html/balıklar/zargana.html</code>
       dosyası sunulur.</p>
 
     <p>Bir dizin istenirse (<code>/</code> ile biten bir yol belirtilmesi
-      durumu), sunulacak dosya <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> yönergesinde belirtilen dosya olacaktır.
-      Örneğin, <code>DocumentRoot</code> yukarıdaki gibi belirtimiş ve siz de
+      durumu), sunulacak dosya <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> y&ouml;nergesinde belirtilen dosya olacaktır.
+      &Ouml;rneğin, <code>DocumentRoot</code> yukarıdaki gibi belirtimiş ve siz de
       şunu belirtmişseniz:</p>
 
     <div class="example"><p><code>DirectoryIndex index.html index.php</code></p></div>
@@ -79,150 +77,150 @@
     <p><code>http://www.example.com/fish/</code> isteği, httpd'nin
       <code>/var/www/html/fish/index.html</code> dosyasını sunmaya, bu dosya
       bulunmuyorsa <code>/var/www/html/fish/index.php</code> dosyasını sunmaya
-      çalışmasına sebep olacaktır.</p>
+      &ccedil;alışmasına sebep olacaktır.</p>
 
     <p>Bu dosyaların ikisi de bulunmuyorsa sonraki adım,
-      <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> yüklü ve uygun şekilde yapılandırılmışsa
-      bir dizin içeriği dosyası sağlamaya çalışmak olacaktır.</p>
+      <code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code> y&uuml;kl&uuml; ve uygun şekilde yapılandırılmışsa
+      bir dizin i&ccedil;eriği dosyası sağlamaya &ccedil;alışmak olacaktır.</p>
 
-    <p>httpd ayrıca, sunucunun birden fazla konak için istek kabul etmesini
+    <p>httpd ayrıca, sunucunun birden fazla konak i&ccedil;in istek kabul etmesini
       sağlayan <a href="vhosts/">sanal barındırmaya</a> da muktedirdir. Bu
-      durumda her sanal konak için ayrı bir <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> belirtilebileceği gibi sunulacak içeriğin
+      durumda her sanal konak i&ccedil;in ayrı bir <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> belirtilebileceği gibi sunulacak i&ccedil;eriğin
       istekte bulunulan IP adresi veya konak ismine dayanarak devingen olarak
-      saptanmasını sağlayabilen <code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code> modülüyle
-      gelen yönergeler de kullanılabilir.</p>
+      saptanmasını sağlayabilen <code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code> mod&uuml;l&uuml;yle
+      gelen y&ouml;nergeler de kullanılabilir.</p>
 
-    <p><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> yönergesi
-      yapılandırma dosyanızda ana sunucu için bir tane ve muhtemelen
-      oluşturduğunuz her <a href="vhosts/">sanal konak</a> için de birer
+    <p><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> y&ouml;nergesi
+      yapılandırma dosyanızda ana sunucu i&ccedil;in bir tane ve muhtemelen
+      oluşturduğunuz her <a href="vhosts/">sanal konak</a> i&ccedil;in de birer
       tanedir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="outside" id="outside">Belge Kök Dizini Dışındaki Dosyalar</a> <a title="Permanent link" href="#outside" class="permalink">&para;</a></h2>
+<h2 id="outside">Belge K&ouml;k Dizini Dışındaki Dosyalar <a title="Permanent link" href="#outside" class="permalink">&para;</a></h2>
 
     <p>Bazen dosya sisteminde doğrudan <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altında bulunmayan dosyalara da erişim izni
-      vermek gerekir. httpd'de bunu sağlamanın çeşitli yolları vardır. Unix
+      vermek gerekir. httpd'de bunu sağlamanın &ccedil;eşitli yolları vardır. Unix
       sistemlerinde sembolik bağlar sayesinde dosya sisteminin farklı
-      yerlerindeki dosyaları ve dizinleri <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altındaymış gibi göstermek mümkündür.
-      <code class="directive"><a href="./mod/core.html#options">Options</a></code> yönergesine değer olarak
+      yerlerindeki dosyaları ve dizinleri <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> altındaymış gibi g&ouml;stermek m&uuml;mk&uuml;nd&uuml;r.
+      <code class="directive"><a href="./mod/core.html#options">Options</a></code> y&ouml;nergesine değer olarak
       <code>FollowSymLinks</code> veya <code>SymLinksIfOwnerMatch</code>
-      atanmadıkça httpd olası güvenlik açıklarına karşı öntanımlı olarak
+      atanmadık&ccedil;a httpd olası g&uuml;venlik a&ccedil;ıklarına karşı &ouml;ntanımlı olarak
       sembolik bağları izlemez.</p>
 
-    <p>Bundan başka, dosya sisteminin farklı parçalarını belge kök dizini
-      altında göstermek için <code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code>
-      yönergesi de kullanılabilir. Örneğin,</p>
+    <p>Bundan başka, dosya sisteminin farklı par&ccedil;alarını belge k&ouml;k dizini
+      altında g&ouml;stermek i&ccedil;in <code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code>
+      y&ouml;nergesi de kullanılabilir. &Ouml;rneğin,</p>
 
     <pre class="prettyprint lang-config">Alias "/belgeler" "/var/http"</pre>
 
 
     <p>yapılandırması ile
-      <code>http://example.com/belgeler/dizin/dosya.html</code> URL'si için
+      <code>http://example.com/belgeler/dizin/dosya.html</code> URL'si i&ccedil;in
       dosya sistemindeki <code>/var/http/dizin/dosya.html</code> dosyası
-      sunulacaktır. Hedef dizindeki dosyaları birer <a class="glossarylink" href="./glossary.html#cgi" title="sözlüğe bakınız">CGI</a> betiği olarak imlemesi dışında <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code> yönergesi de aynı şekilde
-      çalışır.</p>
+      sunulacaktır. Hedef dizindeki dosyaları birer <a class="glossarylink" href="./glossary.html#cgi" title="s&ouml;zl&uuml;ğe bakınız">CGI</a> betiği olarak imlemesi dışında <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code> y&ouml;nergesi de aynı şekilde
+      &ccedil;alışır.</p>
 
-    <p>Biraz daha fazla esnekliğin gerektiği durumlarda  <a class="glossarylink" href="./glossary.html#regex" title="sözlüğe bakınız">düzenli ifadelere</a> dayalı eşleşmeler sağlamak
-      üzere <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> ve <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code> yönergelerinin gücünden
-      yararlanılabilir. Örneğin,</p>
+    <p>Biraz daha fazla esnekliğin gerektiği durumlarda  <a class="glossarylink" href="./glossary.html#regex" title="s&ouml;zl&uuml;ğe bakınız">d&uuml;zenli ifadelere</a> dayalı eşleşmeler sağlamak
+      &uuml;zere <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> ve <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code> y&ouml;nergelerinin g&uuml;c&uuml;nden
+      yararlanılabilir. &Ouml;rneğin,</p>
 
     <pre class="prettyprint lang-config">ScriptAliasMatch "^/~([a-zA-Z0-9]+)/cgi-bin/(.+)" "/home/$1/cgi-bin/$2"</pre>
 
 
     <p>satırı sayesinde <code>http://example.com/~user/cgi-bin/betik.cgi</code>
       URL'si <code>/home/user/cgi-bin/betik.cgi</code> dosyası ile
-      eşleştirilir ve dosya bir CGI betiği olarak çalıştırılırdı.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+      eşleştirilir ve dosya bir CGI betiği olarak &ccedil;alıştırılırdı.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="user" id="user">Kullanıcı Dizinleri</a> <a title="Permanent link" href="#user" class="permalink">&para;</a></h2>
+<h2 id="user">Kullanıcı Dizinleri <a title="Permanent link" href="#user" class="permalink">&para;</a></h2>
 
-    <p>Geleneksel olarak Unix sistemlerinde belli bir kullanıcının (örn,
+    <p>Geleneksel olarak Unix sistemlerinde belli bir kullanıcının (&ouml;rn,
       <em>birisi</em>) ev dizinine <code>~birisi/</code> şeklinde atıfta
-      bulunulabilir. <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> modülü bu özelliği site
-      üzerinden kullanıcıların ev dizinlerindeki dosyaları kişisel sayfalar
-      olarak sunmalarını sağlamak üzere kullanır. Örnek:</p>
+      bulunulabilir. <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> mod&uuml;l&uuml; bu &ouml;zelliği site
+      &uuml;zerinden kullanıcıların ev dizinlerindeki dosyaları kişisel sayfalar
+      olarak sunmalarını sağlamak &uuml;zere kullanır. &Ouml;rnek:</p>
 
     <div class="example"><p><code>http://example.com/~birisi/dosya.html</code></p></div>
 
-    <p>Güvenlik sebebiyle kullanıcıların ev dizinlerine doğrudan HTTP erişimi
+    <p>G&uuml;venlik sebebiyle kullanıcıların ev dizinlerine doğrudan HTTP erişimi
       vermek uygun olmaz. Bu bakımdan, kullanıcının ev dizini altında HTTP
-      erişimi verilecek dosyaların bulunduğu dizini belirtmek için <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi sağlanmıştır.
-      Öntanımlı olan <code>Userdir public_html</code> yapılandırması ile
+      erişimi verilecek dosyaların bulunduğu dizini belirtmek i&ccedil;in <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> y&ouml;nergesi sağlanmıştır.
+      &Ouml;ntanımlı olan <code>Userdir public_html</code> yapılandırması ile
       yukarıdaki gibi bir URL kullanıcının ev dizini (<code>/etc/passwd</code>
       dosyasında belirtilir) <code>/home/birisi/</code> altında yer alan
       <code>/home/birisi/public_html/dosya.html</code> dosyası ile
       eşleşirdi.</p>
 
     <p>Ev dizininin yerinin <code>/etc/passwd</code> dosyasında belirtilmediği
-      sistemlerde kullanılmak üzere <code>Userdir</code> yönergesinin başka
+      sistemlerde kullanılmak &uuml;zere <code>Userdir</code> y&ouml;nergesinin başka
       kullanım şekilleri de vardır.</p>
 
-    <p>Bazı kişiler (genellikle URL üzerinde <code>%7e</code> olarak
-      kodlanması sebebiyle) "~" simgesini biçimsiz bulabilir ve kullanıcı
-      dizinlerini imlemek için başka bir karakter kullanmayı tercih
+    <p>Bazı kişiler (genellikle URL &uuml;zerinde <code>%7e</code> olarak
+      kodlanması sebebiyle) "~" simgesini bi&ccedil;imsiz bulabilir ve kullanıcı
+      dizinlerini imlemek i&ccedil;in başka bir karakter kullanmayı tercih
       edebilirler. Bu işlevsellik <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> tarafından
-      desteklenmemektedir. Ancak, kullanıcı dizinleri düzgün şekilde
-      yapılandırılmışsa istenen etki <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> yönergesi ile sağlanabilir.
-      Örneğin, <code>http://example.com/sayfalar/birisi/dosya.html</code>
+      desteklenmemektedir. Ancak, kullanıcı dizinleri d&uuml;zg&uuml;n şekilde
+      yapılandırılmışsa istenen etki <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> y&ouml;nergesi ile sağlanabilir.
+      &Ouml;rneğin, <code>http://example.com/sayfalar/birisi/dosya.html</code>
       URL'si ile <code>/home/birisi/public_html/dosya.html</code> dosyasını
-      eşlemek için <code>AliasMatch</code> yönergesi şöyle
+      eşlemek i&ccedil;in <code>AliasMatch</code> y&ouml;nergesi ş&ouml;yle
       kullanılabilirdi:</p>
 
     <pre class="prettyprint lang-config">AliasMatch "^/sayfalar/([a-zA-Z0-9]+)(/(.*))?$" "/home/$1/public_html/$3"</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">URL Yönlendirme</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">URL Y&ouml;nlendirme <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
-    <p>Yukarıdaki bölümlerde açıklanan yapılandırma yönergeleri httpd'ye
-      içeriği dosya sisteminin belli bir yerinden alıp istemciye göndermesini
-      söyler. Bazen istemciye, istediği içeriğe farklı bir URL ile
-      erişebileceğini ve bu URL için ayrı bir istek yapması gerektiğini
-      bildirmek gerekir. Bu işleme <em>yönlendirme</em> adı verilir ve bu
-      işlevsellik <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code> yönergesi
-      ile sağlanır. Örneğin, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
-      altındaki <code>/foo/</code> dizininin içeriğinin <code>/bar/</code>
+    <p>Yukarıdaki b&ouml;l&uuml;mlerde a&ccedil;ıklanan yapılandırma y&ouml;nergeleri httpd'ye
+      i&ccedil;eriği dosya sisteminin belli bir yerinden alıp istemciye g&ouml;ndermesini
+      s&ouml;yler. Bazen istemciye, istediği i&ccedil;eriğe farklı bir URL ile
+      erişebileceğini ve bu URL i&ccedil;in ayrı bir istek yapması gerektiğini
+      bildirmek gerekir. Bu işleme <em>y&ouml;nlendirme</em> adı verilir ve bu
+      işlevsellik <code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code> y&ouml;nergesi
+      ile sağlanır. &Ouml;rneğin, <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
+      altındaki <code>/foo/</code> dizininin i&ccedil;eriğinin <code>/bar/</code>
       adında yeni bir dizine taşınması halinde istemciye yeni konumun
-      bildirilmesi şöyle sağlanabilirdi:</p>
+      bildirilmesi ş&ouml;yle sağlanabilirdi:</p>
 
     <pre class="prettyprint lang-config">Redirect permanent "/foo/" "http://example.com/bar/"</pre>
 
 
     <p>Bu atama sayesinde <code>/foo/</code> ile başlayan URL yolları
       <code>example.com</code> sunucundaki <code>/bar/</code> dizini altındaki
-      içeriğe yönlendirilmektedir. Yönlendirmeyi aynı sunucu üzerinde yapmak
-      zorunda değilsiniz, bu yönerge ile başka bir sunucuya da yönlendirme
+      i&ccedil;eriğe y&ouml;nlendirilmektedir. Y&ouml;nlendirmeyi aynı sunucu &uuml;zerinde yapmak
+      zorunda değilsiniz, bu y&ouml;nerge ile başka bir sunucuya da y&ouml;nlendirme
       yapabilirsiniz.</p>
 
-    <p>httpd ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara çözüm
+    <p>httpd ayrıca, yeniden yazma ile ilgili daha karmaşık sorunlara &ccedil;&ouml;z&uuml;m
       olarak <code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> diye bir
-      yönerge daha sağlar. Örneğin bir sitenin baş sayfasını diğer isteklerden
-      ayrı olarak farklı bir siteye yönlendirmek için yönergeyi şöyle
+      y&ouml;nerge daha sağlar. &Ouml;rneğin bir sitenin baş sayfasını diğer isteklerden
+      ayrı olarak farklı bir siteye y&ouml;nlendirmek i&ccedil;in y&ouml;nergeyi ş&ouml;yle
       kullanabilirsiniz:</p>
 
     <pre class="prettyprint lang-config">RedirectMatch permanent "^/$" "http://example.com/ilksayfa.html"</pre>
 
 
-    <p>Bundan başka, bir sitedeki tüm sayfalara yapılan istekleri başka bir
-      siteye geçici olarak yönlendirmek için şöyle bir şey yapabilirsiniz:</p>
+    <p>Bundan başka, bir sitedeki t&uuml;m sayfalara yapılan istekleri başka bir
+      siteye ge&ccedil;ici olarak y&ouml;nlendirmek i&ccedil;in ş&ouml;yle bir şey yapabilirsiniz:</p>
 
     <pre class="prettyprint lang-config">RedirectMatch temp ".*" "http://mesela.example.com/ilksayfa.html"</pre>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Karşı Vekil</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Karşı Vekil <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>httpd ayrıca, uzak sunuculardaki belgelerin yerel sunucunun URL
-      alanına getirilmesini de mümkün kılar. Bu tekniğe HTTP sunucunun
+      alanına getirilmesini de m&uuml;mk&uuml;n kılar. Bu tekniğe HTTP sunucunun
       belgeleri uzak bir sunucudan alıp istemciye sunmasını sağlayarak bir
       vekil sunucu gibi davranması nedeniyle <em>ters vekalet</em> adı
-      verilir. Belgelerin istemciye özkaynağın bulunduğu sunucudan
+      verilir. Belgelerin istemciye &ouml;zkaynağın bulunduğu sunucudan
       geliyormuş gibi değilde doğrudan isteği yaptığı sunucudan geliyormuş
       gibi sunulması nedeniyle bu işlem normal vekaletten farklıdır.</p>
 
-    <p>Aşağıdaki örnekte, istemci <code>/foo/</code> dizini altından bir belge
+    <p>Aşağıdaki &ouml;rnekte, istemci <code>/foo/</code> dizini altından bir belge
       istemekte, sunucu ise bu belgeyi <code>dahili.example.com</code>
-      üzerindeki <code>/bar/</code> dizininden alıp istemciye yerel sunucudan
+      &uuml;zerindeki <code>/bar/</code> dizininden alıp istemciye yerel sunucudan
       geliyormuş gibi sunmaktadır:</p>
 
     <pre class="prettyprint lang-config">ProxyPass "/foo/" "http://dahili.example.com/bar/"
@@ -232,118 +230,118 @@ ProxyPassReverseCookiePath "/foo/" "/bar/"</pre>
 
 
     <p><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> sunucuyu uygun
-      belgeleri alması için yapılandırırken <code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> yönergesi <code>dahili.example.com</code>
-      sunucusundan kaynaklanan yönlendirmeleri yeniden yazar, böylece bunların
+      belgeleri alması i&ccedil;in yapılandırırken <code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> y&ouml;nergesi <code>dahili.example.com</code>
+      sunucusundan kaynaklanan y&ouml;nlendirmeleri yeniden yazar, b&ouml;ylece bunların
       yerel sunucudaki yerleri belirlenmiş olur. Benzer şekilde,  <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code> ve
       <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code>
-      yönergeleri de arka sunucu tarafından atanan çerezleri yeniden yazar.</p>
+      y&ouml;nergeleri de arka sunucu tarafından atanan &ccedil;erezleri yeniden yazar.</p>
 
-    <p>Yalnız, belgelerin içindeki hiperbağların yeniden yazılmayacağına
-      dikkat ediniz. Dolayısıyla, belge içinde
+    <p>Yalnız, belgelerin i&ccedil;indeki hiperbağların yeniden yazılmayacağına
+      dikkat ediniz. Dolayısıyla, belge i&ccedil;inde
       <code>dahili.example.com</code>'u ismiyle hedef alan mutlak hiperbağlar
       varsa bunlar istemci tarafından vekil sunucudan değil doğrudan
-      <code>dahili.example.com</code>'dan istenecektir. Bir sayfanın içindeki bu
-      bağları (ve diğer içeriği) <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code> modülü
-      kullanılarak istemciye sunuluyormuşçasına değiştirebilirsiniz.</p>
+      <code>dahili.example.com</code>'dan istenecektir. Bir sayfanın i&ccedil;indeki bu
+      bağları (ve diğer i&ccedil;eriği) <code class="module"><a href="./mod/mod_substitute.html">mod_substitute</a></code> mod&uuml;l&uuml;
+      kullanılarak istemciye sunuluyormuş&ccedil;asına değiştirebilirsiniz.</p>
 
     <pre class="prettyprint lang-config">Substitute "s/dahili\.example\.com/harici.example.com/i"</pre>
 
 
      <p>HTML ve XHTML'de hiperbağları daha bilgece yeniden yazabilen
-      <code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> modülü de kullanılabilir. Yeniden
-      yazılması gereken URL eşlemlerini oluşturmanızı sağlar, böylece karmaşık
+      <code class="module"><a href="./mod/mod_proxy_html.html">mod_proxy_html</a></code> mod&uuml;l&uuml; de kullanılabilir. Yeniden
+      yazılması gereken URL eşlemlerini oluşturmanızı sağlar, b&ouml;ylece karmaşık
       vekil senaryoları oluşturulabilir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Yeniden Yazma Motoru</a> <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
+<h2 id="rewrite">Yeniden Yazma Motoru <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 
-    <p>Daha güçlü ikameler gerektiğinde <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> modülü
-      tarafından sağlanan yeniden yazma motoru işe yarayabilir. Bu modüldeki
-      yönergeler sunulacak içeriğin yerine karar vermek için kaynak IP adresi,
-      tarayıcı türü gibi isteğe özgü özellikleri kullanırlar.
-      <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> modülü buna ek olarak isteğin nasıl ele
-      alınacağına karar vermek için harici yazılımları ve veritabanlarını
-      kullanabilir. Yeniden yazma motoru yukarıda değinilen üç eşleşme türünü
-      de uygulayabilecek yetenektedir: Dahili yönlendirmeler (rumuzlar),
-      harici yönlendirmeler ve vekalet. <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> modülü
-      tarafından sağlanan yeteneklerin ayrıntılı açıklamaları ve bunların
-      kullanım örnekleri ayrıntılı olarak <a href="rewrite/">mod_rewrite
+    <p>Daha g&uuml;&ccedil;l&uuml; ikameler gerektiğinde <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;
+      tarafından sağlanan yeniden yazma motoru işe yarayabilir. Bu mod&uuml;ldeki
+      y&ouml;nergeler sunulacak i&ccedil;eriğin yerine karar vermek i&ccedil;in kaynak IP adresi,
+      tarayıcı t&uuml;r&uuml; gibi isteğe &ouml;zg&uuml; &ouml;zellikleri kullanırlar.
+      <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml; buna ek olarak isteğin nasıl ele
+      alınacağına karar vermek i&ccedil;in harici yazılımları ve veritabanlarını
+      kullanabilir. Yeniden yazma motoru yukarıda değinilen &uuml;&ccedil; eşleşme t&uuml;r&uuml;n&uuml;
+      de uygulayabilecek yetenektedir: Dahili y&ouml;nlendirmeler (rumuzlar),
+      harici y&ouml;nlendirmeler ve vekalet. <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;
+      tarafından sağlanan yeteneklerin ayrıntılı a&ccedil;ıklamaları ve bunların
+      kullanım &ouml;rnekleri ayrıntılı olarak <a href="rewrite/">mod_rewrite
       belgeleri</a>nde bulunmaktadır.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notfound" id="notfound">Dosya orada yok</a> <a title="Permanent link" href="#notfound" class="permalink">&para;</a></h2>
+<h2 id="notfound">Dosya orada yok <a title="Permanent link" href="#notfound" class="permalink">&para;</a></h2>
 
-    <p>Kaçınılmaz olarak, dosya sisteminde mevcut olmayan dosyalar için de
-      istek yapılacaktır. Bunun çeşitli sebepleri olabilir.  Bazı durumlarda
+    <p>Ka&ccedil;ınılmaz olarak, dosya sisteminde mevcut olmayan dosyalar i&ccedil;in de
+      istek yapılacaktır. Bunun &ccedil;eşitli sebepleri olabilir.  Bazı durumlarda
       bu, belgelerin yerlerininin değiştirilmesinin bir sonucu olabilir. Bu
       durumda yapılacak en iyi şey, istemciyi belgeyi yeni yerinden istemesi
-      için bilgilendirmek amacıyla  <a href="#redirect">URL yönlendirmesi</a>
-      kullanmaktır. Bu şekilde, içeriğin yeri değişse bile eski yer imlerinin
-      ve hiperbağların çalışmaya devam edeceklerinden emin olabilirsiniz.</p>
+      i&ccedil;in bilgilendirmek amacıyla  <a href="#redirect">URL y&ouml;nlendirmesi</a>
+      kullanmaktır. Bu şekilde, i&ccedil;eriğin yeri değişse bile eski yer imlerinin
+      ve hiperbağların &ccedil;alışmaya devam edeceklerinden emin olabilirsiniz.</p>
 
     <p>"Dosya orada yok" ("File Not Found") hatalarının diğer bir bildik
       sebebi de URL'lerin hiperbağlarda veya doğrudan tarayıcıda kasıtlı ya da
-      kasıtsız, yanlış yazılmasıdır. Bu tür sorunlarda yardımcı olması için
-      httpd <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) adında bir modülle gelir. Bu
-      modül etkin kılındığında htpd, "Dosya orada yok" ("File Not Found")
-      hatalarının önünü kesip başka bir yerde benzer isimde bir dosya var mı
-      diye bakar. Böyle bir dosya varsa, <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code>
-      istemciye dosyanın doğru yerini bildiren bir HTTP yönlendirmesi yollar.
-      Benzer çok sayıda dosya varsa bunlar istemciye bir liste halinde
+      kasıtsız, yanlış yazılmasıdır. Bu t&uuml;r sorunlarda yardımcı olması i&ccedil;in
+      httpd <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) adında bir mod&uuml;lle gelir. Bu
+      mod&uuml;l etkin kılındığında htpd, "Dosya orada yok" ("File Not Found")
+      hatalarının &ouml;n&uuml;n&uuml; kesip başka bir yerde benzer isimde bir dosya var mı
+      diye bakar. B&ouml;yle bir dosya varsa, <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code>
+      istemciye dosyanın doğru yerini bildiren bir HTTP y&ouml;nlendirmesi yollar.
+      Benzer &ccedil;ok sayıda dosya varsa bunlar istemciye bir liste halinde
       sunulur.</p>
 
-    <p><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> modülünün en yararlı özelliklerinden biri
-      de dosya isimlerini harf büyüklüğüne duyarsız olarak arayabilmesidir.
-      Dosya isimlerinde harf büyüklüğünün önemli olduğu Unix benzeri sistemler
+    <p><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> mod&uuml;l&uuml;n&uuml;n en yararlı &ouml;zelliklerinden biri
+      de dosya isimlerini harf b&uuml;y&uuml;kl&uuml;ğ&uuml;ne duyarsız olarak arayabilmesidir.
+      Dosya isimlerinde harf b&uuml;y&uuml;kl&uuml;ğ&uuml;n&uuml;n &ouml;nemli olduğu Unix benzeri sistemler
       hakkında bilgisi olmayan kullanıcılara sahip sistemlerin kullanıcılarına
-      bu büyük yarar sağlar. Fakat modülün URL düzeltmekten başka şeyler için
+      bu b&uuml;y&uuml;k yarar sağlar. Fakat mod&uuml;l&uuml;n URL d&uuml;zeltmekten başka şeyler i&ccedil;in
       de kullanılması, istemcilerden gelen neredeyse her isteğin URL
-      yönlendirmesine konu olmasına sebep olarak sunucunun yükünü
+      y&ouml;nlendirmesine konu olmasına sebep olarak sunucunun y&uuml;k&uuml;n&uuml;
       arttırabilir.</p>
 
-    <p><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> modülü sanal URI'leri, onları sunan gerçek
-      kaynağa eşlemekte kullanılan <code class="directive"><a href="./mod/mod_dir.html#fallbackresource">FallbackResource</a></code> yönergesini içerir. Bir 'ön denetleyici'
-      gerçeklerken <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> modülünün kullanılmasını
-      sağlamak için çok kullanışlıdır.</p>
+    <p><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> mod&uuml;l&uuml; sanal URI'leri, onları sunan ger&ccedil;ek
+      kaynağa eşlemekte kullanılan <code class="directive"><a href="./mod/mod_dir.html#fallbackresource">FallbackResource</a></code> y&ouml;nergesini i&ccedil;erir. Bir '&ouml;n denetleyici'
+      ger&ccedil;eklerken <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n kullanılmasını
+      sağlamak i&ccedil;in &ccedil;ok kullanışlıdır.</p>
 
-    <p>Yerinde bulunmayan içeriğin bulunması çabalarının tümü Apache'nin 404
-      (Dosya orada yok) HTTP durum kodlu bir hata sayfası döndürmesine yol
-      açar. Bu sayfanın içeriği <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> yönergesi ile denetlenebilir ve <a href="custom-error.html">Hata Yanıtlarının Kişiselleştirilmesi</a>
-      bölümünde anlatıldığı gibi oldukça esnek bir şekilde
+    <p>Yerinde bulunmayan i&ccedil;eriğin bulunması &ccedil;abalarının t&uuml;m&uuml; Apache'nin 404
+      (Dosya orada yok) HTTP durum kodlu bir hata sayfası d&ouml;nd&uuml;rmesine yol
+      a&ccedil;ar. Bu sayfanın i&ccedil;eriği <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> y&ouml;nergesi ile denetlenebilir ve <a href="custom-error.html">Hata Yanıtlarının Kişiselleştirilmesi</a>
+      b&ouml;l&uuml;m&uuml;nde anlatıldığı gibi olduk&ccedil;a esnek bir şekilde
       kişiselleştirilebilir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">Diğer URL Eşleme Modülleri</a> <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">Diğer URL Eşleme Mod&uuml;lleri <a title="Permanent link" href="#other" class="permalink">&para;</a></h2>
 
 
 
-    <p>URL eşlemede kullanılabilecek diğer modüller:</p>
+    <p>URL eşlemede kullanılabilecek diğer mod&uuml;ller:</p>
 
     <ul>
-    <li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code> - Bir isteği, özkaynağın MIME türüne veya
-      istek yöntemine bakarak bir CGI betiğine eşler.</li>
+    <li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code> - Bir isteği, &ouml;zkaynağın MIME t&uuml;r&uuml;ne veya
+      istek y&ouml;ntemine bakarak bir CGI betiğine eşler.</li>
 
-    <li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> - URL'yi sonlandıran bölü çizgisini
+    <li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code> - URL'yi sonlandıran b&ouml;l&uuml; &ccedil;izgisini
       <code>index.html</code> bir dosyaya eşler.</li>
 
-    <li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> - Bir isteği, bir HTML belge içindeki
+    <li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> - Bir isteği, bir HTML belge i&ccedil;indeki
       bir resme yapılan kullanıcı tıklamalarına dayanarak bir URL'ye
       eşler.</li>
 
-    <li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> - Dil veya içerik sıkıştırması gibi
-      kullanıcı tercihlerine dayanarak uygun bir belgeyi seçer.</li>
+    <li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> - Dil veya i&ccedil;erik sıkıştırması gibi
+      kullanıcı tercihlerine dayanarak uygun bir belgeyi se&ccedil;er.</li>
     </ul>
 
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/urlmapping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/urlmapping.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/urlmapping.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,56 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>htdbm - DBM parola veritabanlarını yönetir - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>htdbm - DBM parola veritabanlarını y&ouml;netir - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>htdbm - DBM parola veritabanlarını yönetir</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>htdbm - DBM parola veritabanlarını y&ouml;netir</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/htdbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/htdbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
     <p><code><strong>htdbm</strong></code>,
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> üzerinden HTTP kullanıcılarının temel
-    kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının
-    saklanmasında kullanılacak DBM dosyalarını yönetmek için kullanılır. DBM
-    dosyaları hakkında daha ayrıntılı bilgi edinmek için
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> &uuml;zerinden HTTP kullanıcılarının temel
+    kimlik doğrulaması i&ccedil;in kullanıcı isimlerinin ve parolalarının
+    saklanmasında kullanılacak DBM dosyalarını y&ouml;netmek i&ccedil;in kullanılır. DBM
+    dosyaları hakkında daha ayrıntılı bilgi edinmek i&ccedil;in
     <strong><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></strong> sayfasına bakınız.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#bugs">Hatalar</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#exit">Çıkış Durumu</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#examples">Örnekler</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#security">Güvenlik Değerlendirmeleri</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#restrictions">Kısıtlamalar</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#options">Se&ccedil;enekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#bugs">Hatalar</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#exit">&Ccedil;ıkış Durumu</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#examples">&Ouml;rnekler</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#security">G&uuml;venlik Değerlendirmeleri</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#restrictions">Kısıtlamalar</a></li>
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Kullanım <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
@@ -64,7 +62,7 @@
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>b</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
       -<strong>B</strong> |
@@ -102,7 +100,7 @@
     <var>kullanıcı</var> <var>parola</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>v</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     [ -<strong>i</strong> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
@@ -116,7 +114,7 @@
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>vb</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     [ -<strong>c</strong> ]
     [ -<strong>m</strong> |
       -<strong>B</strong>
@@ -129,164 +127,164 @@
     <var>parola-dosyası</var> <var>kullanıcı</var> <var>parola</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>x</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
 
     <p><code><strong>htdbm</strong> -<strong>l</strong>
-    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     </code></p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Seçenekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code><strong>-b</strong></code></dt>
-    <dd>Betik kipi; parola için istek yapmak yerine parola komut satırından
-    verilir. <strong>Parola komut satırında görünür</strong> olacağından çok
-    dikkatli kullanmak gerekir. Betik kullanımı için
-    <code><strong>-i</strong></code> seçeneğine bakınız.</dd>
+    <dd>Betik kipi; parola i&ccedil;in istek yapmak yerine parola komut satırından
+    verilir. <strong>Parola komut satırında g&ouml;r&uuml;n&uuml;r</strong> olacağından &ccedil;ok
+    dikkatli kullanmak gerekir. Betik kullanımı i&ccedil;in
+    <code><strong>-i</strong></code> se&ccedil;eneğine bakınız.</dd>
 
     <dt><code><strong>-i</strong></code></dt>
     <dd>Parolayı doğrulamaksızın standart girdiden okur (betik kullanımı
-    için).</dd>
+    i&ccedil;in).</dd>
 
     <dt><code><strong>-c</strong></code></dt>
     <dd><code><var>parola-dosyası</var></code> oluşturur. Dosya mevcutsa,
-    dosya silinip yeniden yazılır. Bu seçenek
-    <code><strong>-n</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+    dosya silinip yeniden yazılır. Bu se&ccedil;enek
+    <code><strong>-n</strong></code> se&ccedil;eneği ile birlikte kullanılamaz.</dd>
 
     <dt><code><strong>-n</strong></code></dt>
-    <dd>Sonuçları veritabanında güncellemek yerine standart çıktıya gönderir.
-    <code><var>parola-dosyası</var></code> belirtilmediğinden, bu seçenek
-    komut satırı sözdizimini değiştirir. Bu seçenek
-    <code><strong>-c</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+    <dd>Sonu&ccedil;ları veritabanında g&uuml;ncellemek yerine standart &ccedil;ıktıya g&ouml;nderir.
+    <code><var>parola-dosyası</var></code> belirtilmediğinden, bu se&ccedil;enek
+    komut satırı s&ouml;zdizimini değiştirir. Bu se&ccedil;enek
+    <code><strong>-c</strong></code> se&ccedil;eneği ile birlikte kullanılamaz.</dd>
 
     <dt><code><strong>-m</strong></code></dt>
-    <dd>Parolalar için MD5 şifrelemesi kullanılır. Windows ve Netware
-    için bu öntanımlıdır.</dd>
+    <dd>Parolalar i&ccedil;in MD5 şifrelemesi kullanılır. Windows ve Netware
+    i&ccedil;in bu &ouml;ntanımlıdır.</dd>
 
     <dt><code><strong>-B</strong></code></dt>
-    <dd>Parolalar için bcrypt şifrelemesi kullanılır. Şu an için çok güvenli
+    <dd>Parolalar i&ccedil;in bcrypt şifrelemesi kullanılır. Şu an i&ccedil;in &ccedil;ok g&uuml;venli
     kabul edilmektedir.</dd>
 
     <dt><code><strong>-C</strong>  <var>bedel</var></code></dt>
-    <dd>Bu seçenek sadece <code><strong>-B</strong></code> (bcrypt şifrelemesi)
-    seçeneği ile birlikte kullanılabilir. Bcrypt algoritmasına hesaplama
-    süresini belirtir (daha yüksek değerler daha güvenlidir, öntanımlı 5,
-    geçerli değerler: 4 - 31).</dd>
+    <dd>Bu se&ccedil;enek sadece <code><strong>-B</strong></code> (bcrypt şifrelemesi)
+    se&ccedil;eneği ile birlikte kullanılabilir. Bcrypt algoritmasına hesaplama
+    s&uuml;resini belirtir (daha y&uuml;ksek değerler daha g&uuml;venlidir, &ouml;ntanımlı 5,
+    ge&ccedil;erli değerler: 4 - 31).</dd>
 
     <dt><code><strong>-d</strong></code></dt>
-    <dd>Parolaları şifrelemek için <code>crypt()</code> kullanılır. Windows,
-    ve Netware dışında öntanımlıdır.
-    <code><strong>htdbm</strong></code> tarafından tüm platformlarda
-    destekleniyor olsa da Windows ve Netware üzerinde
+    <dd>Parolaları şifrelemek i&ccedil;in <code>crypt()</code> kullanılır. Windows,
+    ve Netware dışında &ouml;ntanımlıdır.
+    <code><strong>htdbm</strong></code> tarafından t&uuml;m platformlarda
+    destekleniyor olsa da Windows ve Netware &uuml;zerinde
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> sunucusu tarafından desteklenmez. Bu algoritma
-    günümüz standartlarında <strong>güvenilmez</strong> kabul
+    g&uuml;n&uuml;m&uuml;z standartlarında <strong>g&uuml;venilmez</strong> kabul
     edilmektedir.</dd>
 
     <dt><code><strong>-s</strong></code></dt>
-    <dd>Parolalar için SHA şifrelemesi kullanılır. LDAP Dizin değişim
-    biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü
-    kolaylaştırır. Bu algoritma günümüz standartlarında
-    <strong>güvenilmez</strong> kabul edilmektedir.</dd>
+    <dd>Parolalar i&ccedil;in SHA şifrelemesi kullanılır. LDAP Dizin değişim
+    bi&ccedil;emini (ldif) kullanarak Netscape sunucularına/sunucularından g&ouml;&ccedil;&uuml;
+    kolaylaştırır. Bu algoritma g&uuml;n&uuml;m&uuml;z standartlarında
+    <strong>g&uuml;venilmez</strong> kabul edilmektedir.</dd>
 
     <dt><code><strong>-p</strong></code></dt>
-    <dd>Düz metin parolalar kullanılır. <code><strong>htdbm</strong></code>
-    tarafından tüm platformlarda destekleniyor olsa da Windows, Netware ve
-    TPF üzerinde <code class="program"><a href="../programs/httpd.html">httpd</a></code> sunucusu tarafından sadece düz
+    <dd>D&uuml;z metin parolalar kullanılır. <code><strong>htdbm</strong></code>
+    tarafından t&uuml;m platformlarda destekleniyor olsa da Windows, Netware ve
+    TPF &uuml;zerinde <code class="program"><a href="../programs/httpd.html">httpd</a></code> sunucusu tarafından sadece d&uuml;z
     metin parolalar kabul edilir.</dd>
 
     <dt><code><strong>-l</strong></code></dt>
-    <dd>Veritabanındaki kullanıcıları açıklamalarıyla birlikte standart
-    çıktıya gönderir.</dd>
+    <dd>Veritabanındaki kullanıcıları a&ccedil;ıklamalarıyla birlikte standart
+    &ccedil;ıktıya g&ouml;nderir.</dd>
 
     <dt><code><strong>-v</strong></code></dt>
     <dd>Kullanıcı adını ve parolasını doğrular. Program belirtilen parolanın
-    geçerli olup olmadığını belirten bir ileti basar. Eğer parola geçersizse
-    program hata kodu 3 ile çıkar.</dd>
+    ge&ccedil;erli olup olmadığını belirten bir ileti basar. Eğer parola ge&ccedil;ersizse
+    program hata kodu 3 ile &ccedil;ıkar.</dd>
 
     <dt><code><strong>-x</strong></code></dt>
     <dd>Kullanıcıyı siler. Kullanıcı belirtilen DBM dosyasında mevcutsa
     silinir.</dd>
 
     <dt><code><strong>-t</strong></code></dt>
-    <dd>Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar. Bu
-    seçenek kullanıldığında komut satırının sonuna fazladan bir dizge
+    <dd>Son değiştirgenin bir a&ccedil;ıklama olarak yorumlanmasını sağlar. Bu
+    se&ccedil;enek kullanıldığında komut satırının sonuna fazladan bir dizge
     eklenebilir. Bu dizge, veritabanında belirtilen kullanıcının "Comment"
     alanında saklanır.</dd>
 
     <dt><code><var>parola-dosyası</var></code></dt>
     <dd>DBM dosyasının ismi. Genellikle, <code>.db</code>, <code>.pag</code>
     veya <code>.dir</code> eklentisi olmaksızın belirtilir.
-    <code><strong>-c</strong></code> seçeneği ile birlikte verilmişse ve DBM
-    dosyası mevcut değilse dosya oluşturulur, mevcutsa dosya güncellenir.</dd>
+    <code><strong>-c</strong></code> se&ccedil;eneği ile birlikte verilmişse ve DBM
+    dosyası mevcut değilse dosya oluşturulur, mevcutsa dosya g&uuml;ncellenir.</dd>
 
     <dt><code><var>kullanıcı</var></code></dt>
     <dd><code><var>parola-dosyası</var></code>'nda oluşturulacak veya
-    güncellenecek kullanıcı ismi. <code><var>kullanıcı</var></code> bu
+    g&uuml;ncellenecek kullanıcı ismi. <code><var>kullanıcı</var></code> bu
     dosyada mevcut değilse yeni bir girdi eklenir. Girdi mevcutsa parolası
     değiştirilir.</dd>
 
     <dt><code><var>parola</var></code></dt>
-    <dd>Şifrelenip DBM dosyasında saklanacak düz metin parola. Sadece
-    <code><strong>-b</strong></code> seçeneği ile kullanılır.</dd>
+    <dd>Şifrelenip DBM dosyasında saklanacak d&uuml;z metin parola. Sadece
+    <code><strong>-b</strong></code> se&ccedil;eneği ile kullanılır.</dd>
 
-    <dt><code><strong>-T</strong> <var>VTtürü</var></code></dt>
-    <dd>DBM dosyasının türü; SDBM, GDBM, DB, veya "default" olabilir.</dd>
+    <dt><code><strong>-T</strong> <var>VTt&uuml;r&uuml;</var></code></dt>
+    <dd>DBM dosyasının t&uuml;r&uuml;; SDBM, GDBM, DB, veya "default" olabilir.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">Hatalar</a> <a title="Permanent link" href="#bugs" class="permalink">&para;</a></h2>
-    <p>Birden fazla DBM dosya biçemi vardır ve büyük bir olasılıkla da
-    sisteminizde bu birden fazla biçemle ilgili kütüphaneler vardır. SDBM,
+<h2 id="bugs">Hatalar <a title="Permanent link" href="#bugs" class="permalink">&para;</a></h2>
+    <p>Birden fazla DBM dosya bi&ccedil;emi vardır ve b&uuml;y&uuml;k bir olasılıkla da
+    sisteminizde bu birden fazla bi&ccedil;emle ilgili k&uuml;t&uuml;phaneler vardır. SDBM,
     NDBM, GNU'nun GDBM projesi ve Berkeley/Sleepycat DB 2/3/4 bunların
-    başlıcalarıdır. Ne yazık ki, bu kütüphanelerin her birinin dosya
-    biçimleri farklıdır. Bu bakımdan, <code><var>dosyaismi</var></code>
-    dosyasında kullanılan dosya biçeminin <code><strong>htdbm</strong></code>
-    tarafından kullanılanla aynı biçemde olduğundan emin olmalısınız.
-    <code><strong>htdbm</strong></code> hangi tür DBM dosyasına baktığını
-    saptayacak yeterliliğe sahip değildir. Yanlış biçemli bir dosya
-    belirtirseniz hiçbir şey dönmeyebileceği gibi, başka isimde bir DBM
-    dosyasının oluşturulması veya daha da kötüsü üzerine yazmaya
-    çalışıyorsanız DBM dosyasının bozulması bile olasıdır.</p>
+    başlıcalarıdır. Ne yazık ki, bu k&uuml;t&uuml;phanelerin her birinin dosya
+    bi&ccedil;imleri farklıdır. Bu bakımdan, <code><var>dosyaismi</var></code>
+    dosyasında kullanılan dosya bi&ccedil;eminin <code><strong>htdbm</strong></code>
+    tarafından kullanılanla aynı bi&ccedil;emde olduğundan emin olmalısınız.
+    <code><strong>htdbm</strong></code> hangi t&uuml;r DBM dosyasına baktığını
+    saptayacak yeterliliğe sahip değildir. Yanlış bi&ccedil;emli bir dosya
+    belirtirseniz hi&ccedil;bir şey d&ouml;nmeyebileceği gibi, başka isimde bir DBM
+    dosyasının oluşturulması veya daha da k&ouml;t&uuml;s&uuml; &uuml;zerine yazmaya
+    &ccedil;alışıyorsanız DBM dosyasının bozulması bile olasıdır.</p>
 
-    <p>Unix sistemlerinde, kullanılan DBM dosyasının biçemini öğrenmek için
+    <p>Unix sistemlerinde, kullanılan DBM dosyasının bi&ccedil;emini &ouml;ğrenmek i&ccedil;in
     <code><strong>file</strong></code> programı kullanılabilir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">Çıkış Durumu</a> <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
+<h2 id="exit">&Ccedil;ıkış Durumu <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong></code>, kullanıcı ismi ve parolasını DBM
-    dosyasına başarıyla eklemiş veya güncellemişse <code>0</code>, dosyalara
-    erişirken bir sorun çıkmışsa <code>1</code>, komut satırında bir
-    sözdizimi hatası varsa <code>2</code>, parola etkileşimli alınmış fakat
+    dosyasına başarıyla eklemiş veya g&uuml;ncellemişse <code>0</code>, dosyalara
+    erişirken bir sorun &ccedil;ıkmışsa <code>1</code>, komut satırında bir
+    s&ouml;zdizimi hatası varsa <code>2</code>, parola etkileşimli alınmış fakat
     girdi ile eşleşme sağlanamamışsa <code>3</code>, işlem kesintiye
-    uğramışsa <code>4</code>, bir değer çok uzunsa <code>5</code> (kullanıcı,
-    parola, dosya ismi veya açıklama), kullanıcı ismi kuraldışı karakter
-    içeriyorsa (<a href="#restrictions">Kısıtlamalar</a> bölümüne bakınız)
-    <code>6</code> ve dosya geçerli bir DBM parola dosyası değilse
-    <code>7</code> değeriyle döner.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    uğramışsa <code>4</code>, bir değer &ccedil;ok uzunsa <code>5</code> (kullanıcı,
+    parola, dosya ismi veya a&ccedil;ıklama), kullanıcı ismi kuraldışı karakter
+    i&ccedil;eriyorsa (<a href="#restrictions">Kısıtlamalar</a> b&ouml;l&uuml;m&uuml;ne bakınız)
+    <code>6</code> ve dosya ge&ccedil;erli bir DBM parola dosyası değilse
+    <code>7</code> değeriyle d&ouml;ner.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Örnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <div class="example"><p><code>
       htdbm /usr/local/etc/apache/.htdbm-users jsmith
     </code></p></div>
 
-    <p><code>jsmith</code> kullanıcısı için parolayı ekler veya değiştirir.
-    Parolayı vermesi için kullanıcıya parola isteği yapılır. Windows üzerinde
-    çalıştırılırsa parola Apache MD5 algoritması ile şifrelenir, aksi
+    <p><code>jsmith</code> kullanıcısı i&ccedil;in parolayı ekler veya değiştirir.
+    Parolayı vermesi i&ccedil;in kullanıcıya parola isteği yapılır. Windows &uuml;zerinde
+    &ccedil;alıştırılırsa parola Apache MD5 algoritması ile şifrelenir, aksi
     takdirde sistemin <code>crypt()</code> yordamı kullanılır. Dosya mevcut
-    değilse <code><strong>htdbm</strong></code> beklenen hiçbir işlemi
-    yapmadan bir hata vererek çıkar.</p>
+    değilse <code><strong>htdbm</strong></code> beklenen hi&ccedil;bir işlemi
+    yapmadan bir hata vererek &ccedil;ıkar.</p>
 
     <div class="example"><p><code>
       htdbm -c /home/doe/public_html/.htdbm jane
     </code></p></div>
 
-    <p>Yeni bir dosya oluşturur ve kullanıcı <code>jane</code> için kaydı bir
+    <p>Yeni bir dosya oluşturur ve kullanıcı <code>jane</code> i&ccedil;in kaydı bir
     girdi olarak bu dosyaya yazar. Dosya mevcutsa fakat okunamıyor veya
     yazılamıyorsa dosyada bir değişiklik yapılmaz ve
-    <code><strong>htdbm</strong></code> bir ileti gösterip bir hata durumu
-    ile çıkar.</p>
+    <code><strong>htdbm</strong></code> bir ileti g&ouml;sterip bir hata durumu
+    ile &ccedil;ıkar.</p>
 
     <div class="example"><p><code>
       htdbm -mb /usr/web/.htdbm-all jones Pwd4Steve
@@ -294,50 +292,50 @@
 
     <p>Komut satırından verilen parolayı (<code>Pwd4Steve</code>) MD5
     algoritmasıyla şifreler ve bunu belirtilen dosyada saklar.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Güvenlik Değerlendirmeleri</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
-    <p><code><strong>htdbm</strong></code> tarafından yönetilen parola
+<h2 id="security">G&uuml;venlik Değerlendirmeleri <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+    <p><code><strong>htdbm</strong></code> tarafından y&ouml;netilen parola
     dosyalarına sunucunun URI uzayından erişilememelidir; yani dosya bir
     tarayıcı ile okunabilecek bir yerde bulunmamalıdır.</p>
 
-    <p>Komut satırında parolanın şifrelenmemiş olarak görünmesi sebebiyle
-    <code><strong>-b</strong></code> seçeneğinin kullanımından kaçınılmasını
-    öneriyoruz.</p>
+    <p>Komut satırında parolanın şifrelenmemiş olarak g&ouml;r&uuml;nmesi sebebiyle
+    <code><strong>-b</strong></code> se&ccedil;eneğinin kullanımından ka&ccedil;ınılmasını
+    &ouml;neriyoruz.</p>
 
     <p><code>crypt()</code> algoritması kullanılırken, parolayı
-    şekillendirmek için parolanın ilk 8 baytının kullanılacağına dikkat
+    şekillendirmek i&ccedil;in parolanın ilk 8 baytının kullanılacağına dikkat
     ediniz. Eğer parola 8 bayttan uzunsa kalanlar bir uyarı verilmeksizin
     iptal edilir.</p>
 
-    <p>SHA şifreleme biçeminde tuz kullanılmaz; yani, bir parolanın
-    sadece bir şifreli gösterimi olabilir. <code>crypt()</code> ve
-    MD5 biçemleri parolanın önüne rasgele üretilmiş bir tuz dizgesi
-    eklediklerinden sözlük saldırılarına karşı daha dayanıklıdır.</p>
+    <p>SHA şifreleme bi&ccedil;eminde tuz kullanılmaz; yani, bir parolanın
+    sadece bir şifreli g&ouml;sterimi olabilir. <code>crypt()</code> ve
+    MD5 bi&ccedil;emleri parolanın &ouml;n&uuml;ne rasgele &uuml;retilmiş bir tuz dizgesi
+    eklediklerinden s&ouml;zl&uuml;k saldırılarına karşı daha dayanıklıdır.</p>
 
-    <p>SHA ve <code>crypt()</code> biçimleri günümüz standartlarında
-    <strong>güvenilmez</strong> kabul edilmektedir.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    <p>SHA ve <code>crypt()</code> bi&ccedil;imleri g&uuml;n&uuml;m&uuml;z standartlarında
+    <strong>g&uuml;venilmez</strong> kabul edilmektedir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="restrictions" id="restrictions">Kısıtlamalar</a> <a title="Permanent link" href="#restrictions" class="permalink">&para;</a></h2>
+<h2 id="restrictions">Kısıtlamalar <a title="Permanent link" href="#restrictions" class="permalink">&para;</a></h2>
     <p>Windows platformunda, <code><strong>htdbm</strong></code>
     ile şifrelenen parolalar <code>255</code> karakterden daha uzun olamaz.
     255 karakterden sonrası kırpılır.</p>
 
     <p><code><strong>htdbm</strong></code> tarafından kullanılan MD5
-    algoritması Apache yazılımına özeldir; bu algoritma ile şifrelenen
+    algoritması Apache yazılımına &ouml;zeldir; bu algoritma ile şifrelenen
     parolalar başka HTTP sunucularında kullanılamayabilir.</p>
 
     <p>Kullanıcı isimleri <code>255</code> bayttan uzun olamaz ve iki nokta
-    imi (<code>:</code>) içeremez.</p>
+    imi (<code>:</code>) i&ccedil;eremez.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/programs/htdbm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/programs/htdbm.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/programs/htdbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

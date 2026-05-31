@@ -1,97 +1,95 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_request - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_request - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Mod&uuml;ller</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Modülü mod_request</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div id="preamble"><h1>Apache Mod&uuml;l&uuml; mod_request</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_request.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_request.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_request.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</td></tr>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>HTTP istek g&ouml;vdelerini işleme sokup kullanılabilir kılan s&uuml;zge&ccedil;ler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>request_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_request.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>request_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak&nbsp;Dosyası:</a></th><td>mod_request.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.3 ve sonrasında mevcuttur.</td></tr></table>
 </div>
-<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<div id="quickview"><h3 class="directives">Y&ouml;nergeler</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#keptbodysize">KeptBodySize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#keptbodysize">KeptBodySize</a></li>
 </ul>
-<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_request">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_request">Hata bildir</a></li></ul></div>
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd g&uuml;nl&uuml;ğ&uuml;</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_request">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_request">Hata bildir</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeptBodySize" id="KeptBodySize">KeptBodySize</a> <a name="keptbodysize" id="keptbodysize">Yönergesi</a> <a title="Permanent link" href="#keptbodysize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="keptbodysize"><span id="KeptBodySize">KeptBodySize</span> Y&ouml;nergesi <a title="Permanent link" href="#keptbodysize" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>mod_include gibi süzgeçler tarafından kullanılma olasılığına karşı
-istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
+<tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>mod_include gibi s&uuml;zge&ccedil;ler tarafından kullanılma olasılığına karşı
+istek g&ouml;vdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeptBodySize <var>azami_bayt_sayısı</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>KeptBodySize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>KeptBodySize <var>azami_bayt_sayısı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">&Ouml;ntanımlı:</a></th><td><code>KeptBodySize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_request</td></tr>
+<tr><th><a href="directive-dict.html#Module">Mod&uuml;l:</a></th><td>mod_request</td></tr>
 </table>
-    <p>Normal şartlar altında, durağan dosyaların öntanımlı eylemcileri gibi
-      istek eylemcileri gerek kalmadığında istek gövdesini iptal ederler. Sonuç
-      olarak, mod_include gibi süzgeçler, özgün istek (süzme işlemi
-      gerçekleştikten sonra artık gerekmediğinden istek gövdesini iptal eden)
+    <p>Normal şartlar altında, durağan dosyaların &ouml;ntanımlı eylemcileri gibi
+      istek eylemcileri gerek kalmadığında istek g&ouml;vdesini iptal ederler. Sonu&ccedil;
+      olarak, mod_include gibi s&uuml;zge&ccedil;ler, &ouml;zg&uuml;n istek (s&uuml;zme işlemi
+      ger&ccedil;ekleştikten sonra artık gerekmediğinden istek g&ouml;vdesini iptal eden)
       bir <code>POST</code> isteği olsa bile, <code>GET</code> isteklerinin
-      yapılmasına sadece diğer URL'lerin alt istekler olarak içerilmesi
+      yapılmasına sadece diğer URL'lerin alt istekler olarak i&ccedil;erilmesi
       şartıyla  izin verir.</p>
 
-    <p>Bu yönergede belirtilen değer sıfırdan büyük olduğunda, istek
-      eylemciler, istek gövdesini iptal etmek yerine süzgeçler tarafından
-      kullanılmak üzere belirtilen azami boyuta ayarlarlar. mod_include
-      süzgecinin kullanılması durumunda, bir durağan shtml dosyası için bir
-      <code>POST</code> isteği, ardından gelen isteklerin, önceki gibi
+    <p>Bu y&ouml;nergede belirtilen değer sıfırdan b&uuml;y&uuml;k olduğunda, istek
+      eylemciler, istek g&ouml;vdesini iptal etmek yerine s&uuml;zge&ccedil;ler tarafından
+      kullanılmak &uuml;zere belirtilen azami boyuta ayarlarlar. mod_include
+      s&uuml;zgecinin kullanılması durumunda, bir durağan shtml dosyası i&ccedil;in bir
+      <code>POST</code> isteği, ardından gelen isteklerin, &ouml;nceki gibi
       <code>GET</code> istekleri değil, <code>POST</code> istekleri olmasına
-      yol açacaktır.</p>
+      yol a&ccedil;acaktır.</p>
 
-    <p>Bu özellik, <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> kullanılarak, karmaşık HTML
-      sayfalarının ve uygulamalarının küçük küçük bileşenlere bölünüp sonra da
-      sayfa yapısıyla birlikte sarmalanarak birleştirilmesini mümkün kılar.
-      Bileşenler, CGI programları veya betik dilleri biçiminde olabileceği
+    <p>Bu &ouml;zellik, <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> kullanılarak, karmaşık HTML
+      sayfalarının ve uygulamalarının k&uuml;&ccedil;&uuml;k k&uuml;&ccedil;&uuml;k bileşenlere b&ouml;l&uuml;n&uuml;p sonra da
+      sayfa yapısıyla birlikte sarmalanarak birleştirilmesini m&uuml;mk&uuml;n kılar.
+      Bileşenler, CGI programları veya betik dilleri bi&ccedil;iminde olabileceği
       gibi, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> kullanarak başka bir sunucudaki URL
       uzayına ters vekil URL'ler şeklinde bile olabilir.</p>
 
     <p><strong>Bilginize:</strong> İstekler tamamlanana kadar alınan istekler
-      geçici RAM içinde biriktirilir. Sonuç olarak, bahsi geçen yükü karşılamak
-      için yeterince RAM'in mevcut olması gerekir. Bu yönergeyi kullanmakla,
-      istek gövdesini saklamaya yetecek olası en düşük değerle bile URL
-      uzayınız için gereken yeri kısıtlamış olursunuz.</p>
+      ge&ccedil;ici RAM i&ccedil;inde biriktirilir. Sonu&ccedil; olarak, bahsi ge&ccedil;en y&uuml;k&uuml; karşılamak
+      i&ccedil;in yeterince RAM'in mevcut olması gerekir. Bu y&ouml;nergeyi kullanmakla,
+      istek g&ouml;vdesini saklamaya yetecek olası en d&uuml;ş&uuml;k değerle bile URL
+      uzayınız i&ccedil;in gereken yeri kısıtlamış olursunuz.</p>
 
-    <p>Eğer isteğin uzunluğu bu yönerge ile ayrılan azami uzunluğu aşarsa
+    <p>Eğer isteğin uzunluğu bu y&ouml;nerge ile ayrılan azami uzunluğu aşarsa
       sunucu yanıt olarak <code>413 Request Entity Too Large</code> (413
-      İstenen Öğe Çok Büyük) hatasını döndürür.</p>
+      İstenen &Ouml;ğe &Ccedil;ok B&uuml;y&uuml;k) hatasını d&ouml;nd&uuml;r&uuml;r.</p>
 
-    <p>İstek gövdesini iptal etmek yerine kendi amaçları doğrultusunda bunları
-      biriktiren <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> gibi eylemciler bu yönergeyi dikkate
+    <p>İstek g&ouml;vdesini iptal etmek yerine kendi ama&ccedil;ları doğrultusunda bunları
+      biriktiren <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> gibi eylemciler bu y&ouml;nergeyi dikkate
       almazlar.</p>
 
 
@@ -104,11 +102,11 @@ istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_request.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_request.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="../tr/mod/mod_request.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../fr/mod/mod_request.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
+<a href="../tr/mod/mod_request.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

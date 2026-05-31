@@ -1,34 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Dynamically Configured Mass Virtual Hosting - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Virtual Hosts</a></div><div id="page-content"><div id="preamble"><h1>Dynamically Configured Mass Virtual Hosting</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/vhosts/mass.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -39,21 +37,21 @@
     </p>
 
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#motivation">Motivation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#overview">Overview</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#simple">Dynamic Virtual Hosts with
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#motivation">Motivation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#overview">Overview</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#simple">Dynamic Virtual Hosts with
 mod_vhost_alias</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#homepages">Simplified Dynamic Virtual Hosts</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#combinations">Using Multiple Virtual
+<li><img alt="" src="../images/down.gif"> <a href="#homepages">Simplified Dynamic Virtual Hosts</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#combinations">Using Multiple Virtual
   Hosting Systems on the Same Server</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ipbased">More Efficient IP-Based Virtual Hosting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewrite">Mass virtual hosts with
+<li><img alt="" src="../images/down.gif"> <a href="#ipbased">More Efficient IP-Based Virtual Hosting</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewrite">Mass virtual hosts with
 mod_rewrite</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#macro">Mass virtual hosts with mod_macro</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#macro">Mass virtual hosts with mod_macro</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="motivation" id="motivation">Motivation</a> <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
+<h2 id="motivation">Motivation <a title="Permanent link" href="#motivation" class="permalink">&para;</a></h2>
 
     <p>The techniques described here are of interest if your
     <code>httpd.conf</code> contains many
@@ -104,9 +102,9 @@ mod_rewrite</a></li>
     be found in the <a href="../programs/split-logfile.html">split-logfile</a>
     utility.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Overview</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Overview <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <p>A virtual host is defined by two pieces of information: its
     IP address, and the contents of the <code>Host:</code> header
@@ -152,10 +150,10 @@ mod_rewrite</a></li>
     if any CGIs or SSI documents make use of it, they will get a
     misleading value.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">Dynamic Virtual Hosts with
-mod_vhost_alias</a> <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
+<h2 id="simple">Dynamic Virtual Hosts with
+mod_vhost_alias <a title="Permanent link" href="#simple" class="permalink">&para;</a></h2>
 
     <p>This extract from <code>httpd.conf</code> implements the
     virtual host arrangement outlined in the <a href="#motivation">Motivation</a> section above
@@ -185,9 +183,9 @@ VirtualScriptAlias  "/www/hosts/%0/cgi-bin"</pre>
 <p>See the <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> documentation for more usage
 examples.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="homepages" id="homepages">Simplified Dynamic Virtual Hosts</a> <a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
+<h2 id="homepages">Simplified Dynamic Virtual Hosts <a title="Permanent link" href="#homepages" class="permalink">&para;</a></h2>
 
     <p>This is an adjustment of the above system, tailored for an
     ISP's web hosting server. Using <code>%2</code>,
@@ -213,10 +211,10 @@ ScriptAlias  "/cgi-bin/"  "/www/std-cgi/"</pre>
     <code>VirtualDocumentRoot</code> settings in the
     <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> documentation.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="combinations" id="combinations">Using Multiple Virtual
-  Hosting Systems on the Same Server</a> <a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
+<h2 id="combinations">Using Multiple Virtual
+  Hosting Systems on the Same Server <a title="Permanent link" href="#combinations" class="permalink">&para;</a></h2>
 
     <p>With more complicated setups, you can use httpd's normal
     <code>&lt;VirtualHost&gt;</code> directives to control the
@@ -271,9 +269,9 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon
     behavior.</p>
 </div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipbased" id="ipbased">More Efficient IP-Based Virtual Hosting</a> <a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
+<h2 id="ipbased">More Efficient IP-Based Virtual Hosting <a title="Permanent link" href="#ipbased" class="permalink">&para;</a></h2>
 
     <p>The configuration changes suggested to turn <a href="#simple">the first
     example</a> into an IP-based virtual hosting setup result in
@@ -295,10 +293,10 @@ VirtualDocumentRootIP "/www/hosts/%0/docs"
 VirtualScriptAliasIP  "/www/hosts/%0/cgi-bin"</pre>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Mass virtual hosts with
-mod_rewrite</a> <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
+<h2 id="rewrite">Mass virtual hosts with
+mod_rewrite <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 
 <p>
 Mass virtual hosting may also be accomplished using
@@ -307,9 +305,9 @@ complicated techniques such as storing the vhost definitions externally
 and accessing them via <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. These techniques are
 discussed in the <a href="../rewrite/vhosts.html">rewrite
 documentation</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="macro" id="macro">Mass virtual hosts with mod_macro</a> <a title="Permanent link" href="#macro" class="permalink">&para;</a></h2>
+<h2 id="macro">Mass virtual hosts with mod_macro <a title="Permanent link" href="#macro" class="permalink">&para;</a></h2>
 
 <p>Another option for dynamically generated virtual hosts is
 <code class="module"><a href="../mod/mod_macro.html">mod_macro</a></code>, with which you can create a virtualhost
@@ -320,12 +318,12 @@ documentation.
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/vhosts/mass.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/mass.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/vhosts/mass.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/mass.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

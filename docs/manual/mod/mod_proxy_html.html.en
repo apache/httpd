@@ -1,41 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_html - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_proxy_html</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_html.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_html.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_html.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Rewrite HTML links in to ensure they are addressable
 from Clients' networks in a proxy context.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_html_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_html.c</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_html_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_html.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.4 and later</td></tr></table>
 <h3>Summary</h3>
 
@@ -55,28 +53,28 @@ rewritten to work through the gateway. <code class="module"><a href="../mod/mod_
 <code>&lt;a href="http://www.example.com/appserver/foo/bar.html"&gt;foobar&lt;/a&gt;</code>
 making it accessible from outside.</p>
 
-<p>mod_proxy_html was originally developed at WebÞing, whose
+<p>mod_proxy_html was originally developed at Web&THORN;ing, whose
 extensive <a href="http://apache.webthing.com/mod_proxy_html/">documentation</a> may be useful to users.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmldoctype">ProxyHTMLDocType</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlenable">ProxyHTMLEnable</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlevents">ProxyHTMLEvents</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlextended">ProxyHTMLExtended</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlfixups">ProxyHTMLFixups</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlinterp">ProxyHTMLInterp</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmllinks">ProxyHTMLLinks</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlmeta">ProxyHTMLMeta</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlbufsize">ProxyHTMLBufSize</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlcharsetout">ProxyHTMLCharsetOut</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmldoctype">ProxyHTMLDocType</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlenable">ProxyHTMLEnable</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlevents">ProxyHTMLEvents</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlextended">ProxyHTMLExtended</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlfixups">ProxyHTMLFixups</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlinterp">ProxyHTMLInterp</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmllinks">ProxyHTMLLinks</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlmeta">ProxyHTMLMeta</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlstripcomments">ProxyHTMLStripComments</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxyhtmlurlmap">ProxyHTMLURLMap</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_html">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_html">Report a bug</a></li></ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLBufSize" id="ProxyHTMLBufSize">ProxyHTMLBufSize</a> <a name="proxyhtmlbufsize" id="proxyhtmlbufsize">Directive</a> <a title="Permanent link" href="#proxyhtmlbufsize" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlbufsize"><span id="ProxyHTMLBufSize">ProxyHTMLBufSize</span> Directive <a title="Permanent link" href="#proxyhtmlbufsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the buffer size increment for buffering inline scripts and
 stylesheets.</td></tr>
@@ -101,8 +99,8 @@ size and avoid the need to resize the buffer dynamically during a request.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLCharsetOut" id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</a> <a name="proxyhtmlcharsetout" id="proxyhtmlcharsetout">Directive</a> <a title="Permanent link" href="#proxyhtmlcharsetout" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlcharsetout"><span id="ProxyHTMLCharsetOut">ProxyHTMLCharsetOut</span> Directive <a title="Permanent link" href="#proxyhtmlcharsetout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a charset for mod_proxy_html output.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLCharsetOut <var>Charset | *</var></code></td></tr>
@@ -121,12 +119,12 @@ will generate output using the same encoding as the input.</p>
 <p>Note that this relies on <code class="module"><a href="../mod/mod_xml2enc.html">mod_xml2enc</a></code> being loaded.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLDocType" id="ProxyHTMLDocType">ProxyHTMLDocType</a> <a name="proxyhtmldoctype" id="proxyhtmldoctype">Directive</a> <a title="Permanent link" href="#proxyhtmldoctype" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmldoctype"><span id="ProxyHTMLDocType">ProxyHTMLDocType</span> Directive <a title="Permanent link" href="#proxyhtmldoctype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets an HTML or XHTML document type declaration.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br /><strong>OR</strong>
-<br />ProxyHTMLDocType <var>fpi</var> [SGML|XML]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLDocType HTML|XHTML [Legacy]<br><strong>OR</strong>
+<br>ProxyHTMLDocType <var>fpi</var> [SGML|XML]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_html</td></tr>
@@ -152,8 +150,8 @@ fix every error, but it will strip out bogus elements and attributes.
 It will also optionally log other errors at <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> Debug.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEnable" id="ProxyHTMLEnable">ProxyHTMLEnable</a> <a name="proxyhtmlenable" id="proxyhtmlenable">Directive</a> <a title="Permanent link" href="#proxyhtmlenable" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlenable"><span id="ProxyHTMLEnable">ProxyHTMLEnable</span> Directive <a title="Permanent link" href="#proxyhtmlenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns the proxy_html filter on or off.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLEnable On|Off</code></td></tr>
@@ -173,8 +171,8 @@ module for earlier 2.x versions.</td></tr>
     setting the <var>PROXY_HTML_FORCE</var> environment variable.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLEvents" id="ProxyHTMLEvents">ProxyHTMLEvents</a> <a name="proxyhtmlevents" id="proxyhtmlevents">Directive</a> <a title="Permanent link" href="#proxyhtmlevents" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlevents"><span id="ProxyHTMLEvents">ProxyHTMLEvents</span> Directive <a title="Permanent link" href="#proxyhtmlevents" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify attributes to treat as scripting events.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLEvents <var>attribute [attribute ...]</var></code></td></tr>
@@ -201,8 +199,8 @@ set in each of those scopes.</p>
 and defines the events in standard HTML 4 and XHTML 1.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLExtended" id="ProxyHTMLExtended">ProxyHTMLExtended</a> <a name="proxyhtmlextended" id="proxyhtmlextended">Directive</a> <a title="Permanent link" href="#proxyhtmlextended" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlextended"><span id="ProxyHTMLExtended">ProxyHTMLExtended</span> Directive <a title="Permanent link" href="#proxyhtmlextended" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to fix links in inline scripts, stylesheets,
 and scripting events.</td></tr>
@@ -230,8 +228,8 @@ false matches.
 </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLFixups" id="ProxyHTMLFixups">ProxyHTMLFixups</a> <a name="proxyhtmlfixups" id="proxyhtmlfixups">Directive</a> <a title="Permanent link" href="#proxyhtmlfixups" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlfixups"><span id="ProxyHTMLFixups">ProxyHTMLFixups</span> Directive <a title="Permanent link" href="#proxyhtmlfixups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fixes for simple HTML errors.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLFixups [lowercase] [dospath] [reset]</code></td></tr>
@@ -253,8 +251,8 @@ mistakes, but risk also erroneously fixing links that were correct to start with
 Only use them if you know you have a broken backend server.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLInterp" id="ProxyHTMLInterp">ProxyHTMLInterp</a> <a name="proxyhtmlinterp" id="proxyhtmlinterp">Directive</a> <a title="Permanent link" href="#proxyhtmlinterp" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlinterp"><span id="ProxyHTMLInterp">ProxyHTMLInterp</span> Directive <a title="Permanent link" href="#proxyhtmlinterp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables per-request interpolation of
 <code class="directive">ProxyHTMLURLMap</code> rules.</td></tr>
@@ -274,8 +272,8 @@ module for earlier 2.x versions</td></tr>
     enabled only when necessary.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLLinks" id="ProxyHTMLLinks">ProxyHTMLLinks</a> <a name="proxyhtmllinks" id="proxyhtmllinks">Directive</a> <a title="Permanent link" href="#proxyhtmllinks" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmllinks"><span id="ProxyHTMLLinks">ProxyHTMLLinks</span> Directive <a title="Permanent link" href="#proxyhtmllinks" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify HTML elements that have URL attributes to be rewritten.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLLinks <var>element attribute [attribute2 ...]</var></code></td></tr>
@@ -311,8 +309,8 @@ ProxyHTMLLinks  script     src for</pre>
 </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLMeta" id="ProxyHTMLMeta">ProxyHTMLMeta</a> <a name="proxyhtmlmeta" id="proxyhtmlmeta">Directive</a> <a title="Permanent link" href="#proxyhtmlmeta" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlmeta"><span id="ProxyHTMLMeta">ProxyHTMLMeta</span> Directive <a title="Permanent link" href="#proxyhtmlmeta" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Turns on or off extra pre-parsing of metadata in HTML
 <code>&lt;head&gt;</code> sections.</td></tr>
@@ -356,8 +354,8 @@ module for earlier 2.x versions.</td></tr>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLStripComments" id="ProxyHTMLStripComments">ProxyHTMLStripComments</a> <a name="proxyhtmlstripcomments" id="proxyhtmlstripcomments">Directive</a> <a title="Permanent link" href="#proxyhtmlstripcomments" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlstripcomments"><span id="ProxyHTMLStripComments">ProxyHTMLStripComments</span> Directive <a title="Permanent link" href="#proxyhtmlstripcomments" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to strip HTML comments.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLStripComments On|Off</code></td></tr>
@@ -377,8 +375,8 @@ be sure to run any of those <em>before</em> mod_proxy_html in the
 filter chain if stripping comments!</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyHTMLURLMap" id="ProxyHTMLURLMap">ProxyHTMLURLMap</a> <a name="proxyhtmlurlmap" id="proxyhtmlurlmap">Directive</a> <a title="Permanent link" href="#proxyhtmlurlmap" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxyhtmlurlmap"><span id="ProxyHTMLURLMap">ProxyHTMLURLMap</span> Directive <a title="Permanent link" href="#proxyhtmlurlmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a rule to rewrite HTML links</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHTMLURLMap <var>from-pattern to-pattern [flags] [cond]</var></code></td></tr>
@@ -469,10 +467,10 @@ in mod_proxy_html 3.x for HTTPD 2.0 and 2.2 is also supported.</p>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_html.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_html.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_html.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

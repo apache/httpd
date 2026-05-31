@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_ajp - Apache HTTP サーバ バージョン 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_proxy_ajp</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
@@ -59,19 +57,19 @@
 </div>
 <div id="quickview"><h3>トピック</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#overviewprotocol">プロトコルの概要</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#basppacketstruct">基本パケット構造</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rpacetstruct">リクエストパケット構造</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#resppacketstruct">レスポンスパケット構造</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#overviewprotocol">プロトコルの概要</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#basppacketstruct">基本パケット構造</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rpacetstruct">リクエストパケット構造</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#resppacketstruct">レスポンスパケット構造</a></li>
 </ul><h3 class="directives">ディレクティブ</h3>
 <p>このモジュールにディレクティブはありません。</p>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_ajp">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_ajp">Report a bug</a></li></ul><h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overviewprotocol" id="overviewprotocol">プロトコルの概要</a> <a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
+<h2 id="overviewprotocol">プロトコルの概要 <a title="Permanent link" href="#overviewprotocol" class="permalink">&para;</a></h2>
     <p><code>AJP13</code> プロトコルはパケット指向です。
     可読なプレーンテキスト形式ではなくバイナリ形式になったのは、
     おそらくパフォーマンス上の理由によります。
@@ -87,8 +85,8 @@
     <p>サーブレットコンテナへのコネクションを開いた後は、コネクションの状態は
     次のどれかになります:</p>
     <ul>
-    <li> Idle <br />コネクション上で処理されているリクエストはありません。</li>
-    <li> Assigned <br />コネクションはリクエストを処理中です。</li>
+    <li> Idle <br>コネクション上で処理されているリクエストはありません。</li>
+    <li> Assigned <br>コネクションはリクエストを処理中です。</li>
     </ul>
     <p>コネクションが特定のリクエストにアサインされると、基本的な情報 (例えば
     HTTP ヘッダ等) が圧縮された形 (例えば通常の文字列は整数にエンコードされます)
@@ -98,21 +96,21 @@
     <p>この時点でおそらく、サーブレットコンテナは処理を開始できるようになります。
     ですので、次のメッセージをウェブサーバに戻して知らせられるようになります。</p>
     <ul>
-    <li>SEND_HEADERS <br />ブラウザにヘッダを送信します。</li>
-    <li>SEND_BODY_CHUNK <br />ブラウザにボディデータのチャンクを送ります。
+    <li>SEND_HEADERS <br>ブラウザにヘッダを送信します。</li>
+    <li>SEND_BODY_CHUNK <br>ブラウザにボディデータのチャンクを送ります。
     </li>
-    <li>GET_BODY_CHUNK <br />リクエストのデータを全て受け取り終わっていないときに、
+    <li>GET_BODY_CHUNK <br>リクエストのデータを全て受け取り終わっていないときに、
     残っているデータを受け取ります。パケットにある定まった最大長があり、任意の
     大きさのデータがリクエストのボディとして含まれうる場合 
     (例えばファイルのアップロードの場合) に必要となります。
     (注: HTTP のチャンク転送とは関連ありません。)</li>
-    <li>END_RESPONSE <br />リクエスト処理サイクルを終了します。</li>
+    <li>END_RESPONSE <br>リクエスト処理サイクルを終了します。</li>
     </ul>
     <p>個々のメッセージはそれぞれ異なるデータパケット形式になっています。
     後述の「レスポンスパケットの構造」を参照してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basppacketstruct" id="basppacketstruct">基本パケット構造</a> <a title="Permanent link" href="#basppacketstruct" class="permalink">&para;</a></h2>
+<h2 id="basppacketstruct">基本パケット構造 <a title="Permanent link" href="#basppacketstruct" class="permalink">&para;</a></h2>
     <p>このプロトコルには XDR から受け継いだ部分が少しありますが、多くの点で
     異なります (例えば 4 バイトアライメントでないことなど) 。</p>
     <p>バイトオーダー: 個々のバイトのエンディアンがどうなっているかは、
@@ -284,9 +282,9 @@
     <p>上記メッセージは、それぞれ内部構造が異なっています。詳細は下記をご覧ください。
     </p>
   
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rpacetstruct" id="rpacetstruct">リクエストパケット構造</a> <a title="Permanent link" href="#rpacetstruct" class="permalink">&para;</a></h2>
+<h2 id="rpacetstruct">リクエストパケット構造 <a title="Permanent link" href="#rpacetstruct" class="permalink">&para;</a></h2>
     <p>サーバからコンテナへ送られるメッセージが
     <em>Forward Request</em> 型の場合 :</p>
     <div class="example"><pre>AJP13_FORWARD_REQUEST :=
@@ -422,16 +420,16 @@ attribute_value := (string)</pre></div>
       </td></tr>
       <tr><td>?servlet_path</td><td>0x02</td><td>-</td><td>未実装
       </td></tr>
-      <tr><td>?remote_user</td><td>0x03</td><td>String</td><td /></tr>
-      <tr><td>?auth_type</td><td>0x04</td><td>String</td><td /></tr>
-      <tr><td>?query_string</td><td>0x05</td><td>String</td><td /></tr>
-      <tr><td>?jvm_route</td><td>0x06</td><td>String</td><td /></tr>
-      <tr><td>?ssl_cert</td><td>0x07</td><td>String</td><td /></tr>
-      <tr><td>?ssl_cipher</td><td>0x08</td><td>String</td><td /></tr>
-      <tr><td>?ssl_session</td><td>0x09</td><td>String</td><td /></tr>
+      <tr><td>?remote_user</td><td>0x03</td><td>String</td><td></td></tr>
+      <tr><td>?auth_type</td><td>0x04</td><td>String</td><td></td></tr>
+      <tr><td>?query_string</td><td>0x05</td><td>String</td><td></td></tr>
+      <tr><td>?jvm_route</td><td>0x06</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_cert</td><td>0x07</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_cipher</td><td>0x08</td><td>String</td><td></td></tr>
+      <tr><td>?ssl_session</td><td>0x09</td><td>String</td><td></td></tr>
       <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
-      <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td /></tr>
+      <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td></td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p><code>context</code> と <code>servlet_path</code> は現在の C の
@@ -457,9 +455,9 @@ attribute_value := (string)</pre></div>
     が送出されます。この信号は属性の一覧の終わりを示すと同時に、リクエスト
     パケットの終端をも示しています。</p>
   
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="resppacketstruct" id="resppacketstruct">レスポンスパケット構造</a> <a title="Permanent link" href="#resppacketstruct" class="permalink">&para;</a></h2>
+<h2 id="resppacketstruct">レスポンスパケット構造 <a title="Permanent link" href="#resppacketstruct" class="permalink">&para;</a></h2>
     <p>コンテナがサーバに送り返すことのできるメッセージ:</p>
     <div class="example"><pre>AJP13_SEND_BODY_CHUNK :=
   prefix_code   3
@@ -528,7 +526,7 @@ AJP13_GET_BODY_CHUNK :=
     データ読み込み要求をします。サーバ側はそれに対して、最小 
     <code>request_length</code> 最大 <code>(8186 (8 Kbytes - 6))</code> 
     の範囲で、未転送で残っているリクエストボディの大きさのデータを
-    送り返します。<br />
+    送り返します。<br>
     ボディにそれ以上データが残っていない場合 (つまりサーブレットが
     ボディの最後を超えて読み込もうとした場合) 、サーバは
     ペイロード長 0 の<em>空パケット</em><code>(0x12,0x34,0x00,0x00)</code>
@@ -538,11 +536,11 @@ AJP13_GET_BODY_CHUNK :=
 </div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_proxy_ajp.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

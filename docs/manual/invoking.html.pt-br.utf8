@@ -1,160 +1,158 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-br" xml:lang="pt-br"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="pt-br"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Executando o Apache - Servidor HTTP Apache Versão 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<title>Executando o Apache - Servidor HTTP Apache Vers&atilde;o 2.4</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
-<p class="apache">Servidor HTTP Apache Versão 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p>
+<p class="apache">Servidor HTTP Apache Vers&atilde;o 2.4</p>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentação</a> &gt; <a href="./">Versão 2.4</a></div><div id="page-content"><div id="preamble"><h1>Executando o Apache</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documenta&ccedil;&atilde;o</a> &gt; <a href="./">Vers&atilde;o 2.4</a></div><div id="page-content"><div id="preamble"><h1>Executando o Apache</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
-<p><span>Línguas Disponíveis: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/invoking.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/invoking.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>No Windows o Apache geralmente é executado como um serviço.
-    Para detalhes, consulte: <a href="platform/windows.html#winsvc">Executando o Apache como um Serviço</a>.
+    <p>No Windows o Apache geralmente &eacute; executado como um servi&ccedil;o.
+    Para detalhes, consulte: <a href="platform/windows.html#winsvc">Executando o Apache como um Servi&ccedil;o</a>.
     </p>
 
     <p>No Unix o programa <code class="program"><a href="./programs/httpd.html">httpd</a></code>
-    é executado como um daemon em fica continuamente em
-    segundo plano para gerenciar as requisições. Este documento descreve como
+    &eacute; executado como um daemon em fica continuamente em
+    segundo plano para gerenciar as requisi&ccedil;&otilde;es. Este documento descreve como
     executar o <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Como o Apache Inicia</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#errors">Erros Durante a Inicialização</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#boot">Começando na inicialização do sistema</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#info">Informações Adicionais</a></li>
-</ul><h3>Veja também</h3><ul class="seealso"><li><a href="stopping.html">Interrompendo e Reiniciando</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#startup">Como o Apache Inicia</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#errors">Erros Durante a Inicializa&ccedil;&atilde;o</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#boot">Come&ccedil;ando na inicializa&ccedil;&atilde;o do sistema</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#info">Informa&ccedil;&otilde;es Adicionais</a></li>
+</ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="stopping.html">Interrompendo e Reiniciando</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="startup" id="startup">Como o Apache Inicia</a> <a title="Link permanente" href="#startup" class="permalink">&para;</a></h2>
+<h2 id="startup">Como o Apache Inicia <a title="Link permanente" href="#startup" class="permalink">&para;</a></h2>
 
     <p>Se a diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    especificada no arquivo de configuração indicar o padrão 80 (ou qualquer outra
-    porta abaixo de 1024), será necessário ter privilégios de root
+    especificada no arquivo de configura&ccedil;&atilde;o indicar o padr&atilde;o 80 (ou qualquer outra
+    porta abaixo de 1024), ser&aacute; necess&aacute;rio ter privil&eacute;gios de root
     para iniciar o Apache, para que ele possa se vincular a esta porta privilegiada.
     Depois que o servidor for iniciado e executar algumas atividades preliminares,
-    como abrir seus arquivos de registro, ele iniciará vários
+    como abrir seus arquivos de registro, ele iniciar&aacute; v&aacute;rios
     processos filhos que realizam o trabalho de monitorar e
-    responder às requisições de clientes. O processo principal <code>httpd</code>
-    continua a ser executado como usuário root, mas os processos filhos
-    são executados como um usuário com menos privilégios. Isso é controlado pelo
-    <a href="mpm.html">Módulo de Multiprocessamento</a> selecionado.</p>
+    responder &agrave;s requisi&ccedil;&otilde;es de clientes. O processo principal <code>httpd</code>
+    continua a ser executado como usu&aacute;rio root, mas os processos filhos
+    s&atilde;o executados como um usu&aacute;rio com menos privil&eacute;gios. Isso &eacute; controlado pelo
+    <a href="mpm.html">M&oacute;dulo de Multiprocessamento</a> selecionado.</p>
 
-    <p>O método recomendado para chamar o executável <code class="program"><a href="./programs/httpd.html">httpd</a></code>
-    é usar o script de controle <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>. Este
-    script define certas variáveis ​​de ambiente necessárias para que
+    <p>O m&eacute;todo recomendado para chamar o execut&aacute;vel <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    &eacute; usar o script de controle <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>. Este
+    script define certas vari&aacute;veis ​​de ambiente necess&aacute;rias para que
     o <code class="program"><a href="./programs/httpd.html">httpd</a></code> funcione corretamente em alguns sistemas operacionais
-    e, em seguida, chama o binário <code class="program"><a href="./programs/httpd.html">httpd</a></code>.
-    O <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> repassará quaisquer argumentos da linha de comando,
-    portanto, quaisquer opções do <code class="program"><a href="./programs/httpd.html">httpd</a></code> também podem ser usadas com o
-    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>. Você também pode editar diretamente o
-    script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> alterando a variável <code>HTTPD</code>
-    no início para especificar o local correto do
-    binário <code class="program"><a href="./programs/httpd.html">httpd</a></code> e quaisquer argumentos da linha de comando que você
+    e, em seguida, chama o bin&aacute;rio <code class="program"><a href="./programs/httpd.html">httpd</a></code>.
+    O <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> repassar&aacute; quaisquer argumentos da linha de comando,
+    portanto, quaisquer op&ccedil;&otilde;es do <code class="program"><a href="./programs/httpd.html">httpd</a></code> tamb&eacute;m podem ser usadas com o
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>. Voc&ecirc; tamb&eacute;m pode editar diretamente o
+    script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> alterando a vari&aacute;vel <code>HTTPD</code>
+    no in&iacute;cio para especificar o local correto do
+    bin&aacute;rio <code class="program"><a href="./programs/httpd.html">httpd</a></code> e quaisquer argumentos da linha de comando que voc&ecirc;
     deseje que estejam <em>sempre</em> presentes.</p>
 
-    <p>A primeira coisa que o <code class="program"><a href="./programs/httpd.html">httpd</a></code> faz quando é
-    chamado é localizar e ler o <a href="configuring.html">arquivo de configuração</a>
-    <code>httpd.conf</code>. A localização deste arquivo é definida no
-    momento da compilação, mas é possível especificar sua localização no momento da execução
-    usando a opção de linha de comando <code>-f</code> como em:</p>
+    <p>A primeira coisa que o <code class="program"><a href="./programs/httpd.html">httpd</a></code> faz quando &eacute;
+    chamado &eacute; localizar e ler o <a href="configuring.html">arquivo de configura&ccedil;&atilde;o</a>
+    <code>httpd.conf</code>. A localiza&ccedil;&atilde;o deste arquivo &eacute; definida no
+    momento da compila&ccedil;&atilde;o, mas &eacute; poss&iacute;vel especificar sua localiza&ccedil;&atilde;o no momento da execu&ccedil;&atilde;o
+    usando a op&ccedil;&atilde;o de linha de comando <code>-f</code> como em:</p>
 
 <div class="example"><p><code>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache2/conf/httpd.conf</code></p></div>
 
-    <p>Se tudo correr bem durante a inicialização, o servidor se desconectará do
-    terminal e o prompt de comando retornará quase
-    imediatamente. Isso indica que o servidor está em funcionamento.
-    Você pode então usar seu navegador para se conectar ao servidor e visualizar
-    a página de teste no diretório <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    <p>Se tudo correr bem durante a inicializa&ccedil;&atilde;o, o servidor se desconectar&aacute; do
+    terminal e o prompt de comando retornar&aacute; quase
+    imediatamente. Isso indica que o servidor est&aacute; em funcionamento.
+    Voc&ecirc; pode ent&atilde;o usar seu navegador para se conectar ao servidor e visualizar
+    a p&aacute;gina de teste no diret&oacute;rio <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errors" id="errors">Erros Durante a Inicialização</a> <a title="Link permanente" href="#errors" class="permalink">&para;</a></h2>
+<h2 id="errors">Erros Durante a Inicializa&ccedil;&atilde;o <a title="Link permanente" href="#errors" class="permalink">&para;</a></h2>
 
-    <p>Se o Apache sofrer um problema fatal durante a inicialização, ele
-    escreverá uma mensagem descrevendo o problema no console ou
+    <p>Se o Apache sofrer um problema fatal durante a inicializa&ccedil;&atilde;o, ele
+    escrever&aacute; uma mensagem descrevendo o problema no console ou
     no <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> antes de
-    encerrar. Uma das mensagens de erro mais comuns é "<code>Não foi possível
-    vincular à porta ...</code>". Essa mensagem geralmente é causada por
+    encerrar. Uma das mensagens de erro mais comuns &eacute; "<code>N&atilde;o foi poss&iacute;vel
+    vincular &agrave; porta ...</code>". Essa mensagem geralmente &eacute; causada por
     um dos seguintes motivos:</p>
 
     <ul>
       <li>Tentativa de iniciar o servidor em uma porta privilegiada sem
-      estar logado como usuário root; ou</li>
+      estar logado como usu&aacute;rio root; ou</li>
 
-      <li>Tentativa de iniciar o servidor quando já existe outra instância
-      do Apache ou de algum outro servidor web vinculada à mesma
+      <li>Tentativa de iniciar o servidor quando j&aacute; existe outra inst&acirc;ncia
+      do Apache ou de algum outro servidor web vinculada &agrave; mesma
       porta.</li>
     </ul>
 
-    <p>Para obter mais instruções sobre como solucionar problemas, consulte as
+    <p>Para obter mais instru&ccedil;&otilde;es sobre como solucionar problemas, consulte as
     <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> do Apache.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="boot" id="boot">Começando na inicialização do sistema</a> <a title="Link permanente" href="#boot" class="permalink">&para;</a></h2>
+<h2 id="boot">Come&ccedil;ando na inicializa&ccedil;&atilde;o do sistema <a title="Link permanente" href="#boot" class="permalink">&para;</a></h2>
 
-    <p>Se você deseja que seu servidor continue em execução após uma reinicialização
+    <p>Se voc&ecirc; deseja que seu servidor continue em execu&ccedil;&atilde;o ap&oacute;s uma reinicializa&ccedil;&atilde;o
     do sistema, adicione uma chamada a <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> aos seus
-    arquivos de inicialização do sistema (normalmente <code>rc.local</code> ou um arquivo em
-    um diretório <code>rc.N</code>). Isso iniciará o Apache como
+    arquivos de inicializa&ccedil;&atilde;o do sistema (normalmente <code>rc.local</code> ou um arquivo em
+    um diret&oacute;rio <code>rc.N</code>). Isso iniciar&aacute; o Apache como
     root. Antes de fazer isso, certifique-se de que seu servidor esteja devidamente
-    configurado para restrições de segurança e acesso.</p>
+    configurado para restri&ccedil;&otilde;es de seguran&ccedil;a e acesso.</p>
 
     <p>O script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> foi projetado para funcionar como um
-    script de inicialização SysV padrão; ele pode receber os argumentos
+    script de inicializa&ccedil;&atilde;o SysV padr&atilde;o; ele pode receber os argumentos
     <code>start</code>, <code>restart</code> e <code>stop</code>
     e traduzi-los nos sinais apropriados para
-    <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Portanto, a maioria das vezes é só adicionar
-    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> ao diretório de inicialização apropriado. Mas certifique-se
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Portanto, a maioria das vezes &eacute; s&oacute; adicionar
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> ao diret&oacute;rio de inicializa&ccedil;&atilde;o apropriado. Mas certifique-se
     de verificar os requisitos exatos do seu sistema.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="info" id="info">Informações Adicionais</a> <a title="Link permanente" href="#info" class="permalink">&para;</a></h2>
+<h2 id="info">Informa&ccedil;&otilde;es Adicionais <a title="Link permanente" href="#info" class="permalink">&para;</a></h2>
 
-    <p>Informações adicionais sobre as opções de linha de comando de <code class="program"><a href="./programs/httpd.html">httpd</a></code> e <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, bem como outros programas de suporte
-    incluídos com o servidor, estão disponíveis na página
+    <p>Informa&ccedil;&otilde;es adicionais sobre as op&ccedil;&otilde;es de linha de comando de <code class="program"><a href="./programs/httpd.html">httpd</a></code> e <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, bem como outros programas de suporte
+    inclu&iacute;dos com o servidor, est&atilde;o dispon&iacute;veis na p&aacute;gina
     <a href="programs/">Servidor e Programas de Suporte</a>.
-    Há também documentação sobre todos os <a href="mod/">módulos</a> incluídos na distribuição do Apache
+    H&aacute; tamb&eacute;m documenta&ccedil;&atilde;o sobre todos os <a href="mod/">m&oacute;dulos</a> inclu&iacute;dos na distribui&ccedil;&atilde;o do Apache
     e as <a href="mod/directives.html">diretivas</a> que eles
     fornecem.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Línguas Disponíveis: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>L&iacute;nguas Dispon&iacute;veis: </span><a href="./de/invoking.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./es/invoking.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="./fr/invoking.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/invoking.html" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./pt-br/invoking.html" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Glossário</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

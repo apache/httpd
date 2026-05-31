@@ -1,36 +1,34 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 투토리얼: .htaccess 파일 - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">How-To / Tutorials</a></div><div id="page-content"><div id="preamble"><h1>아파치 투토리얼: .htaccess 파일</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -38,23 +36,23 @@
 <p><code>.htaccess</code> 파일을 사용하여 디렉토리별로 설정을
 변경할 수 있다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess 파일</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#what">무엇이며/어떻게 사용하는가</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#when">언제 .htaccess 파일을 사용하나
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">.htaccess 파일</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#what">무엇이며/어떻게 사용하는가</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#when">언제 .htaccess 파일을 사용하나
     (혹은 사용하지 않나)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#how">어떻게 지시어를 적용하나</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#auth">인증 예제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes 예제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI 예제</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">문제해결</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#how">어떻게 지시어를 적용하나</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#auth">인증 예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">Server Side Includes 예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">CGI 예제</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">문제해결</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess 파일</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">.htaccess 파일 <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what" id="what">무엇이며/어떻게 사용하는가</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2 id="what">무엇이며/어떻게 사용하는가 <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> 파일(혹은 "분산 설정파일")을
@@ -105,10 +103,10 @@
     <p>특정 지시어를 <code>.htaccess</code> 파일에서 사용할
     수 있는지 궁금하면 지시어 문서의 사용장소 항목에 ".htaccess"가
     있는지 확인한다.</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="when" id="when">언제 .htaccess 파일을 사용하나
-    (혹은 사용하지 않나)</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
+<h2 id="when">언제 .htaccess 파일을 사용하나
+    (혹은 사용하지 않나) <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>일반적으로 주서버파일에 접근할 수 없는 경우가 아니라면
     <code>.htaccess</code> 파일을 사용하면 안된다. 예를 들어,
@@ -146,9 +144,9 @@
     파일을 요청하면, 아파치는 다음 파일들을 찾아야 한다.</p>
 
     <div class="example"><p><code>
-      /.htaccess<br />
-      /www/.htaccess<br />
-      /www/htdocs/.htaccess<br />
+      /.htaccess<br>
+      /www/.htaccess<br>
+      /www/htdocs/.htaccess<br>
       /www/htdocs/example/.htaccess
     </code></p></div>
 
@@ -179,9 +177,9 @@
     </code></p></div>
 
     <div class="example"><h3><code>httpd.conf</code> 파일에 있는 섹션</h3><p><code>
-      &lt;Directory /www/htdocs/example&gt;<br />
+      &lt;Directory /www/htdocs/example&gt;<br>
       <span class="indent">
-        AddType text/example .exm<br />
+        AddType text/example .exm<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -197,9 +195,9 @@
     <div class="example"><p><code>
       AllowOverride None
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="how" id="how">어떻게 지시어를 적용하나</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
+<h2 id="how">어떻게 지시어를 적용하나 <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> 파일을 발견한 디렉토리와 그 디렉토리의
     모든 하위디렉토리에 <code>.htaccess</code> 파일에 있는 설정
@@ -233,9 +231,9 @@
     <code>Options Includes</code>가 이전 설정을 완전히 무효로
     만들기때문에 <code>/www/htdocs/example1/example2</code>
     디렉토리는 CGI 실행을 허용하지 않는다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">인증 예제</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
+<h2 id="auth">인증 예제 <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>인증 방법을 알기위해 바로 이곳부터 읽는다면 주의할 것이
     있다. 암호 인증을 하려면 <code>.htaccess</code> 파일이
@@ -253,10 +251,10 @@
     <p><code>.htaccess</code> 파일 내용.</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
+      AuthType Basic<br>
+      AuthName "Password Required"<br>
+      AuthUserFile /www/passwords/password.file<br>
+      AuthGroupFile /www/passwords/group.file<br>
       Require Group admins
     </code></p></div>
 
@@ -266,9 +264,9 @@
 
     <p>인증과 권한부여에 대한 자세한 설명은 <a href="auth.html">인증
     투토리얼</a>을 보길 바란다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes 예제</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">Server Side Includes 예제 <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>또다른 일반적인 <code>.htaccess</code> 파일의 용도는
     특정 디렉토리에서 Server Side Includes를 가능하게 만드는
@@ -276,8 +274,8 @@
     다음과 같은 설정 지시어를 사용하면 된다.</p>
 
     <div class="example"><p><code>
-       Options +Includes<br />
-       AddType text/html shtml<br />
+       Options +Includes<br>
+       AddType text/html shtml<br>
        AddHandler server-parsed shtml
     </code></p></div>
 
@@ -285,16 +283,16 @@
     <code>AllowOverride FileInfo</code>가 모두 필요함을 명심하라.</p>
 
     <p>server-side includes에 대한 자세한 설명은 <a href="ssi.html">SSI 투토리얼</a>을 보길 바란다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI 예제</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">CGI 예제 <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>마지막으로 <code>.htaccess</code> 파일을 사용하여 특정
     디렉토리에서 CGI 프로그램 실행을 허용하고 싶다면, 다음과
     같은 설정을 사용한다.</p>
 
     <div class="example"><p><code>
-       Options +ExecCGI<br />
+       Options +ExecCGI<br>
        AddHandler cgi-script cgi pl
     </code></p></div>
 
@@ -302,7 +300,7 @@
     처리하고 싶다면 다음과 같은 설정도 가능하다.</p>
 
     <div class="example"><p><code>
-       Options +ExecCGI<br />
+       Options +ExecCGI<br>
        SetHandler cgi-script
     </code></p></div>
 
@@ -311,9 +309,9 @@
 
     <p>CGI 프로그래밍과 설정에 대한 자세한 설명은 <a href="cgi.html">CGI 투토리얼</a>을 보길 바란다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">문제해결</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">문제해결 <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> 파일에 둔 설정 지시어가 원하는
     기능을 하지 않는 경우 여러가지 이유가 있을 수 있다.</p>
@@ -333,14 +331,14 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

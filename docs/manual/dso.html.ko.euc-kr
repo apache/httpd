@@ -1,35 +1,33 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>동적공유객체 (DSO) 지원 - Apache HTTP Server Version 2.4</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="./style/css/prettify.css" />
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
-<link href="./images/favicon.png" rel="shortcut icon" /></head>
+<link href="./images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="./images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="./images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="./images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>동적공유객체 (DSO) 지원</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dso.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./fr/dso.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -45,14 +43,14 @@
 
     <p>이 문서는 DSO 모듈 사용법과 배경 이론을 설명한다.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">구현</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">사용법 요약</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#background">배경지식</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#advantages">장단점</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif"> <a href="#implementation">구현</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#usage">사용법 요약</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#background">배경지식</a></li>
+<li><img alt="" src="./images/down.gif"> <a href="#advantages">장단점</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">구현</a> <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
+<h2 id="implementation">구현 <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -82,9 +80,9 @@
     아파치 배포본 소스 트리없이, 또 DSO 지원을 위한 플래폼 특유의
     컴파일러 옵션와 링커 옵션에 신경을 쓰지않고 자신의 아파치
     모듈 소스를 컴파일할 수 있다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">사용법 요약</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">사용법 요약 <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Apache 2.2의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
 
@@ -95,7 +93,7 @@
         <code>mod_foo.so</code>로:
 
 <div class="example"><p><code>
-$ ./configure --prefix=/path/to/install --enable-foo=shared<br />
+$ ./configure --prefix=/path/to/install --enable-foo=shared<br>
 $ make install
 </code></p></div>
       </li>
@@ -106,7 +104,7 @@ $ make install
         <code>mod_foo.so</code>로:
 
 <div class="example"><p><code>
-$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br />
+$ ./configure --add-module=module_type:/path/to/3rdparty/mod_foo.c --enable-foo=shared<br>
 $ make install
 </code></p></div>
       </li>
@@ -116,7 +114,7 @@ $ make install
         경우:
 
 <div class="example"><p><code>
-$ ./configure --enable-so<br />
+$ ./configure --enable-so<br>
 $ make install
 </code></p></div>
       </li>
@@ -128,8 +126,8 @@ $ make install
         DSO <code>mod_foo.so</code>로:
 
 <div class="example"><p><code>
-$ cd /path/to/3rdparty<br />
-$ apxs -c mod_foo.c<br />
+$ cd /path/to/3rdparty<br>
+$ apxs -c mod_foo.c<br>
 $ apxs -i -a -n foo mod_foo.la
 </code></p></div>
       </li>
@@ -138,9 +136,9 @@ $ apxs -i -a -n foo mod_foo.la
     <p>모든 경우 일단 공유 모듈이 컴파일되면, <code>httpd.conf</code>에
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> 지시어를
     사용하여 아파치가 그 모듈을 읽어들이게 만든다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="background" id="background">배경지식</a> <a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
+<h2 id="background">배경지식 <a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
 
     <p>현대적인 유닉스류에는 <em>동적공유객체</em> (DSO)의
     동적 링킹/로딩(dynamic linking/loading)이라고 하여, 특별한
@@ -221,9 +219,9 @@ $ apxs -i -a -n foo mod_foo.la
     이용한 접근방법을 사용했기때문에 1.3 버전부터 이 대열에 합류했다.
     그래서 아파치는 실행중 모듈을 읽어들이는데 DSO를 사용하도록
     운명지워졌다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">장단점</a> <a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
+<h2 id="advantages">장단점 <a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>앞에서 말한 DSO를 사용하면 다음과 같은 장점이 있다:</p>
 
@@ -277,13 +275,13 @@ $ apxs -i -a -n foo mod_foo.la
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="./fr/dso.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="./fr/dso.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="./tr/dso.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

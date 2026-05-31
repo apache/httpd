@@ -1,131 +1,129 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_cern_meta - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_cern_meta</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cern_meta.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cern_meta.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cern_meta.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_cern_meta.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>La sémantique des métafichiers du serveur httpd du
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>La s&eacute;mantique des m&eacute;tafichiers du serveur httpd du
 CERN</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>cern_meta_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_cern_meta.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>cern_meta_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_cern_meta.c</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Il s'agit d'une émulation de la sémantique des métafichiers du
-    serveur httpd du CERN. Les métafichiers consistent en en-têtes HTTP
-    qui peuvent s'ajouter au jeu d'en-têtes habituels pour chaque
-    fichier accédé. Ils ressemblent beaucoup aux fichiers .asis
-    d'Apache, et permettent d'influencer de manière rudimentaire
-    l'en-tête Expires:, ainsi que d'autres curiosités. Il existe de
-    nombreuses méthodes pour gérer les métainformations, mais le choix
-    s'est porté sur celle-ci car il existe déjà un grand nombre
+    <p>Il s'agit d'une &eacute;mulation de la s&eacute;mantique des m&eacute;tafichiers du
+    serveur httpd du CERN. Les m&eacute;tafichiers consistent en en-t&ecirc;tes HTTP
+    qui peuvent s'ajouter au jeu d'en-t&ecirc;tes habituels pour chaque
+    fichier acc&eacute;d&eacute;. Ils ressemblent beaucoup aux fichiers .asis
+    d'Apache, et permettent d'influencer de mani&egrave;re rudimentaire
+    l'en-t&ecirc;te Expires:, ainsi que d'autres curiosit&eacute;s. Il existe de
+    nombreuses m&eacute;thodes pour g&eacute;rer les m&eacute;tainformations, mais le choix
+    s'est port&eacute; sur celle-ci car il existe d&eacute;j&agrave; un grand nombre
     d'utilisateurs du CERN qui peuvent exploiter ce module.</p>
 
-    <p>Pour plus d'information, voir le document sur la <a href="https://www.w3.org/Daemon/User/Config/General.html#MetaDir">sémantique des métafichiers du CERN</a>.</p>
+    <p>Pour plus d'information, voir le document sur la <a href="https://www.w3.org/Daemon/User/Config/General.html#MetaDir">s&eacute;mantique des m&eacute;tafichiers du CERN</a>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#metadir">MetaDir</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#metafiles">MetaFiles</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#metasuffix">MetaSuffix</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#metadir">MetaDir</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#metafiles">MetaFiles</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#metasuffix">MetaSuffix</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cern_meta">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cern_meta">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_cern_meta">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_cern_meta">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></li>
 <li><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metadir" id="metadir">Directive</a> <a name="MetaDir" id="MetaDir">MetaDir</a> <a title="Lien permanent" href="#metadir" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="metadir">Directive <span id="MetaDir">MetaDir</span> <a title="Lien permanent" href="#metadir" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du répertoire où trouver les fichiers de
-métainformations dans le style du CERN</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaDir <var>répertoire</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaDir .web</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nom du r&eacute;pertoire o&ugrave; trouver les fichiers de
+m&eacute;tainformations dans le style du CERN</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaDir <var>r&eacute;pertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaDir .web</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Spécifie le nom du répertoire dans lequel Apache pourra trouver
-    les fichiers de métainformations. Ce répertoire est en général un
-    sous-répertoire 'caché' du répertoire qui contient le fichier à
-    accéder. Définissez cette directive à "<code>.</code>" pour
-    rechercher les métafichiers dans le même répertoire que le fichier à
-    accéder :</p>
+    <p>Sp&eacute;cifie le nom du r&eacute;pertoire dans lequel Apache pourra trouver
+    les fichiers de m&eacute;tainformations. Ce r&eacute;pertoire est en g&eacute;n&eacute;ral un
+    sous-r&eacute;pertoire 'cach&eacute;' du r&eacute;pertoire qui contient le fichier &agrave;
+    acc&eacute;der. D&eacute;finissez cette directive &agrave; "<code>.</code>" pour
+    rechercher les m&eacute;tafichiers dans le m&ecirc;me r&eacute;pertoire que le fichier &agrave;
+    acc&eacute;der :</p>
 
     <pre class="prettyprint lang-config">MetaDir .</pre>
 
 
-    <p>Ou, pour rechercher dans un sous-répertoire du répertoire
-    contenant le fichier à accéder :</p>
+    <p>Ou, pour rechercher dans un sous-r&eacute;pertoire du r&eacute;pertoire
+    contenant le fichier &agrave; acc&eacute;der :</p>
 
     <pre class="prettyprint lang-config">MetaDir .meta</pre>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metafiles" id="metafiles">Directive</a> <a name="MetaFiles" id="MetaFiles">MetaFiles</a> <a title="Lien permanent" href="#metafiles" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="metafiles">Directive <span id="MetaFiles">MetaFiles</span> <a title="Lien permanent" href="#metafiles" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le traitement des métafichiers du CERN</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le traitement des m&eacute;tafichiers du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaFiles on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaFiles off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaFiles off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Active ou désactive le traitement des métafichiers pour certains
-    répertoires.</p>
+    <p>Active ou d&eacute;sactive le traitement des m&eacute;tafichiers pour certains
+    r&eacute;pertoires.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="metasuffix" id="metasuffix">Directive</a> <a name="MetaSuffix" id="MetaSuffix">MetaSuffix</a> <a title="Lien permanent" href="#metasuffix" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="metasuffix">Directive <span id="MetaSuffix">MetaSuffix</span> <a title="Lien permanent" href="#metasuffix" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Suffixe du fichier contenant les métainformations dans le
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Suffixe du fichier contenant les m&eacute;tainformations dans le
 style du CERN</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MetaSuffix <var>suffixe</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>MetaSuffix .meta</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Surcharges autorisées:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MetaSuffix .meta</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cern_meta</td></tr>
 </table>
-    <p>Spécifie le suffixe du fichier contenant les métainformations.
-    Par exemple, si on conserve les valeurs par défaut des deux
-    directives précédentes, une requête pour
+    <p>Sp&eacute;cifie le suffixe du fichier contenant les m&eacute;tainformations.
+    Par exemple, si on conserve les valeurs par d&eacute;faut des deux
+    directives pr&eacute;c&eacute;dentes, une requ&ecirc;te pour
     <code>DOCUMENT_ROOT/un-rep/index.html</code> provoquera la recherche
-    du métafichier
+    du m&eacute;tafichier
     <code>DOCUMENT_ROOT/un-rep/.web/index.html.meta</code>, et utilisera
-    son contenu pour générer les informations quant aux en-têtes MIME
+    son contenu pour g&eacute;n&eacute;rer les informations quant aux en-t&ecirc;tes MIME
     additionnels.</p>
 
     <div class="example"><h3>Exemple :</h3><pre class="prettyprint lang-config">MetaSuffix .meta</pre>
@@ -135,11 +133,11 @@ style du CERN</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_cern_meta.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_cern_meta.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_cern_meta.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_cern_meta.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

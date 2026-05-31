@@ -1,36 +1,34 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ja"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache チュートリアル: .htaccess ファイル - Apache HTTP サーバ バージョン 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="https://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.4</a> &gt; <a href="./">How-To / チュートリアル</a></div><div id="page-content"><div id="preamble"><h1>Apache チュートリアル: .htaccess ファイル</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている
             可能性があります。
@@ -40,22 +38,22 @@
 <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
 提供します。</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">.htaccess ファイル</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#what">.htaccess ファイルとは何か/その使い方</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#when">いつ .htaccess ファイルを使う(使わない)か。</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#how">ディレクティブの適用のされ方</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#auth">認証の例</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssi">SSI の例</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI の例</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">問題解決</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">.htaccess ファイル</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#what">.htaccess ファイルとは何か/その使い方</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#when">いつ .htaccess ファイルを使う(使わない)か。</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#how">ディレクティブの適用のされ方</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#auth">認証の例</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssi">SSI の例</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cgi">CGI の例</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">問題解決</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess ファイル</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">.htaccess ファイル <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what" id="what">.htaccess ファイルとは何か/その使い方</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2 id="what">.htaccess ファイルとは何か/その使い方 <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> ファイル (「分散設定ファイル」) は
@@ -108,9 +106,9 @@
     <p>あるディレクティブを <code>.htaccess</code> ファイルに書くことができるか
     どうかわからないときは、そのディレクティブの説明を探して、".htaccess"
     のための「コンテキスト」の行を調べてください。</p>
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="when" id="when">いつ .htaccess ファイルを使う(使わない)か。</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
+<h2 id="when">いつ .htaccess ファイルを使う(使わない)か。 <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>一般的に、サーバの主設定ファイルにアクセスできない場合を除いて、
     <code>.htaccess</code> ファイルの使用は極力避けてください。
@@ -148,9 +146,9 @@
     ファイルがリクエストされたときは、Apache は以下のファイルを調べます。</p>
 
     <div class="example"><p><code>
-      /.htaccess<br />
-      /www/.htaccess<br />
-      /www/htdocs/.htaccess<br />
+      /.htaccess<br>
+      /www/.htaccess<br>
+      /www/htdocs/.htaccess<br>
       /www/htdocs/example/.htaccess
     </code></p></div>
 
@@ -186,9 +184,9 @@
 
     <div class="example"><h3><code>httpd.conf のセクション</code>
     file</h3><p><code>
-      &lt;Directory /www/htdocs/example&gt;<br />
+      &lt;Directory /www/htdocs/example&gt;<br>
       <span class="indent">
-        AddType text/example .exm<br />
+        AddType text/example .exm<br>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
@@ -205,9 +203,9 @@
     <div class="example"><p><code>
       AllowOverride None
     </code></p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="how" id="how">ディレクティブの適用のされ方</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
+<h2 id="how">ディレクティブの適用のされ方 <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p><code>.htaccess</code> ファイルの設定ディレクティブは <code>.htaccess</code>
     ファイルの存在するディレクトリと、そのサブディレクトリすべてに適用されます。
@@ -244,8 +242,8 @@
     許可されません。これは、<code>Options Includes</code> のみが
     効力を持ち、それがすべての以前の設定を上書きするからです。</p>
 
-    <h3><a name="merge" id="merge">メイン設定ファイルに対する
-    .htaccess のマージ</a></h3>
+    <h3 id="merge">メイン設定ファイルに対する
+    .htaccess のマージ</h3>
 
     <p>As discussed in the documentation on <a href="../sections.html">Configuration Sections</a>,
     <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections for
@@ -269,23 +267,23 @@
     設定できるように、という場合は次のようにできます :</p>
     
     <div class="example"><p><code>
-&lt;Directory /&gt;<br />
+&lt;Directory /&gt;<br>
 <span class="indent">
-Allowoverride All<br />
+Allowoverride All<br>
 </span>
-&lt;/Directory&gt;<br />
-<br />
-&lt;Location /&gt;<br />
+&lt;/Directory&gt;<br>
+<br>
+&lt;Location /&gt;<br>
 <span class="indent">
-Options +IncludesNoExec -ExecCGI<br />
+Options +IncludesNoExec -ExecCGI<br>
 </span>
 &lt;/Location&gt;
     </code></p></div>
 
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">認証の例</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
+<h2 id="auth">認証の例 <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
     知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
@@ -303,10 +301,10 @@ Options +IncludesNoExec -ExecCGI<br />
     <p><code>.htaccess</code> ファイルの内容:</p>
 
     <div class="example"><p><code>
-      AuthType Basic<br />
-      AuthName "Password Required"<br />
-      AuthUserFile /www/passwords/password.file<br />
-      AuthGroupFile /www/passwords/group.file<br />
+      AuthType Basic<br>
+      AuthName "Password Required"<br>
+      AuthUserFile /www/passwords/password.file<br>
+      AuthGroupFile /www/passwords/group.file<br>
       Require Group admins
     </code></p></div>
 
@@ -316,9 +314,9 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p>認証と承認については <a href="auth.html">認証チュートリアル</a>を
     参照してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">SSI の例</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">SSI の例 <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>もう一つの <code>.htaccess</code> ファイルのよくある利用法は
     特定のディレクトリで SSI を有効にすることです。これは、望みのディレクトリの
@@ -326,8 +324,8 @@ Options +IncludesNoExec -ExecCGI<br />
     達成できます:</p>
 
     <div class="example"><p><code>
-       Options +Includes<br />
-       AddType text/html shtml<br />
+       Options +Includes<br>
+       AddType text/html shtml<br>
        AddHandler server-parsed shtml
     </code></p></div>
 
@@ -337,15 +335,15 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p>よりまとまった SSI の説明は <a href="ssi.html">SSI チュートリアル</a>を
     参照してください。</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI の例</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">CGI の例 <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <p>最後に、特定のディレクトリで CGI プログラムの実行を許可したいことが
     あるでしょう。これは以下の設定で行なうことができます:</p>
 
     <div class="example"><p><code>
-       Options +ExecCGI<br />
+       Options +ExecCGI<br>
        AddHandler cgi-script cgi pl
     </code></p></div>
 
@@ -353,7 +351,7 @@ Options +IncludesNoExec -ExecCGI<br />
     みなされるようにしたいなら、以下の設定で実現することができます:</p>
 
     <div class="example"><p><code>
-       Options +ExecCGI<br />
+       Options +ExecCGI<br>
        SetHandler cgi-script
     </code></p></div>
 
@@ -363,9 +361,9 @@ Options +IncludesNoExec -ExecCGI<br />
 
     <p>CGI プログラムと設定のよりまとまった説明は <a href="cgi.html">CGI チュートリアル</a>を参照してください。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">問題解決</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">問題解決 <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>設定ディレクティブを <code>.htaccess</code> ファイルに書いたけれども、
     期待した効果が得られないときには、いくつかの原因が考えられます。</p>
@@ -387,14 +385,14 @@ Options +IncludesNoExec -ExecCGI<br />
 </div></div>
 <div class="bottomlang">
 <p><span>翻訳済み言語: </span><a href="../en/howto/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/howto/htaccess.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/howto/htaccess.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/howto/htaccess.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

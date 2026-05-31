@@ -1,41 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_include - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_include</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_include.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Server-parsed html documents (Server Side Includes)</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>include_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_include.c</td></tr></table>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>include_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_include.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides a filter which will process files
@@ -47,24 +45,24 @@
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enabling">Enabling Server-Side Includes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#pathinfo">PATH_INFO with Server Side Includes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#elements">Available Elements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#includevars">Include Variables</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#substitution">Variable Substitution</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flowctrl">Flow Control Elements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#legacyexpr">Legacy expression syntax</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#enabling">Enabling Server-Side Includes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#pathinfo">PATH_INFO with Server Side Includes</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#elements">Available Elements</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#includevars">Include Variables</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#substitution">Variable Substitution</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flowctrl">Flow Control Elements</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#legacyexpr">Legacy expression syntax</a></li>
 </ul><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssietag">SSIETag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssilastmodified">SSILastModified</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssilegacyexprparser">SSILegacyExprParser</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssistarttag">SSIStartTag</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssitimeformat">SSITimeFormat</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssiundefinedecho">SSIUndefinedEcho</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#xbithack">XBitHack</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssiendtag">SSIEndTag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssierrormsg">SSIErrorMsg</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssietag">SSIETag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssilastmodified">SSILastModified</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssilegacyexprparser">SSILegacyExprParser</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssistarttag">SSIStartTag</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssitimeformat">SSITimeFormat</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#ssiundefinedecho">SSIUndefinedEcho</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#xbithack">XBitHack</a></li>
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_include">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_include">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
@@ -73,9 +71,9 @@
 <li><a href="../filter.html">Filters</a></li>
 <li><a href="../howto/ssi.html">SSI Tutorial</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enabling" id="enabling">Enabling Server-Side Includes</a> <a title="Permanent link" href="#enabling" class="permalink">&para;</a></h2>
+<h2 id="enabling">Enabling Server-Side Includes <a title="Permanent link" href="#enabling" class="permalink">&para;</a></h2>
     
 
     <p>Server Side Includes are implemented by the
@@ -108,18 +106,18 @@ AddOutputFilter INCLUDES .shtml</pre>
     output will have the mime type <code>text/html</code>).</p>
 
     <p>For more information, see our <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="pathinfo" id="pathinfo">PATH_INFO with Server Side Includes</a> <a title="Permanent link" href="#pathinfo" class="permalink">&para;</a></h2>
+<h2 id="pathinfo">PATH_INFO with Server Side Includes <a title="Permanent link" href="#pathinfo" class="permalink">&para;</a></h2>
     
 
     <p>Files processed for server-side includes no longer accept
     requests with <code>PATH_INFO</code> (trailing pathname information)
     by default.  You can use the <code class="directive"><a href="../mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> directive to
     configure the server to accept requests with <code>PATH_INFO</code>.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="elements" id="elements">Available Elements</a> <a title="Permanent link" href="#elements" class="permalink">&para;</a></h2>
+<h2 id="elements">Available Elements <a title="Permanent link" href="#elements" class="permalink">&para;</a></h2>
     <p>The document is parsed as an HTML document, with special
     commands embedded as SGML comments. A command has the syntax: </p>
 
@@ -165,20 +163,20 @@ AddOutputFilter INCLUDES .shtml</pre>
     <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, and will only be available if this
     module is loaded.</p>
 
-    <h3><a name="element.comment" id="element.comment">The comment Element</a></h3>
+    <h3 id="element.comment">The comment Element</h3>
       <p>This command doesn't output anything. Its only use is to
       add comments within a file. These comments are not printed.</p>
 
       <p>This syntax is available in version 2.4.21 and later.</p>
 
       <div class="example"><p><code>
-      &lt;!--#comment Blah Blah Blah --&gt;<br />
-      &nbsp;&nbsp;&nbsp;or<br />
+      &lt;!--#comment Blah Blah Blah --&gt;<br>
+      &nbsp;&nbsp;&nbsp;or<br>
       &lt;!--#comment text="Blah Blah Blah" --&gt;
       </code></p></div>
      
 
-    <h3><a name="element.config" id="element.config">The config Element</a></h3>
+    <h3 id="element.config">The config Element</h3>
       <p>This command controls various aspects of the parsing. The
       valid attributes are:</p>
 
@@ -229,7 +227,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </dl>
      
 
-    <h3><a name="element.echo" id="element.echo">The echo Element</a></h3>
+    <h3 id="element.echo">The echo Element</h3>
       <p>This command prints one of the <a href="#includevars">include
       variables</a> defined below. If the variable is unset, the result is
       determined by the <code class="directive"><a href="#ssiundefinedecho">SSIUndefinedEcho</a></code> directive. Any dates printed are
@@ -294,7 +292,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </dl>
      
 
-    <h3><a name="element.exec" id="element.exec">The exec Element</a></h3>
+    <h3 id="element.exec">The exec Element</h3>
       <p>The <code>exec</code> command executes a given shell command or
       CGI script. It requires <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> to be present
       in the server. If <code class="directive"><a href="../mod/core.html#options">Options</a></code>
@@ -364,7 +362,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </dl>
      
 
-    <h3><a name="element.fsize" id="element.fsize">The fsize Element</a></h3>
+    <h3 id="element.fsize">The fsize Element</h3>
       <p>This command prints the size of the specified file, subject
       to the <code>sizefmt</code> format specification. Attributes:</p>
 
@@ -400,14 +398,14 @@ AddOutputFilter INCLUDES .shtml</pre>
       aliases.</p>
      
 
-    <h3><a name="element.flastmod" id="element.flastmod">The flastmod Element</a></h3>
+    <h3 id="element.flastmod">The flastmod Element</h3>
       <p>This command prints the last modification date of the
       specified file, subject to the <code>timefmt</code> format
       specification. The attributes are the same as for the
       <code><a href="#element.fsize">fsize</a></code> command.</p>
      
 
-    <h3><a name="element.include" id="element.include">The include Element</a></h3>
+    <h3 id="element.include">The include Element</h3>
       <p>This command inserts the text of another document or file
       into the parsed file. Any included file is subject to the usual
       access control. If the directory containing the parsed file has
@@ -484,7 +482,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </dl>
      
 
-    <h3><a name="element.printenv" id="element.printenv">The printenv Element</a></h3>
+    <h3 id="element.printenv">The printenv Element</h3>
       <p>This prints out a plain text listing of all existing variables and
       their values. Special characters are entity encoded (see the <code><a href="#element.echo">echo</a></code> element for details)
       before being output. There are no attributes.</p>
@@ -496,7 +494,7 @@ AddOutputFilter INCLUDES .shtml</pre>
       </code></p></div>
      
 
-    <h3><a name="element.set" id="element.set">The set Element</a></h3>
+    <h3 id="element.set">The set Element</h3>
       <p>This sets the value of a variable. Attributes:</p>
 
       <dl>
@@ -543,9 +541,9 @@ AddOutputFilter INCLUDES .shtml</pre>
         &lt;!--#set var="category" value="help" --&gt;
       </code></p></div>
      
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="includevars" id="includevars">Include Variables</a> <a title="Permanent link" href="#includevars" class="permalink">&para;</a></h2>
+<h2 id="includevars">Include Variables <a title="Permanent link" href="#includevars" class="permalink">&para;</a></h2>
     
 
     <p>In addition to the variables in the standard CGI environment,
@@ -601,9 +599,9 @@ AddOutputFilter INCLUDES .shtml</pre>
       <dt><code>USER_NAME</code></dt>
       <dd>The user name of the owner of the file.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="substitution" id="substitution">Variable Substitution</a> <a title="Permanent link" href="#substitution" class="permalink">&para;</a></h2>
+<h2 id="substitution">Variable Substitution <a title="Permanent link" href="#substitution" class="permalink">&para;</a></h2>
 
     <p>Variable substitution is done within quoted strings in most
     cases where they may reasonably occur as an argument to an SSI
@@ -633,9 +631,9 @@ AddOutputFilter INCLUDES .shtml</pre>
     to "<code>X_Y</code>" if <code>REMOTE_HOST</code> is
     "<code>X</code>" and <code>REQUEST_METHOD</code> is
     "<code>Y</code>".</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flowctrl" id="flowctrl">Flow Control Elements</a> <a title="Permanent link" href="#flowctrl" class="permalink">&para;</a></h2>
+<h2 id="flowctrl">Flow Control Elements <a title="Permanent link" href="#flowctrl" class="permalink">&para;</a></h2>
     
 
     <p>The basic flow control elements are:</p>
@@ -691,9 +689,9 @@ AddOutputFilter INCLUDES .shtml</pre>
     for a complete reference and examples. The <em>restricted</em> functions
     are not available inside <code class="module"><a href="../mod/mod_include.html">mod_include</a></code></p>
     </div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="legacyexpr" id="legacyexpr">Legacy expression syntax</a> <a title="Permanent link" href="#legacyexpr" class="permalink">&para;</a></h2>
+<h2 id="legacyexpr">Legacy expression syntax <a title="Permanent link" href="#legacyexpr" class="permalink">&para;</a></h2>
     
 
     <p>This section describes the syntax of the <code>#if expr</code>
@@ -718,8 +716,8 @@ AddOutputFilter INCLUDES .shtml</pre>
 </div>
       </dd>
 
-      <dt><code><var>string1</var> = <var>string2</var><br />
-      <var>string1</var> == <var>string2</var><br />
+      <dt><code><var>string1</var> = <var>string2</var><br>
+      <var>string1</var> == <var>string2</var><br>
       <var>string1</var> != <var>string2</var></code></dt>
 
       <dd><p>Compare <var>string1</var> with <var>string2</var>. If
@@ -742,9 +740,9 @@ AddOutputFilter INCLUDES .shtml</pre>
 </div>
       </dd>
 
-      <dt><code><var>string1</var> &lt; <var>string2</var><br />
-       <var>string1</var> &lt;= <var>string2</var><br />
-       <var>string1</var> &gt; <var>string2</var><br />
+      <dt><code><var>string1</var> &lt; <var>string2</var><br>
+       <var>string1</var> &lt;= <var>string2</var><br>
+       <var>string1</var> &gt; <var>string2</var><br>
        <var>string1</var> &gt;= <var>string2</var></code></dt>
 
       <dd>Compare <var>string1</var> with <var>string2</var>. Note, that
@@ -788,10 +786,10 @@ AddOutputFilter INCLUDES .shtml</pre>
     variables. If multiple strings are found in a row, they are
     concatenated using blanks. So,</p>
 
-    <div class="example"><p><code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code> results in <code><var>string1</var>&nbsp;<var>string2</var></code><br />
-      <br />
-      and<br />
-      <br />
+    <div class="example"><p><code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code> results in <code><var>string1</var>&nbsp;<var>string2</var></code><br>
+      <br>
+      and<br>
+      <br>
       <code>'<var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var>'</code> results in <code><var>string1</var>&nbsp;&nbsp;&nbsp;&nbsp;<var>string2</var></code>.</p></div>
 
     <div class="note"><h3>Optimization of Boolean Expressions</h3>
@@ -824,8 +822,8 @@ AddOutputFilter INCLUDES .shtml</pre>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a> <a title="Permanent link" href="#ssiendtag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssiendtag"><span id="SSIEndTag">SSIEndTag</span> Directive <a title="Permanent link" href="#ssiendtag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that ends an include element</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIEndTag <var>tag</var></code></td></tr>
@@ -850,8 +848,8 @@ AddOutputFilter INCLUDES .shtml</pre>
 <li><code class="directive"><a href="#ssistarttag">SSIStartTag</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIErrorMsg" id="SSIErrorMsg">SSIErrorMsg</a> <a name="ssierrormsg" id="ssierrormsg">Directive</a> <a title="Permanent link" href="#ssierrormsg" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssierrormsg"><span id="SSIErrorMsg">SSIErrorMsg</span> Directive <a title="Permanent link" href="#ssierrormsg" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Error message displayed when there is an SSI
 error</td></tr>
@@ -876,8 +874,8 @@ directive]"</code></td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIETag" id="SSIETag">SSIETag</a> <a name="ssietag" id="ssietag">Directive</a> <a title="Permanent link" href="#ssietag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssietag"><span id="SSIETag">SSIETag</span> Directive <a title="Permanent link" href="#ssietag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether ETags are generated by the server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIETag on|off</code></td></tr>
@@ -917,8 +915,8 @@ directive]"</code></td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILastModified" id="SSILastModified">SSILastModified</a> <a name="ssilastmodified" id="ssilastmodified">Directive</a> <a title="Permanent link" href="#ssilastmodified" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssilastmodified"><span id="SSILastModified">SSILastModified</span> Directive <a title="Permanent link" href="#ssilastmodified" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls whether <code>Last-Modified</code> headers are generated by the
 server.</td></tr>
@@ -958,8 +956,8 @@ server.</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSILegacyExprParser" id="SSILegacyExprParser">SSILegacyExprParser</a> <a name="ssilegacyexprparser" id="ssilegacyexprparser">Directive</a> <a title="Permanent link" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssilegacyexprparser"><span id="SSILegacyExprParser">SSILegacyExprParser</span> Directive <a title="Permanent link" href="#ssilegacyexprparser" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable compatibility mode for conditional expressions.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSILegacyExprParser on|off</code></td></tr>
@@ -977,8 +975,8 @@ server.</td></tr>
     </p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIStartTag" id="SSIStartTag">SSIStartTag</a> <a name="ssistarttag" id="ssistarttag">Directive</a> <a title="Permanent link" href="#ssistarttag" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssistarttag"><span id="SSIStartTag">SSIStartTag</span> Directive <a title="Permanent link" href="#ssistarttag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String that starts an include element</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIStartTag <var>tag</var></code></td></tr>
@@ -1016,8 +1014,8 @@ SSIEndTag   "%&gt;"</pre>
 <li><code class="directive"><a href="#ssiendtag">SSIEndTag</a></code></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">Directive</a> <a title="Permanent link" href="#ssitimeformat" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssitimeformat"><span id="SSITimeFormat">SSITimeFormat</span> Directive <a title="Permanent link" href="#ssitimeformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the format in which date strings are
 displayed</td></tr>
@@ -1043,8 +1041,8 @@ displayed</td></tr>
     format "22:26, June 14, 2002".</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIUndefinedEcho" id="SSIUndefinedEcho">SSIUndefinedEcho</a> <a name="ssiundefinedecho" id="ssiundefinedecho">Directive</a> <a title="Permanent link" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="ssiundefinedecho"><span id="SSIUndefinedEcho">SSIUndefinedEcho</span> Directive <a title="Permanent link" href="#ssiundefinedecho" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>String displayed when an unset variable is echoed</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIUndefinedEcho <var>string</var></code></td></tr>
@@ -1061,8 +1059,8 @@ displayed</td></tr>
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="XBitHack" id="XBitHack">XBitHack</a> <a name="xbithack" id="xbithack">Directive</a> <a title="Permanent link" href="#xbithack" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="xbithack"><span id="XBitHack">XBitHack</span> Directive <a title="Permanent link" href="#xbithack" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Parse SSI directives in files with the execute bit
 set</td></tr>
@@ -1113,11 +1111,11 @@ set</td></tr>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_include.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_include.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

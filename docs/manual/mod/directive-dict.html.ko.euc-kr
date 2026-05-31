@@ -1,36 +1,34 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>지시어를 설명하는데 사용한 용어들 - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a></div><div id="page-content"><div id="preamble"><h1>지시어를 설명하는데 사용한 용어들</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directive-dict.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directive-dict.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -38,23 +36,23 @@
     <p>이 문서는 아파치 <a href="directives.html">설정
     지시어</a>를 설명하는데 사용한 용어들을 설명한다.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">설명 (Description)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Syntax">문법 (Syntax)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Default">기본값 (Default)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Context">사용장소 (Context)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Override">Override 옵션 (Override)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Status">상태 (Status)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Module">모듈 (Module)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">지원 (Compatibility)</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#Description">설명 (Description)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Syntax">문법 (Syntax)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Default">기본값 (Default)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Context">사용장소 (Context)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Override">Override 옵션 (Override)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Status">상태 (Status)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Module">모듈 (Module)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#Compatibility">지원 (Compatibility)</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../configuring.html">설정파일</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">설명 (Description)</a> <a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
+<h2 id="Description">설명 (Description) <a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>지시어의 목적에 대한 간단한 설명.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">문법 (Syntax)</a> <a title="Permanent link" href="#Syntax" class="permalink">&para;</a></h2>
+<h2 id="Syntax">문법 (Syntax) <a title="Permanent link" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>설정파일에서 사용할 지시어의 형식을 알려준다. 이 문법은
     지시어마다 매우 다르며, 지시어를 정의할 때마다 자세히 설명한다.
@@ -129,18 +127,18 @@
       이름. 운영체제의 환경변수와 다름을 주의하라. 자세한 내용은
       <a href="../env.html">환경변수 문서</a>를 참고하라.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">기본값 (Default)</a> <a title="Permanent link" href="#Default" class="permalink">&para;</a></h2>
+<h2 id="Default">기본값 (Default) <a title="Permanent link" href="#Default" class="permalink">&para;</a></h2>
 
     <p>지시어에 기본값이 있다면 (<em>예를 들어</em>, 설정에서
     지시어를 생략한 경우 아파치 웹서버는 이 값을 사용한다.)
     이 항목에 나온다. 기본값이 없다면 이 항목은
     "<em>None</em>"이어야 한다. 기본값이 서버에 포함된 기본
     httpd.conf의 지시어 값과 다를 수 있음을 주의하라.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">사용장소 (Context)</a> <a title="Permanent link" href="#Context" class="permalink">&para;</a></h2>
+<h2 id="Context">사용장소 (Context) <a title="Permanent link" href="#Context" class="permalink">&para;</a></h2>
 
     <p>서버의 설정파일중 어느곳에서 지시어를 사용할 수 있는지
     알려준다. 다음 값들을 쉼표로 구분한 목록이다:</p>
@@ -183,9 +181,9 @@
     "<code>server config, .htaccess</code>"에서 가능하다는
     지시어는 <code>httpd.conf</code> 파일과 <code>.htaccess</code>
     파일에서는 사용할 수 있지만, <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>나 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>에서는 사용할 수 없다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Override 옵션 (Override)</a> <a title="Permanent link" href="#Override" class="permalink">&para;</a></h2>
+<h2 id="Override">Override 옵션 (Override) <a title="Permanent link" href="#Override" class="permalink">&para;</a></h2>
 
     <p>이 지시어를 <code>.htaccess</code> 파일에서 사용하려면
     어떤 override 옵션을 사용해야 하는지를 나타낸다. 지시어의
@@ -197,9 +195,9 @@
     (디렉토리 등의) 특정 범위와 하위 범위에서 다른 <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> 지시어로 다른 값을
     설정하지않았다면 하위 범위에도 그대로 적용된다. 지시어 설명에
     사용가능한 override 이름들이 나온다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">상태 (Status)</a> <a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
+<h2 id="Status">상태 (Status) <a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>지시어가 아파치 웹서버에 얼마나 긴밀히 묶여있는지를
     나타낸다. 즉, 그 지시어나 기능을 사용하기위해 서버를
@@ -239,14 +237,14 @@
       아파치와 같이 컴파일될 수도 안될 수도 있다. 지시어와 모듈을
       설명하는 문서 앞에서 사용할 수 있는지 살펴봐라.</dd>
     </dl>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">모듈 (Module)</a> <a title="Permanent link" href="#Module" class="permalink">&para;</a></h2>
+<h2 id="Module">모듈 (Module) <a title="Permanent link" href="#Module" class="permalink">&para;</a></h2>
 
     <p>단순히 지시어를 정의한 소스 모듈명을 열거한다.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">지원 (Compatibility)</a> <a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
+<h2 id="Compatibility">지원 (Compatibility) <a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>지시어가 원래 아파치 버전 2 배포본의 일부가 아니였다면,
     지시어를 추가하기 시작한 버전이 여기 나온다. 또, 어떤
@@ -254,14 +252,14 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/directive-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&#241;ol">&nbsp;es&nbsp;</a> |
-<a href="../fr/mod/directive-dict.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../es/mod/directive-dict.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
+<a href="../fr/mod/directive-dict.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/directive-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directive-dict.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -1,77 +1,75 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_proxy_wstunnel - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Module Apache mod_proxy_wstunnel</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module pour <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> supportant les
 websockets</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>proxy_wstunnel_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.5 du serveur HTTP
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_wstunnel_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier&nbsp;Source:</a></th><td>mod_proxy_wstunnel.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.5 du serveur HTTP
 Apache</td></tr></table>
 <h3>Sommaire</h3>
 
   <div class="warning"><h3><a id="deprecation" name="deprecation">Obsolescence</a></h3>
     <p>Depuis la version 2.4.47 du serveur HTTP Apache, la promotion de
-    protocole (tunneling) peut être pris en charge de manière plus efficace par
+    protocole (tunneling) peut &ecirc;tre pris en charge de mani&egrave;re plus efficace par
     <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>.</p>
     <p>Voir <a href="mod_proxy.html#protoupgrade">Promotion de protocole</a>.</p>
   </div>
 
-    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit être
-    chargé. Il fournit le support du tunnelling pour les connexions
-    websocket vers un serveur websockets d'arrière-plan. La connexion
+    <p>Pour utiliser ce module, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> doit &ecirc;tre
+    charg&eacute;. Il fournit le support du tunnelling pour les connexions
+    websocket vers un serveur websockets d'arri&egrave;re-plan. La connexion
     est automatiquement promue en connexion websocket :</p>
 
-    <div class="example"><h3>Réponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
+    <div class="example"><h3>R&eacute;ponse HTTP</h3><pre class="prettyprint lang-config">Upgrade: WebSocket
 Connection: Upgrade</pre>
 </div>	
 
-<p>Le mandatement des requêtes vers un serveur websockets comme
-<code>echo.websocket.org</code> peut être configuré via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+<p>Le mandatement des requ&ecirc;tes vers un serveur websockets comme
+<code>echo.websocket.org</code> peut &ecirc;tre configur&eacute; via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
     <pre class="prettyprint lang-config">ProxyPass "/ws2/"  "ws://echo.websocket.org/"
 ProxyPass "/wss2/" "wss://echo.websocket.org/"</pre>
 
 
-<p>Il est possible de mandater les websockets et HTTP en même temps, avec un jeu
-spécifique d'URLs pour les websockets, en définissant la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> concernant les
+<p>Il est possible de mandater les websockets et HTTP en m&ecirc;me temps, avec un jeu
+sp&eacute;cifique d'URLs pour les websockets, en d&eacute;finissant la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> concernant les
 websockets avant celle concernant HTTP :</p>
 <pre class="prettyprint lang-config">ProxyPassMatch ^/(myApp/ws)$  ws://backend.example.com:9080/$1
 ProxyPass / http://backend.example.com:9080/</pre>
 
 
-<p>Il est possible de mandater les websockets et HTTP en même temps, lorsque
+<p>Il est possible de mandater les websockets et HTTP en m&ecirc;me temps, lorsque
 les URLs websockets ne concernent pas uniquement les websockets ou ne sont pas
-connues à l'avance, en utilisant la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pour configurer le mandatement des
+connues &agrave; l'avance, en utilisant la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pour configurer le mandatement des
 websockets :</p>
 <pre class="prettyprint lang-config">ProxyPass / http://example.com:9080/
 RewriteEngine on
@@ -80,61 +78,61 @@ RewriteCond %{HTTP:Connection} upgrade [NC]
 RewriteRule ^/?(.*) "ws://example.com:9080/$1" [P,L]</pre>
 
 
-<p>La répartition de charge entre plusieurs serveurs d'arrière-plan peut être
-configurée via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
+<p>La r&eacute;partition de charge entre plusieurs serveurs d'arri&egrave;re-plan peut &ecirc;tre
+configur&eacute;e via le module <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>.</p>
 
 <p>
-Ce module peut aussi être utilisé pour la promotion vers des protocoles autres
-que WebSocket en définissant le paramètre <var><a href="mod_proxy.html#upgrade">upgrade</a></var> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> avec un nom de
+Ce module peut aussi &ecirc;tre utilis&eacute; pour la promotion vers des protocoles autres
+que WebSocket en d&eacute;finissant le param&egrave;tre <var><a href="mod_proxy.html#upgrade">upgrade</a></var> de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> avec un nom de
 protocole particulier.
-Les valeurs spéciales <code>upgrade=NONE</code> et <code>upgrade=ANY</code>
-peuvent être utilisées pour tester ou forcer la promotion de protocole mais leur
-utilisation <strong>n'est pas recommandée</strong> en production pour des
-raisons de sécurité.
-<code>NONE</code> signifie que la vérification de l'en-tête est omise mais que
-la promotion (tunneling) vers WebSocket s'effectuera quand-même.
+Les valeurs sp&eacute;ciales <code>upgrade=NONE</code> et <code>upgrade=ANY</code>
+peuvent &ecirc;tre utilis&eacute;es pour tester ou forcer la promotion de protocole mais leur
+utilisation <strong>n'est pas recommand&eacute;e</strong> en production pour des
+raisons de s&eacute;curit&eacute;.
+<code>NONE</code> signifie que la v&eacute;rification de l'en-t&ecirc;te est omise mais que
+la promotion (tunneling) vers WebSocket s'effectuera quand-m&ecirc;me.
 <code>ANY</code> signifie que la promotion (tunneling) s'effectuera en utilisant
-tout protocole demandé par le client.
+tout protocole demand&eacute; par le client.
 </p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxywebsocketfallbacktoproxyhttp">ProxyWebsocketFallbackToProxyHttp</a></li>
 </ul>
-<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Problèmes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
+<h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_wstunnel">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_wstunnel">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul></div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketfallbacktoproxyhttp" id="proxywebsocketfallbacktoproxyhttp">Directive</a> <a name="ProxyWebsocketFallbackToProxyHttp" id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</a> <a title="Lien permanent" href="#proxywebsocketfallbacktoproxyhttp" class="permalink">&para;</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxywebsocketfallbacktoproxyhttp">Directive <span id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</span> <a title="Lien permanent" href="#proxywebsocketfallbacktoproxyhttp" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demande à ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
-gérer la requête</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demande &agrave; ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+g&eacute;rer la requ&ecirc;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>ProxyWebsocketFallbackToProxyHttp On</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_wstunnel</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.4.48 du serveur HTTP Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.48 du serveur HTTP Apache</td></tr>
 </table>
     <p>Depuis la version 2.4.47 de httpd, <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> peut
-    gérer le tunneling et la mise à jour via les WebSockets en accord avec la
-    RFC 7230 ; cette directive permet de définir si, pour ces actions,
-    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> doit passer la main à
-    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, ce qui est le cas par défaut.</p>
-    <p>Définir cette directive à <em>Off</em> revient à laisser
-    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> gérer les requêtes WebSocket, comme avec
-    les versions 2.4.46 et antérieures de httpd.</p>
+    g&eacute;rer le tunneling et la mise &agrave; jour via les WebSockets en accord avec la
+    RFC 7230 ; cette directive permet de d&eacute;finir si, pour ces actions,
+    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> doit passer la main &agrave;
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, ce qui est le cas par d&eacute;faut.</p>
+    <p>D&eacute;finir cette directive &agrave; <em>Off</em> revient &agrave; laisser
+    <code class="module"><a href="../mod/mod_proxy_wstunnel.html">mod_proxy_wstunnel</a></code> g&eacute;rer les requ&ecirc;tes WebSocket, comme avec
+    les versions 2.4.46 et ant&eacute;rieures de httpd.</p>
 
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_wstunnel.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_proxy_wstunnel.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<a href="../fr/mod/mod_proxy_wstunnel.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

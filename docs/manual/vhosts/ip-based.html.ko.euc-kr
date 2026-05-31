@@ -1,49 +1,47 @@
-<?xml version="1.0" encoding="EUC-KR"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
-<meta content="text/html; charset=EUC-KR" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="ko"><head><META http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>아파치 IP기반 가상호스트 지원 - Apache HTTP Server Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
 <p class="apache">Apache HTTP Server Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
 <a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">가상호스트</a></div><div id="page-content"><div id="preamble"><h1>아파치 IP기반 가상호스트 지원</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">시스템 요구사항</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#howto">아파치 설정방법</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multiple">여러 서버를 실행하기</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#single">서버 하나로 가상호스트 실행하기</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#requirements">시스템 요구사항</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#howto">아파치 설정방법</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#multiple">여러 서버를 실행하기</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#single">서버 하나로 가상호스트 실행하기</a></li>
 </ul><h3>참고</h3><ul class="seealso"><li>
 <a href="name-based.html">이름기반 가상호스트 지원</a>
 </li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">시스템 요구사항</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">시스템 요구사항 <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP기반</cite>이란 말이 의미하듯이 서버는
     <strong>IP기반 가상호스트 각각에 대해 다른 IP 주소를
@@ -52,9 +50,9 @@
     (자세한 내용은 시스템 문서를 참고하라. 흔히 "ip aliases"라고
     하며, 보통 "ifconfig" 명령어로 만든다) 사용하여 가능하다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">아파치 설정방법</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">아파치 설정방법 <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     <p>여러 호스트를 지원하도록 아파치를 설정하는 방법은 두가지다.
     하나는 각 호스트마다 별도의 웹서버를 실행하는
@@ -86,9 +84,9 @@
       실행하기에 속도 손실이 클 수 있다.</li>
     </ul>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">여러 서버를 실행하기</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
+<h2 id="multiple">여러 서버를 실행하기 <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
     <p>각 가상호스트별로 웹서버를 설치한다. 설정파일의
     <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 지시어에
@@ -102,9 +100,9 @@
     <p>호스트명 보다는 IP 주소를 사용하길 바란다.
     (<a href="../dns-caveats.html">DNS 문제</a> 참고)</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="single" id="single">서버 하나로 가상호스트 실행하기</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
+<h2 id="single">서버 하나로 가상호스트 실행하기 <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
     <p>이 경우 웹서버 한개로 주서버와 모든 가상호스트에 대한
     요청을 서비스한다. 설정파일의 <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> 지시어에 가상호스트마다
@@ -114,20 +112,20 @@
     지시어 값을 설정한다. 예를 들면,</p>
 
     <div class="example"><p><code>
-    &lt;VirtualHost www.smallco.com&gt;<br />
-    ServerAdmin webmaster@mail.smallco.com<br />
-    DocumentRoot /groups/smallco/www<br />
-    ServerName www.smallco.com<br />
-    ErrorLog /groups/smallco/logs/error_log<br />
-    TransferLog /groups/smallco/logs/access_log<br />
-    &lt;/VirtualHost&gt;<br />
-		<br />
-    &lt;VirtualHost www.baygroup.org&gt;<br />
-    ServerAdmin webmaster@mail.baygroup.org<br />
-    DocumentRoot /groups/baygroup/www<br />
-    ServerName www.baygroup.org<br />
-    ErrorLog /groups/baygroup/logs/error_log<br />
-    TransferLog /groups/baygroup/logs/access_log<br />
+    &lt;VirtualHost www.smallco.com&gt;<br>
+    ServerAdmin webmaster@mail.smallco.com<br>
+    DocumentRoot /groups/smallco/www<br>
+    ServerName www.smallco.com<br>
+    ErrorLog /groups/smallco/logs/error_log<br>
+    TransferLog /groups/smallco/logs/access_log<br>
+    &lt;/VirtualHost&gt;<br>
+		<br>
+    &lt;VirtualHost www.baygroup.org&gt;<br>
+    ServerAdmin webmaster@mail.baygroup.org<br>
+    DocumentRoot /groups/baygroup/www<br>
+    ServerName www.baygroup.org<br>
+    ErrorLog /groups/baygroup/logs/error_log<br>
+    TransferLog /groups/baygroup/logs/access_log<br>
     &lt;/VirtualHost&gt;
 		</code></p></div>
 
@@ -151,13 +149,13 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/vhosts/ip-based.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="">&nbsp;fr&nbsp;</a> |
+<a href="../fr/vhosts/ip-based.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/vhosts/ip-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/ip-based.html" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

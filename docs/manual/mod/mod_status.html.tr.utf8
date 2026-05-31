@@ -1,96 +1,94 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="tr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_status - Apache HTTP Sunucusu Sürüm 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<title>mod_status - Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
-<p class="apache">Apache HTTP Sunucusu Sürüm 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p>
+<p class="apache">Apache HTTP Sunucusu S&uuml;r&uuml;m 2.4</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.4</a> &gt; <a href="./">Modüller</a></div>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="https://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">S&uuml;r&uuml;m 2.4</a> &gt; <a href="./">Mod&uuml;ller</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Modülü mod_status</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<div id="preamble"><h1>Apache Mod&uuml;l&uuml; mod_status</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>status_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_status.c</td></tr></table>
-<h3>Özet</h3>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Mod&uuml;l&nbsp;Betimleyici:</a></th><td>status_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak&nbsp;Dosyası:</a></th><td>mod_status.c</td></tr></table>
+<h3>&Ouml;zet</h3>
 
-    <p><code>mod_status</code> modülü, sunucu yöneticisinin, HTTP sunucusunun
+    <p><code>mod_status</code> mod&uuml;l&uuml;, sunucu y&ouml;neticisinin, HTTP sunucusunun
       ne kadar başarılı olduğu hakkında bilgi edinmesini sağlar. Bilgiler,
       kolayca okunabilen bir HTML sayfası olarak sunulur ve o anki sunucu
       istatistiklerinden oluşur. Gerekirse sayfa kendiliğinden tazelenebilir
       (uyumlu bir tarayıcı gerekir). Diğer sayfa o anki sunucu durumunu makine
-      tarafından okunabilen biçimde listeler.</p>
+      tarafından okunabilen bi&ccedil;imde listeler.</p>
 
     <p>Sunulan bilgiler şunlardır:</p>
 
     <ul>
-      <li>İstekleri sunan çocuk süreç sayısı</li>
+      <li>İstekleri sunan &ccedil;ocuk s&uuml;re&ccedil; sayısı</li>
 
-      <li>Boştaki çocuk süreçlerin sayısı</li>
+      <li>Boştaki &ccedil;ocuk s&uuml;re&ccedil;lerin sayısı</li>
 
-      <li>Her çocuk sürecin durumu, çocuk sürecin işleme tabi tuttuğu istek
+      <li>Her &ccedil;ocuk s&uuml;recin durumu, &ccedil;ocuk s&uuml;recin işleme tabi tuttuğu istek
         sayısı ve sunduğu bayt sayısı (*)</li>
 
       <li>Toplam erişim sayısı ve sunulan toplam bayt sayısı (*)</li>
 
-      <li>Sunucunun kaç kere başlatıldığı/yeniden başlatıldığı ve ne kadar
-        zamandır çalışmakta olduğu</li>
+      <li>Sunucunun ka&ccedil; kere başlatıldığı/yeniden başlatıldığı ve ne kadar
+        zamandır &ccedil;alışmakta olduğu</li>
 
       <li>Saniyedeki ortalama istek sayısı, saniyedeki bayt sayısı ve istek
         başına ortalama bayt sayısı (*)</li>
 
-      <li>Birlikte tüm çocuk süreçler tarafınan toplamda ve her çocuk süreç
-        tarafından ayrı ayrı kullanılan o anki işlemci zamanı yüzdesi (*)</li>
+      <li>Birlikte t&uuml;m &ccedil;ocuk s&uuml;re&ccedil;ler tarafınan toplamda ve her &ccedil;ocuk s&uuml;re&ccedil;
+        tarafından ayrı ayrı kullanılan o anki işlemci zamanı y&uuml;zdesi (*)</li>
 
-      <li>O an işlem görmekte olan konakların ve isteklerin sayısı (*)</li>
+      <li>O an işlem g&ouml;rmekte olan konakların ve isteklerin sayısı (*)</li>
     </ul>
 
-    <p>"(*)" imli bilgiler sadece <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesinin değeri <code>On</code> olduğu
-      takdirde mevcuttur. 2.3.6 sürümünde, bu modulün yüklenmesi öntanımlı
-      olarak <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesinin
+    <p>"(*)" imli bilgiler sadece <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> y&ouml;nergesinin değeri <code>On</code> olduğu
+      takdirde mevcuttur. 2.3.6 s&uuml;r&uuml;m&uuml;nde, bu modul&uuml;n y&uuml;klenmesi &ouml;ntanımlı
+      olarak <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> y&ouml;nergesinin
       değerini <code>On</code> yapacaktır.</p>
 </div>
 <div id="quickview"><h3>Konular</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Sayfanın Tazelenmesi</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#troubleshoot">Sorun gidermek için server-status kullanımı</a></li>
-</ul><h3 class="directives">Yönergeler</h3>
-<p>Bu modül yönerge içermez.</p>
-<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd günlüğü</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Hata bildir</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<li><img alt="" src="../images/down.gif"> <a href="#enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#autoupdate">Sayfanın Tazelenmesi</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#troubleshoot">Sorun gidermek i&ccedil;in server-status kullanımı</a></li>
+</ul><h3 class="directives">Y&ouml;nergeler</h3>
+<p>Bu mod&uuml;l y&ouml;nerge i&ccedil;ermez.</p>
+<h3>Bulunan hatalar</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd g&uuml;nl&uuml;ğ&uuml;</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Bilinenler</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Hata bildir</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
-    <p>Durum raporları, sadece example.com alanından ve sadece tarayıcılar için
+    <p>Durum raporları, sadece example.com alanından ve sadece tarayıcılar i&ccedil;in
       etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
       eklenebilir:</p>
 
@@ -103,63 +101,63 @@
     <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
       <code>http://sunucunuzun.ismi.buraya/server-status</code>
       şeklinde bir istek yapabilirsiniz.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="autoupdate" id="autoupdate">Sayfanın Tazelenmesi</a> <a title="Permanent link" href="#autoupdate" class="permalink">&para;</a></h2>
+<h2 id="autoupdate">Sayfanın Tazelenmesi <a title="Permanent link" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
-    <p>Tarayıcınız "tazeleme" yeteneğine sahipse durum sayfası düzenli
-      aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
-      isterseniz isteği şöyle yapabilirsiniz:<br />
+    <p>Tarayıcınız "tazeleme" yeteneğine sahipse durum sayfası d&uuml;zenli
+      aralıklarla g&uuml;ncellenecektir. Sayfanın N saniyede bir g&uuml;ncellenmesini
+      isterseniz isteği ş&ouml;yle yapabilirsiniz:<br>
       <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a> <a title="Permanent link" href="#machinereadable" class="permalink">&para;</a></h2>
+<h2 id="machinereadable">Makine Tarafından Okunabilen Durum Dosyası <a title="Permanent link" href="#machinereadable" class="permalink">&para;</a></h2>
 
     
-    <p>Durum dosyasının makine tarafından okunabilen sürümüne
+    <p>Durum dosyasının makine tarafından okunabilen s&uuml;r&uuml;m&uuml;ne
       <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
-      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
+      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden &ccedil;alıştığı
       takdirde yararlıdır; Apache HTTP Sunucusu kurulumunuzun
       <code>/support</code> dizininde bulunan <code>log_server_status</code>
       isimli Perl betiğine bakınız.</p>
 
-    <div class="note"><h3>Güvenlik</h3>
-      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucuya yüklendiği takdirde
-       istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
-       (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
-       için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
-       siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
+    <div class="note"><h3>G&uuml;venlik</h3>
+      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucuya y&uuml;klendiği takdirde
+       istatistikleri raporlama yeteneği dizin i&ccedil;i yapılandırma dosyaları
+       (<code>.htaccess</code> gibi) dahil <em>t&uuml;m</em> yapılandırma dosyaları
+       i&ccedil;in kullanılabilir olacaktır. Bu durum g&uuml;venlik ile ilgili olarak
+       siteniz i&ccedil;in i&ccedil;inden &ccedil;ıkılması g&uuml;&ccedil; durumlara yol a&ccedil;abilir (&ccedil;apanoğlu
        durumu).</div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Sorun gidermek için server-status kullanımı</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">Sorun gidermek i&ccedil;in server-status kullanımı <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
-    <p>Sunucunuzun kullanılabilir tüm özkaynakları (işlemci veya bellek)
-      sömürdüğü ve sizin de bu soruna hangi istemcilerin veya isteklerin yol
-      açtığını saptamak istediğiniz durumda sorunu gidermek için başlangıç yeri
+    <p>Sunucunuzun kullanılabilir t&uuml;m &ouml;zkaynakları (işlemci veya bellek)
+      s&ouml;m&uuml;rd&uuml;ğ&uuml; ve sizin de bu soruna hangi istemcilerin veya isteklerin yol
+      a&ccedil;tığını saptamak istediğiniz durumda sorunu gidermek i&ccedil;in başlangı&ccedil; yeri
       olarak  <code>server-status</code> sayfası kullanılabilir.</p>
 
-    <p>Önce <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> yönergesine On
-      atadığınızsan emin olun. Böylece her çocuk süreç veya evre için tüm istek
-      ve istemci bilgilerini görebilirsiniz.</p>
+    <p>&Ouml;nce <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> y&ouml;nergesine On
+      atadığınızsan emin olun. B&ouml;ylece her &ccedil;ocuk s&uuml;re&ccedil; veya evre i&ccedil;in t&uuml;m istek
+      ve istemci bilgilerini g&ouml;rebilirsiniz.</p>
 
-    <p>(<code>top</code> veya benzeri bir süreç izleme aracı kullanarak) Artık
-      kendi süreç listenize  ana zanlılar olan süreçleri bulmak için
-      bakabilirsiniz. Sorunun çeşidine bağlı olarak <code>top</code> çıktısını
-      işlemci kullanımına veya bellek kullanımına göre sıralatabilirsiniz.</p>
+    <p>(<code>top</code> veya benzeri bir s&uuml;re&ccedil; izleme aracı kullanarak) Artık
+      kendi s&uuml;re&ccedil; listenize  ana zanlılar olan s&uuml;re&ccedil;leri bulmak i&ccedil;in
+      bakabilirsiniz. Sorunun &ccedil;eşidine bağlı olarak <code>top</code> &ccedil;ıktısını
+      işlemci kullanımına veya bellek kullanımına g&ouml;re sıralatabilirsiniz.</p>
 
-  <p><code>server-status</code> sayfasını yeniden yükleyip bu süreç
-    kimliklerine bakın. Böylece, bu süreçler tarafından hangi isteklerin hangi
-    istemcilere sunulduğunu görebilirsiniz. İstekler kısa sürelerle görünürler,
-    bu bakımdan iş üstünde yakalamak için çeşitli denemeler yapmanız
+  <p><code>server-status</code> sayfasını yeniden y&uuml;kleyip bu s&uuml;re&ccedil;
+    kimliklerine bakın. B&ouml;ylece, bu s&uuml;re&ccedil;ler tarafından hangi isteklerin hangi
+    istemcilere sunulduğunu g&ouml;rebilirsiniz. İstekler kısa s&uuml;relerle g&ouml;r&uuml;n&uuml;rler,
+    bu bakımdan iş &uuml;st&uuml;nde yakalamak i&ccedil;in &ccedil;eşitli denemeler yapmanız
     gerekebilir.</p>
 
-    <p>Bu işlem, yük sorununuzdan birinci derecede sorumlu istek türleri veya
-      istemciler hakkında bir fikir verecektir. Çoğu durumda belli bir HTTP
+    <p>Bu işlem, y&uuml;k sorununuzdan birinci derecede sorumlu istek t&uuml;rleri veya
+      istemciler hakkında bir fikir verecektir. &Ccedil;oğu durumda belli bir HTTP
       uygulamasının yanlış davrandığını veya belli bir istemcinin sitenize
       saldırmakta olduğunu farkedersiniz.</p>
 
@@ -167,13 +165,13 @@
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+<a href="../tr/mod/mod_status.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br /><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/quickreference.html">Yönergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Hata bildir</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

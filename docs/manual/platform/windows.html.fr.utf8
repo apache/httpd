@@ -1,171 +1,169 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head>
-<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-<meta content="width=device-width, initial-scale=1" name="viewport" />
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="fr"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
 <!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Utilisation du serveur HTTP Apache sous Microsoft Windows - Serveur HTTP Apache Version 2.4</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" /><link rel="stylesheet" type="text/css" href="../style/css/prettify.css" />
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
-<link href="../images/favicon.png" rel="shortcut icon" /></head>
+<link href="../images/favicon.png" rel="shortcut icon"></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p>
 <p class="apache">Serveur HTTP Apache Version 2.4</p>
-<img alt="" src="../images/feather.png" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Notes spécifiques à un
-  système</a></div><div id="page-content"><div id="preamble"><h1>Utilisation du serveur HTTP Apache sous Microsoft Windows</h1>
-<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12" /><line y2="12" x2="22" y1="12" x1="2" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg></button>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Notes sp&eacute;cifiques &agrave; un
+  syst&egrave;me</a></div><div id="page-content"><div id="preamble"><h1>Utilisation du serveur HTTP Apache sous Microsoft Windows</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/windows.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
 
-    <p>Ce document décrit l'installation, la configuration et
-    l'exécution du serveur HTTP Apache 2.4 sous Microsoft Windows. Si vous avez des
-    questions après avoir lu la documentation, ou si vous avez rencontré
-    des évènements particuliers ou des rapports d'erreur, vous pouvez
+    <p>Ce document d&eacute;crit l'installation, la configuration et
+    l'ex&eacute;cution du serveur HTTP Apache 2.4 sous Microsoft Windows. Si vous avez des
+    questions apr&egrave;s avoir lu la documentation, ou si vous avez rencontr&eacute;
+    des &eacute;v&egrave;nements particuliers ou des rapports d'erreur, vous pouvez
     consultez la <a href="http://httpd.apache.org/userslist.html">liste
-    de diffusion de la communauté des utilisateurs</a>.</p>
+    de diffusion de la communaut&eacute; des utilisateurs</a>.</p>
 
     <p>Dans ce document, nous supposons que vous installez une
     distribution binaire d'httpd. Si vous voulez compiler httpd
-    vous-même (par exemple pour aider au développement ou pour
-    rechercher des bogues), référez-vous au document <a href="win_compiling.html">Compilation de httpd pour Microsoft
+    vous-m&ecirc;me (par exemple pour aider au d&eacute;veloppement ou pour
+    rechercher des bogues), r&eacute;f&eacute;rez-vous au document <a href="win_compiling.html">Compilation de httpd pour Microsoft
     Windows</a>.</p>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Prérequis du système d'exploitation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#down">Téléchargement de httpd pour Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cust">Personnaliser httpd pour Windows</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#winsvc">Exécuter httpd en tant que service</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#wincons">Exécuter httpd depuis la console</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#test">Vérification de l'installation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#windrivemap">Configuration de l'accès aux ressources réseau</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#tuning">Personnalisation sous Windows</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#req">Pr&eacute;requis du syst&egrave;me d'exploitation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#down">T&eacute;l&eacute;chargement de httpd pour Windows</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cust">Personnaliser httpd pour Windows</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#winsvc">Ex&eacute;cuter httpd en tant que service</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#wincons">Ex&eacute;cuter httpd depuis la console</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#test">V&eacute;rification de l'installation</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#windrivemap">Configuration de l'acc&egrave;s aux ressources r&eacute;seau</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#tuning">Personnalisation sous Windows</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="req" id="req">Prérequis du système d'exploitation</a> <a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
+<h2 id="req">Pr&eacute;requis du syst&egrave;me d'exploitation <a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
     
 
-    <p>La plate-forme Windows de base pour l'exécution de httpd 2.4 est
-    Windows 2000 ou supérieur. Veillez à toujours vous procurer et installer le
-    dernier service pack afin d'éviter les bogues du système
+    <p>La plate-forme Windows de base pour l'ex&eacute;cution de httpd 2.4 est
+    Windows 2000 ou sup&eacute;rieur. Veillez &agrave; toujours vous procurer et installer le
+    dernier service pack afin d'&eacute;viter les bogues du syst&egrave;me
     d'exploitation.</p>
 
-    <div class="note">Les versions du serveur HTTP Apache supérieures à 2.2 ne
-    fonctionneront sous aucun système d'exploitation d'une version
-    antérieure à Windows 2000.</div>
+    <div class="note">Les versions du serveur HTTP Apache sup&eacute;rieures &agrave; 2.2 ne
+    fonctionneront sous aucun syst&egrave;me d'exploitation d'une version
+    ant&eacute;rieure &agrave; Windows 2000.</div>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="down" id="down">Téléchargement de httpd pour Windows</a> <a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
+<h2 id="down">T&eacute;l&eacute;chargement de httpd pour Windows <a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
     
 
     <p>Le projet du serveur HTTP Apache proprement dit ne fournit pas de
     distribution binaire mais seulement le code source. Certains membres
-    du projet <em>peuvent</em> mettre à disposition des paquets binaires
-    à titre individuel, mais ceux-ci n'ont pas vocation à être
-    distribués publiquement.</p>
+    du projet <em>peuvent</em> mettre &agrave; disposition des paquets binaires
+    &agrave; titre individuel, mais ceux-ci n'ont pas vocation &agrave; &ecirc;tre
+    distribu&eacute;s publiquement.</p>
     
-    <p>Si vous n'êtes
-    pas en mesure de compiler le serveur HTTP Apache vous-même, vous
-    pouvez vous procurer un paquet binaire auprès des nombreuses
+    <p>Si vous n'&ecirc;tes
+    pas en mesure de compiler le serveur HTTP Apache vous-m&ecirc;me, vous
+    pouvez vous procurer un paquet binaire aupr&egrave;s des nombreuses
     distributions disponibles sur Internet.</p>
 
-    <p>Quelques solutions populaires pour déployer Apache httpd, et
-    éventuellement PHP et MySQL sous Microsoft Windows :</p>
+    <p>Quelques solutions populaires pour d&eacute;ployer Apache httpd, et
+    &eacute;ventuellement PHP et MySQL sous Microsoft Windows :</p>
     <ul>
     <li><a href="http://www.apachelounge.com/download/">Apache Lounge</a></li>
     <li><a href="http://www.wampserver.com/">WampServer</a></li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cust" id="cust">Personnaliser httpd pour Windows</a> <a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
+<h2 id="cust">Personnaliser httpd pour Windows <a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
     
 
-    <p>La configuration de httpd est enregistrée dans les fichiers du
-    sous-répertoire <code>conf</code>. Ce sont les même fichiers que
-    ceux utilisés pour configurer la version Unix, mais il y a quelques
-    directives spécifiques à httpd pour Windows. Voir l'<a href="../mod/directives.html">index des directives</a> pour la liste
+    <p>La configuration de httpd est enregistr&eacute;e dans les fichiers du
+    sous-r&eacute;pertoire <code>conf</code>. Ce sont les m&ecirc;me fichiers que
+    ceux utilis&eacute;s pour configurer la version Unix, mais il y a quelques
+    directives sp&eacute;cifiques &agrave; httpd pour Windows. Voir l'<a href="../mod/directives.html">index des directives</a> pour la liste
     des directives disponibles.</p>
 
-    <p>La configuration par défaut de la distribution source installe
-    le serveur dans \Apache24. Cet emplacement peut être modifié à
+    <p>La configuration par d&eacute;faut de la distribution source installe
+    le serveur dans \Apache24. Cet emplacement peut &ecirc;tre modifi&eacute; &agrave;
     la compilation, mais il est important qu'en fin de compte, la directive
     <code class="directive">ServerRoot</code> dans httpd.conf corresponde effectivement
-    à la racine de l'installation. Les distributions binaires peuvent parfois
-    modifier la racine de l'installation par défaut, ou même la structure
-    complète de la configuration initiale.</p>
+    &agrave; la racine de l'installation. Les distributions binaires peuvent parfois
+    modifier la racine de l'installation par d&eacute;faut, ou m&ecirc;me la structure
+    compl&egrave;te de la configuration initiale.</p>
 
-    <p>Les principales spécificités de httpd pour Windows sont :</p>
+    <p>Les principales sp&eacute;cificit&eacute;s de httpd pour Windows sont :</p>
     <ul>
       <li><p>Comme httpd pour Windows est un programme multithread, il
-      ne lance pas de processus séparé pour chaque requête, comme httpd
-      peut le faire sous Unix. En fait, il n'y a en général que deux
-      processus httpd en exécution : un processus parent, et un
-      processus enfant qui traite les requêtes. Chaque requête est
-      traitée par un thread séparé au sein du processus enfant.</p>
+      ne lance pas de processus s&eacute;par&eacute; pour chaque requ&ecirc;te, comme httpd
+      peut le faire sous Unix. En fait, il n'y a en g&eacute;n&eacute;ral que deux
+      processus httpd en ex&eacute;cution : un processus parent, et un
+      processus enfant qui traite les requ&ecirc;tes. Chaque requ&ecirc;te est
+      trait&eacute;e par un thread s&eacute;par&eacute; au sein du processus enfant.</p>
 
-      <p>Les directives de gestion de processus diffèrent également :</p>
+      <p>Les directives de gestion de processus diff&egrave;rent &eacute;galement :</p>
 
       <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
-      : comme dans la version Unix, cette directive contrôle le nombre
+      : comme dans la version Unix, cette directive contr&ocirc;le le nombre
       de connexions qu'un
-      processus enfant particulier va traiter avant de s'arrêter.
-      Cependant, à la différence d'Unix, un processus de remplacement
-      n'est pas instantanément disponible. Utilisez la définition par
-      défaut <code>MaxConnectionsPerChild 0</code>, sauf si vous
-      risquez de manquer de mémoire dans des modules tiers ou dans des
+      processus enfant particulier va traiter avant de s'arr&ecirc;ter.
+      Cependant, &agrave; la diff&eacute;rence d'Unix, un processus de remplacement
+      n'est pas instantan&eacute;ment disponible. Utilisez la d&eacute;finition par
+      d&eacute;faut <code>MaxConnectionsPerChild 0</code>, sauf si vous
+      risquez de manquer de m&eacute;moire dans des modules tiers ou dans des
       applications in-process.</p>
 
       <div class="warning"><strong>Attention : le fichier de
-      configuration du serveur est rechargé lorsqu'un nouveau processus
-      enfant est démarré. En conséquence, si vous avez modifié
+      configuration du serveur est recharg&eacute; lorsqu'un nouveau processus
+      enfant est d&eacute;marr&eacute;. En cons&eacute;quence, si vous avez modifi&eacute;
       <code>httpd.conf</code>, le nouveau processus enfant peut ne pas
-      démarrer, ou vous pouvez obtenir des résultats
+      d&eacute;marrer, ou vous pouvez obtenir des r&eacute;sultats
       inattendus.</strong></div>
 
       <p><code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> : il
       s'agit d'une nouvelle directive. Elle indique au serveur le nombre
-      de threads qu'il doit utiliser. Elle définit le nombre maximum de
-      connexions simultanées que le serveur peut gérer ; vous devez
+      de threads qu'il doit utiliser. Elle d&eacute;finit le nombre maximum de
+      connexions simultan&eacute;es que le serveur peut g&eacute;rer ; vous devez
       donc vous assurer que ce nombre soit suffisamment grand pour les
-      besoins de votre site. La valeur par défaut <code>ThreadsPerChild
-      150</code> est recommandée, mais doit être ajustée à la valeur
-      maximale estimée de connexions simultanées à accepter.</p></li>
+      besoins de votre site. La valeur par d&eacute;faut <code>ThreadsPerChild
+      150</code> est recommand&eacute;e, mais doit &ecirc;tre ajust&eacute;e &agrave; la valeur
+      maximale estim&eacute;e de connexions simultan&eacute;es &agrave; accepter.</p></li>
 
       <li><p>Les directives qui acceptent des noms de fichiers comme
       arguments doivent utiliser des noms de fichiers Windows et non
-      Unix. Cependant, comme httpd peut interpréter les anti-slashes
-      comme des séquences d'échappement de caractères, vous devez
-      absolument utiliser des slashes dans les noms de chemins à la
+      Unix. Cependant, comme httpd peut interpr&eacute;ter les anti-slashes
+      comme des s&eacute;quences d'&eacute;chappement de caract&egrave;res, vous devez
+      absolument utiliser des slashes dans les noms de chemins &agrave; la
       place des anti-slashes.</p></li>
 
-      <li><p>Alors que les noms de fichiers sont en général insensibles
-      à la casse sous Windows, les URLs sont encore sensibles à la casse
-      en interne avant d'être mises en correspondance avec le système de
+      <li><p>Alors que les noms de fichiers sont en g&eacute;n&eacute;ral insensibles
+      &agrave; la casse sous Windows, les URLs sont encore sensibles &agrave; la casse
+      en interne avant d'&ecirc;tre mises en correspondance avec le syst&egrave;me de
       fichiers. Par exemple, les directives <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, et <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> utilisent toutes des
-      arguments sensibles à la casse. Pour cette raison, il est
-      particulièrement recommandé d'utiliser la directive <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> lorsqu'on
-      désire limiter l'accès à certains contenus du système de fichiers,
-      car cette directive s'applique à tout contenu d'un répertoire,
-      sans tenir compte de la manière dont on y accède. Pour vous
-      assurer que seules des minuscules sont utilisées dans les URLs,
+      arguments sensibles &agrave; la casse. Pour cette raison, il est
+      particuli&egrave;rement recommand&eacute; d'utiliser la directive <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> lorsqu'on
+      d&eacute;sire limiter l'acc&egrave;s &agrave; certains contenus du syst&egrave;me de fichiers,
+      car cette directive s'applique &agrave; tout contenu d'un r&eacute;pertoire,
+      sans tenir compte de la mani&egrave;re dont on y acc&egrave;de. Pour vous
+      assurer que seules des minuscules sont utilis&eacute;es dans les URLs,
       vous pouvez utiliser ceci :</p>
 
       <pre class="prettyprint lang-config">RewriteEngine On
@@ -174,21 +172,21 @@ RewriteCond "%{REQUEST_URI}" "[A-Z]"
 RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 </li>
 
-      <li><p>Lors de son exécution, httpd n'a besoin d'un accès en
-      écriture qu'au répertoire des journaux et à toute arborescence de
-      répertoires de cache configurée. Suite au problème d'insensibilité
-      à la casse et au format de noms courts 8.3, httpd doit valider
+      <li><p>Lors de son ex&eacute;cution, httpd n'a besoin d'un acc&egrave;s en
+      &eacute;criture qu'au r&eacute;pertoire des journaux et &agrave; toute arborescence de
+      r&eacute;pertoires de cache configur&eacute;e. Suite au probl&egrave;me d'insensibilit&eacute;
+      &agrave; la casse et au format de noms courts 8.3, httpd doit valider
       tous les noms de chemins fournis. Cela signifie que chaque
-      répertoire que httpd évalue doit avoir les droits en lecture,
+      r&eacute;pertoire que httpd &eacute;value doit avoir les droits en lecture,
       listage et parcours, et ceci depuis la racine jusqu'aux feuilles.
-      Si Apache2.4 est installé dans C:\Program Files, le répertoire
-      racine, Program Files et Apache2.4 doivent tous être visibles pour
+      Si Apache2.4 est install&eacute; dans C:\Program Files, le r&eacute;pertoire
+      racine, Program Files et Apache2.4 doivent tous &ecirc;tre visibles pour
       httpd</p></li>
 
-      <li><p>httpd peut charger divers modules sans qu'il soit nécessaire
-      de recompiler le serveur. Si httpd est compilé
+      <li><p>httpd peut charger divers modules sans qu'il soit n&eacute;cessaire
+      de recompiler le serveur. Si httpd est compil&eacute;
       normalement, il va installer de nombreux modules optionnels dans
-      le répertoire <code>\Apache2.4\modules</code>. Pour activer ces
+      le r&eacute;pertoire <code>\Apache2.4\modules</code>. Pour activer ces
       modules ou d'autres modules, on doit utiliser la
       directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. Par
       exemple, pour activer le module status, ajoutez la ligne suivante
@@ -198,7 +196,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       <pre class="prettyprint lang-config">LoadModule status_module "modules/mod_status.so"</pre>
 
 
-      <p>Des informations sont aussi à votre disposition pour <a href="../mod/mod_so.html#creating">créer des modules
+      <p>Des informations sont aussi &agrave; votre disposition pour <a href="../mod/mod_so.html#creating">cr&eacute;er des modules
       chargeables</a></p></li>
 
       <li><p>httpd peut aussi charger des extensions ISAPI (Internet
@@ -206,90 +204,90 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       Microsoft IIS et d'autres serveurs Windows. <a href="../mod/mod_isapi.html">Voir ici pour plus
       d'informations</a>. Notez que httpd ne peut <strong>pas</strong>
       charger de filtres ISAPI, et que les gestionnaires ISAPI contenant
-      des extensions de fonctionnalités Microsoft ne fonctionneront
+      des extensions de fonctionnalit&eacute;s Microsoft ne fonctionneront
       pas.</p></li>
 
-      <li><p>Pour les scripts CGI, la méthode qu'utilise httpd pour
-      déterminer l'interpréteur du script est configurable grâce à la
+      <li><p>Pour les scripts CGI, la m&eacute;thode qu'utilise httpd pour
+      d&eacute;terminer l'interpr&eacute;teur du script est configurable gr&acirc;ce &agrave; la
       directive <code class="directive"><a href="../mod/core.html#scriptinterpretersource">ScriptInterpreterSource</a></code></p></li>
 
-      <li><p>Comme il est souvent difficile de gérer des fichiers avec
+      <li><p>Comme il est souvent difficile de g&eacute;rer des fichiers avec
       des noms du style <code>.htaccess</code> sous Windows, vous avez
-      tout intérêt à changer le nom de ce fichier de configuration par
-      répertoire à l'aide de la directive <code class="directive"><a href="../mod/core.html#accessfilename">AccessFilename</a></code>.</p></li>
+      tout int&eacute;r&ecirc;t &agrave; changer le nom de ce fichier de configuration par
+      r&eacute;pertoire &agrave; l'aide de la directive <code class="directive"><a href="../mod/core.html#accessfilename">AccessFilename</a></code>.</p></li>
 
-      <li><p>Toute erreur survenant au cours du processus de démarrage
-      de httpd est enregistrée dans le journal des évènements de
-      Windows si l'on est sous Windows NT. Ce mécanisme fonctionne comme
-      une sauvegarde pour les situations où httpd n'est pas encore prêt
-      à utiliser le fichier <code>error.log</code>. Vous pouvez
-      consulter le journal des évènements applicatifs Windows en
-      utilisant l'observateur d'évènements : Démarrage - Paramètres -
+      <li><p>Toute erreur survenant au cours du processus de d&eacute;marrage
+      de httpd est enregistr&eacute;e dans le journal des &eacute;v&egrave;nements de
+      Windows si l'on est sous Windows NT. Ce m&eacute;canisme fonctionne comme
+      une sauvegarde pour les situations o&ugrave; httpd n'est pas encore pr&ecirc;t
+      &agrave; utiliser le fichier <code>error.log</code>. Vous pouvez
+      consulter le journal des &eacute;v&egrave;nements applicatifs Windows en
+      utilisant l'observateur d'&eacute;v&egrave;nements : D&eacute;marrage - Param&egrave;tres -
       Panneau de configuration - Outils d'administration - Observateur
-      d'évènements.</p></li>
+      d'&eacute;v&egrave;nements.</p></li>
     </ul>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="winsvc" id="winsvc">Exécuter httpd en tant que service</a> <a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
+<h2 id="winsvc">Ex&eacute;cuter httpd en tant que service <a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
     
 
-    <p>httpd fournit un utilitaire nommé Apache Service Monitor
-    (Moniteur du service httpd). Grâce à lui, vous pouvez voir et gérer
-    l'état de tous les services httpd installés sur toutes les machines
-    du réseau. Pour pouvoir gérer un service httpd avec le moniteur,
+    <p>httpd fournit un utilitaire nomm&eacute; Apache Service Monitor
+    (Moniteur du service httpd). Gr&acirc;ce &agrave; lui, vous pouvez voir et g&eacute;rer
+    l'&eacute;tat de tous les services httpd install&eacute;s sur toutes les machines
+    du r&eacute;seau. Pour pouvoir g&eacute;rer un service httpd avec le moniteur,
     vous devez d'abord installer le service (soit automatiquement au
     cours de l'installation, soit manuellement).</p>
 
-    <p>Vous pouvez installer httpd en tant que service Windows NT à
-    partir de la ligne de commandes et depuis le sous-répertoire httpd
+    <p>Vous pouvez installer httpd en tant que service Windows NT &agrave;
+    partir de la ligne de commandes et depuis le sous-r&eacute;pertoire httpd
     <code>bin</code> comme suit :</p>
 
     <div class="example"><p><code>
       httpd.exe -k install
     </code></p></div>
 
-    <p>Si vous avez installé plusieurs services httpd sur votre
-    ordinateur, vous devrez spécifier le nom du service que vous voulez
+    <p>Si vous avez install&eacute; plusieurs services httpd sur votre
+    ordinateur, vous devrez sp&eacute;cifier le nom du service que vous voulez
     installer en utilisant la commande suivante (notez que si vous
-    spécifiez un nom durant l'installation, vous devrez aussi le
-    spécifier pour toute opération comportant l'option -k) :</p>
+    sp&eacute;cifiez un nom durant l'installation, vous devrez aussi le
+    sp&eacute;cifier pour toute op&eacute;ration comportant l'option -k) :</p>
 
     <div class="example"><p><code>
       httpd.exe -k install -n "Nom-service"
     </code></p></div>
 
     <p>Si un service doit utiliser un fichier de configuration
-    spécifique, utilisez ceci :</p>
+    sp&eacute;cifique, utilisez ceci :</p>
 
     <div class="example"><p><code>
       httpd.exe -k install -n "Nom-service" -f "c:\fichiers\Nom-service.conf"
     </code></p></div>
 
-    <p>Si vous utilisez la première commande sans paramètre particulier,
-    excepté <code>-k install</code>, le service aura pour nom
-    <code>Apache2.4</code> et le fichier de configuration sera censé
-    être <code>conf\httpd.conf</code>.</p>
+    <p>Si vous utilisez la premi&egrave;re commande sans param&egrave;tre particulier,
+    except&eacute; <code>-k install</code>, le service aura pour nom
+    <code>Apache2.4</code> et le fichier de configuration sera cens&eacute;
+    &ecirc;tre <code>conf\httpd.conf</code>.</p>
 
-    <p>Supprimer un service httpd est très simple. Utilisez
+    <p>Supprimer un service httpd est tr&egrave;s simple. Utilisez
     simplement :</p>
 
     <div class="example"><p><code>
       httpd.exe -k uninstall
     </code></p></div>
 
-    <p>On peut spécifier un service httpd particulier en utilisant
+    <p>On peut sp&eacute;cifier un service httpd particulier en utilisant
     :</p>
 
     <div class="example"><p><code>
       httpd.exe -k uninstall -n "Nom service"
     </code></p></div>
 
-    <p>Normalement, le démarrage, le redémarrage et l'arrêt d'un
+    <p>Normalement, le d&eacute;marrage, le red&eacute;marrage et l'arr&ecirc;t d'un
     service httpd s'effectuent via le Moniteur de Service httpd, ou en
     utilisant des commandes telles que <code>NET START Apache2.4</code> et
     <code>NET STOP Apache2.4</code>, ou encore via le gestionnaire de
-    services standard de Windows. Avant de démarrer httpd en tant que
+    services standard de Windows. Avant de d&eacute;marrer httpd en tant que
     service dans quelque but que ce soit, vous devez tester le fichier
     de configuration du service en utilisant :</p>
 
@@ -297,15 +295,15 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       httpd.exe -n "Nom-service" -t
     </code></p></div>
 
-    <p>Vous pouvez aussi contrôler un service httpd à l'aide de ses
-    options de ligne de commande. Avec cette méthode, pour démarrer un
-    service httpd installé, vous utiliserez :</p>
+    <p>Vous pouvez aussi contr&ocirc;ler un service httpd &agrave; l'aide de ses
+    options de ligne de commande. Avec cette m&eacute;thode, pour d&eacute;marrer un
+    service httpd install&eacute;, vous utiliserez :</p>
 
     <div class="example"><p><code>
       httpd.exe -k start -n "Nom-Service"
     </code></p></div>
 
-    <p>Pour arrêter un service httpd via les options de lignes de
+    <p>Pour arr&ecirc;ter un service httpd via les options de lignes de
     commande, utilisez ceci :</p>
 
     <div class="example"><p><code>
@@ -318,201 +316,201 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       httpd.exe -k shutdown -n "Nom-Service"
     </code></p></div>
 
-    <p>Vous pouvez aussi redémarrer un service en exécution et le forcer
-    à relire son fichier de configuration en utilisant :</p>
+    <p>Vous pouvez aussi red&eacute;marrer un service en ex&eacute;cution et le forcer
+    &agrave; relire son fichier de configuration en utilisant :</p>
 
     <div class="example"><p><code>
       httpd.exe -k restart -n "Nom-Service"
     </code></p></div>
 
-    <p>Par défaut, tous les services httpd sont configurés pour
-    s'exécuter sous l'utilisateur system (le compte
+    <p>Par d&eacute;faut, tous les services httpd sont configur&eacute;s pour
+    s'ex&eacute;cuter sous l'utilisateur system (le compte
     <code>LocalSystem</code>). Le compte <code>LocalSystem</code> n'a
-    pas de privilèges sur votre réseau, que ce soit via un mécanisme
-    sécurisé de Windows, y compris le système de fichiers, des tubes
-    nommés, DCOM ou des RPC sécurisés. Il a cependant des privilèges
-    élevés en local.</p>
+    pas de privil&egrave;ges sur votre r&eacute;seau, que ce soit via un m&eacute;canisme
+    s&eacute;curis&eacute; de Windows, y compris le syst&egrave;me de fichiers, des tubes
+    nomm&eacute;s, DCOM ou des RPC s&eacute;curis&eacute;s. Il a cependant des privil&egrave;ges
+    &eacute;lev&eacute;s en local.</p>
 
-    <div class="warning"><strong>N'accordez jamais de privilèges réseau
-    au compte <code>LocalSystem</code> ! Si httpd doit pouvoir accéder
-    à des ressources réseau, créez un compte séparé pour httpd comme
-    indiqué ci-dessous.</strong></div>
+    <div class="warning"><strong>N'accordez jamais de privil&egrave;ges r&eacute;seau
+    au compte <code>LocalSystem</code> ! Si httpd doit pouvoir acc&eacute;der
+    &agrave; des ressources r&eacute;seau, cr&eacute;ez un compte s&eacute;par&eacute; pour httpd comme
+    indiqu&eacute; ci-dessous.</strong></div>
 
-    <p>Il est fortement fortement conseillé aux utilisateurs de créer un
-    compte séparé pour exécuter le(s) service(s) httpd, et même
-    obligatoire si vous devez accéder à des ressources réseau via
+    <p>Il est fortement fortement conseill&eacute; aux utilisateurs de cr&eacute;er un
+    compte s&eacute;par&eacute; pour ex&eacute;cuter le(s) service(s) httpd, et m&ecirc;me
+    obligatoire si vous devez acc&eacute;der &agrave; des ressources r&eacute;seau via
     httpd.</p>
 
     <ol>
-      <li>Créez un compte d'utilisateur du domaine normal, et
+      <li>Cr&eacute;ez un compte d'utilisateur du domaine normal, et
       assurez-vous de retenir son mot de passe.</li>
 
-      <li>Accordez à l'utilisateur nouvellement créé les privilèges
+      <li>Accordez &agrave; l'utilisateur nouvellement cr&eacute;&eacute; les privil&egrave;ges
       <code>Log on as a service</code> et <code>Act as part of the
-      operating system</code>. Sous Windows NT 4.0, ces privilèges sont
-      accordés via le Gestionnaire des utilisateurs du Domaine, mais
-      sous Windows 2000 et XP, vous aurez plutôt intérêt à utiliser une
+      operating system</code>. Sous Windows NT 4.0, ces privil&egrave;ges sont
+      accord&eacute;s via le Gestionnaire des utilisateurs du Domaine, mais
+      sous Windows 2000 et XP, vous aurez plut&ocirc;t int&eacute;r&ecirc;t &agrave; utiliser une
       GPO pour propager ces configurations. Vous pouvez aussi effectuer
-      ces réglages via la Politique de Sécurité Locale intégrée à la
+      ces r&eacute;glages via la Politique de S&eacute;curit&eacute; Locale int&eacute;gr&eacute;e &agrave; la
       MMC.</li>
 
-      <li>Vérifiez que le compte nouvellement créé est membre du groupe
+      <li>V&eacute;rifiez que le compte nouvellement cr&eacute;&eacute; est membre du groupe
       Utilisateurs</li>
 
-      <li>Accordez à ce compte les droits Lecture et Exécution (RX) sur
-      tous les documents et répertoires de scripts (<code>htdocs</code>
-      et <code>cgi-bin</code> par exemple), et aussi sur l'exécutable
+      <li>Accordez &agrave; ce compte les droits Lecture et Ex&eacute;cution (RX) sur
+      tous les documents et r&eacute;pertoires de scripts (<code>htdocs</code>
+      et <code>cgi-bin</code> par exemple), et aussi sur l'ex&eacute;cutable
       binaire <code>httpd.exe</code>.</li>
 
-      <li>Accordez aussi à ce compte les droits de modification sur le
-      répertoire <code>logs</code>.</li>
+      <li>Accordez aussi &agrave; ce compte les droits de modification sur le
+      r&eacute;pertoire <code>logs</code>.</li>
 
     </ol>
 
-    <div class="note">Il est en général de bonne pratique d'accorder à l'utilisateur
-    sous lequel le service httpd s'exécute les droits en lecture et
-    exécution (RX) sur l'ensemble du répertoire Apache2.4, sauf pour le
-    sous-répertoire <code>logs</code>, sur lequel l'utilisateur doit
+    <div class="note">Il est en g&eacute;n&eacute;ral de bonne pratique d'accorder &agrave; l'utilisateur
+    sous lequel le service httpd s'ex&eacute;cute les droits en lecture et
+    ex&eacute;cution (RX) sur l'ensemble du r&eacute;pertoire Apache2.4, sauf pour le
+    sous-r&eacute;pertoire <code>logs</code>, sur lequel l'utilisateur doit
     avoir au moins les droits de modification (RWXD).</div>
 
-    <p>Si vous permettez à ce compte de se connecter en tant
+    <p>Si vous permettez &agrave; ce compte de se connecter en tant
     qu'utilisateur et service, vous pouvez ouvrir une session sous ce
-    compte et vérifier s'il a bien le droit d'exécuter les scripts, de
-    lire les pages web, et si vous pouvez démarrer httpd à partir d'une
+    compte et v&eacute;rifier s'il a bien le droit d'ex&eacute;cuter les scripts, de
+    lire les pages web, et si vous pouvez d&eacute;marrer httpd &agrave; partir d'une
     console Windows. Si tout fonctionne, et si vous avez suivi les
-    étapes ci-dessus, httpd devrait s'exécuter en tant que service sans
-    problème.</p>
+    &eacute;tapes ci-dessus, httpd devrait s'ex&eacute;cuter en tant que service sans
+    probl&egrave;me.</p>
 
     <div class="note"><strong>Le code d'erreur 2186</strong> indique probablement
-    que httpd ne peut pas accéder à une ressource réseau nécessaire, et
+    que httpd ne peut pas acc&eacute;der &agrave; une ressource r&eacute;seau n&eacute;cessaire, et
     que vous devez revoir la configuration "Log On As" (Se connecter en
     tant que ...) du service.</div>
 
-    <p>Lorsqu'httpd démarre en tant que service, il se peut que vous
+    <p>Lorsqu'httpd d&eacute;marre en tant que service, il se peut que vous
     obteniez un message d'erreur du Gestionnaire de Services Windows.
-    Par exemple, si vous essayez de démarrer httpd en utilisant
+    Par exemple, si vous essayez de d&eacute;marrer httpd en utilisant
     l'applet Services du Panneau de configuration de Windows, vous
     pouvez obtenir le message suivant :</p>
 
     <div class="example"><p><code>
-      Could not start the Apache2.4 service on \\COMPUTER <br />
+      Could not start the Apache2.4 service on \\COMPUTER <br>
       Error 1067; The process terminated unexpectedly.
     </code></p></div>
 
-    <p>Vous obtiendrez cette erreur à caractère général pour tout
-    problème survenant au cours du démarrage du service httpd. Afin de
-    déterminer exactement la cause du problème, vous devez suivre les
-    instructions permettant d'exécuter httpd pour Windows depuis la
+    <p>Vous obtiendrez cette erreur &agrave; caract&egrave;re g&eacute;n&eacute;ral pour tout
+    probl&egrave;me survenant au cours du d&eacute;marrage du service httpd. Afin de
+    d&eacute;terminer exactement la cause du probl&egrave;me, vous devez suivre les
+    instructions permettant d'ex&eacute;cuter httpd pour Windows depuis la
     ligne de commande.</p>
 
-    <p>Si vous rencontrez des problèmes avec le service, il est
-    conseillé de suivre les instructions ci-dessous afin d'essayer de
-    démarrer httpd.exe depuis une console, et d'analyser les erreurs
-    plutôt que vous démener à essayer de démarrer le service.</p>
+    <p>Si vous rencontrez des probl&egrave;mes avec le service, il est
+    conseill&eacute; de suivre les instructions ci-dessous afin d'essayer de
+    d&eacute;marrer httpd.exe depuis une console, et d'analyser les erreurs
+    plut&ocirc;t que vous d&eacute;mener &agrave; essayer de d&eacute;marrer le service.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="wincons" id="wincons">Exécuter httpd depuis la console</a> <a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
+<h2 id="wincons">Ex&eacute;cuter httpd depuis la console <a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
     
 
-    <p>Il est en général recommandé d'exécuter httpd en tant que
+    <p>Il est en g&eacute;n&eacute;ral recommand&eacute; d'ex&eacute;cuter httpd en tant que
     service, mais il est parfois plus simple d'utiliser la ligne de
     commande, en particulier au cours de la configuration initiale et
     les tests.</p>
 
-    <p>Pour exécuter httpd depuis la ligne de commande et en tant
+    <p>Pour ex&eacute;cuter httpd depuis la ligne de commande et en tant
     qu'application de console, utilisez la commande suivante :</p>
 
     <div class="example"><p><code>
       httpd.exe
     </code></p></div>
 
-    <p>httpd va démarrer, et continuera son exécution jusqu'à ce qu'on
-    l'arrête en tapant Ctrl-C.</p>
+    <p>httpd va d&eacute;marrer, et continuera son ex&eacute;cution jusqu'&agrave; ce qu'on
+    l'arr&ecirc;te en tapant Ctrl-C.</p>
 
-    <p>Vous pouvez également démarrer httpd via le raccourci "Démarrer
-    httpd dans une console" placé dans <code>Démarrer --&gt;
+    <p>Vous pouvez &eacute;galement d&eacute;marrer httpd via le raccourci "D&eacute;marrer
+    httpd dans une console" plac&eacute; dans <code>D&eacute;marrer --&gt;
     Programmes --&gt; Apache HTTP Server 2.4.xx --&gt; Control Apache
     Server</code> au cours de l'installation. Ceci va
-    ouvrir une console Windows, et y démarrer httpd.
-    Si vous n'avez pas installé httpd en tant que service, la
-    fenêtre Windows restera ouverte jusqu'à ce que vous arrêtiez httpd
-    en tapant Ctrl-C dans cette fenêtre. Le serveur va alors s'arrêter
-    au bout de quelques secondes. Cependant, si vous avez installé
+    ouvrir une console Windows, et y d&eacute;marrer httpd.
+    Si vous n'avez pas install&eacute; httpd en tant que service, la
+    fen&ecirc;tre Windows restera ouverte jusqu'&agrave; ce que vous arr&ecirc;tiez httpd
+    en tapant Ctrl-C dans cette fen&ecirc;tre. Le serveur va alors s'arr&ecirc;ter
+    au bout de quelques secondes. Cependant, si vous avez install&eacute;
     httpd en tant que service, c'est ce dernier que le raccourci
-    ci-dessus va lancer. Si le service httpd est déjà en cours
-    d'exécution, le raccourci va rester sans effet.</p>
+    ci-dessus va lancer. Si le service httpd est d&eacute;j&agrave; en cours
+    d'ex&eacute;cution, le raccourci va rester sans effet.</p>
 
-    <p>Si httpd s'exécute en tant que service, vous pouvez l'arrêter en
+    <p>Si httpd s'ex&eacute;cute en tant que service, vous pouvez l'arr&ecirc;ter en
     ouvrant une autre console et en entrant :</p>
 
     <div class="example"><p><code>
       httpd.exe -k shutdown
     </code></p></div>
 
-    <p>Plutôt que de lancer httpd à partir d'une console, il est
-    préférable de l'exécuter en tant que service car dans ce cas, il
-    termine proprement les opérations en cours avant de s'éteindre.</p>
+    <p>Plut&ocirc;t que de lancer httpd &agrave; partir d'une console, il est
+    pr&eacute;f&eacute;rable de l'ex&eacute;cuter en tant que service car dans ce cas, il
+    termine proprement les op&eacute;rations en cours avant de s'&eacute;teindre.</p>
 
-    <p>Si le serveur a été lancé depuis une console, vous ne pouvez
-    l'arrêter qu'en pressant la combinaison de touches Ctrl-C dans la
-    même fenêtre.</p>
+    <p>Si le serveur a &eacute;t&eacute; lanc&eacute; depuis une console, vous ne pouvez
+    l'arr&ecirc;ter qu'en pressant la combinaison de touches Ctrl-C dans la
+    m&ecirc;me fen&ecirc;tre.</p>
 
-    <p>Vous pouvez aussi redémarrer httpd. Ceci le force à recharger
-    son fichier de configuration. Toute opération en cours peut être
-    achevée sans interruption. Pour redémarrer httpd, vous pouvez soit
-    taper Control-Break dans la fenêtre de console que vous avez
-    utilisée pour le démarrer, soit entrer :</p>
+    <p>Vous pouvez aussi red&eacute;marrer httpd. Ceci le force &agrave; recharger
+    son fichier de configuration. Toute op&eacute;ration en cours peut &ecirc;tre
+    achev&eacute;e sans interruption. Pour red&eacute;marrer httpd, vous pouvez soit
+    taper Control-Break dans la fen&ecirc;tre de console que vous avez
+    utilis&eacute;e pour le d&eacute;marrer, soit entrer :</p>
 
     <div class="example"><p><code>
       httpd.exe -k restart
     </code></p></div>
 
-    <p>si le serveur s'exécute en tant que service.</p>
+    <p>si le serveur s'ex&eacute;cute en tant que service.</p>
 
     <div class="note">Note pour les utilisateurs familiers de la version Unix
-    de httpd : les commandes ci-dessus représentent pour Windows
-    l'équivalent des commandes <code>kill -TERM <em>pid</em></code> et
+    de httpd : les commandes ci-dessus repr&eacute;sentent pour Windows
+    l'&eacute;quivalent des commandes <code>kill -TERM <em>pid</em></code> et
     <code>kill -USR1 <em>pid</em></code>. L'option de ligne de commande
-    <code>-k</code> a été choisie à titre de rapprochement avec la
-    commande <code>kill</code> utilisée sous Unix.</div>
+    <code>-k</code> a &eacute;t&eacute; choisie &agrave; titre de rapprochement avec la
+    commande <code>kill</code> utilis&eacute;e sous Unix.</div>
 
-    <p>Si la fenêtre de la console httpd se ferme immédiatement ou
-    inopinément après le démarrage de httpd, ouvrez une console Windows
-    depuis le menu Démarrer --&gt; Programmes. Placez-vous dans le
-    répertoire d'installation de httpd, tapez la commande
+    <p>Si la fen&ecirc;tre de la console httpd se ferme imm&eacute;diatement ou
+    inopin&eacute;ment apr&egrave;s le d&eacute;marrage de httpd, ouvrez une console Windows
+    depuis le menu D&eacute;marrer --&gt; Programmes. Placez-vous dans le
+    r&eacute;pertoire d'installation de httpd, tapez la commande
     <code>httpd.exe</code>, et observez le message d'erreur. Allez
-    ensuite dans le répertoire des journaux, et visualisez le fichier
-    <code>error.log</code> pour détecter d'éventuelles erreurs de
-    configuration. Si httpd a été installé dans <code>C:\Program
+    ensuite dans le r&eacute;pertoire des journaux, et visualisez le fichier
+    <code>error.log</code> pour d&eacute;tecter d'&eacute;ventuelles erreurs de
+    configuration. Si httpd a &eacute;t&eacute; install&eacute; dans <code>C:\Program
     Files\Apache Software Foundation\Apache2.4\</code>, vous
     pouvez entrer ce qui suit :</p>
 
     <div class="example"><p><code>
-      c: <br />
-      cd "\Program Files\Apache Software Foundation\Apache2.4\bin" <br />
+      c: <br>
+      cd "\Program Files\Apache Software Foundation\Apache2.4\bin" <br>
       httpd.exe
     </code></p></div>
 
-    <p>Attendez ensuite que httpd s'arrête ou tapez Ctrl-C. Entrez alors
+    <p>Attendez ensuite que httpd s'arr&ecirc;te ou tapez Ctrl-C. Entrez alors
     la commande suivante :</p>
 
     <div class="example"><p><code>
-      cd ..\logs <br />
+      cd ..\logs <br>
       more &lt; error.log
     </code></p></div>
 
     <p>Lorsqu'on travaille avec httpd, il est important de comprendre
     comment ce dernier trouve son fichier de configuration. Vous pouvez
-    spécifier un fichier de configuration à partir de la ligne de
-    commande de deux façons :</p>
+    sp&eacute;cifier un fichier de configuration &agrave; partir de la ligne de
+    commande de deux fa&ccedil;ons :</p>
 
     <ul>
-      <li><p>L'option <code>-f</code> permet de spécifier un chemin
+      <li><p>L'option <code>-f</code> permet de sp&eacute;cifier un chemin
       absolu ou relatif vers un fichier de configuration particulier
-      :</p>(sous Windows 9x, il est recommandé d'utiliser la ligne de
-    commande à cause du manque de fiabilité du support des services
-    fourni par ce système).
+      :</p>(sous Windows 9x, il est recommand&eacute; d'utiliser la ligne de
+    commande &agrave; cause du manque de fiabilit&eacute; du support des services
+    fourni par ce syst&egrave;me).
 
       <div class="example"><p><code>
         httpd.exe -f "c:\fichiers-de-mon-serveur\autre-config.conf"
@@ -524,8 +522,8 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
         httpd.exe -f fichiers-de-mon-serveur\autre-config.conf
       </code></p></div></li>
 
-      <li><p>L'option <code>-n</code> permet de spécifier le service
-      httpd installé dont le fichier de configuration doit être utilisé
+      <li><p>L'option <code>-n</code> permet de sp&eacute;cifier le service
+      httpd install&eacute; dont le fichier de configuration doit &ecirc;tre utilis&eacute;
       :</p>
 
       <div class="example"><p><code>
@@ -534,22 +532,22 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       </li>
     </ul>
 
-    <p>Dans les deux cas, la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> doit être correctement définie
+    <p>Dans les deux cas, la directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> doit &ecirc;tre correctement d&eacute;finie
     dans le fichier de configuration.</p>
 
-    <p>Si vous ne spécifiez aucun fichier de configuration à l'aide des
+    <p>Si vous ne sp&eacute;cifiez aucun fichier de configuration &agrave; l'aide des
     options <code>-f</code> ou <code>-n</code>, httpd utilisera le nom
-    du fichier de configuration compilé dans le serveur, en général
-    <code>conf\httpd.conf</code>. Ce chemin codé en dur est relatif au
-    répertoire d'installation. Vous pouvez vérifier ce chemin à partir
-    de la valeur de l'étiquette <code>SERVER_CONFIG_FILE</code> en
+    du fichier de configuration compil&eacute; dans le serveur, en g&eacute;n&eacute;ral
+    <code>conf\httpd.conf</code>. Ce chemin cod&eacute; en dur est relatif au
+    r&eacute;pertoire d'installation. Vous pouvez v&eacute;rifier ce chemin &agrave; partir
+    de la valeur de l'&eacute;tiquette <code>SERVER_CONFIG_FILE</code> en
     invoquant httpd avec l'option <code>-V</code>, comme ceci :</p>
 
     <div class="example"><p><code>
       httpd.exe -V
     </code></p></div>
 
-    <p>httpd va ensuite essayer de déterminer la valeur de son
+    <p>httpd va ensuite essayer de d&eacute;terminer la valeur de son
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> en effectuant les
     recherches suivantes, dans cet ordre :</p>
 
@@ -559,46 +557,46 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
       <li>L'option de ligne de commande <code>-d</code>.</li>
 
-      <li>Le répertoire de travail courant.</li>
+      <li>Le r&eacute;pertoire de travail courant.</li>
 
-      <li>Une entrée de la base de registre créée dans le cas d'une
+      <li>Une entr&eacute;e de la base de registre cr&eacute;&eacute;e dans le cas d'une
       installation binaire.</li>
 
-      <li>La racine des documents (<code>DocumentRoot</code>) codée en dur
+      <li>La racine des documents (<code>DocumentRoot</code>) cod&eacute;e en dur
       dans le serveur. Elle
-      correspond par défaut à <code>/apache</code>, et vous pouvez le
-      vérifier en tapant <code>httpd.exe -V</code> et en recherchant
-      l'étiquette <code>HTTPD_ROOT</code>.</li>
+      correspond par d&eacute;faut &agrave; <code>/apache</code>, et vous pouvez le
+      v&eacute;rifier en tapant <code>httpd.exe -V</code> et en recherchant
+      l'&eacute;tiquette <code>HTTPD_ROOT</code>.</li>
     </ol>
 
-    <p>Si vous n'avez pas effectué d'installation binaire, dans certains
-    scénarios, httpd va signaler l'absence de cette clé de registre.
-    On peut passer outre cet avertissement si le serveur a été en mesure
-    de trouver son fichier de configuration d'une autre manière.</p>
+    <p>Si vous n'avez pas effectu&eacute; d'installation binaire, dans certains
+    sc&eacute;narios, httpd va signaler l'absence de cette cl&eacute; de registre.
+    On peut passer outre cet avertissement si le serveur a &eacute;t&eacute; en mesure
+    de trouver son fichier de configuration d'une autre mani&egrave;re.</p>
 
-    <p>La valeur de cette clé correspond au répertoire <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> qui contient lui-même le
-    sous-répertoire <code>conf</code>. Lors de son démarrage, httpd lit
-    le fichier <code>httpd.conf</code> à partir de ce répertoire. Si ce
-    fichier contient une directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> qui spécifie un répertoire
-    différent de celui que contient la clé de registre ci-dessus, httpd
-    oubliera la clé de registre, et utilisera le répertoire spécifié par
-    le fichier de configuration. Si vous déplacez le répertoire httpd
-    ou ses fichiers de configuration, il est vital de mettre à jour la
+    <p>La valeur de cette cl&eacute; correspond au r&eacute;pertoire <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> qui contient lui-m&ecirc;me le
+    sous-r&eacute;pertoire <code>conf</code>. Lors de son d&eacute;marrage, httpd lit
+    le fichier <code>httpd.conf</code> &agrave; partir de ce r&eacute;pertoire. Si ce
+    fichier contient une directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> qui sp&eacute;cifie un r&eacute;pertoire
+    diff&eacute;rent de celui que contient la cl&eacute; de registre ci-dessus, httpd
+    oubliera la cl&eacute; de registre, et utilisera le r&eacute;pertoire sp&eacute;cifi&eacute; par
+    le fichier de configuration. Si vous d&eacute;placez le r&eacute;pertoire httpd
+    ou ses fichiers de configuration, il est vital de mettre &agrave; jour la
     directive <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dans
-    <code>httpd.conf</code> afin de refléter la nouvelle
+    <code>httpd.conf</code> afin de refl&eacute;ter la nouvelle
     localisation.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Vérification de l'installation</a> <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">V&eacute;rification de l'installation <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
     
 
-    <p>Une fois httpd démarré (soit à partir d'une console Windows,
-    soit en tant que service), ce dernier va se mettre à l'écoute sur
-    le port 80 (à moins que vous ayiez modifié la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> dans les fichiers de
-    configuration ou que vous ayiez installé httpd pour l'utilisateur
-    courant seulement). Pour vous connecter au serveur et accéder à la
-    page par défaut, lancez un navigateur et entrez cette URL :</p>
+    <p>Une fois httpd d&eacute;marr&eacute; (soit &agrave; partir d'une console Windows,
+    soit en tant que service), ce dernier va se mettre &agrave; l'&eacute;coute sur
+    le port 80 (&agrave; moins que vous ayiez modifi&eacute; la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> dans les fichiers de
+    configuration ou que vous ayiez install&eacute; httpd pour l'utilisateur
+    courant seulement). Pour vous connecter au serveur et acc&eacute;der &agrave; la
+    page par d&eacute;faut, lancez un navigateur et entrez cette URL :</p>
 
     <div class="example"><p><code>
       http://localhost/
@@ -607,8 +605,8 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
     <p>httpd devrait renvoyer une page de bienvenue et vous devriez
     voir s'afficher "It Works!". Si rien ne se passe ou si vous obtenez
     une erreur, consultez le fichier <code>error.log</code> dans le
-    sous-répertoire <code>logs</code>. Si votre serveur n'est pas
-    connecté au réseau, ou si vous avez de sérieux problèmes avec la
+    sous-r&eacute;pertoire <code>logs</code>. Si votre serveur n'est pas
+    connect&eacute; au r&eacute;seau, ou si vous avez de s&eacute;rieux probl&egrave;mes avec la
     configuration de votre DNS (Domain Name Service), vous devez
     utiliser cette URL :</p>
 
@@ -616,35 +614,35 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
       http://127.0.0.1/
     </code></p></div>
 
-    <p>Si httpd écoute un port non standard, vous devez le préciser
+    <p>Si httpd &eacute;coute un port non standard, vous devez le pr&eacute;ciser
     explicitement dans l'URL :</p>
 
     <div class="example"><p><code>
       http://127.0.0.1:8080/
     </code></p></div>
 
-    <p>Après que votre installation de base fonctionne, vous devez la
-    configurer correctement en éditant les fichiers du sous-répertoire
+    <p>Apr&egrave;s que votre installation de base fonctionne, vous devez la
+    configurer correctement en &eacute;ditant les fichiers du sous-r&eacute;pertoire
     <code>conf</code>. Encore une fois, si vous modifiez la
     configuration du service httpd sous Windows NT, essayez d'abord de
-    redémarrer le service depuis la ligne de commande afin de vous
+    red&eacute;marrer le service depuis la ligne de commande afin de vous
     assurer de l'absence d'erreur.</p>
 
-    <p>Comme httpd <strong>ne peut pas</strong> partager le même port
-    avec d'autres applications TCP/IP, il se peut que vous soyez amené à
-    arrêter, désinstaller ou reconfigurer certains services avant de
-    démarrer httpd. Ces services entrant en conflit avec httpd
-    comprennent les autres serveurs WWW, certaines implémentations de
-    pare-feu, et même certaines applications client (comme Skype) qui
+    <p>Comme httpd <strong>ne peut pas</strong> partager le m&ecirc;me port
+    avec d'autres applications TCP/IP, il se peut que vous soyez amen&eacute; &agrave;
+    arr&ecirc;ter, d&eacute;sinstaller ou reconfigurer certains services avant de
+    d&eacute;marrer httpd. Ces services entrant en conflit avec httpd
+    comprennent les autres serveurs WWW, certaines impl&eacute;mentations de
+    pare-feu, et m&ecirc;me certaines applications client (comme Skype) qui
     utilisent le port 80 afin de contourner les pare-feu.</p>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="windrivemap" id="windrivemap">Configuration de l'accès aux ressources réseau</a> <a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
+<h2 id="windrivemap">Configuration de l'acc&egrave;s aux ressources r&eacute;seau <a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
     
 
-  <p>L'accès à des fichiers par le réseau peut être spécifié via deux
-  mécanismes fournis par Windows :</p>
+  <p>L'acc&egrave;s &agrave; des fichiers par le r&eacute;seau peut &ecirc;tre sp&eacute;cifi&eacute; via deux
+  m&eacute;canismes fournis par Windows :</p>
 
   <dl>
     <dt>Association de lettres de lecteur</dt>
@@ -654,19 +652,19 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
     <dd>Par exemple, <code>Alias "/images/" "//imagehost/www/images/"</code></dd>
   </dl>
 
-  <p>L'association de lettres de lecteur permet à l'administrateur de
+  <p>L'association de lettres de lecteur permet &agrave; l'administrateur de
   maintenir une correspondance avec une certaine machine et un certain
   chemin en dehors de la configuration d'Apache httpd. Cependant, ces
   associations ne sont possibles que dans le cadre des sessions
   interactives, et ne sont pas directement disponibles pour Apache httpd
-  lorsqu'il est démarré en tant que service. <strong>N'utilisez par
-  conséquent que des
-  chemins UNC pour les ressources réseau dans httpd.conf,</strong> de
-  façon à ce que les ressources soient accessibles quelle que soit la
-  manière dont Apache httpd a été démarré (des procédures exotiques et
+  lorsqu'il est d&eacute;marr&eacute; en tant que service. <strong>N'utilisez par
+  cons&eacute;quent que des
+  chemins UNC pour les ressources r&eacute;seau dans httpd.conf,</strong> de
+  fa&ccedil;on &agrave; ce que les ressources soient accessibles quelle que soit la
+  mani&egrave;re dont Apache httpd a &eacute;t&eacute; d&eacute;marr&eacute; (des proc&eacute;dures exotiques et
   probablement sujettes aux erreurs peuvent permettre de contourner la
   restriction due aux associations de lettres de lecteur, mais leur
-  utilisation est déconseillée).</p>
+  utilisation est d&eacute;conseill&eacute;e).</p>
 
   <div class="example"><h3>Exemple de DocumentRoot avec chemin UNC</h3><pre class="prettyprint lang-config">  UNCList dochost
   DocumentRoot "//dochost/www/html/"</pre>
@@ -676,7 +674,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
   DocumentRoot "//192.168.1.50/docs/"</pre>
 </div>
 
-  <div class="example"><h3>Exemple d'Alias et répertoire correspondant avec
+  <div class="example"><h3>Exemple d'Alias et r&eacute;pertoire correspondant avec
   chemin UNC</h3><pre class="prettyprint lang-config">UNCList imagehost1 imagehost2  
 Alias "/images/" "//imagehost/www/images/"
 Alias "/images2/" "//imagehost2/www/images/"
@@ -689,27 +687,27 @@ Alias "/images2/" "//imagehost2/www/images/"
 &lt;/Directory&gt;</pre>
 </div>
 
-  <p>Lorsque Apache s'exécute en tant que service, vous devez créer un
-  compte spécifique afin de pouvoir accéder aux ressources réseau, comme
-  décrit ci-dessus.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  <p>Lorsque Apache s'ex&eacute;cute en tant que service, vous devez cr&eacute;er un
+  compte sp&eacute;cifique afin de pouvoir acc&eacute;der aux ressources r&eacute;seau, comme
+  d&eacute;crit ci-dessus.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tuning" id="tuning">Personnalisation sous Windows</a> <a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
+<h2 id="tuning">Personnalisation sous Windows <a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
     
     <ul>
       <li><p>Si on utilise un grand nombre de redirections de journaux
-      via des pipes, il est souvent nécessaire d'augmenter la
-      taille de la mémoire du bureau ("desktop heap"). Pour une information plus
-      détaillée, veuillez vous reporter à la documentation sur les <a href="../logs.html#piped">redirections de journaux</a>.</p></li>
+      via des pipes, il est souvent n&eacute;cessaire d'augmenter la
+      taille de la m&eacute;moire du bureau ("desktop heap"). Pour une information plus
+      d&eacute;taill&eacute;e, veuillez vous reporter &agrave; la documentation sur les <a href="../logs.html#piped">redirections de journaux</a>.</p></li>
     </ul>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/platform/windows.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/platform/windows.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../fr/platform/windows.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2026 The Apache Software Foundation.<br />Autorisé sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
