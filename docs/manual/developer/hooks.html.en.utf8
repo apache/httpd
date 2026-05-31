@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="corehooks" id="corehooks">Core Hooks</a> <a title="Permanent link" href="#corehooks" class="permalink">&para;</a></h2>
+<h2 id="corehooks">Core Hooks <a title="Permanent link" href="#corehooks" class="permalink">&para;</a></h2>
     <p>The httpd's core modules offer a predefinined list of hooks
     used during the standard <a href="./request.html">request processing</a>
     phase. Creating a new hook will expose a function that 
@@ -59,11 +59,11 @@
     </p> 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="create" id="create">Creating a hook function</a> <a title="Permanent link" href="#create" class="permalink">&para;</a></h2>
+<h2 id="create">Creating a hook function <a title="Permanent link" href="#create" class="permalink">&para;</a></h2>
     <p>In order to create a new hook, four things need to be
     done:</p>
 
-    <h3><a name="create-declare" id="create-declare">Declare the hook function</a></h3>
+    <h3 id="create-declare">Declare the hook function</h3>
       <p>Use the <code>AP_DECLARE_HOOK</code> macro, which needs to be given
       the return type of the hook function, the name of the hook, and the
       arguments. For example, if the hook returns an <code>int</code> and
@@ -76,7 +76,7 @@
       they want to use the hook.</p>
     
 
-    <h3><a name="create-create" id="create-create">Create the hook structure</a></h3>
+    <h3 id="create-create">Create the hook structure</h3>
       <p>Each source file that exports a hook has a private structure
       which is used to record the module functions that use the hook.
       This is declared as follows:</p>
@@ -88,7 +88,7 @@
 
     
 
-    <h3><a name="create-implement" id="create-implement">Implement the hook caller</a></h3>
+    <h3 id="create-implement">Implement the hook caller</h3>
       <p>The source file that exports the hook has to implement a
       function that will call the hook. There are currently three
       possible ways to do this. In all cases, the calling function is
@@ -142,7 +142,7 @@
       
     
 
-    <h3><a name="create-call" id="create-call">Call the hook callers</a></h3>
+    <h3 id="create-call">Call the hook callers</h3>
       <p>At appropriate moments in the code, call the hook caller,
       like so:</p>
 
@@ -154,11 +154,11 @@ ret=ap_run_do_something(r, n);</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hooking" id="hooking">Hooking the hook</a> <a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
+<h2 id="hooking">Hooking the hook <a title="Permanent link" href="#hooking" class="permalink">&para;</a></h2>
     <p>A module that wants a hook to be called needs to do two
     things.</p>
 
-    <h3><a name="hooking-implement" id="hooking-implement">Implement the hook function</a></h3>
+    <h3 id="hooking-implement">Implement the hook function</h3>
       <p>Include the appropriate header, and define a static function
       of the correct type:</p>
 
@@ -170,7 +170,7 @@ ret=ap_run_do_something(r, n);</pre>
 
     
 
-    <h3><a name="hooking-add" id="hooking-add">Add a hook registering function</a></h3>
+    <h3 id="hooking-add">Add a hook registering function</h3>
       <p>During initialization, the server will call each modules hook
       registering function, which is included in the module
       structure:</p>
@@ -188,7 +188,7 @@ mode MODULE_VAR_EXPORT my_module =
 
     
 
-    <h3><a name="hooking-order" id="hooking-order">Controlling hook calling order</a></h3>
+    <h3 id="hooking-order">Controlling hook calling order</h3>
       <p>In the example above, we didn't use the three arguments in
       the hook registration function that control calling order of 
       all the functions registered within the hook.
@@ -236,7 +236,7 @@ mode MODULE_VAR_EXPORT my_module =
 <p><span>Available Languages: </span><a href="../en/developer/hooks.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

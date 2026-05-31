@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -54,30 +54,30 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="api_changes" id="api_changes">Changed APIs</a> <a title="Permanent link" href="#api_changes" class="permalink">&para;</a></h2>
+<h2 id="api_changes">Changed APIs <a title="Permanent link" href="#api_changes" class="permalink">&para;</a></h2>
   
 
-  <h3><a name="ap_expr" id="ap_expr">ap_expr (NEW!)</a></h3>
+  <h3 id="ap_expr">ap_expr (NEW!)</h3>
     
     <p>Introduces a new API to parse and evaluate boolean and algebraic
        expressions, including provision for a standard syntax and
        customized variants.</p>
   
 
-  <h3><a name="ap_listen" id="ap_listen">ap_listen (changed; backwards-compatible)</a></h3>
+  <h3 id="ap_listen">ap_listen (changed; backwards-compatible)</h3>
     
     <p>Introduces a new API to enable httpd child processes to serve
        different purposes.</p>
   
 
-  <h3><a name="ap_mpm" id="ap_mpm">ap_mpm (changed)</a></h3>
+  <h3 id="ap_mpm">ap_mpm (changed)</h3>
     
   <p><code>ap_mpm_run</code> is replaced by a new <code>mpm</code> hook.
   Also <code>ap_graceful_stop_signalled</code> is lost, and
   <code>ap_mpm_register_timed_callback</code> is new.</p>
   
 
-  <h3><a name="ap_regex" id="ap_regex">ap_regex (changed)</a></h3>
+  <h3 id="ap_regex">ap_regex (changed)</h3>
     
   <p>In addition to the existing regexp wrapper, a new higher-level API
   <code>ap_rxplus</code> is now provided.  This provides the capability to
@@ -86,30 +86,30 @@
   backreferences is also added.</p>
   
 
-  <h3><a name="ap_slotmem" id="ap_slotmem">ap_slotmem (NEW!)</a></h3>
+  <h3 id="ap_slotmem">ap_slotmem (NEW!)</h3>
     
     <p>Introduces an API for modules to allocate and manage memory slots,
     most commonly for shared memory.</p>
   
 
-  <h3><a name="ap_socache" id="ap_socache">ap_socache (NEW!)</a></h3>
+  <h3 id="ap_socache">ap_socache (NEW!)</h3>
     
     <p>API to manage a shared object cache.</p>
   
 
-  <h3><a name="heartbeat" id="heartbeat">heartbeat (NEW!)</a></h3>
+  <h3 id="heartbeat">heartbeat (NEW!)</h3>
     
     <p>common structures for heartbeat modules</p>
   
 
-  <h3><a name="ap_parse_htaccess" id="ap_parse_htaccess">ap_parse_htaccess (changed)</a></h3>
+  <h3 id="ap_parse_htaccess">ap_parse_htaccess (changed)</h3>
     
     <p>The function signature for <code>ap_parse_htaccess</code> has been
     changed. A <code>apr_table_t</code> of individual directives allowed
     for override must now be passed (override remains).</p>
   
 
-  <h3><a name="http_config" id="http_config">http_config (changed)</a></h3>
+  <h3 id="http_config">http_config (changed)</h3>
     
     <ul>
       <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
@@ -130,7 +130,7 @@
     </ul>
   
 
-  <h3><a name="http_core" id="http_core">http_core (changed)</a></h3>
+  <h3 id="http_core">http_core (changed)</h3>
     
     <ul>
       <li>REMOVED <code>ap_default_type</code>, <code>ap_requires</code>, all
@@ -152,7 +152,7 @@
     </ul>
   
 
-  <h3><a name="httpd" id="httpd">httpd (changed)</a></h3>
+  <h3 id="httpd">httpd (changed)</h3>
     
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
@@ -173,7 +173,7 @@
     </ul>
   
 
-  <h3><a name="http_log" id="http_log">http_log (changed)</a></h3>
+  <h3 id="http_log">http_log (changed)</h3>
     
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
@@ -187,7 +187,7 @@
     </ul>
   
 
-  <h3><a name="http_request" id="http_request">http_request (changed)</a></h3>
+  <h3 id="http_request">http_request (changed)</h3>
     
     <ul>
       <li>New auth_internal API and auth_provider API</li>
@@ -219,12 +219,12 @@
        <code>AP_AUTH_INTERNAL_PER_URI</code>.</p>
   
 
-  <h3><a name="mod_auth" id="mod_auth">mod_auth (NEW!)</a></h3>
+  <h3 id="mod_auth">mod_auth (NEW!)</h3>
     
     <p>Introduces the new provider framework for authn and authz</p>
   
 
-  <h3><a name="mod_cache" id="mod_cache">mod_cache (changed)</a></h3>
+  <h3 id="mod_cache">mod_cache (changed)</h3>
     
     <p>Introduces a <code>commit_entity()</code> function to the cache provider
     interface, allowing atomic writes to cache. Add a <code>cache_status()</code>
@@ -232,13 +232,13 @@
     removed.</p>
   
 
-  <h3><a name="mod_core" id="mod_core">mod_core (NEW!)</a></h3>
+  <h3 id="mod_core">mod_core (NEW!)</h3>
     
     <p>This introduces low-level APIs to send arbitrary headers,
     and exposes functions to handle HTTP OPTIONS and TRACE.</p>
   
 
-  <h3><a name="mod_cache_disk" id="mod_cache_disk">mod_cache_disk (changed)</a></h3>
+  <h3 id="mod_cache_disk">mod_cache_disk (changed)</h3>
     
     <p>Changes the disk format of the disk cache to support atomic cache
     updates without locking. The device/inode pair of the body file is
@@ -246,21 +246,21 @@
     and body belong to one another.</p>
   
 
-  <h3><a name="mod_disk_cache" id="mod_disk_cache">mod_disk_cache (renamed)</a></h3>
+  <h3 id="mod_disk_cache">mod_disk_cache (renamed)</h3>
     
     <p>The mod_disk_cache module has been renamed to mod_cache_disk in
     order to be consistent with the naming of other modules within the
     server.</p>
   
 
-  <h3><a name="mod_request" id="mod_request">mod_request (NEW!)</a></h3>
+  <h3 id="mod_request">mod_request (NEW!)</h3>
     
     <p>The API for <code class="module"><a href="../mod/mod_request.html">mod_request</a></code>, to make input data
     available to multiple application/handler modules where required,
     and to parse HTML form data.</p>
   
 
-  <h3><a name="mpm_common" id="mpm_common">mpm_common (changed)</a></h3>
+  <h3 id="mpm_common">mpm_common (changed)</h3>
     
     <ul>
       <li>REMOVES: <code>accept</code>, <code>lockfile</code>, <code>lock_mech</code>,
@@ -275,46 +275,46 @@
     </ul>
   
 
-  <h3><a name="scoreboard" id="scoreboard">scoreboard (changed)</a></h3>
+  <h3 id="scoreboard">scoreboard (changed)</h3>
     
     <p><code>ap_get_scoreboard_worker</code> is made non-backwards-compatible
     as an alternative version is introduced.  Additional proxy_balancer
     support.  Child status stuff revamped.</p>
   
 
-  <h3><a name="util_cookies" id="util_cookies">util_cookies (NEW!)</a></h3>
+  <h3 id="util_cookies">util_cookies (NEW!)</h3>
     
     <p>Introduces a new API for managing HTTP Cookies.</p>
   
 
-  <h3><a name="util_ldap" id="util_ldap">util_ldap (changed)</a></h3>
+  <h3 id="util_ldap">util_ldap (changed)</h3>
     
     <p><em>no description available</em></p>
   
 
-  <h3><a name="util_mutex" id="util_mutex">util_mutex (NEW!)</a></h3>
+  <h3 id="util_mutex">util_mutex (NEW!)</h3>
     
     <p>A wrapper for APR proc and global mutexes in httpd, providing
        common configuration for the underlying mechanism and location
        of lock files.</p>
   
 
-  <h3><a name="util_script" id="util_script">util_script (changed)</a></h3>
+  <h3 id="util_script">util_script (changed)</h3>
     
     <p>NEW: <code>ap_args_to_table</code></p>
   
 
-  <h3><a name="util_time" id="util_time">util_time (changed)</a></h3>
+  <h3 id="util_time">util_time (changed)</h3>
     
     <p>NEW: <code>ap_recent_ctime_ex</code></p>
   
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Specific information on upgrading modules from 2.2</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Specific information on upgrading modules from 2.2 <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
   
 
-  <h3><a name="upgrading_logging" id="upgrading_logging">Logging</a></h3>
+  <h3 id="upgrading_logging">Logging</h3>
     
     <p>In order to take advantage of per-module loglevel configuration, any
        source file that calls the <code>ap_log_*</code> functions should declare
@@ -400,7 +400,7 @@
        instructed to add it back if necessary for problem diagnosis.)</p>
   
 
-  <h3><a name="upgrading_byfunction" id="upgrading_byfunction">If your module uses these existing APIs...</a></h3>
+  <h3 id="upgrading_byfunction">If your module uses these existing APIs...</h3>
     
 
     <dl>
@@ -518,7 +518,7 @@
     </dl>
   
 
-  <h3><a name="upgrading_byfeature" id="upgrading_byfeature">If your module interfaces with this feature...</a></h3>
+  <h3 id="upgrading_byfeature">If your module interfaces with this feature...</h3>
     
     <dl>
       <dt>suEXEC</dt>
@@ -538,7 +538,7 @@
     </dl>
   
 
-  <h3><a name="upgrading_newfeatures" id="upgrading_newfeatures">Does your module...</a></h3>
+  <h3 id="upgrading_newfeatures">Does your module...</h3>
     
     <dl>
     <dt>Parse query args</dt>
@@ -572,7 +572,7 @@
 <p><span>Available Languages: </span><a href="../en/developer/new_api_2_4.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

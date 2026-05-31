@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -56,7 +56,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a> <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2 id="requiredirectives">The Require Directives <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
@@ -66,7 +66,7 @@
     <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the DBM require directives.</p>
 
-<h3><a name="reqgroup" id="reqgroup">Require dbm-group</a></h3>
+<h3 id="reqgroup">Require dbm-group</h3>
 
     <p>This directive specifies group membership that is required for the
     user to gain access.</p>
@@ -76,7 +76,7 @@
 
 
 
-<h3><a name="reqfilegroup" id="reqfilegroup">Require dbm-file-group</a></h3>
+<h3 id="reqfilegroup">Require dbm-file-group</h3>
 
     <p>When this directive is specified, the user must be a member of the group
     assigned to the file being accessed.</p>
@@ -88,7 +88,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Example usage</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Example usage <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 <p><em>Note that using mod_authz_dbm requires you to require <code>dbm-group</code>
 instead of <code>group</code>:</em>
@@ -104,7 +104,7 @@ instead of <code>group</code>:</em>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDBMGroupFile" id="AuthDBMGroupFile">AuthDBMGroupFile</a> <a name="authdbmgroupfile" id="authdbmgroupfile">Directive</a> <a title="Permanent link" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdbmgroupfile"><span id="AuthDBMGroupFile">AuthDBMGroupFile</span> Directive <a title="Permanent link" href="#authdbmgroupfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the database file containing the list
 of user groups for authorization</td></tr>
@@ -160,7 +160,7 @@ AuthDBMUserFile "/www/userbase"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthzDBMType" id="AuthzDBMType">AuthzDBMType</a> <a name="authzdbmtype" id="authzdbmtype">Directive</a> <a title="Permanent link" href="#authzdbmtype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authzdbmtype"><span id="AuthzDBMType">AuthzDBMType</span> Directive <a title="Permanent link" href="#authzdbmtype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the type of database file that is used to
 store list of user groups</td></tr>
@@ -188,7 +188,7 @@ store list of user groups</td></tr>
 <a href="../ko/mod/mod_authz_dbm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

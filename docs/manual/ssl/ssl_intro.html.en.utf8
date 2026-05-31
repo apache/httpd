@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -44,7 +44,7 @@ and examples as a starting point for further exploration.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">Cryptographic Techniques</a> <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
+<h2 id="cryptographictech">Cryptographic Techniques <a title="Permanent link" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>Understanding SSL requires an understanding of cryptographic
 algorithms, message digest functions (aka. one-way or hash functions), and
@@ -52,7 +52,7 @@ digital signatures. These techniques are the subject of entire books (see
 for instance [<a href="#AC96">AC96</a>]) and provide the basis for privacy,
 integrity, and authentication.</p>
 
-<h3><a name="cryptographicalgo" id="cryptographicalgo">Cryptographic Algorithms</a></h3>
+<h3 id="cryptographicalgo">Cryptographic Algorithms</h3>
 
     <p>Suppose Alice wants to send a message to her bank to transfer some
     money. Alice would like the message to be private, since it will
@@ -95,7 +95,7 @@ integrity, and authentication.</p>
     decrypt them.</p>
 
 
-<h3><a name="messagedigests" id="messagedigests">Message Digests</a></h3>
+<h3 id="messagedigests">Message Digests</h3>
 
     <p>Although Alice may encrypt her message to make it private, there
     is still a concern that someone might modify her original message or
@@ -127,7 +127,7 @@ integrity, and authentication.</p>
     signature.</p>
 
 
-<h3><a name="digitalsignatures" id="digitalsignatures">Digital Signatures</a></h3>
+<h3 id="digitalsignatures">Digital Signatures</h3>
 <p>When Alice sends a message to the bank, the bank needs to ensure that the
 message is really from her, so an intruder cannot request a transaction
 involving her account. A <em>digital signature</em>, created by Alice and
@@ -147,7 +147,7 @@ the bank from a fraudulent claim from Alice that she did not send the message
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">Certificates</a> <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
+<h2 id="certificates">Certificates <a title="Permanent link" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>Although Alice could have sent a private message to the bank, signed
 it and ensured the integrity of the message, she still needs to be sure
@@ -162,7 +162,7 @@ can be assured that they are communicating with whom they think they are.
 Such a trusted agency is called a <em>Certificate Authority</em> and
 certificates are used for authentication.</p>
 
-<h3><a name="certificatecontents" id="certificatecontents">Certificate Contents</a></h3>
+<h3 id="certificatecontents">Certificate Contents</h3>
 
     <p>A certificate associates a public key with the real identity of
     an individual, server, or other entity, known as the subject. As
@@ -274,7 +274,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 -----END CERTIFICATE-----</pre></div>
 
 
-<h3><a name="certificateauthorities" id="certificateauthorities">Certificate Authorities</a></h3>
+<h3 id="certificateauthorities">Certificate Authorities</h3>
 
     <p>By verifying the information in a certificate request
     before granting the certificate, the Certificate Authority assures
@@ -359,7 +359,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Secure Sockets Layer (SSL)</a> <a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
+<h2 id="ssl">Secure Sockets Layer (SSL) <a title="Permanent link" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>The Secure Sockets Layer protocol is a protocol layer which may be
 placed between a reliable connection-oriented network layer protocol
@@ -375,7 +375,7 @@ or other concerns and also enables the protocol to take advantage of new
 algorithms. Choices are negotiated between client and server when
 establishing a protocol session.</p>
 
-<h3><a name="table4" id="table4">Table 4: Versions of the SSL protocol</a></h3>
+<h3 id="table4">Table 4: Versions of the SSL protocol</h3>
 
     <table class="bordered">
     
@@ -428,7 +428,7 @@ certificate chain. SSL 3.0 is the basis for the Transport Layer Security
 [<a href="#TLS1">TLS</a>] protocol standard, currently in development by
 the Internet Engineering Task Force (IETF).</p>
 
-<h3><a name="session" id="session">Establishing a Session</a></h3>
+<h3 id="session">Establishing a Session</h3>
 
     <p>The SSL session is established by following a handshake sequence
     between client and server, as shown in <a href="#figure1">Figure 1</a>. This sequence may vary, depending on whether the server
@@ -476,7 +476,7 @@ the Internet Engineering Task Force (IETF).</p>
     <p>These three elements are described in the sections that follow.</p>
 
 
-<h3><a name="keyexchange" id="keyexchange">Key Exchange Method</a></h3>
+<h3 id="keyexchange">Key Exchange Method</h3>
 
     <p>The key exchange method defines how the shared secret symmetric
     cryptography key used for application data transfer will be agreed
@@ -493,7 +493,7 @@ the Internet Engineering Task Force (IETF).</p>
     used to generating the shared key [<a href="#AC96">AC96</a>, p516].</p>
 
 
-<h3><a name="ciphertransfer" id="ciphertransfer">Cipher for Data Transfer</a></h3>
+<h3 id="ciphertransfer">Cipher for Data Transfer</h3>
 
     <p>SSL uses conventional symmetric cryptography, as described earlier,
     for encrypting messages in a session.
@@ -526,7 +526,7 @@ the Internet Engineering Task Force (IETF).</p>
     and "RC2" is a proprietary algorithm from RSA DSI [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfunction" id="digestfunction">Digest Function</a></h3>
+<h3 id="digestfunction">Digest Function</h3>
 
     <p>The choice of digest function determines how a digest is created
     from a record unit. SSL supports the following:</p>
@@ -542,7 +542,7 @@ the Internet Engineering Task Force (IETF).</p>
     protect against replay attacks.</p>
 
 
-<h3><a name="handshake" id="handshake">Handshake Sequence Protocol</a></h3>
+<h3 id="handshake">Handshake Sequence Protocol</h3>
 
     <p>The handshake sequence uses three protocols:</p>
 
@@ -575,7 +575,7 @@ the Internet Engineering Task Force (IETF).</p>
     established.</p>
 
 
-<h3><a name="datatransfer" id="datatransfer">Data Transfer</a></h3>
+<h3 id="datatransfer">Data Transfer</h3>
 
     <p>The SSL Record Protocol, shown in <a href="#figure3">Figure 3</a>,
     is used to transfer application and SSL Control data between the
@@ -592,7 +592,7 @@ the Internet Engineering Task Force (IETF).</p>
     </p>
 
 
-<h3><a name="securehttp" id="securehttp">Securing HTTP Communication</a></h3>
+<h3 id="securehttp">Securing HTTP Communication</h3>
 
     <p>One common use of SSL is to secure Web HTTP communication between
     a browser and a webserver. This does not preclude the use of
@@ -603,7 +603,7 @@ the Internet Engineering Task Force (IETF).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="references" id="references">References</a> <a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
+<h2 id="references">References <a title="Permanent link" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
@@ -657,7 +657,7 @@ Version 3.0</q>, 1996. See <a href="https://www.rfc-editor.org/rfc/rfc6101">RFC 
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

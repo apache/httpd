@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -113,11 +113,11 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Basic concepts</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
+<h2 id="basics">Basic concepts <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     <p>We begin with an overview of the basic concepts behind the API, and how
     they are manifested in the code.</p>
 
-    <h3><a name="HMR" id="HMR">Handlers, Modules, and Requests</a></h3>
+    <h3 id="HMR">Handlers, Modules, and Requests</h3>
       <p>Apache breaks down request handling into a series of steps, more or
       less the same way the Netscape server API does (although this API has a
       few more stages than NetSite does, as hooks for stuff I thought might be
@@ -170,7 +170,7 @@
       as above.</p>
     
 
-    <h3><a name="moduletour" id="moduletour">A brief tour of a module</a></h3>
+    <h3 id="moduletour">A brief tour of a module</h3>
       <p>At this point, we need to explain the structure of a module. Our
       candidate will be one of the messier ones, the CGI module -- this handles
       both CGI scripts and the <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> config file command. It's actually a great deal
@@ -269,13 +269,13 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="handlers" id="handlers">How handlers work</a> <a title="Permanent link" href="#handlers" class="permalink">&para;</a></h2>
+<h2 id="handlers">How handlers work <a title="Permanent link" href="#handlers" class="permalink">&para;</a></h2>
     <p>The sole argument to handlers is a <code>request_rec</code> structure.
     This structure describes a particular request which has been made to the
     server, on behalf of a client. In most cases, each connection to the
     client generates only one <code>request_rec</code> structure.</p>
 
-    <h3><a name="req_tour" id="req_tour">A brief tour of the request_rec</a></h3>
+    <h3 id="req_tour">A brief tour of the request_rec</h3>
       <p>The <code>request_rec</code> contains pointers to a resource pool
       which will be cleared when the server is finished handling the request;
       to structures containing per-server and per-connection information, and
@@ -386,7 +386,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       </code></p></div>
     
 
-    <h3><a name="req_orig" id="req_orig">Where request_rec structures come from</a></h3>
+    <h3 id="req_orig">Where request_rec structures come from</h3>
       <p>Most <code>request_rec</code> structures are built by reading an HTTP
       request from a client, and filling in the fields. However, there are a
       few exceptions:</p>
@@ -426,8 +426,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       </ul>
     
 
-    <h3><a name="req_return" id="req_return">Handling requests, declining, and returning
-    error codes</a></h3>
+    <h3 id="req_return">Handling requests, declining, and returning
+    error codes</h3>
       <p>As discussed above, each handler, when invoked to handle a particular
       <code>request_rec</code>, has to return an <code>int</code> to indicate
       what happened. That can either be</p>
@@ -448,8 +448,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       redirected <em>to</em>.</p>
     
 
-    <h3><a name="resp_handlers" id="resp_handlers">Special considerations for response
-    handlers</a></h3>
+    <h3 id="resp_handlers">Special considerations for response
+    handlers</h3>
       <p>Handlers for most phases do their work by simply setting a few fields
       in the <code>request_rec</code> structure (or, in the case of access
       checkers, simply by returning the correct error code). However, response
@@ -526,8 +526,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       <em>not</em> response handlers will lead to serious confusion).</p>
     
 
-    <h3><a name="auth_handlers" id="auth_handlers">Special considerations for authentication
-    handlers</a></h3>
+    <h3 id="auth_handlers">Special considerations for authentication
+    handlers</h3>
       <p>Stuff that should be discussed here in detail:</p>
 
       <ul>
@@ -548,8 +548,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       </ul>
     
 
-    <h3><a name="log_handlers" id="log_handlers">Special considerations for logging
-    handlers</a></h3>
+    <h3 id="log_handlers">Special considerations for logging
+    handlers</h3>
       <p>When a request has internally redirected, there is the question of
       what to log. Apache handles this by bundling the entire chain of redirects
       into a list of <code>request_rec</code> structures which are threaded
@@ -562,7 +562,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="pools" id="pools">Resource allocation and resource pools</a> <a title="Permanent link" href="#pools" class="permalink">&para;</a></h2>
+<h2 id="pools">Resource allocation and resource pools <a title="Permanent link" href="#pools" class="permalink">&para;</a></h2>
     <p>One of the problems of writing and designing a server-pool server is
     that of preventing leakage, that is, allocating resources (memory, open
     files, <em>etc.</em>), without subsequently releasing them. The resource
@@ -667,8 +667,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       <code>"foo/bar"</code>.</p>
     
 
-    <h3><a name="pools-used" id="pools-used">Commonly-used pools in the Apache Web
-    server</a></h3>
+    <h3 id="pools-used">Commonly-used pools in the Apache Web
+    server</h3>
       <p>A pool is really defined by its lifetime more than anything else.
       There are some static pools in http_main which are passed to various
       non-http_main functions as arguments at opportune times. Here they
@@ -788,7 +788,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       output has been sent to the client and logging has happened.</p>
     
 
-    <h3><a name="pool-files" id="pool-files">Tracking open files, etc.</a></h3>
+    <h3 id="pool-files">Tracking open files, etc.</h3>
       <p>As indicated above, resource pools are also used to track other sorts
       of resources besides memory. The most common are open files. The routine
       which is typically used for this is <code>ap_pfopen</code>, which takes a
@@ -878,7 +878,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Configuration, commands and the like</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Configuration, commands and the like <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     <p>One of the design goals for this server was to maintain external
     compatibility with the NCSA 1.3 server --- that is, to read the same
     configuration files, to process all the directives therein correctly, and
@@ -922,7 +922,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     similar problems come up, by tying those structures to the per-transaction
     resource pool.</p>
 
-    <h3><a name="per-dir" id="per-dir">Per-directory configuration structures</a></h3>
+    <h3 id="per-dir">Per-directory configuration structures</h3>
       <p>Let's look out how all of this plays out in <code>mod_mime.c</code>,
       which defines the file typing handler which emulates the NCSA server's
       behavior of determining file types from suffixes. What we'll be looking
@@ -1024,7 +1024,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       structure slot in the module itself <code>NULL</code>.</p>
     
 
-    <h3><a name="commands" id="commands">Command handling</a></h3>
+    <h3 id="commands">Command handling</h3>
       <p>Now that we have these structures, we need to be able to figure out how
       to fill them. That involves processing the actual <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> and <code class="directive"><a href="../mod/mod_mime.html#addencoding">AddEncoding</a></code> commands. To find commands, the server looks in
       the module's command table. That table contains information on how many
@@ -1177,8 +1177,8 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
       </code></p></div>
     
 
-    <h3><a name="servconf" id="servconf">Side notes -- per-server configuration,
-    virtual servers, <em>etc</em>.</a></h3>
+    <h3 id="servconf">Side notes -- per-server configuration,
+    virtual servers, <em>etc</em>.</h3>
       <p>The basic ideas behind per-server module configuration are basically
       the same as those for per-directory configuration; there is a creation
       function and a merge function, the latter being invoked where a virtual
@@ -1220,7 +1220,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
 <p><span>Available Languages: </span><a href="../en/developer/API.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

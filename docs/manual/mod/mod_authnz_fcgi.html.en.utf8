@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@ and Access Control</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="invocations" id="invocations">Invocation modes</a> <a title="Permanent link" href="#invocations" class="permalink">&para;</a></h2>
+<h2 id="invocations">Invocation modes <a title="Permanent link" href="#invocations" class="permalink">&para;</a></h2>
 
     <p>The invocation modes for FastCGI authorizers supported by this
     module are distinguished by two characteristics, <em>type</em> and
@@ -288,7 +288,7 @@ while ($request-&gt;Accept() &gt;= 0) {
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Additional examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Additional examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
   <ol>
     <li>If your application supports the separate authentication and
@@ -331,7 +331,7 @@ Require FooAuthnz</pre>
 </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="limitations" id="limitations">Limitations</a> <a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
+<h2 id="limitations">Limitations <a title="Permanent link" href="#limitations" class="permalink">&para;</a></h2>
 
     <p>The following are potential features which are not currently
     implemented:</p>
@@ -386,7 +386,7 @@ Require FooAuthnz</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Logging <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
     <ol>
         <li>Processing errors are logged at log level <code>error</code>
@@ -415,7 +415,7 @@ Require FooAuthnz</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiCheckAuthnProvider" id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</a> <a name="authnzfcgicheckauthnprovider" id="authnzfcgicheckauthnprovider">Directive</a> <a title="Permanent link" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authnzfcgicheckauthnprovider"><span id="AuthnzFcgiCheckAuthnProvider">AuthnzFcgiCheckAuthnProvider</span> Directive <a title="Permanent link" href="#authnzfcgicheckauthnprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables a FastCGI application to handle the check_authn
 authentication hook.</td></tr>
@@ -500,7 +500,7 @@ authentication hook.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthnzFcgiDefineProvider" id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</a> <a name="authnzfcgidefineprovider" id="authnzfcgidefineprovider">Directive</a> <a title="Permanent link" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authnzfcgidefineprovider"><span id="AuthnzFcgiDefineProvider">AuthnzFcgiDefineProvider</span> Directive <a title="Permanent link" href="#authnzfcgidefineprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a FastCGI application as a provider for
 authentication and/or authorization</td></tr>
@@ -542,7 +542,7 @@ authentication and/or authorization</td></tr>
 <a href="../fr/mod/mod_authnz_fcgi.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -55,7 +55,7 @@ Negotiation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="about" id="about">About Content Negotiation</a> <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
+<h2 id="about">About Content Negotiation <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
     <p>A resource may be available in several different
     representations. For example, it might be available in
@@ -109,7 +109,7 @@ Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, im
     the <strong>dimensions</strong> of negotiation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="negotiation" id="negotiation">Negotiation in httpd</a> <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
+<h2 id="negotiation">Negotiation in httpd <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
     <p>In order to negotiate a resource, the server needs to be
     given information about each of the variants. This is done in
@@ -125,7 +125,7 @@ Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, im
       results.</li>
     </ul>
 
-   <h3><a name="type-map" id="type-map">Using a type-map file</a></h3>
+   <h3 id="type-map">Using a type-map file</h3>
 
     <p>A type map is a document which is associated with the handler
     named <code>type-map</code> (or, for backwards-compatibility with
@@ -237,7 +237,7 @@ Content-type: text/plain; qs=0.01</pre>
     typemap</a> documentation.</p>
 
 
-<h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
+<h3 id="multiviews">Multiviews</h3>
 
     <p><code>MultiViews</code> is a per-directory option, meaning it
     can be set with an <code class="directive"><a href="./mod/core.html#options">Options</a></code>
@@ -277,7 +277,7 @@ Content-type: text/plain; qs=0.01</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="methods" id="methods">The Negotiation Methods</a> <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
+<h2 id="methods">The Negotiation Methods <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
     <p>After httpd has obtained a list of the variants for a given
     resource, either from a type-map file or from the filenames in
@@ -309,7 +309,7 @@ Content-type: text/plain; qs=0.01</pre>
       variant selection algorithm' defined in RFC 2296.</li>
     </ol>
 
-<h3><a name="dimensions" id="dimensions">Dimensions of Negotiation</a></h3>
+<h3 id="dimensions">Dimensions of Negotiation</h3>
 
     <table>
       
@@ -356,7 +356,7 @@ Content-type: text/plain; qs=0.01</pre>
     </table>
 
 
-<h3><a name="algorithm" id="algorithm">httpd Negotiation Algorithm</a></h3>
+<h3 id="algorithm">httpd Negotiation Algorithm</h3>
 
     <p>httpd can use the following algorithm to select the 'best'
     variant (if any) to return to the browser. This algorithm is
@@ -443,8 +443,8 @@ Content-type: text/plain; qs=0.01</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="better" id="better">Fiddling with Quality
-    Values</a> <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
+<h2 id="better">Fiddling with Quality
+    Values <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
 
     <p>httpd sometimes changes the quality values from what would
     be expected by a strict interpretation of the httpd
@@ -456,7 +456,7 @@ Content-type: text/plain; qs=0.01</pre>
     browser sends full and correct information these fiddles will not
     be applied.</p>
 
-<h3><a name="wildcards" id="wildcards">Media Types and Wildcards</a></h3>
+<h3 id="wildcards">Media Types and Wildcards</h3>
 
     <p>The <code>Accept:</code> request header indicates preferences
     for media types. It can also include 'wildcard' media types, such
@@ -495,7 +495,7 @@ Content-type: text/plain; qs=0.01</pre>
     send the explicit information to start with work as expected.</p>
 
 
-<h3><a name="exceptions" id="exceptions">Language Negotiation Exceptions</a></h3>
+<h3 id="exceptions">Language Negotiation Exceptions</h3>
 
     <p>New in httpd 2.0, some exceptions have been added to the
     negotiation algorithm to allow graceful fallback when language
@@ -553,8 +553,8 @@ Header append Vary cookie</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extensions" id="extensions">Extensions to Transparent Content
-Negotiation</a> <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2>
+<h2 id="extensions">Extensions to Transparent Content
+Negotiation <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2>
 
 <p>httpd extends the transparent content negotiation protocol (RFC
 2295) as follows. A new <code>{encoding ..}</code> element is used in
@@ -567,7 +567,7 @@ header. The RVSA/1.0 implementation does not round computed quality
 factors to 5 decimal places before choosing the best variant.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a> <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
+<h2 id="naming">Note on hyperlinks and naming conventions <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
     <p>If you are using language negotiation you can choose between
     different naming conventions, because files can have more than
@@ -677,7 +677,7 @@ factors to 5 decimal places before choosing the best variant.</p>
     (<em>e.g.</em>, <code>foo.html.en</code>).</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">Note on Caching</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">Note on Caching <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
     <p>When a cache stores a representation, it associates it with
     the request URL. The next time that URL is requested, the cache
@@ -713,7 +713,7 @@ factors to 5 decimal places before choosing the best variant.</p>
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

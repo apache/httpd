@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -63,8 +63,8 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="programs/configure.html">Configure the source tree</a></li><li><a href="invoking.html">Starting Apache httpd</a></li><li><a href="stopping.html">Stopping and Restarting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Overview for the
-    impatient</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Overview for the
+    impatient <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Installing on Fedora/CentOS/Red Hat Enterprise Linux</dt>
@@ -173,7 +173,7 @@ $ cd httpd-NN</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requirements</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Requirements <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>The following requirements exist for building and running Apache httpd:</p>
 
@@ -237,7 +237,7 @@ $ cd httpd-NN</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">Download</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">Download <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>If you wish to build from source, start by downloading
     the source tarball from the <a href="https://httpd.apache.org/download.cgi">Apache HTTP Server
@@ -254,7 +254,7 @@ $ cd httpd-NN</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extract</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">Extract <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Extract the source from the Apache HTTP Server tarball:</p>
 
@@ -267,7 +267,7 @@ $ cd httpd-NN</pre>
     compiling the server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configuring the source tree</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Configuring the source tree <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>The next step is to configure the Apache source tree for your
     particular platform and personal requirements. This is done using
@@ -334,7 +334,7 @@ $ cd httpd-NN</pre>
     available on the <code class="program"><a href="./programs/configure.html">configure</a></code> manual page.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Build</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">Build <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Now you can build the various parts which form the Apache
     package by running:</p>
@@ -347,7 +347,7 @@ $ cd httpd-NN</pre>
     have enabled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Install</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Install <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Now it's time to install the package under the configured
     installation <em>PREFIX</em> (see <code>--prefix</code> option
@@ -363,7 +363,7 @@ $ cd httpd-NN</pre>
     your configuration files or documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Customize</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">Customize <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Next, you can customize your Apache HTTP server by editing
     the <a href="configuring.html">configuration files</a> under
@@ -376,7 +376,7 @@ $ cd httpd-NN</pre>
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Test</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">Test <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
     HTTP server by immediately running:</p>
@@ -393,7 +393,7 @@ $ cd httpd-NN</pre>
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrading</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Upgrading <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>The first step in upgrading is to read the release announcement
     and the file <code>CHANGES</code> in the source distribution to
@@ -448,7 +448,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Third-party packages</a> <a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
+<h2 id="thirdp">Third-party packages <a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>A large number of third parties provide their own packaged
     distributions of the Apache HTTP Server for installation on
@@ -482,7 +482,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

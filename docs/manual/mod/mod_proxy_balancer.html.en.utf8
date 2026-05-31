@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -87,7 +87,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="scheduler" id="scheduler">Load balancer scheduler algorithm</a> <a title="Permanent link" href="#scheduler" class="permalink">&para;</a></h2>
+<h2 id="scheduler">Load balancer scheduler algorithm <a title="Permanent link" href="#scheduler" class="permalink">&para;</a></h2>
     
     <p>At present, there are 4 load balancer scheduler algorithms available
     for use: Request Counting (<code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>),
@@ -100,7 +100,7 @@
     configure the Balancer and BalancerMembers.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness" id="stickiness">Load balancer stickiness</a> <a title="Permanent link" href="#stickiness" class="permalink">&para;</a></h2>
+<h2 id="stickiness">Load balancer stickiness <a title="Permanent link" href="#stickiness" class="permalink">&para;</a></h2>
     
     <p>The balancer supports stickiness. When a request is proxied
     to some back-end, then all following requests from the same user
@@ -117,7 +117,7 @@
     itself. The URL encoding is usually done on the back-end.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">Examples of a balancer configuration</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">Examples of a balancer configuration <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
     
     <p>Before we dive into the technical details, here's an example of
     how you might use <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> to provide
@@ -148,7 +148,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="environment" id="environment">Exported Environment Variables</a> <a title="Permanent link" href="#environment" class="permalink">&para;</a></h2>
+<h2 id="environment">Exported Environment Variables <a title="Permanent link" href="#environment" class="permalink">&para;</a></h2>
     
     <p>At present there are 6 environment variables exported:</p>
 
@@ -201,7 +201,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="balancer_manager" id="balancer_manager">Enabling Balancer Manager Support</a> <a title="Permanent link" href="#balancer_manager" class="permalink">&para;</a></h2>
+<h2 id="balancer_manager">Enabling Balancer Manager Support <a title="Permanent link" href="#balancer_manager" class="permalink">&para;</a></h2>
     
     <p>This module <em>requires</em> the service of
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>.
@@ -231,7 +231,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     containers can be dynamically controlled by the Manager.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness_implementation" id="stickiness_implementation">Details on load balancer stickiness</a> <a title="Permanent link" href="#stickiness_implementation" class="permalink">&para;</a></h2>
+<h2 id="stickiness_implementation">Details on load balancer stickiness <a title="Permanent link" href="#stickiness_implementation" class="permalink">&para;</a></h2>
     
     <p>When using cookie based stickiness, you need to configure the
     name of the cookie that contains the information about which back-end
@@ -288,7 +288,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     for the same request, the information from the request parameter is used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness_troubleshooting" id="stickiness_troubleshooting">Troubleshooting load balancer stickiness</a> <a title="Permanent link" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
+<h2 id="stickiness_troubleshooting">Troubleshooting load balancer stickiness <a title="Permanent link" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
     
     <p>If you experience stickiness errors, e.g. users lose their
     application sessions and need to login again, you first want to
@@ -337,7 +337,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

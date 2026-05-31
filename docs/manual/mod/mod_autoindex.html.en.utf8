@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -108,7 +108,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autoindex">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autoindex">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="query" id="query">Autoindex Request Query Arguments</a> <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
+<h2 id="query">Autoindex Request Query Arguments <a title="Permanent link" href="#query" class="permalink">&para;</a></h2>
     
 
     <p>Various query string arguments are available to give the client
@@ -198,7 +198,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddAlt" id="AddAlt">AddAlt</a> <a name="addalt" id="addalt">Directive</a> <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addalt"><span id="AddAlt">AddAlt</span> Directive <a title="Permanent link" href="#addalt" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file, instead of an
 icon selected by filename</td></tr>
@@ -223,7 +223,7 @@ AddAlt Compressed *.gz *.zip *.Z</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddAltByEncoding" id="AddAltByEncoding">AddAltByEncoding</a> <a name="addaltbyencoding" id="addaltbyencoding">Directive</a> <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addaltbyencoding"><span id="AddAltByEncoding">AddAltByEncoding</span> Directive <a title="Permanent link" href="#addaltbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file instead of an icon
 selected by MIME-encoding</td></tr>
@@ -247,7 +247,7 @@ selected by MIME-encoding</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddAltByType" id="AddAltByType">AddAltByType</a> <a name="addaltbytype" id="addaltbytype">Directive</a> <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addaltbytype"><span id="AddAltByType">AddAltByType</span> Directive <a title="Permanent link" href="#addaltbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Alternate text to display for a file, instead of an
 icon selected by MIME content-type</td></tr>
@@ -271,7 +271,7 @@ icon selected by MIME content-type</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddDescription" id="AddDescription">AddDescription</a> <a name="adddescription" id="adddescription">Directive</a> <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="adddescription"><span id="AddDescription">AddDescription</span> Directive <a title="Permanent link" href="#adddescription" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Description to display for a file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddDescription <var>string file</var> [<var>file</var>] ...</code></td></tr>
@@ -327,7 +327,7 @@ AddDescription "My friend Marshall" friends/mars.gif</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddIcon" id="AddIcon">AddIcon</a> <a name="addicon" id="addicon">Directive</a> <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addicon"><span id="AddIcon">AddIcon</span> Directive <a title="Permanent link" href="#addicon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display for a file selected by name</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
@@ -364,7 +364,7 @@ AddIcon /icons/backup.png *~</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">Directive</a> <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addiconbyencoding"><span id="AddIconByEncoding">AddIconByEncoding</span> Directive <a title="Permanent link" href="#addiconbyencoding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display next to files selected by MIME
 content-encoding</td></tr>
@@ -390,7 +390,7 @@ content-encoding</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddIconByType" id="AddIconByType">AddIconByType</a> <a name="addiconbytype" id="addiconbytype">Directive</a> <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="addiconbytype"><span id="AddIconByType">AddIconByType</span> Directive <a title="Permanent link" href="#addiconbytype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display next to files selected by MIME
 content-type</td></tr>
@@ -417,7 +417,7 @@ content-type</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DefaultIcon" id="DefaultIcon">DefaultIcon</a> <a name="defaulticon" id="defaulticon">Directive</a> <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaulticon"><span id="DefaultIcon">DefaultIcon</span> Directive <a title="Permanent link" href="#defaulticon" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Icon to display for files when no specific icon is
 configured</td></tr>
@@ -437,7 +437,7 @@ configured</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="HeaderName" id="HeaderName">HeaderName</a> <a name="headername" id="headername">Directive</a> <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="headername"><span id="HeaderName">HeaderName</span> Directive <a title="Permanent link" href="#headername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the file that will be inserted at the top
 of the index listing</td></tr>
@@ -495,7 +495,7 @@ of the index listing</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexForbiddenReturn404" id="IndexForbiddenReturn404">IndexForbiddenReturn404</a> <a name="indexforbiddenreturn404" id="indexforbiddenreturn404">Directive</a> <a title="Permanent link" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexforbiddenreturn404"><span id="IndexForbiddenReturn404">IndexForbiddenReturn404</span> Directive <a title="Permanent link" href="#indexforbiddenreturn404" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Return an HTTP 404 error instead of Forbidden when options 
 don't permit directory listing</td></tr>
@@ -512,7 +512,7 @@ don't permit directory listing</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Directive</a> <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexheadinsert"><span id="IndexHeadInsert">IndexHeadInsert</span> Directive <a title="Permanent link" href="#indexheadinsert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inserts text in the HEAD section of an index page.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexHeadInsert <var>"markup ..."</var></code></td></tr>
@@ -529,7 +529,7 @@ don't permit directory listing</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexIgnore" id="IndexIgnore">IndexIgnore</a> <a name="indexignore" id="indexignore">Directive</a> <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexignore"><span id="IndexIgnore">IndexIgnore</span> Directive <a title="Permanent link" href="#indexignore" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds to the list of files to hide when listing
 a directory</td></tr>
@@ -579,7 +579,7 @@ a directory</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexIgnoreReset" id="IndexIgnoreReset">IndexIgnoreReset</a> <a name="indexignorereset" id="indexignorereset">Directive</a> <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexignorereset"><span id="IndexIgnoreReset">IndexIgnoreReset</span> Directive <a title="Permanent link" href="#indexignorereset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Empties the list of files to hide when listing
 a directory</td></tr>
@@ -609,7 +609,7 @@ a directory</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexOptions" id="IndexOptions">IndexOptions</a> <a name="indexoptions" id="indexoptions">Directive</a> <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexoptions"><span id="IndexOptions">IndexOptions</span> Directive <a title="Permanent link" href="#indexoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Various configuration settings for directory
 indexing</td></tr>
@@ -997,7 +997,7 @@ IndexOptions +SuppressSize</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexOrderDefault" id="IndexOrderDefault">IndexOrderDefault</a> <a name="indexorderdefault" id="indexorderdefault">Directive</a> <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexorderdefault"><span id="IndexOrderDefault">IndexOrderDefault</span> Directive <a title="Permanent link" href="#indexorderdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the default ordering of the directory index</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexOrderDefault Ascending|Descending
@@ -1031,7 +1031,7 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IndexStyleSheet" id="IndexStyleSheet">IndexStyleSheet</a> <a name="indexstylesheet" id="indexstylesheet">Directive</a> <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="indexstylesheet"><span id="IndexStyleSheet">IndexStyleSheet</span> Directive <a title="Permanent link" href="#indexstylesheet" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adds a CSS stylesheet to the directory index</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexStyleSheet <var>url-path</var></code></td></tr>
@@ -1066,7 +1066,7 @@ Name|Date|Size|Description</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Directive</a> <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="readmename"><span id="ReadmeName">ReadmeName</span> Directive <a title="Permanent link" href="#readmename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the file that will be inserted at the end
 of the index listing</td></tr>
@@ -1105,7 +1105,7 @@ ReadmeName /include/FOOTER.html</pre>
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

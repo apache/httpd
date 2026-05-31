@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -84,7 +84,7 @@ $ _</pre>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Synopsis</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Synopsis <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>apxs</strong> -<strong>g</strong>
     [ -<strong>S</strong> <var>name</var>=<var>value</var> ]
     -<strong>n</strong> <var>modname</var></code></p>
@@ -120,8 +120,8 @@ $ _</pre>
     <var>dso-file</var> ...</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
-    <h3><a name="options.common" id="options.common">Common Options</a></h3>
+<h2 id="options">Options <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+    <h3 id="options.common">Common Options</h3>
       <dl>
       <dt><code>-n <var>modname</var></code></dt>
       <dd>This explicitly sets the module name for the <code>-i</code> (install)
@@ -133,7 +133,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.query" id="options.query">Query Options</a></h3>
+    <h3 id="options.query">Query Options</h3>
       <dl>
       <dt><code>-q</code></dt>
       <dd>Performs a query for variables and environment settings used to
@@ -151,14 +151,14 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.conf" id="options.conf">Configuration Options</a></h3>
+    <h3 id="options.conf">Configuration Options</h3>
       <dl>
       <dt><code>-S <var>name</var>=<var>value</var></code></dt>
       <dd>This option changes the apxs settings described above.</dd>
       </dl>
     
 
-    <h3><a name="options.template" id="options.template">Template Generation Options</a></h3>
+    <h3 id="options.template">Template Generation Options</h3>
       <dl>
       <dt><code>-g</code></dt>
       <dd>This generates a subdirectory <var>name</var> (see option
@@ -170,7 +170,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.dso" id="options.dso">DSO Compilation Options</a></h3>
+    <h3 id="options.dso">DSO Compilation Options</h3>
       <dl>
       <dt><code>-c</code></dt>
       <dd>This indicates the compilation operation. It first compiles the C
@@ -221,7 +221,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.dsoinstall" id="options.dsoinstall">DSO Installation and Configuration Options</a></h3>
+    <h3 id="options.dsoinstall">DSO Installation and Configuration Options</h3>
     
       <dl>
       <dt><code>-i</code></dt>
@@ -249,7 +249,7 @@ $ _</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <p>Assume you have an Apache module named <code>mod_foo.c</code> available
     which should extend Apache's server functionality. To accomplish this you
     first have to compile the C source into a shared object suitable for loading
@@ -330,7 +330,7 @@ $ _</pre>
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -91,7 +91,7 @@ via the request headers.
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="processing" id="processing">Remote IP Processing</a> <a title="Permanent link" href="#processing" class="permalink">&para;</a></h2>
+<h2 id="processing">Remote IP Processing <a title="Permanent link" href="#processing" class="permalink">&para;</a></h2>
 
     <p>Apache by default identifies the useragent with the connection's
     client_ip value, and the connection remote_host and remote_logname are
@@ -132,7 +132,7 @@ via the request headers.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a> <a title="Permanent link" href="#remoteipheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipheader"><span id="RemoteIPHeader">RemoteIPHeader</span> Directive <a title="Permanent link" href="#remoteipheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which should be parsed for useragent IP addresses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPHeader <var>header-field</var></code></td></tr>
@@ -161,7 +161,7 @@ via the request headers.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPInternalProxy" id="RemoteIPInternalProxy">RemoteIPInternalProxy</a> <a name="remoteipinternalproxy" id="remoteipinternalproxy">Directive</a> <a title="Permanent link" href="#remoteipinternalproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipinternalproxy"><span id="RemoteIPInternalProxy">RemoteIPInternalProxy</span> Directive <a title="Permanent link" href="#remoteipinternalproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</code></td></tr>
@@ -183,7 +183,7 @@ RemoteIPInternalProxy gateway.localdomain</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPInternalProxyList" id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</a> <a name="remoteipinternalproxylist" id="remoteipinternalproxylist">Directive</a> <a title="Permanent link" href="#remoteipinternalproxylist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipinternalproxylist"><span id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</span> Directive <a title="Permanent link" href="#remoteipinternalproxylist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPInternalProxyList <var>filename</var></code></td></tr>
@@ -209,7 +209,7 @@ gateway.localdomain #The front end balancer</pre></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPProxiesHeader" id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</a> <a name="remoteipproxiesheader" id="remoteipproxiesheader">Directive</a> <a title="Permanent link" href="#remoteipproxiesheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipproxiesheader"><span id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</span> Directive <a title="Permanent link" href="#remoteipproxiesheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which will record all intermediate IP addresses</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPProxiesHeader <var>HeaderFieldName</var></code></td></tr>
@@ -231,7 +231,7 @@ RemoteIPProxiesHeader X-Forwarded-By</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPProxyProtocol" id="RemoteIPProxyProtocol">RemoteIPProxyProtocol</a> <a name="remoteipproxyprotocol" id="remoteipproxyprotocol">Directive</a> <a title="Permanent link" href="#remoteipproxyprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipproxyprotocol"><span id="RemoteIPProxyProtocol">RemoteIPProxyProtocol</span> Directive <a title="Permanent link" href="#remoteipproxyprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable PROXY protocol handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPProxyProtocol On|Off</code></td></tr>
@@ -283,7 +283,7 @@ Listen 8080
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPProxyProtocolExceptions" id="RemoteIPProxyProtocolExceptions">RemoteIPProxyProtocolExceptions</a> <a name="remoteipproxyprotocolexceptions" id="remoteipproxyprotocolexceptions">Directive</a> <a title="Permanent link" href="#remoteipproxyprotocolexceptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteipproxyprotocolexceptions"><span id="RemoteIPProxyProtocolExceptions">RemoteIPProxyProtocolExceptions</span> Directive <a title="Permanent link" href="#remoteipproxyprotocolexceptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable processing of PROXY header for certain hosts or networks</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPProxyProtocolExceptions host|range [host|range] [host|range]</code></td></tr>
@@ -301,7 +301,7 @@ Listen 8080
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a> <a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a> <a title="Permanent link" href="#remoteiptrustedproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteiptrustedproxy"><span id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</span> Directive <a title="Permanent link" href="#remoteiptrustedproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</code></td></tr>
@@ -331,7 +331,7 @@ RemoteIPTrustedProxy proxy.example.com</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a> <a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a> <a title="Permanent link" href="#remoteiptrustedproxylist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="remoteiptrustedproxylist"><span id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</span> Directive <a title="Permanent link" href="#remoteiptrustedproxylist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Restrict client IP addresses trusted to present the RemoteIPHeader value</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxyList <var>filename</var></code></td></tr>
@@ -364,7 +364,7 @@ RemoteIPTrustedProxyList conf/trusted-proxies.lst</pre>
 <a href="../fr/mod/mod_remoteip.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

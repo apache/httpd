@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -68,7 +68,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="req" id="req">Requirements</a> <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
+<h2 id="req">Requirements <a title="Permanent link" href="#req" class="permalink">&para;</a></h2>
 
     
 
@@ -88,7 +88,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="down" id="down">Downloading Apache httpd for NetWare</a> <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
+<h2 id="down">Downloading Apache httpd for NetWare <a title="Permanent link" href="#down" class="permalink">&para;</a></h2>
 
     
 
@@ -102,7 +102,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="inst" id="inst">Installing Apache httpd for NetWare</a> <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
+<h2 id="inst">Installing Apache httpd for NetWare <a title="Permanent link" href="#inst" class="permalink">&para;</a></h2>
 
     
 
@@ -195,7 +195,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="run" id="run">Running Apache httpd for NetWare</a> <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
+<h2 id="run">Running Apache httpd for NetWare <a title="Permanent link" href="#run" class="permalink">&para;</a></h2>
 
     
 
@@ -331,7 +331,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="use" id="use">Configuring Apache httpd for NetWare</a> <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
+<h2 id="use">Configuring Apache httpd for NetWare <a title="Permanent link" href="#use" class="permalink">&para;</a></h2>
 
     
 
@@ -410,7 +410,7 @@
       </li>
     </ul>
 
-    <h3><a name="use-add" id="use-add">Additional NetWare specific directives:</a></h3>
+    <h3 id="use-add">Additional NetWare specific directives:</h3>
 
       
 
@@ -435,7 +435,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="comp" id="comp">Compiling Apache httpd for NetWare</a> <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
+<h2 id="comp">Compiling Apache httpd for NetWare <a title="Permanent link" href="#comp" class="permalink">&para;</a></h2>
 
     
 
@@ -452,7 +452,7 @@
     Alternatively, a complete distribution can be built by including the keyword
     <code>install</code> when invoking the makefiles.</p>
 
-    <h3><a name="comp-req" id="comp-req">Requirements:</a></h3>
+    <h3 id="comp-req">Requirements:</h3>
 
       
 
@@ -482,7 +482,7 @@
 
     
 
-    <h3><a name="comp-make" id="comp-make">Building Apache httpd using the NetWare makefiles:</a></h3>
+    <h3 id="comp-make">Building Apache httpd using the NetWare makefiles:</h3>
 
       
 
@@ -566,7 +566,7 @@
 
     
 
-    <h3><a name="comp-add" id="comp-add">Additional make options</a></h3>
+    <h3 id="comp-add">Additional make options</h3>
 
       
 
@@ -598,7 +598,7 @@
 
     
 
-    <h3><a name="comp-add-env" id="comp-add-env">Additional environment variable options</a></h3>
+    <h3 id="comp-add-env">Additional environment variable options</h3>
 
       
 
@@ -617,7 +617,7 @@
 
     
 
-    <h3><a name="comp-mod_ssl" id="comp-mod_ssl">Building mod_ssl for the NetWare platform</a></h3>
+    <h3 id="comp-mod_ssl">Building mod_ssl for the NetWare platform</h3>
 
       
 
@@ -675,7 +675,7 @@
 <a href="../ko/platform/netware.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

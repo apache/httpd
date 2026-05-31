@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -92,7 +92,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Order of Processing</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Order of Processing <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p>Aliases and Redirects occurring in different contexts are processed
     like other directives according to standard <a href="../sections.html#merging">merging rules</a>.  But when multiple
@@ -132,7 +132,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Directive</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="alias"><span id="Alias">Alias</span> Directive <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Alias [<var>URL-path</var>]
@@ -227,7 +227,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Directive</a> <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliasmatch"><span id="AliasMatch">AliasMatch</span> Directive <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps URLs to filesystem locations using regular
 expressions</td></tr>
@@ -311,7 +311,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath">Directive</a> <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliaspreservepath"><span id="AliasPreservePath">AliasPreservePath</span> Directive <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map the full path after the alias in a location.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
@@ -336,7 +336,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Directive</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirect"><span id="Redirect">Redirect</span> Directive <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external redirect asking the client to fetch
 a different URL</td></tr>
@@ -457,7 +457,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Directive</a> <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectmatch"><span id="RedirectMatch">RedirectMatch</span> Directive <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external redirect based on a regular expression match
 of the current URL</td></tr>
@@ -492,7 +492,7 @@ of the current URL</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Directive</a> <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectpermanent"><span id="RedirectPermanent">RedirectPermanent</span> Directive <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr>
@@ -508,7 +508,7 @@ a different URL</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">Directive</a> <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectrelative"><span id="RedirectRelative">RedirectRelative</span> Directive <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows relative redirect targets.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
@@ -527,7 +527,7 @@ a different URL</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Directive</a> <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirecttemp"><span id="RedirectTemp">RedirectTemp</span> Directive <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr>
@@ -543,7 +543,7 @@ a different URL</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Directive</a> <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptalias"><span id="ScriptAlias">ScriptAlias</span> Directive <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps a URL to a filesystem location and designates the
 target as a CGI script</td></tr>
@@ -627,7 +627,7 @@ target as a CGI script</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Directive</a> <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptaliasmatch"><span id="ScriptAliasMatch">ScriptAliasMatch</span> Directive <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps a URL to a filesystem location using a regular expression
 and designates the target as a CGI script</td></tr>
@@ -678,7 +678,7 @@ and designates the target as a CGI script</td></tr>
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

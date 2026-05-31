@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -70,7 +70,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="using" id="using">Using Digest Authentication</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
+<h2 id="using">Using Digest Authentication <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
     <p>To use MD5 Digest authentication, configure the location to be
     protected as shown in the below example:</p>
@@ -110,7 +110,7 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a> <a title="Permanent link" href="#authdigestalgorithm" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestalgorithm"><span id="AuthDigestAlgorithm">AuthDigestAlgorithm</span> Directive <a title="Permanent link" href="#authdigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Selects the algorithm used to calculate the challenge and
 response hashes in digest authentication</td></tr>
@@ -132,7 +132,7 @@ response hashes in digest authentication</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain" id="authdigestdomain">Directive</a> <a title="Permanent link" href="#authdigestdomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestdomain"><span id="AuthDigestDomain">AuthDigestDomain</span> Directive <a title="Permanent link" href="#authdigestdomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>URIs that are in the same protection space for digest
 authentication</td></tr>
@@ -164,7 +164,7 @@ authentication</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestNcCheck" id="AuthDigestNcCheck">AuthDigestNcCheck</a> <a name="authdigestnccheck" id="authdigestnccheck">Directive</a> <a title="Permanent link" href="#authdigestnccheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestnccheck"><span id="AuthDigestNcCheck">AuthDigestNcCheck</span> Directive <a title="Permanent link" href="#authdigestnccheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables or disables checking of the nonce-count sent by the
 client</td></tr>
@@ -193,7 +193,7 @@ client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a> <a title="Permanent link" href="#authdigestnoncelifetime" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestnoncelifetime"><span id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</span> Directive <a title="Permanent link" href="#authdigestnoncelifetime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long the server nonce is valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestNonceLifetime <var>seconds</var></code></td></tr>
@@ -215,7 +215,7 @@ client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a name="authdigestprovider" id="authdigestprovider">Directive</a> <a title="Permanent link" href="#authdigestprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestprovider"><span id="AuthDigestProvider">AuthDigestProvider</span> Directive <a title="Permanent link" href="#authdigestprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the authentication provider(s) for this location</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestProvider <var>provider-name</var>
@@ -238,7 +238,7 @@ client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop" id="authdigestqop">Directive</a> <a title="Permanent link" href="#authdigestqop" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestqop"><span id="AuthDigestQop">AuthDigestQop</span> Directive <a title="Permanent link" href="#authdigestqop" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines the quality-of-protection to use in digest
 authentication</td></tr>
@@ -266,7 +266,7 @@ authentication</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a> <a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a> <a title="Permanent link" href="#authdigestshmemsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestshmemsize"><span id="AuthDigestShmemSize">AuthDigestShmemSize</span> Directive <a title="Permanent link" href="#authdigestshmemsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The amount of shared memory to allocate for keeping track
 of clients</td></tr>
@@ -304,7 +304,7 @@ AuthDigestShmemSize 1M</pre>
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

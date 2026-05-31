@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -59,7 +59,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="before" id="before">Before we begin</a> <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
+<h2 id="before">Before we begin <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>Before jumping head-first into this document,
     you should be aware that certain assumptions are made about you and
@@ -107,7 +107,7 @@
     <p>Still with us? Yes? Good. Let's move on!</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="model" id="model">suEXEC Security Model</a> <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
+<h2 id="model">suEXEC Security Model <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>Before we begin configuring and installing
     suEXEC, we will first discuss the security model you are about
@@ -356,8 +356,8 @@
     document.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Configuring &amp; Installing
-    suEXEC</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Configuring &amp; Installing
+    suEXEC <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Here's where we begin the fun.</p>
 
@@ -516,8 +516,8 @@ Group webgroup</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Enabling &amp; Disabling
-    suEXEC</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Enabling &amp; Disabling
+    suEXEC <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
     <p>Upon startup of httpd, it looks for the file
     <code class="program"><a href="./programs/suexec.html">suexec</a></code> in the directory defined by the
@@ -542,7 +542,7 @@ Group webgroup</pre>
     httpd after you have removed the <code class="program"><a href="./programs/suexec.html">suexec</a></code> file.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Using suEXEC</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">Using suEXEC <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Requests for CGI programs will call the suEXEC wrapper only if
     they are for a virtual host containing a <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive or if
@@ -567,7 +567,7 @@ Group webgroup</pre>
      <code>--with-suexec-userdir</code> <a href="#install">compile
      time option</a>.</p> </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">Debugging suEXEC</a> <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
+<h2 id="debug">Debugging suEXEC <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>The suEXEC wrapper will write log information
     to the file defined with the <code>--with-suexec-logfile</code>
@@ -580,8 +580,8 @@ Group webgroup</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="jabberwock" id="jabberwock">Beware the Jabberwock:
-    Warnings &amp; Examples</a> <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
+<h2 id="jabberwock">Beware the Jabberwock:
+    Warnings &amp; Examples <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
 
     <p><strong>NOTE!</strong> This section may not be
     complete.</p>
@@ -640,7 +640,7 @@ Group webgroup</pre>
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

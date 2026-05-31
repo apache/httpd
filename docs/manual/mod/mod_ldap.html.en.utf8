@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -86,7 +86,7 @@ by other LDAP modules</td></tr>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ldap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ldap">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exampleconfig" id="exampleconfig">Example Configuration</a> <a title="Permanent link" href="#exampleconfig" class="permalink">&para;</a></h2>
+<h2 id="exampleconfig">Example Configuration <a title="Permanent link" href="#exampleconfig" class="permalink">&para;</a></h2>
     <p>The following is an example configuration that uses
     <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> to increase the performance of HTTP Basic
     authentication provided by <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
@@ -118,7 +118,7 @@ LDAPOpCacheTTL 600
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="pool" id="pool">LDAP Connection Pool</a> <a title="Permanent link" href="#pool" class="permalink">&para;</a></h2>
+<h2 id="pool">LDAP Connection Pool <a title="Permanent link" href="#pool" class="permalink">&para;</a></h2>
 
     <p>LDAP connections are pooled from request to request. This
     allows the LDAP server to remain connected and bound ready for
@@ -146,7 +146,7 @@ LDAPOpCacheTTL 600
     directives. By default, this feature is enabled.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cache" id="cache">LDAP Cache</a> <a title="Permanent link" href="#cache" class="permalink">&para;</a></h2>
+<h2 id="cache">LDAP Cache <a title="Permanent link" href="#cache" class="permalink">&para;</a></h2>
 
     <p>For improved performance, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> uses an aggressive
     caching strategy to minimize the number of times that the LDAP
@@ -161,7 +161,7 @@ LDAPOpCacheTTL 600
     caches</em>. Each LDAP URL that is used by the server has
     its own set of these three caches.</p>
 
-    <h3><a name="search-bind" id="search-bind">The Search/Bind Cache</a></h3>
+    <h3 id="search-bind">The Search/Bind Cache</h3>
       <p>The process of doing a search and then a bind is the
       most time-consuming aspect of LDAP operation, especially if
       the directory is large. The search/bind cache is used to
@@ -184,7 +184,7 @@ LDAPOpCacheTTL 600
       <p>The search and bind cache is controlled with the <code class="directive"><a href="#ldapcacheentries">LDAPCacheEntries</a></code> and <code class="directive"><a href="#ldapcachettl">LDAPCacheTTL</a></code> directives.</p>
     
 
-    <h3><a name="opcaches" id="opcaches">Operation Caches</a></h3>
+    <h3 id="opcaches">Operation Caches</h3>
       <p>During attribute and distinguished name comparison
       functions, <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> uses two operation caches
       to cache the compare operations. The first compare cache is
@@ -202,7 +202,7 @@ LDAPOpCacheTTL 600
       directives.</p>
     
 
-    <h3><a name="monitoring" id="monitoring">Monitoring the Cache</a></h3>
+    <h3 id="monitoring">Monitoring the Cache</h3>
       <p><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code> has a content handler that allows
       administrators to monitor the cache performance. The name of
       the content handler is <code>ldap-status</code>, so the
@@ -224,7 +224,7 @@ LDAPOpCacheTTL 600
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usingssltls" id="usingssltls">Using SSL/TLS</a> <a title="Permanent link" href="#usingssltls" class="permalink">&para;</a></h2>
+<h2 id="usingssltls">Using SSL/TLS <a title="Permanent link" href="#usingssltls" class="permalink">&para;</a></h2>
 
     <p>The ability to create an SSL and TLS connections to an LDAP server
     is defined by the directives
@@ -267,7 +267,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="settingcerts" id="settingcerts">SSL/TLS Certificates</a> <a title="Permanent link" href="#settingcerts" class="permalink">&para;</a></h2>
+<h2 id="settingcerts">SSL/TLS Certificates <a title="Permanent link" href="#settingcerts" class="permalink">&para;</a></h2>
 
     <p>The different LDAP SDKs have widely different methods of setting
     and handling both CA and client side certificates.</p>
@@ -276,7 +276,7 @@ LDAPTrustedGlobalCert CA_DER /certs/certfile.der
     understand the differences between configurations on the different LDAP
     toolkits supported.</p>
 
-    <h3><a name="settingcerts-netscape" id="settingcerts-netscape">Netscape/Mozilla/iPlanet SDK</a></h3>
+    <h3 id="settingcerts-netscape">Netscape/Mozilla/iPlanet SDK</h3>
         <p>CA certificates are specified within a file called cert7.db.
         The SDK will not talk to any LDAP server whose certificate was
         not signed by a CA specified in this file. If
@@ -315,7 +315,7 @@ LDAPTrustedGlobalCert CA_SECMOD /certs/secmod
 
     
 
-    <h3><a name="settingcerts-openldap" id="settingcerts-openldap">OpenLDAP SDK</a></h3>
+    <h3 id="settingcerts-openldap">OpenLDAP SDK</h3>
 
         <p>One or more CA certificates must be specified for the OpenLDAP
         SDK to work correctly. These certificates can be specified as
@@ -354,7 +354,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
     
 
-    <h3><a name="settingcerts-solaris" id="settingcerts-solaris">Solaris SDK</a></h3>
+    <h3 id="settingcerts-solaris">Solaris SDK</h3>
 
         <p>SSL/TLS for the native Solaris LDAP libraries is not yet
         supported. If required, install and use the OpenLDAP libraries
@@ -362,7 +362,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
     
 
-    <h3><a name="settingcerts-microsoft" id="settingcerts-microsoft">Microsoft SDK</a></h3>
+    <h3 id="settingcerts-microsoft">Microsoft SDK</h3>
 
         <p>SSL/TLS certificate configuration for the native Microsoft
         LDAP libraries is done inside the system registry, and no
@@ -378,7 +378,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPCacheEntries" id="LDAPCacheEntries">LDAPCacheEntries</a> <a name="ldapcacheentries" id="ldapcacheentries">Directive</a> <a title="Permanent link" href="#ldapcacheentries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapcacheentries"><span id="LDAPCacheEntries">LDAPCacheEntries</span> Directive <a title="Permanent link" href="#ldapcacheentries" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum number of entries in the primary LDAP cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPCacheEntries <var>number</var></code></td></tr>
@@ -394,7 +394,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPCacheTTL" id="LDAPCacheTTL">LDAPCacheTTL</a> <a name="ldapcachettl" id="ldapcachettl">Directive</a> <a title="Permanent link" href="#ldapcachettl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapcachettl"><span id="LDAPCacheTTL">LDAPCacheTTL</span> Directive <a title="Permanent link" href="#ldapcachettl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time that cached items remain valid</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPCacheTTL <var>seconds</var></code></td></tr>
@@ -409,7 +409,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPConnectionPoolTTL" id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</a> <a name="ldapconnectionpoolttl" id="ldapconnectionpoolttl">Directive</a> <a title="Permanent link" href="#ldapconnectionpoolttl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapconnectionpoolttl"><span id="LDAPConnectionPoolTTL">LDAPConnectionPoolTTL</span> Directive <a title="Permanent link" href="#ldapconnectionpoolttl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Discard backend connections that have been sitting in the connection pool too long</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPConnectionPoolTTL <var>n</var></code></td></tr>
@@ -443,7 +443,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPConnectionTimeout" id="LDAPConnectionTimeout">LDAPConnectionTimeout</a> <a name="ldapconnectiontimeout" id="ldapconnectiontimeout">Directive</a> <a title="Permanent link" href="#ldapconnectiontimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapconnectiontimeout"><span id="LDAPConnectionTimeout">LDAPConnectionTimeout</span> Directive <a title="Permanent link" href="#ldapconnectiontimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the socket connection timeout in seconds</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPConnectionTimeout <var>seconds</var></code></td></tr>
@@ -472,7 +472,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a> <a name="ldaplibrarydebug" id="ldaplibrarydebug">Directive</a> <a title="Permanent link" href="#ldaplibrarydebug" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldaplibrarydebug"><span id="LDAPLibraryDebug">LDAPLibraryDebug</span> Directive <a title="Permanent link" href="#ldaplibrarydebug" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable debugging in the LDAP SDK</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
@@ -500,7 +500,7 @@ LDAPTrustedGlobalCert CA_BASE64 /certs/cacert2.pem
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPOpCacheEntries" id="LDAPOpCacheEntries">LDAPOpCacheEntries</a> <a name="ldapopcacheentries" id="ldapopcacheentries">Directive</a> <a title="Permanent link" href="#ldapopcacheentries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapopcacheentries"><span id="LDAPOpCacheEntries">LDAPOpCacheEntries</span> Directive <a title="Permanent link" href="#ldapopcacheentries" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of entries used to cache LDAP compare
 operations</td></tr>
@@ -516,7 +516,7 @@ operations</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPOpCacheTTL" id="LDAPOpCacheTTL">LDAPOpCacheTTL</a> <a name="ldapopcachettl" id="ldapopcachettl">Directive</a> <a title="Permanent link" href="#ldapopcachettl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapopcachettl"><span id="LDAPOpCacheTTL">LDAPOpCacheTTL</span> Directive <a title="Permanent link" href="#ldapopcachettl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time that entries in the operation cache remain
 valid</td></tr>
@@ -531,7 +531,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPReferralHopLimit" id="LDAPReferralHopLimit">LDAPReferralHopLimit</a> <a name="ldapreferralhoplimit" id="ldapreferralhoplimit">Directive</a> <a title="Permanent link" href="#ldapreferralhoplimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapreferralhoplimit"><span id="LDAPReferralHopLimit">LDAPReferralHopLimit</span> Directive <a title="Permanent link" href="#ldapreferralhoplimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPReferralHopLimit <var>number</var></code></td></tr>
@@ -551,7 +551,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPReferrals" id="LDAPReferrals">LDAPReferrals</a> <a name="ldapreferrals" id="ldapreferrals">Directive</a> <a title="Permanent link" href="#ldapreferrals" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapreferrals"><span id="LDAPReferrals">LDAPReferrals</span> Directive <a title="Permanent link" href="#ldapreferrals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable referral chasing during queries to the LDAP server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPReferrals On|Off|default</code></td></tr>
@@ -592,7 +592,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPRetries" id="LDAPRetries">LDAPRetries</a> <a name="ldapretries" id="ldapretries">Directive</a> <a title="Permanent link" href="#ldapretries" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapretries"><span id="LDAPRetries">LDAPRetries</span> Directive <a title="Permanent link" href="#ldapretries" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the number of LDAP server retries.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPRetries <var>number-of-retries</var></code></td></tr>
@@ -608,7 +608,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPRetryDelay" id="LDAPRetryDelay">LDAPRetryDelay</a> <a name="ldapretrydelay" id="ldapretrydelay">Directive</a> <a title="Permanent link" href="#ldapretrydelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapretrydelay"><span id="LDAPRetryDelay">LDAPRetryDelay</span> Directive <a title="Permanent link" href="#ldapretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the delay between LDAP server retries.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPRetryDelay <var>seconds</var></code></td></tr>
@@ -626,7 +626,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPSharedCacheFile" id="LDAPSharedCacheFile">LDAPSharedCacheFile</a> <a name="ldapsharedcachefile" id="ldapsharedcachefile">Directive</a> <a title="Permanent link" href="#ldapsharedcachefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapsharedcachefile"><span id="LDAPSharedCacheFile">LDAPSharedCacheFile</span> Directive <a title="Permanent link" href="#ldapsharedcachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the shared memory cache file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheFile <var>file-path</var></code></td></tr>
@@ -643,7 +643,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPSharedCacheSize" id="LDAPSharedCacheSize">LDAPSharedCacheSize</a> <a name="ldapsharedcachesize" id="ldapsharedcachesize">Directive</a> <a title="Permanent link" href="#ldapsharedcachesize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapsharedcachesize"><span id="LDAPSharedCacheSize">LDAPSharedCacheSize</span> Directive <a title="Permanent link" href="#ldapsharedcachesize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size in bytes of the shared-memory cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheSize <var>bytes</var></code></td></tr>
@@ -659,7 +659,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a name="ldaptimeout" id="ldaptimeout">Directive</a> <a title="Permanent link" href="#ldaptimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldaptimeout"><span id="LDAPTimeout">LDAPTimeout</span> Directive <a title="Permanent link" href="#ldaptimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTimeout <var>seconds</var></code></td></tr>
@@ -684,7 +684,7 @@ valid</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedClientCert" id="LDAPTrustedClientCert">LDAPTrustedClientCert</a> <a name="ldaptrustedclientcert" id="ldaptrustedclientcert">Directive</a> <a title="Permanent link" href="#ldaptrustedclientcert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldaptrustedclientcert"><span id="LDAPTrustedClientCert">LDAPTrustedClientCert</span> Directive <a title="Permanent link" href="#ldaptrustedclientcert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the file containing or nickname referring to a per
 connection client certificate. Not all LDAP toolkits support per
@@ -719,7 +719,7 @@ connection client certificates.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedGlobalCert" id="LDAPTrustedGlobalCert">LDAPTrustedGlobalCert</a> <a name="ldaptrustedglobalcert" id="ldaptrustedglobalcert">Directive</a> <a title="Permanent link" href="#ldaptrustedglobalcert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldaptrustedglobalcert"><span id="LDAPTrustedGlobalCert">LDAPTrustedGlobalCert</span> Directive <a title="Permanent link" href="#ldaptrustedglobalcert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the file or database containing global trusted
 Certificate Authority or global client certificates</td></tr>
@@ -758,7 +758,7 @@ Certificate Authority or global client certificates</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPTrustedMode" id="LDAPTrustedMode">LDAPTrustedMode</a> <a name="ldaptrustedmode" id="ldaptrustedmode">Directive</a> <a title="Permanent link" href="#ldaptrustedmode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldaptrustedmode"><span id="LDAPTrustedMode">LDAPTrustedMode</span> Directive <a title="Permanent link" href="#ldaptrustedmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
@@ -783,7 +783,7 @@ Certificate Authority or global client certificates</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LDAPVerifyServerCert" id="LDAPVerifyServerCert">LDAPVerifyServerCert</a> <a name="ldapverifyservercert" id="ldapverifyservercert">Directive</a> <a title="Permanent link" href="#ldapverifyservercert" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ldapverifyservercert"><span id="LDAPVerifyServerCert">LDAPVerifyServerCert</span> Directive <a title="Permanent link" href="#ldapverifyservercert" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force server certificate verification</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPVerifyServerCert On|Off</code></td></tr>
@@ -803,7 +803,7 @@ Certificate Authority or global client certificates</td></tr>
 <a href="../fr/mod/mod_ldap.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

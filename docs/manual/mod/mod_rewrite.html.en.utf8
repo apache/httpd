@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -80,7 +80,7 @@ URLs on the fly</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Logging</a> <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Logging <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offers detailed logging of its actions
     at the <code>trace1</code> to <code>trace8</code> log levels. The
@@ -116,7 +116,7 @@ URLs on the fly</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase">Directive</a> <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritebase"><span id="RewriteBase">RewriteBase</span> Directive <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the base URL for per-directory rewrites</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteBase <em>URL-path</em></code></td></tr>
@@ -151,7 +151,7 @@ URLs on the fly</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteCond" id="RewriteCond">RewriteCond</a> <a name="rewritecond" id="rewritecond">Directive</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritecond"><span id="RewriteCond">RewriteCond</span> Directive <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a condition under which rewriting will take place
 </td></tr>
@@ -784,7 +784,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a> <a name="rewriteengine" id="rewriteengine">Directive</a> <a title="Permanent link" href="#rewriteengine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriteengine"><span id="RewriteEngine">RewriteEngine</span> Directive <a title="Permanent link" href="#rewriteengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enables or disables runtime rewriting engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteEngine on|off</code></td></tr>
@@ -817,7 +817,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteMap" id="RewriteMap">RewriteMap</a> <a name="rewritemap" id="rewritemap">Directive</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritemap"><span id="RewriteMap">RewriteMap</span> Directive <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a mapping function for key-lookup</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
@@ -911,7 +911,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a name="rewriteoptions" id="rewriteoptions">Directive</a> <a title="Permanent link" href="#rewriteoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriteoptions"><span id="RewriteOptions">RewriteOptions</span> Directive <a title="Permanent link" href="#rewriteoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets some special options for the rewrite engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteOptions <var>Options</var></code></td></tr>
@@ -1082,7 +1082,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RewriteRule" id="RewriteRule">RewriteRule</a> <a name="rewriterule" id="rewriterule">Directive</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriterule"><span id="RewriteRule">RewriteRule</span> Directive <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines rules for the rewriting engine</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteRule
@@ -1587,7 +1587,7 @@ redirection</td>
 <a href="../fr/mod/mod_rewrite.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

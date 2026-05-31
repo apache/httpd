@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -123,7 +123,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Usage examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Usage examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
 	
     <p>The following example shows how one might configured health checking
@@ -160,7 +160,7 @@ not dynamically checked at all.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a title="Permanent link" href="#proxyhcexpr" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhcexpr"><span id="ProxyHCExpr">ProxyHCExpr</span> Directive <a title="Permanent link" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named condition expression to use to determine health of the backend based on its response</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCExpr <em>name</em> {<em>ap_expr expression</em>}</code></td></tr>
@@ -208,7 +208,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a name="proxyhctemplate" id="proxyhctemplate">Directive</a> <a title="Permanent link" href="#proxyhctemplate" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhctemplate"><span id="ProxyHCTemplate">ProxyHCTemplate</span> Directive <a title="Permanent link" href="#proxyhctemplate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Creates a named template for setting various health check parameters</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTemplate <em>name</em> <em>parameter</em>=<em>setting</em> [...]</code></td></tr>
@@ -233,7 +233,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a name="proxyhctpsize" id="proxyhctpsize">Directive</a> <a title="Permanent link" href="#proxyhctpsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhctpsize"><span id="ProxyHCTPsize">ProxyHCTPsize</span> Directive <a title="Permanent link" href="#proxyhctpsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the total server-wide size of the threadpool used for the health check workers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyHCTPsize <em>size</em></code></td></tr>
@@ -260,7 +260,7 @@ ProxyPass "/apps"     "balancer://foo"
 <a href="../fr/mod/mod_proxy_hcheck.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

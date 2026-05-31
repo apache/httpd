@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -75,7 +75,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Stream Format</a> <a title="Permanent link" href="#format" class="permalink">&para;</a></h2>
+<h2 id="format">Stream Format <a title="Permanent link" href="#format" class="permalink">&para;</a></h2>
     
 
     <p>The encrypted stream consists of an optional IV block, followed by encrypted
@@ -87,7 +87,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Keys and IVs</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Keys and IVs <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -124,7 +124,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="handler" id="handler">Crypto Key Handler</a> <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
+<h2 id="handler">Crypto Key Handler <a title="Permanent link" href="#handler" class="permalink">&para;</a></h2>
     
 
     <p>For convenience, the <strong>crypto-key</strong> handler can be used to serve the key
@@ -146,7 +146,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hls" id="hls">HTTP Live Streaming</a> <a title="Permanent link" href="#hls" class="permalink">&para;</a></h2>
+<h2 id="hls">HTTP Live Streaming <a title="Permanent link" href="#hls" class="permalink">&para;</a></h2>
     
 
     <p>The HLS protocol supports encrypted streams using the AES-128 cipher and a
@@ -185,7 +185,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CryptoCipher" id="CryptoCipher">CryptoCipher</a> <a name="cryptocipher" id="cryptocipher">Directive</a> <a title="Permanent link" href="#cryptocipher" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cryptocipher"><span id="CryptoCipher">CryptoCipher</span> Directive <a title="Permanent link" href="#cryptocipher" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cipher to be used by the crypto filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoCipher name</code></td></tr>
@@ -205,7 +205,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CryptoDriver" id="CryptoDriver">CryptoDriver</a> <a name="cryptodriver" id="cryptodriver">Directive</a> <a title="Permanent link" href="#cryptodriver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cryptodriver"><span id="CryptoDriver">CryptoDriver</span> Directive <a title="Permanent link" href="#cryptodriver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the crypto driver to use</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoDriver name</code></td></tr>
@@ -222,7 +222,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CryptoIV" id="CryptoIV">CryptoIV</a> <a name="cryptoiv" id="cryptoiv">Directive</a> <a title="Permanent link" href="#cryptoiv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cryptoiv"><span id="CryptoIV">CryptoIV</span> Directive <a title="Permanent link" href="#cryptoiv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>IV (Initialization Vector) to be used by the crypto filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoIV value</code></td></tr>
@@ -247,7 +247,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CryptoKey" id="CryptoKey">CryptoKey</a> <a name="cryptokey" id="cryptokey">Directive</a> <a title="Permanent link" href="#cryptokey" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cryptokey"><span id="CryptoKey">CryptoKey</span> Directive <a title="Permanent link" href="#cryptokey" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Key to be used by the crypto filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoKey value</code></td></tr>
@@ -271,7 +271,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CryptoSize" id="CryptoSize">CryptoSize</a> <a name="cryptosize" id="cryptosize">Directive</a> <a title="Permanent link" href="#cryptosize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cryptosize"><span id="CryptoSize">CryptoSize</span> Directive <a title="Permanent link" href="#cryptosize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum size in bytes to buffer by the crypto filter</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CryptoSize integer</code></td></tr>
@@ -292,7 +292,7 @@
 <a href="../fr/mod/mod_crypto.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

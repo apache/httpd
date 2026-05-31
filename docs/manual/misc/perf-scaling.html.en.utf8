@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,8 +69,8 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
-        </a> <a title="Permanent link" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
+<h2 id="what-will-and-will-not-be-discussed">What Will and Will Not Be Discussed
+         <a title="Permanent link" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
         
         <p>The session will focus on easily accessible configuration and tuning
             options for Apache httpd 2.2 and 2.4 as well as monitoring tools.
@@ -85,8 +85,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitoring Your Server
-        </a> <a title="Permanent link" href="#monitoring-your-server" class="permalink">&para;</a></h2>
+<h2 id="monitoring-your-server">Monitoring Your Server
+         <a title="Permanent link" href="#monitoring-your-server" class="permalink">&para;</a></h2>
         
         <p>The first task when sizing or performance-tuning your server is to
             find out how your system is currently performing. By monitoring
@@ -96,8 +96,8 @@
         </p>
 
 
-        <h3><a name="monitoring-tools" id="monitoring-tools">Monitoring Tools
-            </a></h3>
+        <h3 id="monitoring-tools">Monitoring Tools
+            </h3>
             
 
 
@@ -287,8 +287,8 @@ Swap:       3903784      12540  3891244</pre></div>
 
             
         
-        <h3><a name="web-server-log-files" id="web-server-log-files">Web Server Log Files
-            </a></h3>
+        <h3 id="web-server-log-files">Web Server Log Files
+            </h3>
             
             <p>Monitoring and analyzing the log files httpd writes is one of
                 the most effective ways to keep track of your server health and
@@ -686,8 +686,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="generating-a-test-load" id="generating-a-test-load">Generating A Test Load
-            </a></h3>
+        <h3 id="generating-a-test-load">Generating A Test Load
+            </h3>
             
             <p>It is useful to generate a test load to monitor system
                 performance under realistic operating circumstances. Besides
@@ -732,13 +732,13 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring-for-performance" id="configuring-for-performance">Configuring for Performance
-        </a> <a title="Permanent link" href="#configuring-for-performance" class="permalink">&para;</a></h2>
+<h2 id="configuring-for-performance">Configuring for Performance
+         <a title="Permanent link" href="#configuring-for-performance" class="permalink">&para;</a></h2>
         
 
 
-        <h3><a name="apache-configuration" id="apache-configuration">Httpd Configuration
-            </a></h3>
+        <h3 id="apache-configuration">Httpd Configuration
+            </h3>
             
             <p>The httpd 2.2 server is by default a pre-forking web server.
                 When the server starts, the parent process spawns a number of
@@ -991,8 +991,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="tuning-the-operating-system" id="tuning-the-operating-system">Tuning the Operating System
-            </a></h3>
+        <h3 id="tuning-the-operating-system">Tuning the Operating System
+            </h3>
             
             <p>People often look for the 'magic tune-up' that will
                 make their system perform four times as fast by tweaking just
@@ -1211,8 +1211,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching-content" id="caching-content">Caching Content
-        </a> <a title="Permanent link" href="#caching-content" class="permalink">&para;</a></h2>
+<h2 id="caching-content">Caching Content
+         <a title="Permanent link" href="#caching-content" class="permalink">&para;</a></h2>
         
         <p>Requests for dynamically generated content usually take
             significantly more resources than requests for static content.
@@ -1231,8 +1231,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         </p>
 
 
-        <h3><a name="making-popular-pages-static" id="making-popular-pages-static">Making Popular Pages Static
-            </a></h3>
+        <h3 id="making-popular-pages-static">Making Popular Pages Static
+            </h3>
             
             <p>By pre-rendering the response pages for the most popular queries
                 in your application, you can gain a significant performance
@@ -1331,8 +1331,8 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
 
             
         
-        <h3><a name="caching-content-with-mod_cache" id="caching-content-with-mod_cache">Caching Content With mod_cache
-            </a></h3>
+        <h3 id="caching-content-with-mod_cache">Caching Content With mod_cache
+            </h3>
             
             <p>The mod_cache module provides intelligent caching of HTTP
                 responses: it is aware of the expiration timing and content
@@ -1436,8 +1436,8 @@ CacheMaxExpire 21600</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="further-considerations" id="further-considerations">Further Considerations
-        </a> <a title="Permanent link" href="#further-considerations" class="permalink">&para;</a></h2>
+<h2 id="further-considerations">Further Considerations
+         <a title="Permanent link" href="#further-considerations" class="permalink">&para;</a></h2>
         
         <p>Armed with the knowledge of how to tune a system to deliver the
             desired the performance, we will soon discover that <em>one</em>
@@ -1452,7 +1452,7 @@ CacheMaxExpire 21600</pre>
 <a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -73,7 +73,7 @@ files to work with, you may need to resort to
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Simple Redirection</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">Simple Redirection <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> provides the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> and <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directives, which provide a
@@ -127,7 +127,7 @@ use.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL Aliasing</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">URL Aliasing <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p>The <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive
 provides mapping from a URL-path to a directory - usually a directory outside
 of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Although it
@@ -150,7 +150,7 @@ you have <code>Options FollowSymLinks</code> enabled on your
 server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Simple Proxying</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Simple Proxying <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
@@ -198,7 +198,7 @@ to the client.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">Environment Variable Testing</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">Environment Variable Testing <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is frequently used to take a particular
 action based on the presence or absence of a particular environment
@@ -226,7 +226,7 @@ and in certain other directives.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">Front Controller / Resource Routing</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
+<h2 id="fallback-resource">Front Controller / Resource Routing <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
 
 <p>A very common use of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is to route all
 requests for non-existent resources to a single front controller script
@@ -261,7 +261,7 @@ directory:</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ifexpr" id="ifexpr">Conditional Configuration with Expressions</a> <a title="Permanent link" href="#ifexpr" class="permalink">&para;</a></h2>
+<h2 id="ifexpr">Conditional Configuration with Expressions <a title="Permanent link" href="#ifexpr" class="permalink">&para;</a></h2>
 
 <p>Many uses of <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 can be replaced by the
@@ -296,7 +296,7 @@ documentation</a> for the full syntax available in
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="blocked-inline-images" id="blocked-inline-images">Forbidding Image Hotlinking</a> <a title="Permanent link" href="#blocked-inline-images" class="permalink">&para;</a></h2>
+<h2 id="blocked-inline-images">Forbidding Image Hotlinking <a title="Permanent link" href="#blocked-inline-images" class="permalink">&para;</a></h2>
 
   
 
@@ -354,7 +354,7 @@ RewriteRule "\.(gif|jpg|png)$" "/images/go-away.png"   [R,NC]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a> <a title="Permanent link" href="#blocking-of-robots" class="permalink">&para;</a></h2>
+<h2 id="blocking-of-robots">Blocking of Robots <a title="Permanent link" href="#blocking-of-robots" class="permalink">&para;</a></h2>
 
   
 
@@ -404,7 +404,7 @@ RewriteRule "^/secret/files/"      "-"                   [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="host-deny" id="host-deny">Denying Hosts in a Reject List</a> <a title="Permanent link" href="#host-deny" class="permalink">&para;</a></h2>
+<h2 id="host-deny">Denying Hosts in a Reject List <a title="Permanent link" href="#host-deny" class="permalink">&para;</a></h2>
 
   
 
@@ -464,7 +464,7 @@ RewriteRule   "^"                                      "-"           [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">Virtual Hosting</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">Virtual Hosting <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p>Although it is possible to handle <a href="vhosts.html">virtual hosts
 with mod_rewrite</a>, it is seldom the right way. Creating individual
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blocks is
@@ -486,7 +486,7 @@ seems like the right approach.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="load-balancing" id="load-balancing">Load Balancing</a> <a title="Permanent link" href="#load-balancing" class="permalink">&para;</a></h2>
+<h2 id="load-balancing">Load Balancing <a title="Permanent link" href="#load-balancing" class="permalink">&para;</a></h2>
 
   
 
@@ -549,7 +549,7 @@ featureful than anything you can cobble together using
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

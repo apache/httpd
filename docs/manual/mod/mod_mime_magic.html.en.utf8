@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -61,7 +61,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format of the Magic File</a> <a title="Permanent link" href="#format" class="permalink">&para;</a></h2>
+<h2 id="format">Format of the Magic File <a title="Permanent link" href="#format" class="permalink">&para;</a></h2>
 
     <p>The contents of the file are plain ASCII text in 4-5
     columns. Blank lines are allowed but ignored. Commented lines
@@ -150,7 +150,7 @@
 0  string  \037\213  application/octet-stream  x-gzip</pre></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="performance" id="performance">Performance Issues</a> <a title="Permanent link" href="#performance" class="permalink">&para;</a></h2>
+<h2 id="performance">Performance Issues <a title="Permanent link" href="#performance" class="permalink">&para;</a></h2>
     <p>This module is not for every system. If your system is barely
     keeping up with its load or if you're performing a web server
     benchmark, you may not want to enable this because the
@@ -168,7 +168,7 @@
     environment.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Notes</a> <a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Notes <a title="Permanent link" href="#notes" class="permalink">&para;</a></h2>
     <p>The following notes apply to the <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code>
     module and are included here for compliance with contributors'
     copyright restrictions that require their acknowledgment.</p>
@@ -251,7 +251,7 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MimeMagicDecompression" id="MimeMagicDecompression">MimeMagicDecompression</a> <a name="mimemagicdecompression" id="mimemagicdecompression">Directive</a> <a title="Permanent link" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mimemagicdecompression"><span id="MimeMagicDecompression">MimeMagicDecompression</span> Directive <a title="Permanent link" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable decompression of compressed files for MIME type detection</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MimeMagicDecompression On|Off</code></td></tr>
@@ -308,7 +308,7 @@ MimeMagicDecompression On</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a name="mimemagicfile" id="mimemagicfile">Directive</a> <a title="Permanent link" href="#mimemagicfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mimemagicfile"><span id="MimeMagicFile">MimeMagicFile</span> Directive <a title="Permanent link" href="#mimemagicfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
@@ -335,7 +335,7 @@ using the specified magic file</td></tr>
 <a href="../fr/mod/mod_mime_magic.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -72,7 +72,7 @@ Negotiation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="typemaps" id="typemaps">Type maps</a> <a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
+<h2 id="typemaps">Type maps <a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
     <p>A type map has a format similar to RFC822 mail headers. It
     contains document descriptions separated by blank lines, with
     lines beginning with a hash character ('#') treated as
@@ -213,7 +213,7 @@ Negotiation</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiviews" id="multiviews">Multiviews</a> <a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
+<h2 id="multiviews">Multiviews <a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
     <p>A Multiviews search is enabled by the <code>Multiviews</code>
     <code class="directive"><a href="../mod/core.html#options">Options</a></code>. If the server receives a
     request for <code>/some/dir/foo</code> and
@@ -231,7 +231,7 @@ Negotiation</a></li>
     to them when choosing files.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">Directive</a> <a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachenegotiateddocs"><span id="CacheNegotiatedDocs">CacheNegotiatedDocs</span> Directive <a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allows content-negotiated documents to be
 cached by proxy servers</td></tr>
@@ -255,7 +255,7 @@ cached by proxy servers</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">Directive</a> <a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="forcelanguagepriority"><span id="ForceLanguagePriority">ForceLanguagePriority</span> Directive <a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Action to take if a single acceptable document is not
 found</td></tr>
@@ -314,7 +314,7 @@ ForceLanguagePriority Fallback</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">Directive</a> <a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="languagepriority"><span id="LanguagePriority">LanguagePriority</span> Directive <a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The precedence of language variants for cases where
 the client does not express a preference</td></tr>
@@ -355,7 +355,7 @@ the client does not express a preference</td></tr>
 <a href="../ja/mod/mod_negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

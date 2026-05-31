@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -55,7 +55,7 @@ headers</td></tr>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_headers">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_headers">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Order of Processing</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Order of Processing <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p>The directives provided by <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can
     occur almost anywhere within the server configuration, and can be
@@ -73,7 +73,7 @@ RequestHeader unset MirrorID</pre>
     reversed, the MirrorID header is set to "mirror 12".</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="early" id="early">Early and Late Processing</a> <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
+<h2 id="early">Early and Late Processing <a title="Permanent link" href="#early" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> can be applied either early or late
     in the request.  The normal mode is late, when <em>Request</em> Headers are
     set immediately before running the content generator and <em>Response</em>
@@ -95,7 +95,7 @@ RequestHeader unset MirrorID</pre>
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Examples</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Examples <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
 
     <ol>
       <li>
@@ -206,7 +206,7 @@ Header merge Cache-Control no-store env=NO_STORE</pre>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a> <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="header"><span id="Header">Header</span> Directive <a title="Permanent link" href="#header" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|edit*|merge|set|setifempty|unset|note
@@ -473,7 +473,7 @@ Header always set CustomHeader my-value "expr=%{REQUEST_URI} =~ m#^/special_path
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a> <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="requestheader"><span id="RequestHeader">RequestHeader</span> Directive <a title="Permanent link" href="#requestheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|setifempty|unset
@@ -589,7 +589,7 @@ available in 2.4.10 and later</td></tr>
 <a href="../ko/mod/mod_headers.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

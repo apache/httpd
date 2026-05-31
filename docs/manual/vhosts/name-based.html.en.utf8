@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -39,7 +39,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="ip-based.html">IP-based Virtual Host Support</a></li><li><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></li><li><a href="mass.html">Dynamically configured mass virtual hosting</a></li><li><a href="examples.html">Virtual Host examples for common setups</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">Name-based vs. IP-based Virtual Hosts</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
+<h2 id="namevip">Name-based vs. IP-based Virtual Hosts <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p><a href="ip-based.html">IP-based virtual hosts</a> use the IP address of the connection to
     determine the correct virtual host to serve.  Therefore you need to
@@ -66,7 +66,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alg" id="alg">How the server selects the proper name-based virtual host</a> <a title="Permanent link" href="#alg" class="permalink">&para;</a></h2>
+<h2 id="alg">How the server selects the proper name-based virtual host <a title="Permanent link" href="#alg" class="permalink">&para;</a></h2>
 
     <p>It is important to recognize that the first step in name-based virtual
     host resolution is IP-based resolution.  Name-based virtual host
@@ -88,14 +88,14 @@
     This implicitly set server name can lead to counter-intuitive virtual host
     matching and is discouraged.</p>
 
-    <h3><a name="defaultvhost" id="defaultvhost">The default name-based vhost for an IP and port combination </a></h3>
+    <h3 id="defaultvhost">The default name-based vhost for an IP and port combination </h3>
     <p> If no matching ServerName or ServerAlias is found in the set of
     virtual hosts containing the most specific matching IP address and port
     combination, then <strong>the first listed virtual host</strong> that
     matches that will be used.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="using" id="using">Using Name-based Virtual Hosts</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
+<h2 id="using">Using Name-based Virtual Hosts <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -206,7 +206,7 @@
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

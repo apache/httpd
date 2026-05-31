@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -74,7 +74,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a> <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2 id="requiredirectives">The Require Directives <a title="Permanent link" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
@@ -85,7 +85,7 @@
     <p>Since v2.4.8, <a href="../expr.html">expressions</a> are supported
     within the DBD require directives.</p>
 
-<h3><a name="reqgroup" id="reqgroup">Require dbd-group</a></h3>
+<h3 id="reqgroup">Require dbd-group</h3>
 
     <p>This directive specifies group membership that is required for the
     user to gain access.</p>
@@ -96,7 +96,7 @@ AuthzDBDQuery "SELECT user_group FROM authz WHERE user = %s"</pre>
 
 
 
-<h3><a name="reqlogin" id="reqlogin">Require dbd-login</a></h3>
+<h3 id="reqlogin">Require dbd-login</h3>
 
     <p>This directive specifies a query to be run indicating the user
     has logged in.</p>
@@ -107,7 +107,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 
 
-<h3><a name="reqlogout" id="reqlogout">Require dbd-logout</a></h3>
+<h3 id="reqlogout">Require dbd-logout</h3>
 
     <p>This directive specifies a query to be run indicating the user
     has logged out.</p>
@@ -120,7 +120,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'false' WHERE user = %s"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="login" id="login">Database Login</a> <a title="Permanent link" href="#login" class="permalink">&para;</a></h2>
+<h2 id="login">Database Login <a title="Permanent link" href="#login" class="permalink">&para;</a></h2>
 
 <p>
 In addition to the standard authorization function of checking group
@@ -135,7 +135,7 @@ supplying the necessary credentials).</p>
 For usage details, see the configuration example below.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="client" id="client">Client Login integration</a> <a title="Permanent link" href="#client" class="permalink">&para;</a></h2>
+<h2 id="client">Client Login integration <a title="Permanent link" href="#client" class="permalink">&para;</a></h2>
 
 <p>Some administrators may wish to implement client-side session
 management that works in concert with the server-side login/logout
@@ -147,7 +147,7 @@ the database.  Other session management modules can then use the hook
 to implement functions that start and end client-side sessions.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">Configuration example</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">Configuration example <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
 <pre class="prettyprint lang-config"># mod_dbd configuration
 DBDriver pgsql
@@ -202,7 +202,7 @@ DBDExptime 300
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Preventing SQL injections</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Preventing SQL injections <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
 
   <p>Whether you need to care about SQL security depends on what DBD driver
   and backend you use.  With most drivers you don't have to do anything :
@@ -213,7 +213,7 @@ DBDExptime 300
   about security on this scope.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a> <a title="Permanent link" href="#authzdbdlogintoreferer" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authzdbdlogintoreferer"><span id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</span> Directive <a title="Permanent link" href="#authzdbdlogintoreferer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to redirect the Client to the Referring
 page on successful login or logout if a <code>Referer</code> request
@@ -233,7 +233,7 @@ header is present</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a> <a title="Permanent link" href="#authzdbdquery" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authzdbdquery"><span id="AuthzDBDQuery">AuthzDBDQuery</span> Directive <a title="Permanent link" href="#authzdbdquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the SQL Query for the required operation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDQuery <var>query</var></code></td></tr>
@@ -273,7 +273,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a> <a title="Permanent link" href="#authzdbdredirectquery" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authzdbdredirectquery"><span id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</span> Directive <a title="Permanent link" href="#authzdbdredirectquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a query to look up a login page for the user</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDRedirectQuery <var>query</var></code></td></tr>
@@ -302,7 +302,7 @@ AuthzDBDQuery "UPDATE authn SET login = 'true' WHERE user = %s"</pre>
 <a href="../fr/mod/mod_authz_dbd.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

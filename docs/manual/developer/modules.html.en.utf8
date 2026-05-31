@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -37,9 +37,9 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="easy" id="easy">The easier changes ...</a> <a title="Permanent link" href="#easy" class="permalink">&para;</a></h2>
+<h2 id="easy">The easier changes ... <a title="Permanent link" href="#easy" class="permalink">&para;</a></h2>
 
-    <h3><a name="cleanup" id="cleanup">Cleanup Routines</a></h3>
+    <h3 id="cleanup">Cleanup Routines</h3>
       <p>These now need to be of type <code>apr_status_t</code> and return a
       value of that type. Normally the return value will be
       <code>APR_SUCCESS</code> unless there is some need to signal an error in
@@ -47,7 +47,7 @@
       yet checks and acts upon the error.</p>
     
 
-    <h3><a name="init" id="init">Initialization Routines</a></h3>
+    <h3 id="init">Initialization Routines</h3>
       <p>These should now be renamed to better signify where they sit
       in the overall process. So the name gets a small change from
       <code>mmap_init</code> to <code>mmap_post_config</code>. The arguments
@@ -61,7 +61,7 @@
       </ul>
     
 
-    <h3><a name="datatypes" id="datatypes">Data Types</a></h3>
+    <h3 id="datatypes">Data Types</h3>
       <p>A lot of the data types have been moved into the <a href="http://apr.apache.org/">APR</a>. This means that some have had
       a name change, such as the one shown above. The following is a brief
       list of some of the changes that you are likely to have to make.</p>
@@ -73,9 +73,9 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="messy" id="messy">The messier changes...</a> <a title="Permanent link" href="#messy" class="permalink">&para;</a></h2>
+<h2 id="messy">The messier changes... <a title="Permanent link" href="#messy" class="permalink">&para;</a></h2>
 
-    <h3><a name="register-hooks" id="register-hooks">Register Hooks</a></h3>
+    <h3 id="register-hooks">Register Hooks</h3>
       <p>The new architecture uses a series of hooks to provide for
       calling your functions. These you'll need to add to your module
       by way of a new function, <code>static void register_hooks(void)</code>.
@@ -127,7 +127,7 @@
       position <code>HOOK_LAST</code>.</p>
     
 
-    <h3><a name="moddef" id="moddef">Module Definition</a></h3>
+    <h3 id="moddef">Module Definition</h3>
       <p>There are now a lot fewer stages to worry about when
       creating your module definition. The old definition looked
       like</p>
@@ -281,7 +281,7 @@
 <a href="../ja/developer/modules.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

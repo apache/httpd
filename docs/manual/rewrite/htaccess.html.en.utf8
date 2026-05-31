@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -59,7 +59,7 @@ declared in .htaccess</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="tech.html">Technical details</a></li><li><a href="../mod/mod_rewrite.html#what_is_matched">What is matched?</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prerequisites" id="prerequisites">Prerequisites: AllowOverride</a> <a title="Permanent link" href="#prerequisites" class="permalink">&para;</a></h2>
+<h2 id="prerequisites">Prerequisites: AllowOverride <a title="Permanent link" href="#prerequisites" class="permalink">&para;</a></h2>
 
 <p>Before <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives in a
 <code>.htaccess</code> file will be processed at all, the server
@@ -96,7 +96,7 @@ ability to circumvent directory restrictions
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="path-stripping" id="path-stripping">What URL does the rule see?</a> <a title="Permanent link" href="#path-stripping" class="permalink">&para;</a></h2>
+<h2 id="path-stripping">What URL does the rule see? <a title="Permanent link" href="#path-stripping" class="permalink">&para;</a></h2>
 
 <p>In server or virtualhost context, the
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern is
@@ -163,7 +163,7 @@ RewriteRule "^.*$" "-" [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritebase" id="rewritebase">When you need RewriteBase</a> <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
+<h2 id="rewritebase">When you need RewriteBase <a title="Permanent link" href="#rewritebase" class="permalink">&para;</a></h2>
 
 <p>When <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> makes a substitution in
 <code>.htaccess</code> context, it needs to turn the relative result
@@ -213,7 +213,7 @@ would prepend the filesystem path rather than the URL path.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="loops" id="loops">The [L] flag and looping</a> <a title="Permanent link" href="#loops" class="permalink">&para;</a></h2>
+<h2 id="loops">The [L] flag and looping <a title="Permanent link" href="#loops" class="permalink">&para;</a></h2>
 
 <p>In server context, the <code>[L]</code> flag means "stop processing
 the ruleset." In <code>.htaccess</code> context, it means something
@@ -276,8 +276,8 @@ matching rewritten URLs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap-restriction" id="rewritemap-restriction">RewriteMap cannot be
-declared in .htaccess</a> <a title="Permanent link" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
+<h2 id="rewritemap-restriction">RewriteMap cannot be
+declared in .htaccess <a title="Permanent link" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
 
 <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
 can only be declared in server or virtualhost context - not in
@@ -302,7 +302,7 @@ would be prohibitively expensive to repeat each time.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="context-restrictions" id="context-restrictions">Which contexts support rewrite rules?</a> <a title="Permanent link" href="#context-restrictions" class="permalink">&para;</a></h2>
+<h2 id="context-restrictions">Which contexts support rewrite rules? <a title="Permanent link" href="#context-restrictions" class="permalink">&para;</a></h2>
 
 <p>Rewrite rules are supported in
 <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory context</a>
@@ -337,7 +337,7 @@ truly stops processing &mdash; use
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="inheritance" id="inheritance">Rule inheritance with RewriteOptions</a> <a title="Permanent link" href="#inheritance" class="permalink">&para;</a></h2>
+<h2 id="inheritance">Rule inheritance with RewriteOptions <a title="Permanent link" href="#inheritance" class="permalink">&para;</a></h2>
 
 <p>By default, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> rules are <strong>not
 inherited</strong> by subdirectories. If you define rules in
@@ -384,7 +384,7 @@ Available since Apache 2.4.26.</dd>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="debugging" id="debugging">Debugging .htaccess rewrite rules</a> <a title="Permanent link" href="#debugging" class="permalink">&para;</a></h2>
+<h2 id="debugging">Debugging .htaccess rewrite rules <a title="Permanent link" href="#debugging" class="permalink">&para;</a></h2>
 
 <p>When <code>.htaccess</code> rules are not doing what you expect,
 the rewrite log is your most important tool. Enable it at the
@@ -405,7 +405,7 @@ performance.</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">Browser caching of 301 redirects</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">Browser caching of 301 redirects <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
 <p>When you issue a <code>301 Moved Permanently</code> redirect
 (via <code>[R=301]</code> or <code class="directive"><a href="../mod/mod_alias.html#redirect permanent">Redirect permanent</a></code>), the browser is allowed to cache
@@ -438,7 +438,7 @@ first.</div>
 <a href="../zh-cn/rewrite/htaccess.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

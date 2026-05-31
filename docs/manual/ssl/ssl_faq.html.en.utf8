@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@ he poses the right questions.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="installation" id="installation">Installation</a> <a title="Permanent link" href="#installation" class="permalink">&para;</a></h2>
+<h2 id="installation">Installation <a title="Permanent link" href="#installation" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#mutex">Why do I get permission errors related to
 SSLMutex when I start Apache?</a></li>
@@ -50,8 +50,8 @@ SSLMutex when I start Apache?</a></li>
 generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 </ul>
 
-<h3><a name="mutex" id="mutex">Why do I get permission errors related to
-        SSLMutex when I start Apache?</a></h3>
+<h3 id="mutex">Why do I get permission errors related to
+        SSLMutex when I start Apache?</h3>
     <p>Errors such as ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (System error follows)
     [...] System: Permission denied (errno: 13)</code>'' are usually
@@ -62,9 +62,9 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
     the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive).</p>
 
 
-<h3><a name="entropy" id="entropy">Why does mod_ssl stop with the error
+<h3 id="entropy">Why does mod_ssl stop with the error
         "Failed to generate temporary 512 bit RSA private key" when I start
-        Apache?</a></h3>
+        Apache?</h3>
     <p>Cryptographic software needs a source of unpredictable data
     to work correctly. Many open source operating systems provide
     a "randomness device" that serves this purpose (usually named
@@ -81,7 +81,7 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutconfig" id="aboutconfig">Configuration</a> <a title="Permanent link" href="#aboutconfig" class="permalink">&para;</a></h2>
+<h2 id="aboutconfig">Configuration <a title="Permanent link" href="#aboutconfig" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#parallel">Is it possible to provide HTTP and HTTPS from
 the same server?</a></li>
@@ -98,8 +98,8 @@ available to my CGI &amp; SSI scripts?</a></li>
 relative hyperlinks?</a></li>
 </ul>
 
-<h3><a name="parallel" id="parallel">Is it possible to provide HTTP and HTTPS
-        from the same server?</a></h3>
+<h3 id="parallel">Is it possible to provide HTTP and HTTPS
+        from the same server?</h3>
     <p>Yes. HTTP and HTTPS use different server ports (HTTP binds to
     port 80, HTTPS to port 443), so there is no direct conflict between
     them. You can either run two separate server instances bound to
@@ -109,7 +109,7 @@ relative hyperlinks?</a></li>
     responding over HTTPS to requests on port 443.</p>
 
 
-<h3><a name="ports" id="ports">Which port does HTTPS use?</a></h3>
+<h3 id="ports">Which port does HTTPS use?</h3>
 <p>You can run HTTPS on any port, but the standards specify port 443, which
     is where any HTTPS compliant browser will look by default. You can force
     your browser to look on a different port by specifying it in the URL. For
@@ -117,7 +117,7 @@ relative hyperlinks?</a></li>
     you can access them at <code>https://example.com:8080/</code></p>
 
 
-<h3><a name="httpstest" id="httpstest">How do I speak HTTPS manually for testing purposes?</a></h3>
+<h3 id="httpstest">How do I speak HTTPS manually for testing purposes?</h3>
  <p>While you usually just use</p>
 
     <div class="example"><p><code>$ telnet localhost 80<br>
@@ -144,8 +144,8 @@ relative hyperlinks?</a></li>
     $ curl https://localhost/</code></p></div>
 
 
-<h3><a name="hang" id="hang">Why does the connection hang when I connect
-    to my SSL-aware Apache server?</a></h3>
+<h3 id="hang">Why does the connection hang when I connect
+    to my SSL-aware Apache server?</h3>
 
 <p>This can happen when you try to connect to a HTTPS server (or virtual
     server) via HTTP (eg, using <code>http://example.com/</code> instead of
@@ -155,8 +155,8 @@ relative hyperlinks?</a></li>
     or which supports it on a non-standard port). Make sure that you're
     connecting to a (virtual) server that supports SSL.</p>
 
-<h3><a name="refused" id="refused">Why do I get ``Connection Refused'' messages,
-    when trying to access my newly installed Apache+mod_ssl server via HTTPS?</a></h3>
+<h3 id="refused">Why do I get ``Connection Refused'' messages,
+    when trying to access my newly installed Apache+mod_ssl server via HTTPS?</h3>
 <p>
     This error can be caused by an incorrect configuration.
     Please make sure that your <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> directives match your
@@ -165,14 +165,14 @@ relative hyperlinks?</a></li>
     configuration provided by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
 
-<h3><a name="envvars" id="envvars">Why are the <code>SSL_XXX</code> variables
-    not available to my CGI &amp; SSI scripts?</a></h3>
+<h3 id="envvars">Why are the <code>SSL_XXX</code> variables
+    not available to my CGI &amp; SSI scripts?</h3>
 <p>Please make sure you have ``<code>SSLOptions +StdEnvVars</code>''
     enabled for the context of your CGI/SSI requests.</p>
 
 
-<h3><a name="relative" id="relative">How can I switch between HTTP and HTTPS in relative
-    hyperlinks?</a></h3>
+<h3 id="relative">How can I switch between HTTP and HTTPS in relative
+    hyperlinks?</h3>
 
 <p>Usually, to switch between HTTP and HTTPS, you have to use
     fully-qualified hyperlinks (because you have to change the URL
@@ -189,7 +189,7 @@ RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutcerts" id="aboutcerts">Certificates</a> <a title="Permanent link" href="#aboutcerts" class="permalink">&para;</a></h2>
+<h2 id="aboutcerts">Certificates <a title="Permanent link" href="#aboutcerts" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#keyscerts">What are RSA Private Keys, CSRs and
 Certificates?</a></li>
@@ -212,7 +212,7 @@ format?</a></li>
 verify my server certificate?</a></li>
 </ul>
 
-<h3><a name="keyscerts" id="keyscerts">What are RSA Private Keys, CSRs and Certificates?</a></h3>
+<h3 id="keyscerts">What are RSA Private Keys, CSRs and Certificates?</h3>
 <p>An RSA private key file is a digital file that you can use to decrypt
     messages sent to you. It has a public component which you distribute (via
     your Certificate file) which allows people to encrypt those messages to
@@ -229,8 +229,8 @@ verify my server certificate?</a></li>
     description of the SSL protocol.</p>
 
 
-<h3><a name="startup" id="startup">Is there a difference on startup between
-    a non-SSL-aware Apache and an SSL-aware Apache?</a></h3>
+<h3 id="startup">Is there a difference on startup between
+    a non-SSL-aware Apache and an SSL-aware Apache?</h3>
 <p>Yes. In general, starting Apache with
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> built-in is just like starting Apache
     without it. However, if you have a passphrase on your SSL private
@@ -245,8 +245,8 @@ verify my server certificate?</a></li>
     risks - proceed with caution!</p>
 
 
-<h3><a name="selfcert" id="selfcert">How do I create a self-signed SSL
-Certificate for testing purposes?</a></h3>
+<h3 id="selfcert">How do I create a self-signed SSL
+Certificate for testing purposes?</h3>
     <ol>
     <li>Make sure OpenSSL is installed and in your <code>PATH</code>.<br>
     <br>
@@ -274,7 +274,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     </ol>
 
 
-<h3><a name="realcert" id="realcert">How do I create a real SSL Certificate?</a></h3>
+<h3 id="realcert">How do I create a real SSL Certificate?</h3>
 <p>Here is a step-by-step description:</p>
     <ol>
     <li>Make sure OpenSSL is installed and in your <code>PATH</code>.
@@ -345,7 +345,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     </ol>
 
 
-<h3><a name="ownca" id="ownca">How do I create and use my own Certificate Authority (CA)?</a></h3>
+<h3 id="ownca">How do I create and use my own Certificate Authority (CA)?</h3>
     <p>The short answer is to use the <code>CA.sh</code> or <code>CA.pl</code>
     script provided by OpenSSL. Unless you have a good reason not to,
     you should use these for preference. If you cannot, you can create a
@@ -385,7 +385,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     </ol>
 
 
-<h3><a name="passphrase" id="passphrase">How can I change the pass-phrase on my private key file?</a></h3>
+<h3 id="passphrase">How can I change the pass-phrase on my private key file?</h3>
 <p>You simply have to read it with the old pass-phrase and write it again,
     specifying the new pass-phrase. You can accomplish this with the following commands:</p>
 
@@ -400,7 +400,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     pass-phrase a second time.</p>
 
 
-<h3><a name="removepassphrase" id="removepassphrase">How can I get rid of the pass-phrase dialog at Apache startup time?</a></h3>
+<h3 id="removepassphrase">How can I get rid of the pass-phrase dialog at Apache startup time?</h3>
 <p>The reason this dialog pops up at startup and every re-start
     is that the RSA private key inside your server.key file is stored in
     encrypted format for security reasons. The pass-phrase is needed to decrypt
@@ -435,7 +435,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     neither more nor less secure, of course.</p>
 
 
-<h3><a name="verify" id="verify">How do I verify that a private key matches its Certificate?</a></h3>
+<h3 id="verify">How do I verify that a private key matches its Certificate?</h3>
 <p>A private key contains a series of numbers. Two of these numbers form
     the "public key", the others are part of the "private key". The "public
     key" bits are included when you generate a CSR, and subsequently form
@@ -466,7 +466,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
 
 
-<h3><a name="pemder" id="pemder">How can I convert a certificate from PEM to DER format?</a></h3>
+<h3 id="pemder">How can I convert a certificate from PEM to DER format?</h3>
 <p>The default certificate format for OpenSSL is PEM, which is simply
     Base64 encoded DER, with header and footer lines. For some applications
     (e.g. Microsoft Internet Explorer) you need the certificate in plain DER
@@ -475,7 +475,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     <code><strong>$ openssl x509 -in cert.pem -out cert.der -outform DER</strong></code></p>
 
 
-<h3><a name="gid" id="gid">Why do browsers complain that they cannot verify my server certificate?</a></h3>
+<h3 id="gid">Why do browsers complain that they cannot verify my server certificate?</h3>
 
     <p>One reason this might happen is because your server certificate is signed
     by an intermediate CA. Various CAs, such as Verisign or Thawte, have started
@@ -496,7 +496,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutssl" id="aboutssl">The SSL Protocol</a> <a title="Permanent link" href="#aboutssl" class="permalink">&para;</a></h2>
+<h2 id="aboutssl">The SSL Protocol <a title="Permanent link" href="#aboutssl" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#random">Why do I get lots of random SSL protocol
 errors under heavy server load?</a></li>
@@ -524,8 +524,8 @@ HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer
 <li><a href="#javadh">Why do I get handshake failures with Java-based clients when using a certificate with more than 1024 bits?</a></li>
 </ul>
 
-<h3><a name="random" id="random">Why do I get lots of random SSL protocol
-errors under heavy server load?</a></h3>
+<h3 id="random">Why do I get lots of random SSL protocol
+errors under heavy server load?</h3>
 <p>There can be a number of reasons for this, but the main one
     is problems with the SSL session Cache specified by the
     <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code> directive. The DBM session
@@ -533,16 +533,16 @@ errors under heavy server load?</a></h3>
     no cache at all) may help.</p>
 
 
-<h3><a name="load" id="load">Why does my webserver have a higher load, now
-that it serves SSL encrypted traffic?</a></h3>
+<h3 id="load">Why does my webserver have a higher load, now
+that it serves SSL encrypted traffic?</h3>
 <p>SSL uses strong cryptographic encryption, which necessitates a lot of
     number crunching. When you request a webpage via HTTPS, everything (even
     the images) is encrypted before it is transferred. So increased HTTPS
     traffic leads to load increases.</p>
 
 
-<h3><a name="establishing" id="establishing">Why do HTTPS connections to my server
-sometimes take up to 30 seconds to establish a connection?</a></h3>
+<h3 id="establishing">Why do HTTPS connections to my server
+sometimes take up to 30 seconds to establish a connection?</h3>
 <p>This is usually caused by a <code>/dev/random</code> device for
     <code class="directive"><a href="../mod/mod_ssl.html#sslrandomseed">SSLRandomSeed</a></code> which blocks the
     read(2) call until enough entropy is available to service the
@@ -551,7 +551,7 @@ sometimes take up to 30 seconds to establish a connection?</a></h3>
     directive.</p>
 
 
-<h3><a name="ciphers" id="ciphers">What SSL Ciphers are supported by mod_ssl?</a></h3>
+<h3 id="ciphers">What SSL Ciphers are supported by mod_ssl?</h3>
 <p>Usually, any SSL ciphers supported by the version of OpenSSL in use,
     are also supported by <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. Which ciphers are
     available can depend on the way you built OpenSSL. Typically, at
@@ -568,8 +568,8 @@ sometimes take up to 30 seconds to establish a connection?</a></h3>
     <div class="example"><p><code>$ openssl ciphers -v</code></p></div>
 
 
-<h3><a name="adh" id="adh">Why do I get ``no shared cipher'' errors, when
-trying to use Anonymous Diffie-Hellman (ADH) ciphers?</a></h3>
+<h3 id="adh">Why do I get ``no shared cipher'' errors, when
+trying to use Anonymous Diffie-Hellman (ADH) ciphers?</h3>
 <p>By default, OpenSSL does <em>not</em> allow ADH ciphers, for security
     reasons. Please be sure you are aware of the potential side-effects
     if you choose to enable these ciphers.</p>
@@ -578,8 +578,8 @@ trying to use Anonymous Diffie-Hellman (ADH) ciphers?</a></h3>
     ``<code>ADH</code>'' into your <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>.</p>
 
 
-<h3><a name="sharedciphers" id="sharedciphers">Why do I get a 'no shared ciphers'
-error when connecting to my newly installed server?</a></h3>
+<h3 id="sharedciphers">Why do I get a 'no shared ciphers'
+error when connecting to my newly installed server?</h3>
 <p>Either you have made a mistake with your
     <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>
     directive (compare it with the pre-configured example in
@@ -594,7 +594,7 @@ error when connecting to my newly installed server?</a></h3>
     certificate/key pair, using the RSA algorithm.</p>
 
 
-<h3><a name="vhosts" id="vhosts">Why can't I use SSL with name-based/non-IP-based virtual hosts?</a></h3>
+<h3 id="vhosts">Why can't I use SSL with name-based/non-IP-based virtual hosts?</h3>
 <p>The reason is very technical, and a somewhat "chicken and egg" problem.
     The SSL protocol layer stays below the HTTP protocol layer and
     encapsulates HTTP. When an SSL connection (HTTPS) is established
@@ -614,8 +614,8 @@ error when connecting to my newly installed server?</a></h3>
     workarounds.</p>
 
 
-<h3><a name="vhosts2" id="vhosts2">Is it possible to use Name-Based
-Virtual Hosting to identify different SSL virtual hosts?</a></h3>
+<h3 id="vhosts2">Is it possible to use Name-Based
+Virtual Hosting to identify different SSL virtual hosts?</h3>
     <p>Name-Based Virtual Hosting is a very popular method of identifying
     different virtual hosts. It allows you to use the same IP address and
     the same port number for many different sites. When people move on to
@@ -661,7 +661,7 @@ Virtual Hosting to identify different SSL virtual hosts?</a></h3>
     Using different port numbers for different SSL hosts.</p>
 
 
-<h3><a name="comp" id="comp">How do I get SSL compression working?</a></h3>
+<h3 id="comp">How do I get SSL compression working?</h3>
 <p>Although SSL compression negotiation was defined in the specification
 of SSLv2 and TLS, it took until May 2004 for RFC 3749 to define DEFLATE as
 a negotiable standard compression method.
@@ -678,9 +678,9 @@ logging the <code>%{SSL_COMPRESS_METHOD}x</code> variable.
 </p>
 
 
-<h3><a name="lockicon" id="lockicon">When I use Basic Authentication over HTTPS
+<h3 id="lockicon">When I use Basic Authentication over HTTPS
 the lock icon in Netscape browsers stays unlocked when the dialog pops up.
-Does this mean the username/password is being sent unencrypted?</a></h3>
+Does this mean the username/password is being sent unencrypted?</h3>
 <p>No, the username/password is transmitted encrypted. The icon in
     Netscape browsers is not actually synchronized with the SSL/TLS layer.
     It only toggles to the locked state when the first part of the actual
@@ -692,9 +692,9 @@ Does this mean the username/password is being sent unencrypted?</a></h3>
     confused by this icon.</p>
 
 
-<h3><a name="msie" id="msie">Why do I get I/O errors when connecting via
+<h3 id="msie">Why do I get I/O errors when connecting via
 HTTPS to an Apache+mod_ssl server with older versions of Microsoft Internet
-Explorer (MSIE)?</a></h3>
+Explorer (MSIE)?</h3>
 <p>The first reason is that the SSL implementation in some MSIE versions has
     some subtle bugs related to the HTTP keep-alive facility and the SSL close
     notify alerts on socket connection close. Additionally the interaction
@@ -719,7 +719,7 @@ Explorer (MSIE)?</a></h3>
     or otherwise.</p>
 
 
-<h3><a name="srp" id="srp">How do I enable TLS-SRP?</a></h3>
+<h3 id="srp">How do I enable TLS-SRP?</h3>
     <p>TLS-SRP (Secure Remote Password key exchange for TLS, specified in RFC 5054)
     can supplement or replace certificates in authenticating an SSL connection.
     To use TLS-SRP, set the
@@ -740,7 +740,7 @@ Explorer (MSIE)?</a></h3>
     </code></p></div>
 
 
-<h3><a name="javadh" id="javadh">Why do I get handshake failures with Java-based clients when using a certificate with more than 1024 bits?</a></h3>
+<h3 id="javadh">Why do I get handshake failures with Java-based clients when using a certificate with more than 1024 bits?</h3>
     <p>Beginning with version 2.5.0-dev as of 2013-09-29,
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> will use DH parameters which include primes
     with lengths of more than 1024 bits. Java 7 and earlier limit their
@@ -775,7 +775,7 @@ Sgh5jjQE3e+VGbPNOkMbMCsKbfJfFDdP4TVtbVHCReSFtXZiXn7G9ExC6aY37WsL
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="support" id="support">mod_ssl Support</a> <a title="Permanent link" href="#support" class="permalink">&para;</a></h2>
+<h2 id="support">mod_ssl Support <a title="Permanent link" href="#support" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#resources">What information resources are available in
 case of mod_ssl problems?</a></li>
@@ -788,7 +788,7 @@ provide when writing a bug report?</a></li>
 for my core dump?</a></li>
 </ul>
 
-<h3><a name="resources" id="resources">What information resources are available in case of mod_ssl problems?</a></h3>
+<h3 id="resources">What information resources are available in case of mod_ssl problems?</h3>
 <p>The following information resources are available.
     In case of problems you should search here first.</p>
 
@@ -803,8 +803,8 @@ for my core dump?</a></li>
     </dl>
 
 
-<h3><a name="contact" id="contact">What support contacts are available in case
-of mod_ssl problems?</a></h3>
+<h3 id="contact">What support contacts are available in case
+of mod_ssl problems?</h3>
  <p>The following lists all support possibilities for mod_ssl, in order of
          preference. Please go through these possibilities
          <em>in this order</em> - don't just pick the one you like the look of. </p>
@@ -828,8 +828,8 @@ of mod_ssl problems?</a></h3>
     </ol>
 
 
-<h3><a name="reportdetails" id="reportdetails">What information should I
-provide when writing a bug report?</a></h3>
+<h3 id="reportdetails">What information should I
+provide when writing a bug report?</h3>
 <p>You should always provide at least the following information:</p>
 
     <dl>
@@ -866,7 +866,7 @@ provide when writing a bug report?</a></h3>
     </dl>
 
 
-<h3><a name="coredumphelp" id="coredumphelp">I had a core dump, can you help me?</a></h3>
+<h3 id="coredumphelp">I had a core dump, can you help me?</h3>
 <p>In general no, at least not unless you provide more details about the code
     location where Apache dumped core. What is usually always required in
     order to help you is a backtrace (see next question). Without this
@@ -874,8 +874,8 @@ provide when writing a bug report?</a></h3>
     fixing it.</p>
 
 
-<h3><a name="backtrace" id="backtrace">How do I get a backtrace, to help find
-the reason for my core dump?</a></h3>
+<h3 id="backtrace">How do I get a backtrace, to help find
+the reason for my core dump?</h3>
 <p>Following are the steps you will need to complete, to get a backtrace:</p>
     <ol>
     <li>Make sure you have debugging symbols available, at least
@@ -909,7 +909,7 @@ the reason for my core dump?</a></h3>
 <a href="../fr/ssl/ssl_faq.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -48,7 +48,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basics" id="basics">Filters and bucket brigades</a> <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
+<h2 id="basics">Filters and bucket brigades <a title="Permanent link" href="#basics" class="permalink">&para;</a></h2>
     
 
     <p>Each time a filter is invoked, it is passed a <em>bucket
@@ -103,7 +103,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="invocation" id="invocation">Filter invocation</a> <a title="Permanent link" href="#invocation" class="permalink">&para;</a></h2>
+<h2 id="invocation">Filter invocation <a title="Permanent link" href="#invocation" class="permalink">&para;</a></h2>
     
 
     <p>For any given request, an output filter might be invoked only
@@ -142,7 +142,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="brigade" id="brigade">Brigade structure</a> <a title="Permanent link" href="#brigade" class="permalink">&para;</a></h2>
+<h2 id="brigade">Brigade structure <a title="Permanent link" href="#brigade" class="permalink">&para;</a></h2>
     
 
     <p>A bucket brigade is a doubly-linked list of buckets.  The list
@@ -199,7 +199,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="buckets" id="buckets">Processing buckets</a> <a title="Permanent link" href="#buckets" class="permalink">&para;</a></h2>
+<h2 id="buckets">Processing buckets <a title="Permanent link" href="#buckets" class="permalink">&para;</a></h2>
 
     
 
@@ -244,7 +244,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="filtering" id="filtering">Filtering brigades</a> <a title="Permanent link" href="#filtering" class="permalink">&para;</a></h2>
+<h2 id="filtering">Filtering brigades <a title="Permanent link" href="#filtering" class="permalink">&para;</a></h2>
     
 
     <p>The basic function of any output filter will be to iterate
@@ -297,7 +297,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="state" id="state">Maintaining state</a> <a title="Permanent link" href="#state" class="permalink">&para;</a></h2>
+<h2 id="state">Maintaining state <a title="Permanent link" href="#state" class="permalink">&para;</a></h2>
 
     
 
@@ -332,7 +332,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="buffer" id="buffer">Buffering buckets</a> <a title="Permanent link" href="#buffer" class="permalink">&para;</a></h2>
+<h2 id="buffer">Buffering buckets <a title="Permanent link" href="#buffer" class="permalink">&para;</a></h2>
     
 
     <p>If a filter decides to store buckets beyond the duration of a
@@ -381,7 +381,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="nonblock" id="nonblock">Non-blocking bucket reads</a> <a title="Permanent link" href="#nonblock" class="permalink">&para;</a></h2>
+<h2 id="nonblock">Non-blocking bucket reads <a title="Permanent link" href="#nonblock" class="permalink">&para;</a></h2>
     
 
     <p>The <code>apr_bucket_read</code> function takes an
@@ -433,7 +433,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rules" id="rules">Ten rules for output filters</a> <a title="Permanent link" href="#rules" class="permalink">&para;</a></h2>
+<h2 id="rules">Ten rules for output filters <a title="Permanent link" href="#rules" class="permalink">&para;</a></h2>
     
 
     <p>In summary, here is a set of rules for all output filters to
@@ -485,7 +485,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usecase1" id="usecase1">Use case: buffering in mod_ratelimit</a> <a title="Permanent link" href="#usecase1" class="permalink">&para;</a></h2>
+<h2 id="usecase1">Use case: buffering in mod_ratelimit <a title="Permanent link" href="#usecase1" class="permalink">&para;</a></h2>
     
     <p>The <a href="http://svn.apache.org/r1833875">r1833875</a> change is a good
     example to show what buffering and keeping state means in the context of an
@@ -560,7 +560,7 @@ chunk_size = (speed / (1000 / RATE_INTERVAL_MS));</pre>
 <p><span>Available Languages: </span><a href="../en/developer/output-filters.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

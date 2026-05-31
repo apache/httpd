@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -40,7 +40,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="developing" id="developing">2.4 development documents</a> <a title="Permanent link" href="#developing" class="permalink">&para;</a></h2>
+<h2 id="developing">2.4 development documents <a title="Permanent link" href="#developing" class="permalink">&para;</a></h2>
     <ul>
       <li><a href="modguide.html">Developing modules for the Apache HTTP Server 2.4</a></li>
       <li><a href="hooks.html">Hook Functions in 2.4</a></li>
@@ -52,14 +52,14 @@
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrading to 2.4</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Upgrading to 2.4 <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
     <ul>
       <li><a href="new_api_2_4.html">API changes in 2.3/2.4</a></li>
       <li><a href="modules.html">Converting Modules from 1.3 to 2.x</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="external" id="external">Other Resources</a> <a title="Permanent link" href="#external" class="permalink">&para;</a></h2>
+<h2 id="external">Other Resources <a title="Permanent link" href="#external" class="permalink">&para;</a></h2>
     <ul>
       <li>Developer articles at <a href="http://www.apachetutor.org/">apachetutor</a> include:
       <ul>
@@ -77,7 +77,7 @@
 <a href="../zh-cn/developer/" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

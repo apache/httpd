@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@ and URL matching.</p>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="flags.html">RewriteRule Flags</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="rewritemap.html">Using RewriteMap</a></li><li><a href="htaccess.html">Per-directory Rewrites</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalAPI" id="InternalAPI">API Phases</a> <a title="Permanent link" href="#InternalAPI" class="permalink">&para;</a></h2>
+<h2 id="InternalAPI">API Phases <a title="Permanent link" href="#InternalAPI" class="permalink">&para;</a></h2>
 
     <p>The Apache HTTP Server handles requests in several phases. At
     each of these phases, one or more modules may be called upon to
@@ -86,7 +86,7 @@ and URL matching.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Module Processing Order</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Module Processing Order <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> and <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> both
     operate during the URL-to-filename translation phase, but
@@ -129,7 +129,7 @@ RewriteRule "^/old" "/other" [L]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="encoding" id="encoding">URL Encoding and Decoding</a> <a title="Permanent link" href="#encoding" class="permalink">&para;</a></h2>
+<h2 id="encoding">URL Encoding and Decoding <a title="Permanent link" href="#encoding" class="permalink">&para;</a></h2>
 
     <p>Apache httpd unescapes URL-encoded characters in the request URL-path before any
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pattern
@@ -171,7 +171,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
       redirects.</li>
     </ul>
 
-    <h3><a name="allowencodedslashes" id="allowencodedslashes">AllowEncodedSlashes</a></h3>
+    <h3 id="allowencodedslashes">AllowEncodedSlashes</h3>
     
 
     <p>By default, Apache returns 404 for any URL containing an encoded
@@ -197,7 +197,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="InternalRuleset" id="InternalRuleset">Ruleset Processing</a> <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
+<h2 id="InternalRuleset">Ruleset Processing <a title="Permanent link" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
       <p>Now when <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is triggered in these two API phases, it
       reads the configured rulesets from its configuration
@@ -271,7 +271,7 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -47,12 +47,12 @@ configuration files directly.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">.htaccess files</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">.htaccess files <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li><li><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code></li><li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverridelist">AllowOverrideList</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li><li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li><li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code></li><li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li></ul></td></tr></table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what" id="what">What they are/How to use them</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2 id="what">What they are/How to use them <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
 
     <p><code>.htaccess</code> files (or "distributed configuration files")
@@ -96,7 +96,7 @@ configuration files directly.</p>
     honored in <code>.htaccess</code> files.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="when" id="when">When (not) to use .htaccess files</a> <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
+<h2 id="when">When (not) to use .htaccess files <a title="Permanent link" href="#when" class="permalink">&para;</a></h2>
 
     <p>If you have access to the main server configuration file, you
     should put all of your configuration there instead of in
@@ -201,7 +201,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="how" id="how">How directives are applied</a> <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
+<h2 id="how">How directives are applied <a title="Permanent link" href="#how" class="permalink">&para;</a></h2>
 
     <p>The configuration directives found in a <code>.htaccess</code> file
     are applied to the directory in which the <code>.htaccess</code> file
@@ -238,8 +238,8 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
     completely overrides any earlier setting that may have been in
     place.</p>
 
-    <h3><a name="merge" id="merge">Merging of .htaccess with the main
-    configuration files</a></h3>
+    <h3 id="merge">Merging of .htaccess with the main
+    configuration files</h3>
 
     <p>As discussed in the documentation on <a href="../sections.html">Configuration Sections</a>,
     <code>.htaccess</code> files can override the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections for
@@ -264,7 +264,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="auth" id="auth">Authentication example</a> <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
+<h2 id="auth">Authentication example <a title="Permanent link" href="#auth" class="permalink">&para;</a></h2>
 
     <p>As with any <code>.htaccess</code> use, placing these directives in
     a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> block is
@@ -288,7 +288,7 @@ Require group admins</pre>
     more complete discussion of authentication and authorization.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes example</a> <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">Server Side Includes example <a title="Permanent link" href="#ssi" class="permalink">&para;</a></h2>
 
     <p>Another use of <code>.htaccess</code> files is to enable Server Side
     Includes for a particular directory. This may be done with the following
@@ -308,7 +308,7 @@ AddHandler server-parsed shtml</pre>
     complete discussion of server-side includes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Rewrite Rules in .htaccess files</a> <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
+<h2 id="rewrite">Rewrite Rules in .htaccess files <a title="Permanent link" href="#rewrite" class="permalink">&para;</a></h2>
 <p>When using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in
 <code>.htaccess</code> files, be aware that the per-directory context
 changes things a bit. In particular, rules are taken to be relative to
@@ -340,7 +340,7 @@ further details on using <code class="module"><a href="../mod/mod_rewrite.html">
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI example</a> <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">CGI example <a title="Permanent link" href="#cgi" class="permalink">&para;</a></h2>
 
     <div class="note">CGI scripts are a legacy mechanism for dynamic content. For new
     deployments, consider using <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> with a
@@ -373,7 +373,7 @@ SetHandler cgi-script</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Troubleshooting</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">Troubleshooting <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
 
     <p>When you put configuration directives in a <code>.htaccess</code>
     file, and you don't get the desired effect, there are a number of
@@ -427,7 +427,7 @@ SetHandler cgi-script</pre>
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

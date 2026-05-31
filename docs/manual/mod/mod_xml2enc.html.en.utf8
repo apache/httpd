@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -62,7 +62,7 @@ for 2.2.x versions</td></tr></table>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_xml2enc">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_xml2enc">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Usage</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">Usage <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
     <p>There are two usage scenarios: with modules programmed to work
     with mod_xml2enc, and with those that are not aware of it:</p>
     <dl>
@@ -94,7 +94,7 @@ for 2.2.x versions</td></tr></table>
     </dd></dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="api" id="api">Programming API</a> <a title="Permanent link" href="#api" class="permalink">&para;</a></h2>
+<h2 id="api">Programming API <a title="Permanent link" href="#api" class="permalink">&para;</a></h2>
     <p>Programmers writing libxml2-based filter modules are encouraged to
     enable them for mod_xml2enc, to provide strong i18n support for your
     users without reinventing the wheel.  The programming API is exposed in
@@ -102,7 +102,7 @@ for 2.2.x versions</td></tr></table>
     <code class="module"><a href="../mod/mod_proxy_html.html">mod_proxy_html</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="sniffing" id="sniffing">Detecting an Encoding</a> <a title="Permanent link" href="#sniffing" class="permalink">&para;</a></h2>
+<h2 id="sniffing">Detecting an Encoding <a title="Permanent link" href="#sniffing" class="permalink">&para;</a></h2>
     <p>Unlike <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>, mod_xml2enc is designed
     to work with data whose encoding cannot be known in advance and thus
     configured.  It therefore uses 'sniffing' techniques to detect the
@@ -121,7 +121,7 @@ for 2.2.x versions</td></tr></table>
     it is used and detection is stopped.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="output" id="output">Output Encoding</a> <a title="Permanent link" href="#output" class="permalink">&para;</a></h2>
+<h2 id="output">Output Encoding <a title="Permanent link" href="#output" class="permalink">&para;</a></h2>
 <p><a href="http://xmlsoft.org/">libxml2</a> always uses UTF-8 (Unicode)
 internally, and libxml2-based filter modules will output that by default.
 mod_xml2enc can change the output encoding through the API, but there
@@ -131,13 +131,13 @@ necessary, and is not recommended due to the extra processing load on
 the server of an unnecessary conversion.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">Unsupported Encodings</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">Unsupported Encodings <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p>If you are working with encodings that are not supported by any of
 the conversion methods available on your platform, you can still alias
 them to a supported encoding using <code class="directive">xml2EncAlias</code>.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="xml2EncAlias" id="xml2EncAlias">xml2EncAlias</a> <a name="xml2encalias" id="xml2encalias">Directive</a> <a title="Permanent link" href="#xml2encalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="xml2encalias"><span id="xml2EncAlias">xml2EncAlias</span> Directive <a title="Permanent link" href="#xml2encalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Recognize Aliases for encoding values</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2EncAlias <var>charset alias [alias ...]</var></code></td></tr>
@@ -154,7 +154,7 @@ them to a supported encoding using <code class="directive">xml2EncAlias</code>.<
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="xml2EncDefault" id="xml2EncDefault">xml2EncDefault</a> <a name="xml2encdefault" id="xml2encdefault">Directive</a> <a title="Permanent link" href="#xml2encdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="xml2encdefault"><span id="xml2EncDefault">xml2EncDefault</span> Directive <a title="Permanent link" href="#xml2encdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets a default encoding to assume when absolutely no information
 can be <a href="#sniffing">automatically detected</a></td></tr>
@@ -173,7 +173,7 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="xml2StartParse" id="xml2StartParse">xml2StartParse</a> <a name="xml2startparse" id="xml2startparse">Directive</a> <a title="Permanent link" href="#xml2startparse" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="xml2startparse"><span id="xml2StartParse">xml2StartParse</span> Directive <a title="Permanent link" href="#xml2startparse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Advise the parser to skip leading junk.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>xml2StartParse <var>element [element ...]</var></code></td></tr>
@@ -194,7 +194,7 @@ can be <a href="#sniffing">automatically detected</a></td></tr>
 <a href="../fr/mod/mod_xml2enc.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
