@@ -408,8 +408,10 @@ Some targets have additional requirements:
         <xsl:attribute name="method">
             <xsl:choose>
             <xsl:when test="$type = 'manual' or
-                            $type = 'chm' or
                             $type = 'zip'">
+                <xsl:text>html</xsl:text>
+            </xsl:when>
+            <xsl:when test="$type = 'chm'">
                 <xsl:text>xml</xsl:text>
             </xsl:when>
             <xsl:when test="$type = 'hhc' or
@@ -443,20 +445,10 @@ Some targets have additional requirements:
         </xsl:attribute>
         <xsl:attribute name="indent">no</xsl:attribute>
         <xsl:if test="$type = 'manual' or
-                      $type = 'chm' or
                       $type = 'zip'">
-            <xsl:attribute name="doctype-public">
-                <xsl:text>-//W3C//DTD XHTML 1.0 Strict//EN</xsl:text>
-            </xsl:attribute>
+            <xsl:attribute name="doctype-system">about:legacy-compat</xsl:attribute>
         </xsl:if>
-        <xsl:if test="$type = 'manual'">
-            <xsl:attribute name="doctype-system">
-                <xsl:text>http://www.w3.org/TR/xhtml1/DTD/</xsl:text>
-                <xsl:text>xhtml1-strict.dtd</xsl:text>
-            </xsl:attribute>
-        </xsl:if>
-        <xsl:if test="$type = 'chm' or
-                      $type = 'zip'">
+        <xsl:if test="$type = 'chm'">
             <xsl:attribute name="omit-xml-declaration">yes</xsl:attribute>
         </xsl:if>
     </xsl:element>
