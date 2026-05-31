@@ -173,7 +173,7 @@
            rel="stylesheet"
            href="{$path}/style/css/manual-print.css"/>
     <link href="{$path}/style/css/prettify.css" type="text/css" rel="stylesheet" />&lf;
-    <script type="text/javascript" src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
+    <script src="{$path}/style/scripts/prettify.min.js">&lf;</script>&lf;
     <!-- chm files do not need a favicon -->
     <xsl:if test="not($is-chm or $is-zip)">&lf;
         <link rel="shortcut icon" href="{$path}/images/favicon.png" />
@@ -417,7 +417,7 @@
 
 </div> <!-- /footer -->
 
-<script type="text/javascript">
+<script>
 <xsl:text disable-output-escaping="yes"><![CDATA[<!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
@@ -517,9 +517,8 @@ if (qv) {
     <h2>
         <xsl:choose>
         <xsl:when test="@id">
-          <a id="{@id}" name="{@id}">
-              <xsl:apply-templates select="title" mode="print" />
-          </a>
+          <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+          <xsl:apply-templates select="title" mode="print" />
           <xsl:text> </xsl:text>
           <a class="permalink" href="#{@id}" title="{$message[@id='permalink']}">&para;</a>
         </xsl:when>
@@ -545,9 +544,8 @@ if (qv) {
 <h3>
     <xsl:choose>
     <xsl:when test="@id">
-        <a id="{@id}" name="{@id}">
-            <xsl:apply-templates select="title" mode="print" />
-        </a>
+        <xsl:attribute name="id"><xsl:value-of select="@id" /></xsl:attribute>
+        <xsl:apply-templates select="title" mode="print" />
     </xsl:when>
 
     <xsl:otherwise>
