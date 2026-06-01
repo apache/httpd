@@ -1,0 +1,2 @@
+  *) mod_include: Don't print any of if/elsif/else content when
+     a conditional evaluation returns an error. [Eric Covener]

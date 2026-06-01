@@ -57,6 +57,7 @@
 #define SSI_FLAG_COND_TRUE        (1<<1)  /* Conditional eval'd to true. */
 #define SSI_FLAG_SIZE_IN_BYTES    (1<<2)  /* Sizes displayed in bytes.   */
 #define SSI_FLAG_NO_EXEC          (1<<3)  /* No Exec in current context. */
+#define SSI_FLAG_COND_ERROR       (1<<4)  /* Conditional evaluation was in error */
 
 #define SSI_FLAG_SIZE_ABBREV      (~(SSI_FLAG_SIZE_IN_BYTES))
 #define SSI_FLAG_CLEAR_PRINT_COND (~((SSI_FLAG_PRINTING) | \
