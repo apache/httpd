@@ -192,7 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   https://svn.apache.org/r1931453
      2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
                   or https://github.com/apache/httpd/pull/599
-     +1: jorton, covener
+     +1: jorton, covener, jim
 
   *) Fix compatibility with OpenSSL 4.0
      trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
@@ -204,22 +204,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1934594
                   https://svn.apache.org/r1934597
      2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
-     +1: jailletc36, 
+     +1: jailletc36, jim
 
   *) Update to mod_http2 v2.0.40
      trunk patch: https://svn.apache.org/r1934628
      2.4.x patch: svn merge -c 1934628 ^/httpd/httpd/trunk .
-     +1: icing, covener
+     +1: icing, covener, jim
 
   *) Update to mod_http2 v2.0.41
      trunk patch: https://svn.apache.org/r1934678
      2.4.x patch: svn merge -c 1934678 ^/httpd/httpd/trunk .
-     +1: icing, covener
+     +1: icing, covener, jim
 
   *) Update to mod_http2 v2.0.42
      trunk patch: https://svn.apache.org/r1934743
      2.4.x patch: svn merge -c 1934743 ^/httpd/httpd/trunk .
-     +1: icing, covener
+     +1: icing, covener, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
