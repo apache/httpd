@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933118:1933792 (outdated) -->
+<!-- English Revision: 1933792 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -236,7 +236,8 @@
 	<program>suexec</program>, etc..., qui sont nécessaires à
 	l'exécution du serveur HTTP Apache. Par défaut,
 	<code>sbindir</code> est défini à
-	<code><var>EPREFIX</var>/sbin</code>.</dd>
+	<code><var>EPREFIX</var>/bin</code> (comme
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Installe les données modifiables indépendantes de
