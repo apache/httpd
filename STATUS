@@ -229,6 +229,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Can be applied via apply_backport_pr.sh 658
      +1: covener,
 
+  *) mod_ssl: Expose serialNumber (2.5.4.5) as standard env var from certificate DN
+     trunk patch: https://svn.apache.org/r1933908
+     2.4.x patch: svn merge -c 1933908 ^/httpd/httpd/trunk .
+     +1: michaelo
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
