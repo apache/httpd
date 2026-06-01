@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 1745189:1933720 (outdated) -->
+<!-- English Revision: 1933720 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -220,6 +220,14 @@ RewriteRule "^/fridge" "-" [F]
 
     <p>Voir aussi le How-To <a href="auth.html">Authentification and
     autorisation</a>.</p>
+
+    <p>Voir la <a href="../sections.html#merging">documentation sur la fusion
+    des sections de configuration</a> pour un avertissement à propos de la
+    manière dont la directive <directive type="section"
+    module="core">Limit</directive> au sein d’une section <directive
+    type="section" module="core">Location</directive> peut outrepasser
+    silencieusement les restrictions d’accès d’une section <directive
+    type="section" module="core">Directory</directive>.</p>
 </section>
 
 </manualpage>
