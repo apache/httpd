@@ -50,6 +50,9 @@
 #ifdef HAVE_SYS_PRCTL_H
 #include <sys/prctl.h>
 #endif
+#ifdef HAVE_SYS_PROCCTL_H
+#include <sys/procctl.h>
+#endif
 
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "#-1"
@@ -134,9 +137,13 @@ static int set_group_privs(void)
     return 0;
 }
 
-
 static int
 unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
+{
+    return ap_unixd_setup_child();
+}
+
+AP_DECLARE(int) ap_unixd_setup_child(void)
 {
     int rv = set_group_privs();
 
@@ -145,13 +152,6 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
     }
 
     if (NULL != ap_unixd_config.chroot_dir) {
-        if (geteuid()) {
-            rv = errno;
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02158)
-                         "Cannot chroot when not started as root");
-            return rv;
-        }
-
         if (chdir(ap_unixd_config.chroot_dir) != 0) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02159)
@@ -192,6 +192,19 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
         if (prctl(PR_SET_DUMPABLE, 1)) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02163)
+                         "set dumpable failed - this child will not coredump"
+                         " after software errors");
+            return rv;
+        }
+    }
+#endif
+#if defined(HAVE_PROCCTL) && defined(PROC_TRACE_CTL)
+    /* FreeBSD 11 and above */
+    if (ap_coredumpdir_configured) {
+        int enablecoredump = PROC_TRACE_CTL_ENABLE;
+        if (procctl(P_PID, 0, PROC_TRACE_CTL, &enablecoredump) != 0) {
+            rv = errno;
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(10369)
                          "set dumpable failed - this child will not coredump"
                          " after software errors");
             return rv;
@@ -326,58 +339,6 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-AP_DECLARE(int) ap_unixd_setup_child(void)
-{
-    if (set_group_privs()) {
-        return -1;
-    }
-
-    if (NULL != ap_unixd_config.chroot_dir) {
-        if (geteuid()) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02164)
-                         "Cannot chroot when not started as root");
-            return -1;
-        }
-        if (chdir(ap_unixd_config.chroot_dir) != 0) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02165)
-                         "Can't chdir to %s", ap_unixd_config.chroot_dir);
-            return -1;
-        }
-        if (chroot(ap_unixd_config.chroot_dir) != 0) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02166)
-                         "Can't chroot to %s", ap_unixd_config.chroot_dir);
-            return -1;
-        }
-        if (chdir("/") != 0) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02167)
-                         "Can't chdir to new root");
-            return -1;
-        }
-    }
-
-    /* Only try to switch if we're running as root */
-    if (!geteuid() && (
-#ifdef _OSD_POSIX
-        os_init_job_environment(NULL, ap_unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
-#endif
-        setuid(ap_unixd_config.user_id) == -1)) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02168)
-                    "setuid: unable to change to uid: %ld",
-                    (long) ap_unixd_config.user_id);
-        return -1;
-    }
-#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
-    /* this applies to Linux 2.4+ */
-    if (ap_coredumpdir_configured) {
-        if (prctl(PR_SET_DUMPABLE, 1)) {
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL, APLOGNO(02169)
-                         "set dumpable failed - this child will not coredump"
-                         " after software errors");
-        }
-    }
-#endif
-    return 0;
-}
 
 static void unixd_dump_config(apr_pool_t *p, server_rec *s)
 {
