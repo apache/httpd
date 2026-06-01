@@ -234,6 +234,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1933908 ^/httpd/httpd/trunk .
      +1: michaelo
 
+  *) mod_ssl: Set auth type to "ClientCert" after authentication
+     trunk patch: https://svn.apache.org/r1934210
+     2.4.x patch: svn merge -c 1934210 ^/httpd/httpd/trunk .
+     +1: michaelo
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
