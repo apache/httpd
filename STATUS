@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/642
      +1: jorton, 
 
-  *) module_name: What
+  *) mod_include: handle parse error in conditionals by supressing output
      Trunk version of patch:
         https://svn.apache.org/r1934852
      Backport version for 2.4.x of patch:
