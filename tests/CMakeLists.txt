@@ -17,5 +17,3 @@ add_custom_target(tests
     DEPENDS ${PROJECT_NAME}_tests
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
-
-install(TARGETS ${PROJECT_NAME}_tests RUNTIME DESTINATION bin)
