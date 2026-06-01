@@ -606,6 +606,9 @@ FOREACH (modinfo ${MODULE_LIST})
 
 ENDFOREACH()
 
+#workaround for error: Unexpected enablement value "i" for mod_authnz_ldap
+UNSET(i)
+
 SET(install_targets)
 SET(install_bin_pdb)
 SET(install_modules) # special handling vs. other installed targets
