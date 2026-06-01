@@ -184,28 +184,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   (or https://github.com/apache/httpd/pull/588)
      +1: jorton, rpluem, covener
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-  *) core: Add millisecond time formatting for ErrorLogFormat
-     trunk patch: https://svn.apache.org/r1931452
-                  https://svn.apache.org/r1931453
-     2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/599
-     +1: jorton, covener, jim
-
-  *) Fix compatibility with OpenSSL 4.0
-     trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
-     2.4.x patch: https://github.com/apache/httpd/pull/642
-     +1: jorton, 
-
-  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
-     tolorated with 15.2.1, but not anymore.
-     trunk patch: https://svn.apache.org/r1934594
-                  https://svn.apache.org/r1934597
-     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
-
   *) Update to mod_http2 v2.0.40
      trunk patch: https://svn.apache.org/r1934628
      2.4.x patch: svn merge -c 1934628 ^/httpd/httpd/trunk .
@@ -220,6 +198,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/r1934743
      2.4.x patch: svn merge -c 1934743 ^/httpd/httpd/trunk .
      +1: icing, covener, jim
+
+  *) core: Add millisecond time formatting for ErrorLogFormat
+     trunk patch: https://svn.apache.org/r1931452
+                  https://svn.apache.org/r1931453
+     2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
+                  or https://github.com/apache/httpd/pull/599
+     +1: jorton, covener, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+  *) Fix compatibility with OpenSSL 4.0
+     trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
+     2.4.x patch: https://github.com/apache/httpd/pull/642
+     +1: jorton, 
+
+  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
+     tolorated with 15.2.1, but not anymore.
+     trunk patch: https://svn.apache.org/r1934594
+                  https://svn.apache.org/r1934597
+     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
