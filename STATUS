@@ -206,6 +206,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                   or https://github.com/apache/httpd/pull/599
      +1: jorton, covener, jim
 
+  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
+     tolorated with 15.2.1, but not anymore.
+     trunk patch: https://svn.apache.org/r1934594
+                  https://svn.apache.org/r1934597
+     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
+     +1: jailletc36, jim, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -213,13 +220,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
      2.4.x patch: https://github.com/apache/httpd/pull/642
      +1: jorton, 
-
-  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
-     tolorated with 15.2.1, but not anymore.
-     trunk patch: https://svn.apache.org/r1934594
-                  https://svn.apache.org/r1934597
-     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
