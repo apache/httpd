@@ -1,0 +1,4 @@
+  *) mod_http2: update to version 2.0.42
+     Fix excessive file description use for non-TLS frontend connections when
+     sending files. Fixes <https://github.com/icing/mod_h2/issues/325>
+     [Stefan Eissing]

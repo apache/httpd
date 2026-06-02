@@ -106,7 +106,7 @@ static h2_config defconf = {
     1,                      /* modern TLS only */
     -1,                     /* HTTP/1 Upgrade support */
     1024*1024,              /* TLS warmup size */
-    1,                      /* TLS cooldown secs */
+    0,                      /* TLS cooldown secs */
     1,                      /* HTTP/2 server push enabled */
     NULL,                   /* map of content-type to priorities */
     256,                    /* push diary size */

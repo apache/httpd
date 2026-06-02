@@ -880,9 +880,6 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
     memset(&conn_ctx->pipe_in, 0, sizeof(conn_ctx->pipe_in));
     if (stream->input) {
         conn_ctx->beam_in = stream->input;
-        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
-        h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
-        h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
 #if H2_USE_PIPES
         action = "create input write pipe";
         rv = apr_file_pipe_create_pools(&conn_ctx->pipe_in[H2_PIPE_OUT],
@@ -891,6 +888,9 @@ static apr_status_t c2_setup_io(h2_mplx *m, conn_rec *c2, h2_stream *stream, h2_
                                         c2->pool, c2->pool);
         if (APR_SUCCESS != rv) goto cleanup;
 #endif
+        h2_beam_on_send(stream->input, c2_beam_input_write_notify, c2);
+        h2_beam_on_received(stream->input, c2_beam_input_read_notify, c2);
+        h2_beam_on_consumed(stream->input, c1_input_consumed, stream);
         h2_beam_on_eagain(stream->input, c2_beam_input_read_eagain, c2);
         if (!h2_beam_empty(stream->input))
             c2_beam_input_write_notify(c2, stream->input);
