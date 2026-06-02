@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1928265:1933778 (outdated) -->
+<!-- English Revision: 1933778 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -89,6 +89,48 @@ le Serveur HTTP Apache.</p>
     donc indenter ces dernières pour améliorer la lisibilité. Les lignes vides
     sont aussi ignorées. les arguments de directive sont séparés par des blancs.
     Si un argument contient des espaces, il doit être entouré de guillemets.</p>
+
+    <section id="quotes"><title>Citation et échappement</title>
+
+    <p>Un argument qui contient des espaces doit être entouré de guillemets
+    doubles (<code>"</code>) ou de guillemets simples (<code>'</code>). Les
+    guillemets eux-mêmes ne font pas partie de l’argument.</p>
+
+    <p>À l’intérieur d’une chaîne entre guillemets, seules deux séquences
+    d’échappement sont reconnues : <code>\\</code> produit une controblique
+    littérale et <code>\"</code> (ou <code>\'</code> si la chaîne est entourée
+    de guillemets simples) produit un guillemet littéral sans terminer la
+    chaîne. Toutes les autres séquences avec controblique sont conservées telles
+    quelles — par exemple, <code>\n</code> sera considéré comme une chaîne
+    littéral de deux caractères <code>\n</code>, pas comme une nouvelle
+    ligne.</p>
+
+    <p>En dehors des guillemets, les controbliques n’ont aucune signification
+    spéciale et sont traitées comme des caractères littéraux. La seule exception
+    est la controblique de continuation de ligne en fin de ligne, comme décrit
+    ci-avant.</p>
+
+    <p>Notez que des chaînes entre guillemets adjacentes sans espace entre elles
+    ne sont <strong>pas</strong> concaténées — elles sont traitées comme des
+    arguments séparés. Par exemple :</p>
+
+    <example>
+    # Il ne s’agit pas d’un seul argument, mais de DEUX :<br />
+    Header set X-Foo "arg1""arg2"
+    </example>
+
+    <p>Certaines directives acceptent des arguments qui contiennent des
+    sous-expressions ayant leur propre syntaxe, telles que les drapeaux de la
+    directive <directive module="mod_rewrite">RewriteRule</directive> ou les
+    expression <a href="expr.html">ap_expr</a>. Dans ces cas, l’interpréteur de
+    fichier de configuration enlève tout d’abord les guillemets englobants et
+    traite les séquences avec controblique comme décrit ci-avant, puis
+    l’interpréteur propre à la directive traite le résultat. En cas de doute,
+    utiliser des guillemets simples autour d’un argument qui contient des
+    controbliques peut éviter un double traitement inattendu des séquenses
+    d’échappement.</p>
+
+    </section>    
 
     <p>Les directives dans les fichiers de configuration ne sont pas
     sensibles à la casse, mais leurs arguments le sont souvent.</p>
