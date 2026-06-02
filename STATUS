@@ -162,6 +162,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  *) mod_include: handle parse error in conditionals by supressing output
+     Trunk version of patch:
+        https://svn.apache.org/r1934852
+     Backport version for 2.4.x of patch:
+       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/658.diff
+     Can be applied via apply_backport_pr.sh 658
+     +1: covener, jorton, rpluem
+
+  *) mod_ssl: Expose serialNumber (2.5.4.5) as standard env var from certificate DN
+     trunk patch: https://svn.apache.org/r1933908
+     2.4.x patch: svn merge -c 1933908 ^/httpd/httpd/trunk .
+     +1: michaelo, jorton, rpluem
+
+  *) mod_ssl: Set auth type to "ClientCert" after authentication
+     trunk patch: https://svn.apache.org/r1934210
+     2.4.x patch: svn merge -c 1934210 ^/httpd/httpd/trunk .
+     +1: michaelo, jorton, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -170,24 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
      2.4.x patch: https://github.com/apache/httpd/pull/642
      +1: jorton, 
-
-  *) mod_include: handle parse error in conditionals by supressing output
-     Trunk version of patch:
-        https://svn.apache.org/r1934852
-     Backport version for 2.4.x of patch:
-       https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/658.diff
-     Can be applied via apply_backport_pr.sh 658
-     +1: covener, jorton
-
-  *) mod_ssl: Expose serialNumber (2.5.4.5) as standard env var from certificate DN
-     trunk patch: https://svn.apache.org/r1933908
-     2.4.x patch: svn merge -c 1933908 ^/httpd/httpd/trunk .
-     +1: michaelo, jorton
-
-  *) mod_ssl: Set auth type to "ClientCert" after authentication
-     trunk patch: https://svn.apache.org/r1934210
-     2.4.x patch: svn merge -c 1934210 ^/httpd/httpd/trunk .
-     +1: michaelo, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
