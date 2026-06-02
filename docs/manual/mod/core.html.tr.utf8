@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -142,7 +142,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Report a bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a name="acceptfilter" id="acceptfilter">Y&ouml;nergesi</a> <a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="acceptfilter"><span id="AcceptFilter">AcceptFilter</span> Y&ouml;nergesi <a title="Permanent link" href="#acceptfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir protokol&uuml;n dinleyici soketleri i&ccedil;in en iyilemeleri ayarlar
 </td></tr>
@@ -228,7 +228,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a name="acceptpathinfo" id="acceptpathinfo">Y&ouml;nergesi</a> <a title="Permanent link" href="#acceptpathinfo" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="acceptpathinfo"><span id="AcceptPathInfo">AcceptPathInfo</span> Y&ouml;nergesi <a title="Permanent link" href="#acceptpathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dosya isminden sonra belirtilen yol verisini kabul veya
   reddeder.</td></tr>
@@ -295,7 +295,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a name="accessfilename" id="accessfilename">Y&ouml;nergesi</a> <a title="Permanent link" href="#accessfilename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="accessfilename"><span id="AccessFileName">AccessFileName</span> Y&ouml;nergesi <a title="Permanent link" href="#accessfilename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dağıtık yapılandırma dosyasının ismi belirtilir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>AccessFileName <var>filename</var> [<var>filename</var>] ...</code></td></tr>
@@ -336,7 +336,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a name="adddefaultcharset" id="adddefaultcharset">Y&ouml;nergesi</a> <a title="Permanent link" href="#adddefaultcharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="adddefaultcharset"><span id="AddDefaultCharset">AddDefaultCharset</span> Y&ouml;nergesi <a title="Permanent link" href="#adddefaultcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir yanıtın i&ccedil;erik t&uuml;r&uuml; <code>text/plain</code> veya
   <code>text/html</code> olduğunda eklenecek &ouml;ntanımlı karakter k&uuml;mesi
@@ -384,7 +384,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Y&ouml;nergesi</a> <a title="Permanent link" href="#allowencodedslashes" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowencodedslashes"><span id="AllowEncodedSlashes">AllowEncodedSlashes</span> Y&ouml;nergesi <a title="Permanent link" href="#allowencodedslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Kodlanmış dosya yolu ayracı i&ccedil;eren URL'lere izin verilip
   verilmeyeceğini belirler.</td></tr>
@@ -428,7 +428,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a name="allowoverride" id="allowoverride">Y&ouml;nergesi</a> <a title="Permanent link" href="#allowoverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowoverride"><span id="AllowOverride">AllowOverride</span> Y&ouml;nergesi <a title="Permanent link" href="#allowoverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td><code>.htaccess</code> dosyalarında bulunmasına izin verilen
   y&ouml;nerge t&uuml;rleri belirtilir.</td></tr>
@@ -604,7 +604,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a name="allowoverridelist" id="allowoverridelist">Y&ouml;nergesi</a> <a title="Permanent link" href="#allowoverridelist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowoverridelist"><span id="AllowOverrideList">AllowOverrideList</span> Y&ouml;nergesi <a title="Permanent link" href="#allowoverridelist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td><code>.htaccess</code> dosyalarında izin verilecek y&ouml;nergeler tek tek belirtilir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>AllowOverrideList None|<var>y&ouml;nerge</var>
@@ -663,7 +663,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a name="asyncfilter" id="asyncfilter">Y&ouml;nergesi</a> <a title="Permanent link" href="#asyncfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="asyncfilter"><span id="AsyncFilter">AsyncFilter</span> Y&ouml;nergesi <a title="Permanent link" href="#asyncfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Set the minimum filter type eligible for asynchronous handling</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>AsyncFilter request|connection|network</code></td></tr>
@@ -675,7 +675,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a name="cgimapextension" id="cgimapextension">Y&ouml;nergesi</a> <a title="Permanent link" href="#cgimapextension" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgimapextension"><span id="CGIMapExtension">CGIMapExtension</span> Y&ouml;nergesi <a title="Permanent link" href="#cgimapextension" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>CGI betik yorumlayıcısını saptama tekniğini belirler.
 </td></tr>
@@ -694,7 +694,7 @@ httpd 2.1.5 ve sonrasında mevcuttur.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a name="cgipassauth" id="cgipassauth">Y&ouml;nergesi</a> <a title="Permanent link" href="#cgipassauth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgipassauth"><span id="CGIPassAuth">CGIPassAuth</span> Y&ouml;nergesi <a title="Permanent link" href="#cgipassauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Enables passing HTTP authorization headers to scripts as CGI
 variables</td></tr>
@@ -708,7 +708,7 @@ variables</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CGIVar" id="CGIVar">CGIVar</a> <a name="cgivar" id="cgivar">Y&ouml;nergesi</a> <a title="Permanent link" href="#cgivar" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgivar"><span id="CGIVar">CGIVar</span> Y&ouml;nergesi <a title="Permanent link" href="#cgivar" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Controls how some CGI variables are set</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
@@ -720,7 +720,7 @@ variables</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a name="defaultruntimedir" id="defaultruntimedir">Y&ouml;nergesi</a> <a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaultruntimedir"><span id="DefaultRuntimeDir">DefaultRuntimeDir</span> Y&ouml;nergesi <a title="Permanent link" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun &ccedil;alışma anı dosyaları i&ccedil;in temel dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>DefaultRuntimeDir <var>dizin-yolu</var></code></td></tr>
@@ -756,7 +756,7 @@ nasıl ayarlanacağını &ouml;ğrenmek i&ccedil;in:
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DefaultStateDir" id="DefaultStateDir">DefaultStateDir</a> <a name="defaultstatedir" id="defaultstatedir">Y&ouml;nergesi</a> <a title="Permanent link" href="#defaultstatedir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaultstatedir"><span id="DefaultStateDir">DefaultStateDir</span> Y&ouml;nergesi <a title="Permanent link" href="#defaultstatedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Base directory for the persistent state files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
@@ -774,7 +774,7 @@ nasıl ayarlanacağını &ouml;ğrenmek i&ccedil;in:
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Y&ouml;nergesi</a> <a title="Permanent link" href="#defaulttype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaulttype"><span id="DefaultType">DefaultType</span> Y&ouml;nergesi <a title="Permanent link" href="#defaulttype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Değeri <code>none</code> olduğu takdirde, bu y&ouml;nergenin bir
 uyarı vermekten başka bir etkisi yoktur. &Ouml;nceki s&uuml;r&uuml;mlerde, bu y&ouml;nerge,
@@ -808,7 +808,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Y&ouml;nergesi</a> <a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="define"><span id="Define">Define</span> Y&ouml;nergesi <a title="Permanent link" href="#define" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir değişken tanımlar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Define <var>değişken-ismi</var> [<var>değişken-değeri</var>]</code></td></tr>
@@ -843,7 +843,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Directory" id="Directory">&lt;Directory&gt;</a> <a name="directory" id="directory">Y&ouml;nergesi</a> <a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directory"><span id="Directory">&lt;Directory&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#directory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde ve bunların i&ccedil;eriğinde uygulanacak bir y&ouml;nerge grubunu
@@ -980,7 +980,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a name="directorymatch" id="directorymatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#directorymatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directorymatch"><span id="DirectoryMatch">&lt;DirectoryMatch&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#directorymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir d&uuml;zenli ifade ile eşleşen dosya sistemi dizinlerinin i&ccedil;eriklerine uygulanacak bir y&ouml;nerge grubunu sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>&lt;DirectoryMatch <var>d&uuml;zifd</var>&gt;
@@ -1026,7 +1026,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a name="documentroot" id="documentroot">Y&ouml;nergesi</a> <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="documentroot"><span id="DocumentRoot">DocumentRoot</span> Y&ouml;nergesi <a title="Permanent link" href="#documentroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciye g&ouml;r&uuml;n&uuml;r olan ana belge ağacının k&ouml;k dizinini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>DocumentRoot <var>dizin-yolu</var></code></td></tr>
@@ -1060,7 +1060,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Else" id="Else">&lt;Else&gt;</a> <a name="else" id="else">Y&ouml;nergesi</a> <a title="Permanent link" href="#else" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="else"><span id="Else">&lt;Else&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#else" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;nceki bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> veya <code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n koşulu, &ccedil;alışma anında bir istek tarafından yerine getirilmediği takdirde uygulanacak y&ouml;nergeleri i&ccedil;erir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>&lt;Else&gt; ... &lt;/Else&gt;</code></td></tr>
@@ -1102,7 +1102,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a name="elseif" id="elseif">Y&ouml;nergesi</a> <a title="Permanent link" href="#elseif" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="elseif"><span id="ElseIf">&lt;ElseIf&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#elseif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İ&ccedil;erdiği koşulun bir istek tarafınan sağlandığı ancak daha &ouml;nceki bir <code class="directive"><a href="#if">&lt;If&gt;</a></code> veya
 <code class="directive">&lt;ElseIf&gt;</code> b&ouml;l&uuml;mlerininkilerin sağlanmadığı durumda kapsadığı y&ouml;nergelerin uygulanmasını sağlar</td></tr>
@@ -1150,7 +1150,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a name="enablemmap" id="enablemmap">Y&ouml;nergesi</a> <a title="Permanent link" href="#enablemmap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="enablemmap"><span id="EnableMMAP">EnableMMAP</span> Y&ouml;nergesi <a title="Permanent link" href="#enablemmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Teslimat sırasında okunacak dosyalar i&ccedil;in bellek eşlemeyi etkin
   kılar.</td></tr>
@@ -1204,7 +1204,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a name="enablesendfile" id="enablesendfile">Y&ouml;nergesi</a> <a title="Permanent link" href="#enablesendfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="enablesendfile"><span id="EnableSendfile">EnableSendfile</span> Y&ouml;nergesi <a title="Permanent link" href="#enablesendfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dosyaların istemciye tesliminde &ccedil;ekirdeğin dosya g&ouml;nderme
   desteğinin kullanımını etkin kılar.</td></tr>
@@ -1270,7 +1270,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Error" id="Error">Error</a> <a name="error" id="error">Y&ouml;nergesi</a> <a title="Permanent link" href="#error" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="error"><span id="Error">Error</span> Y&ouml;nergesi <a title="Permanent link" href="#error" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;zel bir hata iletisiyle yapılandırma &ccedil;&ouml;z&uuml;mlemesini durdurur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Error <var>ileti</var></code></td></tr>
@@ -1306,7 +1306,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a name="errordocument" id="errordocument">Y&ouml;nergesi</a> <a title="Permanent link" href="#errordocument" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errordocument"><span id="ErrorDocument">ErrorDocument</span> Y&ouml;nergesi <a title="Permanent link" href="#errordocument" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir hata durumunda sunucunun istemciye ne d&ouml;nd&uuml;receğini
   belirler.</td></tr>
@@ -1409,7 +1409,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a name="errorlog" id="errorlog">Y&ouml;nergesi</a> <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errorlog"><span id="ErrorLog">ErrorLog</span> Y&ouml;nergesi <a title="Permanent link" href="#errorlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun hata g&uuml;nl&uuml;ğ&uuml;n&uuml; tutacağı yeri belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</code></td></tr>
@@ -1472,7 +1472,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a name="errorlogformat" id="errorlogformat">Y&ouml;nergesi</a> <a title="Permanent link" href="#errorlogformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errorlogformat"><span id="ErrorLogFormat">ErrorLogFormat</span> Y&ouml;nergesi <a title="Permanent link" href="#errorlogformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Hata g&uuml;nl&uuml;ğ&uuml; girdileri i&ccedil;in bi&ccedil;em belirtimi</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code> ErrorLogFormat [connection|request] <var>bi&ccedil;em</var></code></td></tr>
@@ -1653,7 +1653,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Y&ouml;nergesi</a> <a title="Permanent link" href="#extendedstatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="extendedstatus"><span id="ExtendedStatus">ExtendedStatus</span> Y&ouml;nergesi <a title="Permanent link" href="#extendedstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Her istekte ek durum bilgisinin izini s&uuml;rer</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
@@ -1685,7 +1685,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Y&ouml;nergesi</a> <a title="Permanent link" href="#fileetag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="fileetag"><span id="FileETag">FileETag</span> Y&ouml;nergesi <a title="Permanent link" href="#fileetag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Duruk dosyalar i&ccedil;in <code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak dosya &ouml;zniteliklerini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>FileETag <var>bileşen</var> ...</code></td></tr>
@@ -1752,7 +1752,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Files" id="Files">&lt;Files&gt;</a> <a name="files" id="files">Y&ouml;nergesi</a> <a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="files"><span id="Files">&lt;Files&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#files" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dosya isimleriyle eşleşme halinde uygulanacak y&ouml;nergeleri
   i&ccedil;erir.</td></tr>
@@ -1806,7 +1806,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a name="filesmatch" id="filesmatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#filesmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="filesmatch"><span id="FilesMatch">&lt;FilesMatch&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#filesmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>D&uuml;zenli ifadelerin dosya isimleriyle eşleşmesi halinde
   uygulanacak y&ouml;nergeleri i&ccedil;erir.</td></tr>
@@ -1835,7 +1835,7 @@ i&ccedil;in iptal edilmiştir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a name="flushmaxpipelined" id="flushmaxpipelined">Y&ouml;nergesi</a> <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="flushmaxpipelined"><span id="FlushMaxPipelined">FlushMaxPipelined</span> Y&ouml;nergesi <a title="Permanent link" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Maximum number of pipelined responses above which they are flushed
 to the network</td></tr>
@@ -1848,7 +1848,7 @@ to the network</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a name="flushmaxthreshold" id="flushmaxthreshold">Y&ouml;nergesi</a> <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="flushmaxthreshold"><span id="FlushMaxThreshold">FlushMaxThreshold</span> Y&ouml;nergesi <a title="Permanent link" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Threshold above which pending data are flushed to the
 network</td></tr>
@@ -1861,7 +1861,7 @@ network</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Y&ouml;nergesi</a> <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="forcetype"><span id="ForceType">ForceType</span> Y&ouml;nergesi <a title="Permanent link" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>B&uuml;t&uuml;n dosyaların belirtilen ortam t&uuml;r&uuml;yle sunulmasına
   sebep olur.</td></tr>
@@ -1915,7 +1915,7 @@ network</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="GprofDir" id="GprofDir">GprofDir</a> <a name="gprofdir" id="gprofdir">Y&ouml;nergesi</a> <a title="Permanent link" href="#gprofdir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="gprofdir"><span id="GprofDir">GprofDir</span> Y&ouml;nergesi <a title="Permanent link" href="#gprofdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>gmon.out ayrıntılı inceleme verisinin yazılacağı dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>GprofDir <var>/tmp/gprof/</var>|<var>/tmp/gprof/</var>%</code></td></tr>
@@ -1934,7 +1934,7 @@ network</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a name="hostnamelookups" id="hostnamelookups">Y&ouml;nergesi</a> <a title="Permanent link" href="#hostnamelookups" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="hostnamelookups"><span id="HostnameLookups">HostnameLookups</span> Y&ouml;nergesi <a title="Permanent link" href="#hostnamelookups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemci IP adresleri &uuml;zerinde DNS sorgularını etkin kılar.
 </td></tr>
@@ -1980,7 +1980,7 @@ network</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a name="httpprotocoloptions" id="httpprotocoloptions">Y&ouml;nergesi</a> <a title="Permanent link" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="httpprotocoloptions"><span id="HttpProtocolOptions">HttpProtocolOptions</span> Y&ouml;nergesi <a title="Permanent link" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Modify restrictions on HTTP Request Messages</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
@@ -1993,7 +1993,7 @@ network</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Y&ouml;nergesi</a> <a title="Permanent link" href="#if" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="if"><span id="If">&lt;If&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#if" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ccedil;alışma anında bir koşul bir istek tarafından yerine getirildiği
 takdirde uygulanacak y&ouml;nergeleri barındırır.</td></tr>
@@ -2045,7 +2045,7 @@ takdirde uygulanacak y&ouml;nergeleri barındırır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Y&ouml;nergesi</a> <a title="Permanent link" href="#ifdefine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifdefine"><span id="IfDefine">&lt;IfDefine&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#ifdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Başlatma sırasında bir doğruluk sınamasından sonra işleme
 sokulacak y&ouml;nergeleri sarmalar.</td></tr>
@@ -2116,7 +2116,7 @@ sokulacak y&ouml;nergeleri sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a name="ifdirective" id="ifdirective">Y&ouml;nergesi</a> <a title="Permanent link" href="#ifdirective" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifdirective"><span id="IfDirective">&lt;IfDirective&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#ifdirective" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific directive</td></tr>
@@ -2134,7 +2134,7 @@ presence or absence of a specific directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a name="iffile" id="iffile">Y&ouml;nergesi</a> <a title="Permanent link" href="#iffile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="iffile"><span id="IfFile">&lt;IfFile&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#iffile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Encloses directives that will be processed only
 if file exists at startup</td></tr>
@@ -2148,7 +2148,7 @@ if file exists at startup</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a name="ifmodule" id="ifmodule">Y&ouml;nergesi</a> <a title="Permanent link" href="#ifmodule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifmodule"><span id="IfModule">&lt;IfModule&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#ifmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belli bir mod&uuml;l&uuml;n varlığına veya yokluğuna g&ouml;re işleme sokulacak
 y&ouml;nergeleri sarmalar.</td></tr>
@@ -2199,7 +2199,7 @@ y&ouml;nergeleri sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a name="ifsection" id="ifsection">Y&ouml;nergesi</a> <a title="Permanent link" href="#ifsection" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifsection"><span id="IfSection">&lt;IfSection&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#ifsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Encloses directives that are processed conditional on the
 presence or absence of a specific section directive</td></tr>
@@ -2217,7 +2217,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Include" id="Include">Include</a> <a name="include" id="include">Y&ouml;nergesi</a> <a title="Permanent link" href="#include" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="include"><span id="Include">Include</span> Y&ouml;nergesi <a title="Permanent link" href="#include" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucu yapılandırma dosyalarının başka dosyaları i&ccedil;ermesini sağlar.
 </td></tr>
@@ -2290,7 +2290,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a name="includeoptional" id="includeoptional">Y&ouml;nergesi</a> <a title="Permanent link" href="#includeoptional" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="includeoptional"><span id="IncludeOptional">IncludeOptional</span> Y&ouml;nergesi <a title="Permanent link" href="#includeoptional" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Diğer yapılandırma dosyalarının sunucu yapılandırma dosyasına dahil edilmesini sağlar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>IncludeOptional <var>dosya-yolu</var>|<var>dizin-yolu</var>|<var>joker</var></code></td></tr>
@@ -2312,7 +2312,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a name="keepalive" id="keepalive">Y&ouml;nergesi</a> <a title="Permanent link" href="#keepalive" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="keepalive"><span id="KeepAlive">KeepAlive</span> Y&ouml;nergesi <a title="Permanent link" href="#keepalive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>HTTP kalıcı bağlantılarını etkin kılar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -2350,7 +2350,7 @@ presence or absence of a specific section directive</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a name="keepalivetimeout" id="keepalivetimeout">Y&ouml;nergesi</a> <a title="Permanent link" href="#keepalivetimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="keepalivetimeout"><span id="KeepAliveTimeout">KeepAliveTimeout</span> Y&ouml;nergesi <a title="Permanent link" href="#keepalivetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme s&uuml;resi
 </td></tr>
@@ -2377,7 +2377,7 @@ presence or absence of a specific section directive</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Y&ouml;nergesi</a> <a title="Permanent link" href="#limit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limit"><span id="Limit">&lt;Limit&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#limit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Erişimi sınırlanacak HTTP y&ouml;ntemleri i&ccedil;in erişim sınırlayıcıları
 sarmalar.</td></tr>
@@ -2455,7 +2455,7 @@ sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a name="limitexcept" id="limitexcept">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitexcept" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitexcept"><span id="LimitExcept">&lt;LimitExcept&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#limitexcept" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İsimleri belirtilenler dışında kalan HTTP y&ouml;ntemleri i&ccedil;in
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
@@ -2486,7 +2486,7 @@ kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a name="limitinternalrecursion" id="limitinternalrecursion">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitinternalrecursion"><span id="LimitInternalRecursion">LimitInternalRecursion</span> Y&ouml;nergesi <a title="Permanent link" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dahili y&ouml;nlendirmelerin ve istek i&ccedil;i isteklerin azami sayısını
 belirler.</td></tr>
@@ -2523,7 +2523,7 @@ belirler.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a name="limitrequestbody" id="limitrequestbody">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestbody"><span id="LimitRequestBody">LimitRequestBody</span> Y&ouml;nergesi <a title="Permanent link" href="#limitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemci tarafından g&ouml;nderilen HTTP istek g&ouml;vdesinin toplam
 uzunluğunu sınırlar.</td></tr>
@@ -2570,7 +2570,7 @@ uzunluğunu sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a name="limitrequestfields" id="limitrequestfields">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitrequestfields" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestfields"><span id="LimitRequestFields">LimitRequestFields</span> Y&ouml;nergesi <a title="Permanent link" href="#limitrequestfields" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
@@ -2616,7 +2616,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a name="limitrequestfieldsize" id="limitrequestfieldsize">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestfieldsize"><span id="LimitRequestFieldSize">LimitRequestFieldSize</span> Y&ouml;nergesi <a title="Permanent link" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
@@ -2660,7 +2660,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a name="limitrequestline" id="limitrequestline">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitrequestline" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestline"><span id="LimitRequestLine">LimitRequestLine</span> Y&ouml;nergesi <a title="Permanent link" href="#limitrequestline" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
@@ -2704,7 +2704,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a name="limitxmlrequestbody" id="limitxmlrequestbody">Y&ouml;nergesi</a> <a title="Permanent link" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitxmlrequestbody"><span id="LimitXMLRequestBody">LimitXMLRequestBody</span> Y&ouml;nergesi <a title="Permanent link" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir XML temelli istek g&ouml;vdesinin uzunluğunu sınırlar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>LimitXMLRequestBody <var>bayt-sayısı</var></code></td></tr>
@@ -2727,7 +2727,7 @@ sınırlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Location" id="Location">&lt;Location&gt;</a> <a name="location" id="location">Y&ouml;nergesi</a> <a title="Permanent link" href="#location" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="location"><span id="Location">&lt;Location&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#location" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İ&ccedil;erdiği y&ouml;nergeler sadece eşleşen URL'lere uygulanır.
 </td></tr>
@@ -2866,7 +2866,7 @@ sınırlar.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a name="locationmatch" id="locationmatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#locationmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="locationmatch"><span id="LocationMatch">&lt;LocationMatch&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#locationmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İ&ccedil;erdiği y&ouml;nergeler sadece d&uuml;zenli ifadelerle eşleşen URL'lere
 uygulanır.</td></tr>
@@ -2896,7 +2896,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Y&ouml;nergesi</a> <a title="Permanent link" href="#loglevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="loglevel"><span id="LogLevel">LogLevel</span> Y&ouml;nergesi <a title="Permanent link" href="#loglevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Hata g&uuml;nl&uuml;klerinin ayrıntı seviyesini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>LogLevel [<var>mod&uuml;l</var>:]<var>seviye</var>
@@ -3079,7 +3079,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a name="logleveloverride" id="logleveloverride">Y&ouml;nergesi</a> <a title="Permanent link" href="#logleveloverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="logleveloverride"><span id="LogLevelOverride">LogLevelOverride</span> Y&ouml;nergesi <a title="Permanent link" href="#logleveloverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Override the verbosity of the ErrorLog for certain clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>LogLevel <var>ipaddress</var>[/<var>prefixlen</var>]
@@ -3097,7 +3097,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a name="maxkeepaliverequests" id="maxkeepaliverequests">Y&ouml;nergesi</a> <a title="Permanent link" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxkeepaliverequests"><span id="MaxKeepAliveRequests">MaxKeepAliveRequests</span> Y&ouml;nergesi <a title="Permanent link" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>MaxKeepAliveRequests <var>sayı</var></code></td></tr>
@@ -3119,7 +3119,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a name="maxrangeoverlaps" id="maxrangeoverlaps">Y&ouml;nergesi</a> <a title="Permanent link" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxrangeoverlaps"><span id="MaxRangeOverlaps">MaxRangeOverlaps</span> Y&ouml;nergesi <a title="Permanent link" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;zkaynağın tamamını d&ouml;nd&uuml;rmeden &ouml;nce izin verilen &uuml;st &uuml;ste binen
     aralık sayısı (<code>100-200,150-300</code> gibi)</td></tr>
@@ -3156,7 +3156,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a name="maxrangereversals" id="maxrangereversals">Y&ouml;nergesi</a> <a title="Permanent link" href="#maxrangereversals" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxrangereversals"><span id="MaxRangeReversals">MaxRangeReversals</span> Y&ouml;nergesi <a title="Permanent link" href="#maxrangereversals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;zkaynağın tamamını d&ouml;nd&uuml;rmeden &ouml;nce izin verilen ters sıralı
     aralık sayısı (<code>100-200,50-70</code> gibi)</td></tr>
@@ -3193,7 +3193,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a name="maxranges" id="maxranges">Y&ouml;nergesi</a> <a title="Permanent link" href="#maxranges" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxranges"><span id="MaxRanges">MaxRanges</span> Y&ouml;nergesi <a title="Permanent link" href="#maxranges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;zkaynağın tamamını d&ouml;nd&uuml;rmeden &ouml;nce izin verilen aralık sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>MaxRanges default | unlimited | none |
@@ -3228,7 +3228,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a> <a name="mergeslashes" id="mergeslashes">Y&ouml;nergesi</a> <a title="Permanent link" href="#mergeslashes" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mergeslashes"><span id="MergeSlashes">MergeSlashes</span> Y&ouml;nergesi <a title="Permanent link" href="#mergeslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Controls whether the server merges consecutive slashes in URLs.
 </td></tr>
@@ -3241,7 +3241,7 @@ uygulanır.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a name="mergetrailers" id="mergetrailers">Y&ouml;nergesi</a> <a title="Permanent link" href="#mergetrailers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mergetrailers"><span id="MergeTrailers">MergeTrailers</span> Y&ouml;nergesi <a title="Permanent link" href="#mergetrailers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Determines whether trailers are merged into headers</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>MergeTrailers [on|off]</code></td></tr>
@@ -3253,7 +3253,7 @@ uygulanır.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Y&ouml;nergesi</a> <a title="Permanent link" href="#mutex" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mutex"><span id="Mutex">Mutex</span> Y&ouml;nergesi <a title="Permanent link" href="#mutex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Muteks mekanizmasını ve kilit dosyası dizinini t&uuml;m muteksler veya belirtilenler i&ccedil;in yapılandırır</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Mutex <var>mekanizma</var> [default|<var>muteks-ismi</var>] ... [OmitPID]</code></td></tr>
@@ -3472,7 +3472,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a name="namevirtualhost" id="namevirtualhost">Y&ouml;nergesi</a> <a title="Permanent link" href="#namevirtualhost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="namevirtualhost"><span id="NameVirtualHost">NameVirtualHost</span> Y&ouml;nergesi <a title="Permanent link" href="#namevirtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>&Ouml;NERİLMİYOR: İsme dayalı sanal konaklar i&ccedil;in IP adresi belirtir</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>NameVirtualHost <var>adres</var>[:<var>port</var>]</code></td></tr>
@@ -3490,7 +3490,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Options" id="Options">Options</a> <a name="options" id="options">Y&ouml;nergesi</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="options"><span id="Options">Options</span> Y&ouml;nergesi <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belli bir dizinde ge&ccedil;erli olacak &ouml;zellikleri yapılandırır.
 </td></tr>
@@ -3629,7 +3629,7 @@ uygulanır.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Protocol" id="Protocol">Protocol</a> <a name="protocol" id="protocol">Y&ouml;nergesi</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocol"><span id="Protocol">Protocol</span> Y&ouml;nergesi <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Dinlenen bir soket i&ccedil;in protokol</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Protocol <var>protokol</var></code></td></tr>
@@ -3667,7 +3667,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Protocols" id="Protocols">Protocols</a> <a name="protocols" id="protocols">Y&ouml;nergesi</a> <a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocols"><span id="Protocols">Protocols</span> Y&ouml;nergesi <a title="Permanent link" href="#protocols" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Protocols available for a server/virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Protocols <var>protocol</var> ...</code></td></tr>
@@ -3683,7 +3683,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a name="protocolshonororder" id="protocolshonororder">Y&ouml;nergesi</a> <a title="Permanent link" href="#protocolshonororder" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocolshonororder"><span id="ProtocolsHonorOrder">ProtocolsHonorOrder</span> Y&ouml;nergesi <a title="Permanent link" href="#protocolshonororder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Determines if order of Protocols determines precedence during negotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ProtocolsHonorOrder On|Off</code></td></tr>
@@ -3699,7 +3699,7 @@ uygulanır.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a name="qualifyredirecturl" id="qualifyredirecturl">Y&ouml;nergesi</a> <a title="Permanent link" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="qualifyredirecturl"><span id="QualifyRedirectURL">QualifyRedirectURL</span> Y&ouml;nergesi <a title="Permanent link" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Controls whether the REDIRECT_URL environment variable is
              fully qualified</td></tr>
@@ -3714,7 +3714,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a name="readbuffersize" id="readbuffersize">Y&ouml;nergesi</a> <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="readbuffersize"><span id="ReadBufferSize">ReadBufferSize</span> Y&ouml;nergesi <a title="Permanent link" href="#readbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Size of the buffers used to read data</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
@@ -3726,7 +3726,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a name="regexdefaultoptions" id="regexdefaultoptions">Y&ouml;nergesi</a> <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="regexdefaultoptions"><span id="RegexDefaultOptions">RegexDefaultOptions</span> Y&ouml;nergesi <a title="Permanent link" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Allow to configure global/default options for regexes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>RegexDefaultOptions [none] [+|-]<var>option</var> [[+|-]<var>option</var>] ...</code></td></tr>
@@ -3738,7 +3738,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a name="registerhttpmethod" id="registerhttpmethod">Y&ouml;nergesi</a> <a title="Permanent link" href="#registerhttpmethod" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="registerhttpmethod"><span id="RegisterHttpMethod">RegisterHttpMethod</span> Y&ouml;nergesi <a title="Permanent link" href="#registerhttpmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Register non-standard HTTP methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
@@ -3754,7 +3754,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Y&ouml;nergesi</a> <a title="Permanent link" href="#rlimitcpu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitcpu"><span id="RLimitCPU">RLimitCPU</span> Y&ouml;nergesi <a title="Permanent link" href="#rlimitcpu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Apache httpd alt s&uuml;re&ccedil;leri tarafından &ccedil;alıştırılan s&uuml;re&ccedil;lerin
   işlemci t&uuml;ketimine sınırlama getirir.</td></tr>
@@ -3789,7 +3789,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Y&ouml;nergesi</a> <a title="Permanent link" href="#rlimitmem" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitmem"><span id="RLimitMEM">RLimitMEM</span> Y&ouml;nergesi <a title="Permanent link" href="#rlimitmem" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Apache httpd alt s&uuml;re&ccedil;leri tarafından &ccedil;alıştırılan s&uuml;re&ccedil;lerin
   bellek t&uuml;ketimine sınırlama getirir.</td></tr>
@@ -3826,7 +3826,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Y&ouml;nergesi</a> <a title="Permanent link" href="#rlimitnproc" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitnproc"><span id="RLimitNPROC">RLimitNPROC</span> Y&ouml;nergesi <a title="Permanent link" href="#rlimitnproc" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Apache httpd alt s&uuml;re&ccedil;leri tarafından &ccedil;alıştırılabilecek s&uuml;re&ccedil;
   sayısına sınırlama getirir.</td></tr>
@@ -3869,7 +3869,7 @@ as if 'QualifyRedirectURL On' was configured.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a name="scriptinterpretersource" id="scriptinterpretersource">Y&ouml;nergesi</a> <a title="Permanent link" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptinterpretersource"><span id="ScriptInterpreterSource">ScriptInterpreterSource</span> Y&ouml;nergesi <a title="Permanent link" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>CGI betikleri i&ccedil;in yorumlayıcı belirleme tekniği</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ScriptInterpreterSource Registry|Registry-Strict|Script</code></td></tr>
@@ -3931,7 +3931,7 @@ HTTP Sunucusunun 2.0 ve sonraki s&uuml;r&uuml;mleri i&ccedil;in ge&ccedil;erlidi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Y&ouml;nergesi</a> <a title="Permanent link" href="#seerequesttail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="seerequesttail"><span id="SeeRequestTail">SeeRequestTail</span> Y&ouml;nergesi <a title="Permanent link" href="#seerequesttail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İsteğin 63 karakterden b&uuml;y&uuml;k olduğu varsayımıyla, mod_status'un
   ilk 63 karakteri mi yoksa son 63 karakteri mi g&ouml;stereceğini
@@ -3968,7 +3968,7 @@ HTTP Sunucusunun 2.0 ve sonraki s&uuml;r&uuml;mleri i&ccedil;in ge&ccedil;erlidi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a name="serveradmin" id="serveradmin">Y&ouml;nergesi</a> <a title="Permanent link" href="#serveradmin" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serveradmin"><span id="ServerAdmin">ServerAdmin</span> Y&ouml;nergesi <a title="Permanent link" href="#serveradmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun hata iletilerinde istemciye g&ouml;stereceği eposta adresi
 </td></tr>
@@ -3998,7 +3998,7 @@ HTTP Sunucusunun 2.0 ve sonraki s&uuml;r&uuml;mleri i&ccedil;in ge&ccedil;erlidi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a name="serveralias" id="serveralias">Y&ouml;nergesi</a> <a title="Permanent link" href="#serveralias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serveralias"><span id="ServerAlias">ServerAlias</span> Y&ouml;nergesi <a title="Permanent link" href="#serveralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
@@ -4038,7 +4038,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">Y&ouml;nergesi</a> <a title="Permanent link" href="#servername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="servername"><span id="ServerName">ServerName</span> Y&ouml;nergesi <a title="Permanent link" href="#servername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun &ouml;zdeşleşeceği konak ismi ve port.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
@@ -4122,7 +4122,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerPath" id="ServerPath">ServerPath</a> <a name="serverpath" id="serverpath">Y&ouml;nergesi</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serverpath"><span id="ServerPath">ServerPath</span> Y&ouml;nergesi <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Uyumsuz bir tarayıcı tarafından erişilmesi i&ccedil;in bir isme dayalı sanal konak i&ccedil;in meşru URL yolu</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ServerPath <var>URL-yolu</var></code></td></tr>
@@ -4141,7 +4141,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a name="serverroot" id="serverroot">Y&ouml;nergesi</a> <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serverroot"><span id="ServerRoot">ServerRoot</span> Y&ouml;nergesi <a title="Permanent link" href="#serverroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucu yapılandırması i&ccedil;in k&ouml;k dizin</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ServerRoot <var>dizin-yolu</var></code></td></tr>
@@ -4173,7 +4173,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a name="serversignature" id="serversignature">Y&ouml;nergesi</a> <a title="Permanent link" href="#serversignature" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serversignature"><span id="ServerSignature">ServerSignature</span> Y&ouml;nergesi <a title="Permanent link" href="#serversignature" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucu tarafından &uuml;retilen belgelerin dipnotunu ayarlar.
 </td></tr>
@@ -4207,7 +4207,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a name="servertokens" id="servertokens">Y&ouml;nergesi</a> <a title="Permanent link" href="#servertokens" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="servertokens"><span id="ServerTokens">ServerTokens</span> Y&ouml;nergesi <a title="Permanent link" href="#servertokens" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td><code>Server</code> HTTP yanıt başlığını yapılandırır.
 </td></tr>
@@ -4268,7 +4268,7 @@ kullanılacak konak adları i&ccedil;in başka isimler belirtebilmeyi sağlar.
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="SetHandler" id="SetHandler">SetHandler</a> <a name="sethandler" id="sethandler">Y&ouml;nergesi</a> <a title="Permanent link" href="#sethandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sethandler"><span id="SetHandler">SetHandler</span> Y&ouml;nergesi <a title="Permanent link" href="#sethandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Eşleşen t&uuml;m dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
@@ -4318,7 +4318,7 @@ sebep olur.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a name="setinputfilter" id="setinputfilter">Y&ouml;nergesi</a> <a title="Permanent link" href="#setinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="setinputfilter"><span id="SetInputFilter">SetInputFilter</span> Y&ouml;nergesi <a title="Permanent link" href="#setinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>POST girdilerini ve istemci isteklerini işleyecek s&uuml;zge&ccedil;leri
 belirler.</td></tr>
@@ -4343,7 +4343,7 @@ belirler.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a name="setoutputfilter" id="setoutputfilter">Y&ouml;nergesi</a> <a title="Permanent link" href="#setoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="setoutputfilter"><span id="SetOutputFilter">SetOutputFilter</span> Y&ouml;nergesi <a title="Permanent link" href="#setoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun yanıtlarını işleyecek s&uuml;zge&ccedil;leri belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>SetOutputFilter <var>s&uuml;zge&ccedil;</var>[;<var>s&uuml;zge&ccedil;</var>...]</code></td></tr>
@@ -4378,7 +4378,7 @@ belirler.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a name="stricthostcheck" id="stricthostcheck">Y&ouml;nergesi</a> <a title="Permanent link" href="#stricthostcheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="stricthostcheck"><span id="StrictHostCheck">StrictHostCheck</span> Y&ouml;nergesi <a title="Permanent link" href="#stricthostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Controls whether the server requires the requested hostname be
              listed enumerated in the virtual host handling the request
@@ -4392,7 +4392,7 @@ belirler.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="TimeOut" id="TimeOut">TimeOut</a> <a name="timeout" id="timeout">Y&ouml;nergesi</a> <a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="timeout"><span id="TimeOut">TimeOut</span> Y&ouml;nergesi <a title="Permanent link" href="#timeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir istek i&ccedil;in başarısız olmadan &ouml;nce belirli olayların
 ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml;re.</td></tr>
@@ -4425,7 +4425,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a name="traceenable" id="traceenable">Y&ouml;nergesi</a> <a title="Permanent link" href="#traceenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="traceenable"><span id="TraceEnable">TraceEnable</span> Y&ouml;nergesi <a title="Permanent link" href="#traceenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
@@ -4462,7 +4462,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="UNCList" id="UNCList">UNCList</a> <a name="unclist" id="unclist">Y&ouml;nergesi</a> <a title="Permanent link" href="#unclist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="unclist"><span id="UNCList">UNCList</span> Y&ouml;nergesi <a title="Permanent link" href="#unclist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Controls what UNC host names can be accessed by the server
 </td></tr>
@@ -4475,7 +4475,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Y&ouml;nergesi</a> <a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="undefine"><span id="UnDefine">UnDefine</span> Y&ouml;nergesi <a title="Permanent link" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir değişkeni tanımsız yapar</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>UnDefine <var>değişken-ismi</var></code></td></tr>
@@ -4492,7 +4492,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Y&ouml;nergesi</a> <a title="Permanent link" href="#usecanonicalname" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="usecanonicalname"><span id="UseCanonicalName">UseCanonicalName</span> Y&ouml;nergesi <a title="Permanent link" href="#usecanonicalname" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
@@ -4557,7 +4557,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Y&ouml;nergesi</a> <a title="Permanent link" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="usecanonicalphysicalport"><span id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</span> Y&ouml;nergesi <a title="Permanent link" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
@@ -4615,7 +4615,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a name="virtualhost" id="virtualhost">Y&ouml;nergesi</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="virtualhost"><span id="VirtualHost">&lt;VirtualHost&gt;</span> Y&ouml;nergesi <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sadece belli bir konak ismine ve porta uygulanacak y&ouml;nergeleri barındırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>&lt;VirtualHost
@@ -4727,7 +4727,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Warning" id="Warning">Warning</a> <a name="warning" id="warning">Y&ouml;nergesi</a> <a title="Permanent link" href="#warning" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="warning"><span id="Warning">Warning</span> Y&ouml;nergesi <a title="Permanent link" href="#warning" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Warn from configuration parsing with a custom message</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Warning <var>message</var></code></td></tr>
@@ -4748,7 +4748,7 @@ ger&ccedil;ekleşmesi i&ccedil;in sunucunun ge&ccedil;mesini bekleyeceği s&uuml
 <a href="../tr/mod/core.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

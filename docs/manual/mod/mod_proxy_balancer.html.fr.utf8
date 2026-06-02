@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -94,8 +94,8 @@ la r&eacute;partition de charge</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="scheduler" id="scheduler">L'algorithme de planification de la r&eacute;partition de
-    charge</a> <a title="Lien permanent" href="#scheduler" class="permalink">&para;</a></h2>
+<h2 id="scheduler">L'algorithme de planification de la r&eacute;partition de
+    charge <a title="Lien permanent" href="#scheduler" class="permalink">&para;</a></h2>
     
     <p>A l'heure actuelle, 4 algorithmes de planification de la r&eacute;partition de
     charge sont disponibles : ils se basent respectivement sur le comptage des
@@ -108,8 +108,8 @@ la r&eacute;partition de charge</td></tr>
     particulier la configuration du r&eacute;partiteur et de ses membres.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness" id="stickiness">R&eacute;partition de charge avec abonnement utilisateur
-    (stickiness)</a> <a title="Lien permanent" href="#stickiness" class="permalink">&para;</a></h2>
+<h2 id="stickiness">R&eacute;partition de charge avec abonnement utilisateur
+    (stickiness) <a title="Lien permanent" href="#stickiness" class="permalink">&para;</a></h2>
     
     <p>Le r&eacute;partiteur supporte l'abonnement utilisateur. Lorsqu'une
     requ&ecirc;te est mandat&eacute;e vers un serveur d'arri&egrave;re-plan particulier,
@@ -132,7 +132,7 @@ la r&eacute;partition de charge</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">Exemples de configuration d'un r&eacute;partiteur</a> <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">Exemples de configuration d'un r&eacute;partiteur <a title="Lien permanent" href="#example" class="permalink">&para;</a></h2>
     
     <p>Avant de nous plonger dans les d&eacute;tails techniques, voici un
     exemple d'utilisation de <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> mettant
@@ -167,7 +167,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="environment" id="environment">Variables d'environnement export&eacute;es</a> <a title="Lien permanent" href="#environment" class="permalink">&para;</a></h2>
+<h2 id="environment">Variables d'environnement export&eacute;es <a title="Lien permanent" href="#environment" class="permalink">&para;</a></h2>
     
     <p>A l'heure actuelle, 6 variables d'environnement sont export&eacute;es :</p>
 
@@ -227,7 +227,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="balancer_manager" id="balancer_manager">Activation du support du gestionnaire de r&eacute;partiteur</a> <a title="Lien permanent" href="#balancer_manager" class="permalink">&para;</a></h2>
+<h2 id="balancer_manager">Activation du support du gestionnaire de r&eacute;partiteur <a title="Lien permanent" href="#balancer_manager" class="permalink">&para;</a></h2>
     
     <p>Cette fonctionnalit&eacute; <em>n&eacute;cessite</em> le chargement du module
     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>. Le gestionnaire de r&eacute;partiteur permet
@@ -258,8 +258,8 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     section <code>&lt;Location ...&gt;</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness_implementation" id="stickiness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
-    (stickiness)</a> <a title="Lien permanent" href="#stickiness_implementation" class="permalink">&para;</a></h2>
+<h2 id="stickiness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
+    (stickiness) <a title="Lien permanent" href="#stickiness_implementation" class="permalink">&para;</a></h2>
     
     <p>Si l'abonnement s'appuie sur un cookie, vous devez d&eacute;finir le nom
     de ce cookie dont le contenu pr&eacute;cise le serveur d'arri&egrave;re-plan &agrave;
@@ -325,8 +325,8 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     retenue.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="stickiness_troubleshooting" id="stickiness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
-    abonnement</a> <a title="Lien permanent" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
+<h2 id="stickiness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
+    abonnement <a title="Lien permanent" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
     
     <p>Si vous &ecirc;tes confront&eacute; &agrave; des erreurs d'abonnement, comme la
     n&eacute;cessit&eacute; pour les utilisateurs de se reconnecter suite &agrave; une perte
@@ -382,7 +382,7 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

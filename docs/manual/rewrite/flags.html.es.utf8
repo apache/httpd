@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -73,7 +73,7 @@ proporcionando explicaciones detalladas y ejemplos.</p>
 </ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentaci&oacute;n del m&oacute;dulo</a></li><li><a href="intro.html">Introducci&oacute;n a mod_rewrite</a></li><li><a href="remapping.html">Redirecci&oacute;n y remapeo</a></li><li><a href="access.html">Control de acceso</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="proxy.html">Proxy</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">T&eacute;cnicas avanzadas</a></li><li><a href="avoid.html">Cu&aacute;ndo no usar mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducci&oacute;n</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introducci&oacute;n <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 <p>Una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> puede tener
 su comportamiento modificado por una o m&aacute;s banderas. Las banderas se incluyen entre
 corchetes al final de la regla, y m&uacute;ltiples banderas se separan
@@ -97,7 +97,7 @@ no tienen efecto en contexto per-directorio y htaccess, cuando una sustituci&oac
 de c&oacute;mo podr&iacute;a usarlas.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (escapar referencias inversas)</a> <a title="Enlace permanente" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_b">B (escapar referencias inversas) <a title="Enlace permanente" href="#flag_b" class="permalink">&para;</a></h2>
 <p>La bandera [B] indica a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que escape los caracteres no alfanum&eacute;ricos
 antes de aplicar la transformaci&oacute;n.</p>
 
@@ -151,7 +151,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
         y <a href="#flag_bctls">#flag_bctls</a></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (no escapar espacio a +)</a> <a title="Enlace permanente" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus (no escapar espacio a +) <a title="Enlace permanente" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>La bandera [BNP] indica a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que escape el car&aacute;cter de espacio
 en una referencia inversa a %20 en lugar de '+'. &Uacute;til cuando la referencia inversa
 se usar&aacute; en el componente de ruta en lugar de la cadena de consulta.</p>
@@ -165,7 +165,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>Esta bandera est&aacute; disponible en la versi&oacute;n 2.4.26 y posterior.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Enlace permanente" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Enlace permanente" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>La bandera [BCTLS] es similar a la bandera [B], pero solo escapa
 caracteres de control y el car&aacute;cter de espacio. Este es el mismo conjunto de
 caracteres rechazados cuando se copian en la cadena de consulta sin codificar.
@@ -179,7 +179,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Enlace permanente" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Enlace permanente" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>La lista de caracteres en [BNE=...] se trata como exclusiones de los
 caracteres de las banderas [B] o [BCTLS]. Los caracteres listados no ser&aacute;n
 escapados.
@@ -192,7 +192,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 <p>Esta bandera est&aacute; disponible en la versi&oacute;n 2.5.1 y posterior.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Enlace permanente" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Enlace permanente" href="#flag_c" class="permalink">&para;</a></h2>
 <p>La bandera [C] o [chain] indica que la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est&aacute; encadenada a la siguiente
 regla. Es decir, si la regla coincide, entonces se procesa como de costumbre y
 el control pasa a la siguiente regla. Sin embargo, si no coincide, entonces
@@ -201,7 +201,7 @@ omiten.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Enlace permanente" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Enlace permanente" href="#flag_co" class="permalink">&para;</a></h2>
 <p>La bandera [CO], o [cookie], le permite establecer una cookie cuando una
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> particular
 coincide. El argumento consiste en tres campos obligatorios y cinco
@@ -283,7 +283,7 @@ minutos (24 horas) y se devuelve para todas las URIs.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Enlace permanente" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Enlace permanente" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>La bandera DPI causa que la porci&oacute;n PATH_INFO de la URI reescrita sea
 descartada.</p>
 <p>Esta bandera est&aacute; disponible en la versi&oacute;n 2.2.12 y posterior.</p>
@@ -313,7 +313,7 @@ solo el resultado directo de las sustituciones, sin ning&uacute;n PATH_INFO
 a&ntilde;adido.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Enlace permanente" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Enlace permanente" href="#flag_e" class="permalink">&para;</a></h2>
 <p>Con la bandera [E], o [env], puede establecer el valor de una variable
 de entorno. Tenga en cuenta que algunas variables de entorno pueden establecerse despu&eacute;s de que la regla
 se ejecute, deshaciendo as&iacute; lo que ha establecido. Vea <a href="../env.html">el
@@ -364,7 +364,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 un ejemplo, no como una recomendaci&oacute;n.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Enlace permanente" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Enlace permanente" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Usar la bandera [END] termina no solo la ronda actual de procesamiento de
 reescritura (como [L]) sino tambi&eacute;n previene que cualquier procesamiento de
 reescritura posterior ocurra en contexto per-directorio (htaccess).</p>
@@ -373,7 +373,7 @@ reescritura posterior ocurra en contexto per-directorio (htaccess).</p>
 redirecciones externas.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Enlace permanente" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Enlace permanente" href="#flag_f" class="permalink">&para;</a></h2>
 <p>Usar la bandera [F] causa que el servidor devuelva un c&oacute;digo de estado 403 Forbidden
 al cliente. Aunque el mismo comportamiento puede lograrse usando
 la directiva <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>, esto
@@ -394,7 +394,7 @@ inmediatamente, y no se eval&uacute;an m&aacute;s reglas.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Enlace permanente" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Enlace permanente" href="#flag_g" class="permalink">&para;</a></h2>
 <p>La bandera [G] fuerza al servidor a devolver un estado 410 Gone con la
 respuesta. Esto indica que un recurso sol&iacute;a estar disponible, pero ya no
 lo est&aacute;.</p>
@@ -410,7 +410,7 @@ inmediatamente, y no se eval&uacute;an m&aacute;s reglas.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Enlace permanente" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Enlace permanente" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Fuerza que la solicitud resultante sea manejada con el manejador
 especificado. Por ejemplo, uno podr&iacute;a usar esto para forzar que todos los archivos sin
 extensi&oacute;n de archivo sean procesados por el manejador de php:</p>
@@ -438,7 +438,7 @@ $1 se refiere a la coincidencia capturada dentro de los par&eacute;ntesis de la 
 regular.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Enlace permanente" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Enlace permanente" href="#flag_l" class="permalink">&para;</a></h2>
 <p>La bandera [L] causa que <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> deje de procesar
 el conjunto de reglas. En la mayor&iacute;a de los contextos, esto significa que si la regla coincide, no
 se procesar&aacute;n m&aacute;s reglas. Esto corresponde al
@@ -480,7 +480,7 @@ RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Enlace permanente" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Enlace permanente" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 La bandera [N] causa que el conjunto de reglas comience de nuevo desde el principio, usando
 el resultado del conjunto de reglas hasta el momento como punto de partida. Use
@@ -510,7 +510,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Enlace permanente" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Enlace permanente" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>El uso de la bandera [NC] causa que la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> se eval&uacute;e de manera
 insensible a may&uacute;sculas/min&uacute;sculas. Es decir, no importa si las letras aparecen
 en may&uacute;sculas o min&uacute;sculas en la URI coincidente.</p>
@@ -524,7 +524,7 @@ ejemplo.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Enlace permanente" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Enlace permanente" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>Por defecto, cuando una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 resulta en una redirecci&oacute;n externa, cualquier car&aacute;cter en la salida que no est&eacute;
 en el siguiente conjunto seguro ser&aacute; convertido a sus equivalentes en hexadecimal
@@ -558,7 +558,7 @@ entonces resultar&aacute; en una condici&oacute;n de error 404 No Encontrado.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Enlace permanente" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Enlace permanente" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>El uso de la bandera [NS] previene que la regla se use en
 sub-solicitudes. Por ejemplo, una p&aacute;gina incluida usando un SSI (Server
 Side Include) es una sub-solicitud, y usted puede querer evitar que las reescrituras
@@ -582,7 +582,7 @@ separadas.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Enlace permanente" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Enlace permanente" href="#flag_p" class="permalink">&para;</a></h2>
 <p>El uso de la bandera [P] causa que la solicitud sea manejada por
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, y procesada a trav&eacute;s de una solicitud proxy. Por
 ejemplo, si quisiera que todas las solicitudes de im&aacute;genes fueran manejadas por un servidor
@@ -632,7 +632,7 @@ usar esta bandera.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Enlace permanente" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Enlace permanente" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 El destino (o cadena de sustituci&oacute;n) en una RewriteRule se asume que es una
@@ -672,7 +672,7 @@ es reescribir a <code>-</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Enlace permanente" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Enlace permanente" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 Cuando la URI de reemplazo contiene una cadena de consulta, el comportamiento predeterminado
 de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> es descartar
@@ -693,7 +693,7 @@ ser&aacute; descartada.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Enlace permanente" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Enlace permanente" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 Cuando la URI solicitada contiene una cadena de consulta, y la URI destino no
 la contiene, el comportamiento predeterminado de <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> es copiar esa cadena de consulta
@@ -715,7 +715,7 @@ reemplazada con la cadena de consulta en la URI destino de la <code>RewriteRule<
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Enlace permanente" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Enlace permanente" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 Por defecto, el primer signo de interrogaci&oacute;n (el m&aacute;s a la izquierda) en la sustituci&oacute;n
 delimita la ruta de la cadena de consulta. Usar la bandera [QSL] indica a
@@ -731,7 +731,7 @@ se puede a&ntilde;adir un signo de interrogaci&oacute;n en combinaci&oacute;n co
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Enlace permanente" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Enlace permanente" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 El uso de la bandera [R] causa que se emita una redirecci&oacute;n HTTP al navegador.
 Si se especifica una URL completamente cualificada (es decir, incluyendo
@@ -767,7 +767,7 @@ un mensaje en el log de errores.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Enlace permanente" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Enlace permanente" href="#flag_s" class="permalink">&para;</a></h2>
 <p>La bandera [S] se usa para omitir reglas que no desea ejecutar. La
 sintaxis de la bandera skip es [S=<em>N</em>], donde <em>N</em> indica
 el n&uacute;mero de reglas a omitir (siempre que la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">
@@ -817,7 +817,7 @@ las directivas <code class="directive">&lt;If&gt;</code>, <code class="directive
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Enlace permanente" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Enlace permanente" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Establece el tipo MIME con el que se enviar&aacute; la respuesta
 resultante. Esto tiene el mismo efecto que la directiva <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>.</p>
 
@@ -851,7 +851,7 @@ La bandera <code>L</code> puede ser &uacute;til en este contexto para terminar l
 ronda <em>actual</em> de procesamiento de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Enlace permanente" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Enlace permanente" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Establecer esta bandera es necesario para permitir que una reescritura contin&uacute;e si la
     solicitud HTTP que se est&aacute; reescribiendo tiene un signo de interrogaci&oacute;n codificado, '%3f', y el
     resultado reescrito tiene un '?' en la sustituci&oacute;n. Esto protege contra una URL
@@ -859,7 +859,7 @@ ronda <em>actual</em> de procesamiento de <code class="module"><a href="../mod/m
     codificado.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Enlace permanente" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Enlace permanente" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>Establecer esta bandera es necesario en sustituciones de &aacute;mbito de servidor
     que comienzan con una variable o referencia inversa y se resuelven a una ruta del sistema de archivos.
     Estas sustituciones no se prefijan con la ra&iacute;z del documento.
@@ -869,7 +869,7 @@ ronda <em>actual</em> de procesamiento de <code class="module"><a href="../mod/m
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Enlace permanente" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Enlace permanente" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>Establecer esta bandera previene la fusi&oacute;n de m&uacute;ltiples barras iniciales,
     como se usa en las rutas UNC de Windows. La bandera no es necesaria cuando la
     sustituci&oacute;n de las reglas comienza con m&uacute;ltiples barras literales.</p>
@@ -887,7 +887,7 @@ ronda <em>actual</em> de procesamiento de <code class="module"><a href="../mod/m
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

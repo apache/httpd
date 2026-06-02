@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="core" id="core">Melhorias do N&uacute;cleo</a> <a title="Link permanente" href="#core" class="permalink">&para;</a></h2>
+<h2 id="core">Melhorias do N&uacute;cleo <a title="Link permanente" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
 
@@ -120,7 +120,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="module" id="module">Melhorias nos M&oacute;dulos</a> <a title="Link permanente" href="#module" class="permalink">&para;</a></h2>
+<h2 id="module">Melhorias nos M&oacute;dulos <a title="Link permanente" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Authn/Authz</dt>
@@ -170,7 +170,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Melhorias na Aplica&ccedil;&atilde;o</a> <a title="Link permanente" href="#programs" class="permalink">&para;</a></h2>
+<h2 id="programs">Melhorias na Aplica&ccedil;&atilde;o <a title="Link permanente" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="program"><a href="./programs/httpd.html">httpd</a></code></dt>
@@ -186,7 +186,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Altera&ccedil;&otilde;es para Desenvolvedor de M&oacute;dulos</a> <a title="Link permanente" href="#developer" class="permalink">&para;</a></h2>
+<h2 id="developer">Altera&ccedil;&otilde;es para Desenvolvedor de M&oacute;dulos <a title="Link permanente" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>API <a class="glossarylink" href="./glossary.html#apr" title="ver gloss&aacute;rio">APR</a> 1.0</dt>
@@ -282,7 +282,7 @@
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

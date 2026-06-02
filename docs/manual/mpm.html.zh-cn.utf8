@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">介绍</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">介绍 <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP 服务器被设计为一个功能强大，并且灵活的 web 服务器，
     可以在很多平台与环境中工作。不同平台和不同的环境往往需要不同
@@ -77,7 +77,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">默认 MPM</a> <a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
+<h2 id="defaults">默认 MPM <a title="Permanent link" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>下表列出了不同系统的默认 MPM。如果你不在编译时选择，那么它就是你将要使用的 MPM。</p>
 
@@ -89,7 +89,7 @@
 </table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static" id="static">构建 MPM 为静态模块</a> <a title="Permanent link" href="#static" class="permalink">&para;</a></h2>
+<h2 id="static">构建 MPM 为静态模块 <a title="Permanent link" href="#static" class="permalink">&para;</a></h2>
 
     <p>在全部平台中，MPM 都可以构建为静态模块。在构建时选择一种
     MPM，链接到服务器中。如果要改变 MPM，必须重新构建。</p>
@@ -103,7 +103,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">构建 MPM 为动态模块</a> <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">构建 MPM 为动态模块 <a title="Permanent link" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>在 Unix 或类似平台中，MPM 可以构建为动态模块，与其它动态模块一样在运行时加载。
     构建 MPM 为动态模块允许通过修改 <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
@@ -130,7 +130,7 @@
 <a href="./zh-cn/mpm.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">模块</a> | <a href="./mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="./glossary.html">术语</a> | <a href="./sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

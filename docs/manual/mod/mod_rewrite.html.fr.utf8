@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -79,7 +79,7 @@ r&egrave;gles permettant de r&eacute;&eacute;crire les URLs des requ&ecirc;tes
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Journalisation <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offre une journalisation d&eacute;taill&eacute;e
     de ses actions aux niveaux de journalisation <code>trace1</code> &agrave;
@@ -117,7 +117,7 @@ r&egrave;gles permettant de r&eacute;&eacute;crire les URLs des requ&ecirc;tes
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewritebase" id="rewritebase">Directive</a> <a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a title="Lien permanent" href="#rewritebase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritebase">Directive <span id="RewriteBase">RewriteBase</span> <a title="Lien permanent" href="#rewritebase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</td></tr>
@@ -154,7 +154,7 @@ r&eacute;pertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewritecond" id="rewritecond">Directive</a> <a name="RewriteCond" id="RewriteCond">RewriteCond</a> <a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritecond">Directive <span id="RewriteCond">RewriteCond</span> <a title="Lien permanent" href="#rewritecond" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
 la r&eacute;&eacute;criture soit effectu&eacute;e
@@ -808,7 +808,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"  [L]</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewriteengine" id="rewriteengine">Directive</a> <a name="RewriteEngine" id="RewriteEngine">RewriteEngine</a> <a title="Lien permanent" href="#rewriteengine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriteengine">Directive <span id="RewriteEngine">RewriteEngine</span> <a title="Lien permanent" href="#rewriteengine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou d&eacute;sactive l'ex&eacute;cution du
 moteur de r&eacute;&eacute;criture</td></tr>
@@ -845,7 +845,7 @@ moteur de r&eacute;&eacute;criture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewritemap" id="rewritemap">Directive</a> <a name="RewriteMap" id="RewriteMap">RewriteMap</a> <a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewritemap">Directive <span id="RewriteMap">RewriteMap</span> <a title="Lien permanent" href="#rewritemap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une fonction de mise en correspondance pour la
 recherche de mots-cl&eacute;s</td></tr>
@@ -943,7 +943,7 @@ de la version 2.4.29 du serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewriteoptions" id="rewriteoptions">Directive</a> <a name="RewriteOptions" id="RewriteOptions">RewriteOptions</a> <a title="Lien permanent" href="#rewriteoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriteoptions">Directive <span id="RewriteOptions">RewriteOptions</span> <a title="Lien permanent" href="#rewriteoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure certaines options sp&eacute;ciales
 pour le moteur de r&eacute;&eacute;criture</td></tr>
@@ -1131,7 +1131,7 @@ pour le moteur de r&eacute;&eacute;criture</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rewriterule" id="rewriterule">Directive</a> <a name="RewriteRule" id="RewriteRule">RewriteRule</a> <a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rewriterule">Directive <span id="RewriteRule">RewriteRule</span> <a title="Lien permanent" href="#rewriterule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RewriteRule
@@ -1747,7 +1747,7 @@ externe</td>
 <a href="../fr/mod/mod_rewrite.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

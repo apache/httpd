@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -65,7 +65,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="programs/configure.html">소스 트리 구성</a></li><li><a href="invoking.html">아파치 시작</a></li><li><a href="stopping.html">아파치 중단과 재시작</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">성미 급한 사람을 위한 개요</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">성미 급한 사람을 위한 개요 <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -125,7 +125,7 @@
     컴파일과 설치 과정을 각각 자세히 설명한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">요구사항</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">요구사항 <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>아파치를 컴파일하기위해 다음과 같은 것들이 필요하다:</p>
 
@@ -169,7 +169,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">다운로드</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">다운로드 <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>아파치는 여러 미러 목록이 있는 <a href="http://httpd.apache.org/download.cgi">아파치 웹서버
     다운로드 사이트</a>에서 다운로드할 수 있다. 유닉스류 시스템을
@@ -188,7 +188,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">압축 풀기</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">압축 풀기 <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>아파치 웹서버 타볼에서 소스를 푸는 작업은 단순히 압축과
     tar를 푸는 것이다:</p>
@@ -203,7 +203,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     디렉토리로 <code>cd</code>해야 한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">소스 트리 구성하기</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">소스 트리 구성하기 <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>다음 과정은 특정 플래폼과 개인적인 필요에 따라 아파치
     소스 트리를 구성하는 일이다. 이를 위해 배포본의 최상위 디렉토리에
@@ -264,7 +264,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     <p><code>configure</code> 옵션들에 대한 자세한 설명은 <a href="programs/configure.html">configure manpage</a>에 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">컴파일</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">컴파일 <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>이제 다음 명령어 하나로 아파치의 여러 부분을 컴파일할
     수 있다:</p>
@@ -276,7 +276,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     하드웨어와 포함한 모듈수에 따라 크게 변한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">설치</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">설치 <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>이제 다음 명령어로 패키지를 (위의 <code>--prefix</code>
     옵션 참고) 지정한 설치 위치 <em>PREFIX</em>에 설치한다:</p>
@@ -287,7 +287,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     덮어쓰지 않는다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">설정</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">설정 <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>다음으로 <code><em>PREFIX</em>/conf/</code>에 있는
     <a href="configuring.html">설정파일</a>을 편집하여 아파치
@@ -300,7 +300,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     참고하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">검사</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">검사 <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>이제 다음과 같이 아파치 웹서버를 <a href="invoking.html">시작</a>할 수 있다:</p>
 
@@ -314,7 +314,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">업그레이드</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">업그레이드 <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>업그레이드한다면 먼저 사이트에 영향을 줄 수 있는 변화가
     있는지 알아보기위해 발표문과 소스 배포본의 <code>CHANGES</code>
@@ -365,7 +365,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

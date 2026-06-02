@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -90,7 +90,7 @@ activo</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="event-worker-relationship" id="event-worker-relationship">Relaci&oacute;n con el MPM Worker</a> <a title="Enlace permanente" href="#event-worker-relationship" class="permalink">&para;</a></h2>
+<h2 id="event-worker-relationship">Relaci&oacute;n con el MPM Worker <a title="Enlace permanente" href="#event-worker-relationship" class="permalink">&para;</a></h2>
     
     <p><code class="module"><a href="../mod/event.html">event</a></code> est&aacute; basado en el MPM <code class="module"><a href="../mod/worker.html">worker</a></code>, que implmementa un servidor h&iacute;brido de multi-proceso multi-hilo. Un solo proceso (el padre) es responsable de lanzar procesos child (hijos). Cada proceso child crea un n&uacute;mero fijo de hilos de servidor tal y como se especifica en la directiva 
     <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, as&iacute; como un hilo listener que est&aacute; en escucha para recibir conexiones y las pasa al hilo worker para procesamiento seg&uacute;n van llegando.</p>
@@ -99,7 +99,7 @@ activo</td></tr>
     <code class="directive">AsyncRequestWorkerFactor</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Como Trabaja</a> <a title="Enlace permanente" href="#how-it-works" class="permalink">&para;</a></h2>
+<h2 id="how-it-works">Como Trabaja <a title="Enlace permanente" href="#how-it-works" class="permalink">&para;</a></h2>
     <p>El objetivo original de este MPM era arreglar el 'problema del keep alive' en HTTP. Despu&eacute;s de que un cliente completa su primera petici&oacute;n, puede mantener la conexi&oacute;n abierta, enviando m&aacute;s peticiones utilizando el mismo socket y ahorrando una cantidad significativa de tiempo en abrir nuevas conexiones TCP. Sin embargo, el Servidor Apache HTTP tradicionalmente mantiene un proceso/hilo child esperando a que le lleguen datos del cliente, lo cual tiene sus propias desventajas.
     Para resolver este problema, este MPM usa un hilo dedicado de tipo listener en cada proceso junto con un grupo de hilos worker, compartiendo colas espec&iacute;ficas para esas peticiones en modo keep-alive (o, m&aacute;s sencillamente, "readable"), aquellos en modo terminando-escritura, y aquellos en proceso de cerrarse ("closing"). Un bucle de eventos, activado por el estado de disponibilidad del socket, ajusta estas colas y manda el trabajo al grupo de workers.
     </p>
@@ -109,7 +109,7 @@ activo</td></tr>
     <p>La cantidad total de conexiones que un solo bloque de proceso/hilo puede gestionar se regula con la directiva 
     <code class="directive">AsyncRequestWorkerFactor</code>.</p>
 
-    <h3><a name="async-connections" id="async-connections">Conexiones Async</a></h3>
+    <h3 id="async-connections">Conexiones Async</h3>
         <p>Las conexiones Async necesitar&iacute;an un hilo worker fijo dedicado con los MPMs previos, pero no con event. La p&aacute;gina de estado de 
         <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> muestra columnas nuevas bajo la secci&oacute;n de conexiones Async:</p>
         <dl>
@@ -133,7 +133,7 @@ activo</td></tr>
 
     
 
-    <h3><a name="graceful-close" id="graceful-close">Cierre de procesos graceful y uso de Scoreboard</a></h3>
+    <h3 id="graceful-close">Cierre de procesos graceful y uso de Scoreboard</h3>
 
         <p>Este mpm mostr&oacute; algunos cuellos de botella de escalabilidad en el pasado llevando al siguiente error: "<strong>scoreboard is full, not at MaxRequestWorkers</strong>".
         <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> limita el n&uacute;mero de peticiones simult&aacute;neas que van a ser atendidas en un momento dado y tambi&eacute;n el n&uacute;mero de procesos permitidos
@@ -167,7 +167,7 @@ activo</td></tr>
         <p>El comportamiento descrito en el &uacute;ltimo punto se puede observar completamente a trav&eacute;s de <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> en la tabla de resumen de conexiones en dos nuevas columnas: "Slot" y "Stopping". La primera indica el PID y la &uacute;ltima si el proceso est&aacute; parando o no; el estado extra "Yes (old gen)" indica un proceso que todav&iacute;a se est&aacute; ejecutando despu&eacute;s de un reinicio graceful.</p>
     
 
-    <h3><a name="limitations" id="limitations">Limitaciones</a></h3>
+    <h3 id="limitations">Limitaciones</h3>
         <p>La gesti&oacute;n de conexi&oacute;n mejorada podr&iacute;a no funcionar para ciertos filtros de conexi&oacute;n que se han declarado incompatibles con event. En estos casos, este MPM retornar&aacute; al comportamiento del MPM 
         <code class="module"><a href="../mod/worker.html">worker</a></code> y reservar&aacute; un hilo worker por conexi&oacute;n. Todos los m&oacute;dulos incluidos con el servidor son compatibles con el MPM event.
         </p>
@@ -180,7 +180,7 @@ activo</td></tr>
 
     
 
-    <h3><a name="background" id="background">Trasfondo</a></h3>
+    <h3 id="background">Trasfondo</h3>
         <p>El modelo event fue posible por la introducci&oacute;n de APIs en los sistemas operativos soportados:</p>
         <ul>
             <li>epoll (Linux) </li>
@@ -198,7 +198,7 @@ activo</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requerimientos</a> <a title="Enlace permanente" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Requerimientos <a title="Enlace permanente" href="#requirements" class="permalink">&para;</a></h2>
     <p>Este MPM depende de operaciones at&oacute;micas de comparar-y-cambiar de <a class="glossarylink" href="../glossary.html#apr" title="ver glosario">APR</a> para sincronizaci&oacute;n de hilos. Si est&aacute; compilando para una m&aacute;quina x86 y no necesita soportar 386, o est&aacute; compilando para SPARC y no necesita funcionar en chips pre-UltraSPARC, a&ntilde;ada
     <code>--enable-nonportable-atomics=yes</code> a los par&aacute;metros del script 
     <code class="program"><a href="../programs/configure.html">configure</a></code>. Esto har&aacute; que APR implemente operaciones at&oacute;micas usando los opcode eficientes no disponibles en CPU's m&aacute;s antiguas.
@@ -218,7 +218,7 @@ activo</td></tr>
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directiva</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a> <a title="Enlace permanente" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="asyncrequestworkerfactor">Directiva <span id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</span> <a title="Enlace permanente" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Limita el n&uacute;mero de conexiones concurrentes por 
     proceso</td></tr>
@@ -315,7 +315,7 @@ max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers
 <a href="../fr/mod/event.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

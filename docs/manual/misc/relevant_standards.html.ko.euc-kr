@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -64,7 +64,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="http_recommendations" id="http_recommendations">HTTP 권고</a> <a title="Permanent link" href="#http_recommendations" class="permalink">&para;</a></h2>
+<h2 id="http_recommendations">HTTP 권고 <a title="Permanent link" href="#http_recommendations" class="permalink">&para;</a></h2>
 
     <p>어떤 모듈을 컴파일하고 사용하는지와 관계없이 기본적으로
     웹서버인 아파치는 다음 IETF 권고(recommendation)를 따른다:</p>
@@ -94,7 +94,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="html_recommendations" id="html_recommendations">HTML 권고</a> <a title="Permanent link" href="#html_recommendations" class="permalink">&para;</a></h2>
+<h2 id="html_recommendations">HTML 권고 <a title="Permanent link" href="#html_recommendations" class="permalink">&para;</a></h2>
 
     <p>하이퍼텍스트 마크업 언어 (Hypertext Markup Language,
     HTML)와 관련하여 아파치는 다음 IETF 권고와 W3C 권고를 따른다:</p>
@@ -141,7 +141,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authentication" id="authentication">인증</a> <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
+<h2 id="authentication">인증 <a title="Permanent link" href="#authentication" class="permalink">&para;</a></h2>
 
     <p>인증방법에 대해 아파치는 다음 IETF 권고를 따른다:</p>
 
@@ -155,7 +155,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="language_country_codes" id="language_country_codes">언어/국가 코드</a> <a title="Permanent link" href="#language_country_codes" class="permalink">&para;</a></h2>
+<h2 id="language_country_codes">언어/국가 코드 <a title="Permanent link" href="#language_country_codes" class="permalink">&para;</a></h2>
 
     <p>아래 링크에 ISO와 다른 언어/국가 코드 정보가 있다:</p>
 
@@ -196,7 +196,7 @@
 <a href="../ko/misc/relevant_standards.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

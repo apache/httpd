@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -83,7 +83,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Exemples simples</a> <a title="Lien permanent" href="#basicexamples" class="permalink">&para;</a></h2>
+<h2 id="basicexamples">Exemples simples <a title="Lien permanent" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>Pour cr&eacute;er une session et la stocker dans un cookie nomm&eacute;
       <var>session</var>, configurez-la comme suit :</p>
@@ -104,7 +104,7 @@ SessionCookieName session path=/</pre>
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessioncookiemaxage" id="sessioncookiemaxage">Directive</a> <a name="SessionCookieMaxAge" id="SessionCookieMaxAge">SessionCookieMaxAge</a> <a title="Lien permanent" href="#sessioncookiemaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessioncookiemaxage">Directive <span id="SessionCookieMaxAge">SessionCookieMaxAge</span> <a title="Lien permanent" href="#sessioncookiemaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si les cookies de session doivent sp&eacute;cifier une dur&eacute;e de vie &agrave;
 transmettre au client</td></tr>
@@ -129,7 +129,7 @@ transmettre au client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessioncookiename" id="sessioncookiename">Directive</a> <a name="SessionCookieName" id="SessionCookieName">SessionCookieName</a> <a title="Lien permanent" href="#sessioncookiename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessioncookiename">Directive <span id="SessionCookieName">SessionCookieName</span> <a title="Lien permanent" href="#sessioncookiename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs du cookie RFC2109 dans lequel la session
 est stock&eacute;e</td></tr>
@@ -160,7 +160,7 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;versi
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessioncookiename2" id="sessioncookiename2">Directive</a> <a name="SessionCookieName2" id="SessionCookieName2">SessionCookieName2</a> <a title="Lien permanent" href="#sessioncookiename2" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessioncookiename2">Directive <span id="SessionCookieName2">SessionCookieName2</span> <a title="Lien permanent" href="#sessioncookiename2" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom et attributs pour le cookie RFC2965 dans lequel est
 stock&eacute;e la session</td></tr>
@@ -192,7 +192,7 @@ SessionCookieName2 session path=/private;domain=example.com;httponly;secure;vers
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessioncookieremove" id="sessioncookieremove">Directive</a> <a name="SessionCookieRemove" id="SessionCookieRemove">SessionCookieRemove</a> <a title="Lien permanent" href="#sessioncookieremove" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessioncookieremove">Directive <span id="SessionCookieRemove">SessionCookieRemove</span> <a title="Lien permanent" href="#sessioncookieremove" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine si les cookies de session doivent &ecirc;tre supprim&eacute;s
 des en-t&ecirc;tes HTTP entrants</td></tr>
@@ -221,7 +221,7 @@ des en-t&ecirc;tes HTTP entrants</td></tr>
 <a href="../fr/mod/mod_session_cookie.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

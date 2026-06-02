@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -53,7 +53,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">İlgili mod&uuml;ller ve Y&ouml;nergeler</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">İlgili mod&uuml;ller ve Y&ouml;nergeler <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
 
     <p>Kimlik Doğrulama ve yetkilendirme işlemi ile ilgili &uuml;&ccedil; t&uuml;r mod&uuml;l
     vardır. Genellikle her bir gruptan en az bir mod&uuml;l se&ccedil;eceksiniz.</p>
@@ -110,7 +110,7 @@
     bahsetmektedir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     <p>Sitenizde sadece k&uuml;&ccedil;&uuml;k bir grup insana hitap eden ya da hassas
     bilgileriniz varsa, bu makaledeki teknikleri kullanarak dilediğiniz
     kişilerin sadece dilediğiniz sayfaları g&ouml;r&uuml;nt&uuml;lemesini
@@ -127,7 +127,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">&Ouml;n gereksinimler</a> <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
+<h2 id="theprerequisites">&Ouml;n gereksinimler <a title="Permanent link" href="#theprerequisites" class="permalink">&para;</a></h2>
     
     <p>Bu makalede bahsi ge&ccedil;en y&ouml;nergeler ya ana sunucu yapılandırma
     dosyasında (genellikle <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;m&uuml;nde) ya da dizin i&ccedil;i
@@ -165,7 +165,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">&Ccedil;alışmaya Başlama</a> <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
+<h2 id="gettingitworking">&Ccedil;alışmaya Başlama <a title="Permanent link" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Burada, sunucu &uuml;zerindeki bir dizini parolayla korumak i&ccedil;in
     gereken temel bilgiler verilecektir.</p>
 
@@ -286,7 +286,7 @@
     &ccedil;eşitli yoları &uuml;zerinde duracağız.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Birden &ccedil;ok kişiye izin vermek</a> <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
+<h2 id="lettingmorethanonepersonin">Birden &ccedil;ok kişiye izin vermek <a title="Permanent link" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     
     <p>Yukarıdaki y&ouml;nergelerle bir dizinde sadece bir kişiye
     (<code>umut</code> adlı kullanıcıya) izin verir. &Ccedil;oğunlukla birden
@@ -355,7 +355,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Olası Sorunlar</a> <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
+<h2 id="possibleproblems">Olası Sorunlar <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Temel kimlik doğrulama yolu belirtildiği i&ccedil;in, sunucuya
     yaptığınız her belge istediğinde kullanıcı adınızın ve parolanızın
     doğrulanması gerekir. Hatta aynı sayfayı yeniden y&uuml;klerken ya da
@@ -374,7 +374,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Diğer parola depolama y&ouml;ntemleri</a> <a title="Permanent link" href="#dbmdbd" class="permalink">&para;</a></h2>
+<h2 id="dbmdbd">Diğer parola depolama y&ouml;ntemleri <a title="Permanent link" href="#dbmdbd" class="permalink">&para;</a></h2>
     
     <p>Parolaları basit bir metin dosyasında depolamak yukarıda
     bahsedilen sorunlara yol a&ccedil;tığından parolaları başka bir yerde
@@ -404,7 +404,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Birden &ccedil;ok tedarik&ccedil;i kullanmak</a> <a title="Permanent link" href="#multprovider" class="permalink">&para;</a></h2>
+<h2 id="multprovider">Birden &ccedil;ok tedarik&ccedil;i kullanmak <a title="Permanent link" href="#multprovider" class="permalink">&para;</a></h2>
     
     <p>Kimlik doğrulama ve yetkilendirme mimarisine dayalı yeni
     tedarik&ccedil;iyi kullanarak tek bir yetkilendirme ya da kimlik doğrulama
@@ -462,12 +462,12 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Yetkilendirmenin biraz &ouml;tesi</a> <a title="Permanent link" href="#beyond" class="permalink">&para;</a></h2>
+<h2 id="beyond">Yetkilendirmenin biraz &ouml;tesi <a title="Permanent link" href="#beyond" class="permalink">&para;</a></h2>
     <p>Tek bir veri deposundan yapılacak tek bir sınamadan &ccedil;ok daha
     esnek kimlik doğrulaması yapılabilir. Sıralama, mantık ve hangi
     kimlik doğrulamasının kullanılacağını se&ccedil;mek m&uuml;mk&uuml;nd&uuml;r.</p>
 
-    <h3><a name="authandororder" id="authandororder">Mantık ve sıralamanın uygulanması</a></h3>
+    <h3 id="authandororder">Mantık ve sıralamanın uygulanması</h3>
       
       <p>Yetkilendirmenin hangi sırayla uygulanacağı ve nasıl
       denetleneceği ge&ccedil;mişte biraz gizemli bir konuydu. Apache 2.2'de,
@@ -500,8 +500,8 @@
 
     
 
-    <h3><a name="reqaccessctrl" id="reqaccessctrl">Erişim denetimi i&ccedil;in yetkilendirme tedarik&ccedil;ilerinin
-      kullanımı</a></h3>
+    <h3 id="reqaccessctrl">Erişim denetimi i&ccedil;in yetkilendirme tedarik&ccedil;ilerinin
+      kullanımı</h3>
       
       <p>Kullanıcı adı ve parolasına g&ouml;re kimlik doğrulama hikayenin
       sadece bir b&ouml;l&uuml;m&uuml;d&uuml;r. Sıklıkla insanlara kim olduklarına g&ouml;re
@@ -585,7 +585,7 @@
 
     
 
-    <h3><a name="filesystem" id="filesystem">Erişim denetimi ve geriye uyumluluk</a></h3>
+    <h3 id="filesystem">Erişim denetimi ve geriye uyumluluk</h3>
       
       <p>Kimlik doğrulama i&ccedil;in tedarik tabanlı mekanizma kullanımının
       yan etkilerinden birisi,
@@ -601,7 +601,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Kimlik Doğrulama Arabelleği</a> <a title="Permanent link" href="#socache" class="permalink">&para;</a></h2>
+<h2 id="socache">Kimlik Doğrulama Arabelleği <a title="Permanent link" href="#socache" class="permalink">&para;</a></h2>
     <p>Zaman zaman kimlik doğrulama ağınızda veya sağlayıcı(ları)nızda kabul
     edilemez y&uuml;kler oluşturur. Bu &ccedil;oğunlukla <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
     (veya &uuml;&ccedil;&uuml;nc&uuml; parti/&ouml;zel sağlayıcıların) kullanıcılarını etkiler. Bununla
@@ -611,7 +611,7 @@
     <p>Bu, bazı kullanıcılar i&ccedil;in &ouml;nemli bir başarım artışı sağlayabilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Daha fazla bilgi</a> <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2 id="moreinformation">Daha fazla bilgi <a title="Permanent link" href="#moreinformation" class="permalink">&para;</a></h2>
     <p>Daha fazla bilgi i&ccedil;in <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> ve
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> mod&uuml;llerinin belgelerine bakınız.
     <code class="directive"><a href="../mod/mod_authn_core.html#<authnprovideralias>">&lt;AuthnProviderAlias&gt;</a></code>
@@ -632,7 +632,7 @@
 <a href="../tr/howto/auth.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

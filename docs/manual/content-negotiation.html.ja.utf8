@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -58,7 +58,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="about" id="about">コンテントネゴシエーションについて</a> <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
+<h2 id="about">コンテントネゴシエーションについて <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
     <p>リソースは、幾つか異なった表現で利用できる場合があります。
     例えば、異なる言語や異なるメディアタイプ、
@@ -119,7 +119,7 @@
     ネゴシエーションの<strong>次元</strong>と呼びます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="negotiation" id="negotiation">Apache におけるネゴシエーション</a> <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
+<h2 id="negotiation">Apache におけるネゴシエーション <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
     <p>リソースをネゴシエーションするためには、
     サーバは variant それぞれについての情報を知っておく必要があります。
@@ -136,7 +136,7 @@
       行なってその結果から選択する方法。</li>
     </ul>
 
-   <h3><a name="type-map" id="type-map">type-map ファイルを使う</a></h3>
+   <h3 id="type-map">type-map ファイルを使う</h3>
 
     <p>タイプマップは <code>type-map</code> ハンドラ
     (もしくは、古い Apache
@@ -214,7 +214,7 @@
     ドキュメントにあります。</p>
 
 
-<h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
+<h3 id="multiviews">Multiviews</h3>
 
     <p><code>MultiViews</code> はディレクトリ毎のオプションで、
     <code>httpd.conf</code>ファイルの
@@ -265,7 +265,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="methods" id="methods">ネゴシエーション方法</a> <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
+<h2 id="methods">ネゴシエーション方法 <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
     <p>Apache はリソースの variant の一覧を、タイプマップファイルか
     ディレクトリ内のファイル名からかで取得した後、
@@ -298,7 +298,7 @@
       を実行するように頼むことができます。</li>
     </ol>
 
-<h3><a name="dimensions" id="dimensions">ネゴシエーションの次元</a></h3>
+<h3 id="dimensions">ネゴシエーションの次元</h3>
 
     <table>
       
@@ -348,7 +348,7 @@
     </table>
 
 
-<h3><a name="algorithm" id="algorithm">Apache ネゴシエーションアルゴリズム</a></h3>
+<h3 id="algorithm">Apache ネゴシエーションアルゴリズム</h3>
 
     <p>ブラウザに返す「最適な」variant を (もしあれば) 選択するように
     Apache は次のアルゴリズムを使うことができます。
@@ -436,7 +436,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="better" id="better">品質の値を変える</a> <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
+<h2 id="better">品質の値を変える <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
 
     <p>上記の Apache ネゴシエーションアルゴリズムの厳格な解釈で
     得られるであろう値から、Apache は品質数値を時々変えます。
@@ -448,7 +448,7 @@
     ブラウザが完全で正しい情報を送っていれば、
     この数値変化は適用されません。</p>
 
-<h3><a name="wildcards" id="wildcards">メディアタイプとワイルドカード</a></h3>
+<h3 id="wildcards">メディアタイプとワイルドカード</h3>
 
     <p><code>Accept:</code> リクエストヘッダはメディアタイプの優先傾向を指定します。
     これはまた、"image/*" や "*/*"
@@ -494,7 +494,7 @@
     動作するようになります。</p>
 
 
-<h3><a name="exceptions" id="exceptions">言語ネゴシエーションの例外処理</a></h3>
+<h3 id="exceptions">言語ネゴシエーションの例外処理</h3>
 
     <p>Apache 2.0 では新たに、言語ネゴシエーションが適合するものを
     見つけるのに失敗した時に、優雅にフォールバックできるような
@@ -558,8 +558,8 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extensions" id="extensions">Transparent Content Negotiation
-の拡張</a> <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
+<h2 id="extensions">Transparent Content Negotiation
+の拡張 <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
 
 <p>Apache は transparent content negotiation プロトコル
 (RFC 2295) を次のように拡張しています。
@@ -575,7 +575,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 計算した品質数値は小数点以下 5 桁まで丸めません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="naming" id="naming">リンクと名前の変換に関する注意点</a> <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
+<h2 id="naming">リンクと名前の変換に関する注意点 <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
     <p>言語ネゴシエーションを使っている場合は、
     ファイルが一つ以上の拡張子を持てて、
@@ -686,7 +686,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     (<em>例えば</em> <code>foo.html.en</code>)。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">キャッシュに関する注意事項</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">キャッシュに関する注意事項 <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
     <p>キャッシュが一つの表現を保存しているときは、
     リクエスト URL と関連づけられています。
@@ -727,7 +727,7 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

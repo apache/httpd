@@ -1,0 +1,290 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>motorz - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache MPM motorz</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/motorz.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>A lean, fast, self-contained event-driven Multi-Processing Module
+built on the APR pollset and thread pool especially suited as a reverse proxy</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>mpm_motorz_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>motorz.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p>The <code class="module"><a href="../mod/motorz.html">motorz</a></code> Multi-Processing Module (MPM) is an
+    asynchronous, event-driven implementation. It combines a
+    prefork-style fixed pool of child processes with an event core built on
+    <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>'s pollset and a shared thread pool. Each child
+    runs one or more dedicated <dfn>poller</dfn> threads that watch sockets
+    and timers, dispatching ready I/O events and expired timers to a pool of
+    worker threads. The workers never poll; they only process the
+    connection/request work pushed to them.</p>
+
+    <p>The design goal is a fast, efficient, single, compact MPM that runs on modern
+    Unix platforms by leaning on APR as much as possible, while still supporting
+    the asynchronous connection handling needed for efficient keep-alive and
+    HTTP/2.</p>
+
+    <p>To use the <code class="module"><a href="../mod/motorz.html">motorz</a></code> MPM, add
+      <code>--with-mpm=motorz</code> to the <code class="program"><a href="../programs/configure.html">configure</a></code>
+      script's arguments when building the <code class="program"><a href="../programs/httpd.html">httpd</a></code>, or build
+      it as a loadable module with
+      <code>--enable-mpms-shared=motorz</code>.</p>
+
+</div>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif"> <a href="#how-it-works">How it Works</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#async-connections">Asynchronous connection handling</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#admission-control">Admission control</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#relationship">Relationship to other MPMs</a></li>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mod_unixd.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#pollersperchild">PollersPerChild</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
+<li><img alt="" src="../images/right.gif"> <a href="mod_unixd.html#user">User</a></li>
+</ul>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=motorz">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=motorz">Report a bug</a></li></ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="event.html">The event MPM</a></li>
+<li><a href="worker.html">The worker MPM</a></li>
+<li><a href="prefork.html">The prefork MPM</a></li>
+<li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server uses</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="how-it-works">How it Works <a title="Permanent link" href="#how-it-works" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/motorz.html">motorz</a></code> uses prefork as the framework for process
+    management and an event core for connection handling. A single control
+    process (the parent) launches a fixed number of child processes, as set
+    by the <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> directive.
+    Unlike <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code>, the number of
+    children does not float with load: <code class="module"><a href="../mod/motorz.html">motorz</a></code> maintains a
+    static pool, replacing children one-for-one as they exit. Concurrency
+    within a host is scaled by adding worker threads
+    (<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>) and, where
+    the poll/dispatch path is the bottleneck, poller threads
+    (<code class="directive">PollersPerChild</code>), rather than by spawning more
+    processes.</p>
+
+    <p>Each child process runs:</p>
+    <ul>
+        <li><strong>One or more poller threads.</strong> Each poller owns its
+        own pollset, timer ring (with a guarding mutex) and lock-free
+        transaction-pool recycle list, so pollers never contend with one
+        another. A poller polls, dispatches ready I/O events and expired
+        timers to the worker pool, and (for the poller that owns the listening
+        sockets) accepts new connections. The number of pollers is controlled
+        by <code class="directive">PollersPerChild</code>.</li>
+
+        <li><strong>A shared pool of worker threads</strong>
+        (<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>) that run
+        the actual connection and request processing pushed to them. Workers
+        never poll.</li>
+
+        <li><strong>A supervisor</strong> (the child's main thread) that
+        watches <code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
+        and the pipe-of-death / generation, signals the pollers to wind down,
+        and then joins them on exit.</li>
+    </ul>
+
+    <p>A connection is sharded to one poller at accept time (round-robin) and
+    bound to it for its whole lifetime: it re-arms in, and times out on, that
+    poller's pollset and timer ring. Using multiple pollers lifts the
+    single-poll-thread throughput ceiling, so accept, event dispatch and timer
+    expiry scale with <code class="directive">PollersPerChild</code> instead of being
+    serialized on one thread.</p>
+
+    <p>While the parent process is usually started as <code>root</code> under
+    Unix in order to bind to port 80, the child processes and threads are
+    launched by the server as a less-privileged user. The
+    <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and
+    <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> directives are used to set
+    the privileges of the Apache HTTP Server child processes. The child
+    processes must be able to read all the content that will be served, but
+    should have as few privileges beyond that as possible.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxconnectionsperchild">MaxConnectionsPerChild</a></code>
+    controls how frequently the server recycles processes by retiring old ones
+    and launching new ones.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="async-connections">Asynchronous connection handling <a title="Permanent link" href="#async-connections" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/motorz.html">motorz</a></code> reports itself as an asynchronous MPM. When a
+    worker finishes the active phase of a connection (for example, an
+    HTTP keep-alive connection between requests, or a connection waiting on
+    further I/O), it hands the socket back to its poller rather than holding a
+    worker thread idle. The poller waits for the next event on that socket,
+    bounded by the configured <code class="directive"><a href="../mod/mpm_common.html#timeout">Timeout</a></code>,
+    and re-dispatches the connection to a worker only when there is work to do.
+    This frees worker threads from idle keep-alive connections and is what
+    allows efficient HTTP/2 handling, where the master connection is handed
+    back to the MPM between requests.</p>
+
+    <p>Lingering close is also non-blocking: instead of blocking a worker for
+    the duration of the lingering-close timeout, the draining socket is handed
+    back to the poll loop with a bounded linger timeout, so the worker is
+    returned to the pool immediately.</p>
+
+    <p>Modules that take a connection fully asynchronous (suspending it and
+    resuming it later) are supported; a suspended connection is parked and
+    re-armed on its owning poller when resumed.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="admission-control">Admission control <a title="Permanent link" href="#admission-control" class="permalink">&para;</a></h2>
+    <p>To keep a child safe under overload, <code class="module"><a href="../mod/motorz.html">motorz</a></code> applies
+    listener backpressure. When the worker pool saturates, the poller that
+    owns the listening sockets removes them from its pollset and stops
+    accepting; it re-adds them once the backlog drains. This keeps the work
+    queue and per-connection memory bounded rather than growing without limit.
+    The decision is based on the worker pool's idle, pending and active-thread
+    counts, with hysteresis to avoid flapping the listeners on and off.</p>
+
+    <div class="note"><h3>ThreadsPerChild and admission control</h3>
+    <p>Because the admission-control low-water mark is a fraction of
+    <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, very small
+    values (in particular <code>ThreadsPerChild 1</code>) cause the listeners
+    to re-enable only when the work queue is completely empty, which severely
+    degrades throughput. A value of <code>ThreadsPerChild</code> of at least 4
+    is strongly recommended; the server emits a warning otherwise.</p>
+    </div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="relationship">Relationship to other MPMs <a title="Permanent link" href="#relationship" class="permalink">&para;</a></h2>
+    <p><code class="module"><a href="../mod/motorz.html">motorz</a></code> uses prefork for process management and an APR
+    thread pool for workers, with pollers dispatching work to that pool. This
+    is distinct from <code class="module"><a href="../mod/event.html">event</a></code>'s listener/worker/fdqueue design,
+    in which the worker threads themselves re-arm a shared, thread-safe
+    pollset.</p>
+
+    <p>Whether additional pollers help depends on the workload. If the worker
+    threads are the CPU bottleneck&mdash;typical for real request
+    processing&mdash;the poller threads are not the limiting factor, and a
+    <code class="directive">PollersPerChild</code> beyond one or two yields little. The
+    multiple-poller design removes <code class="module"><a href="../mod/motorz.html">motorz</a></code>'s
+    <em>structural</em> single-thread ceiling, but per-host throughput is still
+    governed by worker CPU.</p>
+
+    <div class="note"><h3>No ServerLimit / dynamic process scaling</h3>
+    <p>Unlike <code class="module"><a href="../mod/worker.html">worker</a></code> and <code class="module"><a href="../mod/event.html">event</a></code>,
+    <code class="module"><a href="../mod/motorz.html">motorz</a></code> does not scale the number of child processes with
+    load and does not provide a separate
+    <code class="directive"><a href="../mod/mpm_common.html#serverlimit">ServerLimit</a></code> ceiling. The process
+    pool is fixed at <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>,
+    which therefore acts as the hard daemon limit, and there are no
+    <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> /
+    <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code> /
+    <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code> controls.
+    Scale concurrency with
+    <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> (and, if the
+    poll path saturates, <code class="directive">PollersPerChild</code>).</p>
+    </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="pollersperchild"><span id="PollersPerChild">PollersPerChild</span> Directive <a title="Permanent link" href="#pollersperchild" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Number of poll threads per child process</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PollersPerChild <var>number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PollersPerChild 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/motorz.html">motorz</a></code></td></tr>
+</table>
+    <p>The <code class="directive">PollersPerChild</code> directive sets the number of
+    poller threads created in each child process. Each poller owns its own
+    pollset, timer ring and connection-recycle list, and handles a shard of
+    the child's connections, so adding pollers raises the rate at which a
+    single child can accept connections and dispatch I/O events and timer
+    expiries.</p>
+
+    <p>A value of <code>0</code> (the default) means <em>auto</em>: the number
+    of pollers is derived from the number of online CPUs, capped at a built-in
+    maximum. In all cases the number of pollers is clamped so that it never
+    exceeds <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> and is
+    never less than one.</p>
+
+    <p>Because event dispatch is rarely the bottleneck for real request
+    processing&mdash;worker CPU usually is&mdash;values beyond one or two
+    seldom improve throughput. Raising <code class="directive">PollersPerChild</code>
+    is mainly useful for workloads dominated by very high connection churn or
+    large numbers of idle, event-driven connections, where the poll/accept
+    path itself becomes the limit.</p>
+
+    <div class="note"><h3>Example</h3>
+    <pre class="prettyprint lang-config">StartServers       2
+ThreadsPerChild   64
+ThreadLimit       64
+PollersPerChild    2</pre>
+
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/motorz.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

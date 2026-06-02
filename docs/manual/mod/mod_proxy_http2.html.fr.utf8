@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -90,7 +90,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples de base</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples de base <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     <p>Les exemples ci-dessous montrent comment configurer HTTP/2 pour des
     connexions d'arri&egrave;re-plan vers un mandataire inverse.</p>
@@ -112,7 +112,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
     </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Informations sur les requ&ecirc;tes</a> <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Informations sur les requ&ecirc;tes <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
     <p><code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> fournit les informations sur les requ&ecirc;tes
     suivantes pour enregistrement dans les journaux en utilisant le format
     <code>%{VARNAME}n</code> avec les directives <code class="directive"><a href="../mod/mod_log_config.html#logformat">LogFormat</a></code> ou <code class="directive"><a href="../mod/core.html#errorlogformat">ErrorLogFormat</a></code> :
@@ -126,7 +126,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="h2push" id="h2push">HTTP/2 PUSH</a> <a title="Lien permanent" href="#h2push" class="permalink">&para;</a></h2>
+<h2 id="h2push">HTTP/2 PUSH <a title="Lien permanent" href="#h2push" class="permalink">&para;</a></h2>
     <p>Ce module ne supporte pas la fonctionnalit&eacute; HTTP/2 PUSH. Les serveurs
     d'arri&egrave;re-plan qui veulent indiquer des ressources &agrave; pr&eacute;charger doivent
     envoyer les en-t&ecirc;tes <code>Link</code> appropri&eacute;s.</p> <p>En cas de besoin,
@@ -143,7 +143,7 @@ ProxyPassReverse "/app" "http://app.example.com"</pre>
 <a href="../fr/mod/mod_proxy_http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

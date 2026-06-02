@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -101,7 +101,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatisasession" id="whatisasession">Qu'est-ce qu'une session ?</a> <a title="Lien permanent" href="#whatisasession" class="permalink">&para;</a></h2>
+<h2 id="whatisasession">Qu'est-ce qu'une session ? <a title="Lien permanent" href="#whatisasession" class="permalink">&para;</a></h2>
       <p>Au coeur de l'interface de session se trouve une table de
       paires cl&eacute;/valeur qui sont accessibles d'une requ&ecirc;te du navigateur
       &agrave; l'autre. Les valeurs de cl&eacute;s peuvent se voir affecter toute cha&icirc;ne
@@ -118,8 +118,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whocanuseasession" id="whocanuseasession">Qui peut utiliser une session
-    ?</a> <a title="Lien permanent" href="#whocanuseasession" class="permalink">&para;</a></h2>
+<h2 id="whocanuseasession">Qui peut utiliser une session
+    ? <a title="Lien permanent" href="#whocanuseasession" class="permalink">&para;</a></h2>
       <p>L'interface de session a &eacute;t&eacute; con&ccedil;ue &agrave; l'origine pour &ecirc;tre
       utilis&eacute;e par d'autres modules du serveur comme
       <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> ; les applications &agrave; base de
@@ -131,8 +131,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serversession" id="serversession">Stockage des sessions sur le
-    serveur</a> <a title="Lien permanent" href="#serversession" class="permalink">&para;</a></h2>
+<h2 id="serversession">Stockage des sessions sur le
+    serveur <a title="Lien permanent" href="#serversession" class="permalink">&para;</a></h2>
       <p>Apache peut &ecirc;tre configur&eacute; pour stocker les sessions
       utilisateurs sur un serveur particulier ou un groupe de serveurs.
       Cette fonctionnalit&eacute; est similaire aus sessions disponibles sur
@@ -156,8 +156,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="browsersession" id="browsersession">Stockage des sessions au niveau
-    du navigateur</a> <a title="Lien permanent" href="#browsersession" class="permalink">&para;</a></h2>
+<h2 id="browsersession">Stockage des sessions au niveau
+    du navigateur <a title="Lien permanent" href="#browsersession" class="permalink">&para;</a></h2>
       <p>Dans les environnements &agrave; haut trafic o&ugrave; le stockage d'une
       session sur un serveur consomme trop
       de ressources, il est possible de stocker le contenu de la session
@@ -179,7 +179,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basicexamples" id="basicexamples">Exemples simples</a> <a title="Lien permanent" href="#basicexamples" class="permalink">&para;</a></h2>
+<h2 id="basicexamples">Exemples simples <a title="Lien permanent" href="#basicexamples" class="permalink">&para;</a></h2>
 
       <p>La cr&eacute;ation d'une session consiste simplement &agrave; ouvrir la
       session, et &agrave; d&eacute;cider de l'endroit o&ugrave; elle doit &ecirc;tre stock&eacute;e. Dans
@@ -230,8 +230,8 @@ SessionHeader X-Replace-Session</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="sessionprivacy" id="sessionprivacy">Confidentialit&eacute; des
-    sessions</a> <a title="Lien permanent" href="#sessionprivacy" class="permalink">&para;</a></h2>
+<h2 id="sessionprivacy">Confidentialit&eacute; des
+    sessions <a title="Lien permanent" href="#sessionprivacy" class="permalink">&para;</a></h2>
 
       <p>En utilisant la fonctionnalit&eacute; de votre navigateur "Afficher
       les cookies", vous pouvez voir une r&eacute;pr&eacute;sentation de la session
@@ -264,7 +264,7 @@ SessionCookieName session path=/</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cookieprivacy" id="cookieprivacy">Confidentialit&eacute; du cookie</a> <a title="Lien permanent" href="#cookieprivacy" class="permalink">&para;</a></h2>
+<h2 id="cookieprivacy">Confidentialit&eacute; du cookie <a title="Lien permanent" href="#cookieprivacy" class="permalink">&para;</a></h2>
 
       <p>Le m&eacute;canisme de cookie HTTP offre aussi des fonctionnalit&eacute;s
       quant &agrave; la confidentialit&eacute;, comme la possibilit&eacute; de
@@ -303,8 +303,8 @@ SessionCookieName session path=/private;domain=example.com;httponly;secure;</pre
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authentication" id="authentication">Support des sessions pour
-    l'authentification</a> <a title="Lien permanent" href="#authentication" class="permalink">&para;</a></h2>
+<h2 id="authentication">Support des sessions pour
+    l'authentification <a title="Lien permanent" href="#authentication" class="permalink">&para;</a></h2>
 
       <p>Comme il est possible de le faire avec de nombreux serveurs
       d'applications, les modules d'authentification peuvent utiliser
@@ -328,8 +328,8 @@ AuthName "realm"
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="integration" id="integration">Int&eacute;gration des sessions avec les
-    applications externes</a> <a title="Lien permanent" href="#integration" class="permalink">&para;</a></h2>
+<h2 id="integration">Int&eacute;gration des sessions avec les
+    applications externes <a title="Lien permanent" href="#integration" class="permalink">&para;</a></h2>
 
       <p>Pour que les sessions soient utiles, leur contenu doit &ecirc;tre
       accessible aux applications externes, et ces derni&egrave;res doivent
@@ -397,7 +397,7 @@ AuthName "realm"
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="session" id="session">Directive</a> <a name="Session" id="Session">Session</a> <a title="Lien permanent" href="#session" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="session">Directive <span id="Session">Session</span> <a title="Lien permanent" href="#session" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ouvre une session pour le contexte courant</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Session On|Off</code></td></tr>
@@ -414,7 +414,7 @@ AuthName "realm"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessionenv" id="sessionenv">Directive</a> <a name="SessionEnv" id="SessionEnv">SessionEnv</a> <a title="Lien permanent" href="#sessionenv" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessionenv">Directive <span id="SessionEnv">SessionEnv</span> <a title="Lien permanent" href="#sessionenv" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si le contenu de la session doit &ecirc;tre enregistr&eacute;
 dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
@@ -440,7 +440,7 @@ dans la variable d'environnement <var>HTTP_SESSION</var></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessionexclude" id="sessionexclude">Directive</a> <a name="SessionExclude" id="SessionExclude">SessionExclude</a> <a title="Lien permanent" href="#sessionexclude" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessionexclude">Directive <span id="SessionExclude">SessionExclude</span> <a title="Lien permanent" href="#sessionexclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les pr&eacute;fixes d'URLs pour lesquels une session sera
 ignor&eacute;e</td></tr>
@@ -469,7 +469,7 @@ ignor&eacute;e</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessionexpiryupdateinterval" id="sessionexpiryupdateinterval">Directive</a> <a name="SessionExpiryUpdateInterval" id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</a> <a title="Lien permanent" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessionexpiryupdateinterval">Directive <span id="SessionExpiryUpdateInterval">SessionExpiryUpdateInterval</span> <a title="Lien permanent" href="#sessionexpiryupdateinterval" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le nombre de secondes dont la dur&eacute;e d'expiration d'une
 session peut changer sans que cette session soit mise &agrave; jour</td></tr>
@@ -509,7 +509,7 @@ session peut changer sans que cette session soit mise &agrave; jour</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessionheader" id="sessionheader">Directive</a> <a name="SessionHeader" id="SessionHeader">SessionHeader</a> <a title="Lien permanent" href="#sessionheader" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessionheader">Directive <span id="SessionHeader">SessionHeader</span> <a title="Lien permanent" href="#sessionheader" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Importation des mises &agrave; jour de session depuis l'en-t&ecirc;te de
 r&eacute;ponse HTTP sp&eacute;cifi&eacute;</td></tr>
@@ -538,7 +538,7 @@ r&eacute;ponse HTTP sp&eacute;cifi&eacute;</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessioninclude" id="sessioninclude">Directive</a> <a name="SessionInclude" id="SessionInclude">SessionInclude</a> <a title="Lien permanent" href="#sessioninclude" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessioninclude">Directive <span id="SessionInclude">SessionInclude</span> <a title="Lien permanent" href="#sessioninclude" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les pr&eacute;fixes d'URL pour lesquels une session est
 valide</td></tr>
@@ -564,7 +564,7 @@ valide</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sessionmaxage" id="sessionmaxage">Directive</a> <a name="SessionMaxAge" id="SessionMaxAge">SessionMaxAge</a> <a title="Lien permanent" href="#sessionmaxage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sessionmaxage">Directive <span id="SessionMaxAge">SessionMaxAge</span> <a title="Lien permanent" href="#sessionmaxage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une dur&eacute;e de vie maximale pour la session en
 secondes</td></tr>
@@ -595,7 +595,7 @@ secondes</td></tr>
 <a href="../fr/mod/mod_session.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

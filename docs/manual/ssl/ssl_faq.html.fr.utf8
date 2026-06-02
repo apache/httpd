@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -41,7 +41,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="installation" id="installation">Installation</a> <a title="Lien permanent" href="#installation" class="permalink">&para;</a></h2>
+<h2 id="installation">Installation <a title="Lien permanent" href="#installation" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#mutex">Pourquoi le d&eacute;marrage d'Apache provoque-t-il des
 erreurs de permission en rapport avec SSLMutex ?</a></li>
@@ -50,8 +50,8 @@ erreurs de permission en rapport avec SSLMutex ?</a></li>
 d'Apache ?</a></li>
 </ul>
 
-<h3><a name="mutex" id="mutex">Pourquoi le d&eacute;marrage d'Apache provoque-t-il des
-erreurs de permission en rapport avec SSLMutex ?</a></h3>
+<h3 id="mutex">Pourquoi le d&eacute;marrage d'Apache provoque-t-il des
+erreurs de permission en rapport avec SSLMutex ?</h3>
     <p>Des erreurs telles que ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (avec l'erreur
     syst&egrave;me qui suit) [...] System: Permission denied (errno: 13)</code>''
@@ -63,9 +63,9 @@ erreurs de permission en rapport avec SSLMutex ?</a></h3>
     directive <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>).</p>
 
 
-<h3><a name="entropy" id="entropy">Pourquoi mod_ssl s'arr&ecirc;te-t-il avec l'erreur
+<h3 id="entropy">Pourquoi mod_ssl s'arr&ecirc;te-t-il avec l'erreur
 "Failed to generate temporary 512 bit RSA private key" au d&eacute;marrage
-d'Apache ?</a></h3>
+d'Apache ?</h3>
     <p>Pour fonctionner correctement, les logiciels de cryptographie ont
     besoin d'une source de donn&eacute;es al&eacute;atoires. De nombreux syst&egrave;mes
     d'exploitation libres proposent un "p&eacute;riph&eacute;rique source d'entropie"
@@ -85,7 +85,7 @@ d'Apache ?</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutconfig" id="aboutconfig">Configuration</a> <a title="Lien permanent" href="#aboutconfig" class="permalink">&para;</a></h2>
+<h2 id="aboutconfig">Configuration <a title="Lien permanent" href="#aboutconfig" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#parallel">Peut-on faire cohabiter HTTP et HTTPS sur le m&ecirc;me
 serveur ?</a></li>
@@ -103,8 +103,8 @@ ne sont-elles pas disponibles dans mes scripts CGI et SSI ?</a></li>
 HTTPS dans les hyperliens relatifs ?</a></li>
 </ul>
 
-<h3><a name="parallel" id="parallel">Peut-on faire cohabiter HTTP et HTTPS sur le m&ecirc;me
-serveur ?</a></h3>
+<h3 id="parallel">Peut-on faire cohabiter HTTP et HTTPS sur le m&ecirc;me
+serveur ?</h3>
     <p>Oui. HTTP et HTTPS utilisent des ports diff&eacute;rents (HTTP &eacute;coute le port
     80 et HTTPS le port 443), si bien qu'il n'y a pas de conflit direct entre
     les deux. Vous pouvez soit ex&eacute;cuter deux instances s&eacute;par&eacute;es du serveur,
@@ -116,7 +116,7 @@ serveur ?</a></h3>
     443.</p>
 
 
-<h3><a name="ports" id="ports">Quel port HTTPS utilise-t-il ?</a></h3>
+<h3 id="ports">Quel port HTTPS utilise-t-il ?</h3>
 <p>Vous pouvez associer le protocole HTTPS &agrave; n'importe quel port, mais le port
 standard est le port 443, que tout navigateur compatible HTTPS va utiliser par
 d&eacute;faut. Vous pouvez forcer votre navigateur &agrave; utiliser un port diff&eacute;rent en le
@@ -125,8 +125,8 @@ servir des pages en HTTPS sur le port 8080, vous pourrez y acc&eacute;der par
 l'adresse <code>https://example.com:8080/</code>.</p>
 
 
-<h3><a name="httpstest" id="httpstest">Comment s'exprimer en langage HTTPS &agrave; des fins
-de test ?</a></h3>
+<h3 id="httpstest">Comment s'exprimer en langage HTTPS &agrave; des fins
+de test ?</h3>
  <p>Alors que vous utilisez simplement</p>
 
     <div class="example"><p><code>$ telnet localhost 80<br>
@@ -154,8 +154,8 @@ de test ?</a></h3>
     $ curl https://localhost/</code></p></div>
 
 
-<h3><a name="hang" id="hang">Pourquoi la communication se bloque-t-elle lorsque je
-me connecte &agrave; mon serveur Apache configur&eacute; pour SSL ?</a></h3>
+<h3 id="hang">Pourquoi la communication se bloque-t-elle lorsque je
+me connecte &agrave; mon serveur Apache configur&eacute; pour SSL ?</h3>
 <p>Ceci peut arriver si vous vous connectez &agrave; un serveur HTTPS (ou &agrave;
 un serveur virtuel) via HTTP (par exemple, en utilisant
 <code>http://example.com/</code> au lieu de <code>https://example.com</code>).
@@ -166,9 +166,9 @@ port non standard). Assurez-vous que vous vous connectez bien &agrave; un
 serveur (virtuel) qui supporte SSL.</p>
 
 
-<h3><a name="refused" id="refused">Pourquoi, lorsque je tente d'acc&eacute;der en HTTPS &agrave; mon
+<h3 id="refused">Pourquoi, lorsque je tente d'acc&eacute;der en HTTPS &agrave; mon
 serveur Apache+mod_ssl fra&icirc;chement install&eacute;, l'erreur ``Connection Refused''
-s'affiche-t-elle ?</a></h3>
+s'affiche-t-elle ?</h3>
 <p>Une configuration incorrecte peut provoquer ce type d'erreur.
 Assurez-vous que vos directives <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> s'accordent avec vos directives
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. Si
@@ -176,14 +176,14 @@ Assurez-vous que vos directives <code class="directive"><a href="../mod/mpm_comm
     configuration par d&eacute;faut fournie par<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>.</p>
 
 
-<h3><a name="envvars" id="envvars">Pourquoi les variables <code>SSL_XXX</code>
-ne sont-elles pas disponibles dans mes scripts CGI et SSI ?</a></h3>
+<h3 id="envvars">Pourquoi les variables <code>SSL_XXX</code>
+ne sont-elles pas disponibles dans mes scripts CGI et SSI ?</h3>
 <p>Assurez-vous que la directive ``<code>SSLOptions +StdEnvVars</code>'' est
 bien pr&eacute;sente dans le contexte de vos requ&ecirc;tes CGI/SSI.</p>
 
 
-<h3><a name="relative" id="relative">Comment puis-je basculer entre les protocoles HTTP et
-HTTPS dans les hyperliens relatifs ?</a></h3>
+<h3 id="relative">Comment puis-je basculer entre les protocoles HTTP et
+HTTPS dans les hyperliens relatifs ?</h3>
 
 <p>Normalement, pour basculer entre HTTP et HTTPS, vous devez utiliser des
 hyperliens pleinement qualifi&eacute;s (car vous devez modifier le sch&eacute;ma de l'URL).
@@ -200,7 +200,7 @@ RewriteRule   "^/(.*)_NOSSL$" "http://%{SERVER_NAME}/$1"  [R,L]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutcerts" id="aboutcerts">Certificats</a> <a title="Lien permanent" href="#aboutcerts" class="permalink">&para;</a></h2>
+<h2 id="aboutcerts">Certificats <a title="Lien permanent" href="#aboutcerts" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#keyscerts">Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
 une demande de signature de certificat (CSR) ?</a></li>
@@ -223,8 +223,8 @@ au format DER ?</a></li>
 v&eacute;rifier mon certificat de serveur ?</a></li>
 </ul>
 
-<h3><a name="keyscerts" id="keyscerts">Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
-une demande de signature de certificat (CSR) ?</a></h3>
+<h3 id="keyscerts">Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
+une demande de signature de certificat (CSR) ?</h3>
 <p>Un fichier de cl&eacute; priv&eacute;e RSA est un fichier num&eacute;rique que vous pouvez
 utiliser pour d&eacute;chiffrer des messages que l'on vous a envoy&eacute;s. Il a son
 pendant &agrave; caract&egrave;re public que vous pouvez distribuer (par le biais de votre
@@ -243,8 +243,8 @@ vous envoient.</p>
     pour une description g&eacute;n&eacute;rale du protocole SSL.</p>
 
 
-<h3><a name="startup" id="startup">Y a-t-il une diff&eacute;rence au d&eacute;marrage entre un serveur
-Apache non SSL et un serveur Apache supportant SSL ?</a></h3>
+<h3 id="startup">Y a-t-il une diff&eacute;rence au d&eacute;marrage entre un serveur
+Apache non SSL et un serveur Apache supportant SSL ?</h3>
 <p>Oui. En g&eacute;n&eacute;ral, avec ou sans <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> int&eacute;gr&eacute;, le d&eacute;marrage
 d'Apache ne pr&eacute;sente pas de diff&eacute;rences. Cependant, si votre fichier de cl&eacute;
 priv&eacute;e SSL poss&egrave;de un mot de passe, vous devrez le taper au d&eacute;marrage
@@ -258,8 +258,8 @@ d'Apache.</p>
     les risques de s&eacute;curit&eacute; - agissez avec pr&eacute;caution !</p>
 
 
-<h3><a name="selfcert" id="selfcert">Comment cr&eacute;er un certificat auto-sign&eacute; SSL &agrave; des
-fins de test ?</a></h3>
+<h3 id="selfcert">Comment cr&eacute;er un certificat auto-sign&eacute; SSL &agrave; des
+fins de test ?</h3>
     <ol>
     <li>V&eacute;rifiez qu'OpenSSL est install&eacute; et l'ex&eacute;cutable openssl dans votre
     <code>PATH</code>.<br>
@@ -288,7 +288,7 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     </ol>
 
 
-<h3><a name="realcert" id="realcert">Comment cr&eacute;er un vrai certificat SSL ?</a></h3>
+<h3 id="realcert">Comment cr&eacute;er un vrai certificat SSL ?</h3>
 <p>Voici la marche &agrave; suivre pas &agrave; pas :</p>
     <ol>
     <li>Assurez-vous qu'OpenSSL est bien install&eacute; et dans votre <code>PATH</code>.
@@ -362,8 +362,8 @@ SSLCertificateKeyFile /path/to/this/server.key</pre>
     </ol>
 
 
-<h3><a name="ownca" id="ownca">Comment cr&eacute;er et utiliser sa propre Autorit&eacute; de
-certification (CA) ?</a></h3>
+<h3 id="ownca">Comment cr&eacute;er et utiliser sa propre Autorit&eacute; de
+certification (CA) ?</h3>
     <p>La solution la plus simple consiste &agrave; utiliser les scripts
     <code>CA.sh</code> ou <code>CA.pl</code> fournis avec OpenSSL. De
     pr&eacute;f&eacute;rence, utilisez cette solution, &agrave; moins que vous ayez de bonnes
@@ -405,8 +405,8 @@ certification (CA) ?</a></h3>
     </ol>
 
 
-<h3><a name="passphrase" id="passphrase">Comment modifier le mot de passe
-de ma cl&eacute; priv&eacute;e ?</a></h3>
+<h3 id="passphrase">Comment modifier le mot de passe
+de ma cl&eacute; priv&eacute;e ?</h3>
 <p>Vous devez simplement lire la cl&eacute; avec l'ancien mot de passe et la
 r&eacute;&eacute;crire en sp&eacute;cifiant le nouveau mot de passe. Pour cela, vous pouvez
 utiliser les commandes suivantes :</p>
@@ -422,8 +422,8 @@ utiliser les commandes suivantes :</p>
     mot de passe une seconde fois.</p>
 
 
-<h3><a name="removepassphrase" id="removepassphrase">Comment d&eacute;marrer Apache sans avoir &agrave; entrer de
-mot de passe ?</a></h3>
+<h3 id="removepassphrase">Comment d&eacute;marrer Apache sans avoir &agrave; entrer de
+mot de passe ?</h3>
 <p>L'apparition de ce dialogue au d&eacute;marrage et &agrave; chaque red&eacute;marrage provient
 du fait que la cl&eacute; priv&eacute;e RSA contenue dans votre fichier server.key est
 enregistr&eacute;e sous forme chiffr&eacute;e pour des raisons de s&eacute;curit&eacute;. Le
@@ -461,8 +461,8 @@ s&eacute;curit&eacute; du serveur - agissez avec pr&eacute;cautions !</p>
     s&eacute;curis&eacute;.</p>
 
 
-<h3><a name="verify" id="verify">Comment v&eacute;rifier si une cl&eacute; priv&eacute;e correspond bien
-&agrave; son certificat ?</a></h3>
+<h3 id="verify">Comment v&eacute;rifier si une cl&eacute; priv&eacute;e correspond bien
+&agrave; son certificat ?</h3>
 <p>Une cl&eacute; priv&eacute;e contient une s&eacute;rie de nombres. Deux de ces nombres forment la
 "cl&eacute; publique", les autres appartiennent &agrave; la "cl&eacute; priv&eacute;e". Les bits de la
 "cl&eacute; publique" sont inclus quand vous g&eacute;n&eacute;rez une CSR, et font par
@@ -494,8 +494,8 @@ cons&eacute;quent partie du certificat associ&eacute;.</p>
     <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
 
 
-<h3><a name="pemder" id="pemder">Comment convertir un certificat du format PEM
-au format DER ?</a></h3>
+<h3 id="pemder">Comment convertir un certificat du format PEM
+au format DER ?</h3>
 <p>Le format des certificats par d&eacute;faut pour OpenSSL est le format PEM,
 qui est tout simplement un format DER cod&eacute; en Base64, avec des lignes
 d'en-t&ecirc;tes et des annotations. Certaines applications, comme
@@ -506,8 +506,8 @@ au format DER <code>cert.der</code> &agrave; l'aide de la commande suivante :
 -outform DER</strong></code></p>
 
 
-<h3><a name="gid" id="gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
-v&eacute;rifier mon certificat de serveur ?</a></h3>
+<h3 id="gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
+v&eacute;rifier mon certificat de serveur ?</h3>
 
     <p>Ceci peut se produire si votre certificat de serveur est sign&eacute;
     par une autorit&eacute; de certification interm&eacute;diaire. Plusieurs CAs,
@@ -529,7 +529,7 @@ v&eacute;rifier mon certificat de serveur ?</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="aboutssl" id="aboutssl">Le protocole SSL</a> <a title="Lien permanent" href="#aboutssl" class="permalink">&para;</a></h2>
+<h2 id="aboutssl">Le protocole SSL <a title="Lien permanent" href="#aboutssl" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#random">Pourquoi de nombreuses et al&eacute;atoires erreurs de
 protocole SSL apparaissent-elles en cas de forte charge du serveur ?</a></li>
@@ -564,8 +564,8 @@ avec les clients bas&eacute;s sur Java lorsqu'on utilise un certificat de plus
 de 1024 bits ?</a></li>
 </ul>
 
-<h3><a name="random" id="random">Pourquoi de nombreuses et al&eacute;atoires erreurs de
-protocole SSL apparaissent-elles en cas de forte charge du serveur ?</a></h3>
+<h3 id="random">Pourquoi de nombreuses et al&eacute;atoires erreurs de
+protocole SSL apparaissent-elles en cas de forte charge du serveur ?</h3>
 <p>Ce probl&egrave;me peut avoir plusieurs causes, mais la principale r&eacute;side dans le
 cache de session SSL d&eacute;fini par la directive
 <code class="directive"><a href="../mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code>. Le cache de session
@@ -573,8 +573,8 @@ DBM est souvent &agrave; la source du probl&egrave;me qui peut &ecirc;tre r&eacu
 cache de session SHM (ou en n'utilisant tout simplement pas de cache).</p>
 
 
-<h3><a name="load" id="load">Pourquoi la charge de mon serveur est-elle plus
-importante depuis qu'il sert des ressources chiffr&eacute;es en SSL ?</a></h3>
+<h3 id="load">Pourquoi la charge de mon serveur est-elle plus
+importante depuis qu'il sert des ressources chiffr&eacute;es en SSL ?</h3>
 <p>SSL utilise un proc&eacute;d&eacute; de chiffrement fort qui n&eacute;cessite la manipulation
 d'une quantit&eacute; tr&egrave;s importante de nombres. Lorsque vous effectuez une requ&ecirc;te
 pour une page web via HTTPS, tout (m&ecirc;me les images) est chiffr&eacute; avant d'&ecirc;tre
@@ -582,8 +582,8 @@ transmis. C'est pourquoi un accroissement du traffic HTTPS entra&icirc;ne une
 augmentation de la charge.</p>
 
 
-<h3><a name="establishing" id="establishing">Pourquoi les connexions en HTTPS &agrave; mon serveur
-prennent-elles parfois jusqu'&agrave; 30 secondes pour s'&eacute;tablir ?</a></h3>
+<h3 id="establishing">Pourquoi les connexions en HTTPS &agrave; mon serveur
+prennent-elles parfois jusqu'&agrave; 30 secondes pour s'&eacute;tablir ?</h3>
 <p>Ce probl&egrave;me provient en g&eacute;n&eacute;ral d'un p&eacute;riph&eacute;rique <code>/dev/random</code>
 qui bloque l'appel syst&egrave;me read(2) jusqu'&agrave; ce que suffisamment d'entropie
 soit disponible pour servir la requ&ecirc;te. Pour plus d'information, se r&eacute;f&eacute;rer au
@@ -591,8 +591,8 @@ manuel de r&eacute;f&eacute;rence de la directive
 <code class="directive"><a href="../mod/mod_ssl.html#sslrandomseed">SSLRandomSeed</a></code>.</p>
 
 
-<h3><a name="ciphers" id="ciphers">Quels sont les algorithmes de chiffrement
-support&eacute;s par mod_ssl ?</a></h3>
+<h3 id="ciphers">Quels sont les algorithmes de chiffrement
+support&eacute;s par mod_ssl ?</h3>
 <p>En g&eacute;n&eacute;ral, tous les algorithmes de chiffrement support&eacute;s par la version
 d'OpenSSL install&eacute;e, le sont aussi par <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>. La liste des
 algorithmes disponibles peut d&eacute;pendre de la mani&egrave;re dont vous avez install&eacute;
@@ -609,9 +609,9 @@ OpenSSL. Typiquement, au moins les algorithmes suivants sont support&eacute;s :<
     <div class="example"><p><code>$ openssl ciphers -v</code></p></div>
 
 
-<h3><a name="adh" id="adh">Pourquoi une erreur ``no shared cipher'' appara&icirc;t-elle
+<h3 id="adh">Pourquoi une erreur ``no shared cipher'' appara&icirc;t-elle
 quand j'essaie d'utiliser un algorithme de chiffrement
-Diffie-Hellman anonyme (ADH) ?</a></h3>
+Diffie-Hellman anonyme (ADH) ?</h3>
 <p>Par d&eacute;faut et pour des raisons de s&eacute;curit&eacute;, OpenSSl ne permet <em>pas</em>
 l'utilisation des algorithmes de chiffrements ADH. Veuillez vous informer
 sur les effets pervers potentiels si vous choisissez d'activer le support
@@ -622,9 +622,9 @@ anonymes (ADH), vous devez compiler OpenSSL avec
 directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code>.</p>
 
 
-<h3><a name="sharedciphers" id="sharedciphers">Pourquoi une erreur ``no shared cipher''
+<h3 id="sharedciphers">Pourquoi une erreur ``no shared cipher''
 appara&icirc;t-elle lorsqu'on se connecte &agrave; mon serveur
-fra&icirc;chement install&eacute; ?</a></h3>
+fra&icirc;chement install&eacute; ?</h3>
 <p>Soit vous avez fait une erreur en d&eacute;finissant votre directive
 <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> (comparez-la avec
 l'exemple pr&eacute;configur&eacute; dans <code>extra/httpd-ssl.conf</code>), soit vous avez
@@ -640,8 +640,8 @@ cl&eacute;/certificat pour le serveur en utilisant un algorithme de chiffrement
 RSA.</p>
 
 
-<h3><a name="vhosts" id="vhosts">Pourquoi ne peut-on pas utiliser SSL avec des h&ocirc;tes
-virtuels identifi&eacute;s par un nom et non par une adresse IP ?</a></h3>
+<h3 id="vhosts">Pourquoi ne peut-on pas utiliser SSL avec des h&ocirc;tes
+virtuels identifi&eacute;s par un nom et non par une adresse IP ?</h3>
 <p>La raison est tr&egrave;s technique, et s'apparente au probl&egrave;me de la primaut&eacute; de
 l'oeuf ou de la poule. La couche du protocole SSL se trouve en dessous de la
 couche de protocole HTTP qu'elle encapsule. Lors de l'&eacute;tablissement d'une
@@ -662,9 +662,9 @@ contourner ce probl&egrave;me.</p>
     virtuels &agrave; base de noms sans avoir &agrave; contourner ce probl&egrave;me.</p>
 
 
-<h3><a name="vhosts2" id="vhosts2">Est-il possible d'utiliser
+<h3 id="vhosts2">Est-il possible d'utiliser
 l'h&eacute;bergement virtuel bas&eacute; sur le nom d'h&ocirc;te
-pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</a></h3>
+pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</h3>
     <p>L'h&eacute;bergement virtuel bas&eacute; sur le nom est une m&eacute;thode tr&egrave;s populaire
     d'identification des diff&eacute;rents h&ocirc;tes virtuels. Il permet d'utiliser la
     m&ecirc;me adresse IP et le m&ecirc;me num&eacute;ro de port pour de nombreux sites
@@ -717,7 +717,7 @@ pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</a></h3>
     Utiliser des num&eacute;ros de port diff&eacute;rents pour chaque h&ocirc;te SSL.</p>
 
 
-<h3><a name="comp" id="comp">Comment mettre en oeuvre la compression SSL ?</a></h3>
+<h3 id="comp">Comment mettre en oeuvre la compression SSL ?</h3>
 <p>Bien que la n&eacute;gociation pour la compression SSL ait &eacute;t&eacute; d&eacute;finie dans la
 sp&eacute;cification de SSLv2 et TLS, ce n'est qu'en mai 2004 que la RFC 3749 a
 d&eacute;fini DEFLATE comme une m&eacute;thode de compression standard n&eacute;gociable.
@@ -735,10 +735,10 @@ journalisant la variable <code>%{SSL_COMPRESS_METHOD}x</code>.
 </p>
 
 
-<h3><a name="lockicon" id="lockicon">Lorsque j'utilise l'authentification de base sur HTTPS,
+<h3 id="lockicon">Lorsque j'utilise l'authentification de base sur HTTPS,
 l'ic&ocirc;ne de verrouillage des navigateurs Netscape reste ouverte quand la bo&icirc;te
 de dialogue d'authentification appara&icirc;t. Cela signifie-t-il que les utilisateur
-et mot de passe sont envoy&eacute;s en clair ?</a></h3>
+et mot de passe sont envoy&eacute;s en clair ?</h3>
 <p>Non, le couple utilisateur/mot de passe est transmis sous forme chiffr&eacute;e.
 	L'ic&ocirc;ne de chiffrement dans les navigateurs Netscape n'est pas vraiment
 	synchronis&eacute; avec la couche SSL/TLS. Il ne passe &agrave; l'&eacute;tat verrouill&eacute;
@@ -751,10 +751,10 @@ et mot de passe sont envoy&eacute;s en clair ?</a></h3>
 	chiffr&eacute;e. Ne vous laissez donc pas abuser par l'&eacute;tat de cet ic&ocirc;ne.</p>
 
 
-<h3><a name="msie" id="msie">Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles
+<h3 id="msie">Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles
 lorsqu'on se connecte via HTTPS &agrave; un serveur Apache+mod_ssl avec des
 versions anciennes de
-Microsoft Internet Explorer (MSIE) ?</a></h3>
+Microsoft Internet Explorer (MSIE) ?</h3>
 <p>La premi&egrave;re raison en est la pr&eacute;sence dans l'impl&eacute;mentation SSL de
 certaines versions de MSIE de bogues subtils en rapport avec le
 dispositif de "maintien en vie" (keep-alive) HTTP, et les alertes de
@@ -785,7 +785,7 @@ dans votre section d'h&ocirc;te virtuel avec support SSL :</p>
 
 
 
-<h3><a name="srp" id="srp">Comment activer TLS-SRP ?</a></h3>
+<h3 id="srp">Comment activer TLS-SRP ?</h3>
     <p>TLS-SRP (Echange de cl&eacute;s avec mot de passe distant s&eacute;curis&eacute;,
     d&eacute;fini dans la RFC 5054) peut compl&eacute;ter ou m&ecirc;me remplacer les
     certificats au cours de l'authentification d'une connexion SSL. Pour
@@ -807,9 +807,9 @@ dans votre section d'h&ocirc;te virtuel avec support SSL :</p>
     </code></p></div>
 
 
-<h3><a name="javadh" id="javadh">Pourquoi des erreurs de n&eacute;gociation apparaissent
+<h3 id="javadh">Pourquoi des erreurs de n&eacute;gociation apparaissent
 avec les clients bas&eacute;s sur Java lorsqu'on utilise un certificat de plus
-de 1024 bits ?</a></h3>
+de 1024 bits ?</h3>
     <p>Depuis la version 2.5.0-dev et &agrave;/c du 29/09/2013,
     <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> utilise des param&egrave;tres DH qui comportent
     des nombres premiers de plus de 1024 bits. Cependant, java 7 et ses versions
@@ -846,7 +846,7 @@ de 1024 bits ?</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="support" id="support">Support de mod_ssl</a> <a title="Lien permanent" href="#support" class="permalink">&para;</a></h2>
+<h2 id="support">Support de mod_ssl <a title="Lien permanent" href="#support" class="permalink">&para;</a></h2>
 <ul>
 <li><a href="#resources">Quelles sont les sources d'informations
 disponibles en cas de probl&egrave;me avec mod_ssl ?</a></li>
@@ -861,8 +861,8 @@ ce qui s'est pass&eacute;, pour m'aider &agrave; trouver la raison de ce vidage
 m&eacute;moire ?</a></li>
 </ul>
 
-<h3><a name="resources" id="resources">Quelles sont les sources d'informations
-disponibles en cas de probl&egrave;me avec mod_ssl ?</a></h3>
+<h3 id="resources">Quelles sont les sources d'informations
+disponibles en cas de probl&egrave;me avec mod_ssl ?</h3>
 <p>Voici les sources d'informations disponibles ; vous devez chercher
 ici en cas de probl&egrave;me.</p>
 
@@ -879,8 +879,8 @@ ici en cas de probl&egrave;me.</p>
     </dl>
 
 
-<h3><a name="contact" id="contact">Qui peut-on contacter pour un support en cas de
-probl&egrave;me avec mod_ssl ?</a></h3>
+<h3 id="contact">Qui peut-on contacter pour un support en cas de
+probl&egrave;me avec mod_ssl ?</h3>
  <p>Voici toutes les possibilit&eacute;s de support pour mod_ssl, par ordre
  de pr&eacute;f&eacute;rence. Merci d'utiliser ces possibilit&eacute;s
  <em>dans cet ordre</em> - ne vous pr&eacute;cipitez pas sur celle qui vous
@@ -910,8 +910,8 @@ probl&egrave;me avec mod_ssl ?</a></h3>
     </ol>
 
 
-<h3><a name="reportdetails" id="reportdetails">Quelles informations dois-je fournir lors
-de l'&eacute;criture d'un rapport de bogue ?</a></h3>
+<h3 id="reportdetails">Quelles informations dois-je fournir lors
+de l'&eacute;criture d'un rapport de bogue ?</h3>
 <p>Vous devez toujours fournir au moins les informations
 suivantes :</p>
 
@@ -956,8 +956,8 @@ suivantes :</p>
     </dl>
 
 
-<h3><a name="coredumphelp" id="coredumphelp">Un vidage m&eacute;moire s'est produit,
-pouvez-vous m'aider ?</a></h3>
+<h3 id="coredumphelp">Un vidage m&eacute;moire s'est produit,
+pouvez-vous m'aider ?</h3>
 <p>En g&eacute;n&eacute;ral non, du moins tant que vous n'aurez pas fourni plus de
 d&eacute;tails &agrave; propos de la localisation dans le code o&ugrave; Apache a effectu&eacute;
 son vidage m&eacute;moire. Ce dont nous avons en g&eacute;n&eacute;ral besoin pour vous
@@ -966,9 +966,9 @@ Sans cette information, il est pratiquement impossible de d&eacute;terminer
 la nature du probl&egrave;me et de vous aider &agrave; le r&eacute;soudre.</p>
 
 
-<h3><a name="backtrace" id="backtrace">Comment puis-je obtenir une journalisation de
+<h3 id="backtrace">Comment puis-je obtenir une journalisation de
 ce qui s'est pass&eacute;, pour m'aider &agrave; trouver la raison de ce vidage
-m&eacute;moire ?</a></h3>
+m&eacute;moire ?</h3>
 <p>Vous trouverez ci-dessous les diff&eacute;rentes &eacute;tapes permettant
 d'obtenir une journalisation des &eacute;v&egrave;nements (backtrace) :</p>
     <ol>
@@ -1009,7 +1009,7 @@ d'obtenir une journalisation des &eacute;v&egrave;nements (backtrace) :</p>
 <a href="../fr/ssl/ssl_faq.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -44,7 +44,7 @@ Barındırma</a></li><li><a href="examples.html">&Ccedil;ok kullanılan sanal ko
 &ouml;rnekleri</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">İsme dayalı ve IP'ye dayalı Sanal Konaklar</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
+<h2 id="namevip">İsme dayalı ve IP'ye dayalı Sanal Konaklar <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p><a href="ip-based.html">IP'ye dayalı sanal konaklar</a>da sunulacak
       sanal konağı doğru tespit edebilmek i&ccedil;in bağlantının yapıldığı IP
@@ -71,7 +71,7 @@ Barındırma</a></li><li><a href="examples.html">&Ccedil;ok kullanılan sanal ko
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alg" id="alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl se&ccedil;er</a> <a title="Permanent link" href="#alg" class="permalink">&para;</a></h2>
+<h2 id="alg">Sunucu isme dayalı sanal konaklardan uygun olanını nasıl se&ccedil;er <a title="Permanent link" href="#alg" class="permalink">&para;</a></h2>
   
 
     <p>İsme dayalı sanal konak &ccedil;&ouml;z&uuml;mlemesinin ilk adımının IP'ye dayalı
@@ -88,7 +88,7 @@ Barındırma</a></li><li><a href="examples.html">&Ccedil;ok kullanılan sanal ko
       <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> y&ouml;nergelerindeki
       isimlerle karşılaştırır.</p>
 
-  <h3><a name="defaultvhost" id="defaultvhost">Bir IP adresi ve port &ccedil;ifti i&ccedil;in &ouml;ntanımlı isme dayalı sankon</a></h3>
+  <h3 id="defaultvhost">Bir IP adresi ve port &ccedil;ifti i&ccedil;in &ouml;ntanımlı isme dayalı sankon</h3>
    
     <p><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ve
       <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> y&ouml;nergelerinde bir
@@ -97,7 +97,7 @@ Barındırma</a></li><li><a href="examples.html">&Ccedil;ok kullanılan sanal ko
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="using" id="using">İsme Dayalı Sanal Konakların Kullanımı</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
+<h2 id="using">İsme Dayalı Sanal Konakların Kullanımı <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -197,7 +197,7 @@ Barındırma</a></li><li><a href="examples.html">&Ccedil;ok kullanılan sanal ko
 <a href="../tr/vhosts/name-based.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

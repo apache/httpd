@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -52,7 +52,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="uptodate" id="uptodate">Mantenerse al D&iacute;a</a> <a title="Enlace permanente" href="#uptodate" class="permalink">&para;</a></h2>
+<h2 id="uptodate">Mantenerse al D&iacute;a <a title="Enlace permanente" href="#uptodate" class="permalink">&para;</a></h2>
 
     <p>El Servidor Apache HTTP tiene un buen historial de seguridad y comunidad de desarrolladores con una alta preocupaci&oacute;n por los problemas de seguridad. Pero ser&aacute; inevitable que algunos problemas -- peque&ntilde;os o grandes -- sean descubiertos en el software despu&eacute;s de que &eacute;ste ha sido publicado. Por esta raz&oacute;n, es crucial estar al tanto de las actualizaciones de software.  Si ha obtenido su versi&oacute;n del Servidor HTTP directamente de Apache, le recomendamos encarecidamente que se suscriba a la <a href="http://httpd.apache.org/lists.html#http-announce">Lista de Anuncios del Servidor Apache HTTP</a> donde puede estar informado de nuevas versiones y actualizaciones de seguridad. Hay servicios similares disponibles desde la mayor&iacute;a de distribuidores de terceros del Software Apache.</p>
 
@@ -60,7 +60,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dos" id="dos">Ataques de Denegaci&oacute;n de Servicio (DoS, Denial of Service)</a> <a title="Enlace permanente" href="#dos" class="permalink">&para;</a></h2>
+<h2 id="dos">Ataques de Denegaci&oacute;n de Servicio (DoS, Denial of Service) <a title="Enlace permanente" href="#dos" class="permalink">&para;</a></h2>
 
     
 
@@ -98,7 +98,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverroot" id="serverroot">Permisos en Directorios ServerRoot</a> <a title="Enlace permanente" href="#serverroot" class="permalink">&para;</a></h2>
+<h2 id="serverroot">Permisos en Directorios ServerRoot <a title="Enlace permanente" href="#serverroot" class="permalink">&para;</a></h2>
 
     
 
@@ -129,7 +129,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssi" id="ssi">Server Side Includes (Inclusiones en la parte Servidor)</a> <a title="Enlace permanente" href="#ssi" class="permalink">&para;</a></h2>
+<h2 id="ssi">Server Side Includes (Inclusiones en la parte Servidor) <a title="Enlace permanente" href="#ssi" class="permalink">&para;</a></h2>
 
     
 
@@ -150,7 +150,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi" id="cgi">CGI en General</a> <a title="Enlace permanente" href="#cgi" class="permalink">&para;</a></h2>
+<h2 id="cgi">CGI en General <a title="Enlace permanente" href="#cgi" class="permalink">&para;</a></h2>
 
     
 
@@ -160,7 +160,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="nsaliasedcgi" id="nsaliasedcgi">CGI sin Alias de Script</a> <a title="Enlace permanente" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="nsaliasedcgi">CGI sin Alias de Script <a title="Enlace permanente" href="#nsaliasedcgi" class="permalink">&para;</a></h2>
 
     
 
@@ -174,7 +174,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="saliasedcgi" id="saliasedcgi">CGI con Alias de Script</a> <a title="Enlace permanente" href="#saliasedcgi" class="permalink">&para;</a></h2>
+<h2 id="saliasedcgi">CGI con Alias de Script <a title="Enlace permanente" href="#saliasedcgi" class="permalink">&para;</a></h2>
 
     
 
@@ -184,7 +184,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Otras fuentes de contenido din&aacute;mico</a> <a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">Otras fuentes de contenido din&aacute;mico <a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -193,7 +193,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamicsec" id="dynamicsec">Seguridad de Contenido Din&aacute;mico</a> <a title="Enlace permanente" href="#dynamicsec" class="permalink">&para;</a></h2>
+<h2 id="dynamicsec">Seguridad de Contenido Din&aacute;mico <a title="Enlace permanente" href="#dynamicsec" class="permalink">&para;</a></h2>
 
   
 
@@ -203,7 +203,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="systemsettings" id="systemsettings">Configuraci&oacute;n de Protecci&oacute;n del Sistema</a> <a title="Enlace permanente" href="#systemsettings" class="permalink">&para;</a></h2>
+<h2 id="systemsettings">Configuraci&oacute;n de Protecci&oacute;n del Sistema <a title="Enlace permanente" href="#systemsettings" class="permalink">&para;</a></h2>
 
     
 
@@ -222,7 +222,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protectserverfiles" id="protectserverfiles">Proteger Ficheros del Servidor por Defecto</a> <a title="Enlace permanente" href="#protectserverfiles" class="permalink">&para;</a></h2>
+<h2 id="protectserverfiles">Proteger Ficheros del Servidor por Defecto <a title="Enlace permanente" href="#protectserverfiles" class="permalink">&para;</a></h2>
 
     
 
@@ -261,7 +261,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="watchyourlogs" id="watchyourlogs">Examinando sus Logs</a> <a title="Enlace permanente" href="#watchyourlogs" class="permalink">&para;</a></h2>
+<h2 id="watchyourlogs">Examinando sus Logs <a title="Enlace permanente" href="#watchyourlogs" class="permalink">&para;</a></h2>
 
     
 
@@ -297,7 +297,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">Fusi&oacute;n de secciones de configuraci&oacute;n</a> <a title="Enlace permanente" href="#merging" class="permalink">&para;</a></h2>
+<h2 id="merging">Fusi&oacute;n de secciones de configuraci&oacute;n <a title="Enlace permanente" href="#merging" class="permalink">&para;</a></h2>
 
     
 
@@ -313,7 +313,7 @@
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

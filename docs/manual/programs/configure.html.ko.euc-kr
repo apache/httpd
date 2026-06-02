@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -46,7 +46,7 @@
 </ul><h3>참고</h3><ul class="seealso"><li><a href="../install.html">컴파일과 설치</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">개요</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">개요 <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code>configure</code> 스크립트는 배포본의 최상위
     디렉토리에서 실행해야 한다.</p>
 
@@ -59,7 +59,7 @@
     설명한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">옵션</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">옵션 <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
   <ul>
     <li><a href="#configurationoptions">구성 옵션</a></li>
     <li><a href="#installationdirectories">설치 디렉토리</a></li>
@@ -68,7 +68,7 @@
     <li><a href="#supportopt">지원 프로그램을 위한 옵션</a></li>
   </ul>
 
-  <h3><a name="configurationoptions" id="configurationoptions">구성 옵션</a></h3>
+  <h3 id="configurationoptions">구성 옵션</h3>
 
     <p>이 옵션들은 <code>configure</code> 자체 행동에 영향을
     준다.</p>
@@ -114,7 +114,7 @@
     </dl>
   
 
-  <h3><a name="installationdirectories" id="installationdirectories">설치 디렉토리</a></h3>
+  <h3 id="installationdirectories">설치 디렉토리</h3>
 
     <p>이 옵션들은 설치 디렉토리를 지정한다. 설치 위치는
       선택한 구조(layout)에 따라 다르다.</p>
@@ -238,7 +238,7 @@
     
   
   
-  <h3><a name="systemtypes" id="systemtypes">시스템 종류</a></h3>
+  <h3 id="systemtypes">시스템 종류</h3>
 
     <p>다른 시스템에서 실행할 아파치 웹서버를
       교차컴파일하기(cross-compile)하기 위한 옵션들이다. 서버를
@@ -262,7 +262,7 @@
     </dl>
   
 
-  <h3><a name="optionalfeatures" id="optionalfeatures">기능 선택</a></h3>
+  <h3 id="optionalfeatures">기능 선택</h3>
 
     <p>이 옵션은 웹서버의 세부 기능을 조절한다.</p>
 
@@ -697,7 +697,7 @@
     
   
 
-  <h3><a name="packages" id="packages">추가 패키지 선택</a></h3>
+  <h3 id="packages">추가 패키지 선택</h3>
     <p>다음 옵션은 추가 패키지를 선택한다.</p>
 
     <h4><a name="generalpackages" id="generalpackages">일반적인 문법</a></h4>
@@ -793,7 +793,7 @@
     
   
   
-  <h3><a name="supportopt" id="supportopt">지원 프로그램을 위한 옵션</a></h3>
+  <h3 id="supportopt">지원 프로그램을 위한 옵션</h3>
     <dl>
       <dt><code>--enable-static-support</code></dt>
       <dd>지원 프로그램을 정적으로 링크된 실행파일로 만든다.
@@ -901,7 +901,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">환경변수</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">환경변수 <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
   <p><code>configure</code>의 선택을 무시하거나 관례와 다른
     이름이나 위치에 있는 라이브러리와 프로그램을 찾도록 도와주는
     유용한 환경변수들이 있다.</p>
@@ -935,7 +935,7 @@
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

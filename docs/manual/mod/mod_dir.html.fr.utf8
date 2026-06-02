@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -73,7 +73,7 @@ de r&eacute;pertoire</td></tr>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_dir">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_dir">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directorycheckhandler" id="directorycheckhandler">Directive</a> <a name="DirectoryCheckHandler" id="DirectoryCheckHandler">DirectoryCheckHandler</a> <a title="Lien permanent" href="#directorycheckhandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directorycheckhandler">Directive <span id="DirectoryCheckHandler">DirectoryCheckHandler</span> <a title="Lien permanent" href="#directorycheckhandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la r&eacute;ponse de ce module lorsqu'un autre
 gestionnaire est utilis&eacute;</td></tr>
@@ -109,7 +109,7 @@ comme si "DirectoryCheckHandler ON" avait &eacute;t&eacute; sp&eacute;cifi&eacut
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directoryindex" id="directoryindex">Directive</a> <a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a title="Lien permanent" href="#directoryindex" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directoryindex">Directive <span id="DirectoryIndex">DirectoryIndex</span> <a title="Lien permanent" href="#directoryindex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Liste des fichiers ressources &agrave; rechercher lorsque le
 client envoie une requ&ecirc;te pour un r&eacute;pertoire</td></tr>
@@ -189,7 +189,7 @@ client envoie une requ&ecirc;te pour un r&eacute;pertoire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directoryindexredirect" id="directoryindexredirect">Directive</a> <a name="DirectoryIndexRedirect" id="DirectoryIndexRedirect">DirectoryIndexRedirect</a> <a title="Lien permanent" href="#directoryindexredirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directoryindexredirect">Directive <span id="DirectoryIndexRedirect">DirectoryIndexRedirect</span> <a title="Lien permanent" href="#directoryindexredirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une redirection externe pour les index de
 r&eacute;pertoires.
@@ -233,7 +233,7 @@ r&eacute;pertoires.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directoryslash" id="directoryslash">Directive</a> <a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a title="Lien permanent" href="#directoryslash" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directoryslash">Directive <span id="DirectorySlash">DirectorySlash</span> <a title="Lien permanent" href="#directoryslash" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activation/D&eacute;sactivation de la redirection "slash de
 fin"</td></tr>
@@ -305,7 +305,7 @@ du serveur HTTP Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="fallbackresource" id="fallbackresource">Directive</a> <a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="fallbackresource">Directive <span id="FallbackResource">FallbackResource</span> <a title="Lien permanent" href="#fallbackresource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
 aucun fichier ou gestionnaire</td></tr>
@@ -387,7 +387,7 @@ version 2.4.4 du serveur HTTP Apache</td></tr>
 <a href="../tr/mod/mod_dir.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -50,12 +50,12 @@
 </ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../configuring.html">Ficheros de Configuraci&oacute;n</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">Descripci&oacute;n</a> <a title="Enlace permanente" href="#Description" class="permalink">&para;</a></h2>
+<h2 id="Description">Descripci&oacute;n <a title="Enlace permanente" href="#Description" class="permalink">&para;</a></h2>
 
     <p>Una breve descripci&oacute;n del prop&oacute;sito de la directiva.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Syntax" id="Syntax">Sintaxis</a> <a title="Enlace permanente" href="#Syntax" class="permalink">&para;</a></h2>
+<h2 id="Syntax">Sintaxis <a title="Enlace permanente" href="#Syntax" class="permalink">&para;</a></h2>
 
     <p>Indica el formato de la directiva tal y como aparecer&iacute;a en un fichero de 
     configuraci&oacute;n. Esta sintaxis es muy espec&iacute;fica de cada directiva, y se 
@@ -139,7 +139,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Default" id="Default">Por defecto</a> <a title="Enlace permanente" href="#Default" class="permalink">&para;</a></h2>
+<h2 id="Default">Por defecto <a title="Enlace permanente" href="#Default" class="permalink">&para;</a></h2>
 
     <p>Si la directiva tiene un valor por defecto (<em>p.ej.</em>, si
     la omite de la configuraci&oacute;n completamente, el servidor Web Apache
@@ -151,7 +151,7 @@
     con el servidor.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Context" id="Context">Contexto</a> <a title="Enlace permanente" href="#Context" class="permalink">&para;</a></h2>
+<h2 id="Context">Contexto <a title="Enlace permanente" href="#Context" class="permalink">&para;</a></h2>
 
     <p>Esto indica d&oacute;nde se acepta la directiva en los ficheros de 
     configuraci&oacute;n. Es una lista separada por comas para uno o m&aacute;s de los 
@@ -205,7 +205,7 @@
     o <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Override" id="Override">Override</a> <a title="Enlace permanente" href="#Override" class="permalink">&para;</a></h2>
+<h2 id="Override">Override <a title="Enlace permanente" href="#Override" class="permalink">&para;</a></h2>
 
     <p>Este atributo de directiva indica qu&eacute; Override de configuraci&oacute;n debe 
     estar activo para que la directiva se procese cuando aparece en un fichero 
@@ -221,7 +221,7 @@
     los posibles nombres de Override disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Estado</a> <a title="Enlace permanente" href="#Status" class="permalink">&para;</a></h2>
+<h2 id="Status">Estado <a title="Enlace permanente" href="#Status" class="permalink">&para;</a></h2>
 
     <p>Esto indica cuan vinculada est&aacute; esta directiva al servidor Web de Apache; 
     o en otras palabras, puede que necesite recompilar el servidor con un 
@@ -271,13 +271,13 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Module" id="Module">M&oacute;dulo</a> <a title="Enlace permanente" href="#Module" class="permalink">&para;</a></h2>
+<h2 id="Module">M&oacute;dulo <a title="Enlace permanente" href="#Module" class="permalink">&para;</a></h2>
 
     <p>&Eacute;sto simplemente hace referencia al nombre del m&oacute;dulo original que provee 
     la directiva.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Compatibilidad</a> <a title="Enlace permanente" href="#Compatibility" class="permalink">&para;</a></h2>
+<h2 id="Compatibility">Compatibilidad <a title="Enlace permanente" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>Si la directiva no era parte de la distribuci&oacute;n original de Apache 
     versi&oacute;n 2, la versi&oacute;n en la que se introdujo deber&iacute;a estar referida aqu&iacute;. 
@@ -293,7 +293,7 @@
 <a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

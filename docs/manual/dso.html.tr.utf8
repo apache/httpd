@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -50,7 +50,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Ger&ccedil;eklenim</a> <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
+<h2 id="implementation">Ger&ccedil;eklenim <a title="Permanent link" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -84,7 +84,7 @@
       programını kullanarak derleyebilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Kullanım &Ouml;zeti</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">Kullanım &Ouml;zeti <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusu 2.x'in DSO &ouml;zelliklerine bir giriş olarak burada
       kısaca bir bilgi vermekle yetinilecektir:</p>
@@ -150,7 +150,7 @@ $ apxs -aci filanca mod_filanca.la
       bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="background" id="background">Artalan Bilgisi</a> <a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
+<h2 id="background">Artalan Bilgisi <a title="Permanent link" href="#background" class="permalink">&para;</a></h2>
 
     <p>G&uuml;n&uuml;m&uuml;z&uuml;n Unix t&uuml;revlerinde var olan bir mekanizma sayesinde
       &ccedil;alıştırılabilir bir programın adres uzayına &ccedil;alışma anında y&uuml;klenmek
@@ -241,7 +241,7 @@ $ apxs -aci filanca mod_filanca.la
       kullanılabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Getiriler ve G&ouml;t&uuml;r&uuml;ler</a> <a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
+<h2 id="advantages">Getiriler ve G&ouml;t&uuml;r&uuml;ler <a title="Permanent link" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>Yukarıda bahsedilen DSO'ya dayalı &ouml;zelliklerin getirileri
       şunlardır:</p>
@@ -307,7 +307,7 @@ $ apxs -aci filanca mod_filanca.la
 <a href="./tr/dso.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

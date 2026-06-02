@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -41,7 +41,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="identification" id="identification">서버 식별</a> <a title="Permanent link" href="#identification" class="permalink">&para;</a></h2>
+<h2 id="identification">서버 식별 <a title="Permanent link" href="#identification" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li></ul></td></tr></table>
@@ -61,7 +61,7 @@
     올바로 찾게 한다.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="locations" id="locations">파일 위치</a> <a title="Permanent link" href="#locations" class="permalink">&para;</a></h2>
+<h2 id="locations">파일 위치 <a title="Permanent link" href="#locations" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#lockfile">LockFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
@@ -75,7 +75,7 @@
     문서를 참고하라.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="resource" id="resource">자원사용 제한</a> <a title="Permanent link" href="#resource" class="permalink">&para;</a></h2>
+<h2 id="resource">자원사용 제한 <a title="Permanent link" href="#resource" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td></td><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
@@ -100,7 +100,7 @@
 <a href="./tr/server-wide.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

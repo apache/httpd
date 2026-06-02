@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -82,7 +82,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_status">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_status">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Status 사용하기</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Status 사용하기 <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>foo.com 도메인에서 접근한 브라우저에게만 상태를 보여주려면
@@ -102,7 +102,7 @@
     접근하면 서버 통계를 볼 수 있다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="autoupdate" id="autoupdate">자동 갱신</a> <a title="Permanent link" href="#autoupdate" class="permalink">&para;</a></h2>
+<h2 id="autoupdate">자동 갱신 <a title="Permanent link" href="#autoupdate" class="permalink">&para;</a></h2>
 
     
     <p>브라우저가 "재갱신"을 지원한다면 status 페이지를 자동으로
@@ -112,7 +112,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="machinereadable" id="machinereadable">컴퓨터가 읽을 수 있는 Status 파일</a> <a title="Permanent link" href="#machinereadable" class="permalink">&para;</a></h2>
+<h2 id="machinereadable">컴퓨터가 읽을 수 있는 Status 파일 <a title="Permanent link" href="#machinereadable" class="permalink">&para;</a></h2>
 
     
     <p><code>http://your.server.name/server-status?auto</code>에서
@@ -140,7 +140,7 @@
 <a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

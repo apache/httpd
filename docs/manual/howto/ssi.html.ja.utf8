@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -49,7 +49,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">はじめに</a> <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">はじめに <a title="Permanent link" href="#related" class="permalink">&para;</a></h2>
  <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_include.html#xbithack">XBitHack</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></code></li></ul></td></tr></table>
 
     <p>この記事は、通常は単に SSI と呼ばれる Server Side Includes
@@ -63,7 +63,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what" id="what">SSI とは ?</a> <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
+<h2 id="what">SSI とは ? <a title="Permanent link" href="#what" class="permalink">&para;</a></h2>
 
     <p>SSI (Server Side Includes) は、HTML
     ページ中に配置されるディレクティブであり、
@@ -79,7 +79,7 @@
     他の方法を探す必要があります。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">SSI を許可するためのサーバの設定</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">SSI を許可するためのサーバの設定 <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
 
 
     <p>サーバで SSI を許可するには、<code>httpd.conf</code>
@@ -164,7 +164,7 @@
     </ol>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basic" id="basic">基本的な SSI ディレクティブ</a> <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
+<h2 id="basic">基本的な SSI ディレクティブ <a title="Permanent link" href="#basic" class="permalink">&para;</a></h2>
 
     <p>SSI ディレクティブは以下の文法で記述します:</p>
 <div class="example"><p><code>
@@ -180,7 +180,7 @@
     指定できるものの大多数については、次回もう少し詳しく説明します。
     ここでは、SSI で行なうことができる例をいくつか示します。</p>
 
-<h3><a name="todaysdate" id="todaysdate">今日の日付</a></h3>
+<h3 id="todaysdate">今日の日付</h3>
 
 <div class="example"><p><code>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
@@ -202,7 +202,7 @@
 </code></p></div>
 
 
-<h3><a name="lastmodified" id="lastmodified">ファイルの変更日</a></h3>
+<h3 id="lastmodified">ファイルの変更日</h3>
 
 <div class="example"><p><code>
         This document last modified &lt;!--#flastmod file="index.html" --&gt;
@@ -212,7 +212,7 @@
     フォーマットの設定に従います。</p>
 
 
-<h3><a name="cgi" id="cgi">CGI プログラムの結果を取り込む</a></h3>
+<h3 id="cgi">CGI プログラムの結果を取り込む</h3>
 
     <p>これは、全ての人のお気に入りである ``ヒットカウンタ'' のような
     CGI プログラムの結果を出力する SSI
@@ -225,14 +225,14 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="additionalexamples" id="additionalexamples">追加の例</a> <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
+<h2 id="additionalexamples">追加の例 <a title="Permanent link" href="#additionalexamples" class="permalink">&para;</a></h2>
 
 
     <p>以下は、SSI を使用して HTML
     ドキュメントにおいてできることのいくつかの特別な例です。</p>
 
-<h3><a name="docmodified" id="docmodified">いつこのドキュメントは修正されたのか
-?</a></h3>
+<h3 id="docmodified">いつこのドキュメントは修正されたのか
+?</h3>
 
     <p>先に、ドキュメントが最後に変更されたのはいつかを
     ユーザに通知するために SSI を使用することができることを述べました。
@@ -261,7 +261,7 @@
     <code>strftime</code> で検索してみてください。文法は同じです。</p>
 
 
-<h3><a name="standard-footer" id="standard-footer">標準のフッタを挿入する</a></h3>
+<h3 id="standard-footer">標準のフッタを挿入する</h3>
 
 
     <p>もし数ページを超えるページを持つサイトを管理しているならば、
@@ -295,7 +295,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">他に何が設定できるのか ?</a> <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">他に何が設定できるのか ? <a title="Permanent link" href="#config" class="permalink">&para;</a></h2>
 
 
     <p>時刻書式を <code>config</code> で設定できることに加えて、
@@ -324,7 +324,7 @@
     に短縮させるには <code>abbrev</code> を指定することができます。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exec" id="exec">コマンドの実行</a> <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
+<h2 id="exec">コマンドの実行 <a title="Permanent link" href="#exec" class="permalink">&para;</a></h2>
     
 
     <p>今後数ヶ月のうちに、小さな CGI プログラムと SSI
@@ -360,14 +360,14 @@
     機能は許可しないようにすることができます。</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="advanced" id="advanced">高度な SSI テクニック</a> <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
+<h2 id="advanced">高度な SSI テクニック <a title="Permanent link" href="#advanced" class="permalink">&para;</a></h2>
 
 
     <p>コンテンツを出力することに加え、Apache SSI は変数を設定し、
     そして比較と条件分岐にその変数を使用できる機能を提供しています。
     </p>
 
-<h3><a name="caveat" id="caveat">警告</a></h3>
+<h3 id="caveat">警告</h3>
 
     <p>この記事で述べた大部分の機能は、Apache 1.2
     以降を使用している場合のみ利用可能です。もちろん、もし Apache 1.2
@@ -375,7 +375,7 @@
     さぁ、今それを行ないなさい。それまで待っています。</p>
 
 
-<h3><a name="variables" id="variables">変数を設定する</a></h3>
+<h3 id="variables">変数を設定する</h3>
 
     <p><code>set</code> ディレクティブを使用して、
     後で使用するために変数を設定することができます。
@@ -413,7 +413,7 @@
 </code></p></div>
 
 
-<h3><a name="conditional" id="conditional">条件式</a></h3>
+<h3 id="conditional">条件式</h3>
 
 
     <p>さて、変数を持っていて、
@@ -475,7 +475,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="conclusion" id="conclusion">終わりに</a> <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
+<h2 id="conclusion">終わりに <a title="Permanent link" href="#conclusion" class="permalink">&para;</a></h2>
 
     <p>SSI は確かに CGI
     や動的なウェブページを生成する他の技術に代わるものではありません。
@@ -490,7 +490,7 @@
 <a href="../ko/howto/ssi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

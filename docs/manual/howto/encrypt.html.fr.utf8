@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -70,7 +70,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">Tutoriel SSL</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Une br&egrave;ve introduction sur les certificats, ou passeports Internet</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Une br&egrave;ve introduction sur les certificats, ou passeports Internet <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>
     Le protocole TLS (anciennement SSL) permet aux clients et serveurs de
@@ -158,7 +158,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="buycert" id="buycert">Acheter un certificat</a> <a title="Lien permanent" href="#buycert" class="permalink">&para;</a></h2>
+<h2 id="buycert">Acheter un certificat <a title="Lien permanent" href="#buycert" class="permalink">&para;</a></h2>
     
     <p>Vous pouvez effectivement en acheter un. De nombreuses soci&eacute;t&eacute;s vendent
     des passeports Internet en tant que service. Dans <a href="https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport">cette
@@ -186,7 +186,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="freecert" id="freecert">Obtenir gratuitement un certificat</a> <a title="Lien permanent" href="#freecert" class="permalink">&para;</a></h2>
+<h2 id="freecert">Obtenir gratuitement un certificat <a title="Lien permanent" href="#freecert" class="permalink">&para;</a></h2>
     
     <p>
     Certaines soci&eacute;t&eacute;s fournissent gratuitement des certificats pour serveurs
@@ -212,7 +212,7 @@
 <a href="../fr/howto/encrypt.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

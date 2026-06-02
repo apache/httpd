@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@
 </ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="intro.html">mod_rewrite 简介</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">介绍</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">介绍 <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 的行为可以通过一个或多个标志来修改。标志包含在规则末尾的方括号中，
 多个标志之间用逗号分隔。</p>
@@ -88,7 +88,7 @@
 <p>下面逐一介绍每个可用的标志，并给出使用示例。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B（转义反向引用）</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_b">B（转义反向引用） <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>[B] 标志指示 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 在应用转换之前转义非字母数字字符。</p>
 
@@ -140,7 +140,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
         和 <a href="#flag_bctls">#flag_bctls</a></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus（不将空格转义为 +）</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus（不将空格转义为 +） <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>[BNP] 标志指示 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 将反向引用中的空格字符
 转义为 %20 而不是 '+'。当反向引用将用于路径部分而不是查询字符串时很有用。</p>
 
@@ -153,7 +153,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>此标志在 2.4.26 及更高版本中可用。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>[BCTLS] 标志类似于 [B] 标志，但只转义控制字符和空格字符。
 这与未编码复制到查询字符串时被拒绝的字符集相同。
 </p>
@@ -166,7 +166,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>[BNE=...] 中的字符列表被视为 [B] 或 [BCTLS] 标志的排除项。
 列出的字符将不会被转义。
 </p>
@@ -178,7 +178,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 <p>此标志在 2.5.1 及更高版本中可用。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
 <p>[C] 或 [chain] 标志表示该 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 与下一条规则链接在一起。也就是说，如果该规则匹配，则照常处理，
 控制继续传递到下一条规则。但如果不匹配，
@@ -186,7 +186,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
 <p>[CO] 或 [cookie] 标志允许你在特定的
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 匹配时设置 cookie。参数由三个必需字段和五个可选字段组成。</p>
@@ -261,7 +261,7 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>DPI 标志使重写后 URI 的 PATH_INFO 部分被丢弃。</p>
 <p>此标志在 2.2.12 及更高版本中可用。</p>
 <p>在目录级上下文中，每个 <code class="directive">RewriteRule</code>
@@ -285,7 +285,7 @@ PATH_INFO 不需要的话。此标志会永久忘记本轮
 而不会附加任何 PATH_INFO。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
 <p>使用 [E] 或 [env] 标志，你可以设置环境变量的值。
 请注意，某些环境变量可能在规则运行后被设置，
 从而取消你所设置的值。有关环境变量工作方式的更多详细信息，
@@ -330,14 +330,14 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 也可以达到相同的效果。此处提供此技术作为示例，而非建议。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>使用 [END] 标志不仅会终止当前轮的重写处理（如 [L]），
 还会阻止在目录级（htaccess）上下文中发生任何后续的重写处理。</p>
 
 <p>这不适用于由外部重定向产生的新请求。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>使用 [F] 标志会导致服务器向客户端返回 403 Forbidden 状态码。
 虽然使用 <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>
 指令也可以实现相同的行为，但这种方式在分配 Forbidden 状态时更加灵活。</p>
@@ -355,7 +355,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>[G] 标志强制服务器在响应中返回 410 Gone 状态。
 这表示资源曾经可用，但现在已不再可用。</p>
 
@@ -369,7 +369,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>强制使用指定的处理器来处理结果请求。例如，
 可以使用此标志强制所有没有文件扩展名的文件由 php 处理器解析：</p>
 
@@ -395,7 +395,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 $1 引用正则表达式括号内捕获的匹配内容。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>[L] 标志使 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
 停止处理规则集。在大多数上下文中，这意味着如果规则匹配，
 将不再处理后续规则。这对应于 Perl 中的 <code>last</code>
@@ -433,7 +433,7 @@ RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 [N] 标志使规则集从头开始重新运行，使用到目前为止的规则集结果作为起点。
 请极其谨慎地使用，因为它可能导致循环。
@@ -458,7 +458,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>使用 [NC] 标志使 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 以不区分大小写的方式进行匹配。也就是说，
 匹配的 URI 中字母是大写还是小写都无所谓。</p>
@@ -471,7 +471,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>默认情况下，当 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 导致外部重定向时，输出中不在以下安全集中的字符将被转换为其十六进制编码
 （百分比编码）等价物：</p>
@@ -502,7 +502,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>使用 [NS] 标志可防止规则被用于子请求。例如，
 使用 SSI（服务器端包含）包含的页面是子请求，
 你可能希望避免在这些子请求上发生重写。此外，
@@ -522,7 +522,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>使用 [P] 标志使请求由 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 处理，并通过代理请求进行处理。例如，
 如果你想让所有图像请求由后端图像服务器处理，可以这样做：</p>
@@ -565,7 +565,7 @@ URL 集的安全影响。确保 URL 的方案和主机名部分是固定的，
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 RewriteRule 中的目标（或替换字符串）默认被假定为文件路径。
@@ -604,7 +604,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 当替换 URI 包含查询字符串时，
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -624,7 +624,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 当请求的 URI 包含查询字符串而目标 URI 不包含时，
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -646,7 +646,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 默认情况下，替换中第一个（最左边的）问号将路径与查询字符串分开。
 使用 [QSL] 标志指示
@@ -661,7 +661,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 使用 [R] 标志会导致向浏览器发出 HTTP 重定向。
 如果指定了完全限定的 URL（即包含 <code>http://servername/</code>），
@@ -690,7 +690,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
 <p>[S] 标志用于跳过你不想运行的规则。
 跳过标志的语法为 [S=<em>N</em>]，其中 <em>N</em>
 表示要跳过的规则数（前提是
@@ -737,7 +737,7 @@ RewriteRule ".?"                  "-" [S=3]
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>设置响应将以何种 MIME 类型发送。这与 <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> 指令的效果相同。</p>
 
 <p>例如，你可以使用以下技术在以特定方式请求时将 Perl 源代码作为纯文本提供：</p>
@@ -767,13 +767,13 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 处理。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>如果被重写的 HTTP 请求包含编码的问号 '%3f'，
     且重写结果的替换中包含 '?'，则需要设置此标志才能允许重写继续。
     这可以防止恶意 URL 利用捕获和重新替换编码的问号。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>当服务器范围内的替换以变量或反向引用开头并解析为文件系统路径时，
     需要设置此标志。这些替换不会以文档根目录为前缀。
     这可以防止恶意 URL 导致展开的替换映射到意外的文件系统位置。</p>
@@ -781,7 +781,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>设置此标志可防止合并多个前导斜杠，
     如 Windows UNC 路径中使用的那样。当规则替换以多个字面量斜杠开头时，
     不需要此标志。</p>
@@ -799,7 +799,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 <a href="../zh-cn/rewrite/flags.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

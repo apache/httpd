@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -45,7 +45,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>Apache HTTP sunucusu, sunucunun başarımını &ccedil;eşitli yollarla arttırmak
@@ -93,7 +93,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">&Uuml;&ccedil; durumlu RFC2616 HTTP &ouml;nbelleklemesi</a> <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
+<h2 id="http-caching">&Uuml;&ccedil; durumlu RFC2616 HTTP &ouml;nbelleklemesi <a title="Permanent link" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -389,7 +389,7 @@
         saptar ve istemciye hangi s&uuml;r&uuml;mle yanıt verileceğine karar verir.</p>
     
 
-    <h3><a name="disk" id="disk">Disk &Uuml;zerinde &Ouml;nbellekleme</a></h3>
+    <h3 id="disk">Disk &Uuml;zerinde &Ouml;nbellekleme</h3>
       
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> mod&uuml;l&uuml; &ouml;nbelleği y&ouml;netmek i&ccedil;in &ccedil;eşitli
@@ -503,7 +503,7 @@ CacheDirLength 1
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne &Ouml;nbellekleme</a> <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
+<h2 id="socache-caching">İki durumlu Anahtar/Değer Paylaşımlı Nesne &Ouml;nbellekleme <a title="Permanent link" href="#socache-caching" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_dbm.html">mod_socache_dbm</a></code></li><li><code class="module"><a href="./mod/mod_socache_dc.html">mod_socache_dc</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li><li><code class="module"><a href="./mod/mod_socache_shmcb.html">mod_socache_shmcb</a></code></li><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
@@ -526,7 +526,7 @@ CacheDirLength 1
     <dd>Paylaşımlı belleğe dayalı paylaşımlı nesne &ouml;nbelleklemesi.</dd>
     </dl>
 
-    <h3><a name="mod_authn_socache-caching" id="mod_authn_socache-caching">Kimlik Doğrulama Bilgilerinin &Ouml;nbelleklenmesi</a></h3>
+    <h3 id="mod_authn_socache-caching">Kimlik Doğrulama Bilgilerinin &Ouml;nbelleklenmesi</h3>
       
 
       <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li></ul></td></tr></table>
@@ -536,7 +536,7 @@ CacheDirLength 1
         sağlar.</p>
     
 
-    <h3><a name="mod_ssl-caching" id="mod_ssl-caching">SSL Oturumlarının &Ouml;nbelleklenmesi</a></h3>
+    <h3 id="mod_ssl-caching">SSL Oturumlarının &Ouml;nbelleklenmesi</h3>
       
 
       <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
@@ -546,7 +546,7 @@ CacheDirLength 1
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Uzmanlaşmış Dosya &Ouml;nbellekleme</a> <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
+<h2 id="file-caching">Uzmanlaşmış Dosya &Ouml;nbellekleme <a title="Permanent link" href="#file-caching" class="permalink">&para;</a></h2>
     
 
      <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
@@ -560,7 +560,7 @@ CacheDirLength 1
       se&ccedil;eneği vardır. Bu se&ccedil;eneklerin duruk dosyalara erişimin yavaş olduğu
       sistemlere de bir yardımı olabilir.</p>
 
-    <h3><a name="filehandle" id="filehandle">Dosya Tanıtıcı &Ouml;nbelleklemesi</a></h3>
+    <h3 id="filehandle">Dosya Tanıtıcı &Ouml;nbelleklemesi</h3>
       
 
       <p>Bir dosyanın a&ccedil;ılması işlemi, &ouml;zellikle de ağ dosya sistemlerinde
@@ -607,7 +607,7 @@ CacheDirLength 1
 
     
 
-    <h3><a name="inmemory" id="inmemory">Sistem Belleğinde &Ouml;nbellekleme</a></h3>
+    <h3 id="inmemory">Sistem Belleğinde &Ouml;nbellekleme</h3>
       
 
       <p>İ&ccedil;eriğin sistem belleğinden sunulması i&ccedil;erik sunmanın evrensel olarak
@@ -697,7 +697,7 @@ CacheDirLength 1
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">G&uuml;venlik Kaygıları</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">G&uuml;venlik Kaygıları <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Erişim Denetimi ve Yetkilendirme</h3>
@@ -813,7 +813,7 @@ CacheDirLength 1
 <a href="./tr/caching.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -40,7 +40,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="definition" id="definition">&iquest;Qu&eacute; es un Handler?</a> <a title="Enlace permanente" href="#definition" class="permalink">&para;</a></h2>
+<h2 id="definition">&iquest;Qu&eacute; es un Handler? <a title="Enlace permanente" href="#definition" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>M&oacute;dulos Relacionados</th><th>Directivas Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
@@ -97,11 +97,11 @@
     </ul> 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Ejemplos</a> <a title="Enlace permanente" href="#examples" class="permalink">&para;</a></h2> 
+<h2 id="examples">Ejemplos <a title="Enlace permanente" href="#examples" class="permalink">&para;</a></h2> 
       
 
-      <h3><a name="example1" id="example1">Modificar contenido est&aacute;tico usando un script
-      CGI</a></h3>
+      <h3 id="example1">Modificar contenido est&aacute;tico usando un script
+      CGI</h3>
       
 
       <p>Las siguientes directivas hacen que cuando haya una
@@ -120,7 +120,7 @@
       modificaci&oacute;n o a&ntilde;adido deseado.</p>
 
     
-    <h3><a name="example2" id="example2">Archivos con cabeceras HTTP</a></h3>
+    <h3 id="example2">Archivos con cabeceras HTTP</h3>
       
 
       <p>Las siguientes directivas activan el handler
@@ -138,7 +138,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programmer" id="programmer">Nota para programadores</a> <a title="Enlace permanente" href="#programmer" class="permalink">&para;</a></h2>
+<h2 id="programmer">Nota para programadores <a title="Enlace permanente" href="#programmer" class="permalink">&para;</a></h2>
     
 
     <p>Para implementar las funcionalidades de los handlers, se ha
@@ -170,7 +170,7 @@
 <a href="./zh-cn/handler.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

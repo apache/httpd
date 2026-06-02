@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -48,7 +48,7 @@
     Apache</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">&Uuml;berblick</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">&Uuml;berblick <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Referenzierte Module</th><th>Referenzierte Direktiven</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
@@ -109,7 +109,7 @@ Listen 192.0.2.5:8000</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="reload" id="reload">&Auml;nderung der Listen-Konfiguration beim Neustart</a> <a title="Permanent link" href="#reload" class="permalink">&para;</a></h2>
+<h2 id="reload">&Auml;nderung der Listen-Konfiguration beim Neustart <a title="Permanent link" href="#reload" class="permalink">&para;</a></h2>
     
 
     <p>Wenn der httpd neu gestartet wird, m&uuml;ssen &Auml;nderungen an
@@ -139,7 +139,7 @@ Listen 192.0.2.5:8000</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Betrachtung von IPv6-Besonderheiten</a> <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
+<h2 id="ipv6">Betrachtung von IPv6-Besonderheiten <a title="Permanent link" href="#ipv6" class="permalink">&para;</a></h2>
     
 
     <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
@@ -190,7 +190,7 @@ Listen 192.0.2.1:80</pre>
     OpenBSD ist <code>--disable-v4-mapped</code> voreingestellt.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Angabe des Protokolls bei Listen</a> <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Angabe des Protokolls bei Listen <a title="Permanent link" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>Das optionale zweite <var>Protokoll</var>-Argument von <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ist f&uuml;r die meisten
     Konfigurationen gar nicht erforderlich. Wenn nicht angegeben, sind
@@ -209,7 +209,7 @@ Listen 192.0.2.1:80</pre>
 </div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Das Zusammenspiel mit virtuellen Hosts</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Das Zusammenspiel mit virtuellen Hosts <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
     <p>Die Direktive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
@@ -240,7 +240,7 @@ Listen 192.0.2.1:80</pre>
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

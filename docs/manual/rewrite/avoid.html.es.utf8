@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -71,7 +71,7 @@ con los que trabajar, puede necesitar recurrir a
 </ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentaci&oacute;n del m&oacute;dulo</a></li><li><a href="intro.html">Introducci&oacute;n a mod_rewrite</a></li><li><a href="remapping.html">Redirecci&oacute;n y remapeo</a></li><li><a href="access.html">Control de acceso</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="proxy.html">Proxy</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">T&eacute;cnicas avanzadas</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Redirecci&oacute;n Simple</a> <a title="Enlace permanente" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">Redirecci&oacute;n Simple <a title="Enlace permanente" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> proporciona las directivas <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> y <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>, que proporcionan un
@@ -131,7 +131,7 @@ tarea en un archivo <code>.htaccess</code> en su lugar.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">Alias de URL</a> <a title="Enlace permanente" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">Alias de URL <a title="Enlace permanente" href="#alias" class="permalink">&para;</a></h2>
 <p>La directiva <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
 proporciona mapeo de un URI a un directorio - generalmente un directorio fuera
 de su <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Aunque es
@@ -154,7 +154,7 @@ tiene <code>Options FollowSymLinks</code> habilitado en su
 servidor.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">Alojamiento Virtual</a> <a title="Enlace permanente" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">Alojamiento Virtual <a title="Enlace permanente" href="#vhosts" class="permalink">&para;</a></h2>
 <p>Aunque es posible manejar <a href="vhosts.html">hosts virtuales
 con mod_rewrite</a>, rara vez es la forma correcta. Crear bloques
 <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> individuales es
@@ -176,7 +176,7 @@ parece ser el enfoque correcto.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Proxy Simple</a> <a title="Enlace permanente" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Proxy Simple <a title="Enlace permanente" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> proporciona la bandera <a href="flags.html#flag_p">[P]</a> para pasar URIs reescritas a trav&eacute;s de
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
@@ -206,7 +206,7 @@ lograr.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">Prueba de Variables de Entorno</a> <a title="Enlace permanente" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">Prueba de Variables de Entorno <a title="Enlace permanente" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se usa frecuentemente para tomar una acci&oacute;n particular
 basada en la presencia o ausencia de una variable de entorno particular
@@ -244,7 +244,7 @@ y en ciertas otras directivas.</p>
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -70,7 +70,7 @@ y&ouml;nergesinde kullanılabilecek bayrakları ayrıntılı a&ccedil;ıklamalar
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 y&ouml;nergesinin davranışı bir veya daha fazla bayrakla
 değiştirilebilir. Bayraklar kuralın sonunda k&ouml;şeli parantez i&ccedil;inde
@@ -94,7 +94,7 @@ olmaz.</p>
 bir &ouml;rnekle birlikte sunulmaktadır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (geri başvuruları kodla)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_b">B (geri başvuruları kodla) <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>[B] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 y&ouml;nergesine d&ouml;n&uuml;ş&uuml;m&uuml; uygulamadan &ouml;nce alfasayısal olmayan karakterleri
 kodlamasını s&ouml;yler.</p>
@@ -153,7 +153,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 <p>Bu şekilde kodlanan karakterleri sınırlamak i&ccedil;in <a href="#flag_bne">#flag_bne</a> ve <a href="#flag_bctls">#flag_bctls</a> bayraklarına bakın</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (boşluğu +'ya kodlama)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus (boşluğu +'ya kodlama) <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>[BNP] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 y&ouml;nergesine geri başvurulardaki boşluk karakterini '+' yerine %20
 olarak kodlamasını s&ouml;yler. Geri başvuru sorgu dizgesi yerine yol
@@ -168,7 +168,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>Bu bayrak 2.4.26 ve sonraki s&uuml;r&uuml;mlerde mevcuttur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>[BCTLS] bayrağı [B] bayrağına benzer, ancak yalnızca kontrol
 karakterlerini ve boşluk karakterini kodlar. Bu, sorgu dizgesine
 kodlanmadan kopyalandıklarında reddedilen karakter k&uuml;mesiyle
@@ -182,7 +182,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>[BNE=...] i&ccedil;indeki karakter listesi, [B] veya [BCTLS] bayraklarının
 karakterlerinden istisna olarak değerlendirilir. Listelenen karakterler
 kodlanmayacaktır.</p>
@@ -194,7 +194,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 <p>Bu bayrak 2.5.1 ve sonraki s&uuml;r&uuml;mlerde mevcuttur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
 <p>[C] veya [chain] bayrağı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesinin bir sonraki
 kurala zincirleneceğini belirtir. Yani, kural eşleşirse her zamanki
 gibi işlenir ve denetim bir sonraki kurala ge&ccedil;er. Ancak eşleşmezse bir
@@ -202,7 +202,7 @@ sonraki kural ve birlikte zincirlenen diğer kurallar atlanır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
 <p>[CO] veya [cookie] bayrağı, belirli bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> eşleştiğinde bir &ccedil;erez
 ayarlamanıza olanak tanır. Arg&uuml;man &uuml;&ccedil; zorunlu ve beş isteğe bağlı
 alandan oluşur.</p>
@@ -285,7 +285,7 @@ erecek şekilde ayarlanır ve t&uuml;m URI'ler i&ccedil;in d&ouml;nd&uuml;r&uuml
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>DPI bayrağı, yeniden yazılmış URI'nin PATH_INFO b&ouml;l&uuml;m&uuml;n&uuml;n
 atılmasına neden olur.</p>
 <p>Bu bayrak 2.2.12 ve sonraki s&uuml;r&uuml;mlerde mevcuttur.</p>
@@ -315,7 +315,7 @@ hesaplanmaz. Bu tur boyunca sonraki kurallar, yalnızca değiştirmelerin
 doğrudan sonucunu g&ouml;r&uuml;r; eklenmiş bir PATH_INFO olmaz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
 <p>[E] veya [env] bayrağıyla bir ortam değişkeninin değerini
 ayarlayabilirsiniz. Bazı ortam değişkenlerinin kural &ccedil;alıştıktan sonra
 ayarlanabileceğini ve b&ouml;ylece ayarladığınız değeri ge&ccedil;ersiz
@@ -367,7 +367,7 @@ kullanılarak elde edilebileceğini unutmayın. Bu teknik bir &ouml;neri olarak
 değil, bir &ouml;rnek olarak sunulmuştur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>[END] bayrağı kullanmak, yalnızca ge&ccedil;erli yeniden yazma işleme
 turunu durdurmakla kalmaz ([L] gibi), aynı zamanda dizin başına
 (htaccess) bağlamda sonraki yeniden yazma işlemlerinin de
@@ -377,7 +377,7 @@ ger&ccedil;ekleşmesini engeller.</p>
 ge&ccedil;erli değildir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>[F] bayrağı kullanmak, sunucunun istemciye 403 Yasak durum kodu
 d&ouml;nd&uuml;rmesine neden olur. Aynı davranış <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> y&ouml;nergesiyle de
 ger&ccedil;ekleştirilebilir ancak bu, Yasak durumu atamada daha fazla esneklik
@@ -398,7 +398,7 @@ d&ouml;nd&uuml;r&uuml;l&uuml;r ve başka kural değerlendirilmez.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>[G] bayrağı, sunucuyu yanıtla birlikte 410 Kalktı durum kodu
 d&ouml;nd&uuml;rmeye zorlar. Bu, bir kaynağın eskiden mevcut olduğunu ancak
 artık mevcut olmadığını belirtir.</p>
@@ -414,7 +414,7 @@ d&ouml;nd&uuml;r&uuml;l&uuml;r ve başka kural değerlendirilmez.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Elde edilen isteğin belirtilen işleyici ile işlenmesini zorlar.
 &Ouml;rneğin, dosya uzantısı olmayan t&uuml;m dosyaların php işleyicisi
 tarafından &ccedil;&ouml;z&uuml;mlenmesini zorlamak i&ccedil;in kullanılabilir:</p>
@@ -443,7 +443,7 @@ $1 geri başvurusu, d&uuml;zenli ifadenin parantez i&ccedil;indeki yakalanan
 eşleşmeye referans verir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>[L] bayrağı, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> mod&uuml;l&uuml;n&uuml;n kural k&uuml;mesini
 işlemeyi durdurmasına neden olur. &Ccedil;oğu bağlamda, kural eşleşirse başka
 kural işlenmeyeceği anlamına gelir. Bu, Perl'deki <code>last</code>
@@ -486,7 +486,7 @@ RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 [N] bayrağı, kural k&uuml;mesinin şimdiye kadarki sonucu başlangı&ccedil; noktası
 olarak kullanarak en baştan yeniden başlamasına neden olur. D&ouml;ng&uuml;ye
@@ -516,7 +516,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>[NC] bayrağının kullanımı, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesinin b&uuml;y&uuml;k/k&uuml;&ccedil;&uuml;k
 harf duyarsız bi&ccedil;imde eşleştirilmesine neden olur. Yani eşleşen
 URI'de harflerin b&uuml;y&uuml;k veya k&uuml;&ccedil;&uuml;k harf olarak g&ouml;r&uuml;n&uuml;p g&ouml;r&uuml;nmediği
@@ -531,7 +531,7 @@ duyarsızdır; bu nedenle &ouml;rneğin hem <code>.jpg</code> hem de
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>&Ouml;ntanımlı olarak, bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> harici y&ouml;nlendirmeyle
 sonu&ccedil;landığında, &ccedil;ıktıda aşağıdaki g&uuml;venli k&uuml;me dışında kalan
 karakterler onaltılık kod (y&uuml;zde kodlu) eşdeğerlerine
@@ -566,7 +566,7 @@ yol a&ccedil;ar.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>[NS] bayrağının kullanımı, kuralın alt isteklerde kullanılmasını
 engeller. &Ouml;rneğin, SSI (Sunucu Tarafı Dahil Etme) kullanılarak dahil
 edilen bir sayfa bir alt istektir ve bu alt isteklerde yeniden
@@ -591,7 +591,7 @@ ayrı HTTP istekleri olarak ister.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>[P] bayrağının kullanımı, isteğin <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 tarafından işlenmesine ve bir vekil isteği &uuml;zerinden ele alınmasına
 neden olur. &Ouml;rneğin, t&uuml;m resim isteklerinin bir arka u&ccedil; resim
@@ -641,7 +641,7 @@ etkinleştirilmiş olmalıdır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 Bir RewriteRule'daki hedef (veya değiştirme dizgesi) &ouml;ntanımlı olarak
@@ -678,7 +678,7 @@ zımnen uygulandığını unutmayın. Bundan ka&ccedil;ınmanın tek yolu
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 Değiştirme URI'si bir sorgu dizgesi i&ccedil;erdiğinde, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesinin &ouml;ntanımlı
 davranışı mevcut sorgu dizgesini atıp yeni oluşturulanla
@@ -699,7 +699,7 @@ dizgesi atılır.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 İstenen URI bir sorgu dizgesi i&ccedil;erdiğinde ve hedef URI i&ccedil;ermediğinde,
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesinin
@@ -722,7 +722,7 @@ değiştirilir.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 &Ouml;ntanımlı olarak, değiştirmedeki ilk (en soldaki) soru işareti yolu
 sorgu dizgesinden ayırır. [QSL] bayrağı kullanmak, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesine iki bileşeni
@@ -737,7 +737,7 @@ bayrakla birlikte sonuna bir soru işareti eklenebilir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 [R] bayrağı kullanmak, tarayıcıya bir HTTP y&ouml;nlendirmesi
 verilmesine neden olur. Tam nitelikli bir URL belirtilmişse (yani
@@ -773,7 +773,7 @@ g&uuml;nl&uuml;ğ&uuml; mesajına neden olacaktır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
 <p>[S] bayrağı, &ccedil;alıştırmak istemediğiniz kuralları atlamak i&ccedil;in
 kullanılır. Atlama bayrağının s&ouml;zdizimi [S=<em>N</em>]'dir; burada
 <em>N</em> atlanacak kural sayısını belirtir (<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ve ondan &ouml;nceki
@@ -824,7 +824,7 @@ ger&ccedil;ekleştirmek muhtemelen daha kolaydır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Elde edilen yanıtın g&ouml;nderileceği MIME t&uuml;r&uuml;n&uuml; ayarlar. Bu,
 <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> y&ouml;nergesiyle aynı
 etkiye sahiptir.</p>
@@ -861,7 +861,7 @@ işlemesinin <em>ge&ccedil;erli</em> turunu sonlandırmak i&ccedil;in yararlı
 olabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Yazılmakta olan HTTP isteğinde kodlanmış bir soru işareti
     '%3f' varsa ve yeniden yazılmış sonucun değiştirmesinde '?' varsa,
     yeniden yazmanın devam etmesine izin vermek i&ccedil;in bu bayrağın
@@ -870,7 +870,7 @@ olabilir.</p>
     karşı koruma sağlar.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>Sunucu kapsamlı değiştirmeler bir değişken veya geri başvuru
     ile başlayıp bir dosya sistemi yoluna &ccedil;&ouml;z&uuml;mlendiğinde bu bayrağın
     ayarlanması gereklidir. Bu değiştirmeler belge k&ouml;k&uuml; ile
@@ -881,7 +881,7 @@ olabilir.</p>
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>Bu bayrağın ayarlanması, Windows UNC yollarında kullanıldığı
     gibi birden fazla baştaki eğik &ccedil;izginin birleştirilmesini engeller.
     Kural değiştirmesi birden fazla birebir eğik &ccedil;izgi ile
@@ -900,7 +900,7 @@ olabilir.</p>
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

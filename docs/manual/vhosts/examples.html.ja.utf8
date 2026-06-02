@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -64,8 +64,8 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">一つの IP アドレスでいくつかの名前ベースの
-    ウェブサイトを実行する</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">一つの IP アドレスでいくつかの名前ベースの
+    ウェブサイトを実行する <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
     <p>サーバは IP アドレスを一つ割り当てられていて、DNS でマシンに
     複数の名前 (CNAME) が指定されています。このマシンで
@@ -149,8 +149,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">複数の IP アドレスのあるホストで名前ベースの
-    ホスティングを行なう</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">複数の IP アドレスのあるホストで名前ベースの
+    ホスティングを行なう <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
  
     <div class="note">
     <h3>注</h3><p>ここで説明されている方法は IP アドレスが
@@ -203,8 +203,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">違う IP アドレス (例えば、内部と外部アドレス)
-    で同じコンテンツを送る</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+<h2 id="intraextra">違う IP アドレス (例えば、内部と外部アドレス)
+    で同じコンテンツを送る <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>サーバマシンは IP アドレスを二つ (<code>192.168.1.1</code>
     と <code>172.20.30.40</code>) 持っています。このマシンは内部
@@ -245,7 +245,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">違うポートで違うサイトを運営する</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">違うポートで違うサイトを運営する <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>同じ IP に複数のドメインがあり、さらに複数のポートを使って
     リクエストを扱いたいときがあります。"NameVirtualHost" タグの中で
@@ -293,7 +293,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP ベースのバーチャルホスティング</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">IP ベースのバーチャルホスティング <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>サーバは <code>www.example.com</code> と <code>www.example.org</code>
     にそれぞれ解決される、二つの IP アドレス (<code>172.20.30.40</code> と
@@ -325,8 +325,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">ポートベースと IP ベースの混ざった
-    バーチャルホスト</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">ポートベースと IP ベースの混ざった
+    バーチャルホスト <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>サーバマシンはそれぞれ <code>www.example.com</code> と
     <code>www.example.org</code> にそれぞれ解決される、IP アドレスを二つ
@@ -372,8 +372,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">名前ベースと IP ベースを混ぜた
-    バーチャルホスト</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">名前ベースと IP ベースを混ぜた
+    バーチャルホスト <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>いくつかのマシンでは名前ベースの、その他では IP ベースのバーチャル
     ホストをします。</p>
@@ -424,8 +424,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy"><code>Virtual_host</code> と
-    mod_proxy を併用する</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy"><code>Virtual_host</code> と
+    mod_proxy を併用する <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>次の例は、フロント側のバーチャルホストで他のマシンへプロクシします。
     例では <code>192.168.111.2</code> のマシンではバーチャルホスト名は
@@ -445,11 +445,11 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> のバーチャルホストを
-    使う</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2> 
+<h2 id="default"><code>_default_</code> のバーチャルホストを
+    使う <a title="Permanent link" href="#default" class="permalink">&para;</a></h2> 
 
-    <h3><a name="defaultallports" id="defaultallports">すべてのポートに対する
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultallports">すべてのポートに対する
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>未指定の IP アドレスとポート、<em>つまり</em>他のバーチャルホストに
     使われていないアドレスとポートの組み合わせ、への<em>すべての</em>リクエストを
@@ -480,8 +480,8 @@
     単一の情報ページ (やスクリプト) に書き換えることができます。</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">違うポートのための
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultdifferentports">違うポートのための
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>一つめの設定とほぼ同じですが、サーバは複数のポートを listen しており、
     80 番ポートに対して二つめの <code>_default_</code> バーチャルホストを
@@ -511,8 +511,8 @@
     主サーバはリクエストを扱いません。</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">一つのポートに対してだけの
-    <code>_default_</code> バーチャルホスト</a></h3>
+    <h3 id="defaultoneport">一つのポートに対してだけの
+    <code>_default_</code> バーチャルホスト</h3>
 
     <p>80 番ポートにはデフォルトのバーチャルホストが必要で、他の
     バーチャルホストはデフォルトが必要ない場合です。</p>
@@ -533,8 +533,8 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">名前ベースのバーチャルホストから IP ベースの
-    バーチャルホストに移行する</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">名前ベースのバーチャルホストから IP ベースの
+    バーチャルホストに移行する <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>ホスト名が名前 <code>www.example.org</code> のバーチャルホスト
     (<a href="#name">名前ベース</a>の例の 2 番目の設定) が専用の IP アドレスを
@@ -579,8 +579,8 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath"><code>ServerPath</code> ディレクティブを
-    使う</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath"><code>ServerPath</code> ディレクティブを
+    使う <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>名前ベースのバーチャルホストが二つあるサーバがあるとします。
     正しいバーチャルホストを得るためにはクライアントは正しい
@@ -655,7 +655,7 @@
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

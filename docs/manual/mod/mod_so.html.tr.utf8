@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -68,7 +68,7 @@ yeniden başlatılması sırasında y&uuml;klenmesini sağlar.</td></tr>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_so">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_so">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="windows" id="windows">Y&uuml;klenebilir Mod&uuml;llerin Windows i&ccedil;in Oluşturulması</a> <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
+<h2 id="windows">Y&uuml;klenebilir Mod&uuml;llerin Windows i&ccedil;in Oluşturulması <a title="Permanent link" href="#windows" class="permalink">&para;</a></h2>
     
 
     <div class="note"><h3>Bilginize</h3>
@@ -143,7 +143,7 @@ yeniden başlatılması sırasında y&uuml;klenmesini sağlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LoadFile" id="LoadFile">LoadFile</a> <a name="loadfile" id="loadfile">Y&ouml;nergesi</a> <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="loadfile"><span id="LoadFile">LoadFile</span> Y&ouml;nergesi <a title="Permanent link" href="#loadfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belirtilen nesne dosyasını veya k&uuml;t&uuml;phaneyi sunucu ile ilintiler.
 </td></tr>
@@ -168,7 +168,7 @@ yeniden başlatılması sırasında y&uuml;klenmesini sağlar.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LoadModule" id="LoadModule">LoadModule</a> <a name="loadmodule" id="loadmodule">Y&ouml;nergesi</a> <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="loadmodule"><span id="LoadModule">LoadModule</span> Y&ouml;nergesi <a title="Permanent link" href="#loadmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Belirtilen nesne dosyasını veya k&uuml;t&uuml;phaneyi sunucu ile ilintiler
 ve etkin mod&uuml;l listesine ekler.</td></tr>
@@ -202,7 +202,7 @@ ve etkin mod&uuml;l listesine ekler.</td></tr>
 <a href="../tr/mod/mod_so.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

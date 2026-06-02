@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -56,7 +56,7 @@ autorisation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules et directives concern&eacute;s</a> <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">Modules et directives concern&eacute;s <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
 
 <p>Trois groupes de modules sont concern&eacute;s par le processus
 d'authentification et d'autorisation. Vous devrez utiliser au moins un
@@ -112,7 +112,7 @@ module de chaque groupe.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
     <p>Si votre site web contient des informations sensibles ou
     destin&eacute;es seulement &agrave; un groupe de personnes restreint, les
     techniques expos&eacute;es dans cet article vont vous aider &agrave; vous assurer
@@ -130,7 +130,7 @@ module de chaque groupe.</p>
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Les pr&eacute;requis</a> <a title="Lien permanent" href="#theprerequisites" class="permalink">&para;</a></h2>
+<h2 id="theprerequisites">Les pr&eacute;requis <a title="Lien permanent" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>Les directives d&eacute;crites dans cet article devront &ecirc;tre ins&eacute;r&eacute;es
     soit au niveau de la configuration de votre serveur principal (en
     g&eacute;n&eacute;ral dans une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>), soit au niveau de la
@@ -169,7 +169,7 @@ module de chaque groupe.</p>
     de l'autorisation au sein du serveur web.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Mise en oeuvre</a> <a title="Lien permanent" href="#gettingitworking" class="permalink">&para;</a></h2>
+<h2 id="gettingitworking">Mise en oeuvre <a title="Lien permanent" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Nous d&eacute;crivons ici les bases de la protection par mot de passe
     d'un r&eacute;pertoire de votre serveur.</p>
 
@@ -290,8 +290,8 @@ Require user rbowen</pre>
     <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Autorisation d'acc&egrave;s &agrave;
-plusieurs personnes</a> <a title="Lien permanent" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
+<h2 id="lettingmorethanonepersonin">Autorisation d'acc&egrave;s &agrave;
+plusieurs personnes <a title="Lien permanent" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>Les directives ci-dessus n'autorisent qu'une personne (quelqu'un
     poss&eacute;dant le nom d'utilisateur <code>rbowen</code>) &agrave; acc&eacute;der au
     r&eacute;pertoire. Dans la plupart des cas, vous devrez autoriser
@@ -359,7 +359,7 @@ Require group GroupName</pre>
     fichier dans la directive <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Probl&egrave;mes possibles</a> <a title="Lien permanent" href="#possibleproblems" class="permalink">&para;</a></h2>
+<h2 id="possibleproblems">Probl&egrave;mes possibles <a title="Lien permanent" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>L'authentification Basic est sp&eacute;cifi&eacute;e d'une telle mani&egrave;re que
     vos nom d'utilisateur et mot de passe doivent &ecirc;tre v&eacute;rifi&eacute;s chaque
     fois que vous demandez un document au serveur, et ceci m&ecirc;me si vous
@@ -380,8 +380,8 @@ Require group GroupName</pre>
     d'authentification diff&eacute;rente.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">Autre m&eacute;thode de stockage des mots de
-passe</a> <a title="Lien permanent" href="#dbmdbd" class="permalink">&para;</a></h2>
+<h2 id="dbmdbd">Autre m&eacute;thode de stockage des mots de
+passe <a title="Lien permanent" href="#dbmdbd" class="permalink">&para;</a></h2>
 
     <p>Suite au probl&egrave;me &eacute;voqu&eacute; pr&eacute;c&eacute;demment et induit par le stockage
     des mots de passe dans un fichier texte, vous pouvez &ecirc;tre appel&eacute; &agrave;
@@ -410,8 +410,8 @@ passe</a> <a title="Lien permanent" href="#dbmdbd" class="permalink">&para;</a><
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> pour plus de d&eacute;tails.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Utilisation de plusieurs fournisseurs
-d'authentification</a> <a title="Lien permanent" href="#multprovider" class="permalink">&para;</a></h2>
+<h2 id="multprovider">Utilisation de plusieurs fournisseurs
+d'authentification <a title="Lien permanent" href="#multprovider" class="permalink">&para;</a></h2>
 
     <p>Depuis l'arriv&eacute;e des nouvelles architecture d'autorisation et
     d'authentification bas&eacute;es sur les fournisseurs, vous n'&ecirc;tes plus
@@ -470,8 +470,8 @@ d'authentification</a> <a title="Lien permanent" href="#multprovider" class="per
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">Pour aller plus loin qu'une simple
-autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&para;</a></h2>
+<h2 id="beyond">Pour aller plus loin qu'une simple
+autorisation <a title="Lien permanent" href="#beyond" class="permalink">&para;</a></h2>
 
     <p>La mani&egrave;re dont les autorisations sont accord&eacute;es est d&eacute;sormais
     beaucoup plus souple qu'une simple v&eacute;rification aupr&egrave;s d'une seule
@@ -479,8 +479,8 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
     logique et la mani&egrave;re selon lesquels une autorisation est
     accord&eacute;e.</p>
 
-    <h3><a name="authandororder" id="authandororder">Appliquer logique et
-    ordonnancement</a></h3>
+    <h3 id="authandororder">Appliquer logique et
+    ordonnancement</h3>
         <p>Le contr&ocirc;le de la mani&egrave;re et de l'ordre selon lesquels le
 	processus d'autorisation &eacute;tait appliqu&eacute;
 	constituait une sorte de myst&egrave;re par
@@ -522,8 +522,8 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
 
     
 
-    <h3><a name="reqaccessctrl" id="reqaccessctrl">Utilisation de fournisseurs
-    d'autorisation pour le contr&ocirc;le d'acc&egrave;s</a></h3>
+    <h3 id="reqaccessctrl">Utilisation de fournisseurs
+    d'autorisation pour le contr&ocirc;le d'acc&egrave;s</h3>
         <p>La v&eacute;rification du nom d'utilisateur et du mot de passe ne
 	constituent qu'un aspect des m&eacute;thodes d'authentification.
 	Souvent, le contr&ocirc;le d'acc&egrave;s &agrave; certaines personnes n'est pas
@@ -596,8 +596,8 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
 
     
 
-    <h3><a name="filesystem" id="filesystem">Compatibilit&eacute; ascendante du contr&ocirc;le
-    d'acc&egrave;s</a></h3>
+    <h3 id="filesystem">Compatibilit&eacute; ascendante du contr&ocirc;le
+    d'acc&egrave;s</h3>
         <p>L'adoption d'un m&eacute;canisme &agrave; base de fournisseurs pour
 	l'autorisation, a pour effet colat&eacute;ral de rendre inutiles
 	les directives <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code>. Cependant, et &agrave;
@@ -621,7 +621,7 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Mise en cache de l'authentification</a> <a title="Lien permanent" href="#socache" class="permalink">&para;</a></h2>
+<h2 id="socache">Mise en cache de l'authentification <a title="Lien permanent" href="#socache" class="permalink">&para;</a></h2>
     <p>Dans certains cas, l'authentification constitue une charge
     inacceptable pour un fournisseur d'authentification ou votre r&eacute;seau.
     Ceci est susceptible d'affecter les utilisateurs du module
@@ -635,7 +635,7 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
     &agrave; certains utilisateurs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Pour aller plus loin . . .</a> <a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2 id="moreinformation">Pour aller plus loin . . . <a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
     <p>Vous pouvez aussi lire la documentation de
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> et <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>
     qui contient des informations suppl&eacute;mentaires &agrave; propos du
@@ -660,7 +660,7 @@ autorisation</a> <a title="Lien permanent" href="#beyond" class="permalink">&par
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

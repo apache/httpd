@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -62,7 +62,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="before" id="before">始める前に</a> <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
+<h2 id="before">始める前に <a title="Permanent link" href="#before" class="permalink">&para;</a></h2>
 
     <p>この文書の先頭に飛ぶ前に、Apache
     グループとこの文書での仮定を知っておくべきでしょう。
@@ -110,7 +110,7 @@
     <p>それでも進みますか? よろしい。では、先へ進みましょう!</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="model" id="model">suEXEC セキュリティモデル</a> <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
+<h2 id="model">suEXEC セキュリティモデル <a title="Permanent link" href="#model" class="permalink">&para;</a></h2>
 
     <p>suEXEC の設定とインストールを始める前に、
     まず実装しようとしているセキュリティモデルについて論じておきます。
@@ -361,8 +361,8 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">suEXEC
-    の設定とインストール</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">suEXEC
+    の設定とインストール <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>ここから楽しくなります。</p>
 
@@ -493,8 +493,8 @@
     確証します。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">suEXEC
-    の有効化と無効化</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">suEXEC
+    の有効化と無効化 <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
     <p>起動時に、Apache は <code>--sbindir</code>
     オプションで設定されたディレクトリで
@@ -519,7 +519,7 @@
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">suEXEC の使用</a> <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">suEXEC の使用 <a title="Permanent link" href="#usage" class="permalink">&para;</a></h2>
 
     <p>CGI プログラムへのリクエストが suEXEC ラッパーを呼ぶのは、
     <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> ディレクティブを
@@ -548,7 +548,7 @@
      時のオプション</a> <code>--with-suexec-userdir</code> も参照してください。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="debug" id="debug">suEXEC のデバッグ</a> <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
+<h2 id="debug">suEXEC のデバッグ <a title="Permanent link" href="#debug" class="permalink">&para;</a></h2>
 
     <p>suEXEC wrapper は、上記で述べた <code>--with-suexec-logfile</code>
     オプションで指定されたファイルにログ情報を記録します。
@@ -557,7 +557,7 @@
     エラーログを見るとよいでしょう。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="jabberwock" id="jabberwock">とかげに注意: 警告と事例</a> <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
+<h2 id="jabberwock">とかげに注意: 警告と事例 <a title="Permanent link" href="#jabberwock" class="permalink">&para;</a></h2>
 
     <p><strong>注意!</strong>
     この章は完全ではありません。この章の最新改訂版については、
@@ -618,7 +618,7 @@
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@ kullanılabilir. Bu nedenle, yalnızca .htaccess dosyalarıyla
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="intro.html">mod_rewrite'a giriş</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Basit Y&ouml;nlendirme</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">Basit Y&ouml;nlendirme <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 
 
 <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>, bir URL'yi başka birine y&ouml;nlendirme
@@ -134,7 +134,7 @@ yapılandırma dosyasına erişiminiz yoksa ve bu g&ouml;revi bunun yerine bir
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="alias" id="alias">URL Takma Adlandırma</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<h2 id="alias">URL Takma Adlandırma <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> y&ouml;nergesi, bir
 URI'den bir dizine - genellikle <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dışındaki bir dizine - eşleme
 sağlar. Bu eşlemeyi <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ile ger&ccedil;ekleştirmek
@@ -154,7 +154,7 @@ kullanılabilir, <code>.htaccess</code> dosyasında kullanılamaz.
 bağlantılar aynı şeyi ger&ccedil;ekleştirmenin başka bir yolu olabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="vhosts" id="vhosts">Sanal Konak Oluşturma</a> <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
+<h2 id="vhosts">Sanal Konak Oluşturma <a title="Permanent link" href="#vhosts" class="permalink">&para;</a></h2>
 <p><a href="vhosts.html">mod_rewrite ile sanal konakları</a> y&ouml;netmek
 m&uuml;mk&uuml;n olsa da, nadiren doğru yoldur. Ayrı ayrı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> blokları
 oluşturmak neredeyse her zaman doğru yaklaşımdır. &Ccedil;ok sayıda sanal
@@ -175,7 +175,7 @@ bakın.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Basit Vekil Kullanımı</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Basit Vekil Kullanımı <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, yeniden
 yazılmış URI'leri <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> &uuml;zerinden ge&ccedil;irmek i&ccedil;in
@@ -207,7 +207,7 @@ etki eder ve yapmaya &ccedil;alıştığınız şeyi ge&ccedil;ersiz kılabilir.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="setenv" id="setenv">Ortam Değişkeni Sınaması</a> <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
+<h2 id="setenv">Ortam Değişkeni Sınaması <a title="Permanent link" href="#setenv" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, belirli bir ortam değişkeninin veya
 istek başlığının varlığına veya yokluğuna bağlı olarak belirli bir
@@ -246,7 +246,7 @@ değerlendirme belgelerine</a> bakın.</p>
 <a href="../zh-cn/rewrite/avoid.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

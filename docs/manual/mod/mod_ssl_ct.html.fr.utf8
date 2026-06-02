@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -133,7 +133,7 @@ venir.</p>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_ssl_ct">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_ssl_ct">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="server" id="server">Vue d'ensemble du fonctionnement au niveau du serveur</a> <a title="Lien permanent" href="#server" class="permalink">&para;</a></h2>
+<h2 id="server">Vue d'ensemble du fonctionnement au niveau du serveur <a title="Lien permanent" href="#server" class="permalink">&para;</a></h2>
   
 
   <p>Les serveurs doivent pouvoir envoyer les SCTs aux clients. Les SCTs
@@ -163,8 +163,8 @@ venir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Vue d'ensemble du fonctionnement au niveau du serveur
-  mandataire</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Vue d'ensemble du fonctionnement au niveau du serveur
+  mandataire <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
   
 
   <p>Le serveur mandataire indique qu'il supporte la Transparence des
@@ -200,7 +200,7 @@ venir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logconf" id="logconf">Configuration du log</a> <a title="Lien permanent" href="#logconf" class="permalink">&para;</a></h2>
+<h2 id="logconf">Configuration du log <a title="Lien permanent" href="#logconf" class="permalink">&para;</a></h2>
   
 
   <p>Les serveurs et les mandataires utilisent des informations
@@ -271,7 +271,7 @@ venir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static" id="static">Stockage des SCTs sous une forme compr&eacute;hensible pour mod_ssl_ct</a> <a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
+<h2 id="static">Stockage des SCTs sous une forme compr&eacute;hensible pour mod_ssl_ct <a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
   
 
   <p>Le module <code class="module"><a href="../mod/mod_ssl_ct.html">mod_ssl_ct</a></code> permet de configurer les SCTs
@@ -285,8 +285,8 @@ venir.</p>
   format correct avec des donn&eacute;es en provenance d'un log.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation des rep&egrave;res de temps des certificats (CT) dans
-  le journal des acc&egrave;s</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Journalisation des rep&egrave;res de temps des certificats (CT) dans
+  le journal des acc&egrave;s <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
   
 
   <p>Dans les deux modes mandataire et serveur, les variables
@@ -304,7 +304,7 @@ venir.</p>
   <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="audit" id="audit">Audit hors ligne pour mandataire</a> <a title="Lien permanent" href="#audit" class="permalink">&para;</a></h2>
+<h2 id="audit">Audit hors ligne pour mandataire <a title="Lien permanent" href="#audit" class="permalink">&para;</a></h2>
   
 
   <p>Le support de cette fonctionnalit&eacute; en est au stade exp&eacute;rimental, et
@@ -342,7 +342,7 @@ venir.</p>
   traitement des donn&eacute;es.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctauditstorage" id="ctauditstorage">Directive</a> <a name="CTAuditStorage" id="CTAuditStorage">CTAuditStorage</a> <a title="Lien permanent" href="#ctauditstorage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctauditstorage">Directive <span id="CTAuditStorage">CTAuditStorage</span> <a title="Lien permanent" href="#ctauditstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>R&eacute;pertoire de stockage des donn&eacute;es pour l'audit hors ligne</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTAuditStorage <em>directory</em></code></td></tr>
@@ -373,7 +373,7 @@ venir.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctlogclient" id="ctlogclient">Directive</a> <a name="CTLogClient" id="CTLogClient">CTLogClient</a> <a title="Lien permanent" href="#ctlogclient" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctlogclient">Directive <span id="CTLogClient">CTLogClient</span> <a title="Lien permanent" href="#ctlogclient" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin de l'utilitaire client du log certificate-transparency</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTLogClient <em>executable</em></code></td></tr>
@@ -398,7 +398,7 @@ venir.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctlogconfigdb" id="ctlogconfigdb">Directive</a> <a name="CTLogConfigDB" id="CTLogConfigDB">CTLogConfigDB</a> <a title="Lien permanent" href="#ctlogconfigdb" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctlogconfigdb">Directive <span id="CTLogConfigDB">CTLogConfigDB</span> <a title="Lien permanent" href="#ctlogconfigdb" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Base de donn&eacute;es pour la configuration des logs avec mises &agrave;
 jour dynamiques</td></tr>
@@ -419,7 +419,7 @@ jour dynamiques</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctmaxsctage" id="ctmaxsctage">Directive</a> <a name="CTMaxSCTAge" id="CTMaxSCTAge">CTMaxSCTAge</a> <a title="Lien permanent" href="#ctmaxsctage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctmaxsctage">Directive <span id="CTMaxSCTAge">CTMaxSCTAge</span> <a title="Lien permanent" href="#ctmaxsctage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Age maximum d'un SCT obtenu depuis un log avant son
 raffra&icirc;chissement</td></tr>
@@ -439,7 +439,7 @@ raffra&icirc;chissement</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctproxyawareness" id="ctproxyawareness">Directive</a> <a name="CTProxyAwareness" id="CTProxyAwareness">CTProxyAwareness</a> <a title="Lien permanent" href="#ctproxyawareness" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctproxyawareness">Directive <span id="CTProxyAwareness">CTProxyAwareness</span> <a title="Lien permanent" href="#ctproxyawareness" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Niveau de prise en compte et de mise en oeuvre des CTs pour un
 mandataire
@@ -475,7 +475,7 @@ mandataire
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctsctstorage" id="ctsctstorage">Directive</a> <a name="CTSCTStorage" id="CTSCTStorage">CTSCTStorage</a> <a title="Lien permanent" href="#ctsctstorage" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctsctstorage">Directive <span id="CTSCTStorage">CTSCTStorage</span> <a title="Lien permanent" href="#ctsctstorage" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>R&eacute;pertoire o&ugrave; les SCTs sont stock&eacute;s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTSCTStorage <em>directory</em></code></td></tr>
@@ -500,7 +500,7 @@ mandataire
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctserverhellosctlimit" id="ctserverhellosctlimit">Directive</a> <a name="CTServerHelloSCTLimit" id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</a> <a title="Lien permanent" href="#ctserverhellosctlimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctserverhellosctlimit">Directive <span id="CTServerHelloSCTLimit">CTServerHelloSCTLimit</span> <a title="Lien permanent" href="#ctserverhellosctlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de SCTs pouvant &ecirc;tre renvoy&eacute;s au cours de la
 phase ServerHello</td></tr>
@@ -523,7 +523,7 @@ phase ServerHello</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctstaticlogconfig" id="ctstaticlogconfig">Directive</a> <a name="CTStaticLogConfig" id="CTStaticLogConfig">CTStaticLogConfig</a> <a title="Lien permanent" href="#ctstaticlogconfig" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctstaticlogconfig">Directive <span id="CTStaticLogConfig">CTStaticLogConfig</span> <a title="Lien permanent" href="#ctstaticlogconfig" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration statique d'un log</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CTStaticLogConfig <em>log-id|-</em> <em>public-key-file|-</em>
@@ -600,7 +600,7 @@ peuvent &ecirc;tre d&eacute;finis via cette directive.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ctstaticscts" id="ctstaticscts">Directive</a> <a name="CTStaticSCTs" id="CTStaticSCTs">CTStaticSCTs</a> <a title="Lien permanent" href="#ctstaticscts" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ctstaticscts">Directive <span id="CTStaticSCTs">CTStaticSCTs</span> <a title="Lien permanent" href="#ctstaticscts" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration statique d'un ou plusieurs SCTs pour un
 certificat de serveur
@@ -645,7 +645,7 @@ certificat de serveur
 <a href="../fr/mod/mod_ssl_ct.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

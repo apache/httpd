@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -44,7 +44,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="ip-based.html">ネームベースのバーチャルホスト</a></li><li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li><li><a href="mass.html">大量のバーチャルホストの動的な設定</a></li><li><a href="examples.html">バーチャルホストの一般的な設定例</a></li><li><a href="examples.html#serverpath">ServerPath 設定例</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="namevip" id="namevip">名前ベースと IP ベースのバーチャルホストの比較</a> <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
+<h2 id="namevip">名前ベースと IP ベースのバーチャルホストの比較 <a title="Permanent link" href="#namevip" class="permalink">&para;</a></h2>
 
     <p>IP ベースのバーチャルホストでは、応答する
     バーチャルホストへのコネクションを決定するために IP
@@ -82,7 +82,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="using" id="using">名前ベースのバーチャルホストを利用する</a> <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
+<h2 id="using">名前ベースのバーチャルホストを利用する <a title="Permanent link" href="#using" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -212,7 +212,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compat" id="compat">古いブラウザとの互換性</a> <a title="Permanent link" href="#compat" class="permalink">&para;</a></h2>
+<h2 id="compat">古いブラウザとの互換性 <a title="Permanent link" href="#compat" class="permalink">&para;</a></h2>
 
     <p>以前述べたように、名前ベースのバーチャルホストが正しく動作する
     ために必要な情報を送ってこないクライアントが依然として存在しています。
@@ -278,7 +278,7 @@
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

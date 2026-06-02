@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">소개</a> <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
+<h2 id="intro">소개 <a title="Permanent link" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>관련된 모듈</th><th>관련된 지시어</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -55,13 +55,13 @@
     작성해본다.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">CGI를 허용하도록 아파치 설정하기</a> <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">CGI를 허용하도록 아파치 설정하기 <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램이 올바로 동작하려면 CGI 실행이 가능하도록
     아파치를 설정해야 한다. 설정하는 방법은 여러가지다.</p>
 
-    <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
+    <h3 id="scriptalias">ScriptAlias</h3>
       
 
       <p><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
@@ -100,7 +100,7 @@
       오류문을 보낸다.</p>
     
 
-    <h3><a name="nonscriptalias" id="nonscriptalias">ScriptAlias 디렉토리 밖에 있는 CGI</a></h3>
+    <h3 id="nonscriptalias">ScriptAlias 디렉토리 밖에 있는 CGI</h3>
       
 
       <p>보통 보안상 이유때문에 CGI 프로그램은 <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>한 디렉토리에
@@ -120,7 +120,7 @@
       <code>ExecCGI</code>를 지정해야 한다.</p>
     
 
-    <h3><a name="options" id="options">Options를 사용하여 명시적으로 CGI 실행을 허용하기</a></h3>
+    <h3 id="options">Options를 사용하여 명시적으로 CGI 실행을 허용하기</h3>
       
 
       <p>서버의 주설정파일에 직접 <code class="directive"><a href="../mod/core.html#options">Options</a></code> 지시어를 사용하여 특정
@@ -144,7 +144,7 @@
       </code></p></div>
     
 
-    <h3><a name="htaccess" id="htaccess">.htaccess 파일</a></h3>
+    <h3 id="htaccess">.htaccess 파일</h3>
       
 
       <p><a href="htaccess.html"><code>.htaccess</code> 투토리얼</a>은
@@ -152,7 +152,7 @@
       사용할 수 있는 방법을 알려준다.</p>
     
 
-    <h3><a name="userdir" id="userdir">사용자 디렉토리</a></h3>
+    <h3 id="userdir">사용자 디렉토리</h3>
       
 
       <p>아래 설정을 사용하면 사용자 디렉토리에서 <code>.cgi</code>로
@@ -183,7 +183,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">CGI 프로그램 작성하기</a> <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
+<h2 id="writing">CGI 프로그램 작성하기 <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>``일반적인'' 프로그래밍과 CGI 프로그래밍 사이에는 두가지
@@ -206,7 +206,7 @@
     <p>두가지를 제외하고는 CGI 프로그램 작성은 이미 만들어 보았을
     다른 프로그램들과 매우 비슷하다.</p>
 
-    <h3><a name="firstcgi" id="firstcgi">처음으로 만든 CGI 프로그램</a></h3>
+    <h3 id="firstcgi">처음으로 만든 CGI 프로그램</h3>
       
 
       <p>다음은 브라우저에 한 줄을 찍는 CGI 프로그램 예제다.
@@ -240,7 +240,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">그러나 아직 동작하지 않아요!</a> <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">그러나 아직 동작하지 않아요! <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>웹에서 CGI 프로그램에 접근할때 브라우저에 나올 수 있는
@@ -271,7 +271,7 @@
       출력하지 못했는지 알아본다.</dd>
     </dl>
 
-    <h3><a name="permissions" id="permissions">파일권한</a></h3>
+    <h3 id="permissions">파일권한</h3>
       
 
       <p>서버는 당신과 동일한 계정으로 동작하지 않음을 명심하라.
@@ -290,7 +290,7 @@
 
     
 
-    <h3><a name="pathinformation" id="pathinformation">경로 정보와 환경</a></h3>
+    <h3 id="pathinformation">경로 정보와 환경</h3>
       
 
       <p>명령행에서 프로그램을 실행하면 자동으로 어떤 정보가
@@ -319,7 +319,7 @@
 
     
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">프로그램 오류</a></h3>
+    <h3 id="syntaxerrors">프로그램 오류</h3>
       
 
       <p>CGI 프로그램이 실패하는 경우 대부분 프로그램 자체
@@ -344,7 +344,7 @@
       위의 <a href="#writing">CGI 프로그램 작성하기</a>를 참고하라.</p>
     
 
-    <h3><a name="errorlogs" id="errorlogs">오류 로그</a></h3>
+    <h3 id="errorlogs">오류 로그</h3>
       
 
       <p>오류 로그는 당신 편이다. 무언가 잘못되면 오류 로그에
@@ -354,7 +354,7 @@
       대부분의 문제를 빨리 파악하여 해결할 수 있다.</p>
     
 
-    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+    <h3 id="suexec">Suexec</h3>
       
 
       <p><a href="../suexec.html">suexec</a> 지원 프로그램을
@@ -379,7 +379,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">뒤에서는 무슨 일이 벌어지는가?</a> <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
+<h2 id="behindscenes">뒤에서는 무슨 일이 벌어지는가? <a title="Permanent link" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그래밍에 익숙해질수록 뒤에서 벌어지는 일을 이해하면
@@ -388,7 +388,7 @@
     프로그램을 작성할 수 있지만 이런 프로그램은 별로 쓸모가
     없기때문이다.</p>
 
-    <h3><a name="env" id="env">환경변수</a></h3>
+    <h3 id="env">환경변수</h3>
       
 
       <p>환경변수는 당신이 컴퓨터를 사용하는 동안 당신 주위를
@@ -425,7 +425,7 @@
       </code></p></div>
     
 
-    <h3><a name="stdin" id="stdin">STDIN과 STDOUT</a></h3>
+    <h3 id="stdin">STDIN과 STDOUT</h3>
       
 
       <p>또, 서버와 클라이언트는 표준입력(<code>STDIN</code>)과
@@ -460,7 +460,7 @@
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">CGI 모듈/라이브러리</a> <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
+<h2 id="libraries">CGI 모듈/라이브러리 <a title="Permanent link" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>CGI 프로그램을 작성할때 지루한 작업을 대신해주는 코드
@@ -477,7 +477,7 @@
     있는 <code>CGIC</code> 라이브러리다.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">더 많은 정보...</a> <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
+<h2 id="moreinfo">더 많은 정보... <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>웹에 매우 많은 CGI 정보가 있다. 뉴스그룹 <a href="news:comp.infosystems.www.authoring.cgi">comp.infosystems.www.authoring.cgi</a>에서 여러 사람들과
@@ -508,7 +508,7 @@
 <a href="../ko/howto/cgi.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -45,7 +45,7 @@ DSO (Dynamic Shared Object)</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>La conception du serveur HTTP Apache en fait un serveur web puissant et
     flexible pouvant fonctionner sur une tr&egrave;s grande vari&eacute;t&eacute; de
@@ -97,7 +97,7 @@ DSO (Dynamic Shared Object)</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM par d&eacute;faut</a> <a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
+<h2 id="defaults">MPM par d&eacute;faut <a title="Lien permanent" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>La table suivante fournit la liste des MPMs par d&eacute;faut pour divers
 syst&egrave;mes d'exploitation.  Il s'agit du MPM qui sera utilis&eacute; si
@@ -134,8 +134,8 @@ modernes satisfont aux deux conditions.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static" id="static">Compiler un module MPM en tant que module
-statique</a> <a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
+<h2 id="static">Compiler un module MPM en tant que module
+statique <a title="Lien permanent" href="#static" class="permalink">&para;</a></h2>
 
     <p>Les modules MPM peuvent &ecirc;tre compil&eacute;s en tant que modules
 statiques sur toutes les plates-formes. A la compilation d'Apache, un
@@ -156,8 +156,8 @@ souhaitez changer de module MPM.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Compiler un module MPM en tant que module
-DSO (Dynamic Shared Object)</a> <a title="Lien permanent" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">Compiler un module MPM en tant que module
+DSO (Dynamic Shared Object) <a title="Lien permanent" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>Sous Unix et les plates-formes similaires, les modules MPM
     peuvent &ecirc;tre compil&eacute;s en tant que modules DSO et charg&eacute;s
@@ -202,7 +202,7 @@ DSO (Dynamic Shared Object)</a> <a title="Lien permanent" href="#dynamic" class=
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

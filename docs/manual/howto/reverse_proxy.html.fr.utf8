@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -67,12 +67,12 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">Mandataire inverse</a> <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">Mandataire inverse <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
   
   <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li><li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code></li></ul></td></tr></table>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="simple" id="simple">Mandatement inverse simple</a> <a title="Lien permanent" href="#simple" class="permalink">&para;</a></h2>
+<h2 id="simple">Mandatement inverse simple <a title="Lien permanent" href="#simple" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -111,7 +111,7 @@ ProxyPassReverse "/images"  "http://www.example.com/"</pre>
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cluster" id="cluster">Clusters et Balancers</a> <a title="Lien permanent" href="#cluster" class="permalink">&para;</a></h2>
+<h2 id="cluster">Clusters et Balancers <a title="Lien permanent" href="#cluster" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -157,7 +157,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="config" id="config">Configuration du Balancer et des BalancerMembers</a> <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Configuration du Balancer et des BalancerMembers <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -179,7 +179,7 @@ ProxyPassReverse "/images"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="failover" id="failover">Gestion des indisponibilit&eacute;s (Failover)</a> <a title="Lien permanent" href="#failover" class="permalink">&para;</a></h2>
+<h2 id="failover">Gestion des indisponibilit&eacute;s (Failover) <a title="Lien permanent" href="#failover" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -242,7 +242,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="manager" id="manager">Gestion du r&eacute;partiteur de charge</a> <a title="Lien permanent" href="#manager" class="permalink">&para;</a></h2>
+<h2 id="manager">Gestion du r&eacute;partiteur de charge <a title="Lien permanent" href="#manager" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -295,8 +295,8 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="health-check" id="health-check">V&eacute;rification dynamique du bon fonctionnement d'un serveur
-    d'arri&egrave;re-plan</a> <a title="Lien permanent" href="#health-check" class="permalink">&para;</a></h2>
+<h2 id="health-check">V&eacute;rification dynamique du bon fonctionnement d'un serveur
+    d'arri&egrave;re-plan <a title="Lien permanent" href="#health-check" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -310,7 +310,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="status" id="status">Drapeaux d'&eacute;tat d'un membre du groupe de r&eacute;partition de charge</a> <a title="Lien permanent" href="#status" class="permalink">&para;</a></h2>
+<h2 id="status">Drapeaux d'&eacute;tat d'un membre du groupe de r&eacute;partition de charge <a title="Lien permanent" href="#status" class="permalink">&para;</a></h2>
     
 
     <p>
@@ -358,7 +358,7 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 <a href="../fr/howto/reverse_proxy.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

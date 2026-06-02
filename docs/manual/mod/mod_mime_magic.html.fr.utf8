@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -62,7 +62,7 @@ octets de son contenu</td></tr>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_mime_magic">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_mime_magic">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du fichier magique</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
+<h2 id="format">Format du fichier magique <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
 
     <p>Le fichier contient du texte ASCII sur 4 &agrave; 5 colonnes. Les lignes
     vides sont autoris&eacute;es mais ignor&eacute;es. Toute ligne commen&ccedil;ant par un
@@ -152,7 +152,7 @@ octets de son contenu</td></tr>
 0  string  \037\213  application/octet-stream  x-gzip</pre></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="performance" id="performance">Probl&egrave;mes li&eacute;s aux performances</a> <a title="Lien permanent" href="#performance" class="permalink">&para;</a></h2>
+<h2 id="performance">Probl&egrave;mes li&eacute;s aux performances <a title="Lien permanent" href="#performance" class="permalink">&para;</a></h2>
     <p>Ce module n'est pas fait pour tous les syst&egrave;mes. Si votre syst&egrave;me
     parvient &agrave; peine &agrave; supporter sa charge, ou si vous testez les
     performances d'un serveur web, il est d&eacute;conseill&eacute; d'utiliser ce
@@ -173,7 +173,7 @@ octets de son contenu</td></tr>
     charge suppl&eacute;mentaire convient &agrave; votre environnement.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Notes</a> <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Notes <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
     <p>Les notes suivantes s'appliquent au module
     <code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> et sont incluses ici pour
     conformit&eacute; avec les restrictions de copyright des contributeurs
@@ -258,7 +258,7 @@ octets de son contenu</td></tr>
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mimemagicdecompression" id="mimemagicdecompression">Directive</a> <a name="MimeMagicDecompression" id="MimeMagicDecompression">MimeMagicDecompression</a> <a title="Lien permanent" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mimemagicdecompression">Directive <span id="MimeMagicDecompression">MimeMagicDecompression</span> <a title="Lien permanent" href="#mimemagicdecompression" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Activer la d&eacute;compression des fichiers compress&eacute;s pour la d&eacute;tection
 du type MIME</td></tr>
@@ -321,7 +321,7 @@ MimeMagicDecompression On</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mimemagicfile" id="mimemagicfile">Directive</a> <a name="MimeMagicFile" id="MimeMagicFile">MimeMagicFile</a> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mimemagicfile">Directive <span id="MimeMagicFile">MimeMagicFile</span> <a title="Lien permanent" href="#mimemagicfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la d&eacute;termination du type MIME en se basant sur le
 contenu du fichier et en utilisant le fichier magique
@@ -349,7 +349,7 @@ sp&eacute;cifi&eacute;</td></tr>
 <a href="../fr/mod/mod_mime_magic.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -59,7 +59,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">M&oacute;dulos y Directivas Relacionados</a> <a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">M&oacute;dulos y Directivas Relacionados <a title="Enlace permanente" href="#related" class="permalink">&para;</a></h2>
 
 <p>Hay tres tipos de m&oacute;dulos involucrados en los procesos de la autenticaci&oacute;n 
 	y autorizaci&oacute;n. Normalmente deber&aacute;s escoger al menos un m&oacute;dulo de cada grupo.</p>
@@ -116,7 +116,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducci&oacute;n</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introducci&oacute;n <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
     <p>Si se tiene informaci&oacute;n en nuestra p&aacute;gina web que sea informaci&oacute;n 
     	sensible o pensada para un grupo reducido de usuarios/personas,
     	las t&eacute;cnicas que se describen en este manual, le servir&aacute;n  
@@ -132,7 +132,7 @@
     </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="theprerequisites" id="theprerequisites">Los Prerequisitos</a> <a title="Enlace permanente" href="#theprerequisites" class="permalink">&para;</a></h2>
+<h2 id="theprerequisites">Los Prerequisitos <a title="Enlace permanente" href="#theprerequisites" class="permalink">&para;</a></h2>
     <p>Las directivas que se usan en este art&iacute;culo necesitaran ponerse ya sea 
     	en el fichero de configuraci&oacute;n principal del servidor ( t&iacute;picamente en 
     	la secci&oacute;n 
@@ -171,7 +171,7 @@
     para la configuraci&oacute;n y uso de autenticaci&oacute;n y autorizaci&oacute;n en el servidor web.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="gettingitworking" id="gettingitworking">Conseguir que funcione</a> <a title="Enlace permanente" href="#gettingitworking" class="permalink">&para;</a></h2>
+<h2 id="gettingitworking">Conseguir que funcione <a title="Enlace permanente" href="#gettingitworking" class="permalink">&para;</a></h2>
     <p>Aqu&iacute; est&aacute; lo b&aacute;sico de c&oacute;mo proteger con contrase&ntilde;a un directorio en tu
      servidor.</p>
 
@@ -294,8 +294,8 @@ Require user rbowen
     directiva <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Dejar que m&aacute;s de una persona 
-	entre</a> <a title="Enlace permanente" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
+<h2 id="lettingmorethanonepersonin">Dejar que m&aacute;s de una persona 
+	entre <a title="Enlace permanente" href="#lettingmorethanonepersonin" class="permalink">&para;</a></h2>
     <p>Las directivas mencionadas arriba s&oacute;lo permiten a una persona 
     (especialmente con un usuario que en ej ejemplo es <code>rbowen</code>) 
     en el directorio. En la mayor&iacute;a de los casos, se querr&aacute; permitir el acceso
@@ -360,7 +360,7 @@ Require group GroupName</pre>
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="possibleproblems" id="possibleproblems">Posibles Problemas</a> <a title="Enlace permanente" href="#possibleproblems" class="permalink">&para;</a></h2>
+<h2 id="possibleproblems">Posibles Problemas <a title="Enlace permanente" href="#possibleproblems" class="permalink">&para;</a></h2>
     <p>Debido a la forma en que se especifica la autenticaci&oacute;n b&aacute;sica,
     su nombre de usuario y la contrase&ntilde;a deben ser verificados cada vez 
     que se solicita un documento desde el servidor. Esto es, incluso si&nbsp;
@@ -380,8 +380,8 @@ Require group GroupName</pre>
 	</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbmdbd" id="dbmdbd">M&eacute;todo alternativo de almacenamiento de las 
-	contrase&ntilde;as</a> <a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
+<h2 id="dbmdbd">M&eacute;todo alternativo de almacenamiento de las 
+	contrase&ntilde;as <a title="Enlace permanente" href="#dbmdbd" class="permalink">&para;</a></h2>
 
     <p>Debido a que el almacenamiento de las contrase&ntilde;as en texto plano tiene 
     	el problema mencionado anteriormente, puede que se prefiera guardar 
@@ -408,7 +408,7 @@ Require group GroupName</pre>
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> para m&aacute;s detalles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multprovider" id="multprovider">Uso de m&uacute;ltiples proveedores</a> <a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
+<h2 id="multprovider">Uso de m&uacute;ltiples proveedores <a title="Enlace permanente" href="#multprovider" class="permalink">&para;</a></h2>
 
     <p>Con la introducci&oacute;n de la nueva autenticaci&oacute;n basada en un proveedor y
      una arquitectura de autorizaci&oacute;n, ya no estaremos restringidos a un &uacute;nico
@@ -470,14 +470,14 @@ Require group GroupName</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="beyond" id="beyond">M&aacute;s all&aacute; de la Autorizaci&oacute;n</a> <a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
+<h2 id="beyond">M&aacute;s all&aacute; de la Autorizaci&oacute;n <a title="Enlace permanente" href="#beyond" class="permalink">&para;</a></h2>
 
     <p>El modo en que la autorizaci&oacute;n puede ser aplicada es ahora mucho m&aacute;s flexible
     	que us solo chequeo contra un almac&eacute;n de datos (contrase&ntilde;as). Ordenando la 
     	l&oacute;gica y escoger la forma en que la autorizaci&oacute;n es realizada, ahora es posible 
     </p>
 
-    <h3><a name="authandororder" id="authandororder">Aplicando la l&oacute;gica y ordenaci&oacute;n</a></h3>
+    <h3 id="authandororder">Aplicando la l&oacute;gica y ordenaci&oacute;n</h3>
         <p>Controlar el c&oacute;mo y en qu&eacute; orden se va a aplicar la autorizaci&oacute;n ha 
         	sido un misterio en el pasado. En Apache 2.2 un proveedor del 
         	mecanismo de autenticaci&oacute;n fue introducido para disociar el proceso actual
@@ -519,8 +519,8 @@ Require group GroupName</pre>
 
     
 
-    <h3><a name="reqaccessctrl" id="reqaccessctrl">Uso de los proveedores de autorizaci&oacute;n para 
-    	el control de acceso</a></h3>
+    <h3 id="reqaccessctrl">Uso de los proveedores de autorizaci&oacute;n para 
+    	el control de acceso</h3>
 
     	<p>
     		La autenticaci&oacute;n de nombre de usuario y contrase&ntilde;a es s&oacute;lo parte
@@ -609,8 +609,8 @@ Require group GroupName</pre>
 
     
 
-    <h3><a name="filesystem" id="filesystem">Compatibilidad de Control de Acceso con versiones 
-    	anteriores </a></h3>
+    <h3 id="filesystem">Compatibilidad de Control de Acceso con versiones 
+    	anteriores </h3>
 
         <p>
         	Uno de los efectos secundarios de adoptar proveedores basados en 
@@ -646,7 +646,7 @@ Require group GroupName</pre>
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache" id="socache">Cache de Autenticaci&oacute;n</a> <a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
+<h2 id="socache">Cache de Autenticaci&oacute;n <a title="Enlace permanente" href="#socache" class="permalink">&para;</a></h2>
 	<p>
 		Puede haber momentos en que la autenticaci&oacute;n ponga una carga 
 		inaceptable en el proveedor (de autenticaci&oacute;n) o en tu red.
@@ -661,7 +661,7 @@ Require group GroupName</pre>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">M&aacute;s informaci&oacute;n</a> <a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2 id="moreinformation">M&aacute;s informaci&oacute;n <a title="Enlace permanente" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>
     	Tambi&eacute;n deber&iacute;a leer la documentaci&oacute;n para
@@ -692,7 +692,7 @@ Require group GroupName</pre>
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

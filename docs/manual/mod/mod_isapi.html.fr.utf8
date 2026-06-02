@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -67,7 +67,7 @@
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_isapi">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_isapi">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Utilisation</a> <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">Utilisation <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Dans le fichier de configuration du serveur, utilisez la
     directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> pour
@@ -104,7 +104,7 @@
     le module <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notes" id="notes">Notes additionnelles</a> <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
+<h2 id="notes">Notes additionnelles <a title="Lien permanent" href="#notes" class="permalink">&para;</a></h2>
 
     <p>L'impl&eacute;mentation ISAPI d'Apache se conforme &agrave; toutes les
     sp&eacute;cifications ISAPI 2.0, &agrave; l'exception de certaines extensions
@@ -136,7 +136,7 @@
     pas encore &eacute;t&eacute; planifi&eacute;.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="journal" id="journal">Journal du programmeur</a> <a title="Lien permanent" href="#journal" class="permalink">&para;</a></h2>
+<h2 id="journal">Journal du programmeur <a title="Lien permanent" href="#journal" class="permalink">&para;</a></h2>
 
     <p>Si vous &eacute;crivez des modules <code class="module"><a href="../mod/mod_isapi.html">mod_isapi</a></code> Apache
     2.0, vous devez limiter vos appels &agrave;
@@ -246,7 +246,7 @@
     des .dlls ISAPI &agrave; des fins de performances.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapiappendlogtoerrors" id="isapiappendlogtoerrors">Directive</a> <a name="ISAPIAppendLogToErrors" id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</a> <a title="Lien permanent" href="#isapiappendlogtoerrors" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapiappendlogtoerrors">Directive <span id="ISAPIAppendLogToErrors">ISAPIAppendLogToErrors</span> <a title="Lien permanent" href="#isapiappendlogtoerrors" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement des requ&ecirc;tes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -264,7 +264,7 @@ dans le journal des erreurs</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapiappendlogtoquery" id="isapiappendlogtoquery">Directive</a> <a name="ISAPIAppendLogToQuery" id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</a> <a title="Lien permanent" href="#isapiappendlogtoquery" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapiappendlogtoquery">Directive <span id="ISAPIAppendLogToQuery">ISAPIAppendLogToQuery</span> <a title="Lien permanent" href="#isapiappendlogtoquery" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre les requ&ecirc;tes
 <code>HSE_APPEND_LOG_PARAMETER</code> de la part des extensions ISAPI
@@ -283,7 +283,7 @@ dans la partie arguments de la requ&ecirc;te</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapicachefile" id="isapicachefile">Directive</a> <a name="ISAPICacheFile" id="ISAPICacheFile">ISAPICacheFile</a> <a title="Lien permanent" href="#isapicachefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapicachefile">Directive <span id="ISAPICacheFile">ISAPICacheFile</span> <a title="Lien permanent" href="#isapicachefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichiers .dll ISAPI devant &ecirc;tre charg&eacute;s au
 d&eacute;marrage</td></tr>
@@ -304,7 +304,7 @@ d&eacute;marrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapifakeasync" id="isapifakeasync">Directive</a> <a name="ISAPIFakeAsync" id="ISAPIFakeAsync">ISAPIFakeAsync</a> <a title="Lien permanent" href="#isapifakeasync" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapifakeasync">Directive <span id="ISAPIFakeAsync">ISAPIFakeAsync</span> <a title="Lien permanent" href="#isapifakeasync" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Emulation du support des entr&eacute;es/sorties asynchrones pour
 les appels ISAPI</td></tr>
@@ -320,7 +320,7 @@ les appels ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapilognotsupported" id="isapilognotsupported">Directive</a> <a name="ISAPILogNotSupported" id="ISAPILogNotSupported">ISAPILogNotSupported</a> <a title="Lien permanent" href="#isapilognotsupported" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapilognotsupported">Directive <span id="ISAPILogNotSupported">ISAPILogNotSupported</span> <a title="Lien permanent" href="#isapilognotsupported" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Journalisation des demandes de fonctionnalit&eacute;s non
 support&eacute;es de la part des extensions ISAPI</td></tr>
@@ -339,7 +339,7 @@ support&eacute;es de la part des extensions ISAPI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="isapireadaheadbuffer" id="isapireadaheadbuffer">Directive</a> <a name="ISAPIReadAheadBuffer" id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</a> <a title="Lien permanent" href="#isapireadaheadbuffer" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="isapireadaheadbuffer">Directive <span id="ISAPIReadAheadBuffer">ISAPIReadAheadBuffer</span> <a title="Lien permanent" href="#isapireadaheadbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon de lecture anticip&eacute;e envoy&eacute; aux extensions
 ISAPI</td></tr>
@@ -366,7 +366,7 @@ ISAPI</td></tr>
 <a href="../ko/mod/mod_isapi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

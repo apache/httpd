@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -66,7 +66,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="programs/configure.html">ソースツリーの設定</a></li><li><a href="invoking.html">Apacheの起動</a></li><li><a href="stopping.html">Apacheの停止と再起動</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">概要 (せっかちな人向け)</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">概要 (せっかちな人向け) <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -127,7 +127,7 @@
     コンパイルとインストールについては、次に詳しく記述されています。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">必要なもの</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">必要なもの <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Apache のビルドには次のものが必要です:</p>
 
@@ -171,7 +171,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">ダウンロード</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">ダウンロード <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP サーバは <a href="http://httpd.apache.org/download.cgi">Apache HTTP
     サーバダウンロードサイト</a>からダウンロードできますし、
@@ -196,7 +196,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">展開</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">展開 <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Apache HTTPD の tarball
     からソースファイルを展開して取り出すとは、
@@ -213,7 +213,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     <code>cd</code> で移動してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">ソースツリーを設定する</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">ソースツリーを設定する <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>次のステップは、あなたのプラットホームと
     個人的な要求に合うように Apache
@@ -288,7 +288,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     をご覧ください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">ビルド</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">ビルド <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>これで Apache の様々なパーツをビルドすることができます。
     次のコマンドを単純に実行するだけです:</p>
@@ -301,7 +301,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     大きく依存するでしょう。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">インストール</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">インストール <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>さて、設定したインストール <em>PREFIX</em> 
      (前述の <code>--prefix</code> オプションを参照) 
@@ -318,7 +318,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     ドキュメントファイルの上書きは行いません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">カスタマイズ</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">カスタマイズ <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>次に <code><em>PREFIX</em>/conf/</code> 以下にある <a href="configuring.html">設定ファイル</a>を編集して、
     Apache HTTP サーバをカスタマイズします。</p>
@@ -331,7 +331,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">テスト</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">テスト <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>次のコマンドを実行して Apache HTTP サーバを<a href="invoking.html">開始</a>できます:</p>
 
@@ -348,7 +348,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">アップグレード</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">アップグレード <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>アップグレードでまず行なうべきことは、リリースアナウンスと
     ソースディストリビューションに入っている <code>CHANGES</code> を読んで、
@@ -411,7 +411,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

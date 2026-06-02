@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -68,7 +68,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">サンプル設定</a> <a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
+<h2 id="recommended">サンプル設定 <a title="Permanent link" href="#recommended" class="permalink">&para;</a></h2>
     <p>下にせっかちな人向けの簡単な設定例を示します。</p>
 
     <div class="example"><h3>数タイプのみ圧縮する</h3><p><code>
@@ -107,9 +107,9 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">圧縮を有効にする</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">圧縮を有効にする <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
 
-    <h3><a name="output" id="output">Output Compression</a></h3>
+    <h3 id="output">Output Compression</h3>
       <p>圧縮機能は <code>DEFLATE</code> <a href="../filter.html">フィルタ</a>
       により実装されています。以下のディレクティブはそのディレクティブのある
       コンテナ中のドキュメントを圧縮するようにします:</p>
@@ -179,7 +179,7 @@
       </div>
 
     
-    <h3><a name="inflate" id="inflate">出力の伸長</a></h3>
+    <h3 id="inflate">出力の伸長</h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip 圧縮されたレスポンス
       本文を inflate/uncompress するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>
@@ -201,7 +201,7 @@
       </p>
       
     
-    <h3><a name="input" id="input">入力の伸張</a></h3>
+    <h3 id="input">入力の伸張</h3>
       <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは、gzip
       で圧縮されたリクエスト本体を伸張するフィルタも提供しています。
       この機能を有効にするには、<code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>
@@ -233,7 +233,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Proxy サーバでの扱い</a> <a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
+<h2 id="proxies">Proxy サーバでの扱い <a title="Permanent link" href="#proxies" class="permalink">&para;</a></h2>
 
     <p><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> モジュールは <code>Vary: Accept-Encoding</code>
     HTTP 応答ヘッダを送信して、適切な <code>Accept-Encoding</code>
@@ -262,7 +262,7 @@
     </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a name="deflatealteretag" id="deflatealteretag">ディレクティブ</a> <a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatealteretag"><span id="DeflateAlterETag">DeflateAlterETag</span> ディレクティブ <a title="Permanent link" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>How the outgoing ETag header should be modified during compression</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateAlterETag AddSuffix|NoChange|Remove</code></td></tr>
@@ -275,7 +275,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a name="deflatebuffersize" id="deflatebuffersize">ディレクティブ</a> <a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatebuffersize"><span id="DeflateBufferSize">DeflateBufferSize</span> ディレクティブ <a title="Permanent link" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>zlib が一度に圧縮する塊の大きさ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateBufferSize <var>value</var></code></td></tr>
@@ -289,7 +289,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a name="deflatecompressionlevel" id="deflatecompressionlevel">ディレクティブ</a> <a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatecompressionlevel"><span id="DeflateCompressionLevel">DeflateCompressionLevel</span> ディレクティブ <a title="Permanent link" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>出力に対して行なう圧縮の程度</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateCompressionLevel <var>value</var></code></td></tr>
@@ -306,7 +306,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a name="deflatefilternote" id="deflatefilternote">ディレクティブ</a> <a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatefilternote"><span id="DeflateFilterNote">DeflateFilterNote</span> ディレクティブ <a title="Permanent link" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ロギング用に圧縮比をメモに追加</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
@@ -361,7 +361,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">ディレクティブ</a> <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflatelimitrequestbody"><span id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</span> ディレクティブ <a title="Permanent link" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum size of inflated request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
@@ -375,7 +375,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a name="deflateinflateratioburst" id="deflateinflateratioburst">ディレクティブ</a> <a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflateratioburst"><span id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</span> ディレクティブ <a title="Permanent link" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum number of times the inflation ratio for request bodies
              can be crossed</td></tr>
@@ -390,7 +390,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a name="deflateinflateratiolimit" id="deflateinflateratiolimit">ディレクティブ</a> <a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflateratiolimit"><span id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</span> ディレクティブ <a title="Permanent link" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Maximum inflation ratio for request bodies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
@@ -404,7 +404,7 @@
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a name="deflatememlevel" id="deflatememlevel">ディレクティブ</a> <a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatememlevel"><span id="DeflateMemLevel">DeflateMemLevel</span> ディレクティブ <a title="Permanent link" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>zlib が圧縮に使うメモリのレベルを指定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateMemLevel <var>value</var></code></td></tr>
@@ -420,7 +420,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a name="deflatewindowsize" id="deflatewindowsize">ディレクティブ</a> <a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatewindowsize"><span id="DeflateWindowSize">DeflateWindowSize</span> ディレクティブ <a title="Permanent link" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>Zlib の圧縮用ウィンドウの大きさ</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DeflateWindowSize <var>value</var></code></td></tr>
@@ -445,7 +445,7 @@
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

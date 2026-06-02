@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -381,7 +381,7 @@
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_md">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_md">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdactivationdelay" id="mdactivationdelay">Directive</a> <a name="MDActivationDelay" id="MDActivationDelay">MDActivationDelay</a> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdactivationdelay">Directive <span id="MDActivationDelay">MDActivationDelay</span> <a title="Lien permanent" href="#mdactivationdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;lai d'activation des nouveaux certificays</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDActivationDelay <var>duration</var></code></td></tr>
@@ -396,7 +396,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdbaseserver" id="mdbaseserver">Directive</a> <a name="MDBaseServer" id="MDBaseServer">MDBaseServer</a> <a title="Lien permanent" href="#mdbaseserver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdbaseserver">Directive <span id="MDBaseServer">MDBaseServer</span> <a title="Lien permanent" href="#mdbaseserver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si le serveur global peut &ecirc;tre g&eacute;r&eacute; ou seulement
 	les serveurs virtuels.</td></tr>
@@ -418,7 +418,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcacertificatefile" id="mdcacertificatefile">Directive</a> <a name="MDCACertificateFile" id="MDCACertificateFile">MDCACertificateFile</a> <a title="Lien permanent" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcacertificatefile">Directive <span id="MDCACertificateFile">MDCACertificateFile</span> <a title="Lien permanent" href="#mdcacertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fichier contenant des certificats de confiance x509 pour
 	v&eacute;rifier les serveurs ACME.</td></tr>
@@ -443,7 +443,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcachallenges" id="mdcachallenges">Directive</a> <a name="MDCAChallenges" id="MDCAChallenges">MDCAChallenges</a> <a title="Lien permanent" href="#mdcachallenges" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcachallenges">Directive <span id="MDCAChallenges">MDCAChallenges</span> <a title="Lien permanent" href="#mdcachallenges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type de n&eacute;gociation ACME utilis&eacute;e pour prouver l'appartenance
 	du domaine.</td></tr>
@@ -486,7 +486,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificateagreement" id="mdcertificateagreement">Directive</a> <a name="MDCertificateAgreement" id="MDCertificateAgreement">MDCertificateAgreement</a> <a title="Lien permanent" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificateagreement">Directive <span id="MDCertificateAgreement">MDCertificateAgreement</span> <a title="Lien permanent" href="#mdcertificateagreement" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Acceptation des conditions d'utilisation de l'autorit&eacute; de
 	certification.</td></tr>
@@ -505,7 +505,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificateauthority" id="mdcertificateauthority">Directive</a> <a name="MDCertificateAuthority" id="MDCertificateAuthority">MDCertificateAuthority</a> <a title="Lien permanent" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificateauthority">Directive <span id="MDCertificateAuthority">MDCertificateAuthority</span> <a title="Lien permanent" href="#mdcertificateauthority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URLs du service ACME de l'autorit&eacute; de certification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateAuthority <var>url</var></code></td></tr>
@@ -542,7 +542,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificatecheck" id="mdcertificatecheck">Directive</a> <a name="MDCertificateCheck" id="MDCertificateCheck">MDCertificateCheck</a> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificatecheck">Directive <span id="MDCertificateCheck">MDCertificateCheck</span> <a title="Lien permanent" href="#mdcertificatecheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le motif de nom et d'URL pour un site de
 	v&eacute;rification de certificat</td></tr>
@@ -558,7 +558,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificatefile" id="mdcertificatefile">Directive</a> <a name="MDCertificateFile" id="MDCertificateFile">MDCertificateFile</a> <a title="Lien permanent" href="#mdcertificatefile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificatefile">Directive <span id="MDCertificateFile">MDCertificateFile</span> <a title="Lien permanent" href="#mdcertificatefile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit un fichier de certificat statique pour le domaine g&eacute;r&eacute;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateFile <var>path-to-pem-file</var></code></td></tr>
@@ -606,7 +606,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificatekeyfile" id="mdcertificatekeyfile">Directive</a> <a name="MDCertificateKeyFile" id="MDCertificateKeyFile">MDCertificateKeyFile</a> <a title="Lien permanent" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificatekeyfile">Directive <span id="MDCertificateKeyFile">MDCertificateKeyFile</span> <a title="Lien permanent" href="#mdcertificatekeyfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une cl&eacute; priv&eacute;e statique pour le certificat
 	statique.</td></tr>
@@ -626,7 +626,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificatemonitor" id="mdcertificatemonitor">Directive</a> <a name="MDCertificateMonitor" id="MDCertificateMonitor">MDCertificateMonitor</a> <a title="Lien permanent" href="#mdcertificatemonitor" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificatemonitor">Directive <span id="MDCertificateMonitor">MDCertificateMonitor</span> <a title="Lien permanent" href="#mdcertificatemonitor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'URL d'un moniteur d'enregistrement de certificat.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateMonitor name url</code></td></tr>
@@ -658,7 +658,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificateprotocol" id="mdcertificateprotocol">Directive</a> <a name="MDCertificateProtocol" id="MDCertificateProtocol">MDCertificateProtocol</a> <a title="Lien permanent" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificateprotocol">Directive <span id="MDCertificateProtocol">MDCertificateProtocol</span> <a title="Lien permanent" href="#mdcertificateprotocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le protocole &agrave; utiliser avec l'autorit&eacute; de certification.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCertificateProtocol <var>protocol</var></code></td></tr>
@@ -672,7 +672,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcertificatestatus" id="mdcertificatestatus">Directive</a> <a name="MDCertificateStatus" id="MDCertificateStatus">MDCertificateStatus</a> <a title="Lien permanent" href="#mdcertificatestatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcertificatestatus">Directive <span id="MDCertificateStatus">MDCertificateStatus</span> <a title="Lien permanent" href="#mdcertificatestatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Extrait les informations publiques du certificat au format
 	JSON.</td></tr>
@@ -701,7 +701,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdchallengedns01" id="mdchallengedns01">Directive</a> <a name="MDChallengeDns01" id="MDChallengeDns01">MDChallengeDns01</a> <a title="Lien permanent" href="#mdchallengedns01" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdchallengedns01">Directive <span id="MDChallengeDns01">MDChallengeDns01</span> <a title="Lien permanent" href="#mdchallengedns01" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la commande d'activation/d&eacute;sactivation des
 	v&eacute;rifications dns-01</td></tr>
@@ -739,7 +739,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdchallengedns01version" id="mdchallengedns01version">Directive</a> <a name="MDChallengeDns01Version" id="MDChallengeDns01Version">MDChallengeDns01Version</a> <a title="Lien permanent" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdchallengedns01version">Directive <span id="MDChallengeDns01Version">MDChallengeDns01Version</span> <a title="Lien permanent" href="#mdchallengedns01version" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le type des arguments avec lesquels appeler
 	MDChallengeDns01</td></tr>
@@ -762,7 +762,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcheckinterval" id="mdcheckinterval">Directive</a> <a name="MDCheckInterval" id="MDCheckInterval">MDCheckInterval</a> <a title="Lien permanent" href="#mdcheckinterval" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcheckinterval">Directive <span id="MDCheckInterval">MDCheckInterval</span> <a title="Lien permanent" href="#mdcheckinterval" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine la p&eacute;riodicit&eacute; de la v&eacute;rification des certificats</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDCheckInterval <var>duration</var></code></td></tr>
@@ -791,7 +791,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdcontactemail" id="mdcontactemail">Directive</a> <a name="MDContactEmail" id="MDContactEmail">MDContactEmail</a> <a title="Lien permanent" href="#mdcontactemail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdcontactemail">Directive <span id="MDContactEmail">MDContactEmail</span> <a title="Lien permanent" href="#mdcontactemail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adresse Email pour l'enregistrement du compte</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDContactEmail <var>address</var></code></td></tr>
@@ -816,7 +816,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mddrivemode" id="mddrivemode">Directive</a> <a name="MDDriveMode" id="MDDriveMode">MDDriveMode</a> <a title="Lien permanent" href="#mddrivemode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mddrivemode">Directive <span id="MDDriveMode">MDDriveMode</span> <a title="Lien permanent" href="#mddrivemode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ancien nom de MDRenewMode.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDDriveMode always|auto|manual</code></td></tr>
@@ -831,7 +831,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdexternalaccountbinding" id="mdexternalaccountbinding">Directive</a> <a name="MDExternalAccountBinding" id="MDExternalAccountBinding">MDExternalAccountBinding</a> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdexternalaccountbinding">Directive <span id="MDExternalAccountBinding">MDExternalAccountBinding</span> <a title="Lien permanent" href="#mdexternalaccountbinding" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les valeurs keyid et hmac de liaison avec les
 	comptes externes &agrave; utiliser dans les CA</td></tr>
@@ -880,7 +880,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdhttpproxy" id="mdhttpproxy">Directive</a> <a name="MDHttpProxy" id="MDHttpProxy">MDHttpProxy</a> <a title="Lien permanent" href="#mdhttpproxy" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdhttpproxy">Directive <span id="MDHttpProxy">MDHttpProxy</span> <a title="Lien permanent" href="#mdhttpproxy" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sp&eacute;cifie un serveur mandataire pour les connexions
 	sortantes.</td></tr>
@@ -898,7 +898,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdinitialdelay" id="mdinitialdelay">Directive</a> <a name="MDInitialDelay" id="MDInitialDelay">MDInitialDelay</a> <a title="Lien permanent" href="#mdinitialdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdinitialdelay">Directive <span id="MDInitialDelay">MDInitialDelay</span> <a title="Lien permanent" href="#mdinitialdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le d&eacute;lai avant la premi&egrave;re v&eacute;rification de certificat.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDInitialDelay <var>duration</var></code></td></tr>
@@ -917,7 +917,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdmatchnames" id="mdmatchnames">Directive</a> <a name="MDMatchNames" id="MDMatchNames">MDMatchNames</a> <a title="Lien permanent" href="#mdmatchnames" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdmatchnames">Directive <span id="MDMatchNames">MDMatchNames</span> <a title="Lien permanent" href="#mdmatchnames" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit comment les noms DNS sont compar&eacute;s aux vhosts</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMatchNames all|servernames</code></td></tr>
@@ -951,7 +951,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdmember" id="mdmember">Directive</a> <a name="MDMember" id="MDMember">MDMember</a> <a title="Lien permanent" href="#mdmember" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdmember">Directive <span id="MDMember">MDMember</span> <a title="Lien permanent" href="#mdmember" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom d'h&ocirc;te additionnel pour le domaine g&eacute;r&eacute;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMember <var>hostname</var></code></td></tr>
@@ -980,7 +980,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdmembers" id="mdmembers">Directive</a> <a name="MDMembers" id="MDMembers">MDMembers</a> <a title="Lien permanent" href="#mdmembers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdmembers">Directive <span id="MDMembers">MDMembers</span> <a title="Lien permanent" href="#mdmembers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si les alias de noms de domaines sont
 	automatiquement ajout&eacute;s.</td></tr>
@@ -996,7 +996,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdmessagecmd" id="mdmessagecmd">Directive</a> <a name="MDMessageCmd" id="MDMessageCmd">MDMessageCmd</a> <a title="Lien permanent" href="#mdmessagecmd" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdmessagecmd">Directive <span id="MDMessageCmd">MDMessageCmd</span> <a title="Lien permanent" href="#mdmessagecmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>G&egrave;re les &eacute;v&egrave;nements pour les domaines g&eacute;r&eacute;s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDMessageCmd <var>path-to-cmd</var> <var>optional-args</var></code></td></tr>
@@ -1083,7 +1083,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdmuststaple" id="mdmuststaple">Directive</a> <a name="MDMustStaple" id="MDMustStaple">MDMustStaple</a> <a title="Lien permanent" href="#mdmuststaple" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdmuststaple">Directive <span id="MDMustStaple">MDMustStaple</span> <a title="Lien permanent" href="#mdmuststaple" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si les nouveaux certificats doivent avoir le
 	drapeau OCSP Must Staple activ&eacute;.</td></tr>
@@ -1104,7 +1104,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdnotifycmd" id="mdnotifycmd">Directive</a> <a name="MDNotifyCmd" id="MDNotifyCmd">MDNotifyCmd</a> <a title="Lien permanent" href="#mdnotifycmd" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdnotifycmd">Directive <span id="MDNotifyCmd">MDNotifyCmd</span> <a title="Lien permanent" href="#mdnotifycmd" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Lance un programme lorsqu'un domaine g&eacute;r&eacute; est op&eacute;rationnel.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDNotifyCmd <var>path</var> [ <var>args</var> ]</code></td></tr>
@@ -1122,7 +1122,7 @@
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdomain" id="mdomain">Directive</a> <a name="MDomain" id="MDomain">MDomain</a> <a title="Lien permanent" href="#mdomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdomain">Directive <span id="MDomain">MDomain</span> <a title="Lien permanent" href="#mdomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une liste de noms de domaines qui appartiennent &agrave;
 	un groupe.</td></tr>
@@ -1213,7 +1213,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdomainsetsection" id="mdomainsetsection">Directive</a> <a name="MDomainSetsection" id="MDomainSetsection">&lt;MDomainSet&gt;</a> <a title="Lien permanent" href="#mdomainsetsection" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdomainsetsection">Directive <span id="MDomainSetsection">&lt;MDomainSet&gt;</span> <a title="Lien permanent" href="#mdomainsetsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Conteneur de directives &agrave; appliquer &agrave; un ou plusieurs
 	domaines g&eacute;r&eacute;s.</td></tr>
@@ -1248,7 +1248,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdportmap" id="mdportmap">Directive</a> <a name="MDPortMap" id="MDPortMap">MDPortMap</a> <a title="Lien permanent" href="#mdportmap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdportmap">Directive <span id="MDPortMap">MDPortMap</span> <a title="Lien permanent" href="#mdportmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mappage des ports externes avec les ports internes pour
 	v&eacute;rifier &agrave; qui appartient le domaine.</td></tr>
@@ -1300,7 +1300,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdprivatekeys" id="mdprivatekeys">Directive</a> <a name="MDPrivateKeys" id="MDPrivateKeys">MDPrivateKeys</a> <a title="Lien permanent" href="#mdprivatekeys" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdprivatekeys">Directive <span id="MDPrivateKeys">MDPrivateKeys</span> <a title="Lien permanent" href="#mdprivatekeys" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le type et la taille des cl&eacute;s priv&eacute;es g&eacute;n&eacute;r&eacute;es.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDPrivateKeys <var>type</var> [ <var>params</var>... ]</code></td></tr>
@@ -1357,7 +1357,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdprofile" id="mdprofile">Directive</a> <a name="MDProfile" id="MDProfile">MDProfile</a> <a title="Lien permanent" href="#mdprofile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdprofile">Directive <span id="MDProfile">MDProfile</span> <a title="Lien permanent" href="#mdprofile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utiliser un profile ACME sp&eacute;cifique depuis le CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfile name</code></td></tr>
@@ -1397,7 +1397,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdprofilemandatory" id="mdprofilemandatory">Directive</a> <a name="MDProfileMandatory" id="MDProfileMandatory">MDProfileMandatory</a> <a title="Lien permanent" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdprofilemandatory">Directive <span id="MDProfileMandatory">MDProfileMandatory</span> <a title="Lien permanent" href="#mdprofilemandatory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;ler si un MDProfile est obligatoire.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDProfileMandatory on|off</code></td></tr>
@@ -1420,7 +1420,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdrenewmode" id="mdrenewmode">Directive</a> <a name="MDRenewMode" id="MDRenewMode">MDRenewMode</a> <a title="Lien permanent" href="#mdrenewmode" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdrenewmode">Directive <span id="MDRenewMode">MDRenewMode</span> <a title="Lien permanent" href="#mdrenewmode" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;le le renouvellement des certificats.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewMode always|auto|manual</code></td></tr>
@@ -1455,7 +1455,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdrenewviaari" id="mdrenewviaari">Directive</a> <a name="MDRenewViaARI" id="MDRenewViaARI">MDRenewViaARI</a> <a title="Lien permanent" href="#mdrenewviaari" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdrenewviaari">Directive <span id="MDRenewViaARI">MDRenewViaARI</span> <a title="Lien permanent" href="#mdrenewviaari" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilisation de l'extension ACME ARI (rfc9773).</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewViaARI on|off</code></td></tr>
@@ -1480,7 +1480,7 @@ MDomain example2.org auto
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdrenewwindow" id="mdrenewwindow">Directive</a> <a name="MDRenewWindow" id="MDRenewWindow">MDRenewWindow</a> <a title="Lien permanent" href="#mdrenewwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdrenewwindow">Directive <span id="MDRenewWindow">MDRenewWindow</span> <a title="Lien permanent" href="#mdrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le moment auquel un certificat doit &ecirc;tre renouvel&eacute;.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRenewWindow <var>duration</var></code></td></tr>
@@ -1516,7 +1516,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdrequirehttps" id="mdrequirehttps">Directive</a> <a name="MDRequireHttps" id="MDRequireHttps">MDRequireHttps</a> <a title="Lien permanent" href="#mdrequirehttps" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdrequirehttps">Directive <span id="MDRequireHttps">MDRequireHttps</span> <a title="Lien permanent" href="#mdrequirehttps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Redirige le trafic http: vers https: pour les domaines
 	g&eacute;r&eacute;s.</td></tr>
@@ -1582,7 +1582,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdretrydelay" id="mdretrydelay">Directive</a> <a name="MDRetryDelay" id="MDRetryDelay">MDRetryDelay</a> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdretrydelay">Directive <span id="MDRetryDelay">MDRetryDelay</span> <a title="Lien permanent" href="#mdretrydelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente avant de r&eacute;essayer, doubl&eacute; &agrave; chaque erreur
 	cons&eacute;cutive</td></tr>
@@ -1611,7 +1611,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdretryfailover" id="mdretryfailover">Directive</a> <a name="MDRetryFailover" id="MDRetryFailover">MDRetryFailover</a> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdretryfailover">Directive <span id="MDRetryFailover">MDRetryFailover</span> <a title="Lien permanent" href="#mdretryfailover" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDRetryFailover <var>number</var></code></td></tr>
@@ -1632,7 +1632,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdserverstatus" id="mdserverstatus">Directive</a> <a name="MDServerStatus" id="MDServerStatus">MDServerStatus</a> <a title="Lien permanent" href="#mdserverstatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdserverstatus">Directive <span id="MDServerStatus">MDServerStatus</span> <a title="Lien permanent" href="#mdserverstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
 	sont ajout&eacute;s ou non &agrave; server-status.</td></tr>
@@ -1655,7 +1655,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstapleothers" id="mdstapleothers">Directive</a> <a name="MDStapleOthers" id="MDStapleOthers">MDStapleOthers</a> <a title="Lien permanent" href="#mdstapleothers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstapleothers">Directive <span id="MDStapleOthers">MDStapleOthers</span> <a title="Lien permanent" href="#mdstapleothers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour les certificats non g&eacute;r&eacute;s par
 	mod_md.</td></tr>
@@ -1677,7 +1677,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstapling" id="mdstapling">Directive</a> <a name="MDStapling" id="MDStapling">MDStapling</a> <a title="Lien permanent" href="#mdstapling" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstapling">Directive <span id="MDStapling">MDStapling</span> <a title="Lien permanent" href="#mdstapling" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active l'agrafage pour un ou plusieurs domaines.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStapling on|off</code></td></tr>
@@ -1710,7 +1710,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstaplingkeepresponse" id="mdstaplingkeepresponse">Directive</a> <a name="MDStaplingKeepResponse" id="MDStaplingKeepResponse">MDStaplingKeepResponse</a> <a title="Lien permanent" href="#mdstaplingkeepresponse" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstaplingkeepresponse">Directive <span id="MDStaplingKeepResponse">MDStaplingKeepResponse</span> <a title="Lien permanent" href="#mdstaplingkeepresponse" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;le la dur&eacute;e au bout de laquelle les anciennes
 	r&eacute;ponses doivent &ecirc;tre supprim&eacute;es.</td></tr>
@@ -1735,7 +1735,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstaplingrenewwindow" id="mdstaplingrenewwindow">Directive</a> <a name="MDStaplingRenewWindow" id="MDStaplingRenewWindow">MDStaplingRenewWindow</a> <a title="Lien permanent" href="#mdstaplingrenewwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstaplingrenewwindow">Directive <span id="MDStaplingRenewWindow">MDStaplingRenewWindow</span> <a title="Lien permanent" href="#mdstaplingrenewwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;le l'anciennet&eacute; des r&eacute;ponses OCSP au dela de laquelle
 	ces derni&egrave;res seront renouvel&eacute;es.</td></tr>
@@ -1789,7 +1789,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstoredir" id="mdstoredir">Directive</a> <a name="MDStoreDir" id="MDStoreDir">MDStoreDir</a> <a title="Lien permanent" href="#mdstoredir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstoredir">Directive <span id="MDStoreDir">MDStoreDir</span> <a title="Lien permanent" href="#mdstoredir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin dans le syst&egrave;me de fichiers local du r&eacute;pertoire o&ugrave;
 	seront stock&eacute;es les donn&eacute;es &agrave; propos des domaines g&eacute;r&eacute;s.</td></tr>
@@ -1817,7 +1817,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdstorelocks" id="mdstorelocks">Directive</a> <a name="MDStoreLocks" id="MDStoreLocks">MDStoreLocks</a> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdstorelocks">Directive <span id="MDStoreLocks">MDStoreLocks</span> <a title="Lien permanent" href="#mdstorelocks" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure le verrouillage du magasin pour les mises &agrave; jour</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDStoreLocks on|off|<var>duration</var></code></td></tr>
@@ -1858,7 +1858,7 @@ MDRenewWindow 10%</pre>
         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mdwarnwindow" id="mdwarnwindow">Directive</a> <a name="MDWarnWindow" id="MDWarnWindow">MDWarnWindow</a> <a title="Lien permanent" href="#mdwarnwindow" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mdwarnwindow">Directive <span id="MDWarnWindow">MDWarnWindow</span> <a title="Lien permanent" href="#mdwarnwindow" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la fen&ecirc;tre de temps pendant laquelle vous serez
 	inform&eacute; de l'expiration prochaine d'un certificat.</td></tr>
@@ -1890,7 +1890,7 @@ MDRenewWindow 10%</pre>
 <a href="../fr/mod/mod_md.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

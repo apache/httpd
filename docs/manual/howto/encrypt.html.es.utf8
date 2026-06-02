@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -55,7 +55,7 @@ Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>C&oacute;mo Ci
 </ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../ssl/ssl_howto.html">SSL How-To</a></li><li><a href="../mod/mod_ssl.html">mod_ssl</a></li><li><a href="../mod/mod_md.html">mod_md</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Peque&ntilde;a introducci&oacute;n a los Certificados e.j: Pasaporte de Internet</a> <a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2> 
+<h2 id="protocol">Peque&ntilde;a introducci&oacute;n a los Certificados e.j: Pasaporte de Internet <a title="Enlace permanente" href="#protocol" class="permalink">&para;</a></h2> 
     
     <p> 
     El protocolo TLS (anteriormente conocido como SSL) es una forma en la que el servidor y el cliente pueden intercambiar informaci&oacute;n sin que nadie m&aacute;s intercepte las comunicaciones. Es lo que nuestros navegadores entienden cuando abrimos un enlace <em>https</em>.
@@ -114,7 +114,7 @@ Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>C&oacute;mo Ci
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="buycert" id="buycert">Comprar un Certificado</a> <a title="Enlace permanente" href="#buycert" class="permalink">&para;</a></h2> 
+<h2 id="buycert">Comprar un Certificado <a title="Enlace permanente" href="#buycert" class="permalink">&para;</a></h2> 
   <p> 
     Puedes comprar uno. Hay muchas compa&ntilde;&iacute;as vendiendo pasaportes de 
   	Internet (certificados) como servicio. En <a href="https://ccadb-public.secure.force.com/mozilla/IncludedCACertificateReport">esta lista de Mozilla,</a> podr&aacute;s encontrar todas las compa&ntilde;&iacute;as en las que el  navegador Firefox conf&iacute;a. Escoge una, visita su p&aacute;gina web y te dir&aacute;n los diferentes precios, y c&oacute;mo hacer para demostrar que eres quien dices ser, y as&iacute; podr&aacute;n marcar tu certificado con un sello de confianza.
@@ -129,7 +129,7 @@ Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>C&oacute;mo Ci
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="freecert" id="freecert">Obtener un Certificado Gratuito</a> <a title="Enlace permanente" href="#freecert" class="permalink">&para;</a></h2>
+<h2 id="freecert">Obtener un Certificado Gratuito <a title="Enlace permanente" href="#freecert" class="permalink">&para;</a></h2>
     
     <p>
     	Tambi&eacute;n hay compa&ntilde;&iacute;as que ofrecen certificados para servidores web 
@@ -157,7 +157,7 @@ Tutoriales</a></div><div id="page-content"><div id="preamble"><h1>C&oacute;mo Ci
 <a href="../fr/howto/encrypt.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

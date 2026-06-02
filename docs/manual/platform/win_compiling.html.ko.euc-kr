@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">요구사항</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">요구사항 <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     
 
@@ -171,7 +171,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="commandbuild" id="commandbuild">명령행에서 컴파일하기</a> <a title="Permanent link" href="#commandbuild" class="permalink">&para;</a></h2>
+<h2 id="commandbuild">명령행에서 컴파일하기 <a title="Permanent link" href="#commandbuild" class="permalink">&para;</a></h2>
 
     
 
@@ -192,7 +192,7 @@ nmake /f Makefile.win _apached</pre></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="workspacebuild" id="workspacebuild">Developer Studio Workspace IDE에서 컴파일하기</a> <a title="Permanent link" href="#workspacebuild" class="permalink">&para;</a></h2>
+<h2 id="workspacebuild">Developer Studio Workspace IDE에서 컴파일하기 <a title="Permanent link" href="#workspacebuild" class="permalink">&para;</a></h2>
 
     
 
@@ -259,7 +259,7 @@ nmake /f Makefile.win _apached</pre></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="projectcomponents" id="projectcomponents">프로젝트 구성요소</a> <a title="Permanent link" href="#projectcomponents" class="permalink">&para;</a></h2>
+<h2 id="projectcomponents">프로젝트 구성요소 <a title="Permanent link" href="#projectcomponents" class="permalink">&para;</a></h2>
 
     
 
@@ -381,7 +381,7 @@ nmake /f Makefile.win installd INSTDIR=<em>dir</em>
       <li><code><em>dir</em>\lib</code> - 링크 라이브러리파일</li>
     </ul>
 
-    <h3><a name="projectcomponents-warn" id="projectcomponents-warn">개발중인 아파치 버전을 컴파일할때 경고</a></h3>
+    <h3 id="projectcomponents-warn">개발중인 아파치 버전을 컴파일할때 경고</h3>
 
       
 
@@ -423,7 +423,7 @@ nmake /f Makefile.win installd INSTDIR=<em>dir</em>
 <a href="../ko/platform/win_compiling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -49,18 +49,18 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="what-will-and-will-not-be-discussed" id="what-will-and-will-not-be-discussed">De qu&eacute; hablaremos y de qu&eacute; no</a> <a title="Enlace permanente" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
+<h2 id="what-will-and-will-not-be-discussed">De qu&eacute; hablaremos y de qu&eacute; no <a title="Enlace permanente" href="#what-will-and-will-not-be-discussed" class="permalink">&para;</a></h2>
         
 
         <p>Este documento se centrar&aacute; en documentaci&oacute;n de f&aacute;cil acceso y opciones de ajuste para Apache HTTPD 2.2 y 2.4, as&iacute; como herramientas de monitorizaci&oacute;n. Las herramientas de monitorizaci&oacute;n le permiten observar su servidor web para obtener informaci&oacute;n de su rendimiento, o su falta de &eacute;l. Asumiremos que usted no tiene un presupuesto ilimitado para hardware de servidor, as&iacute; que la infraestructura existente tiene que hacer el trabajo. Usted probablemente tampoco desea compilar su propio Apache, o recompilar el kernel del sistema operativo. Aunque si asumimos que est&aacute; familiarizado con el fichero de configuraci&oacute;n de Apache httpd.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="monitoring-your-server" id="monitoring-your-server">Monitorizando Su Servidor</a> <a title="Enlace permanente" href="#monitoring-your-server" class="permalink">&para;</a></h2>
+<h2 id="monitoring-your-server">Monitorizando Su Servidor <a title="Enlace permanente" href="#monitoring-your-server" class="permalink">&para;</a></h2>
         
 
         <p>La primera tarea cuando se mide o se ajusta el rendimiento de su servidor es averiguar como est&aacute; rindiendo actualmente. Monitorizando su servidor con  carga real, o carga generada artificialmente, puede extrapolar su comportamiento bajo estr&eacute;s, como por ejemplo cuando se le menciona en Slashdot.</p>
 
-        <h3><a name="monitoring-tools" id="monitoring-tools">Herramientas de Monitorizaci&oacute;n</a></h3>
+        <h3 id="monitoring-tools">Herramientas de Monitorizaci&oacute;n</h3>
             
 
             <h4><a name="top" id="top">top</a></h4>
@@ -167,7 +167,7 @@ Swap:       3903784      12540  3891244</pre></div>
             
         
 
-        <h3><a name="web-server-log-files" id="web-server-log-files">Ficheros de Log del Servidor Web</a></h3>
+        <h3 id="web-server-log-files">Ficheros de Log del Servidor Web</h3>
             
 
             <p>Monitorizar y analizar los ficheros de log es una de las formas m&aacute;s efectivas de estar al tanto de la salud del servidor y su rendimiento. Monitorizar el log de errores ayuda a detectar condiciones de error, descubrir ataques y encontrar problemas de rendimiento. Analizar los logs de acceso le indica cu&aacute;n ocupado est&aacute; su servidor, qu&eacute; recursos son los m&aacute;s populares y de d&oacute;nde vienen los usuarios. Los datos de ficheros de log hist&oacute;ricos puede darle una visi&oacute;n inmejorable sobre las tendencias de acceso a su servidor, que le permite predecir cuando sus necesidades de rendimiento sobrepasar&aacute;n las de la capacidad de su servidor.</p>
@@ -422,7 +422,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
             
         
 
-        <h3><a name="generating-a-test-load" id="generating-a-test-load">Generando una Carga de Prueba</a></h3>
+        <h3 id="generating-a-test-load">Generando una Carga de Prueba</h3>
             
             
             <p>Es &uacute;til generar una carga de prueba para comprobar el rendimiento del sistema en situaciones de operaci&oacute;n realistas. Adem&aacute;s de paquetes de software comercial como <a href="http://learnloadrunner.com/">LoadRunner</a>, hay un gran n&uacute;mero de herramientas libres para generar carga contra su servidor.</p>
@@ -449,11 +449,11 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring-for-performance" id="configuring-for-performance">Configurar para obtener Rendimiento</a> <a title="Enlace permanente" href="#configuring-for-performance" class="permalink">&para;</a></h2>
+<h2 id="configuring-for-performance">Configurar para obtener Rendimiento <a title="Enlace permanente" href="#configuring-for-performance" class="permalink">&para;</a></h2>
         
 
 
-        <h3><a name="apache-configuration" id="apache-configuration">Configuraci&oacute;n de httpd</a></h3>
+        <h3 id="apache-configuration">Configuraci&oacute;n de httpd</h3>
             
 
             <p>Apache httpd 2.2 es por defecto un servidor que hace pre-fork. Cuando el servidor arranca, el proceso padre arranca un n&uacute;mero determinado de procesos hijos que hacen el trabajo actual de servir a las peticiones recibidas. Pero Apache httpd 2.0 introdujo el concepto de M&oacute;dulo de Multi-Proceso (MPM). Los desarrolladores pueden desarrollar MPMs para que se ajuste al proceso- o una arquitectura multihilo para su sistema operativo espec&iacute;fico. Apache 2 viene con MPMs especiales para Windows, OS/2, Netware y BeOS. En plataformas tipo-unix. los MPMs m&aacute;s populares son Prefork y Worker. El MPM Prefork ofrece el mismo modelo de pre-fork que usa Apache 1.3. El MPM Worker ejecuta un n&uacute;mero de procesos hijo, y genera threads que gestionan un gran n&uacute;mero de peticiones dentro de cada proceso hijo. En 2.4 los MPMs ya no tienen que estar vinculados al binario de httpd. Pueden cargarse intercambiare como cualquier otro m&oacute;dulo a trav&eacute;s de <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. El MPM por defecto en 2.4 es event.</p>
@@ -527,7 +527,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
             
         
         
-        <h3><a name="tuning-the-operating-system" id="tuning-the-operating-system">Afinando el Sistema Operativo</a></h3>
+        <h3 id="tuning-the-operating-system">Afinando el Sistema Operativo</h3>
             
 
             <p>A menudo las personas buscan 'la clave m&aacute;gica' que har&aacute; que su sistema rinda cuatro veces m&aacute;s r&aacute;pido con tan solo cambiar una valor de configuraci&oacute;n. La verdad es, los derivados de Unix de hoy en d&iacute;a est&aacute;n ya bastante bien ajustados "de f&aacute;brica" y no hay mucho que hacer para conseguir que fucionen de manera &oacute;ptima. Sin embargo, hay algunas cosas que como administrador usted puede hacer para mejorar el rendimiendo.</p>
@@ -611,7 +611,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching-content" id="caching-content">Cacheando Contenido</a> <a title="Enlace permanente" href="#caching-content" class="permalink">&para;</a></h2>
+<h2 id="caching-content">Cacheando Contenido <a title="Enlace permanente" href="#caching-content" class="permalink">&para;</a></h2>
         
 
         <p>Peticiones para contenido que se genera din&aacute;micamente generalmente consumen m&aacute;s recursos que el contenido est&aacute;tico. El contenido est&aacute;tico consiste en ficheros sencillos como p&aacute;ginas, im&aacute;genes, etc. que se encuentran en el disco y se sirven de manera muy eficiente. Muchos sistemas operativos cachean autom&aacute;ticamente en memoria los contenidos de ficheros a los que se accede frecuentemente.</p>
@@ -619,7 +619,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
         <p>Procesar solicitudes din&aacute;micas, por el contrario, requieren mucho m&aacute;s esfuerzo. Ejecutando scripts CGI, pasando solicitudes a un servidor externo de aplicaciones y acceder a contenido en base de datos puede a&ntilde;adir retardo y carga de proceso a un servidor web ocupado. Bajo muchas circunstancias, el rendimiento se puede mejorar peticiones m&aacute;s realizadas de contenido din&aacute;mico convirti&eacute;ndolas en contenido est&aacute;tico. En esta secci&oacute;n se ver&aacute;n dos formas de gestionarlo.</p>
 
 
-        <h3><a name="making-popular-pages-static" id="making-popular-pages-static">Convertir las P&aacute;ginas M&aacute;s Visitadas en Est&aacute;ticas.</a></h3>
+        <h3 id="making-popular-pages-static">Convertir las P&aacute;ginas M&aacute;s Visitadas en Est&aacute;ticas.</h3>
             
 
             <p>Pre-renderizando las p&aacute;ginas que son m&aacute;s visitadas para las solicitudes m&aacute;s realizadas en su aplicaci&oacute;n, puede darle una mejora significativa de rendimiento sin dejar de lado la flexibilidad del contenido generado din&aacute;micamente. Por ejemplo, si su aplicaci&oacute;n es un servicio de entrega de flores, probablemente quiera pre-renderizar sus p&aacute;gina de cat&aacute;logo para las rosas rojas en las semanas previas al d&iacute;a de los enamorados. Cuando el usuario busca rosas rojas, se sirven de p&aacute;ginas pre-renderizadas. Solicitudes para, por ejemplo, rosas amarillas se generar&aacute;n directamente desde la base de datos. El m&oacute;dulo mod_rewrite incluido con Apache es una gran herramienta para implementar estas sustituciones.</p>
@@ -667,7 +667,7 @@ CustomLog "|/usr/local/apache2/bin/rotatelogs /var/log/access_log 86400" common
             
         
 
-        <h3><a name="caching-content-with-mod_cache" id="caching-content-with-mod_cache">Cacheando Contenido con mod_cache</a></h3>
+        <h3 id="caching-content-with-mod_cache">Cacheando Contenido con mod_cache</h3>
             
 
             <p>El m&oacute;dulo mod_cache facilita cacheo inteligente de respuestas HTTP: est&aacute; al tanto de los tiempos de expiraci&oacute;n y requerimientos de contenido que son parte de la especificaci&oacute;n HTTP. El m&oacute;dulo mod_cache cachea contenido de respuestas de URL. Si el contenido que se env&iacute;a al cliente es considerado como cacheable, se guarda en disco. Peticiones posteriores a la misma URL se sirven del disco directamente desde la cache. El modulo que provee cache para mod_cache, mod_disk_cache, determina el contenido que se almacena en disco. Para la mayor&iacute;a de sistemas de servidores tendr&aacute;n m&aacute;s disco disponible que memoria, y es buno anotar que algunos kernel de sistema operativo frecuentemente cachean el acceso a disco de manera transparente en memoria, as&iacute; que replicar esto en el servidor no es &uacute;til.</p>
@@ -702,7 +702,7 @@ CacheMaxExpire 21600</pre>
         
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="further-considerations" id="further-considerations">Otras Consideraciones</a> <a title="Enlace permanente" href="#further-considerations" class="permalink">&para;</a></h2>
+<h2 id="further-considerations">Otras Consideraciones <a title="Enlace permanente" href="#further-considerations" class="permalink">&para;</a></h2>
         
 
         <p>Armado con el conocimiento de c&oacute;mo afinar el sistema para entregar el rendimiento deseado, pronto descubrir&aacute; que <em>un</em> solo sistema puede provocar un cuello de botella. C&oacute;mo hacer que un sistema sea apto para crecimiento, o como afinar un n&uacute;mero de sistemas como uno solo ser&aacute; comentado en la p&aacute;gina<a href="https://cwiki.apache.org/confluence/display/httpd/PerformanceScalingOut">PerformanceScalingOut</a>.
@@ -714,7 +714,7 @@ CacheMaxExpire 21600</pre>
 <a href="../fr/misc/perf-scaling.html" hreflang="fr" rel="alternate" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

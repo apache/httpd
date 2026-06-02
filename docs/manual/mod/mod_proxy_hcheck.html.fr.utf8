@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -143,7 +143,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples d'utilisation</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples d'utilisation <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
 	
     <p>L'exemple suivant montre comment configurer le check up pour diff&eacute;rents
@@ -185,7 +185,7 @@ up.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyhcexpr" id="proxyhcexpr">Directive</a> <a name="ProxyHCExpr" id="ProxyHCExpr">ProxyHCExpr</a> <a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhcexpr">Directive <span id="ProxyHCExpr">ProxyHCExpr</span> <a title="Lien permanent" href="#proxyhcexpr" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cr&eacute;e et nomme une expression conditionnelle &agrave; utiliser pour
 d&eacute;terminer la sant&eacute; d'un serveur d'arri&egrave;re-plan en fonction de sa valeur</td></tr>
@@ -237,7 +237,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyhctemplate" id="proxyhctemplate">Directive</a> <a name="ProxyHCTemplate" id="ProxyHCTemplate">ProxyHCTemplate</a> <a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhctemplate">Directive <span id="ProxyHCTemplate">ProxyHCTemplate</span> <a title="Lien permanent" href="#proxyhctemplate" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cr&eacute;e et nomme un mod&egrave;le permettant de d&eacute;finir diff&eacute;rents
 param&egrave;tres de check up</td></tr>
@@ -262,7 +262,7 @@ ProxyPass "/apps"     "balancer://foo"
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyhctpsize" id="proxyhctpsize">Directive</a> <a name="ProxyHCTPsize" id="ProxyHCTPsize">ProxyHCTPsize</a> <a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyhctpsize">Directive <span id="ProxyHCTPsize">ProxyHCTPsize</span> <a title="Lien permanent" href="#proxyhctpsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la taille totale, pour l'ensemble du
 serveur, du jeu de threads utilis&eacute; pour le check up des
@@ -292,7 +292,7 @@ serveur, du jeu de threads utilis&eacute; pour le check up des
 <a href="../fr/mod/mod_proxy_hcheck.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

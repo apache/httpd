@@ -188,6 +188,7 @@ log_server_status</a></li>
 </ul><ul><li><a href="mod/core.html">Apache Core Features</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM Common Directives</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
+<li><a href="mod/motorz.html">Apache MPM motorz</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
 <li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -51,7 +51,7 @@ başlangı&ccedil; yapmak isteyenlere yardımcı olmalıdır.
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Mod&uuml;l belgeleri</a></li><li><a href="remapping.html">Yeniden y&ouml;nlendirme ve yeniden eşleme</a></li><li><a href="access.html">Erişim denetimi</a></li><li><a href="vhosts.html">Sanal konaklar</a></li><li><a href="proxy.html">Vekil kullanımı</a></li><li><a href="rewritemap.html">RewriteMap Kullanımı</a></li><li><a href="advanced.html">İleri teknikler</a></li><li><a href="avoid.html">mod_rewrite kullanılmaması gereken durumlar</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Apache mod&uuml;l&uuml; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, URL değiştirmeleri
 yapmanın bir yolunu sunan &ccedil;ok g&uuml;&ccedil;l&uuml; ve karmaşık bir mod&uuml;ld&uuml;r. Bununla
 ihtiya&ccedil; duyabileceğiniz neredeyse her t&uuml;rl&uuml; URL yeniden yazma işlemini
@@ -79,7 +79,7 @@ g&ouml;sterir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">D&uuml;zenli İfadeler</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">D&uuml;zenli İfadeler <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, <a href="http://pcre.org/">Perl
 Uyumlu D&uuml;zenli İfade</a> s&ouml;zvarlığını kullanır. Bu belgede, d&uuml;zenli
@@ -96,7 +96,7 @@ bu konu hakkında kesin başvuru kaynağı olmaya devam etmektedir)
 ifade s&ouml;zvarlığı sağlamaya &ccedil;alışıyoruz; b&ouml;ylece <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> kuralları sihirli
 form&uuml;ller yerine bilimsel form&uuml;ller olacaktır.</p>
 
-<h3><a name="regexvocab" id="regexvocab">D&uuml;zenli ifade s&ouml;zvarlığı</a></h3>
+<h3 id="regexvocab">D&uuml;zenli ifade s&ouml;zvarlığı</h3>
 
 <p>D&uuml;zenli ifadeler ve <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> kuralları yazmak i&ccedil;in
 ihtiya&ccedil; duyacağınız asgari yapı taşları aşağıdadır. Bunlar kesinlikle
@@ -181,8 +181,8 @@ yalnızca ifadenin geri kalanıyla eşleşmezse eşleşmiş sayılır.</p>
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">D&uuml;zenli İfade Geri Başvuru
-Kullanılabilirliği</a></h3>
+<h3 id="InternalBackRefs">D&uuml;zenli İfade Geri Başvuru
+Kullanılabilirliği</h3>
 
       <p>Burada hatırlanması gereken &ouml;nemli bir şey vardır:
       <em>Kalıp</em>'ta veya <em>CondPattern</em>'lerden birinde
@@ -216,7 +216,7 @@ Kullanılabilirliği</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule Temelleri</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">RewriteRule Temelleri <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
 boşluklarla ayrılmış &uuml;&ccedil; arg&uuml;mandan oluşur. Arg&uuml;manlar şunlardır:</p>
 <ol>
@@ -293,7 +293,7 @@ değişkenlerde kullanılabilir.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Yeniden Yazma Bayrakları</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">Yeniden Yazma Bayrakları <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p>Bir <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 y&ouml;nergesinin davranışı, kuralın sonuna bir veya daha fazla bayrak
 uygulanarak değiştirilebilir. &Ouml;rneğin, bir kuralın eşleştirme
@@ -309,7 +309,7 @@ belgesine bakın.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Yeniden Yazma Koşulları</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">Yeniden Yazma Koşulları <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>Ardından gelen <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> y&ouml;nergesine tabi
 olacak istek t&uuml;rlerini kısıtlamak i&ccedil;in bir veya daha fazla <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> y&ouml;nergesi
 kullanılabilir. İlk arg&uuml;man isteğin bir &ouml;zelliğini tanımlayan bir
@@ -358,7 +358,7 @@ değeri <code>foo/bar</code> olacaktır.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Yeniden yazma eşlemleri</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">Yeniden yazma eşlemleri <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> y&ouml;nergesi,
 tabir yerindeyse yeniden yazma işleminizi yapacak harici bir işlev
@@ -366,7 +366,7 @@ tabir yerindeyse yeniden yazma işleminizi yapacak harici bir işlev
 olarak tartışılmaktadır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess dosyaları</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess dosyaları <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>Yeniden yazma genellikle ana sunucu yapılandırma ayarında
 (herhangi bir <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n dışında) veya
@@ -395,7 +395,7 @@ eşlenmesini sağlamak i&ccedil;in <code class="directive"><a href="../mod/mod_r
 <a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -82,7 +82,7 @@ taille sup&eacute;rieure &agrave; 8 Mo provoquent une erreur.
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_sed">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_sed">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="sampleconf" id="sampleconf">Exemple de configuration</a> <a title="Lien permanent" href="#sampleconf" class="permalink">&para;</a></h2>
+<h2 id="sampleconf">Exemple de configuration <a title="Lien permanent" href="#sampleconf" class="permalink">&para;</a></h2>
     <div class="example"><h3>Ajout d'un filtre en sortie</h3><pre class="prettyprint lang-config"># Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
 	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
 	 # documents html avant de les envoyer au client.
@@ -104,7 +104,7 @@ taille sup&eacute;rieure &agrave; 8 Mo provoquent une erreur.
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="sed_commands" id="sed_commands">Commandes sed</a> <a title="Lien permanent" href="#sed_commands" class="permalink">&para;</a></h2>
+<h2 id="sed_commands">Commandes sed <a title="Lien permanent" href="#sed_commands" class="permalink">&para;</a></h2>
     <p>
     Vous trouverez tous les d&eacute;tails &agrave; propos de la commande
     <code>sed</code> dans sa <a href="http://www.gnu.org/software/sed/manual/sed.txt">page
@@ -126,7 +126,7 @@ taille sup&eacute;rieure &agrave; 8 Mo provoquent une erreur.
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="inputsed" id="inputsed">Directive</a> <a name="InputSed" id="InputSed">InputSed</a> <a title="Lien permanent" href="#inputsed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="inputsed">Directive <span id="InputSed">InputSed</span> <a title="Lien permanent" href="#inputsed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed &agrave; ex&eacute;cuter pour le filtrage des donn&eacute;es d'une
 requ&ecirc;te (en g&eacute;n&eacute;ral des donn&eacute;es <code>POST</code>)</td></tr>
@@ -142,7 +142,7 @@ requ&ecirc;te (en g&eacute;n&eacute;ral des donn&eacute;es <code>POST</code>)</t
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="outputsed" id="outputsed">Directive</a> <a name="OutputSed" id="OutputSed">OutputSed</a> <a title="Lien permanent" href="#outputsed" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="outputsed">Directive <span id="OutputSed">OutputSed</span> <a title="Lien permanent" href="#outputsed" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Commande sed pour le filtrage des contenus de type
 r&eacute;ponse</td></tr>
@@ -163,7 +163,7 @@ r&eacute;ponse</td></tr>
 <a href="../fr/mod/mod_sed.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

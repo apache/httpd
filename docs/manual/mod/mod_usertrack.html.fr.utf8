@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -58,7 +58,7 @@ utilisateur sur un site
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_usertrack">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_usertrack">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Journalisation <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
 
 
     <p><code class="module"><a href="../mod/mod_usertrack.html">mod_usertrack</a></code> d&eacute;finit un cookie qui peut &ecirc;tre
@@ -72,7 +72,7 @@ CustomLog "logs/clickstream.log" usertrack</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiedomain" id="cookiedomain">Directive</a> <a name="CookieDomain" id="CookieDomain">CookieDomain</a> <a title="Lien permanent" href="#cookiedomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiedomain">Directive <span id="CookieDomain">CookieDomain</span> <a title="Lien permanent" href="#cookiedomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le domaine auquel le cookie traceur
 s'applique</td></tr>
@@ -111,7 +111,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookieexpires" id="cookieexpires">Directive</a> <a name="CookieExpires" id="CookieExpires">CookieExpires</a> <a title="Lien permanent" href="#cookieexpires" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookieexpires">Directive <span id="CookieExpires">CookieExpires</span> <a title="Lien permanent" href="#cookieexpires" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&eacute;e avant expiration du cookie traceur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieExpires <em>dur&eacute;e</em></code></td></tr>
@@ -137,7 +137,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiehttponly" id="cookiehttponly">Directive</a> <a name="CookieHTTPOnly" id="CookieHTTPOnly">CookieHTTPOnly</a> <a title="Lien permanent" href="#cookiehttponly" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiehttponly">Directive <span id="CookieHTTPOnly">CookieHTTPOnly</span> <a title="Lien permanent" href="#cookiehttponly" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'HTTPOnly' au cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieHTTPOnly on|off</code></td></tr>
@@ -154,7 +154,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiename" id="cookiename">Directive</a> <a name="CookieName" id="CookieName">CookieName</a> <a title="Lien permanent" href="#cookiename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiename">Directive <span id="CookieName">CookieName</span> <a title="Lien permanent" href="#cookiename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du cookie traceur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieName <em>symbole</em></code></td></tr>
@@ -178,7 +178,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiesamesite" id="cookiesamesite">Directive</a> <a name="CookieSameSite" id="CookieSameSite">CookieSameSite</a> <a title="Lien permanent" href="#cookiesamesite" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiesamesite">Directive <span id="CookieSameSite">CookieSameSite</span> <a title="Lien permanent" href="#cookiesamesite" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'SameSite' au cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieSameSite None|Lax|Strict</code></td></tr>
@@ -203,7 +203,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiesecure" id="cookiesecure">Directive</a> <a name="CookieSecure" id="CookieSecure">CookieSecure</a> <a title="Lien permanent" href="#cookiesecure" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiesecure">Directive <span id="CookieSecure">CookieSecure</span> <a title="Lien permanent" href="#cookiesecure" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute l'attribut 'Secure' au cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieSecure on|off</code></td></tr>
@@ -220,7 +220,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookiestyle" id="cookiestyle">Directive</a> <a name="CookieStyle" id="CookieStyle">CookieStyle</a> <a title="Lien permanent" href="#cookiestyle" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookiestyle">Directive <span id="CookieStyle">CookieStyle</span> <a title="Lien permanent" href="#cookiestyle" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Format du champ d'en-t&ecirc;te cookie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieStyle
@@ -257,7 +257,7 @@ s'applique</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cookietracking" id="cookietracking">Directive</a> <a name="CookieTracking" id="CookieTracking">CookieTracking</a> <a title="Lien permanent" href="#cookietracking" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cookietracking">Directive <span id="CookieTracking">CookieTracking</span> <a title="Lien permanent" href="#cookietracking" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active le cookie traceur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CookieTracking on|off</code></td></tr>
@@ -286,7 +286,7 @@ s'applique</td></tr>
 <a href="../fr/mod/mod_usertrack.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

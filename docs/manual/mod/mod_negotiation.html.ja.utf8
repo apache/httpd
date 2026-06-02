@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -74,7 +74,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="typemaps" id="typemaps">タイプマップ</a> <a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
+<h2 id="typemaps">タイプマップ <a title="Permanent link" href="#typemaps" class="permalink">&para;</a></h2>
     <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
     ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
     ('#') で始まる行はコメントとして扱われます。
@@ -163,7 +163,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiviews" id="multiviews">MultiViews</a> <a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
+<h2 id="multiviews">MultiViews <a title="Permanent link" href="#multiviews" class="permalink">&para;</a></h2>
     <p>MultiViews 探索は、<code>Multiviews</code> <code class="directive"><a href="../mod/core.html#options">Options</a></code> ディレクティブにより有効になります。
     サーバが <code>/some/dir/foo</code>
     へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
@@ -181,7 +181,7 @@
     ディレクティブで設定します。</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CacheNegotiatedDocs" id="CacheNegotiatedDocs">CacheNegotiatedDocs</a> <a name="cachenegotiateddocs" id="cachenegotiateddocs">ディレクティブ</a> <a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachenegotiateddocs"><span id="CacheNegotiatedDocs">CacheNegotiatedDocs</span> ディレクティブ <a title="Permanent link" href="#cachenegotiateddocs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>コンテントネゴシエーションされたドキュメントをプロキシサーバが
 キャッシュできるようにする</td></tr>
@@ -208,7 +208,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ForceLanguagePriority" id="ForceLanguagePriority">ForceLanguagePriority</a> <a name="forcelanguagepriority" id="forcelanguagepriority">ディレクティブ</a> <a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="forcelanguagepriority"><span id="ForceLanguagePriority">ForceLanguagePriority</span> ディレクティブ <a title="Permanent link" href="#forcelanguagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>要求に合う単独のドキュメントが見つからなかったときに行なうことを指定
 </td></tr>
@@ -265,7 +265,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LanguagePriority" id="LanguagePriority">LanguagePriority</a> <a name="languagepriority" id="languagepriority">ディレクティブ</a> <a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="languagepriority"><span id="LanguagePriority">LanguagePriority</span> ディレクティブ <a title="Permanent link" href="#languagepriority" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントが優先度を示さなかったときの言語の variant の優先度を
 指定</td></tr>
@@ -307,7 +307,7 @@
 <a href="../ja/mod/mod_negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

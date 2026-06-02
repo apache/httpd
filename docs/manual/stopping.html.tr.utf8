@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -49,7 +49,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Başlatma</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Giriş</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Giriş <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusunu durdurmak ve yeniden başlatmak i&ccedil;in &ccedil;alışan
       <code class="program"><a href="./programs/httpd.html">httpd</a></code> s&uuml;re&ccedil;lerine bir sinyal g&ouml;ndermeniz gerekir.
@@ -92,7 +92,7 @@
       ayarlara uygun olarak değiştirdikten sonra kullanınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="term" id="term">Hemen Durdur</a> <a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
+<h2 id="term">Hemen Durdur <a title="Permanent link" href="#term" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: TERM</dt>
     <dd><code>apachectl -k stop</code></dd>
@@ -105,7 +105,7 @@
       sonlandırılacak ve artık isteklere yanıt verilmeyecektir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">Nazik&ccedil;e Yeniden Başlat</a> <a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
+<h2 id="graceful">Nazik&ccedil;e Yeniden Başlat <a title="Permanent link" href="#graceful" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: USR1</dt>
     <dd><code>apachectl -k graceful</code></dd>
@@ -172,7 +172,7 @@
       d&uuml;zeltmeniz gerekir.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hup" id="hup">Hemen Yeniden Başlat</a> <a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
+<h2 id="hup">Hemen Yeniden Başlat <a title="Permanent link" href="#hup" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: HUP</dt>
     <dd><code>apachectl -k restart</code></dd>
@@ -195,7 +195,7 @@
       hatalarıyla ilgili bildirim alırsınız.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="gracefulstop" id="gracefulstop">Nazik&ccedil;e Durdur</a> <a title="Permanent link" href="#gracefulstop" class="permalink">&para;</a></h2>
+<h2 id="gracefulstop">Nazik&ccedil;e Durdur <a title="Permanent link" href="#gracefulstop" class="permalink">&para;</a></h2>
 
   <dl><dt>Sinyal: WINCH</dt>
     <dd><code>apachectl -k graceful-stop</code></dd>
@@ -249,7 +249,7 @@
 <a href="./tr/stopping.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
