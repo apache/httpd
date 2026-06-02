@@ -1,6 +1,6 @@
 # motorz MPM test harness
 
-Self-contained smoke / regression tests for the experimental **motorz** MPM
+Self-contained smoke / regression tests for the **motorz** MPM
 (`server/mpm/motorz/motorz.c`). These drive a real `httpd` built from this tree
 against a throwaway `ServerRoot` in a temp dir; nothing is installed and no
 existing config is touched.
