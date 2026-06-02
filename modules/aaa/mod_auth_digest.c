@@ -83,9 +83,7 @@
 /* struct to hold the configuration info */
 
 typedef struct digest_config_struct {
-    const char  *dir_name;
     authn_provider_list *providers;
-    apr_sha1_ctx_t  nonce_ctx;    
     apr_time_t    nonce_lifetime;
     int          check_nc;
     const char  *algorithm;
@@ -463,50 +461,12 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
 
 static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 {
-    digest_config_rec *conf;
+    digest_config_rec *conf = apr_pcalloc(p, sizeof *conf);
 
-    if (dir == NULL) {
-        return NULL;
-    }
-
-    conf = (digest_config_rec *) apr_pcalloc(p, sizeof(digest_config_rec));
-    if (conf) {
-        conf->nonce_lifetime = DFLT_NONCE_LIFE;
-        conf->dir_name       = apr_pstrdup(p, dir);
-        conf->algorithm      = DFLT_ALGORITHM;
-    }
+    conf->nonce_lifetime = DFLT_NONCE_LIFE;
+    conf->algorithm      = DFLT_ALGORITHM;
 
     return conf;
-}
-
-
-/*
- * The realm is no longer precomputed because it may be an expression, which
- * makes this hooking of AuthName quite weird.
- */
-static const char *set_realm(cmd_parms *cmd, void *config, const char *realm)
-{
-    digest_config_rec *conf = (digest_config_rec *) config;
-#ifdef AP_DEBUG
-    int i;
-
-    /* check that we got random numbers */
-    for (i = 0; i < SECRET_LEN; i++) {
-        if (secret[i] != 0)
-            break;
-    }
-    ap_assert(i < SECRET_LEN);
-#endif
-
-    /* we precompute the part of the nonce hash that is constant (well,
-     * the host:port would be too, but that varies for .htaccess files
-     * and directives outside a virtual host section)
-     */
-    apr_sha1_init(&conf->nonce_ctx);
-    apr_sha1_update_binary(&conf->nonce_ctx, secret, SECRET_LEN);
-
-
-    return DECLINE_CMD;
 }
 
 static const char *add_authn_provider(cmd_parms *cmd, void *config,
@@ -664,8 +624,6 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
 
 static const command_rec digest_cmds[] =
 {
-    AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG,
-     "The authentication realm (e.g. \"Members Only\")"),
     AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, OR_AUTHCFG,
                      "specify the auth providers for a directory or location"),
     AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG,
@@ -1061,14 +1019,8 @@ static void gen_nonce_hash(char hash[NONCE_HASH_LEN+1], const char *timestr, con
     unsigned char sha1[APR_SHA1_DIGESTSIZE];
     apr_sha1_ctx_t ctx;
 
-    memcpy(&ctx, &conf->nonce_ctx, sizeof(ctx));
-    /*
-    apr_sha1_update_binary(&ctx, (const unsigned char *) server->server_hostname,
-                         strlen(server->server_hostname));
-    apr_sha1_update_binary(&ctx, (const unsigned char *) &server->port,
-                         sizeof(server->port));
-     */
-
+    apr_sha1_init(&ctx);
+    apr_sha1_update_binary(&ctx, secret, SECRET_LEN);
     apr_sha1_update_binary(&ctx, (const unsigned char *) realm, strlen(realm));
 
     apr_sha1_update_binary(&ctx, (const unsigned char *) timestr, strlen(timestr));
