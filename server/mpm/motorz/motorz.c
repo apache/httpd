@@ -1297,6 +1297,37 @@ static void clean_child_exit(int code)
     apr_signal(SIGHUP, SIG_IGN);
     apr_signal(SIGTERM, SIG_IGN);
 
+    /* Join the poller threads before tearing down the worker pool. A poller
+     * thread, mid motorz_pollset_cb, may be about to hand a ready connection
+     * to the worker pool via apr_thread_pool_push(mz->workers, ...); if we
+     * destroy mz->workers (or pchild, on which the poller threads were
+     * created) out from under it, that push dereferences freed memory and
+     * crashes in APR's add_task. child_main's normal exit already joins the
+     * pollers before getting here, but the abrupt paths (just_die, and the
+     * mid-startup error exits below where some pollers may already be
+     * running) do not -- so quiesce and join them here too. die_now stops the
+     * poll loops; the join is skipped for any poller running on the *current*
+     * thread (defensive: clean_child_exit is normally reached on the main
+     * thread, never a poller thread).
+     */
+    die_now = 1;
+    if (mz->pollers) {
+        apr_os_thread_t self = apr_os_thread_current();
+        int i;
+        for (i = 0; i < mz->num_pollers; i++) {
+            motorz_poller_t *poller = mz->pollers[i];
+            if (poller && poller->thread) {
+                apr_os_thread_t *pos = NULL;
+                if (apr_os_thread_get(&pos, poller->thread) != APR_SUCCESS
+                        || pos == NULL
+                        || !apr_os_thread_equal(*pos, self)) {
+                    apr_status_t pstatus;
+                    apr_thread_join(&pstatus, poller->thread);
+                }
+            }
+        }
+    }
+
     /* Drain the worker thread pool before tearing down pools. Without this,
      * worker threads executing motorz_io_process or motorz_conn_done (which
      * call ap_log_error and apr_pool_clear) may still be running when pchild
@@ -1458,7 +1489,15 @@ static const char *motorz_get_name(void)
 
 static void just_die(int sig)
 {
-    clean_child_exit(0);
+    /* Async-signal context: do the minimum. Setting die_now stops the poller
+     * loops and breaks motorz_supervise on the main thread, which then joins
+     * the pollers and calls clean_child_exit -- the one teardown path that
+     * quiesces the poller threads before destroying mz->workers and pchild.
+     * Calling clean_child_exit() directly from here (the old behaviour) tore
+     * those down while a poller could still be pushing work to the pool, a
+     * use-after-free that crashed in APR's add_task.
+     */
+    die_now = 1;
 }
 
 static void stop_listening(int sig)
