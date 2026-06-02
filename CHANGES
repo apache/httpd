@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) support: Add in Python versions of various Perl-based support
+     scripts - apxs-ng, dbmmanage-ng, log_server_status-ng,
+     logresolve.py, phf_abuse_log-ng.cgi and split-logfile-ng.
+     [Jim Jagielski]
+
   *) mpm_motorz, mod_http2: Rework the MotorZ MPM with
      multi-poller scale-out (new PollersPerChild directive) and async
      keep-alive/HTTP/2 handoff, plus concurrency hardening and bug
