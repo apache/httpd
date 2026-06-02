@@ -1,6 +1,45 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.68
 
+  *) mod_unixd: CoreDumpDirectory requires enabling tracing on FreeBSD 11+.
+     PR 65819.  [David CARLIER <devnexen gmail.com>]
+
+  *) mod_file_cache: Fix crashes for mmap'ed files under threaded
+     MPMs. PR 69901. barr.israel <barr.israel campus.technion.ac.il>
+
+  *) core: Add support for %{m}t in ErrorLogFormat to log milli-second
+     time resolution (in addition to existing %{u}t for micro-seconds).
+     [Luboš Uhliarik <luhliari redhat.com>]
+
+  *) mod_unixd: Drop test that effective user ID is zero in
+     a chroot configuration.  PR 69767.
+     [Bastien Roucaries <rouca debian.org>]
+
+  *) mod_proxy_balancer: Include nonce in XML output.  PR 63074.
+     Federico Mennite <federico.mennite lifeware.ch>
+
+  *) mod_http2: update to version 2.0.42
+     Fix excessive file description use for non-TLS frontend connections when
+     sending files. Fixes <https://github.com/icing/mod_h2/issues/325>
+     [Stefan Eissing]
+
+  *) mod_http2: update to version 2.0.41
+     Fix cookie header accounting against LimitRequestFields.
+     [Stefan Eissing]
+
+  *) mod_http2: update to version 2.0.40
+     Fix error handling on upload requests when server runs out of file
+     handles that left beam bucket callbacks in place, potentially using
+     no longer valid references. Only applies on platforms with pipes
+     and file descriptor limits not healthy for a network server.
+     [Stefan Eissing]
+
+  *) mod_dav_fs: Return a 404 for DELETE if deletion fails because the
+     resource no longer exists.  PR 60746.  [Joe Orton]
+
+  *) mod_proxy_hcheck: Fix healthcheck disabled due to child restart while
+     updating. [Yann Ylavic]
+
 Changes with Apache 2.4.67
 
   *) SECURITY: CVE-2026-34059: Apache HTTP Server: mod_proxy_ajp:

@@ -1,3 +1,0 @@
-  *) core: Add support for %{m}t in ErrorLogFormat to log milli-second
-     time resolution (in addition to existing %{u}t for micro-seconds).
-     [Luboš Uhliarik <luhliari redhat.com>]
