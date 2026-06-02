@@ -1,0 +1,62 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# phf_abuse_log-ng.cgi -- Python port of the historical Perl phf_abuse_log.cgi.
+#
+# This script is used to detect people trying to abuse the security hole which
+# existed in A CGI script direstributed with Apache 1.0.3 and earlier versions.
+# You can redirect them to here using the "<Location /cgi-bin/phf*>" suggestion
+# in httpd.conf.
+#
+# The format logged to is
+#    "[date] remote_addr remote_host [date] referrer user_agent".
+
+import os
+import sys
+import time
+
+LOG = "/var/log/phf_log"
+
+# Perl's ctime() produces e.g. "Wed Jun  2 14:30:00 2026\n"; time.ctime()
+# matches that format and has no trailing newline to strip.
+when = time.ctime()
+
+remote_addr = os.environ.get("REMOTE_ADDR", "")
+remote_host = os.environ.get("REMOTE_HOST", "")
+# NOTE: the Perl original had a bug here -- it referenced $ENV{$HTTP_REFERER}
+# (with a stray leading $), so it looked up the env var *named by* the value of
+# the undefined Perl variable $HTTP_REFERER, which resolved to $ENV{""} and thus
+# always logged an empty string.  We do the correct thing and read HTTP_REFERER.
+http_referer = os.environ.get("HTTP_REFERER", "")
+http_user_agent = os.environ.get("HTTP_USER_AGENT", "")
+
+http_via = os.environ.get("HTTP_VIA", "")
+if http_via:
+    http_user_agent += " via " + http_via
+
+try:
+    log = open(LOG, "a")
+except OSError as e:
+    sys.exit("boo hoo, phf_log " + str(e))
+
+with log:
+    log.write("[%s] %s %s %s %s\n" % (when, remote_addr, remote_host,
+                                      http_referer, http_user_agent))
+
+sys.stdout.write("Content-type: text/html\r\n\r\n"
+                 "<BLINK>Smile, you're on Candid Camera.</BLINK>\n")

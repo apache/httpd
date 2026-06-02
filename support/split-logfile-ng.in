@@ -1,0 +1,92 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# split-logfile-ng -- Python port of the historical Perl split-logfile.
+#
+# This script will take a combined Web server access
+# log file and break its contents into separate files.
+# It assumes that the first field of each line is the
+# virtual host identity (put there by "%v"), and that
+# the logfiles should be named that+".log" in the current
+# directory.
+#
+# The combined log file is read from stdin. Records read
+# will be appended to any existing log files.
+
+import re
+import sys
+
+
+def main():
+    #
+    # Operate on raw bytes, not decoded text, to match the Perl original
+    # exactly: Perl reads STDIN as bytes, so its \s matches only ASCII
+    # whitespace and lc() lowercases only ASCII A-Z.  Python's bytes
+    # regexes are inherently ASCII-only and bytes.lower() lowercases only
+    # ASCII, so reading sys.stdin.buffer reproduces Perl's behavior on
+    # non-ASCII input (Unicode whitespace / case folding would otherwise
+    # diverge).
+    #
+    log_file = {}
+
+    for log_line in sys.stdin.buffer:
+        #
+        # Get the first token from the log record; it's the
+        # identity of the virtual host to which the record
+        # applies.
+        #
+        vhost = re.split(rb"\s", log_line, maxsplit=1)[0]
+        #
+        # Normalize the virtual host name to all lowercase.
+        # If it's blank, the request was handled by the default
+        # server, so supply a default name.  This shouldn't
+        # happen, but caution rocks.
+        #
+        vhost = vhost.lower() or b"access"
+        #
+        # if the vhost contains a "/" or "\", it is illegal so just use
+        # the default log to avoid any security issues due if it is interprted
+        # as a directory separator.
+        #
+        if re.search(rb"[/\\]", vhost):
+            vhost = b"access"
+        #
+        # If the log file for this virtual host isn't opened
+        # yet, do it now.
+        #
+        if vhost not in log_file:
+            try:
+                log_file[vhost] = open(vhost + b".log", "ab")
+            except IOError:
+                sys.stderr.write("Can't open %s.log\n"
+                                 % vhost.decode("latin-1"))
+                sys.exit(1)
+        #
+        # Strip off the first token (which may be null in the
+        # case of the default server), and write the edited
+        # record to the current log file.
+        #
+        log_line = re.sub(rb"^\S*\s+", b"", log_line)
+        log_file[vhost].write(log_line)
+
+    for fh in log_file.values():
+        fh.close()
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,93 @@
+#!@pythonbin@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# log_server_status-ng -- Python port of the historical Perl log_server_status.
+#
+# Log Server Status
+# Mark J Cox, UK Web Ltd 1996, mark ukweb.com
+#
+# This script is designed to be run at a frequent interval by something
+# like cron.  It connects to the server and downloads the status
+# information.  It reformats the information to a single line and logs
+# it to a file.  Make sure the directory $wherelog is writable by the
+# user who runs this script.
+#
+
+import re
+import socket
+import sys
+import time
+
+wherelog = "@exp_logfiledir@/"  # Logs will be like "@exp_logfiledir@/19960312"
+server   = "localhost"          # Name of server, could be "www.foo.com"
+port     = "@PORT@"             # Port on server
+request  = "/server-status/?auto"  # Request to send
+
+ltime = time.localtime(time.time())
+
+# day = year + zero-padded month + zero-padded day
+day = "%d%02d%02d" % (ltime.tm_year, ltime.tm_mon, ltime.tm_mday)
+
+# time = zero-padded hours + minutes + seconds, concatenated
+now = "%02d%02d%02d" % (ltime.tm_hour, ltime.tm_min, ltime.tm_sec)
+
+logfile = wherelog + day
+
+try:
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((server, int(port)))
+except OSError as err:
+    with open(logfile, "a") as out:
+        out.write("%s:-1:-1:-1:-1:%s\n" % (now, err))
+    sys.exit("Couldn't connect to %s:%s : %s\n" % (server, port, err))
+
+# Send the request and read the response.
+sock.sendall(
+    ("GET %s HTTP/1.1\r\nHost: %s\r\nConnection: close\r\n\r\n\r\n"
+     % (request, server)).encode("latin-1")
+)
+
+# Read the entire response, then split into lines (mirrors Perl's <$socket>).
+response = b""
+while True:
+    chunk = sock.recv(4096)
+    if not chunk:
+        break
+    response += chunk
+sock.close()
+
+# Default to empty strings: Perl's undef interpolates to "" (the fields are
+# always present on a successful server-status response; this only matters
+# if the response is malformed).
+requests = idle = number = cpu = ""
+for line in response.decode("latin-1", "replace").splitlines():
+    m = re.match(r"^BusyWorkers: (\S+)", line)
+    if m:
+        requests = m.group(1)
+    m = re.match(r"^IdleWorkers: (\S+)", line)
+    if m:
+        idle = m.group(1)
+    m = re.search(r"sses: (\S+)", line)
+    if m:
+        number = m.group(1)
+    m = re.match(r"^CPULoad: (\S+)", line)
+    if m:
+        cpu = m.group(1)
+
+with open(logfile, "a") as out:
+    out.write("%s:%s:%s:%s:%s\n" % (now, requests, idle, number, cpu))
