@@ -1,2 +1,0 @@
-*) mod_ssl: Set auth type to "ClientCert" when client certificate authentication
-   has been performed.  [Michael Osipov <michaelo apache.org>]

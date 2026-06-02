@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.68
 
+  *) mod_ssl: Add SerialNumber as a recognized attribute type for SSL
+     distinguished name variables.  [Michael Osipov <michaelo apache.org>,
+     Benjamin Demarteau <benjamin.demarteau liege.be>]
+
+  *) mod_ssl: Set auth type to "ClientCert" when client certificate authentication
+     has been performed.  [Michael Osipov <michaelo apache.org>]
+
   *) mod_include: Don't print any of if/elsif/else content when
      a conditional evaluation returns an error. [Eric Covener]
 
