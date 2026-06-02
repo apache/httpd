@@ -170,6 +170,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://github.com/apache/httpd/pull/642
      +1: jorton, 
 
+  *) test/h2: ignore AH02430 for the whole TestRfc9113 class.
+     trunk patch: http://svn.apache.org/r1934891
+     2.4.x patch: svn merge -c 1934891 ^/httpd/httpd/trunk .
+     +1: jim,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
