@@ -162,56 +162,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) mod_http2: update to v2.0.39
-     https://github.com/apache/httpd/pull/602 should have been applied!
-     trunk patch: https://svn.apache.org/r1931949
-     2.4.x patch: svn merge -c 1931949 ^/httpd/httpd/trunk .
-     +1: icing, steffenal, covener
-
-  *) mod_dav_fs: Fix missing 404 with DELETE race
-     trunk patch: https://svn.apache.org/r1926172
-     2.4.x patch: svn merge -c 1926172 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/583
-     +1: jorton, rpluem, covener
-
-  *) mod_unixd: sync with trunk.
-     trunk patch: https://svn.apache.org/r1617196
-                  https://svn.apache.org/r1617201
-                  https://svn.apache.org/r1618778
-                  https://svn.apache.org/r1897269
-                  https://svn.apache.org/r1927804
-     2.4.x patch: svn merge -c 1617196,1617201,1618778,1897269,1927804,1930444 ^/httpd/httpd/trunk .
-                  (or https://github.com/apache/httpd/pull/588)
-     +1: jorton, rpluem, covener
-
-  *) Update to mod_http2 v2.0.40
-     trunk patch: https://svn.apache.org/r1934628
-     2.4.x patch: svn merge -c 1934628 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
-
-  *) Update to mod_http2 v2.0.41
-     trunk patch: https://svn.apache.org/r1934678
-     2.4.x patch: svn merge -c 1934678 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
-
-  *) Update to mod_http2 v2.0.42
-     trunk patch: https://svn.apache.org/r1934743
-     2.4.x patch: svn merge -c 1934743 ^/httpd/httpd/trunk .
-     +1: icing, covener, jim
-
-  *) core: Add millisecond time formatting for ErrorLogFormat
-     trunk patch: https://svn.apache.org/r1931452
-                  https://svn.apache.org/r1931453
-     2.4.x patch: svn merge -c 1931452,1931453 ^/httpd/httpd/trunk .
-                  or https://github.com/apache/httpd/pull/599
-     +1: jorton, covener, jim
-
-  *) Fix build failure with gcc 16.1.1 in maintainer-mode. Apparently such warnings were
-     tolorated with 15.2.1, but not anymore.
-     trunk patch: https://svn.apache.org/r1934594
-                  https://svn.apache.org/r1934597
-     2.4.x patch: svn merge -c 1934594,1934597 ^/httpd/httpd/trunk .
-     +1: jailletc36, jim, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -227,17 +177,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.4.x of patch:
        https://patch-diff.githubusercontent.com/raw/apache/httpd/pull/658.diff
      Can be applied via apply_backport_pr.sh 658
-     +1: covener,
+     +1: covener, jorton
 
   *) mod_ssl: Expose serialNumber (2.5.4.5) as standard env var from certificate DN
      trunk patch: https://svn.apache.org/r1933908
      2.4.x patch: svn merge -c 1933908 ^/httpd/httpd/trunk .
-     +1: michaelo
+     +1: michaelo, jorton
 
   *) mod_ssl: Set auth type to "ClientCert" after authentication
      trunk patch: https://svn.apache.org/r1934210
      2.4.x patch: svn merge -c 1934210 ^/httpd/httpd/trunk .
-     +1: michaelo
+     +1: michaelo, jorton
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
