@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.68
 
+  *) mod_include: Don't print any of if/elsif/else content when
+     a conditional evaluation returns an error. [Eric Covener]
+
   *) mod_unixd: CoreDumpDirectory requires enabling tracing on FreeBSD 11+.
      PR 65819.  [David CARLIER <devnexen gmail.com>]
 

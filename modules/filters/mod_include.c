@@ -2329,6 +2329,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
 
     if (ctx->argc != 1) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2338,6 +2340,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01354) "unknown parameter \"%s\" "
                       "to tag if in %s", tag, r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2345,6 +2349,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01355) "missing expr value for if "
                       "element in %s", r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2356,6 +2362,8 @@ static apr_status_t handle_if(include_ctx_t *ctx, ap_filter_t *f,
         expr_ret = parse_ap_expr(ctx, expr, &was_error);
 
     if (was_error) {
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
@@ -2401,6 +2409,8 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
 
     if (ctx->argc != 1) {
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2410,6 +2420,8 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01358) "unknown parameter \"%s\" "
                       "to tag if in %s", tag, r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2417,6 +2429,8 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01359) "missing expr in elif "
                       "statement: %s", r->filename);
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         return APR_SUCCESS;
     }
 
@@ -2434,6 +2448,8 @@ static apr_status_t handle_elif(include_ctx_t *ctx, ap_filter_t *f,
         expr_ret = parse_ap_expr(ctx, expr, &was_error);
 
     if (was_error) {
+        ctx->flags &= SSI_FLAG_CLEAR_PRINT_COND;
+        ctx->flags |= SSI_FLAG_COND_ERROR;
         SSI_CREATE_ERROR_BUCKET(ctx, f, bb);
         return APR_SUCCESS;
     }
@@ -2480,6 +2496,11 @@ static apr_status_t handle_else(include_ctx_t *ctx, ap_filter_t *f,
 
     DEBUG_DUMP_COND(ctx, " else");
 
+    /* Don't toggle printing if there was an expression evaluation error */
+    if (ctx->flags & SSI_FLAG_COND_ERROR) {
+        return APR_SUCCESS;
+    }
+
     if (ctx->flags & SSI_FLAG_COND_TRUE) {
         ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
     }
@@ -2519,6 +2540,7 @@ static apr_status_t handle_endif(include_ctx_t *ctx, ap_filter_t *f,
     DEBUG_DUMP_COND(ctx, "endif");
 
     ctx->flags |= (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
+    ctx->flags &= ~SSI_FLAG_COND_ERROR;
 
     return APR_SUCCESS;
 }
