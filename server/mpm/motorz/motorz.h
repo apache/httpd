@@ -15,6 +15,7 @@
  */
 
 #include "apr.h"
+#include "apr_atomic.h"
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
@@ -113,6 +114,8 @@
  * allocated on first call to pre-config hook; located on
  * subsequent calls to pre-config hook
  */
+typedef struct motorz_poller_t motorz_poller_t;
+
 typedef struct motorz_core_t motorz_core_t;
 struct motorz_core_t {
     ap_unixd_mpm_retained_data *mpm;
@@ -126,10 +129,48 @@ struct motorz_core_t {
      */
     int max_daemons_limit;
     apr_pool_t *pool;
-    apr_thread_mutex_t *mtx;
+    /* Worker thread pool, shared by all pollers in this child. */
+    apr_thread_pool_t *workers;
+    /* Per-child array of pollers. Each owns its own pollset + timer ring +
+     * recycle list, so the single-poll-thread throughput ceiling scales with
+     * num_pollers. A connection is bound to one poller for its lifetime
+     * (scon->poller) and always re-arms there. See MOTORZ.README.
+     */
+    motorz_poller_t **pollers;
+    int num_pollers;
+};
+
+typedef struct motorz_recycled_pool motorz_recycled_pool;
+struct motorz_recycled_pool {
+    apr_pool_t *pool;
+    motorz_recycled_pool *next;
+};
+
+/* One poll thread's context. Each poller owns its pollset, timer ring and the
+ * mutex guarding that ring, plus its own lock-free transaction-pool recycle
+ * list and listener-admission state -- so pollers do not contend with each
+ * other. A connection is permanently bound to the poller that accepted it
+ * (scon->poller), which is what makes connection sharding across pollers
+ * correct: it always re-arms in, and recycles to, its own poller.
+ */
+struct motorz_poller_t {
+    motorz_core_t *mz;            /* back-pointer to the shared child core */
+    int index;                   /* 0 .. num_pollers-1 */
+    apr_pool_t *pool;            /* subpool of mz->pool for this poller */
+    apr_thread_t *thread;        /* the poll thread running motorz_poller_main */
     apr_pollset_t *pollset;
     apr_skiplist *timeout_ring;
-    apr_thread_pool_t *workers;
+    apr_thread_mutex_t *mtx;     /* guards this poller's timeout_ring */
+    /* Lock-free (CAS) recycle free-list: multi-producer push (any worker), but
+     * single-consumer pop (THIS poller's thread only) -- the same MPSC
+     * contract as mpm_fdqueue.c's ap_queue_info_{push,pop}_pool.
+     */
+    struct motorz_recycled_pool *volatile recycled_pools;
+    apr_uint32_t num_recycled;
+    /* Listener admission control (poller that owns the listeners only). */
+    apr_pollfd_t **listener_pfds;
+    int num_listener_pfds;
+    int listeners_disabled;
 };
 
 typedef struct motorz_child_bucket motorz_child_bucket;
@@ -168,6 +209,7 @@ struct motorz_timer_t
     void *baton;
     apr_pool_t *pool;
     motorz_core_t *mz;
+    motorz_poller_t *poller;     /* the poller whose ring this timer is in */
 };
 
 typedef struct motorz_conn_t motorz_conn_t;
@@ -175,6 +217,16 @@ struct motorz_conn_t
 {
     apr_pool_t *pool;
     motorz_core_t *mz;
+    /* The poller this connection does its I/O on for its whole lifetime: it
+     * re-arms in, and times out on, this poller's pollset/ring. Sharded across
+     * pollers at accept time to spread load. */
+    motorz_poller_t *poller;
+    /* The poller that owns this connection's transaction-pool recycling -- the
+     * poller that accepted it (and popped its ptrans). Recycling must return to
+     * the same single-consumer free-list it came from, which (unlike I/O) is
+     * NOT sharded: only the accepting poller pops, so only it may be the home.
+     */
+    motorz_poller_t *pool_poller;
     apr_socket_t *sock;
     apr_bucket_alloc_t *ba;
     ap_sb_handle_t *sbh;
@@ -184,6 +236,8 @@ struct motorz_conn_t
     request_rec *r;
     /** is the current conn_rec suspended? */
     int suspended;
+    /** has ap_start_lingering_close() been called for this conn? */
+    int linger_started;
     /** poll file descriptor information */
     apr_pollfd_t pfd;
     /** public parts of the connection state */
