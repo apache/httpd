@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -72,7 +72,7 @@ und bietet detaillierte Erkl&auml;rungen und Beispiele.</p>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&uuml;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einf&uuml;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Einf&uuml;hrung <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Das Verhalten einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 kann durch ein oder mehrere Flags modifiziert werden. Flags werden in
 eckigen Klammern am Ende der Regel angegeben, und mehrere Flags werden
@@ -96,7 +96,7 @@ durchgef&uuml;hrt wird.</p>
 Beispiel, wie Sie diese verwenden k&ouml;nnten.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (R&uuml;ckreferenzen maskieren)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_b">B (R&uuml;ckreferenzen maskieren) <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>Das [B]-Flag weist <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> an, nicht-alphanumerische
 Zeichen vor der Anwendung der Transformation zu maskieren.</p>
 
@@ -151,7 +151,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
         und <a href="#flag_bctls">#flag_bctls</a></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (Leerzeichen nicht zu + maskieren)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus (Leerzeichen nicht zu + maskieren) <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>Das [BNP]-Flag weist <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> an, das Leerzeichen
 in einer R&uuml;ckreferenz zu %20 statt zu '+' zu maskieren. N&uuml;tzlich, wenn die
 R&uuml;ckreferenz im Pfadteil statt im Query-String verwendet wird.</p>
@@ -164,7 +164,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>Dieses Flag ist ab Version 2.4.26 verf&uuml;gbar.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>Das [BCTLS]-Flag &auml;hnelt dem [B]-Flag, maskiert aber nur
 Steuerzeichen und das Leerzeichen. Dies ist dieselbe Menge von
 Zeichen, die abgelehnt werden, wenn sie unkodiert in den Query-String
@@ -178,7 +178,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>Die Liste der Zeichen in [BNE=...] wird als Ausnahmen von den
 Zeichen der [B]- oder [BCTLS]-Flags behandelt. Die aufgelisteten Zeichen
 werden nicht maskiert.</p>
@@ -190,7 +190,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 <p>Dieses Flag ist ab Version 2.5.1 verf&uuml;gbar.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
 <p>Das [C]- oder [chain]-Flag zeigt an, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> mit der n&auml;chsten Regel
 verkettet ist. Wenn die Regel &uuml;bereinstimmt, wird sie wie gewohnt
 verarbeitet und die Kontrolle geht an die n&auml;chste Regel &uuml;ber. Wenn sie
@@ -199,7 +199,7 @@ verketteten Regeln &uuml;bersprungen.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
 <p>Das [CO]- oder [cookie]-Flag erm&ouml;glicht es Ihnen, ein Cookie zu setzen,
 wenn eine bestimmte <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 &uuml;bereinstimmt. Das Argument besteht aus drei erforderlichen und f&uuml;nf
@@ -283,7 +283,7 @@ Minuten (24 Stunden) ab und wird f&uuml;r alle URIs zur&uuml;ckgegeben.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>Das DPI-Flag bewirkt, dass der PATH_INFO-Teil des umgeschriebenen URI
 verworfen wird.</p>
 <p>Dieses Flag ist ab Version 2.2.12 verf&uuml;gbar.</p>
@@ -314,7 +314,7 @@ w&auml;hrend dieser Runde der Verarbeitung sehen nur das direkte Ergebnis der
 Ersetzungen, ohne angeh&auml;ngten PATH_INFO.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
 <p>Mit dem [E]- oder [env]-Flag k&ouml;nnen Sie den Wert einer Umgebungsvariable
 setzen. Beachten Sie, dass einige Umgebungsvariablen nach der Ausf&uuml;hrung
 der Regel gesetzt werden k&ouml;nnen, wodurch das von Ihnen Gesetzte &uuml;berschrieben
@@ -365,7 +365,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 Technik wird als Beispiel angeboten, nicht als Empfehlung.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [END]-Flags beendet nicht nur die aktuelle Runde der
 Umschreibungsverarbeitung (wie [L]), sondern verhindert auch jede
 nachfolgende Umschreibungsverarbeitung im Verzeichniskontext (htaccess).</p>
@@ -374,7 +374,7 @@ nachfolgende Umschreibungsverarbeitung im Verzeichniskontext (htaccess).</p>
 resultieren.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [F]-Flags bewirkt, dass der Server einen
 403-Forbidden-Statuscode an den Client zur&uuml;ckgibt. Obwohl dasselbe
 Verhalten mit der <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code>-Direktive
@@ -398,7 +398,7 @@ ausgewertet.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>Das [G]-Flag zwingt den Server, einen 410-Gone-Status mit der
 Antwort zur&uuml;ckzugeben. Dies zeigt an, dass eine Ressource fr&uuml;her
 verf&uuml;gbar war, aber nicht mehr verf&uuml;gbar ist.</p>
@@ -415,7 +415,7 @@ ausgewertet.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>Erzwingt, dass die resultierende Anfrage mit dem angegebenen
 Handler behandelt wird. Beispielsweise k&ouml;nnte man dies verwenden, um
 alle Dateien ohne Dateiendung vom PHP-Handler parsen zu lassen:</p>
@@ -444,7 +444,7 @@ $1 verweist auf die erfasste &Uuml;bereinstimmung innerhalb der Klammern des
 regul&auml;ren Ausdrucks.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>Das [L]-Flag bewirkt, dass <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> die Verarbeitung
 des Regelsatzes stoppt. In den meisten Kontexten bedeutet dies, dass bei
 &Uuml;bereinstimmung der Regel keine weiteren Regeln verarbeitet werden. Dies
@@ -490,7 +490,7 @@ RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 Das [N]-Flag bewirkt, dass der Regelsatz von oben neu gestartet wird,
 wobei das bisherige Ergebnis des Regelsatzes als Ausgangspunkt verwendet wird.
@@ -521,7 +521,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [NC]-Flags bewirkt, dass die <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ohne Ber&uuml;cksichtigung der
 Gro&szlig;-/Kleinschreibung abgeglichen wird. Das hei&szlig;t, es spielt keine Rolle,
 ob Buchstaben im abgeglichenen URI als Gro&szlig;- oder Kleinbuchstaben
@@ -536,7 +536,7 @@ Ber&uuml;cksichtigung der Gro&szlig;-/Kleinschreibung, sodass beispielsweise sow
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>Standardm&auml;&szlig;ig werden bei einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>,
 die zu einer externen Umleitung f&uuml;hrt, alle Zeichen in der Ausgabe, die
 nicht in der folgenden sicheren Menge enthalten sind, in ihre
@@ -569,7 +569,7 @@ sein Hexcode-&Auml;quivalent <code>%23</code> umgewandelt, was dann zu einem
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [NS]-Flags verhindert, dass die Regel auf
 Unteranfragen angewendet wird. Beispielsweise ist eine Seite, die mittels
 SSI (Server Side Include) eingebunden wird, eine Unteranfrage, und Sie
@@ -596,7 +596,7 @@ separate HTTP-Anfragen an.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>Die Verwendung des [P]-Flags bewirkt, dass die Anfrage von
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> behandelt und &uuml;ber eine Proxy-Anfrage verarbeitet
 wird. Wenn Sie beispielsweise m&ouml;chten, dass alle Bildanfragen von einem
@@ -647,7 +647,7 @@ Flag verwenden zu k&ouml;nnen.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 Das Ziel (oder der Ersetzungsstring) in einer RewriteRule wird
@@ -686,7 +686,7 @@ M&ouml;glichkeit, dies zu umgehen, ist die Umschreibung zu <code>-</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 Wenn der Ersetzungs-URI einen Query-String enth&auml;lt, ist das Standardverhalten
 von <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, den vorhandenen
@@ -707,7 +707,7 @@ abgebildet - das hei&szlig;t, der vorhandene Query-String wird verworfen.
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 Wenn der angeforderte URI einen Query-String enth&auml;lt und der Ziel-URI
 nicht, ist das Standardverhalten von <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, diesen Query-String in den
@@ -730,7 +730,7 @@ durch den Query-String im <code>RewriteRule</code>-Ziel-URI ersetzt.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 Standardm&auml;&szlig;ig trennt das erste (linkeste) Fragezeichen in der Ersetzung
 den Pfad vom Query-String. Die Verwendung des [QSL]-Flags weist
@@ -749,7 +749,7 @@ angeh&auml;ngt werden.
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 Die Verwendung des [R]-Flags bewirkt, dass eine HTTP-Umleitung an den
 Browser gesendet wird. Wenn eine vollqualifizierte URL angegeben wird
@@ -785,7 +785,7 @@ einem 500-Fehler und einer Fehlermeldung im Fehlerprotokoll.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
 <p>Das [S]-Flag wird verwendet, um Regeln zu &uuml;berspringen, die Sie nicht
 ausf&uuml;hren m&ouml;chten. Die Syntax des Skip-Flags ist [S=<em>N</em>], wobei
 <em>N</em> die Anzahl der zu &uuml;berspringenden Regeln angibt (vorausgesetzt,
@@ -836,7 +836,7 @@ Direktiven <code class="directive">&lt;If&gt;</code>, <code class="directive">&l
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>Setzt den MIME-Typ, mit dem die resultierende Antwort gesendet wird.
 Dies hat denselben Effekt wie die <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>-Direktive.</p>
 
@@ -872,7 +872,7 @@ diesem Kontext n&uuml;tzlich sein, um die <em>aktuelle</em> Runde der
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>-Verarbeitung zu beenden.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Das Setzen dieses Flags ist erforderlich, um eine Umschreibung
     fortzusetzen, wenn die zu schreibende HTTP-Anfrage ein kodiertes
     Fragezeichen '%3f' enth&auml;lt und das umgeschriebene Ergebnis ein '?' in
@@ -880,7 +880,7 @@ diesem Kontext n&uuml;tzlich sein, um die <em>aktuelle</em> Runde der
     Erfassung und Neuersetzung des kodierten Fragezeichens ausnutzt.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>Das Setzen dieses Flags ist erforderlich bei Server-Kontext-Ersetzungen,
     die mit einer Variable oder R&uuml;ckreferenz beginnen und zu einem
     Dateisystempfad aufgel&ouml;st werden. Diesen Ersetzungen wird nicht das
@@ -891,7 +891,7 @@ diesem Kontext n&uuml;tzlich sein, um die <em>aktuelle</em> Runde der
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>Das Setzen dieses Flags verhindert das Zusammenf&uuml;hren mehrerer
     f&uuml;hrender Schr&auml;gstriche, wie sie in Windows-UNC-Pfaden verwendet werden.
     Das Flag ist nicht erforderlich, wenn die Regelersetzung mit mehreren
@@ -910,7 +910,7 @@ diesem Kontext n&uuml;tzlich sein, um die <em>aktuelle</em> Runde der
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

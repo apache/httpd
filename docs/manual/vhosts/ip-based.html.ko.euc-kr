@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -41,7 +41,7 @@
 </li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">시스템 요구사항</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">시스템 요구사항 <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP기반</cite>이란 말이 의미하듯이 서버는
     <strong>IP기반 가상호스트 각각에 대해 다른 IP 주소를
@@ -52,7 +52,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">아파치 설정방법</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">아파치 설정방법 <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     <p>여러 호스트를 지원하도록 아파치를 설정하는 방법은 두가지다.
     하나는 각 호스트마다 별도의 웹서버를 실행하는
@@ -86,7 +86,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">여러 서버를 실행하기</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
+<h2 id="multiple">여러 서버를 실행하기 <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
     <p>각 가상호스트별로 웹서버를 설치한다. 설정파일의
     <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> 지시어에
@@ -102,7 +102,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="single" id="single">서버 하나로 가상호스트 실행하기</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
+<h2 id="single">서버 하나로 가상호스트 실행하기 <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
     <p>이 경우 웹서버 한개로 주서버와 모든 가상호스트에 대한
     요청을 서비스한다. 설정파일의 <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> 지시어에 가상호스트마다
@@ -155,7 +155,7 @@
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

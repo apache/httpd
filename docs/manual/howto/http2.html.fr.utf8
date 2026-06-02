@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -46,7 +46,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Le protocole HTTP/2</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Le protocole HTTP/2 <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>HTTP/2 est une &eacute;volution du protocole de la couche application le plus
     utilis&eacute; au monde, HTTP. Cette &eacute;volution permet en particulier une utilisation
@@ -97,7 +97,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">HTTP/2 dans Apache httpd</a> <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
+<h2 id="implementation">HTTP/2 dans Apache httpd <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
     
     <p>Le protocole HTTP/2 est impl&eacute;ment&eacute; dans Apache httpd via un module
     propre, pertinemment nomm&eacute; <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code>. Ce
@@ -111,7 +111,7 @@
     vous indiquera comment votre application peut en tirer parti.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="building" id="building">Compilation de httpd avec le support de HTTP/2</a> <a title="Lien permanent" href="#building" class="permalink">&para;</a></h2>
+<h2 id="building">Compilation de httpd avec le support de HTTP/2 <a title="Lien permanent" href="#building" class="permalink">&para;</a></h2>
     
     <p><code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> se base sur la biblioth&egrave;que
     de <a href="https://nghttp2.org">nghttp2</a> pour son impl&eacute;mentation. Pour
@@ -137,7 +137,7 @@
     1.0.2. ou sup&eacute;rieure.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="basic-config" id="basic-config">Configuration de base</a> <a title="Lien permanent" href="#basic-config" class="permalink">&para;</a></h2>
+<h2 id="basic-config">Configuration de base <a title="Lien permanent" href="#basic-config" class="permalink">&para;</a></h2>
     
 
     <p>Maintenant que vous disposez d'un binaire <code>httpd</code> compil&eacute; avec le
@@ -216,7 +216,7 @@
     commun</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mpm-config" id="mpm-config">Configuration du MPM</a> <a title="Lien permanent" href="#mpm-config" class="permalink">&para;</a></h2>
+<h2 id="mpm-config">Configuration du MPM <a title="Lien permanent" href="#mpm-config" class="permalink">&para;</a></h2>
     
 
     <p>Tous les modules multiprocessus (MPM) fournis avec httpd supportent
@@ -242,7 +242,7 @@
     fonctionne.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="clients" id="clients">Clients</a> <a title="Lien permanent" href="#clients" class="permalink">&para;</a></h2>
+<h2 id="clients">Clients <a title="Lien permanent" href="#clients" class="permalink">&para;</a></h2>
     
     <p>La plupart des navigateurs modernes supportent HTTP/2, mais seulement sur
     des connexions SSL : Firefox v43, Chrome v45, Safari v9, iOS Safari v9,
@@ -257,7 +257,7 @@
     est <a href="https://curl.haxx.se">curl</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tools" id="tools">Outils efficaces pour d&eacute;boguer HTTP/2</a> <a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
+<h2 id="tools">Outils efficaces pour d&eacute;boguer HTTP/2 <a title="Lien permanent" href="#tools" class="permalink">&para;</a></h2>
     
     <p>Le premier d'entre eux est bien entendu <a href="https://curl.haxx.se">curl</a>. Assurez-vous au pr&eacute;alable que votre
     version supporte HTTP/2 en v&eacute;rifiant ses <code>Fonctionnalit&eacute;s</code> :</p>
@@ -287,7 +287,7 @@
     qui permet d'indiquer que votre navigateur utilise HTTP/2.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="push" id="push">Push serveur</a> <a title="Lien permanent" href="#push" class="permalink">&para;</a></h2>
+<h2 id="push">Push serveur <a title="Lien permanent" href="#push" class="permalink">&para;</a></h2>
     
     <p>Le protocole HTTP/2 permet au serveur de proposer (PUSH) des r&eacute;ponses
     pour lesquelles le client n'a rien demand&eacute;. La communication autour de ces
@@ -370,7 +370,7 @@
     d'exposer les cookies l&agrave; o&ugrave; ils ne sont pas cens&eacute;s &ecirc;tre visibles.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="earlyhints" id="earlyhints">Suggestions pr&eacute;coces</a> <a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
+<h2 id="earlyhints">Suggestions pr&eacute;coces <a title="Lien permanent" href="#earlyhints" class="permalink">&para;</a></h2>
     
     <p>A l'instar des ressources PUSH&eacute;es, une autre m&eacute;thode consiste &agrave; envoyer
     des en-t&ecirc;tes <code>Link</code> au client avant m&ecirc;me que la r&eacute;ponse ne soit
@@ -404,7 +404,7 @@
 <a href="../fr/howto/http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

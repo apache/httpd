@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -64,7 +64,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="old-to-new" id="old-to-new">旧 URL から新 URL へ (内部)</a> <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
+<h2 id="old-to-new">旧 URL から新 URL へ (内部) <a title="Permanent link" href="#old-to-new" class="permalink">&para;</a></h2>
 
   
 
@@ -92,7 +92,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>/bar</strong>.html" [PT
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="old-to-new-extern" id="old-to-new-extern">旧 URL から新 URL への書き換え (外部)</a> <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
+<h2 id="old-to-new-extern">旧 URL から新 URL への書き換え (外部) <a title="Permanent link" href="#old-to-new-extern" class="permalink">&para;</a></h2>
 
   
 
@@ -133,7 +133,7 @@ RewriteRule    "^<strong>/foo</strong>\.html$"  "<strong>bar</strong>.html"  [<s
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="movehomedirs" id="movehomedirs">リソースの別サーバへの移動</a> <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
+<h2 id="movehomedirs">リソースの別サーバへの移動 <a title="Permanent link" href="#movehomedirs" class="permalink">&para;</a></h2>
 
   
 
@@ -170,7 +170,7 @@ Redirect "/docs/" "http://new.example.com/docs/"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static-to-dynamic" id="static-to-dynamic">静的から動的へ</a> <a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
+<h2 id="static-to-dynamic">静的から動的へ <a title="Permanent link" href="#static-to-dynamic" class="permalink">&para;</a></h2>
 
   
 
@@ -202,7 +202,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="backward-compatibility" id="backward-compatibility">ファイル拡張子変更の後方互換性</a> <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
+<h2 id="backward-compatibility">ファイル拡張子変更の後方互換性 <a title="Permanent link" href="#backward-compatibility" class="permalink">&para;</a></h2>
 
   
 
@@ -260,7 +260,7 @@ RewriteRule    "^foo\.html$"  "foo.cgi"  [H=<strong>cgi-script</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="canonicalhost" id="canonicalhost">正規ホスト名</a> <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
+<h2 id="canonicalhost">正規ホスト名 <a title="Permanent link" href="#canonicalhost" class="permalink">&para;</a></h2>
 
 
 
@@ -346,7 +346,7 @@ RewriteRule "^/?(.*)"      "http://www.%{HTTP_HOST}/$1" [L,R,NE]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multipledirs" id="multipledirs">複数のディレクトリでのページ検索</a> <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
+<h2 id="multipledirs">複数のディレクトリでのページ検索 <a title="Permanent link" href="#multipledirs" class="permalink">&para;</a></h2>
 
   
 
@@ -388,7 +388,7 @@ RewriteRule "^"     "-"                                          [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">地理的に分散されたサーバへのリダイレクト</a> <a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
+<h2 id="archive-access-multiplexer">地理的に分散されたサーバへのリダイレクト <a title="Permanent link" href="#archive-access-multiplexer" class="permalink">&para;</a></h2>
 
   
 
@@ -442,7 +442,7 @@ com       http://www.example.com/<br>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="canonicalurl" id="canonicalurl">正規 URL</a> <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
+<h2 id="canonicalurl">正規 URL <a title="Permanent link" href="#canonicalurl" class="permalink">&para;</a></h2>
 
 
 
@@ -482,7 +482,7 @@ com       http://www.example.com/<br>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moveddocroot" id="moveddocroot"><code>DocumentRoot</code> の移動</a> <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
+<h2 id="moveddocroot"><code>DocumentRoot</code> の移動 <a title="Permanent link" href="#moveddocroot" class="permalink">&para;</a></h2>
 
   
 
@@ -527,7 +527,7 @@ RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="fallback-resource" id="fallback-resource">フォールバックリソース</a> <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
+<h2 id="fallback-resource">フォールバックリソース <a title="Permanent link" href="#fallback-resource" class="permalink">&para;</a></h2>
 
 
 <dl>
@@ -575,7 +575,7 @@ RewriteRule   "^/$"  "/about/"  [<strong>R</strong>]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite-query" id="rewrite-query">クエリ文字列の書き換え</a> <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
+<h2 id="rewrite-query">クエリ文字列の書き換え <a title="Permanent link" href="#rewrite-query" class="permalink">&para;</a></h2>
 
 
 <dl>
@@ -640,7 +640,7 @@ RewriteRule "^/?path/([^/]+)/([^/]+)" "/path?$1=$2" [PT]</pre>
 <a href="../zh-cn/rewrite/remapping.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

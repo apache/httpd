@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -65,8 +65,8 @@
 </ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="programs/configure.html">Configurar a &aacute;rvore do c&oacute;digo-fonte</a></li><li><a href="invoking.html">Iniciando o httpd Apache</a></li><li><a href="stopping.html">Parando e Reinicializando</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Vis&atilde;o geral para o
-    ansioso</a> <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Vis&atilde;o geral para o
+    ansioso <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Instalando no Linux Fedora/CentOS/Red Hat Enterprise</dt>
@@ -160,7 +160,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Requisitos</a> <a title="Link permanente" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Requisitos <a title="Link permanente" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Os seguintes requisitos existem para a compila&ccedil;&atilde;o do httpd Apache:</p>
 
@@ -225,7 +225,7 @@ sudo service apache2 start</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">Baixando o Apache</a> <a title="Link permanente" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">Baixando o Apache <a title="Link permanente" href="#download" class="permalink">&para;</a></h2>
 
     <p>O Servidor HTTP Apache pode ser baixado do <a href="http://httpd.apache.org/download.cgi">site de download
     do Servidor HTTP Apache</a>, que lista v&aacute;rios espelhos. A maioria dos usu&aacute;rios
@@ -245,7 +245,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extraindo</a> <a title="Link permanente" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">Extraindo <a title="Link permanente" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Extrair o c&oacute;digo-fonte do arquivo tar do servidor HTTP Apache &eacute; uma
     quest&atilde;o simples de descompactar e, em seguida, extrair o arquivo tar:</p>
@@ -260,7 +260,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     a compila&ccedil;&atilde;o do servidor.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configurando a estrutura do c&oacute;digo</a> <a title="Link permanente" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Configurando a estrutura do c&oacute;digo <a title="Link permanente" href="#configure" class="permalink">&para;</a></h2>
 
     <p>O pr&oacute;ximo passo &eacute; configurar a estrutura do c&oacute;digo-fonte do Apache para sua
     plataforma espec&iacute;fica e requisitos pessoais. Isso &eacute; feito usando
@@ -329,7 +329,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     dispon&iacute;veis na p&aacute;gina do manual de <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Compilando</a> <a title="Link permanente" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">Compilando <a title="Link permanente" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Agora voc&ecirc; pode compilar as v&aacute;rias partes que formam o pacote Apache
     simplesmente executando o comando:</p>
@@ -342,7 +342,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     habilitou.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Instalando</a> <a title="Link permanente" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Instalando <a title="Link permanente" href="#install" class="permalink">&para;</a></h2>
 
     <p>Agora &eacute; hora de instalar o pacote no diret&oacute;rio de instala&ccedil;&atilde;o configurado
     <em>PREFIX</em> (consulte a op&ccedil;&atilde;o <code>--prefix</code>
@@ -358,7 +358,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     seus arquivos ou documentos de configura&ccedil;&atilde;o.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Personalizando</a> <a title="Link permanente" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">Personalizando <a title="Link permanente" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Em seguida, voc&ecirc; pode personalizar seu Servidor HTTP Apache editando
     os <a href="configuring.html">arquivos de configura&ccedil;&atilde;o</a> em
@@ -371,7 +371,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     deste manual e uma refer&ecirc;ncia completa das <a href="mod/directives.html">diretivas de configura&ccedil;&atilde;o</a> dispon&iacute;veis.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Teste</a> <a title="Link permanente" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">Teste <a title="Link permanente" href="#test" class="permalink">&para;</a></h2>
 
     <p>Agora voc&ecirc; pode <a href="invoking.html">iniciar</a> seu servidor Apache
     HTTP executando imediatamente:</p>
@@ -388,7 +388,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Atualizando</a> <a title="Link permanente" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Atualizando <a title="Link permanente" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>O primeiro passo para a atualiza&ccedil;&atilde;o &eacute; ler o an&uacute;ncio de lan&ccedil;amento
     e o arquivo <code>CHANGES</code> na distribui&ccedil;&atilde;o do c&oacute;digo-fonte para
@@ -443,7 +443,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Pacotes de terceiros</a> <a title="Link permanente" href="#thirdp" class="permalink">&para;</a></h2>
+<h2 id="thirdp">Pacotes de terceiros <a title="Link permanente" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>Um grande n&uacute;mero de terceiros fornece suas pr&oacute;prias distribui&ccedil;&otilde;es
     empacotadas do Servidor HTTP Apache para instala&ccedil;&atilde;o em
@@ -477,7 +477,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

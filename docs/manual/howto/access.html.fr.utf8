@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -27,8 +27,6 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le contr&ocirc;le d'acc&egrave;s fait r&eacute;f&eacute;rence &agrave; tout concept de contr&ocirc;le
     d'acc&egrave;s &agrave; une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -44,7 +42,7 @@ d'acc&egrave;s</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules et directives concern&eacute;s</a> <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">Modules et directives concern&eacute;s <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
 
     <p>Plusieurs modules peuvent intervenir dans le contr&ocirc;le d'acc&egrave;s.
     Les plus importants sont <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> et
@@ -54,8 +52,8 @@ d'acc&egrave;s</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="host" id="host">Contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te du
-client</a> <a title="Lien permanent" href="#host" class="permalink">&para;</a></h2>
+<h2 id="host">Contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te du
+client <a title="Lien permanent" href="#host" class="permalink">&para;</a></h2>
     <p>
     Si vous souhaitez restreindre l'acc&egrave;s &agrave; certaines parties de votre
     site web en fonction de l'adresse de l'h&ocirc;te de vos visiteurs, le
@@ -136,8 +134,8 @@ Require not host gov</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Contr&ocirc;le d'acc&egrave;s en fonction de variables
-arbitraires</a> <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Contr&ocirc;le d'acc&egrave;s en fonction de variables
+arbitraires <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez accorder ou refuser l'acc&egrave;s en fonction de variables
     d'environnement arbitraires ou de valeurs d'en-t&ecirc;tes de la requ&ecirc;te
@@ -170,8 +168,8 @@ arbitraires</a> <a title="Lien permanent" href="#env" class="permalink">&para;</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Utilisation de mod_rewrite pour le contr&ocirc;le
-d'acc&egrave;s</a> <a title="Lien permanent" href="#rewrite" class="permalink">&para;</a></h2>
+<h2 id="rewrite">Utilisation de mod_rewrite pour le contr&ocirc;le
+d'acc&egrave;s <a title="Lien permanent" href="#rewrite" class="permalink">&para;</a></h2>
 
     <p>Le drapeau <code>[F]</code> de la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> permet d'envoyer une
     r&eacute;ponse de type 403 Forbidden. Il vous permet donc d'interdire
@@ -199,7 +197,7 @@ RewriteRule "^/fridge" "-" [F]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinformation" id="moreinformation">Informations compl&eacute;mentaires</a> <a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
+<h2 id="moreinformation">Informations compl&eacute;mentaires <a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
 
     <p>Le <a href="../expr.html">moteur d'expressions</a> vous fournit
     une grande puissance d'action en fonction de variables du serveur
@@ -213,6 +211,11 @@ RewriteRule "^/fridge" "-" [F]</pre>
 
     <p>Voir aussi le How-To <a href="auth.html">Authentification and
     autorisation</a>.</p>
+
+    <p>Voir la <a href="../sections.html#merging">documentation sur la fusion
+    des sections de configuration</a> pour un avertissement &agrave; propos de la
+    mani&egrave;re dont la directive <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> au sein d&rsquo;une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> peut outrepasser
+    silencieusement les restrictions d&rsquo;acc&egrave;s d&rsquo;une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -220,7 +223,7 @@ RewriteRule "^/fridge" "-" [F]</pre>
 <a href="../fr/howto/access.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

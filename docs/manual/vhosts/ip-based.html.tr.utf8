@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -41,7 +41,7 @@
 </li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="explanation" id="explanation">IP'ye dayalı sanal konak desteği nedir</a> <a title="Permanent link" href="#explanation" class="permalink">&para;</a></h2>
+<h2 id="explanation">IP'ye dayalı sanal konak desteği nedir <a title="Permanent link" href="#explanation" class="permalink">&para;</a></h2>
     <p>IP'ye dayalı sanal konak desteği, bir isteğin alındığı IP adresi ve
       porta bağlı olarak farklı y&ouml;nergeleri uygulamak i&ccedil;in bir yoldur. &Ouml;zetle,
       farklı siteleri farklı portlardan ve aray&uuml;zlerden sunmakta
@@ -54,7 +54,7 @@
        Konaklar</a> b&ouml;l&uuml;m&uuml;ne bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Sistem gereksinimleri</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Sistem gereksinimleri <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p><cite>IP'ye dayalı</cite> deyince, sunucunun <strong>her IP'ye dayalı
       sanal konak i&ccedil;in ayrı bir IP adresi/port &ccedil;ifti</strong>ne sahip olduğunu
@@ -70,7 +70,7 @@
       bilinir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="howto" id="howto">Apache nasıl ayarlanır?</a> <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
+<h2 id="howto">Apache nasıl ayarlanır? <a title="Permanent link" href="#howto" class="permalink">&para;</a></h2>
 
     <p>&Ccedil;ok sayıda konağı desteklemek &uuml;zere Apache iki şekilde
       yapılandırılabilir. Ya her konak i&ccedil;in ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code>
@@ -111,7 +111,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="multiple" id="multiple">&Ccedil;ok sayıda s&uuml;recin yapılandırılması</a> <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
+<h2 id="multiple">&Ccedil;ok sayıda s&uuml;recin yapılandırılması <a title="Permanent link" href="#multiple" class="permalink">&para;</a></h2>
 
     <p>Her sanal konak i&ccedil;in ayrı bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> yapılandırması
       oluşturulur. Her yapılandırmada, o s&uuml;re&ccedil; tarafından sunulacak IP adresi
@@ -128,7 +128,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="single" id="single">Sanal konaklar tek bir s&uuml;recin yapılandırılması</a> <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
+<h2 id="single">Sanal konaklar tek bir s&uuml;recin yapılandırılması <a title="Permanent link" href="#single" class="permalink">&para;</a></h2>
 
     <p>Bu durum i&ccedil;in, ana sunucu ve sanal konakların t&uuml;m&uuml;ne gelen istekler tek
       bir <code class="program"><a href="../programs/httpd.html">httpd</a></code> s&uuml;reci tarafından karşılanır. Yapılandırma
@@ -193,7 +193,7 @@
 <a href="../tr/vhosts/ip-based.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

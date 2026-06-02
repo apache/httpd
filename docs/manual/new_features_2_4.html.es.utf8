@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="core" id="core">Mejoras en el Core</a> <a title="Enlace permanente" href="#core" class="permalink">&para;</a></h2>
+<h2 id="core">Mejoras en el Core <a title="Enlace permanente" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Cargas de  MPM en Tiempo de Ejecuci&oacute;n</dt>
@@ -106,7 +106,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="newmods" id="newmods">Nuevos M&oacute;dulos</a> <a title="Enlace permanente" href="#newmods" class="permalink">&para;</a></h2>
+<h2 id="newmods">Nuevos M&oacute;dulos <a title="Enlace permanente" href="#newmods" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
@@ -213,7 +213,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="module" id="module">Mejoras de M&oacute;dulos.</a> <a title="Enlace permanente" href="#module" class="permalink">&para;</a></h2>
+<h2 id="module">Mejoras de M&oacute;dulos. <a title="Enlace permanente" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
@@ -337,7 +337,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Mejoras para el Programa</a> <a title="Enlace permanente" href="#programs" class="permalink">&para;</a></h2>
+<h2 id="programs">Mejoras para el Programa <a title="Enlace permanente" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
         <dt><code class="program"><a href="./programs/fcgistarter.html">fcgistarter</a></code></dt>
@@ -361,7 +361,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Documentaci&oacute;n</a> <a title="Enlace permanente" href="#documentation" class="permalink">&para;</a></h2>
+<h2 id="documentation">Documentaci&oacute;n <a title="Enlace permanente" href="#documentation" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>mod_rewrite</dt>
@@ -387,7 +387,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Cambios en los Desarrollos de M&oacute;dulos</a> <a title="Enlace permanente" href="#developer" class="permalink">&para;</a></h2>
+<h2 id="developer">Cambios en los Desarrollos de M&oacute;dulos <a title="Enlace permanente" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>A&ntilde;adido Hook de Comprobaci&oacute;n de Configuraci&oacute;n</dt>
@@ -447,7 +447,7 @@
 <a href="./tr/new_features_2_4.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -40,12 +40,12 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Description" id="Description">A&ccedil;ıklama</a> <a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
+<h2 id="Description">A&ccedil;ıklama <a title="Permanent link" href="#Description" class="permalink">&para;</a></h2>
 
 <p>Mod&uuml;l&uuml;n kullanım amacının kısa bir a&ccedil;ıklaması.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Status" id="Status">Durum</a> <a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
+<h2 id="Status">Durum <a title="Permanent link" href="#Status" class="permalink">&para;</a></h2>
 
     <p>Mod&uuml;l&uuml;n Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, mod&uuml;le ve işlevselliğine erişim kazanmak i&ccedil;in sunucuyu yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu &ouml;zniteliğin olası değerleri şunlardır:</p>
 
@@ -72,17 +72,17 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="SourceFile" id="SourceFile">Kaynak Dosyası</a> <a title="Permanent link" href="#SourceFile" class="permalink">&para;</a></h2>
+<h2 id="SourceFile">Kaynak Dosyası <a title="Permanent link" href="#SourceFile" class="permalink">&para;</a></h2>
 
     <p>Karşısına mod&uuml;l kodunu i&ccedil;eren kaynak dosyasının ismi yazılır. Bu isim ayrıca <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> y&ouml;nergesi tarafından da kullanılır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ModuleIdentifier" id="ModuleIdentifier">Mod&uuml;l Betimleyici</a> <a title="Permanent link" href="#ModuleIdentifier" class="permalink">&para;</a></h2>
+<h2 id="ModuleIdentifier">Mod&uuml;l Betimleyici <a title="Permanent link" href="#ModuleIdentifier" class="permalink">&para;</a></h2>
 
     <p>Mod&uuml;ller devingen olarak y&uuml;klenirken <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> y&ouml;nergesinde kullanmak i&ccedil;in mod&uuml;l&uuml; betimleyen dizgedir. Aslında, kaynak dosyasında <code>module</code> t&uuml;r&uuml;ndeki harici değişkenin ismidir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a> <a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
+<h2 id="Compatibility">Uyumluluk <a title="Permanent link" href="#Compatibility" class="permalink">&para;</a></h2>
 
     <p>Eğer mod&uuml;l Apache'nin 2. s&uuml;r&uuml;m dağıtımının &ouml;zg&uuml;n par&ccedil;ası değilse s&ouml;z  konusu s&uuml;r&uuml;m burada belirtilir. Ayrıca, mod&uuml;l&uuml;n kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
 </div></div>
@@ -94,7 +94,7 @@
 <a href="../tr/mod/module-dict.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

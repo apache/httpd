@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -83,7 +83,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">CGI 環境変数</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">CGI 環境変数 <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
     <p>サーバは <a href="http://www.ietf.org/rfc/rfc3875">CGI
     規格</a> で決められている CGI
     環境変数を設定します。以下のものは、条件付きで設定されます。</p>
@@ -127,7 +127,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi-debug" id="cgi-debug">CGI のデバッグ</a> <a title="Permanent link" href="#cgi-debug" class="permalink">&para;</a></h2>
+<h2 id="cgi-debug">CGI のデバッグ <a title="Permanent link" href="#cgi-debug" class="permalink">&para;</a></h2>
     <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
     (標準出力とエラー)
     を調べることができないために、難しい状態が続いていました。
@@ -173,7 +173,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a> <a name="cgiscripttimeout" id="cgiscripttimeout">ディレクティブ</a> <a title="Permanent link" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgiscripttimeout"><span id="CGIScriptTimeout">CGIScriptTimeout</span> ディレクティブ <a title="Permanent link" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>The length of time to wait for more output from the
 CGI program</td></tr>
@@ -188,7 +188,7 @@ unset</code></td></tr>
             まだ翻訳されていません。英語版をご覧ください。
             </p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a name="scriptlog" id="scriptlog">ディレクティブ</a> <a title="Permanent link" href="#scriptlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptlog"><span id="ScriptLog">ScriptLog</span> ディレクティブ <a title="Permanent link" href="#scriptlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのエラーログファイルの場所</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLog <var>file-path</var></code></td></tr>
@@ -225,7 +225,7 @@ unset</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a name="scriptlogbuffer" id="scriptlogbuffer">ディレクティブ</a> <a title="Permanent link" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptlogbuffer"><span id="ScriptLogBuffer">ScriptLogBuffer</span> ディレクティブ <a title="Permanent link" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>スクリプトログに記録される PUT や POST リクエストの内容の上限</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogBuffer <em>bytes</em></code></td></tr>
@@ -243,7 +243,7 @@ unset</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a name="scriptloglength" id="scriptloglength">ディレクティブ</a> <a title="Permanent link" href="#scriptloglength" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptloglength"><span id="ScriptLogLength">ScriptLogLength</span> ディレクティブ <a title="Permanent link" href="#scriptloglength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI スクリプトのログファイルの大きさの上限</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ScriptLogLength <var>bytes</var></code></td></tr>
@@ -270,7 +270,7 @@ unset</code></td></tr>
 <a href="../ko/mod/mod_cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -65,7 +65,7 @@ modules multi-processus (MPM)</td></tr>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_common">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_common">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="accepterrorsnonfatal" id="accepterrorsnonfatal">Directive</a> <a name="AcceptErrorsNonFatal" id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</a> <a title="Lien permanent" href="#accepterrorsnonfatal" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="accepterrorsnonfatal">Directive <span id="AcceptErrorsNonFatal">AcceptErrorsNonFatal</span> <a title="Lien permanent" href="#accepterrorsnonfatal" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Traite certaines erreurs lors de l'acceptation d'une nouvelle connexion comme
 non fatales pour le processus httpd.</td></tr>
@@ -96,7 +96,7 @@ alors la fermeture du processus httpd)</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="coredumpdirectory" id="coredumpdirectory">Directive</a> <a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a title="Lien permanent" href="#coredumpdirectory" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="coredumpdirectory">Directive <span id="CoreDumpDirectory">CoreDumpDirectory</span> <a title="Lien permanent" href="#coredumpdirectory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le r&eacute;pertoire dans lequel le serveur HTTP Apache va tenter de se
 positionner avant d'effectuer un vidage m&eacute;moire</td></tr>
@@ -168,7 +168,7 @@ positionner avant d'effectuer un vidage m&eacute;moire</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="enableexceptionhook" id="enableexceptionhook">Directive</a> <a name="EnableExceptionHook" id="EnableExceptionHook">EnableExceptionHook</a> <a title="Lien permanent" href="#enableexceptionhook" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="enableexceptionhook">Directive <span id="EnableExceptionHook">EnableExceptionHook</span> <a title="Lien permanent" href="#enableexceptionhook" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active un hook ("point d'accrochage logiciel") qui ex&eacute;cute des
 gestionnaires d'exception apr&egrave;s un crash</td></tr>
@@ -193,7 +193,7 @@ gestionnaires d'exception apr&egrave;s un crash</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">Directive</a> <a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a> <a title="Lien permanent" href="#gracefulshutdowntimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="gracefulshutdowntimeout">Directive <span id="GracefulShutdownTimeout">GracefulShutdownTimeout</span> <a title="Lien permanent" href="#gracefulshutdowntimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sp&eacute;cifie le d&eacute;lai maximum apr&egrave;s lequel le serveur va
 s'arr&ecirc;ter dans le cas d'un arr&ecirc;t "en douceur"</td></tr>
@@ -214,7 +214,7 @@ s'arr&ecirc;ter dans le cas d'un arr&ecirc;t "en douceur"</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="listen" id="listen">Directive</a> <a name="Listen" id="Listen">Listen</a> <a title="Lien permanent" href="#listen" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="listen">Directive <span id="Listen">Listen</span> <a title="Lien permanent" href="#listen" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les adresses IP et ports sur lesquels le serveur &eacute;coute</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>] [options=<var>flag</var>[,<var>flag..</var>]]</code></td></tr>
@@ -333,7 +333,7 @@ use</code>, citant d'autres causes possibles.</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="listenbacklog" id="listenbacklog">Directive</a> <a name="ListenBackLog" id="ListenBackLog">ListenBackLog</a> <a title="Lien permanent" href="#listenbacklog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="listenbacklog">Directive <span id="ListenBackLog">ListenBackLog</span> <a title="Lien permanent" href="#listenbacklog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Longueur maximale de la liste d'attente des
 connexions</td></tr>
@@ -358,7 +358,7 @@ connexions</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="listencoresbucketsratio" id="listencoresbucketsratio">Directive</a> <a name="ListenCoresBucketsRatio" id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</a> <a title="Lien permanent" href="#listencoresbucketsratio" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="listencoresbucketsratio">Directive <span id="ListenCoresBucketsRatio">ListenCoresBucketsRatio</span> <a title="Lien permanent" href="#listencoresbucketsratio" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Rapport entre le nombre de coeurs de processeur activ&eacute;s et
 le nombre de segments d'&eacute;coute</td></tr>
@@ -441,7 +441,7 @@ plateformes de type BSD.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="listentcpdeferaccept" id="listentcpdeferaccept">Directive</a> <a name="ListenTCPDeferAccept" id="ListenTCPDeferAccept">ListenTCPDeferAccept</a> <a title="Lien permanent" href="#listentcpdeferaccept" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="listentcpdeferaccept">Directive <span id="ListenTCPDeferAccept">ListenTCPDeferAccept</span> <a title="Lien permanent" href="#listentcpdeferaccept" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Valeur de l'option de socket TCP_DEFER_ACCEPT si elle est
 d&eacute;finie</td></tr>
@@ -461,7 +461,7 @@ d&eacute;finie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxconnectionsperchild" id="maxconnectionsperchild">Directive</a> <a name="MaxConnectionsPerChild" id="MaxConnectionsPerChild">MaxConnectionsPerChild</a> <a title="Lien permanent" href="#maxconnectionsperchild" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxconnectionsperchild">Directive <span id="MaxConnectionsPerChild">MaxConnectionsPerChild</span> <a title="Lien permanent" href="#maxconnectionsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions qu'un processus enfant va
 traiter au cours de son fonctionnement</td></tr>
@@ -489,7 +489,7 @@ support&eacute;.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxmemfree" id="maxmemfree">Directive</a> <a name="MaxMemFree" id="MaxMemFree">MaxMemFree</a> <a title="Lien permanent" href="#maxmemfree" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxmemfree">Directive <span id="MaxMemFree">MaxMemFree</span> <a title="Lien permanent" href="#maxmemfree" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Quantit&eacute; maximale de m&eacute;moire que l'allocateur principal est
 autoris&eacute; &agrave; conserver sans appeler <code>free()</code></td></tr>
@@ -508,7 +508,7 @@ autoris&eacute; &agrave; conserver sans appeler <code>free()</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxrequestworkers" id="maxrequestworkers">Directive</a> <a name="MaxRequestWorkers" id="MaxRequestWorkers">MaxRequestWorkers</a> <a title="Lien permanent" href="#maxrequestworkers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxrequestworkers">Directive <span id="MaxRequestWorkers">MaxRequestWorkers</span> <a title="Lien permanent" href="#maxrequestworkers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de connexions pouvant &ecirc;tre trait&eacute;es
 simultan&eacute;ment</td></tr>
@@ -573,7 +573,7 @@ simultan&eacute;ment</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxsparethreads" id="maxsparethreads">Directive</a> <a name="MaxSpareThreads" id="MaxSpareThreads">MaxSpareThreads</a> <a title="Lien permanent" href="#maxsparethreads" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxsparethreads">Directive <span id="MaxSpareThreads">MaxSpareThreads</span> <a title="Lien permanent" href="#maxsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximum de threads inactifs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MaxSpareThreads <var>nombre</var></code></td></tr>
@@ -624,7 +624,7 @@ simultan&eacute;ment</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="minsparethreads" id="minsparethreads">Directive</a> <a name="MinSpareThreads" id="MinSpareThreads">MinSpareThreads</a> <a title="Lien permanent" href="#minsparethreads" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="minsparethreads">Directive <span id="MinSpareThreads">MinSpareThreads</span> <a title="Lien permanent" href="#minsparethreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre minimum de threads inactifs qui seront disponibles
 pour pouvoir traiter les pics de requ&ecirc;tes</td></tr>
@@ -668,7 +668,7 @@ pour pouvoir traiter les pics de requ&ecirc;tes</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="pidfile" id="pidfile">Directive</a> <a name="PidFile" id="PidFile">PidFile</a> <a title="Lien permanent" href="#pidfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="pidfile">Directive <span id="PidFile">PidFile</span> <a title="Lien permanent" href="#pidfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ficher dans lequel le serveur enregistre l'identificateur
 de processus du d&eacute;mon</td></tr>
@@ -707,7 +707,7 @@ de processus du d&eacute;mon</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="receivebuffersize" id="receivebuffersize">Directive</a> <a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a> <a title="Lien permanent" href="#receivebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="receivebuffersize">Directive <span id="ReceiveBufferSize">ReceiveBufferSize</span> <a title="Lien permanent" href="#receivebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon TCP en entr&eacute;e</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReceiveBufferSize <var>octets</var></code></td></tr>
@@ -725,7 +725,7 @@ de processus du d&eacute;mon</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scoreboardfile" id="scoreboardfile">Directive</a> <a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a title="Lien permanent" href="#scoreboardfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scoreboardfile">Directive <span id="ScoreBoardFile">ScoreBoardFile</span> <a title="Lien permanent" href="#scoreboardfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier o&ugrave; sont stock&eacute;es les donn&eacute;es concernant
 la coordination des processus enfants</td></tr>
@@ -770,7 +770,7 @@ le serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sendbuffersize" id="sendbuffersize">Directive</a> <a name="SendBufferSize" id="SendBufferSize">SendBufferSize</a> <a title="Lien permanent" href="#sendbuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sendbuffersize">Directive <span id="SendBufferSize">SendBufferSize</span> <a title="Lien permanent" href="#sendbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du tampon TCP en sortie</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SendBufferSize <var>octets</var></code></td></tr>
@@ -803,7 +803,7 @@ le serveur HTTP Apache</a></li>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serverlimit" id="serverlimit">Directive</a> <a name="ServerLimit" id="ServerLimit">ServerLimit</a> <a title="Lien permanent" href="#serverlimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serverlimit">Directive <span id="ServerLimit">ServerLimit</span> <a title="Lien permanent" href="#serverlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite sup&eacute;rieure de la d&eacute;finition du nombre de
 processus</td></tr>
@@ -871,7 +871,7 @@ le serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="startservers" id="startservers">Directive</a> <a name="StartServers" id="StartServers">StartServers</a> <a title="Lien permanent" href="#startservers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="startservers">Directive <span id="StartServers">StartServers</span> <a title="Lien permanent" href="#startservers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de processus enfants du serveur cr&eacute;&eacute;s au
 d&eacute;marrage</td></tr>
@@ -901,7 +901,7 @@ d&eacute;marrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="startthreads" id="startthreads">Directive</a> <a name="StartThreads" id="StartThreads">StartThreads</a> <a title="Lien permanent" href="#startthreads" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="startthreads">Directive <span id="StartThreads">StartThreads</span> <a title="Lien permanent" href="#startthreads" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de threads cr&eacute;&eacute;s au d&eacute;marrage</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>StartThreads <var>nombre</var></code></td></tr>
@@ -922,7 +922,7 @@ d&eacute;marrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="threadlimit" id="threadlimit">Directive</a> <a name="ThreadLimit" id="ThreadLimit">ThreadLimit</a> <a title="Lien permanent" href="#threadlimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="threadlimit">Directive <span id="ThreadLimit">ThreadLimit</span> <a title="Lien permanent" href="#threadlimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de threads maximum que l'on peut d&eacute;finir par
 processus enfant</td></tr>
@@ -972,7 +972,7 @@ processus enfant</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="threadsperchild" id="threadsperchild">Directive</a> <a name="ThreadsPerChild" id="ThreadsPerChild">ThreadsPerChild</a> <a title="Lien permanent" href="#threadsperchild" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="threadsperchild">Directive <span id="ThreadsPerChild">ThreadsPerChild</span> <a title="Lien permanent" href="#threadsperchild" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de threads cr&eacute;&eacute;s par chaque processus
 enfant</td></tr>
@@ -1014,7 +1014,7 @@ enfant</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="threadstacksize" id="threadstacksize">Directive</a> <a name="ThreadStackSize" id="ThreadStackSize">ThreadStackSize</a> <a title="Lien permanent" href="#threadstacksize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="threadstacksize">Directive <span id="ThreadStackSize">ThreadStackSize</span> <a title="Lien permanent" href="#threadstacksize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille en octets de la pile qu'utilisent les threads qui
 traitent les connexions clients</td></tr>
@@ -1088,7 +1088,7 @@ d'exploitation</code></td></tr>
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

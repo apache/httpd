@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -56,7 +56,7 @@ configuration courante</a></li><li><a href="mass.html">H&eacute;bergement virtue
 dynamiquement</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configparsing" id="configparsing">Fichier de configuration</a> <a title="Lien permanent" href="#configparsing" class="permalink">&para;</a></h2>
+<h2 id="configparsing">Fichier de configuration <a title="Lien permanent" href="#configparsing" class="permalink">&para;</a></h2>
 
     <p>Un <em>serveur  principal (main_server)</em> contient toutes
     les d&eacute;finitions qui apparaissent en dehors des sections
@@ -175,12 +175,12 @@ dynamiquement</a></li></ul></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="hostmatching" id="hostmatching">Choix du serveur virtuel</a> <a title="Lien permanent" href="#hostmatching" class="permalink">&para;</a></h2>
+<h2 id="hostmatching">Choix du serveur virtuel <a title="Lien permanent" href="#hostmatching" class="permalink">&para;</a></h2>
 
     <p>&Agrave; la r&eacute;ception d'une requ&ecirc;te, le serveur proc&egrave;de comme suit pour
     d&eacute;terminer quel serveur virtuel utiliser&nbsp;:</p>
 
-    <h3><a name="hashtable" id="hashtable">Recherche de l'adresse IP</a></h3>
+    <h3 id="hashtable">Recherche de l'adresse IP</h3>
 
     <p>Lors d'une premi&egrave;re connexion sur une adresse/port, le serveur
     recherche toutes les directives <code>VirtualHost</code> qui
@@ -198,7 +198,7 @@ dynamiquement</a></li></ul></div>
 
     
 
-    <h3><a name="ipbased" id="ipbased">Serveur virtuel par IP</a></h3>
+    <h3 id="ipbased">Serveur virtuel par IP</h3>
 
     <p>Si une seule section <code>VirtualHost</code> pr&eacute;sente la
     meilleure correspondance avec la paire adresse IP/port, aucune
@@ -207,7 +207,7 @@ dynamiquement</a></li></ul></div>
 
     
 
-    <h3><a name="namebased" id="namebased">Serveur virtuel par nom</a></h3>
+    <h3 id="namebased">Serveur virtuel par nom</h3>
 
     <p>Si plusieurs sections <code>VirtualHost</code> pr&eacute;sentent la
     meilleure correspondance avec la paire adresse IP/port, le terme
@@ -240,7 +240,7 @@ dynamiquement</a></li></ul></div>
 
     
 
-    <h3><a name="persistent" id="persistent">Connexions persistantes</a></h3>
+    <h3 id="persistent">Connexions persistantes</h3>
 
     <p>La <em>recherche par adresse IP</em> d&eacute;crite ci-avant n'est faite
     qu'<em>une fois</em> pour chaque session TCP/IP, alors que la
@@ -252,7 +252,7 @@ dynamiquement</a></li></ul></div>
 
     
 
-    <h3><a name="absoluteURI" id="absoluteURI">URI absolu</a></h3>
+    <h3 id="absoluteURI">URI absolu</h3>
 
     <p>Au cas o&ugrave; l'URI de la requ&ecirc;te est absolu, et que son nom de
     serveur et son port correspondent au serveur principal (ou l'un
@@ -264,7 +264,7 @@ dynamiquement</a></li></ul></div>
     comme une requ&ecirc;te d'un serveur mandataire (proxy).</p>
 
 
-<h3><a name="observations" id="observations">Observations</a></h3>
+<h3 id="observations">Observations</h3>
 
     <ul>
       <li>La s&eacute;lection d'un serveur virtuel en fonction de son nom est
@@ -320,7 +320,7 @@ dynamiquement</a></li></ul></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tips" id="tips">Trucs et astuces</a> <a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
+<h2 id="tips">Trucs et astuces <a title="Lien permanent" href="#tips" class="permalink">&para;</a></h2>
 
     <p>En plus des points &eacute;voqu&eacute;s sur la page des
     <a href="../dns-caveats.html#tips">probl&egrave;mes li&eacute;s au DNS</a>,
@@ -346,7 +346,7 @@ dynamiquement</a></li></ul></div>
 <a href="../tr/vhosts/details.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

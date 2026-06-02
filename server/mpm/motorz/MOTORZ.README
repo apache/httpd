@@ -8,3 +8,260 @@ APR Thread pool is used.
 
 MotorZ uses Prefork as the framework and Simple for the actual event
 structure.
+
+
+Threading model
+===============
+
+Each child process runs:
+
+  - N poll threads ("pollers", PollersPerChild; default: one per online CPU,
+    capped). Each poller owns its OWN pollset, timer ring (+ guarding mutex)
+    and lock-free transaction-pool recycle list, so pollers never contend with
+    each other. A poller polls, dispatches ready I/O events and expired timers
+    to the worker pool, and (for the listener-owning poller) accepts.
+  - A shared APR thread pool of worker threads (ThreadsPerChild) that run the
+    actual connection/request processing pushed to them; workers never poll.
+  - A supervisor (the child's main thread) that watches MaxRequestsPerChild and
+    the pipe-of-death / generation, signalling the pollers to wind down, then
+    joins them on exit.
+
+A connection is sharded to one poller at accept time (round-robin) and bound to
+it for its whole lifetime: it re-arms in and times out on that poller's
+pollset/ring. (Its transaction pool is recycled back to the ACCEPTING poller's
+free-list, which is the single consumer of that list -- recycling is not
+sharded, only I/O is.) Multiple pollers lift the old single-poll-thread
+throughput ceiling: accept + event dispatch + timer expiry now scale with
+PollersPerChild instead of being serialized on one thread.
+
+Admission control (listener backpressure) keeps the child safe under overload:
+when the worker pool saturates, the listener-owning poller removes the
+listening sockets from its pollset (motorz_update_listeners /
+motorz_disable_listeners) and re-adds them once the backlog drains, so the work
+queue and per-connection memory stay bounded rather than growing without limit.
+
+Relationship to mpm_event
+-------------------------
+
+MotorZ uses Prefork for process management and an APR thread pool for workers,
+with pollers dispatching to that pool -- distinct from mpm_event's
+listener/worker/fdqueue design where workers themselves re-arm a shared
+thread-safe pollset. In practice, whether more pollers help depends on the
+workload: if the worker threads are the CPU bottleneck (typical for real
+request processing), the poll threads are not the limit and PollersPerChild
+beyond 1-2 yields little. The multiple-poller design removes motorz's
+*structural* single-thread ceiling, but per-box throughput is still governed by
+worker CPU. For the broadest, most battle-tested high-concurrency async
+behavior, mpm_event remains the reference; MotorZ stays a lean, self-contained
+alternative.
+
+
+HTTP/2 async handoff (ENABLED -- mod_http2 close-ordering fixed)
+===============================================================
+
+Status: motorz reports AP_MPMQ_IS_ASYNC = 1 and AP_MPMQ_CAN_WAITIO = 1
+(MOTORZ_ENABLE_ASYNC = 1 in motorz.c). Async was previously disabled to work
+around a real defect in the interaction between motorz's async connection
+handoff and mod_http2's stream lifecycle that dropped a small fraction of
+requests under HTTP/2 connection churn. That defect has now been fixed in
+mod_http2 (see "The fix" below), so async is safe to advertise: the c1
+connection is no longer closed until every secondary connection (c2) has
+finished and flushed its response. CONN_STATE_ASYNC_WAITIO in
+motorz_io_process() is now actually exercised by mod_http2 (it only requests
+WAITIO of an async MPM).
+
+The symptom / root cause / diagnosis below are retained as the rationale for
+the fix and as a guide if a regression ever reappears.
+
+Symptom
+-------
+Under HTTP/2 with many short-lived, rapidly churning connections (the worst case
+is one request per connection at high concurrency, e.g. `h2load -n 30000 -c 50
+-m 1`), motorz intermittently dropped ~0.2-3% of requests. h2load reports them
+as "Process Request Failure"; the responses are lost. All h2 error codes are 0
+(graceful), there is no TCP RST, no server-side 4xx/5xx, and -- crucially -- no
+data race on motorz's own per-connection state (the claim/ownership model holds;
+verified with ThreadSanitizer). mpm_event does NOT exhibit this; motorz does.
+It is timing-sensitive (a Heisenbug): trace8 logging, lldb, and Guard Malloc all
+slow the hot path enough to hide it; it reproduces under TSan and at info level.
+
+Root cause: a c1/c2 close-ordering race in mod_http2, exposed by async handoff
+---------------------------------------------------------------------------
+mod_http2 runs the HTTP/2 master connection ("c1") on the MPM-provided thread
+and runs each request stream on a SECONDARY connection ("c2") on its OWN worker
+thread pool (h2_workers.c). A stream's response is produced by its c2 worker and
+written out through c1.
+
+Two facts combine to make the bug:
+
+  1. A stream is considered "running" until its c2 worker calls c2_prod_done(),
+     which sets conn_ctx->done = 1 (h2_mplx.c). h2_mplx.c:stream_is_running() ==
+     (started && !done). There is a WINDOW between the c2 submitting its final
+     output + EOS to its output beam (which lets c1/nghttp2 see the stream as
+     CLOSED -> CLEANUP) and the c2 worker actually returning and calling
+     c2_prod_done(). During that window the stream is CLOSED at the protocol
+     level but still "running".
+
+  2. When the c1 session ends (e.g. the client sends GOAWAY after its last
+     request -- normal for one-request-per-connection churn), h2_c1_run()
+     (h2_c1.c) sets c->cs->state = CONN_STATE_LINGER for the ST_DONE/ST_CLEANUP
+     session states. The MPM then performs a lingering close, whose pre_close
+     hook (ap_prep_lingering_close -> ap_run_pre_close_connection -> h2_c1_pre_close
+     -> h2_session_pre_close) sends GOAWAY and tears the session down.
+     m_stream_cleanup() (h2_mplx.c), for any stream still "running" at that
+     moment, calls h2_c2_abort() -- which aborts the c2 output beam
+     ("(53)Software caused connection abort"), discarding the in-flight response.
+
+So if the c1 close runs DURING the window in (1), the just-finished stream's
+response is aborted instead of flushed. mpm_event keeps the c1 connection
+scheduled such that the c2 reaches done=1 first (its trace shows nearly all
+streams "c2 is done, move to spurge", almost none "c2 is running, abort").
+motorz, dispatching c1 work to a fresh pool thread on each async re-entry,
+drives the close ahead of c2_prod_done far more often (many "c2 is running,
+abort", and GOAWAYs logged with reason='timeout' -- the reason string is just
+"state was IDLE at close", NOT an actual timeout: elapsed times were ~tens of ms
+against a 10s Timeout).
+
+Why disabling async fixes it
+----------------------------
+With AP_MPMQ_IS_ASYNC = 0, mod_http2's h2_c1_run() does NOT return the c1
+connection to the MPM between requests. Instead it LOOPS on h2_session_process(),
+holding one worker thread and driving mod_http2's own multiplexer pollset
+(h2_mplx_c1_poll, which polls both the c1 socket and the c2 beam pipes) until the
+session is genuinely done -- i.e. until every stream's c2 has completed and its
+output has been written. The early c1 close-vs-c2 race cannot occur because the
+same thread that would close the connection is the one pumping the c2 output to
+completion first. Measured: zero dropped requests, and HTTP/2 throughput is
+unchanged (mod_http2 pins a worker per active c1 connection either way).
+
+Cost of the workaround
+----------------------
+The trade-off is HTTP/1.1, not HTTP/2. With async on, an idle keep-alive
+connection is handed back to the MPM and frees its worker; with async off it
+holds a worker for the connection's lifetime, so the count of concurrent
+kept-alive HTTP/1.1 connections is bounded by ThreadsPerChild. (No requests are
+lost -- HTTP/1.1 correctness is unaffected; only keep-alive worker-occupancy
+scaling regresses.) This is an acceptable trade to be correct under HTTP/2;
+revisit if/when motorz targets large HTTP/1.1 keep-alive fan-out.
+
+The fix (implemented in mod_http2)
+----------------------------------
+The fix lives in mod_http2, not motorz, and follows the second candidate
+approach above: never let the c1 session reach DONE -> LINGER (which is what
+lets the MPM close the connection) while a stream it is processing still has a
+c2 whose response has not been written. The invariant established is: "a c1
+connection is only closed once every stream's c2 has finished and its output is
+flushed." Two small changes in h2_session.c do this for the path that actually
+triggered the loss -- the client's graceful GOAWAY:
+
+  * h2_session_ev_remote_goaway(): a graceful GOAWAY (error code 0) with streams
+    still in flight (open_streams > 0) no longer transits straight to
+    H2_SESSION_ST_DONE. It records the remote shutdown, RSTs only the
+    unprocessed streams (as before), and keeps the session running so the
+    in-flight streams complete and their c2 output is written. (An error GOAWAY,
+    or one with no streams in flight, still goes to DONE immediately.) This also
+    matches RFC 9113: a peer GOAWAY stops new streams, it does not abort streams
+    at or below its last-stream-id.
+
+  * H2_SESSION_ST_IDLE handling in h2_session_process(): once those streams have
+    drained (open_streams == 0) and the remote has shut down, the session sends
+    our GOAWAY and goes to DONE from IDLE instead of parking the connection back
+    on the MPM to wait for new streams that a departing client will never open.
+    Reaching DONE only here -- after the c2s are done and flushed -- is what
+    keeps the close from racing an in-flight c2.
+
+With this in place the abort-on-close in m_stream_cleanup()/h2_mplx_c1_destroy()
+is no longer reached while a c2's response is unsent, so MOTORZ_ENABLE_ASYNC=1
+is lossless under churn. The churn regression (server/mpm/motorz/test/smoke.sh
+and run-http2.sh) asserts it at n=.. c=50 m=1, and the async assertions there
+have been inverted to expect async ON (CONN_STATE_ASYNC_WAITIO arms / "returning
+to mpm c1 monitoring" appears).
+
+Measuring the regression correctly (two pitfalls)
+.................................................
+The committed tests learned two lessons the hard way; preserve them if you edit:
+
+  1. Assert on RESPONSE LOSS, not on h2load's "failed" total. h2load's "failed"
+     counts BOTH connection-establishment errors AND dropped responses:
+       failed = (total - started)  +  (started - succeeded)
+                \__ connection setup _/   \__ THIS bug ___/
+     The first term is environmental -- ephemeral-port exhaustion and accept-
+     queue pressure when hammering loopback at high -c (it appears with the fix,
+     without the fix, and even on mpm_event; on a busy macOS loopback a few
+     hundred per 30000 is normal). Only the second term, started - succeeded
+     (responses dropped on connections that DID start), is the close-ordering
+     bug. The tests compute `lost = started - succeeded` and assert that is 0;
+     asserting "failed == 0" or "started == total" gives flaky failures that
+     have nothing to do with this fix.
+
+  2. Measure at LogLevel info, NOT trace8. This is a Heisenbug: trace8 slows the
+     hot path enough to hide it (the same reason it hides under lldb / Guard
+     Malloc, noted below). A churn assertion run under trace8 passes even with
+     the fix deliberately removed -- i.e. it is vacuous. smoke.sh runs at trace8
+     for its state-machine traces, so its churn check is only a gross sanity
+     pass; the load-bearing, non-vacuous churn regression is the one in
+     run-http2.sh, which runs at info. (Verified: defeating the fix and
+     re-running at info brings response loss back; under trace8 it does not.)
+
+How to trigger the bug (step by step)
+-------------------------------------
+The bug is masked while async is OFF, so you must first turn it back on:
+
+  1. Re-enable async:    set MOTORZ_ENABLE_ASYNC to 1 in motorz.c, rebuild
+     (`make`). (motorz_query will now report AP_MPMQ_IS_ASYNC=1 and
+     AP_MPMQ_CAN_WAITIO=1, so mod_http2 takes the async c1 hand-back path.)
+
+  2. Build at a NORMAL/fast level. Do NOT use trace8/trace2 logging, lldb, or
+     Guard Malloc while trying to TRIGGER it -- the bug is a Heisenbug and any
+     of those slow the hot path enough to hide it. (Use trace2 only afterwards
+     to observe the close path, see below.)
+
+  3. Config that maximizes the race (TLS vhost with `Protocols h2 http/1.1`):
+       StartServers 1
+       PollersPerChild 1        ; fewer pollers => worse (more serialized on
+                                ;   poller 0), so 1 is the most reliable trigger
+       ThreadsPerChild 128      ; large, so the failures are NOT worker
+                                ;   starvation -- rules that out as a cause
+       ThreadLimit 128
+       LogLevel info
+     (Any document works; a tiny static file is fine.)
+
+  4. Drive maximum HTTP/2 CONNECTION CHURN with h2load -- the trigger is many
+     short connections each doing very few streams, NOT many streams per conn:
+
+       h2load -n 30000 -c 50 -m 1  https://localhost:PORT/
+
+     -m 1 (one stream per connection) is the strongest trigger; -m 25 still
+     fails sometimes; -m >= 50 essentially hides it. Run it 5-10 times: roughly
+     1 in 3-5 runs drops a few hundred requests (h2load: "Process Request
+     Failure", "failed"/"errored" > 0, and "started" < "total"). Higher -c (e.g.
+     100) raises the hit rate. The committed test harness encodes this:
+     `server/mpm/motorz/test/smoke.sh` and `run-http2.sh` (which currently
+     assert 0 failures *because async is off* -- with async on they will fail,
+     which IS the reproduction).
+
+  5. The failures are graceful: no TCP RST, no 4xx/5xx, no crash -- just lost
+     responses. (Very rarely the child SIGBUSes; that is the same race hitting
+     freed memory, not a separate bug.)
+
+How it was diagnosed (for whoever picks this up)
+------------------------------------------------
+  * Confirm the close path: with async on, LogLevel trace2 (GLOBAL -- a
+    per-module "http2:trace2" spec does NOT emit on this build), small runs
+    (e.g. n=2000) until a fail, then grep the failing connection id for
+    "c2 is running, abort", "Software caused connection abort", and
+    "GOAWAY[... reason='timeout'". Those three together are the signature.
+  * Confirm it is the async handoff (not anything else): flip
+    MOTORZ_ENABLE_ASYNC back to 0 -> failures vanish entirely (0/N runs). That
+    single toggle is the proof, and is the shipped workaround.
+  * Confirm it is NOT a motorz data race: ThreadSanitizer build
+    (`make EXTRA_CFLAGS="-fsanitize=thread -g -O1" LDFLAGS="-fsanitize=thread"`,
+    run with `TSAN_OPTIONS=log_path=...`) shows no race on motorz's scon
+    fields; the only h2 races are the by-design c2->aborted signal flag and
+    benign lock-free free-list idioms.
+  * Contrast with mpm_event: run the identical h2load churn against event ->
+    0 failures, and its trace shows nearly all streams "c2 is done, move to
+    spurge" (clean) vs motorz's many "c2 is running, abort".
+  * Earlier dead ends (do NOT re-chase): the scoreboard slot-0 contention and
+    the c2->cs conn_state aliasing were both real races but NOT the cause --
+    fixing either did not stop the dropped requests.

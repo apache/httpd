@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -54,7 +54,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="implementation" id="implementation">Impl&eacute;mentation</a> <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
+<h2 id="implementation">Impl&eacute;mentation <a title="Lien permanent" href="#implementation" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
@@ -92,7 +92,7 @@
     r&eacute;gler les drapeaux du compilateur et de l'&eacute;diteur de liens pour la prise en charge de DSO.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="usage" id="usage">Mode d'emploi succinct</a> <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
+<h2 id="usage">Mode d'emploi succinct <a title="Lien permanent" href="#usage" class="permalink">&para;</a></h2>
 
     <p>Afin que vous puissiez vous faire une id&eacute;e des fonctionnalit&eacute;s DSO
     du serveur HTTP Apache 2.x, en voici un r&eacute;sum&eacute; court et concis :</p>
@@ -159,7 +159,7 @@ $ apxs -cia mod_foo.c</pre>
     pour plus de d&eacute;tails.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="background" id="background">Les dessous du fonctionnement des DSO</a> <a title="Lien permanent" href="#background" class="permalink">&para;</a></h2>
+<h2 id="background">Les dessous du fonctionnement des DSO <a title="Lien permanent" href="#background" class="permalink">&para;</a></h2>
 
     <p>Les clones modernes d'UNIX proposent un m&eacute;canisme
     appel&eacute; &eacute;dition de liens et chargement dynamiques d'
@@ -256,7 +256,7 @@ $ apxs -cia mod_foo.c</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="advantages" id="advantages">Avantages et inconv&eacute;nients</a> <a title="Lien permanent" href="#advantages" class="permalink">&para;</a></h2>
+<h2 id="advantages">Avantages et inconv&eacute;nients <a title="Lien permanent" href="#advantages" class="permalink">&para;</a></h2>
 
     <p>Les fonctionnalit&eacute;s ci-dessus bas&eacute;es sur les DSO pr&eacute;sentent les
     avantages suivants :</p>
@@ -329,7 +329,7 @@ $ apxs -cia mod_foo.c</pre>
 <a href="./tr/dso.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

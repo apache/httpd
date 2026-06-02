@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -82,7 +82,7 @@ eşlenmesini sağlar ve URL y&ouml;nlendirmesi yapar.</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">İşlem Sırası</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">İşlem Sırası <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
     <p>Farklı bağlamlarda bulunan <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#redirect">Redirect</a></code>
       y&ouml;nergeleri standart <a href="../sections.html#mergin">katıştırma
@@ -115,7 +115,7 @@ eşlenmesini sağlar ve URL y&ouml;nlendirmesi yapar.</td></tr>
 
   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Y&ouml;nergesi</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="alias"><span id="Alias">Alias</span> Y&ouml;nergesi <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>URL'leri dosya sistemi konumlarıyla eşler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>Alias <var>URL-yolu</var> <var>dosya-yolu</var> |
@@ -177,7 +177,7 @@ eşlenmesini sağlar ve URL y&ouml;nlendirmesi yapar.</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliasmatch"><span id="AliasMatch">AliasMatch</span> Y&ouml;nergesi <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>URL'leri dosya sistemi konumlarıyla d&uuml;zenli ifadeleri kullanarak
 eşler.</td></tr>
@@ -255,7 +255,7 @@ eşler.</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath">Y&ouml;nergesi</a> <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliaspreservepath"><span id="AliasPreservePath">AliasPreservePath</span> Y&ouml;nergesi <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Map the full path after the alias in a location.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
@@ -267,7 +267,7 @@ eşler.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Y&ouml;nergesi</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirect"><span id="Redirect">Redirect</span> Y&ouml;nergesi <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciyi, bir y&ouml;nlendirme isteği d&ouml;nd&uuml;rerek farklı bir URL'ye
 y&ouml;nlendirir.</td></tr>
@@ -362,7 +362,7 @@ y&ouml;nlendirir.</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectmatch"><span id="RedirectMatch">RedirectMatch</span> Y&ouml;nergesi <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Ge&ccedil;erli URL ile eşleşen bir d&uuml;zenli ifadeye dayanarak bir harici
 y&ouml;nlendirme g&ouml;nderir.</td></tr>
@@ -395,7 +395,7 @@ y&ouml;nlendirme g&ouml;nderir.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Y&ouml;nergesi</a> <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectpermanent"><span id="RedirectPermanent">RedirectPermanent</span> Y&ouml;nergesi <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciyi, kalıcı bir y&ouml;nlendirme isteği d&ouml;nd&uuml;rerek farklı bir
 URL'ye y&ouml;nlendirir.</td></tr>
@@ -410,7 +410,7 @@ URL'ye y&ouml;nlendirir.</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">Y&ouml;nergesi</a> <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectrelative"><span id="RedirectRelative">RedirectRelative</span> Y&ouml;nergesi <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Allows relative redirect targets.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
@@ -422,7 +422,7 @@ URL'ye y&ouml;nlendirir.</td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Y&ouml;nergesi</a> <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirecttemp"><span id="RedirectTemp">RedirectTemp</span> Y&ouml;nergesi <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>İstemciyi, ge&ccedil;ici bir y&ouml;nlendirme isteği d&ouml;nd&uuml;rerek farklı bir
 URL'ye y&ouml;nlendirir.</td></tr>
@@ -437,7 +437,7 @@ URL'ye y&ouml;nlendirir.</td></tr>
   
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Y&ouml;nergesi</a> <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptalias"><span id="ScriptAlias">ScriptAlias</span> Y&ouml;nergesi <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir URL'yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak &ccedil;alıştırır.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>ScriptAlias <var>URL-yolu</var>
@@ -517,7 +517,7 @@ URL'ye y&ouml;nlendirir.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Y&ouml;nergesi</a> <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptaliasmatch"><span id="ScriptAliasMatch">ScriptAliasMatch</span> Y&ouml;nergesi <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir URL'yi dosya sistemindeki bir yere d&uuml;zenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak &ccedil;alıştırır.</td></tr>
@@ -566,7 +566,7 @@ eşler ve hedefi bir CGI betiği olarak &ccedil;alıştırır.</td></tr>
 <a href="../tr/mod/mod_alias.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

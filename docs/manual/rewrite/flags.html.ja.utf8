@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -72,7 +72,7 @@
 </ul><h3>参照</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">モジュールドキュメント</a></li><li><a href="intro.html">mod_rewrite 入門</a></li><li><a href="remapping.html">リダイレクトとリマッピング</a></li><li><a href="access.html">アクセス制御</a></li><li><a href="vhosts.html">バーチャルホスト</a></li><li><a href="proxy.html">プロキシ</a></li><li><a href="rewritemap.html">RewriteMap の使用</a></li><li><a href="advanced.html">高度なテクニック</a></li><li><a href="avoid.html">mod_rewrite を使わない場合</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">はじめに</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">はじめに <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> は、
 1 つ以上のフラグによって動作を変更できます。フラグはルールの末尾の
 角括弧内に含まれ、複数のフラグはカンマで区切られます。</p>
@@ -92,7 +92,7 @@ htaccess コンテキストで、同じ書き換え処理ラウンド中に ('-'
 <p>ここでは、各フラグと使用例を紹介します。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_b" id="flag_b">B (バックリファレンスのエスケープ)</a> <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
+<h2 id="flag_b">B (バックリファレンスのエスケープ) <a title="Permanent link" href="#flag_b" class="permalink">&para;</a></h2>
 <p>[B] フラグは、変換を適用する前に非英数字文字をエスケープするよう
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> に指示します。</p>
 
@@ -146,7 +146,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
         および <a href="#flag_bctls">#flag_bctls</a> を参照してください</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bnp" id="flag_bnp">BNP|backrefnoplus (スペースを + にエスケープしない)</a> <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
+<h2 id="flag_bnp">BNP|backrefnoplus (スペースを + にエスケープしない) <a title="Permanent link" href="#flag_bnp" class="permalink">&para;</a></h2>
 <p>[BNP] フラグは、バックリファレンス内のスペース文字を '+' ではなく
 %20 にエスケープするよう <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> に指示します。
 バックリファレンスがクエリ文字列ではなくパスコンポーネントで使用される
@@ -160,7 +160,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>このフラグはバージョン 2.4.26 以降で使用可能です。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bctls" id="flag_bctls">BCTLS</a> <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
+<h2 id="flag_bctls">BCTLS <a title="Permanent link" href="#flag_bctls" class="permalink">&para;</a></h2>
 <p>[BCTLS] フラグは [B] フラグに似ていますが、制御文字とスペース文字のみを
 エスケープします。これは、エンコードされずにクエリ文字列にコピーされた
 場合に拒否される文字セットと同じです。</p>
@@ -173,7 +173,7 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_bne" id="flag_bne">BNE</a> <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
+<h2 id="flag_bne">BNE <a title="Permanent link" href="#flag_bne" class="permalink">&para;</a></h2>
 <p>[BNE=...] 内の文字リストは、[B] または [BCTLS] フラグの文字に対する
 除外として扱われます。リストされた文字はエスケープされません。</p>
 
@@ -184,7 +184,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 <p>このフラグはバージョン 2.5.1 以降で使用可能です。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_c" id="flag_c">C|chain</a> <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
+<h2 id="flag_c">C|chain <a title="Permanent link" href="#flag_c" class="permalink">&para;</a></h2>
 <p>[C] または [chain] フラグは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> が次のルールに
 チェーンされることを示します。つまり、ルールがマッチすると通常通り
 処理され、制御は次のルールに移ります。しかし、マッチしない場合は、
@@ -192,7 +192,7 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_co" id="flag_co">CO|cookie</a> <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
+<h2 id="flag_co">CO|cookie <a title="Permanent link" href="#flag_co" class="permalink">&para;</a></h2>
 <p>[CO] または [cookie] フラグは、特定の
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> がマッチした場合に
 cookie を設定できるようにします。引数は 3 つの必須フィールドと
@@ -272,7 +272,7 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpath</a> <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
+<h2 id="flag_dpi">DPI|discardpath <a title="Permanent link" href="#flag_dpi" class="permalink">&para;</a></h2>
 <p>DPI フラグは、書き換えた URI の PATH_INFO 部分を破棄します。</p>
 <p>このフラグはバージョン 2.2.12 以降で使用可能です。</p>
 <p>ディレクトリ単位のコンテキストでは、各
@@ -299,7 +299,7 @@ RewriteRule   "^/index\.html"   "-" [CO=frontdoor:yes:.example.com:1440:/]</pre>
 参照します。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_e" id="flag_e">E|env</a> <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
+<h2 id="flag_e">E|env <a title="Permanent link" href="#flag_e" class="permalink">&para;</a></h2>
 <p>[E] または [env] フラグを使用すると、環境変数の値を設定できます。
 一部の環境変数はルールの実行後に設定される可能性があり、設定した値が
 上書きされることがあることに注意してください。環境変数の動作の詳細は
@@ -348,7 +348,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 例として提供されています。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_end" id="flag_end">END</a> <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
+<h2 id="flag_end">END <a title="Permanent link" href="#flag_end" class="permalink">&para;</a></h2>
 <p>[END] フラグを使用すると、([L] のように) 現在の書き換え処理ラウンドを
 終了するだけでなく、ディレクトリ単位 (htaccess) コンテキストでの
 以降の書き換え処理も防止します。</p>
@@ -356,7 +356,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 <p>これは外部リダイレクトによる新しいリクエストには適用されません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_f" id="flag_f">F|forbidden</a> <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
+<h2 id="flag_f">F|forbidden <a title="Permanent link" href="#flag_f" class="permalink">&para;</a></h2>
 <p>[F] フラグを使用すると、サーバはクライアントに 403 Forbidden
 ステータスコードを返します。同じ動作は
 <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> ディレクティブでも
@@ -378,7 +378,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_g" id="flag_g">G|gone</a> <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
+<h2 id="flag_g">G|gone <a title="Permanent link" href="#flag_g" class="permalink">&para;</a></h2>
 <p>[G] フラグは、サーバにレスポンスとして 410 Gone ステータスを
 返すよう強制します。これは、リソースがかつて利用可能であったが、
 もはや利用できないことを示します。</p>
@@ -394,7 +394,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_h" id="flag_h">H|handler</a> <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
+<h2 id="flag_h">H|handler <a title="Permanent link" href="#flag_h" class="permalink">&para;</a></h2>
 <p>結果のリクエストを指定されたハンドラで処理するよう強制します。
 例えば、ファイル拡張子のないすべてのファイルを php ハンドラで
 解析させるために使用できます:</p>
@@ -422,7 +422,7 @@ CustomLog   "logs/access_log"    combined env=!image</pre>
 参照します。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_l" id="flag_l">L|last</a> <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
+<h2 id="flag_l">L|last <a title="Permanent link" href="#flag_l" class="permalink">&para;</a></h2>
 <p>[L] フラグは <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> にルールセットの処理を
 停止させます。ほとんどのコンテキストで、ルールがマッチした場合、
 以降のルールは処理されなくなります。これは Perl の <code>last</code>
@@ -463,7 +463,7 @@ RewriteRule "^(.*)"          "/index.php?req=$1" [L,PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_n" id="flag_n">N|next</a> <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
+<h2 id="flag_n">N|next <a title="Permanent link" href="#flag_n" class="permalink">&para;</a></h2>
 <p>
 [N] フラグは、それまでのルールセットの結果を出発点として、ルールセットを
 最初からやり直します。ループを引き起こす可能性があるため、
@@ -492,7 +492,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_nc" id="flag_nc">NC|nocase</a> <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
+<h2 id="flag_nc">NC|nocase <a title="Permanent link" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>[NC] フラグを使用すると、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> は大文字小文字を
 区別せずにマッチします。つまり、マッチする URI で文字が大文字か
 小文字かを気にしません。</p>
@@ -505,7 +505,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ne" id="flag_ne">NE|noescape</a> <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
+<h2 id="flag_ne">NE|noescape <a title="Permanent link" href="#flag_ne" class="permalink">&para;</a></h2>
 <p>デフォルトでは、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 が外部リダイレクトをもたらす場合、出力内の以下の安全なセット以外の文字は
 16 進コード (パーセントエンコード) に変換されます:</p>
@@ -535,7 +535,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a> <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
+<h2 id="flag_ns">NS|nosubreq <a title="Permanent link" href="#flag_ns" class="permalink">&para;</a></h2>
 <p>[NS] フラグを使用すると、サブリクエストでのルールの使用が
 防止されます。例えば、SSI (Server Side Include) を使用して
 インクルードされたページはサブリクエストであり、それらのサブリクエストで
@@ -559,7 +559,7 @@ CSS ファイルはサブリクエストではありません - ブラウザが�
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_p" id="flag_p">P|proxy</a> <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
+<h2 id="flag_p">P|proxy <a title="Permanent link" href="#flag_p" class="permalink">&para;</a></h2>
 <p>[P] フラグを使用すると、リクエストは <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> によって
 処理され、プロキシリクエストとして扱われます。例えば、すべての画像
 リクエストをバックエンド画像サーバで処理したい場合、以下のようにします:</p>
@@ -606,7 +606,7 @@ CSS ファイルはサブリクエストではありません - ブラウザが�
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a> <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
+<h2 id="flag_pt">PT|passthrough <a title="Permanent link" href="#flag_pt" class="permalink">&para;</a></h2>
 
 <p>
 RewriteRule のターゲット (置換文字列) はデフォルトではファイルパスと
@@ -643,7 +643,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a> <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
+<h2 id="flag_qsa">QSA|qsappend <a title="Permanent link" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
 置換 URI にクエリ文字列が含まれる場合、
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> のデフォルト動作は
@@ -663,7 +663,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a> <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
+<h2 id="flag_qsd">QSD|qsdiscard <a title="Permanent link" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
 リクエストされた URI にクエリ文字列が含まれ、ターゲット URI に含まれない
 場合、<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> のデフォルト
@@ -686,7 +686,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_qsl" id="flag_qsl">QSL|qslast</a> <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
+<h2 id="flag_qsl">QSL|qslast <a title="Permanent link" href="#flag_qsl" class="permalink">&para;</a></h2>
 <p>
 デフォルトでは、置換内の最初の (左端の) 疑問符がパスとクエリ文字列を
 区切ります。[QSL] フラグを使用すると、代わりに最後の (右端の) 疑問符で
@@ -702,7 +702,7 @@ RewriteRule "/pics/(.+)\.jpg$" "/icons/$1.gif" [PT]</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_r" id="flag_r">R|redirect</a> <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
+<h2 id="flag_r">R|redirect <a title="Permanent link" href="#flag_r" class="permalink">&para;</a></h2>
 <p>
 [R] フラグを使用すると、ブラウザに HTTP リダイレクトが発行されます。
 完全修飾 URL (つまり <code>http://servername/</code> を含む) が指定された
@@ -736,7 +736,7 @@ URL の生成に使用されます。
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_s" id="flag_s">S|skip</a> <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
+<h2 id="flag_s">S|skip <a title="Permanent link" href="#flag_s" class="permalink">&para;</a></h2>
 <p>[S] フラグは、実行したくないルールをスキップするために使用されます。
 スキップフラグの構文は [S=<em>N</em>] で、<em>N</em> はスキップする
 ルールの数を表します (<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -785,7 +785,7 @@ RewriteRule ".?"                  "-" [S=3]
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_t" id="flag_t">T|type</a> <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
+<h2 id="flag_t">T|type <a title="Permanent link" href="#flag_t" class="permalink">&para;</a></h2>
 <p>結果のレスポンスが送信される MIME タイプを設定します。
 これは <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> ディレクティブと
 同じ効果を持ちます。</p>
@@ -820,7 +820,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 <code>L</code> フラグが有用です。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_allow_3f" id="flag_unsafe_allow_3f">UnsafeAllow3F</a> <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Permanent link" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>このフラグを設定すると、書き換え対象の HTTP リクエストに
     エンコードされた疑問符 '%3f' が含まれ、書き換え結果の置換に
     '?' がある場合でも書き換えを続行できます。これは、悪意のある
@@ -828,7 +828,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
     防止します。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unsafe_prefix_stat" id="flag_unsafe_prefix_stat">UnsafePrefixStat</a> <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
+<h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Permanent link" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
     <p>このフラグを設定すると、サーバスコープの置換が変数や
     バックリファレンスで始まり、ファイルシステムパスに解決される場合に
     必要です。これらの置換にはドキュメントルートがプレフィックスとして
@@ -838,7 +838,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
     <p>Available in Apache HTTP Server 2.5.1 and later.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flag_unc" id="flag_unc">UNC</a> <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
+<h2 id="flag_unc">UNC <a title="Permanent link" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>このフラグを設定すると、Windows UNC パスで使用される複数の
     先頭スラッシュのマージが防止されます。ルールの置換がリテラルの
     複数スラッシュで始まる場合、このフラグは不要です。</p>
@@ -856,7 +856,7 @@ RewriteRule "IMG"  "-" [T=image/jpg]</pre>
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

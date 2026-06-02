@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -28,8 +28,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le script <code class="program"><a href="../programs/configure.html">configure</a></code> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
@@ -48,7 +46,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../install.html">Compilation et installation</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">R&eacute;sum&eacute;</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">R&eacute;sum&eacute; <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p>Vous devez appeler le script <code class="program"><a href="../programs/configure.html">configure</a></code> depuis le
     r&eacute;pertoire racine de la distribution.</p>
 
@@ -61,7 +59,7 @@
     usuelles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Options <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
   <ul>
     <li><a href="#configurationoptions">Options de Configuration</a></li>
     <li><a href="#installationdirectories">R&eacute;pertoires d'installation</a></li>
@@ -70,7 +68,7 @@
     <li><a href="#supportopt">Options pour les programmes support</a></li>
   </ul>
 
-  <h3><a name="configurationoptions" id="configurationoptions">Options de Configuration</a></h3>
+  <h3 id="configurationoptions">Options de Configuration</h3>
 
     <p>Les options suivantes affectent le comportement du script
     <code class="program"><a href="../programs/configure.html">configure</a></code>.</p>
@@ -118,8 +116,8 @@
     </dl>
   
 
-  <h3><a name="installationdirectories" id="installationdirectories">R&eacute;pertoires
-  d'installation</a></h3>
+  <h3 id="installationdirectories">R&eacute;pertoires
+  d'installation</h3>
 
     <p>Ces options permettent de sp&eacute;cifier le r&eacute;pertoire d'installation.
     L'arborescence de l'installation d&eacute;pend de l'organisation (layout)
@@ -240,7 +238,8 @@
 	<code class="program"><a href="../programs/suexec.html">suexec</a></code>, etc..., qui sont n&eacute;cessaires &agrave;
 	l'ex&eacute;cution du serveur HTTP Apache. Par d&eacute;faut,
 	<code>sbindir</code> est d&eacute;fini &agrave;
-	<code><var>EPREFIX</var>/sbin</code>.</dd>
+	<code><var>EPREFIX</var>/bin</code> (comme
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Installe les donn&eacute;es modifiables ind&eacute;pendantes de
@@ -259,7 +258,7 @@
     
   
 
-  <h3><a name="systemtypes" id="systemtypes">Types de syst&egrave;mes</a></h3>
+  <h3 id="systemtypes">Types de syst&egrave;mes</h3>
 
     <p>Ces options sont utilis&eacute;es pour la cross-compilation du serveur
     HTTP Apache afin de pouvoir l'utiliser sur un autre syst&egrave;me. Dans le
@@ -285,8 +284,8 @@
     </dl>
   
 
-  <h3><a name="optionalfeatures" id="optionalfeatures">Fonctionnalit&eacute;s
-  optionnelles</a></h3>
+  <h3 id="optionalfeatures">Fonctionnalit&eacute;s
+  optionnelles</h3>
 
     <p>Ces options vous permettent de configurer avec pr&eacute;cision les
     fonctionnalit&eacute;s de votre futur serveur HTTP.</p>
@@ -509,7 +508,7 @@
     
   
 
-  <h3><a name="packages" id="packages">Paquets optionnels</a></h3>
+  <h3 id="packages">Paquets optionnels</h3>
     <p>Ces options permettent de d&eacute;finir des paquets optionnels.</p>
 
     <h4><a name="generalpackages" id="generalpackages">Syntaxe g&eacute;n&eacute;rale</a></h4>
@@ -615,8 +614,8 @@
     
   
 
-  <h3><a name="supportopt" id="supportopt">Options pour les programmes de
-  support</a></h3>
+  <h3 id="supportopt">Options pour les programmes de
+  support</h3>
     <dl>
       <dt><code>--enable-static-support</code></dt>
       <dd>Permet de compiler une version des binaires de support li&eacute;s
@@ -728,7 +727,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Variables d'environnement</a> <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Variables d'environnement <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
   <p>Certaines variables d'environnement permettent de modifier les
   choix effectu&eacute;s par <code class="program"><a href="../programs/configure.html">configure</a></code>, ou d'aider ce dernier &agrave;
   trouver les biblioth&egrave;ques et programmes poss&eacute;dant des noms et chemins
@@ -767,7 +766,7 @@
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

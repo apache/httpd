@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -63,7 +63,7 @@
 fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Modifications des param&egrave;tres de compilation</a> <a title="Lien permanent" href="#compile-time" class="permalink">&para;</a></h2>
+<h2 id="compile-time">Modifications des param&egrave;tres de compilation <a title="Lien permanent" href="#compile-time" class="permalink">&para;</a></h2>
     
      <p>Le processus de compilation est tr&egrave;s similaire &agrave; celui de la
      version 2.2. Dans la plupart des cas, vous pourrez utiliser votre
@@ -103,14 +103,14 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></li></ul></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="run-time" id="run-time">Modifications de la configuration &agrave; l'ex&eacute;cution</a> <a title="Lien permanent" href="#run-time" class="permalink">&para;</a></h2>
+<h2 id="run-time">Modifications de la configuration &agrave; l'ex&eacute;cution <a title="Lien permanent" href="#run-time" class="permalink">&para;</a></h2>
     
 <p>Des changements significatifs dans la configuration de
 l'autorisation, ainsi que quelques changements mineurs, peuvent
 n&eacute;cessiter une mise &agrave; jour des fichiers de configuration de la version
 2.2 avant de les utiliser sous la version 2.4.</p>
 
-    <h3><a name="authz" id="authz">Autorisation</a></h3>
+    <h3 id="authz">Autorisation</h3>
       
 
       <p>Tout fichier de configuration qui g&egrave;re des autorisations devra
@@ -317,7 +317,7 @@ Require ip 127.0.0.1</pre>
 
     
 
-    <h3><a name="config" id="config">Autres changements dans la configuration</a></h3>
+    <h3 id="config">Autres changements dans la configuration</h3>
       
 
       <p>D'autres ajustements mineurs peuvent s'av&eacute;rer n&eacute;cessaires pour
@@ -457,7 +457,7 @@ Require ip 127.0.0.1</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="misc" id="misc">Changements divers</a> <a title="Lien permanent" href="#misc" class="permalink">&para;</a></h2>
+<h2 id="misc">Changements divers <a title="Lien permanent" href="#misc" class="permalink">&para;</a></h2>
     
 
     <ul>
@@ -517,7 +517,7 @@ Require ip 127.0.0.1</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">Modules tiers</a> <a title="Lien permanent" href="#third-party" class="permalink">&para;</a></h2>
+<h2 id="third-party">Modules tiers <a title="Lien permanent" href="#third-party" class="permalink">&para;</a></h2>
     
 
 	<p>Tous les modules tiers doivent &ecirc;tre recompil&eacute;s pour la
@@ -529,7 +529,7 @@ Require ip 127.0.0.1</pre>
     reporter &agrave; la vue d'ensemble <a href="developer/new_api_2_4.html">Mise &agrave; jour de l'API</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="commonproblems" id="commonproblems">Probl&egrave;mes de mise &agrave; jour courants</a> <a title="Lien permanent" href="#commonproblems" class="permalink">&para;</a></h2>
+<h2 id="commonproblems">Probl&egrave;mes de mise &agrave; jour courants <a title="Lien permanent" href="#commonproblems" class="permalink">&para;</a></h2>
     
     <ul><li>Erreurs au d&eacute;marrage :
     <ul>
@@ -573,7 +573,7 @@ Require ip 127.0.0.1</pre>
 <a href="./pt-br/upgrading.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -66,7 +66,7 @@
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="programs/configure.html">Den Quellcode konfigurieren</a></li><li><a href="invoking.html">Apache starten</a></li><li><a href="stopping.html">Beenden und Neustarten</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">&Uuml;berblick f&uuml;r die Ungeduldigen</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">&Uuml;berblick f&uuml;r die Ungeduldigen <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -129,7 +129,7 @@
     Installationsvorganges genauer beschrieben.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Anforderungen</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Anforderungen <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Folgende Anforderungen gelten f&uuml;r die Erstellung des
     Apache:</p>
@@ -183,7 +183,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">Download</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">Download <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>Der Apache kann von der <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     Downloadseite</a> heruntergeladen werden, auf der verschiedene Spiegelserver
@@ -206,7 +206,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Auspacken</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">Auspacken <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Das Auspacken des Quellcodes aus dem Apache HTTPD Tarball besteht
     aus einem simplen Dekomprimieren und danach "Ent-tarren":</p>
@@ -223,7 +223,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Den Codebaum konfigurieren</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Den Codebaum konfigurieren <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>Der n&auml;chste Schritt ist die Konfiguration des
     Apache-Codebaumes f&uuml;r Ihre spezielle Plattform und Ihre
@@ -297,7 +297,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Erstellen</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">Erstellen <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Nun k&ouml;nnen Sie die verschiedenen Teile, die das Apache-Paket
     bilden, einfach durch Ausf&uuml;hren des folgenden Befehls erstellen:</p>
@@ -310,7 +310,7 @@
     der Module, die Sie aktiviert haben, sehr stark variieren.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Installieren</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Installieren <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Nun endlich installieren Sie das Package unter dem konfigurierten
     Installations-<em>PREFIX</em> (siehe oben: Option <code>--prefix</code>
@@ -322,7 +322,7 @@
     oder Dokumente nicht &uuml;berschrieben.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Anpassen</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">Anpassen <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Als n&auml;chstes k&ouml;nnen Sie Ihren Apache HTTP Server anpassen,
     indem Sie die <a href="configuring.html">Konfigurationsdateien</a>
@@ -335,7 +335,7 @@
     Sie unter <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Testen</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">Testen <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Sie k&ouml;nnen nun Ihren Apache HTTP Server <a href="invoking.html">starten</a>, indem Sie einfach</p>
 
@@ -353,7 +353,7 @@
   <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Upgrade</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Upgrade <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>Der erste Schritt beim Aktualisieren besteht darin, die
     Versionsank&uuml;ndigung sowie die <code>CHANGES</code>-Datei in der
@@ -413,7 +413,7 @@
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Module</a> | <a href="./mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

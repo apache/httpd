@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@
 	des sources</a></li><li><a href="invoking.html">D&eacute;marrer Apache httpd</a></li><li><a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Aper&ccedil;u pour les plus press&eacute;s</a> <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Aper&ccedil;u pour les plus press&eacute;s <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
 
     <dl>
     <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
@@ -167,7 +167,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Pr&eacute;requis</a> <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Pr&eacute;requis <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Les pr&eacute;requis pour la construction d'Apache httpd sont les suivants:</p>
 
@@ -240,7 +240,7 @@ sudo service apache2 start</pre>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">T&eacute;l&eacute;chargement</a> <a title="Lien permanent" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">T&eacute;l&eacute;chargement <a title="Lien permanent" href="#download" class="permalink">&para;</a></h2>
 
     <p>Le serveur HTTP Apache peut &ecirc;tre t&eacute;l&eacute;charg&eacute; &agrave; partir du
     <a href="http://httpd.apache.org/download.cgi">site de t&eacute;l&eacute;chargement
@@ -262,7 +262,7 @@ sudo service apache2 start</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Extraction</a> <a title="Lien permanent" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">Extraction <a title="Lien permanent" href="#extract" class="permalink">&para;</a></h2>
 
     <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
     simplement &agrave; d&eacute;compresser et &agrave; d&eacute;sarchiver cette derni&egrave;re :</p>
@@ -276,7 +276,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     dans ce r&eacute;pertoire avant de proc&eacute;der &agrave; la compilation du serveur.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Configuration de l'arborescence des sources</a> <a title="Lien permanent" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Configuration de l'arborescence des sources <a title="Lien permanent" href="#configure" class="permalink">&para;</a></h2>
 
     <p>L'&eacute;tape suivante consiste &agrave; configurer l'arborescence des sources
     d'Apache en fonction de votre plateforme et de vos besoins personnels.
@@ -351,7 +351,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     <code class="program"><a href="./programs/configure.html">configure</a></code> dans sa page de manuel.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Construction</a> <a title="Lien permanent" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">Construction <a title="Lien permanent" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez maintenant construire les diff&eacute;rents &eacute;l&eacute;ments qui
     composent le paquet Apache en lan&ccedil;ant tout simplement la commande :</p>
@@ -363,7 +363,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     en fonction de votre mat&eacute;riel et du nombre de modules que vous avez activ&eacute;s.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Installation</a> <a title="Lien permanent" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Installation <a title="Lien permanent" href="#install" class="permalink">&para;</a></h2>
 
     <p>Il est temps maintenant d'installer le paquet dans le r&eacute;pertoire
     d'installation d&eacute;fini par <em>PREFIX</em> (voir plus haut l'option
@@ -380,7 +380,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     vos fichiers de configuration ou autres documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Personnalisation</a> <a title="Lien permanent" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">Personnalisation <a title="Lien permanent" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Ensuite, vous pourrez personnaliser votre Serveur HTTP Apache en
     &eacute;ditant les <a href="configuring.html">fichiers de configuration</a>
@@ -394,7 +394,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
     r&eacute;cente de ce manuel et la liste compl&egrave;te des <a href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Test</a> <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">Test <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
 
     <p>Vous pouvez maintenant <a href="invoking.html">d&eacute;marrer</a> votre
     serveur HTTP Apache en lan&ccedil;ant:</p>
@@ -411,7 +411,7 @@ $ tar xvf httpd-<em>NN</em>.tar</pre>
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Mise &agrave; jour</a> <a title="Lien permanent" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Mise &agrave; jour <a title="Lien permanent" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>La premi&egrave;re &eacute;tape d'une mise &agrave; jour consiste &agrave; lire l'annonce de la
     sortie de la nouvelle version et le fichier <code>CHANGES</code>
@@ -473,7 +473,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">Paquets tiers</a> <a title="Lien permanent" href="#thirdp" class="permalink">&para;</a></h2>
+<h2 id="thirdp">Paquets tiers <a title="Lien permanent" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>De nombreux tiers fournissent leur propre distribution du
     serveur HTTP Apache &agrave; installer sur une plate-forme particuli&egrave;re. On
@@ -505,7 +505,7 @@ $ <em>PREFIX</em>/bin/apachectl -k start</pre>
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

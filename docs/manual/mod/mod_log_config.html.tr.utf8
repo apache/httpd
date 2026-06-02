@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -72,7 +72,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="formats" id="formats">G&uuml;nl&uuml;k Girdilerinin Kişiselleştirilmesi</a> <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
+<h2 id="formats">G&uuml;nl&uuml;k Girdilerinin Kişiselleştirilmesi <a title="Permanent link" href="#formats" class="permalink">&para;</a></h2>
 
     <p><code class="directive"><a href="#logformat">LogFormat</a></code> ve <code class="directive"><a href="#customlog">CustomLog</a></code> y&ouml;nergelerinin bi&ccedil;em
       arg&uuml;manı bir dizgedir. Bu dizge her isteği g&uuml;nl&uuml;k dosyasına g&uuml;nl&uuml;klemek
@@ -232,7 +232,7 @@
           kullanmak i&ccedil;in <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
 </table>
 
-    <h3><a name="modifiers" id="modifiers">Değiştiriciler</a></h3>
+    <h3 id="modifiers">Değiştiriciler</h3>
 
       <p>Belli &ouml;ğelerin sadece belli durum kodlarıyla ilgili yanıtlarla
         basılabilmesi i&ccedil;in bu durum kodları % iminden hemen sonra virg&uuml;llerle
@@ -262,7 +262,7 @@
 
     
 
-    <h3><a name="format-notes" id="format-notes">Bazı Bilgiler</a></h3>
+    <h3 id="format-notes">Bazı Bilgiler</h3>
 
       <p>G&uuml;venlik nedeniyle, 2.0.46 s&uuml;r&uuml;m&uuml;nden itibaren <code>%r</code>,
         <code>%i</code> ve <code>%o</code> belirte&ccedil;lerinde basılamayan
@@ -291,7 +291,7 @@
 
     
 
-    <h3><a name="examples" id="examples">&Ouml;rnekler</a></h3>
+    <h3 id="examples">&Ouml;rnekler</h3>
 
       <p>Genelde herkes&ccedil;e kullanılan g&uuml;nl&uuml;k kaydı bi&ccedil;emleme dizgelerinden
         bazıları:</p>
@@ -324,14 +324,14 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">G&uuml;venlik Kaygıları</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">G&uuml;venlik Kaygıları <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p>G&uuml;nl&uuml;k dosyarının kaydedildiği dizine sunucuyu başlatan kullanıcı
       dışında diğer kullanıcılar tarafından yazılabiliyor olması halinde
       g&uuml;venliğinizden nasıl feragat etmiş olacağınız <a href="../misc/security_tips.html#serverroot">g&uuml;venlik ipu&ccedil;ları</a>
       belgesinde a&ccedil;ıklanmıştır.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="BufferedLogs" id="BufferedLogs">BufferedLogs</a> <a name="bufferedlogs" id="bufferedlogs">Y&ouml;nergesi</a> <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="bufferedlogs"><span id="BufferedLogs">BufferedLogs</span> Y&ouml;nergesi <a title="Permanent link" href="#bufferedlogs" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>G&uuml;nl&uuml;k girdilerini diske yazmadan &ouml;nce bellekte tamponlar
 </td></tr>
@@ -355,7 +355,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="CustomLog" id="CustomLog">CustomLog</a> <a name="customlog" id="customlog">Y&ouml;nergesi</a> <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="customlog"><span id="CustomLog">CustomLog</span> Y&ouml;nergesi <a title="Permanent link" href="#customlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>G&uuml;nl&uuml;k dosyasın ismini ve girdi bi&ccedil;emini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>CustomLog  <var>dosya</var>|<var>borulu-s&uuml;re&ccedil;</var>
@@ -443,7 +443,7 @@ expr=<var>ifade</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="GlobalLog" id="GlobalLog">GlobalLog</a> <a name="globallog" id="globallog">Y&ouml;nergesi</a> <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> Y&ouml;nergesi <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Sets filename and format of log file</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>GlobalLog  <var>file</var>|<var>pipe</var>|<var>provider</var>
@@ -457,7 +457,7 @@ expr=<var>expression</var>]</code></td></tr>
 </table><p>Bu y&ouml;nergenin belgesi hen&uuml;z T&uuml;rk&ccedil;eye &ccedil;evrilmedi.
             L&uuml;tfen İngilizce s&uuml;r&uuml;m&uuml;ne bakınız.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="LogFormat" id="LogFormat">LogFormat</a> <a name="logformat" id="logformat">Y&ouml;nergesi</a> <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="logformat"><span id="LogFormat">LogFormat</span> Y&ouml;nergesi <a title="Permanent link" href="#logformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir g&uuml;nl&uuml;k dosyasında kullanılmak &uuml;zere girdi bi&ccedil;emi tanımlar.
 </td></tr>
@@ -497,7 +497,7 @@ expr=<var>expression</var>]</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="TransferLog" id="TransferLog">TransferLog</a> <a name="transferlog" id="transferlog">Y&ouml;nergesi</a> <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="transferlog"><span id="TransferLog">TransferLog</span> Y&ouml;nergesi <a title="Permanent link" href="#transferlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">A&ccedil;ıklama:</a></th><td>Bir g&uuml;nl&uuml;k dosyasının yerini belirtir.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">S&ouml;zdizimi:</a></th><td><code>TransferLog <var>dosya</var>|<var>borulu-s&uuml;re&ccedil;</var>
@@ -528,7 +528,7 @@ expr=<var>expression</var>]</code></td></tr>
 <a href="../tr/mod/mod_log_config.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

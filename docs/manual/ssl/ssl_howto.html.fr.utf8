@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@ mani&egrave;re plus approfondie.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configexample" id="configexample">Exemple de configuration basique</a> <a title="Lien permanent" href="#configexample" class="permalink">&para;</a></h2>
+<h2 id="configexample">Exemple de configuration basique <a title="Lien permanent" href="#configexample" class="permalink">&para;</a></h2>
 
 
 <p>Votre configuration SSL doit comporter au moins les directives
@@ -59,7 +59,7 @@ suivantes :</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ciphersuites" id="ciphersuites">Suites d'algorithmes de chiffrement et mise en oeuvre du chiffrement fort</a> <a title="Lien permanent" href="#ciphersuites" class="permalink">&para;</a></h2>
+<h2 id="ciphersuites">Suites d'algorithmes de chiffrement et mise en oeuvre du chiffrement fort <a title="Lien permanent" href="#ciphersuites" class="permalink">&para;</a></h2>
 
 
 <div class="warning">
@@ -102,8 +102,8 @@ acc&eacute;der &agrave; une URL particuli&egrave;re ?</a></li>
 </ul>
 
 
-<h3><a name="onlystrong" id="onlystrong">Comment cr&eacute;er un serveur SSL qui n'accepte
-que le chiffrement fort ?</a></h3>
+<h3 id="onlystrong">Comment cr&eacute;er un serveur SSL qui n'accepte
+que le chiffrement fort ?</h3>
 
     <p>La configuration suivante active le "chiffrement fort" telle qu'il est
     d&eacute;fini ci-dessus, et s'inspire du document de la Fondation Mozilla sur les
@@ -147,9 +147,9 @@ SSLSessionTickets   off</pre>
     version d'OpenSSL.</p>
 
 
-<h3><a name="strongurl" id="strongurl">Comment cr&eacute;er un serveur qui accepte de nombreux types de
+<h3 id="strongurl">Comment cr&eacute;er un serveur qui accepte de nombreux types de
 chiffrement en g&eacute;n&eacute;ral, mais exige un chiffrement fort pour pouvoir
-acc&eacute;der &agrave; une URL particuli&egrave;re ?</a></h3>
+acc&eacute;der &agrave; une URL particuli&egrave;re ?</h3>
 
     <p>Dans ce cas bien &eacute;videmment, une directive <code class="directive"><a href="../mod/mod_ssl.html#sslciphersuite">SSLCipherSuite</a></code> au niveau du serveur principal
     qui restreint le choix des suites de chiffrement aux versions les plus
@@ -173,7 +173,7 @@ SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-E
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ocspstapling" id="ocspstapling">Agrafage OCSP</a> <a title="Lien permanent" href="#ocspstapling" class="permalink">&para;</a></h2>
+<h2 id="ocspstapling">Agrafage OCSP <a title="Lien permanent" href="#ocspstapling" class="permalink">&para;</a></h2>
 
 
 <p>Le protocole de contr&ocirc;le du statut des certificats en ligne (Online
@@ -345,7 +345,7 @@ individuelle des directives <code class="directive"><a href="../mod/mod_ssl.html
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="accesscontrol" id="accesscontrol">Authentification du client et contr&ocirc;le d'acc&egrave;s</a> <a title="Lien permanent" href="#accesscontrol" class="permalink">&para;</a></h2>
+<h2 id="accesscontrol">Authentification du client et contr&ocirc;le d'acc&egrave;s <a title="Lien permanent" href="#accesscontrol" class="permalink">&para;</a></h2>
 
 <ul>
 <li><a href="#allclients">Comment forcer les clients
@@ -363,9 +363,9 @@ pour l'acc&egrave;s &agrave; une partie de l'Intranet, pour les clients en
 provenance de l'Internet ?</a></li>
 </ul>
 
-<h3><a name="allclients" id="allclients">Comment forcer les clients
+<h3 id="allclients">Comment forcer les clients
 &agrave; s'authentifier &agrave; l'aide de certificats ?
-</a></h3>
+</h3>
 
 
     <p>Lorsque vous connaissez tous vos clients (comme c'est en g&eacute;n&eacute;ral le cas
@@ -383,10 +383,10 @@ SSLCACertificateFile "conf/ssl.crt/ca.crt"</pre>
 
 
 
-<h3><a name="arbitraryclients" id="arbitraryclients">Comment forcer les clients
+<h3 id="arbitraryclients">Comment forcer les clients
 &agrave; s'authentifier &agrave; l'aide de certificats pour une URL particuli&egrave;re,
 mais autoriser quand-m&ecirc;me tout client anonyme
-&agrave; acc&eacute;der au reste du serveur ?</a></h3>
+&agrave; acc&eacute;der au reste du serveur ?</h3>
 
 
 <p>Pour forcer les clients &agrave; s'authentifier &agrave; l'aide de certificats pour une
@@ -403,9 +403,9 @@ SSLVerifyDepth 1
 
 
 
-<h3><a name="certauthenticate" id="certauthenticate">Comment n'autoriser l'acc&egrave;s &agrave; une URL
+<h3 id="certauthenticate">Comment n'autoriser l'acc&egrave;s &agrave; une URL
 particuli&egrave;re qu'aux clients qui poss&egrave;dent des certificats, mais autoriser
-l'acc&egrave;s au reste du serveur &agrave; tous les clients ?</a></h3>
+l'acc&egrave;s au reste du serveur &agrave; tous les clients ?</h3>
 
 
     <p>La cl&eacute; du probl&egrave;me consiste &agrave; v&eacute;rifier si une partie du certificat
@@ -469,11 +469,11 @@ SSLCACertificatePath "conf/ssl.crt"
 
 
 
-<h3><a name="intranet" id="intranet">Comment imposer HTTPS avec chiffrements forts,
+<h3 id="intranet">Comment imposer HTTPS avec chiffrements forts,
 et soit authentification de base, soit possession de certificats clients,
 pour l'acc&egrave;s &agrave; une partie de l'Intranet, pour les clients en
 provenance de l'Internet ? Je souhaite quand-m&ecirc;me autoriser l'acc&egrave;s en HTTP
-aux clients de l'intranet.</a></h3>
+aux clients de l'intranet.</h3>
 
 
    <p>On suppose dans ces exemples que les clients de l'intranet ont des
@@ -527,7 +527,7 @@ aux clients de l'intranet.</a></h3>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logging" id="logging">Journalisation</a> <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
+<h2 id="logging">Journalisation <a title="Lien permanent" href="#logging" class="permalink">&para;</a></h2>
     
 
     <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut enregistrer des informations de
@@ -544,7 +544,7 @@ aux clients de l'intranet.</a></h3>
 <a href="../fr/ssl/ssl_howto.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

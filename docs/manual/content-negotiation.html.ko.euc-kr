@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -52,7 +52,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="about" id="about">내용협상에 대해</a> <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
+<h2 id="about">내용협상에 대해 <a title="Permanent link" href="#about" class="permalink">&para;</a></h2>
 
     <p>자원은 여러 다른 표현을 가질 수 있다. 예를 들어, 다른
     언어나 다른 media type 혹은 둘 모두가 다른 표현들이 있을
@@ -100,7 +100,7 @@
     <strong>범위(dimension)</strong>라고 한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="negotiation" id="negotiation">아파치의 협상</a> <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
+<h2 id="negotiation">아파치의 협상 <a title="Permanent link" href="#negotiation" class="permalink">&para;</a></h2>
 
     <p>자원을 협상하기위해 서버는 각 변형에 대한 정보가 필요하다.
     다음 두가지 방법중 하나로 정보를 얻는다:</p>
@@ -113,7 +113,7 @@
       결과를 선택하는 'MultiViews'를 사용한다.</li>
     </ul>
 
-   <h3><a name="type-map" id="type-map">type-map 파일 사용하기</a></h3>
+   <h3 id="type-map">type-map 파일 사용하기</h3>
 
     <p>type map은 <code>type-map</code>이란 핸들러와 연결된
     (혹은 이전 아파치 설정과 호환을 위해 MIME type이
@@ -177,7 +177,7 @@
     typemap</a> 문서를 참고하라.</p>
 
 
-<h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
+<h3 id="multiviews">Multiviews</h3>
 
     <p><code>MultiViews</code>는 디렉토리별 옵션이므로,
     <code>httpd.conf</code>의
@@ -214,7 +214,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="methods" id="methods">협상방법</a> <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
+<h2 id="methods">협상방법 <a title="Permanent link" href="#methods" class="permalink">&para;</a></h2>
 
     <p>아파치가 type-map 파일이나 디렉토리에 있는 파일명들로
     주어진 자원에 대한 변형 목록을 얻게되면 '최적의' 변형을
@@ -241,7 +241,7 @@
       selection algorithm)'을 요청할 수 있다.</li>
     </ol>
 
-<h3><a name="dimensions" id="dimensions">협상의 범위</a></h3>
+<h3 id="dimensions">협상의 범위</h3>
 
     <table>
       
@@ -284,7 +284,7 @@
     </table>
 
 
-<h3><a name="algorithm" id="algorithm">아파치 협상 알고리즘</a></h3>
+<h3 id="algorithm">아파치 협상 알고리즘</h3>
 
     <p>아파치는 브라우저에게 보낼 '최적의' 변형을 (있다면)
     선택하기위해 아래 알고리즘을 사용한다. 이 알고리즘은 변경할
@@ -359,7 +359,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="better" id="better">품질계수 조작하기</a> <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
+<h2 id="better">품질계수 조작하기 <a title="Permanent link" href="#better" class="permalink">&para;</a></h2>
 
     <p>아파치는 종종 위의 아파치 협상 알고리즘을 엄격히 지키지않고
     품질계수를 변경한다. 이유는 완전하고 정확한 정보를 보내지않는
@@ -368,7 +368,7 @@
     <code>Accept</code> 헤더를 보낸다. 브라우저가 완전하고 올바른
     정보를 보낸다면, 조작을 하지않는다.</p>
 
-<h3><a name="wildcards" id="wildcards">Media Type과 와일드카드</a></h3>
+<h3 id="wildcards">Media Type과 와일드카드</h3>
 
     <p><code>Accept:</code> 요청 헤더는 media type에 대한 선호를
     나타낸다. 또, *는 어떤 문자열이라도 가능하기때문에 "image/*"나
@@ -405,7 +405,7 @@
     요청은 요청한데로 처리한다.</p>
 
 
-<h3><a name="exceptions" id="exceptions">언어(language) 협상의 예외</a></h3>
+<h3 id="exceptions">언어(language) 협상의 예외</h3>
 
     <p>아파치 2.0은 언어 협상이 실패한 경우 부드럽게 복구하기위해
     협상 알고리즘에 새로 예외를 몇개 추가했다.</p>
@@ -455,7 +455,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extensions" id="extensions">자연스러운(transparent) 내용협상의 확장</a> <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
+<h2 id="extensions">자연스러운(transparent) 내용협상의 확장 <a title="Permanent link" href="#extensions" class="permalink">&para;</a></h2> 
 
 <p>아파치는 다음과 같이 자연스러운 내용확장 프로토콜을 (RFC 2295)
 확장한다. 변형 목록의 새로운 <code>{encoding ..}</code>는 특정
@@ -467,7 +467,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 않는다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="naming" id="naming">하이퍼링크와 이름규칙에 대하여</a> <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
+<h2 id="naming">하이퍼링크와 이름규칙에 대하여 <a title="Permanent link" href="#naming" class="permalink">&para;</a></h2>
 
     <p>언어(language) 협상을 사용한다면 파일은 여러 확장자를
     가지고 확장자의 순서는 보통 관계없으므로 파일명에 여러 다른
@@ -575,7 +575,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
     두어야한다.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="caching" id="caching">캐쉬에 대하여</a> <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
+<h2 id="caching">캐쉬에 대하여 <a title="Permanent link" href="#caching" class="permalink">&para;</a></h2>
 
     <p>캐쉬가 표현을 저장하면 표현과 요청 URL을 연관시킨다.
     다음번 그 URL을 요청하면 캐쉬는 저장된 표현을 사용한다.
@@ -607,7 +607,7 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

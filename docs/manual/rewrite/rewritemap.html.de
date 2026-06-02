@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -60,7 +60,7 @@ Konfiguration einzuf&uuml;gen.</div>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="intro.html">Einf&uuml;hrung in mod_rewrite</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einf&uuml;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Einf&uuml;hrung <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
    <p>
@@ -136,7 +136,7 @@ Geltungsbereichen verwenden. Sie k&ouml;nnen sie nur nicht in diesen Geltungsber
 die verwendet werden k&ouml;nnen, und geben Beispiele f&uuml;r jeden.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="int" id="int">int: Interne Funktion</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+<h2 id="int">int: Interne Funktion <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
     
 
     <p>Wenn ein MapType von <code>int</code> verwendet wird, ist die
@@ -183,7 +183,7 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="txt" id="txt">txt: Klartext-Maps</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+<h2 id="txt">txt: Klartext-Maps <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
     
 
     <p>Wenn ein MapType von <code>txt</code> verwendet wird, ist die
@@ -258,7 +258,7 @@ telephone  328
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rnd" id="rnd">rnd: Zuf&auml;lliger Klartext</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+<h2 id="rnd">rnd: Zuf&auml;lliger Klartext <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
     
 
     <p>Wenn ein MapType von <code>rnd</code> verwendet wird, ist die
@@ -305,7 +305,7 @@ static   www1|www1|www2|www3|www4
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbm" id="dbm">dbm: DBM-Hash-Datei</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+<h2 id="dbm">dbm: DBM-Hash-Datei <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
     
 
     <p>Wenn ein MapType von <code>dbm</code> verwendet wird, ist die
@@ -363,7 +363,7 @@ bei Maps, die von vielen Anfragen aufgerufen werden.
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prg" id="prg">prg: Externes Umschreibungsprogramm</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+<h2 id="prg">prg: Externes Umschreibungsprogramm <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
 
     <p>Wenn ein MapType von <code>prg</code> verwendet wird, ist die
     MapSource ein Dateisystempfad zu einem ausf&uuml;hrbaren Programm, das
@@ -455,7 +455,7 @@ gesendet.</li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbd" id="dbd">dbd oder fastdbd: SQL-Abfrage</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+<h2 id="dbd">dbd oder fastdbd: SQL-Abfrage <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
     
 
     <p>Wenn ein MapType von <code>dbd</code> oder <code>fastdbd</code>
@@ -488,7 +488,7 @@ gesendet.</li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">Zusammenfassung</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+<h2 id="summary">Zusammenfassung <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
     
 
     <p>Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
@@ -514,7 +514,7 @@ gesendet.</li>
 <a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

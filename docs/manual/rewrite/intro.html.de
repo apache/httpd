@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -54,7 +54,7 @@ erleichtern.
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Moduldokumentation</a></li><li><a href="remapping.html">Umleitung und Neuzuordnung</a></li><li><a href="access.html">Zugriffskontrolle</a></li><li><a href="vhosts.html">Virtuelle Hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="rewritemap.html">Verwendung von RewriteMap</a></li><li><a href="advanced.html">Fortgeschrittene Techniken</a></li><li><a href="avoid.html">Wann man mod_rewrite nicht verwenden sollte</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Einf&uuml;hrung</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Einf&uuml;hrung <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Das Apache-Modul <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ist ein sehr
 leistungsf&auml;higes und ausgereiftes Modul, das eine M&ouml;glichkeit bietet,
 URL-Manipulationen durchzuf&uuml;hren. Damit k&ouml;nnen Sie nahezu alle Arten von
@@ -83,7 +83,7 @@ wie jede Regel verarbeitet wird.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">Regul&auml;re Ausdr&uuml;cke</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">Regul&auml;re Ausdr&uuml;cke <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> verwendet das Vokabular der <a href="http://pcre.org/">Perl-kompatiblen regul&auml;ren Ausdr&uuml;cke</a>. In
 diesem Dokument versuchen wir nicht, eine detaillierte Referenz zu
@@ -98,7 +98,7 @@ vermitteln, um Ihnen den Einstieg zu erleichtern, ohne Sie zu
 &uuml;berfordern, in der Hoffnung, dass <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s wissenschaftliche Formeln sind und keine
 magischen Beschw&ouml;rungen.</p>
 
-<h3><a name="regexvocab" id="regexvocab">Regex-Vokabular</a></h3>
+<h3 id="regexvocab">Regex-Vokabular</h3>
 
 <p>Die folgenden sind die minimalen Bausteine, die Sie ben&ouml;tigen, um
 regul&auml;re Ausdr&uuml;cke und <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s
@@ -182,7 +182,7 @@ des Ausdrucks &uuml;bereinstimmt.</p>
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">Verf&uuml;gbarkeit von Regex-R&uuml;ckreferenzen</a></h3>
+<h3 id="InternalBackRefs">Verf&uuml;gbarkeit von Regex-R&uuml;ckreferenzen</h3>
 
       <p>Hier ist eine wichtige Sache zu beachten: Wann immer Sie
       Klammern in <em>Pattern</em> oder in einem der
@@ -215,7 +215,7 @@ des Ausdrucks &uuml;bereinstimmt.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule-Grundlagen</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">RewriteRule-Grundlagen <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>Eine <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> besteht
 aus drei durch Leerzeichen getrennten Argumenten. Die Argumente sind:</p>
 <ol>
@@ -289,7 +289,7 @@ in der Reihenfolge in den Variablen <code>$1</code>, <code>$2</code>,
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Umschreibungs-Flags</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">Umschreibungs-Flags <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p>Das Verhalten einer <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> kann durch die Anwendung
 eines oder mehrerer Flags am Ende der Regel modifiziert werden.
 Beispielsweise kann das &Uuml;bereinstimmungsverhalten einer Regel durch
@@ -304,7 +304,7 @@ Beispiele finden Sie im Dokument <a href="flags.html">Umschreibungs-Flags</a>.</
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Umschreibungsbedingungen</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">Umschreibungsbedingungen <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>Eine oder mehrere <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>-Direktiven
 k&ouml;nnen verwendet werden, um die Typen von Anfragen einzuschr&auml;nken, die der
 nachfolgenden <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -355,7 +355,7 @@ dann enth&auml;lt <code>%1</code> den Wert <code>example.com</code> und
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Umschreibungs-Maps</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">Umschreibungs-Maps <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p>Die <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>-Direktive
 bietet eine M&ouml;glichkeit, sozusagen eine externe Funktion aufzurufen,
@@ -364,7 +364,7 @@ um Ihre Umschreibung durchzuf&uuml;hren. Dies wird im
 ausf&uuml;hrlicher besprochen.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess-Dateien</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess-Dateien <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>Umschreibungen werden typischerweise in der Hauptserverkonfiguration
 (au&szlig;erhalb eines <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>-Abschnitts)
@@ -394,7 +394,7 @@ verwendet werden, um sicherzustellen, dass die Anfrage korrekt zugeordnet wird.<
 <a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Lizenziert unter der <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Module</a> | <a href="../mod/quickreference.html">Direktiven</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossar</a> | <a href="../sitemap.html">Seitenindex</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -84,7 +84,7 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="event-worker-relationship" id="event-worker-relationship">Relations avec le MPM Worker</a> <a title="Lien permanent" href="#event-worker-relationship" class="permalink">&para;</a></h2>
+<h2 id="event-worker-relationship">Relations avec le MPM Worker <a title="Lien permanent" href="#event-worker-relationship" class="permalink">&para;</a></h2>
 <p>Le MPM <code class="module"><a href="../mod/event.html">event</a></code> s'inspire du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> qui
 impl&eacute;mente un serveur hybride multi-processus et multi-threads. Un processus de
 contr&ocirc;le unique (le parent) est charg&eacute; de lancer des processus enfants. Chaque
@@ -99,7 +99,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a> <a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
+<h2 id="how-it-works">Comment tout cela fonctionne <a title="Lien permanent" href="#how-it-works" class="permalink">&para;</a></h2>
     
     <p>Ce module MPM a &eacute;t&eacute; con&ccedil;u &agrave; l'origine pour r&eacute;soudre le "probl&egrave;me keep
     alive" de HTTP. Lorsqu'un client a effectu&eacute; une premi&egrave;re requ&ecirc;te, il peut
@@ -128,7 +128,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     d&eacute;finir le nombre total de connexions qu'un bloc processus/thread peut
     g&eacute;rer.</p>
 
-    <h3><a name="async-connections" id="async-connections">Connexions asynchrones</a></h3>
+    <h3 id="async-connections">Connexions asynchrones</h3>
         <p>Avec les MPM pr&eacute;c&eacute;dents, les connexions asynchrones n&eacute;cessitaient
 	un thread de travail d&eacute;di&eacute;, mais ce n'est plus le cas avec le MPM Event.
 	La page d'&eacute;tat de <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> montre de nouvelles
@@ -197,8 +197,8 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
     
 
-    <h3><a name="graceful-close" id="graceful-close">Arr&ecirc;t de processus en douceur et
-    utilisation du scoreboard</a></h3>
+    <h3 id="graceful-close">Arr&ecirc;t de processus en douceur et
+    utilisation du scoreboard</h3>
         <p>Ce MPM pr&eacute;sentait dans le pass&eacute; des limitations de mont&eacute;e en
 	puissance qui
 	provoquaient l'erreur suivante : "<strong>scoreboard is full, not at
@@ -272,7 +272,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 	apr&egrave;s un red&eacute;marrage graceful.</p>
     
 
-    <h3><a name="limitations" id="limitations">Limitations</a></h3>
+    <h3 id="limitations">Limitations</h3>
         <p>La gestion am&eacute;lior&eacute;e des connexions peut ne pas fonctionner pour
 	certains filtres de connexion qui se sont d&eacute;clar&eacute;s eux-m&ecirc;mes
 	incompatibles avec le MPM Event. Dans ce cas, le MPM Event r&eacute;adoptera le
@@ -307,7 +307,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
 
     
 
-    <h3><a name="background" id="background">Mat&eacute;riel d'arri&egrave;re-plan</a></h3>
+    <h3 id="background">Mat&eacute;riel d'arri&egrave;re-plan</h3>
         <p>Le mod&egrave;le event a &eacute;t&eacute; rendu possible par l'introduction de nouvelles
 	APIs dans les syst&egrave;mes d'exploitation support&eacute;s :</p>
         <ul>
@@ -336,7 +336,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
         
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Pr&eacute;requis</a> <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Pr&eacute;requis <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
     <p>Ce MPM d&eacute;pend des op&eacute;rations atomiques compare-and-swap
     d'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> pour la synchronisation des threads. Si
     vous compilez pour une plate-forme x86 et n'avez pas besoin du
@@ -370,7 +370,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="asyncrequestworkerfactor" id="asyncrequestworkerfactor">Directive</a> <a name="AsyncRequestWorkerFactor" id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</a> <a title="Lien permanent" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="asyncrequestworkerfactor">Directive <span id="AsyncRequestWorkerFactor">AsyncRequestWorkerFactor</span> <a title="Lien permanent" href="#asyncrequestworkerfactor" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de connexions simultan&eacute;es par thread</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AsyncRequestWorkerFactor <var>facteur</var></code></td></tr>
@@ -494,7 +494,7 @@ max_connections = (AsyncRequestWorkerFactor + 1) * MaxRequestWorkers
 <a href="../fr/mod/event.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

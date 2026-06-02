@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -80,7 +80,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">처리 순서</a> <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">처리 순서 <a title="Permanent link" href="#order" class="permalink">&para;</a></h2>
 
 <p>서로 다른 사용장소에서 Alias와 Redirect를 사용하면 다른 지시어와
 같이 표준 <a href="../sections.html#mergin">결합 방법</a>에
@@ -108,7 +108,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">지시어</a> <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="alias"><span id="Alias">Alias</span> 지시어 <a title="Permanent link" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>URL을 특정 파일시스템 장소로 대응한다</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>Alias <var>URL-path</var>
@@ -160,7 +160,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">지시어</a> <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliasmatch"><span id="AliasMatch">AliasMatch</span> 지시어 <a title="Permanent link" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>정규표현식을 사용하여 URL을 파일시스템 장소로
 대응한다</td></tr>
@@ -183,7 +183,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a name="aliaspreservepath" id="aliaspreservepath">지시어</a> <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliaspreservepath"><span id="AliasPreservePath">AliasPreservePath</span> 지시어 <a title="Permanent link" href="#aliaspreservepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Map the full path after the alias in a location.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
@@ -196,7 +196,7 @@ Alias /foo /gaq
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">지시어</a> <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirect"><span id="Redirect">Redirect</span> 지시어 <a title="Permanent link" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>클라이언트가 다른 URL에 접속하도록 요청하는 외부
 리다이렉션을 보낸다</td></tr>
@@ -268,7 +268,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">지시어</a> <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectmatch"><span id="RedirectMatch">RedirectMatch</span> 지시어 <a title="Permanent link" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>현재 URL이 정규표현식에 해당하면 외부 리다이렉션을
 보낸다</td></tr>
@@ -292,7 +292,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">지시어</a> <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectpermanent"><span id="RedirectPermanent">RedirectPermanent</span> 지시어 <a title="Permanent link" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>클라이언트가 다른 URL에 접속하도록 요청하는 외부
 영구 리다이렉션을 보낸다</td></tr>
@@ -307,7 +307,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a name="redirectrelative" id="redirectrelative">지시어</a> <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectrelative"><span id="RedirectRelative">RedirectRelative</span> 지시어 <a title="Permanent link" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>Allows relative redirect targets.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
@@ -320,7 +320,7 @@ Alias /foo /gaq
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">지시어</a> <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirecttemp"><span id="RedirectTemp">RedirectTemp</span> 지시어 <a title="Permanent link" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>클라이언트가 다른 URL에 접속하도록 요청하는 외부
 임시 리다이렉션을 보낸다</td></tr>
@@ -335,7 +335,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">지시어</a> <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptalias"><span id="ScriptAlias">ScriptAlias</span> 지시어 <a title="Permanent link" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>URL을 특정 파일시스템 장소로 대응하고 대상이 CGI
 스크립트라고 알린다</td></tr>
@@ -360,7 +360,7 @@ Alias /foo /gaq
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">지시어</a> <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptaliasmatch"><span id="ScriptAliasMatch">ScriptAliasMatch</span> 지시어 <a title="Permanent link" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>정규표현식을 사용하여 URL을 특정 파일시스템 장소로
 대응하고 대상이 CGI 스크립트라고 알린다</td></tr>
@@ -391,7 +391,7 @@ Alias /foo /gaq
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

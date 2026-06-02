@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -76,7 +76,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la "Lance &agrave; incendie" (Firehose)</a> <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Activation de la "Lance &agrave; incendie" (Firehose) <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     
 
     <p>Pour activer ce module, il doit &ecirc;tre compil&eacute; et charg&eacute; via la
@@ -110,7 +110,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="format" id="format">Format du flux</a> <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
+<h2 id="format">Format du flux <a title="Lien permanent" href="#format" class="permalink">&para;</a></h2>
     
 
     <p>En g&eacute;n&eacute;ral, le serveur g&egrave;re plusieurs connexions simultan&eacute;ment,
@@ -169,7 +169,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoseconnectioninput" id="firehoseconnectioninput">Directive</a> <a name="FirehoseConnectionInput" id="FirehoseConnectionInput">FirehoseConnectionInput</a> <a title="Lien permanent" href="#firehoseconnectioninput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoseconnectioninput">Directive <span id="FirehoseConnectionInput">FirehoseConnectionInput</span> <a title="Lien permanent" href="#firehoseconnectioninput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur &agrave; chaque
 connexion.</td></tr>
@@ -190,7 +190,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoseconnectionoutput" id="firehoseconnectionoutput">Directive</a> <a name="FirehoseConnectionOutput" id="FirehoseConnectionOutput">FirehoseConnectionOutput</a> <a title="Lien permanent" href="#firehoseconnectionoutput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoseconnectionoutput">Directive <span id="FirehoseConnectionOutput">FirehoseConnectionOutput</span> <a title="Lien permanent" href="#firehoseconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur &agrave; chaque connexion</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -211,7 +211,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoseproxyconnectioninput" id="firehoseproxyconnectioninput">Directive</a> <a name="FirehoseProxyConnectionInput" id="FirehoseProxyConnectionInput">FirehoseProxyConnectionInput</a> <a title="Lien permanent" href="#firehoseproxyconnectioninput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoseproxyconnectioninput">Directive <span id="FirehoseProxyConnectionInput">FirehoseProxyConnectionInput</span> <a title="Lien permanent" href="#firehoseproxyconnectioninput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -228,7 +228,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoseproxyconnectionoutput" id="firehoseproxyconnectionoutput">Directive</a> <a name="FirehoseProxyConnectionOutput" id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</a> <a title="Lien permanent" href="#firehoseproxyconnectionoutput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoseproxyconnectionoutput">Directive <span id="FirehoseProxyConnectionOutput">FirehoseProxyConnectionOutput</span> <a title="Lien permanent" href="#firehoseproxyconnectionoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic envoy&eacute; par mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseProxyConnectionOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -246,7 +246,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoserequestinput" id="firehoserequestinput">Directive</a> <a name="FirehoseRequestInput" id="FirehoseRequestInput">FirehoseRequestInput</a> <a title="Lien permanent" href="#firehoserequestinput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoserequestinput">Directive <span id="FirehoseRequestInput">FirehoseRequestInput</span> <a title="Lien permanent" href="#firehoserequestinput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic entrant dans le serveur &agrave; chaque requ&ecirc;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestInput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -266,7 +266,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="firehoserequestoutput" id="firehoserequestoutput">Directive</a> <a name="FirehoseRequestOutput" id="FirehoseRequestOutput">FirehoseRequestOutput</a> <a title="Lien permanent" href="#firehoserequestoutput" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="firehoserequestoutput">Directive <span id="FirehoseRequestOutput">FirehoseRequestOutput</span> <a title="Lien permanent" href="#firehoserequestoutput" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Capture le trafic sortant du serveur &agrave; chaque requ&ecirc;te</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FirehoseRequestOutput <var>[ block | nonblock ]</var> <var>filename</var></code></td></tr>
@@ -291,7 +291,7 @@ Apache.</td></tr>
 <a href="../fr/mod/mod_firehose.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

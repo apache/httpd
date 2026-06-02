@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -52,7 +52,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="filter.html">Filtres</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Imposer la conformit&eacute; au protocole HTTP dans Apache 2</a> <a title="Lien permanent" href="#intro" class="permalink">&para;</a></h2>
+<h2 id="intro">Imposer la conformit&eacute; au protocole HTTP dans Apache 2 <a title="Lien permanent" href="#intro" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 
@@ -118,7 +118,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policyconditional" id="policyconditional">Politique des requ&ecirc;tes conditionnelles</a> <a title="Lien permanent" href="#policyconditional" class="permalink">&para;</a></h2>
+<h2 id="policyconditional">Politique des requ&ecirc;tes conditionnelles <a title="Lien permanent" href="#policyconditional" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyconditional">PolicyConditional</a></code></li></ul></td></tr></table>
 
@@ -185,7 +185,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policylength" id="policylength">Politique de gestion de l'en-t&ecirc;te Content-Length</a> <a title="Lien permanent" href="#policylength" class="permalink">&para;</a></h2>
+<h2 id="policylength">Politique de gestion de l'en-t&ecirc;te Content-Length <a title="Lien permanent" href="#policylength" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policylength">PolicyLength</a></code></li></ul></td></tr></table>
 
@@ -233,7 +233,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policytype" id="policytype">Politique de filtrage de l'en-t&ecirc;te Content-Type</a> <a title="Lien permanent" href="#policytype" class="permalink">&para;</a></h2>
+<h2 id="policytype">Politique de filtrage de l'en-t&ecirc;te Content-Type <a title="Lien permanent" href="#policytype" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policytype">PolicyType</a></code></li></ul></td></tr></table>
 
@@ -269,7 +269,7 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policykeepalive" id="policykeepalive">Politique de gestion des connexions persistantes (Keepalive)</a> <a title="Lien permanent" href="#policykeepalive" class="permalink">&para;</a></h2>
+<h2 id="policykeepalive">Politique de gestion des connexions persistantes (Keepalive) <a title="Lien permanent" href="#policykeepalive" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policykeepalive">PolicyKeepalive</a></code></li></ul></td></tr></table>
 
@@ -334,7 +334,7 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policymaxage" id="policymaxage">Dur&eacute;e de fra&icirc;cheur / Politique de gestion de l'&acirc;ge maximum</a> <a title="Lien permanent" href="#policymaxage" class="permalink">&para;</a></h2>
+<h2 id="policymaxage">Dur&eacute;e de fra&icirc;cheur / Politique de gestion de l'&acirc;ge maximum <a title="Lien permanent" href="#policymaxage" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policymaxage">PolicyMaxage</a></code></li></ul></td></tr></table>
 
@@ -367,8 +367,8 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policynocache" id="policynocache">Politique de gestion des contenus qui ne peuvent pas &ecirc;tre mis
-    en cache</a> <a title="Lien permanent" href="#policynocache" class="permalink">&para;</a></h2>
+<h2 id="policynocache">Politique de gestion des contenus qui ne peuvent pas &ecirc;tre mis
+    en cache <a title="Lien permanent" href="#policynocache" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policynocache">PolicyNocache</a></code></li></ul></td></tr></table>
 
@@ -401,7 +401,7 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policyvalidation" id="policyvalidation">Politique de validation</a> <a title="Lien permanent" href="#policyvalidation" class="permalink">&para;</a></h2>
+<h2 id="policyvalidation">Politique de validation <a title="Lien permanent" href="#policyvalidation" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvalidation">PolicyValidation</a></code></li></ul></td></tr></table>
 
@@ -428,7 +428,7 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policyvary" id="policyvary">Politique de gestion de l'en-t&ecirc;te Vary</a> <a title="Lien permanent" href="#policyvary" class="permalink">&para;</a></h2>
+<h2 id="policyvary">Politique de gestion de l'en-t&ecirc;te Vary <a title="Lien permanent" href="#policyvary" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyvary">PolicyVary</a></code></li></ul></td></tr></table>
 
@@ -452,7 +452,7 @@ Content-Type:</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="policyversion" id="policyversion">Politique de gestion des versions de protocole</a> <a title="Lien permanent" href="#policyversion" class="permalink">&para;</a></h2>
+<h2 id="policyversion">Politique de gestion des versions de protocole <a title="Lien permanent" href="#policyversion" class="permalink">&para;</a></h2>
     
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_policy.html">mod_policy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_policy.html#policyversion">PolicyVersion</a></code></li></ul></td></tr></table>
 
@@ -482,7 +482,7 @@ Content-Type:</pre>
 <a href="./fr/compliance.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

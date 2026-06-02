@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -51,7 +51,7 @@
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_autht_core">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_autht_core">Signaler un bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="authtalias" id="authtalias">Cr&eacute;er des alias de fournisseurs de jetons</a> <a title="Lien permanent" href="#authtalias" class="permalink">&para;</a></h2>
+<h2 id="authtalias">Cr&eacute;er des alias de fournisseurs de jetons <a title="Lien permanent" href="#authtalias" class="permalink">&para;</a></h2>
 
     <p>On peut cr&eacute;er des fournisseurs de jetons &eacute;tendus au sein du fichier de
     configuration et leur assigner un nom d'alias. On peut ensuite faire
@@ -61,7 +61,7 @@
     aussi de faire r&eacute;f&eacute;rence au m&ecirc;me fournisseur de jetons &eacute;tendu au sein de
     plusieurs sections de localisation.</p>
 
-    <h3><a name="example" id="example">Exemples</a></h3>
+    <h3 id="example">Exemples</h3>
 
         <p>Cet exemple recherche des signatures de jetons JWT dans deux fichiers
 	de mots de passe diff&eacute;rents.</p>
@@ -89,7 +89,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authtprovideralias" id="authtprovideralias">Directive</a> <a name="AuthtProviderAlias" id="AuthtProviderAlias">&lt;AuthtProviderAlias&gt;</a> <a title="Lien permanent" href="#authtprovideralias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authtprovideralias">Directive <span id="AuthtProviderAlias">&lt;AuthtProviderAlias&gt;</span> <a title="Lien permanent" href="#authtprovideralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui repr&eacute;sentent une extension d'un
 fournisseur de jetons de base et sont r&eacute;f&eacute;renc&eacute;es par l'alias sp&eacute;cifi&eacute;</td></tr>
@@ -115,7 +115,7 @@ fournisseur de jetons de base et sont r&eacute;f&eacute;renc&eacute;es par l'ali
 <a href="../fr/mod/mod_autht_core.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

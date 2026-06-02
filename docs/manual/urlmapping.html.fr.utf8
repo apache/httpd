@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -50,12 +50,12 @@ URLs</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="related" id="related">Modules et directives concern&eacute;s</a> <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
+<h2 id="related">Modules et directives concern&eacute;s <a title="Lien permanent" href="#related" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="./mod/mod_autoindex.html">mod_autoindex</a></code></li><li><code class="module"><a href="./mod/mod_dir.html">mod_dir</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code></li><li><code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code></li><li><code class="module"><a href="./mod/mod_vhost_alias.html">mod_vhost_alias</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_speling.html#checkspelling">CheckSpelling</a></code></li><li><code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code></li><li><code class="directive"><a href="./mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirect">Redirect</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritecond">RewriteCond</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li><li><code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code></li><li><code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="documentroot" id="documentroot">Racine des documents (DocumentRoot)</a> <a title="Lien permanent" href="#documentroot" class="permalink">&para;</a></h2>
+<h2 id="documentroot">Racine des documents (DocumentRoot) <a title="Lien permanent" href="#documentroot" class="permalink">&para;</a></h2>
 
     <p>La m&eacute;thode par d&eacute;faut de httpd pour d&eacute;terminer quel fichier servir pour
     une requ&ecirc;te donn&eacute;e, consiste &agrave; extraire le chemin du fichier de la requ&ecirc;te
@@ -111,8 +111,8 @@ URLs</a></li>
     <a href="vhosts/">H&ocirc;te virtuel</a> suppl&eacute;mentaire que vous avez cr&eacute;&eacute;.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="outside" id="outside">Fichiers situ&eacute;s en dehors de
-l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class="permalink">&para;</a></h2>
+<h2 id="outside">Fichiers situ&eacute;s en dehors de
+l'arborescence DocumentRoot <a title="Lien permanent" href="#outside" class="permalink">&para;</a></h2>
 
     <p>Il existe de nombreuses circonstances pour lesquelles il est n&eacute;cessaire
     d'autoriser l'acc&egrave;s web &agrave; des portions du syst&egrave;me de fichiers qui ne se
@@ -152,7 +152,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
     comme un script CGI.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="user" id="user">R&eacute;pertoires des utilisateurs</a> <a title="Lien permanent" href="#user" class="permalink">&para;</a></h2>
+<h2 id="user">R&eacute;pertoires des utilisateurs <a title="Lien permanent" href="#user" class="permalink">&para;</a></h2>
 
     <p>Sur les syst&egrave;mes Unix, on peut traditionnellement faire r&eacute;f&eacute;rence
     au r&eacute;pertoire personnel d'un <em>utilisateur</em> particulier &agrave; l'aide de
@@ -196,7 +196,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="redirect" id="redirect">Redirection d'URL</a> <a title="Lien permanent" href="#redirect" class="permalink">&para;</a></h2>
+<h2 id="redirect">Redirection d'URL <a title="Lien permanent" href="#redirect" class="permalink">&para;</a></h2>
 
     <p>Les directives de configuration d&eacute;crites dans les sections pr&eacute;c&eacute;dentes
     demandent &agrave; httpd d'extraire un contenu depuis un emplacement sp&eacute;cifique
@@ -237,7 +237,7 @@ l'arborescence DocumentRoot</a> <a title="Lien permanent" href="#outside" class=
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Mandataire inverse (Reverse Proxy)</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Mandataire inverse (Reverse Proxy) <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
 
 <p>httpd vous permet aussi de rapatrier des documents distants
 dans l'espace des URL du serveur local.
@@ -285,7 +285,7 @@ d'URLs et de leurs r&eacute;&eacute;critures, de fa&ccedil;on &agrave; pouvoir g
 de r&eacute;&eacute;criture complexes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewrite" id="rewrite">Moteur de r&eacute;&eacute;criture</a> <a title="Lien permanent" href="#rewrite" class="permalink">&para;</a></h2>
+<h2 id="rewrite">Moteur de r&eacute;&eacute;criture <a title="Lien permanent" href="#rewrite" class="permalink">&para;</a></h2>
 
     <p>Le moteur de r&eacute;&eacute;criture <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> peut s'av&eacute;rer
     utile lorsqu'une substitution plus puissante est n&eacute;cessaire.
@@ -300,7 +300,7 @@ de r&eacute;&eacute;criture complexes.</p>
     <a href="rewrite/">documentation d&eacute;taill&eacute;e de mod_rewrite</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="notfound" id="notfound">Fichier non trouv&eacute; (File Not Found)</a> <a title="Lien permanent" href="#notfound" class="permalink">&para;</a></h2>
+<h2 id="notfound">Fichier non trouv&eacute; (File Not Found) <a title="Lien permanent" href="#notfound" class="permalink">&para;</a></h2>
 
     <p>In&eacute;vitablement, appara&icirc;tront des URLs qui ne correspondront &agrave; aucun
     fichier du syst&egrave;me de fichiers.
@@ -348,8 +348,8 @@ de r&eacute;&eacute;criture complexes.</p>
     <a href="custom-error.html">R&eacute;ponses personnalis&eacute;es aux erreurs</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">Autres modules de mise en correspondance des
-URLs</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">Autres modules de mise en correspondance des
+URLs <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
 
 
 
@@ -379,7 +379,7 @@ URLs</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

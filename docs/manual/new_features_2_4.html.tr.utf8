@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -44,7 +44,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="core" id="core">&Ccedil;ekirdekteki Gelişmeler</a> <a title="Permanent link" href="#core" class="permalink">&para;</a></h2>
+<h2 id="core">&Ccedil;ekirdekteki Gelişmeler <a title="Permanent link" href="#core" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>&Ccedil;alışma anında y&uuml;klenebilen MPM'ler</dt>
@@ -102,7 +102,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="newmods" id="newmods">Yeni Mod&uuml;ller</a> <a title="Permanent link" href="#newmods" class="permalink">&para;</a></h2>
+<h2 id="newmods">Yeni Mod&uuml;ller <a title="Permanent link" href="#newmods" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code></dt>
@@ -181,7 +181,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="module" id="module">Mod&uuml;llerdeki Gelişmeler</a> <a title="Permanent link" href="#module" class="permalink">&para;</a></h2>
+<h2 id="module">Mod&uuml;llerdeki Gelişmeler <a title="Permanent link" href="#module" class="permalink">&para;</a></h2>
     
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
@@ -303,7 +303,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Programlardaki Gelişmeler</a> <a title="Permanent link" href="#programs" class="permalink">&para;</a></h2>
+<h2 id="programs">Programlardaki Gelişmeler <a title="Permanent link" href="#programs" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>fcgistarter</dt>
@@ -326,7 +326,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="documentation" id="documentation">Belgelendirme</a> <a title="Permanent link" href="#documentation" class="permalink">&para;</a></h2>
+<h2 id="documentation">Belgelendirme <a title="Permanent link" href="#documentation" class="permalink">&para;</a></h2>
     
     <dl>
         <dt>mod_rewrite</dt>
@@ -354,7 +354,7 @@
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Mod&uuml;l Geliştirici Değişiklikleri</a> <a title="Permanent link" href="#developer" class="permalink">&para;</a></h2>
+<h2 id="developer">Mod&uuml;l Geliştirici Değişiklikleri <a title="Permanent link" href="#developer" class="permalink">&para;</a></h2>
     
     <dl>
       <dt>Yapılandırma Denetleme Kancası Eklendi</dt>
@@ -411,7 +411,7 @@
 <a href="./tr/new_features_2_4.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

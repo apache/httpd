@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -46,7 +46,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introduction</a> <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introduction <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
     
 
     <p>Le serveur HTTP Apache offre tout un ensemble de fonctionnalit&eacute;s
@@ -99,7 +99,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="http-caching" id="http-caching">Mise en cache HTTP &agrave; trois &eacute;tats RFC2616</a> <a title="Lien permanent" href="#http-caching" class="permalink">&para;</a></h2>
+<h2 id="http-caching">Mise en cache HTTP &agrave; trois &eacute;tats RFC2616 <a title="Lien permanent" href="#http-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -453,13 +453,13 @@ Vary: negotiate,accept-language,accept-charset
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples de configuration du cache</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples de configuration du cache <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
 
     
 
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_cache_disk.html">mod_cache_disk</a></code></li><li><code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code></li><li><code class="module"><a href="./mod/mod_socache_memcache.html">mod_socache_memcache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="./mod/mod_cache_disk.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="./mod/mod_cache_socache.html#cachesocache">CacheSocache</a></code></li></ul></td></tr></table>
 
-    <h3><a name="disk" id="disk">Mise en cache sur disque</a></h3>
+    <h3 id="disk">Mise en cache sur disque</h3>
       
 
       <p>Le module <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> s'appuie sur des
@@ -585,7 +585,7 @@ CacheDirLength 1</pre>
       &agrave; la suite d'un nettoyage.</p>
     
 
-    <h3><a name="memcache" id="memcache">Cache en m&eacute;moire</a></h3>
+    <h3 id="memcache">Cache en m&eacute;moire</h3>
       
 
       <p>En utilisant le module <code class="module"><a href="./mod/mod_cache_socache.html">mod_cache_socache</a></code>,
@@ -624,8 +624,8 @@ CacheSocache dbm:/path/to/datafile</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="socache-caching" id="socache-caching">Mise en cache g&eacute;n&eacute;rale d'objets partag&eacute;s &agrave; deux &eacute;tats de forme
-    cl&eacute;/valeur</a> <a title="Lien permanent" href="#socache-caching" class="permalink">&para;</a></h2>
+<h2 id="socache-caching">Mise en cache g&eacute;n&eacute;rale d'objets partag&eacute;s &agrave; deux &eacute;tats de forme
+    cl&eacute;/valeur <a title="Lien permanent" href="#socache-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -649,7 +649,7 @@ CacheSocache dbm:/path/to/datafile</pre>
     <dd>Cache d'objets partag&eacute;s bas&eacute; sur la m&eacute;moire partag&eacute;e.</dd>
     </dl>
 
-    <h3><a name="mod_authn_socache-caching" id="mod_authn_socache-caching">Mise en cache des donn&eacute;es d'authentification</a></h3>
+    <h3 id="mod_authn_socache-caching">Mise en cache des donn&eacute;es d'authentification</h3>
       
 
       <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_authn_socache.html">mod_authn_socache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></code></li></ul></td></tr></table>
@@ -660,7 +660,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-    <h3><a name="mod_ssl-caching" id="mod_ssl-caching">Mise en cache des sessions SSL</a></h3>
+    <h3 id="mod_ssl-caching">Mise en cache des sessions SSL</h3>
       
 
       <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_ssl.html#sslsessioncache">SSLSessionCache</a></code></li><li><code class="directive"><a href="./mod/mod_ssl.html#sslstaplingcache">SSLStaplingCache</a></code></li></ul></td></tr></table>
@@ -673,7 +673,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-caching" id="file-caching">Mise en cache &agrave; base de fichiers sp&eacute;cialis&eacute;s</a> <a title="Lien permanent" href="#file-caching" class="permalink">&para;</a></h2>
+<h2 id="file-caching">Mise en cache &agrave; base de fichiers sp&eacute;cialis&eacute;s <a title="Lien permanent" href="#file-caching" class="permalink">&para;</a></h2>
 
     
 
@@ -689,7 +689,7 @@ CacheSocache dbm:/path/to/datafile</pre>
     cache le descripteur de fichier. Ces options peuvent vous aider sur
     les syst&egrave;mes o&ugrave; l'acc&egrave;s aux fichiers statiques est lent.</p>
 
-    <h3><a name="filehandle" id="filehandle">Mise en cache des descripteurs de fichier</a></h3>
+    <h3 id="filehandle">Mise en cache des descripteurs de fichier</h3>
       
 
       <p>Le processus d'ouverture d'un fichier peut &ecirc;tre en soi une
@@ -742,7 +742,7 @@ CacheSocache dbm:/path/to/datafile</pre>
 
     
 
-    <h3><a name="inmemory" id="inmemory">In-Memory Caching</a></h3>
+    <h3 id="inmemory">In-Memory Caching</h3>
       
 
     <p>Servir un contenu directement depuis la m&eacute;moire syst&egrave;me est
@@ -836,7 +836,7 @@ sys     0m0.000s</pre></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Consid&eacute;rations sur la s&eacute;curit&eacute;</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Consid&eacute;rations sur la s&eacute;curit&eacute; <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     
 
     <h3>Autorisation et contr&ocirc;le d'acc&egrave;s</h3>
@@ -966,7 +966,7 @@ sys     0m0.000s</pre></div>
 <a href="./tr/caching.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

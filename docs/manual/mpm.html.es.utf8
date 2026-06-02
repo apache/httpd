@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@ como los usa Apache.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducci&oacute;n</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introducci&oacute;n <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 
     <p>El servidor Apache HTTPD est&aacute; dise&ntilde;ado para ser un servidor web potente
     y flexible que pueda funcionar en la m&aacute;s amplia variedad de
@@ -93,7 +93,7 @@ como los usa Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="defaults" id="defaults">MPM por defecto</a> <a title="Enlace permanente" href="#defaults" class="permalink">&para;</a></h2>
+<h2 id="defaults">MPM por defecto <a title="Enlace permanente" href="#defaults" class="permalink">&para;</a></h2>
 
 <p>En la siguiente tabla se muestran los MPMs por defecto para varios
 sistemas operativos.  Estos ser&aacute;n los MPM seleccionados si no se
@@ -132,7 +132,7 @@ soportan estas dos caracter&iacute;sticas.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="static" id="static">Compilando un MPM como m&oacute;dulo est&aacute;tico</a> <a title="Enlace permanente" href="#static" class="permalink">&para;</a></h2>
+<h2 id="static">Compilando un MPM como m&oacute;dulo est&aacute;tico <a title="Enlace permanente" href="#static" class="permalink">&para;</a></h2>
 
     <p>Los MPMs pueden ser compilados como m&oacute;dulos est&aacute;ticos en todas las plataformas. 
     Un solo MPM es elegido en tiempo de compilaci&oacute;n y se enlaza al servidor. El servidor
@@ -148,7 +148,7 @@ soportan estas dos caracter&iacute;sticas.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dynamic" id="dynamic">Compilando un MPM como m&oacute;dulo DSO</a> <a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
+<h2 id="dynamic">Compilando un MPM como m&oacute;dulo DSO <a title="Enlace permanente" href="#dynamic" class="permalink">&para;</a></h2>
 
     <p>En Unix y plataformas similares, MPMs se pueden compilar como m&oacute;dulos
     DSO y ser cargados din&aacute;micamente en el servidor de la misma forma que otros
@@ -189,7 +189,7 @@ soportan estas dos caracter&iacute;sticas.</p>
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -47,7 +47,7 @@ pour une exploration plus d&eacute;taill&eacute;e.</p>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cryptographictech" id="cryptographictech">Techniques de chiffrement</a> <a title="Lien permanent" href="#cryptographictech" class="permalink">&para;</a></h2>
+<h2 id="cryptographictech">Techniques de chiffrement <a title="Lien permanent" href="#cryptographictech" class="permalink">&para;</a></h2>
 
 <p>La ma&icirc;trise de SSL n&eacute;cessite la compr&eacute;hension des algorithmes de
 chiffrement, des fonctions relatives aux empreintes de messages (comme les
@@ -56,7 +56,7 @@ techniques pourraient faire l'objet d'un ouvrage &agrave; elles seules (voir par
 exemple [<a href="#AC96">AC96</a>]) et constituent les bases de la
 confidentialit&eacute;, de l'int&eacute;grit&eacute; et de l'authentification.</p>
 
-<h3><a name="cryptographicalgo" id="cryptographicalgo">Algorithmes de chiffrement</a></h3>
+<h3 id="cryptographicalgo">Algorithmes de chiffrement</h3>
 
     <p>Supposons qu'Alice veuille envoyer un message &agrave; sa banque pour
     transf&eacute;rer une certaine somme. Alice souhaiterait que le message soit
@@ -102,7 +102,7 @@ confidentialit&eacute;, de l'int&eacute;grit&eacute; et de l'authentification.</
     Seule la banque sera en mesure de les d&eacute;chiffrer.</p>
 
 
-<h3><a name="messagedigests" id="messagedigests">Empreinte d'un message</a></h3>
+<h3 id="messagedigests">Empreinte d'un message</h3>
 
     <p>Bien qu'Alice puisse chiffrer son message pour le rendre priv&eacute;, il
     subsiste toujours le risque que quelqu'un puisse modifier le message
@@ -138,7 +138,7 @@ confidentialit&eacute;, de l'int&eacute;grit&eacute; et de l'authentification.</
     l'inclure dans une signature num&eacute;rique.</p>
 
 
-<h3><a name="digitalsignatures" id="digitalsignatures">Signatures num&eacute;riques</a></h3>
+<h3 id="digitalsignatures">Signatures num&eacute;riques</h3>
 <p>Quand Alice envoie un message &agrave; sa banque, cette derni&egrave;re doit s'assurer
 que le message a bien &eacute;t&eacute; envoy&eacute; par elle, pour &eacute;viter qu'un intrus puisse
 effectuer une transaction sur son compte. Une <em>signature num&eacute;rique</em>,
@@ -162,7 +162,7 @@ elle seule peut l'avoir sign&eacute; (non-r&eacute;pudiation).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="certificates" id="certificates">Certificats</a> <a title="Lien permanent" href="#certificates" class="permalink">&para;</a></h2>
+<h2 id="certificates">Certificats <a title="Lien permanent" href="#certificates" class="permalink">&para;</a></h2>
 
 <p>Bien qu'Alice soit parvenue &agrave; envoyer un message priv&eacute; &agrave; sa banque, apr&egrave;s
 l'avoir sign&eacute; et avoir ainsi assur&eacute; l'int&eacute;grit&eacute; du message, elle doit encore v&eacute;rifier
@@ -179,7 +179,7 @@ communiquent est bien celle avec laquelle ils d&eacute;sirent le faire. Un tel
 organisme de confiance s'appelle une <em>Autorit&eacute; de Certification</em>, et
 on utilise les certificats &agrave; des fins d'authentification.</p>
 
-<h3><a name="certificatecontents" id="certificatecontents">Contenu d'un certificat</a></h3>
+<h3 id="certificatecontents">Contenu d'un certificat</h3>
 
     <p>Un certificat associe une cl&eacute; publique avec l'identit&eacute; r&eacute;elle d'un
     individu, d'un serveur, ou d'une autre entit&eacute; plus connue sous le nom de
@@ -294,7 +294,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 -----END CERTIFICATE-----</pre></div>
 
 
-<h3><a name="certificateauthorities" id="certificateauthorities">Autorit&eacute;s de certification</a></h3>
+<h3 id="certificateauthorities">Autorit&eacute;s de certification</h3>
 
     <p>En v&eacute;rifiant les informations contenues dans une demande de certificat
     avant de l'accorder, l'autorit&eacute; de certification s'assure de l'identit&eacute; du
@@ -386,7 +386,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ssl" id="ssl">Couche Points d'Acc&egrave;s S&eacute;curis&eacute;s - Secure Sockets Layer (SSL)</a> <a title="Lien permanent" href="#ssl" class="permalink">&para;</a></h2>
+<h2 id="ssl">Couche Points d'Acc&egrave;s S&eacute;curis&eacute;s - Secure Sockets Layer (SSL) <a title="Lien permanent" href="#ssl" class="permalink">&para;</a></h2>
 
 <p>Le protocole Couche Points d'Acc&egrave;s S&eacute;curis&eacute;s est une couche protocolaire
 qui pourrait s'intercaler entre un protocole d'une couche r&eacute;seau orient&eacute;e
@@ -404,7 +404,7 @@ permet aussi au protocole de tirer parti des nouveaux algorithmes. Ces choix
 font l'objet d'une n&eacute;gociation entre client et serveur lors de
 l'&eacute;tablissement de la session protocolaire.</p>
 
-<h3><a name="table4" id="table4">Tableau 4: Versions du protocole SSL</a></h3>
+<h3 id="table4">Tableau 4: Versions du protocole SSL</h3>
 
     <table class="bordered">
     
@@ -462,7 +462,7 @@ ou Transport Layer Security
 [<a href="#TLS1">TLS</a>], actuellement en d&eacute;veloppement au sein de
 l'Internet Engineering Task Force (IETF).</p>
 
-<h3><a name="session" id="session">Etablissement d'une session</a></h3>
+<h3 id="session">Etablissement d'une session</h3>
 
     <p>La session SSL est &eacute;tablie en suivant une s&eacute;quence d'&eacute;changes
     d'informations entre client et serveur, comme le montre la
@@ -516,7 +516,7 @@ l'Internet Engineering Task Force (IETF).</p>
     <p>Ces trois &eacute;l&eacute;ments sont d&eacute;crits dans les sections suivantes.</p>
 
 
-<h3><a name="keyexchange" id="keyexchange">M&eacute;thode d'&eacute;change de la cl&eacute;</a></h3>
+<h3 id="keyexchange">M&eacute;thode d'&eacute;change de la cl&eacute;</h3>
 
     <p>La m&eacute;thode d'&eacute;change de la cl&eacute; d&eacute;finit la mani&egrave;re
     dont la cl&eacute; de chiffrement
@@ -537,7 +537,7 @@ l'Internet Engineering Task Force (IETF).</p>
     cl&eacute; partag&eacute;e peut &ecirc;tre intercept&eacute; [<a href="#AC96">AC96</a>, p516].</p>
 
 
-<h3><a name="ciphertransfer" id="ciphertransfer">Chiffrement du transfert de donn&eacute;es</a></h3>
+<h3 id="ciphertransfer">Chiffrement du transfert de donn&eacute;es</h3>
 
     <p>Comme d&eacute;crit plus haut, SSL utilise le chiffrement sym&eacute;trique
     conventionnel pour chiffrer les messages au cours d'une session. Il existe
@@ -572,7 +572,7 @@ l'Internet Engineering Task Force (IETF).</p>
     [<a href="#AC96">AC96</a>, ch13].</p>
 
 
-<h3><a name="digestfunction" id="digestfunction">Fonction de cr&eacute;ation d'empreinte</a></h3>
+<h3 id="digestfunction">Fonction de cr&eacute;ation d'empreinte</h3>
 
     <p>Le choix d'une fonction de cr&eacute;ation d'empreinte d&eacute;termine la mani&egrave;re
     dont une empreinte est cr&eacute;&eacute;e &agrave; partir d'une unit&eacute; de donn&eacute;es. SSL supporte
@@ -591,7 +591,7 @@ l'Internet Engineering Task Force (IETF).</p>
     attaques de type "rejeu".</p>
 
 
-<h3><a name="handshake" id="handshake">Protocole de la s&eacute;quence d'&eacute;changes d'informations</a></h3>
+<h3 id="handshake">Protocole de la s&eacute;quence d'&eacute;changes d'informations</h3>
 
     <p>La s&eacute;quence d'&eacute;changes d'informations utilise trois protocoles :</p>
 
@@ -626,7 +626,7 @@ l'Internet Engineering Task Force (IETF).</p>
     pas d'empreinte d'int&eacute;grit&eacute;, jusqu'&agrave; ce que la session ait &eacute;t&eacute; &eacute;tablie.</p>
 
 
-<h3><a name="datatransfer" id="datatransfer">Transmission des donn&eacute;es</a></h3>
+<h3 id="datatransfer">Transmission des donn&eacute;es</h3>
 
     <p>Le protocole d'enregistrement SSL, comme le montre la
     <a href="#figure3">Figure 3</a>, est utilis&eacute; pour transmettre les donn&eacute;es
@@ -645,7 +645,7 @@ l'Internet Engineering Task Force (IETF).</p>
     Protocole d'enregistrement SSL</p>
 
 
-<h3><a name="securehttp" id="securehttp">S&eacute;curisation des communications HTTP</a></h3>
+<h3 id="securehttp">S&eacute;curisation des communications HTTP</h3>
 
     <p>Une des utilisations courantes de SSL est la s&eacute;curisation des
     communication HTTP sur le Web entre un navigateur et un serveur web. Ceci
@@ -659,7 +659,7 @@ l'Internet Engineering Task Force (IETF).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="references" id="references">R&eacute;f&eacute;rences</a> <a title="Lien permanent" href="#references" class="permalink">&para;</a></h2>
+<h2 id="references">R&eacute;f&eacute;rences <a title="Lien permanent" href="#references" class="permalink">&para;</a></h2>
 
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
@@ -713,7 +713,7 @@ Version 3.0</q>, 1996. Voir la <a href="https://www.rfc-editor.org/rfc/rfc6101">
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

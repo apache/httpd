@@ -20,7 +20,6 @@ on:
 
 jobs:
   build:
-    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -37,6 +36,14 @@ jobs:
     env: 
       VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
     steps:
+      - name: Prepare Environment
+        run: |
+          $root = &(Join-Path ${env:ProgramFiles(x86)} "\Microsoft Visual Studio\Installer\vswhere.exe") -property installationpath -latest
+          Import-Module (Join-Path $root "Common7\Tools\Microsoft.VisualStudio.DevShell.dll")
+          Enter-VsDevShell -VsInstallPath $root -DevCmdArguments "-arch=${{ matrix.arch }}"
+
+          ls env: | foreach { "$($_.Name)=$($_.Value)" >> $env:GITHUB_ENV }
+
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@v7
         with:

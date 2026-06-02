@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -50,7 +50,7 @@
 </ul><h3>参见</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">模块文档</a></li><li><a href="remapping.html">重定向和重映射</a></li><li><a href="access.html">访问控制</a></li><li><a href="vhosts.html">虚拟主机</a></li><li><a href="proxy.html">代理</a></li><li><a href="rewritemap.html">使用 RewriteMap</a></li><li><a href="advanced.html">高级技术</a></li><li><a href="avoid.html">何时不使用 mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">介绍</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">介绍 <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Apache 模块 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 是一个非常强大且复杂的模块，
 它提供了进行 URL 操作的方法。使用它，你几乎可以完成所有类型的 URL 重写。
 然而，它有一定的复杂性，可能会令初学者望而生畏。
@@ -72,7 +72,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">正则表达式</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">正则表达式 <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 使用 <a href="http://pcre.org/">Perl
 兼容正则表达式</a>词汇。在本文档中，我们不试图提供正则表达式的详细参考。
@@ -87,7 +87,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 是科学公式，而不是魔法咒语。</p>
 
-<h3><a name="regexvocab" id="regexvocab">正则表达式词汇</a></h3>
+<h3 id="regexvocab">正则表达式词汇</h3>
 
 <p>以下是编写正则表达式和
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
@@ -167,7 +167,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">正则表达式反向引用的可用性</a></h3>
+<h3 id="InternalBackRefs">正则表达式反向引用的可用性</h3>
 
       <p>这里有一个重要的事情要记住：每当你在<em>模式</em>或某个
       <em>CondPattern</em> 中使用括号时，都会在内部创建反向引用，
@@ -198,7 +198,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule 基础</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">RewriteRule 基础 <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 由三个以空格分隔的参数组成。这些参数是：</p>
 <ol>
@@ -272,7 +272,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">重写标志</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">重写标志 <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 的行为可以通过在规则末尾应用一个或多个标志来修改。
 例如，可以通过应用 <code>[NC]</code>
@@ -286,7 +286,7 @@ Friedl 的《精通正则表达式》</a>（第三版出版于 2006 年，
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">重写条件</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">重写条件 <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>一个或多个 <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 指令可用于限制将受后续
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> 影响的请求类型。
@@ -334,14 +334,14 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">重写映射</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">重写映射 <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 指令提供了一种调用外部函数来为你执行重写的方法。
 这在 <a href="rewritemap.html">RewriteMap 补充文档</a>中有更详细的讨论。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess 文件</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess 文件 <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>重写通常在主服务器配置中（在任何
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
@@ -373,7 +373,7 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 <a href="../zh-cn/rewrite/intro.html" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>基于 <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> 许可证.</p>
-<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">模块</a> | <a href="../mod/quickreference.html">指令</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">常见问题</a> | <a href="../glossary.html">术语</a> | <a href="../sitemap.html">网站导航</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

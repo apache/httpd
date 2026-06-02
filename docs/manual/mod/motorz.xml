@@ -1,0 +1,258 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="motorz.xml.meta">
+<name>motorz</name>
+<description>A lean, fast, self-contained event-driven Multi-Processing Module
+built on the APR pollset and thread pool especially suited as a reverse proxy</description>
+<status>MPM</status>
+<sourcefile>motorz.c</sourcefile>
+<identifier>mpm_motorz_module</identifier>
+
+<summary>
+    <p>The <module>motorz</module> Multi-Processing Module (MPM) is an
+    asynchronous, event-driven implementation. It combines a
+    prefork-style fixed pool of child processes with an event core built on
+    <glossary>APR</glossary>'s pollset and a shared thread pool. Each child
+    runs one or more dedicated <dfn>poller</dfn> threads that watch sockets
+    and timers, dispatching ready I/O events and expired timers to a pool of
+    worker threads. The workers never poll; they only process the
+    connection/request work pushed to them.</p>
+
+    <p>The design goal is a fast, efficient, single, compact MPM that runs on modern
+    Unix platforms by leaning on APR as much as possible, while still supporting
+    the asynchronous connection handling needed for efficient keep-alive and
+    HTTP/2.</p>
+
+    <p>To use the <module>motorz</module> MPM, add
+      <code>--with-mpm=motorz</code> to the <program>configure</program>
+      script's arguments when building the <program>httpd</program>, or build
+      it as a loadable module with
+      <code>--enable-mpms-shared=motorz</code>.</p>
+
+</summary>
+
+<seealso><a href="event.html">The event MPM</a></seealso>
+<seealso><a href="worker.html">The worker MPM</a></seealso>
+<seealso><a href="prefork.html">The prefork MPM</a></seealso>
+<seealso><a href="../bind.html">Setting which addresses and ports Apache HTTP Server uses</a></seealso>
+
+<section id="how-it-works"><title>How it Works</title>
+    <p><module>motorz</module> uses prefork as the framework for process
+    management and an event core for connection handling. A single control
+    process (the parent) launches a fixed number of child processes, as set
+    by the <directive module="mpm_common">StartServers</directive> directive.
+    Unlike <module>worker</module> and <module>event</module>, the number of
+    children does not float with load: <module>motorz</module> maintains a
+    static pool, replacing children one-for-one as they exit. Concurrency
+    within a host is scaled by adding worker threads
+    (<directive module="mpm_common">ThreadsPerChild</directive>) and, where
+    the poll/dispatch path is the bottleneck, poller threads
+    (<directive>PollersPerChild</directive>), rather than by spawning more
+    processes.</p>
+
+    <p>Each child process runs:</p>
+    <ul>
+        <li><strong>One or more poller threads.</strong> Each poller owns its
+        own pollset, timer ring (with a guarding mutex) and lock-free
+        transaction-pool recycle list, so pollers never contend with one
+        another. A poller polls, dispatches ready I/O events and expired
+        timers to the worker pool, and (for the poller that owns the listening
+        sockets) accepts new connections. The number of pollers is controlled
+        by <directive>PollersPerChild</directive>.</li>
+
+        <li><strong>A shared pool of worker threads</strong>
+        (<directive module="mpm_common">ThreadsPerChild</directive>) that run
+        the actual connection and request processing pushed to them. Workers
+        never poll.</li>
+
+        <li><strong>A supervisor</strong> (the child's main thread) that
+        watches <directive module="mpm_common">MaxConnectionsPerChild</directive>
+        and the pipe-of-death / generation, signals the pollers to wind down,
+        and then joins them on exit.</li>
+    </ul>
+
+    <p>A connection is sharded to one poller at accept time (round-robin) and
+    bound to it for its whole lifetime: it re-arms in, and times out on, that
+    poller's pollset and timer ring. Using multiple pollers lifts the
+    single-poll-thread throughput ceiling, so accept, event dispatch and timer
+    expiry scale with <directive>PollersPerChild</directive> instead of being
+    serialized on one thread.</p>
+
+    <p>While the parent process is usually started as <code>root</code> under
+    Unix in order to bind to port 80, the child processes and threads are
+    launched by the server as a less-privileged user. The
+    <directive module="mod_unixd">User</directive> and
+    <directive module="mod_unixd">Group</directive> directives are used to set
+    the privileges of the Apache HTTP Server child processes. The child
+    processes must be able to read all the content that will be served, but
+    should have as few privileges beyond that as possible.</p>
+
+    <p><directive module="mpm_common">MaxConnectionsPerChild</directive>
+    controls how frequently the server recycles processes by retiring old ones
+    and launching new ones.</p>
+</section>
+
+<section id="async-connections"><title>Asynchronous connection handling</title>
+    <p><module>motorz</module> reports itself as an asynchronous MPM. When a
+    worker finishes the active phase of a connection (for example, an
+    HTTP keep-alive connection between requests, or a connection waiting on
+    further I/O), it hands the socket back to its poller rather than holding a
+    worker thread idle. The poller waits for the next event on that socket,
+    bounded by the configured <directive module="mpm_common">Timeout</directive>,
+    and re-dispatches the connection to a worker only when there is work to do.
+    This frees worker threads from idle keep-alive connections and is what
+    allows efficient HTTP/2 handling, where the master connection is handed
+    back to the MPM between requests.</p>
+
+    <p>Lingering close is also non-blocking: instead of blocking a worker for
+    the duration of the lingering-close timeout, the draining socket is handed
+    back to the poll loop with a bounded linger timeout, so the worker is
+    returned to the pool immediately.</p>
+
+    <p>Modules that take a connection fully asynchronous (suspending it and
+    resuming it later) are supported; a suspended connection is parked and
+    re-armed on its owning poller when resumed.</p>
+</section>
+
+<section id="admission-control"><title>Admission control</title>
+    <p>To keep a child safe under overload, <module>motorz</module> applies
+    listener backpressure. When the worker pool saturates, the poller that
+    owns the listening sockets removes them from its pollset and stops
+    accepting; it re-adds them once the backlog drains. This keeps the work
+    queue and per-connection memory bounded rather than growing without limit.
+    The decision is based on the worker pool's idle, pending and active-thread
+    counts, with hysteresis to avoid flapping the listeners on and off.</p>
+
+    <note><title>ThreadsPerChild and admission control</title>
+    <p>Because the admission-control low-water mark is a fraction of
+    <directive module="mpm_common">ThreadsPerChild</directive>, very small
+    values (in particular <code>ThreadsPerChild 1</code>) cause the listeners
+    to re-enable only when the work queue is completely empty, which severely
+    degrades throughput. A value of <code>ThreadsPerChild</code> of at least 4
+    is strongly recommended; the server emits a warning otherwise.</p>
+    </note>
+</section>
+
+<section id="relationship"><title>Relationship to other MPMs</title>
+    <p><module>motorz</module> uses prefork for process management and an APR
+    thread pool for workers, with pollers dispatching work to that pool. This
+    is distinct from <module>event</module>'s listener/worker/fdqueue design,
+    in which the worker threads themselves re-arm a shared, thread-safe
+    pollset.</p>
+
+    <p>Whether additional pollers help depends on the workload. If the worker
+    threads are the CPU bottleneck&#8212;typical for real request
+    processing&#8212;the poller threads are not the limiting factor, and a
+    <directive>PollersPerChild</directive> beyond one or two yields little. The
+    multiple-poller design removes <module>motorz</module>'s
+    <em>structural</em> single-thread ceiling, but per-host throughput is still
+    governed by worker CPU.</p>
+
+    <note><title>No ServerLimit / dynamic process scaling</title>
+    <p>Unlike <module>worker</module> and <module>event</module>,
+    <module>motorz</module> does not scale the number of child processes with
+    load and does not provide a separate
+    <directive module="mpm_common">ServerLimit</directive> ceiling. The process
+    pool is fixed at <directive module="mpm_common">StartServers</directive>,
+    which therefore acts as the hard daemon limit, and there are no
+    <directive module="mpm_common">MinSpareThreads</directive> /
+    <directive module="mpm_common">MaxSpareThreads</directive> /
+    <directive module="mpm_common">MaxRequestWorkers</directive> controls.
+    Scale concurrency with
+    <directive module="mpm_common">ThreadsPerChild</directive> (and, if the
+    poll path saturates, <directive>PollersPerChild</directive>).</p>
+    </note>
+</section>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>PollersPerChild</name>
+<description>Number of poll threads per child process</description>
+<syntax>PollersPerChild <var>number</var></syntax>
+<default>PollersPerChild 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>motorz</module></modulelist>
+
+<usage>
+    <p>The <directive>PollersPerChild</directive> directive sets the number of
+    poller threads created in each child process. Each poller owns its own
+    pollset, timer ring and connection-recycle list, and handles a shard of
+    the child's connections, so adding pollers raises the rate at which a
+    single child can accept connections and dispatch I/O events and timer
+    expiries.</p>
+
+    <p>A value of <code>0</code> (the default) means <em>auto</em>: the number
+    of pollers is derived from the number of online CPUs, capped at a built-in
+    maximum. In all cases the number of pollers is clamped so that it never
+    exceeds <directive module="mpm_common">ThreadsPerChild</directive> and is
+    never less than one.</p>
+
+    <p>Because event dispatch is rarely the bottleneck for real request
+    processing&#8212;worker CPU usually is&#8212;values beyond one or two
+    seldom improve throughput. Raising <directive>PollersPerChild</directive>
+    is mainly useful for workloads dominated by very high connection churn or
+    large numbers of idle, event-driven connections, where the poll/accept
+    path itself becomes the limit.</p>
+
+    <note><title>Example</title>
+    <highlight language="config">
+StartServers       2
+ThreadsPerChild   64
+ThreadLimit       64
+PollersPerChild    2
+    </highlight>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

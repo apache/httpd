@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -40,7 +40,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intro" id="intro">Introduction</a> <a title="Lien permanent" href="#intro" class="permalink">&para;</a></h2>
+<h2 id="intro">Introduction <a title="Lien permanent" href="#intro" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li><li><code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code></li></ul></td></tr></table>
@@ -55,7 +55,7 @@
     CGI.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuring" id="configuring">Configurer httpd pour autoriser CGI</a> <a title="Lien permanent" href="#configuring" class="permalink">&para;</a></h2>
+<h2 id="configuring">Configurer httpd pour autoriser CGI <a title="Lien permanent" href="#configuring" class="permalink">&para;</a></h2>
     
 
     <p>httpd doit &ecirc;tre configur&eacute; pour permettre l'ex&eacute;cution des
@@ -79,7 +79,7 @@
 </div>
 
 
-    <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
+    <h3 id="scriptalias">ScriptAlias</h3>
       
 
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> indique &agrave; httpd qu'un
@@ -121,7 +121,7 @@
       renverra un message d'erreur.</p>
     
 
-    <h3><a name="nonscriptalias" id="nonscriptalias">CGI en dehors des r&eacute;pertoires ScripAlias</a></h3>
+    <h3 id="nonscriptalias">CGI en dehors des r&eacute;pertoires ScripAlias</h3>
       
 
       <p>Pour des raisons de s&eacute;curit&eacute;, la localisation des programmes
@@ -146,8 +146,8 @@
       <code>ExecCGI</code> doit &ecirc;tre sp&eacute;cifi&eacute; dans la directive <code class="directive"><a href="../mod/core.html#options">Options</a></code>.</p>
     
 
-    <h3><a name="options" id="options">Utilisation d'options explicites pour permettre l'ex&eacute;cution
-      des programmes CGI</a></h3>
+    <h3 id="options">Utilisation d'options explicites pour permettre l'ex&eacute;cution
+      des programmes CGI</h3>
       
 
       <p>Vous pouvez utiliser de mani&egrave;re explicite la directive
@@ -172,7 +172,7 @@
 
     
 
-    <h3><a name="htaccess" id="htaccess">Fichiers .htaccess</a></h3>
+    <h3 id="htaccess">Fichiers .htaccess</h3>
       
 
       <p>Le <a href="htaccess.html"><code>tutoriel
@@ -181,7 +181,7 @@
       fichier <code>httpd.conf</code>.</p>
     
 
-    <h3><a name="userdir" id="userdir">R&eacute;pertoires utilisateurs</a></h3>
+    <h3 id="userdir">R&eacute;pertoires utilisateurs</h3>
       
 
       <p>Pour permettre l'ex&eacute;cution en tant que programme CGI de tout
@@ -209,7 +209,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="writing" id="writing">Ecrire un programme CGI</a> <a title="Lien permanent" href="#writing" class="permalink">&para;</a></h2>
+<h2 id="writing">Ecrire un programme CGI <a title="Lien permanent" href="#writing" class="permalink">&para;</a></h2>
     
 
     <p>Il y a deux diff&eacute;rences principales entre la programmation
@@ -233,7 +233,7 @@
     <p>A part ces deux diff&eacute;rences, un programme CGI ressemblera &agrave; tout
     autre programme que vous pourriez &ecirc;tre amen&eacute; &agrave; &eacute;crire.</p>
 
-    <h3><a name="firstcgi" id="firstcgi">Votre premier programme CGI</a></h3>
+    <h3 id="firstcgi">Votre premier programme CGI</h3>
       
 
       <p>L'exemple suivant est un exemple de programme CGI qui permet
@@ -276,7 +276,7 @@ print "Hello, World.";</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="troubleshoot" id="troubleshoot">Mais &ccedil;a ne marche toujours pas !</a> <a title="Lien permanent" href="#troubleshoot" class="permalink">&para;</a></h2>
+<h2 id="troubleshoot">Mais &ccedil;a ne marche toujours pas ! <a title="Lien permanent" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
     <p>Vous devriez voir au moins une des quatre sorties suivantes dans
@@ -313,7 +313,7 @@ print "Hello, World.";</pre>
       votre programme CGI de g&eacute;n&eacute;rer les en-t&ecirc;tes appropri&eacute;s.</dd>
     </dl>
 
-    <h3><a name="permissions" id="permissions">Droits des fichiers</a></h3>
+    <h3 id="permissions">Droits des fichiers</h3>
       
 
       <p>Souvenez-vous que le serveur ne s'ex&eacute;cute pas sous votre nom.
@@ -336,8 +336,8 @@ print "Hello, World.";</pre>
 
     
 
-    <h3><a name="pathinformation" id="pathinformation">Chemin des ex&eacute;cutables (PATH) et variables
-      d'environnement</a></h3>
+    <h3 id="pathinformation">Chemin des ex&eacute;cutables (PATH) et variables
+      d'environnement</h3>
       
 
       <p>Lorsque vous lancez un programme depuis la ligne de commande,
@@ -377,7 +377,7 @@ print "Hello, World.";</pre>
 
       
 
-    <h3><a name="missingenv" id="missingenv">Variables d'environnement manquantes</a></h3>
+    <h3 id="missingenv">Variables d'environnement manquantes</h3>
       
 
       <p>Si votre programme CGI d&eacute;pend de <a href="#env">variables
@@ -392,7 +392,7 @@ print "Hello, World.";</pre>
 
     
 
-    <h3><a name="syntaxerrors" id="syntaxerrors">Erreurs inh&eacute;rentes au programme</a></h3>
+    <h3 id="syntaxerrors">Erreurs inh&eacute;rentes au programme</h3>
       
 
       <p>La plupart des &eacute;checs dans l'ex&eacute;cution d'un programme CGI
@@ -421,7 +421,7 @@ print "Hello, World.";</pre>
       plus de d&eacute;tails.</p>
     
 
-    <h3><a name="errorlogs" id="errorlogs">Journalisation des erreurs</a></h3>
+    <h3 id="errorlogs">Journalisation des erreurs</h3>
       
 
       <p>Les journaux d'erreurs sont vos amis. Toute anomalie de
@@ -434,7 +434,7 @@ print "Hello, World.";</pre>
       identifi&eacute;s . . . et r&eacute;solus.</p>
     
 
-    <h3><a name="suexec" id="suexec">Suexec</a></h3>
+    <h3 id="suexec">Suexec</h3>
       
 
       <p>Le programme <a href="../suexec.html">suexec</a> permet
@@ -464,7 +464,7 @@ print "Hello, World.";</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="behindscenes" id="behindscenes">Que se passe-t-il en coulisse</a> <a title="Lien permanent" href="#behindscenes" class="permalink">&para;</a></h2>
+<h2 id="behindscenes">Que se passe-t-il en coulisse <a title="Lien permanent" href="#behindscenes" class="permalink">&para;</a></h2>
     
 
     <p>Lorsque vos comp&eacute;tences en programmation CGI seront plus
@@ -474,7 +474,7 @@ print "Hello, World.";</pre>
     soit tout &agrave; fait louable d'&eacute;crire un programme qui affiche "Bonjour
     tout le monde . . .", cela ne sert pas &agrave; grand chose.</p>
 
-    <h3><a name="env" id="env">Variables d'environnement</a></h3>
+    <h3 id="env">Variables d'environnement</h3>
       
 
       <p>Les variables d'environnement sont des valeurs qui gravitent
@@ -522,7 +522,7 @@ foreach my $key (keys %ENV) {
 
     
 
-    <h3><a name="stdin" id="stdin">STDIN et STDOUT</a></h3>
+    <h3 id="stdin">STDIN et STDOUT</h3>
       
 
       <p>L'entr&eacute;e standard (<code>STDIN</code>) et la sortie standard
@@ -569,7 +569,7 @@ foreach my $key (keys %ENV) {
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="libraries" id="libraries">Biblioth&egrave;ques et modules CGI</a> <a title="Lien permanent" href="#libraries" class="permalink">&para;</a></h2>
+<h2 id="libraries">Biblioth&egrave;ques et modules CGI <a title="Lien permanent" href="#libraries" class="permalink">&para;</a></h2>
     
 
     <p>Pour &eacute;crire un programme CGI, il vous est conseill&eacute; d'utiliser
@@ -588,7 +588,7 @@ foreach my $key (keys %ENV) {
     options. L'une d'elles est la biblioth&egrave;que <code>CGIC</code> de <a href="https://web.mit.edu/wwwdev/www/cgic.html">https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="moreinfo" id="moreinfo">Pour plus d'informations</a> <a title="Lien permanent" href="#moreinfo" class="permalink">&para;</a></h2>
+<h2 id="moreinfo">Pour plus d'informations <a title="Lien permanent" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
     <p>La sp&eacute;cification CGI actuelle est disponible dans la <a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>
@@ -616,7 +616,7 @@ foreach my $key (keys %ENV) {
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

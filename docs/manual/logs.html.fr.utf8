@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -50,7 +50,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Vue d'ensemble</a> <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Vue d'ensemble <a title="Lien permanent" href="#overview" class="permalink">&para;</a></h2>
     
 
   <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td></td></tr></table>
@@ -75,7 +75,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">Avertissement &agrave; propos de la s&eacute;curit&eacute;</a> <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">Avertissement &agrave; propos de la s&eacute;curit&eacute; <a title="Lien permanent" href="#security" class="permalink">&para;</a></h2>
     
 
     <p>Tout utilisateur qui a les droits en &eacute;criture sur le r&eacute;pertoire dans
@@ -94,7 +94,7 @@
     manipulation des journaux bruts.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="errorlog" id="errorlog">Journal des erreurs</a> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
+<h2 id="errorlog">Journal des erreurs <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlogformat">ErrorLogFormat</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
@@ -166,7 +166,7 @@
     </code></p></div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="permodule" id="permodule">Journalisation par module</a> <a title="Lien permanent" href="#permodule" class="permalink">&para;</a></h2>
+<h2 id="permodule">Journalisation par module <a title="Lien permanent" href="#permodule" class="permalink">&para;</a></h2>
     
 
     <p>La directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> permet
@@ -191,7 +191,7 @@
     <code>RewriteLog</code>.</div>
  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="accesslog" id="accesslog">Journal des acc&egrave;s</a> <a title="Lien permanent" href="#accesslog" class="permalink">&para;</a></h2>
+<h2 id="accesslog">Journal des acc&egrave;s <a title="Lien permanent" href="#accesslog" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_setenvif.html">mod_setenvif</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code></li></ul></td></tr></table>
@@ -228,7 +228,7 @@
     <a href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a> de la
     documentation du module <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
-    <h3><a name="common" id="common">Format habituel du journal</a></h3>
+    <h3 id="common">Format habituel du journal</h3>
       
 
       <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
@@ -377,7 +377,7 @@ CustomLog "logs/access_log" common</pre>
       </dl>
     
 
-    <h3><a name="combined" id="combined">Combined Log Format (Format de journalisation combin&eacute;)</a></h3>
+    <h3 id="combined">Combined Log Format (Format de journalisation combin&eacute;)</h3>
       
 
       <p>Une autre cha&icirc;ne de format couramment utilis&eacute;e est le
@@ -421,7 +421,7 @@ CustomLog "log/access_log" combined</pre>
       </dl>
     
 
-    <h3><a name="multiple" id="multiple">Journaux d'acc&egrave;s multiples</a></h3>
+    <h3 id="multiple">Journaux d'acc&egrave;s multiples</h3>
       
 
       <p>Plusieurs journaux d'acc&egrave;s peuvent &ecirc;tre cr&eacute;&eacute;s en sp&eacute;cifiant tout
@@ -448,7 +448,7 @@ CustomLog "logs/agent_log" "%{User-agent}i"</pre>
       <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code>.</p>
     
 
-    <h3><a name="conditional" id="conditional">Journalisation conditionnelle</a></h3>
+    <h3 id="conditional">Journalisation conditionnelle</h3>
       
 
       <p>Il est parfois souhaitable d'exclure certaines entr&eacute;es des journaux
@@ -522,7 +522,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rotation" id="rotation">Rotation des journaux</a> <a title="Lien permanent" href="#rotation" class="permalink">&para;</a></h2>
+<h2 id="rotation">Rotation des journaux <a title="Lien permanent" href="#rotation" class="permalink">&para;</a></h2>
     
 
     <p>M&ecirc;me dans le cas d'un serveur mod&eacute;r&eacute;ment sollicit&eacute;, la quantit&eacute;
@@ -562,7 +562,7 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
     <a href="#piped">journaux redirig&eacute;s</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="piped" id="piped">Journaux redirig&eacute;s</a> <a title="Lien permanent" href="#piped" class="permalink">&para;</a></h2>
+<h2 id="piped">Journaux redirig&eacute;s <a title="Lien permanent" href="#piped" class="permalink">&para;</a></h2>
     
 
     <p>Nous avons vu que le d&eacute;mon httpd &eacute;crivait les informations de
@@ -642,7 +642,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">H&ocirc;tes virtuels</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">H&ocirc;tes virtuels <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
     <p>Lorsqu'un serveur poss&egrave;de plusieurs <a href="vhosts/">h&ocirc;tes virtuels</a>, il existe de nombreuses solutions pour g&eacute;rer
@@ -681,7 +681,7 @@ CustomLog "logs/access_log" commonvhost</pre>
     pour g&eacute;n&eacute;rer "&agrave; froid" autant de journaux que d'h&ocirc;tes virtuels.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">Autres fichiers journaux</a> <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">Autres fichiers journaux <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
@@ -706,7 +706,7 @@ CustomLog "logs/access_log" commonvhost</pre>
       personnalisation. C'est un inestimable outil de d&eacute;bogage et de s&eacute;curit&eacute;.</p>
     
 
-    <h3><a name="pidfile" id="pidfile">Fichier PID</a></h3>
+    <h3 id="pidfile">Fichier PID</h3>
       
 
       <p>Au d&eacute;marrage, le d&eacute;mon httpd Apache enregistre l'identifiant du
@@ -719,7 +719,7 @@ CustomLog "logs/access_log" commonvhost</pre>
       consulter la page <a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a>.</p>
     
 
-    <h3><a name="scriptlog" id="scriptlog">Journal des scripts</a></h3>
+    <h3 id="scriptlog">Journal des scripts</h3>
       
 
       <p>Afin de faciliter le d&eacute;bogage, la directive
@@ -730,7 +730,7 @@ CustomLog "logs/access_log" commonvhost</pre>
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
     
 
-    <h3><a name="debug" id="debug">Journalisation de d&eacute;bogage configurable</a></h3>
+    <h3 id="debug">Journalisation de d&eacute;bogage configurable</h3>
         
 
         <p>La directive <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code>
@@ -748,7 +748,7 @@ CustomLog "logs/access_log" commonvhost</pre>
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

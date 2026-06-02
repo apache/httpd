@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -77,8 +77,8 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">Fonctionnement de plusieurs serveurs 
-  virtuels par nom sur une seule adresse IP.</a> <a title="Lien permanent" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">Fonctionnement de plusieurs serveurs 
+  virtuels par nom sur une seule adresse IP. <a title="Lien permanent" href="#purename" class="permalink">&para;</a></h2>
 
     <p>Votre serveur poss&egrave;de plusieurs noms d'h&ocirc;te qui correspondent &agrave;
     une seule adresse IP, ce qui lui permet de r&eacute;pondre diff&eacute;remment si
@@ -148,8 +148,8 @@ Listen 80
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">Serveurs virtuels par nom sur plus 
-    d'une seule adresse IP.</a> <a title="Lien permanent" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">Serveurs virtuels par nom sur plus 
+    d'une seule adresse IP. <a title="Lien permanent" href="#twoips" class="permalink">&para;</a></h2>
 
   	<div class="note">
           <h3>Note&nbsp;:</h3><p>Toutes les techniques pr&eacute;sent&eacute;es ici 
@@ -191,9 +191,9 @@ DocumentRoot "/www/mainserver"
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">Servir le m&ecirc;me contenu sur des 
+<h2 id="intraextra">Servir le m&ecirc;me contenu sur des 
     adresses IP diff&eacute;rentes (telle qu'une adresse interne et une 
-    externe).</a> <a title="Lien permanent" href="#intraextra" class="permalink">&para;</a></h2>
+    externe). <a title="Lien permanent" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>La machine serveur dispose de deux adresses IP 
     (<code>192.168.1.1</code> et <code>172.20.30.40</code>). Cette 
@@ -230,8 +230,8 @@ DocumentRoot "/www/mainserver"
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">Servir diff&eacute;rents sites sur diff&eacute;rents 
-    ports.</a> <a title="Lien permanent" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">Servir diff&eacute;rents sites sur diff&eacute;rents 
+    ports. <a title="Lien permanent" href="#port" class="permalink">&para;</a></h2>
 
     <p>Vous disposez de plusieurs domaines pointant sur la m&ecirc;me adresse 
     IP et vous voulez &eacute;galement servir de multiples ports. L'exemple
@@ -265,7 +265,7 @@ Listen 8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">H&eacute;bergement virtuel bas&eacute; sur IP</a> <a title="Lien permanent" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">H&eacute;bergement virtuel bas&eacute; sur IP <a title="Lien permanent" href="#ip" class="permalink">&para;</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
@@ -291,8 +291,8 @@ Listen 8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">H&eacute;bergements virtuels mixtes bas&eacute;s sur 
-    les ports et sur les IP</a> <a title="Lien permanent" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">H&eacute;bergements virtuels mixtes bas&eacute;s sur 
+    les ports et sur les IP <a title="Lien permanent" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>Le serveur dispose de deux adresses IP (<code>172.20.30.40</code> 
     et <code>172.20.30.50</code>) correspondant respectivement aux noms 
@@ -328,8 +328,8 @@ Listen 172.20.30.50:8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">H&eacute;bergements virtuels mixtes bas&eacute; sur 
-    les noms et sur IP</a> <a title="Lien permanent" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">H&eacute;bergements virtuels mixtes bas&eacute; sur 
+    les noms et sur IP <a title="Lien permanent" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>Toute adresse indiqu&eacute;e comme argument d'une section VirtualHost
     et n'apparaissant dans aucun autre serveur virtuel, fait de cette
@@ -366,8 +366,8 @@ Listen 172.20.30.50:8080
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Utilisation simultan&eacute;e de 
-    <code>Virtual_host</code> et de mod_proxy</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Utilisation simultan&eacute;e de 
+    <code>Virtual_host</code> et de mod_proxy <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
 
     <p>L'exemple suivant montre comment une machine peut mandater 
     un serveur virtuel fonctionnant sur le serveur d'une autre machine. 
@@ -388,11 +388,11 @@ Listen 172.20.30.50:8080
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default">Utilisation de serveurs virtuels 
-    <code>_default_</code></a> <a title="Lien permanent" href="#default" class="permalink">&para;</a></h2>
+<h2 id="default">Utilisation de serveurs virtuels 
+    <code>_default_</code> <a title="Lien permanent" href="#default" class="permalink">&para;</a></h2>
 
-    <h3><a name="defaultallports" id="defaultallports">Serveurs virtuels 
-    <code>_default_</code> pour tous les ports</a></h3>
+    <h3 id="defaultallports">Serveurs virtuels 
+    <code>_default_</code> pour tous les ports</h3>
 
     <p>Exemple de capture de <em>toutes</em> les requ&ecirc;tes &eacute;manant 
     d'adresses IP ou de ports non connus, <em>c'est-&agrave;-dire</em>, d'un 
@@ -422,8 +422,8 @@ Listen 172.20.30.50:8080
     un script).</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">Serveurs virtuels 
-    <code>_default_</code> pour des ports diff&eacute;rents</a></h3>
+    <h3 id="defaultdifferentports">Serveurs virtuels 
+    <code>_default_</code> pour des ports diff&eacute;rents</h3>
 
     <p>La configuration est similaire &agrave; l'exemple pr&eacute;c&eacute;dent, mais 
     le serveur &eacute;coute sur plusieurs ports et un second serveur virtuel 
@@ -447,8 +447,8 @@ Listen 172.20.30.50:8080
     serveur principal n'est jamais utilis&eacute; pour servir une requ&ecirc;te.</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">Serveurs virtuels 
-    <code>_default_</code> pour un seul port</a></h3>
+    <h3 id="defaultoneport">Serveurs virtuels 
+    <code>_default_</code> pour un seul port</h3>
 
     <p>Nous voulons cr&eacute;er un serveur virtuel par d&eacute;faut seulement 
     pour le port 80.</p>
@@ -471,8 +471,8 @@ DocumentRoot "/www/default"
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">Migration d'un serveur virtuel 
-	par nom en un serveur virtuel par IP</a> <a title="Lien permanent" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">Migration d'un serveur virtuel 
+	par nom en un serveur virtuel par IP <a title="Lien permanent" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>Le serveur virtuel par nom avec le nom de domaine 
     <code>www.example.org</code> (de notre <a href="#name">exemple 
@@ -508,8 +508,8 @@ DocumentRoot "/www/example1"
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath">Utilisation de la directive 
-    <code>ServerPath</code></a> <a title="Lien permanent" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath">Utilisation de la directive 
+    <code>ServerPath</code> <a title="Lien permanent" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>Dans le cas o&ugrave; vous disposez de deux serveurs virtuels par nom, 
     le client doit transmettre un en-t&ecirc;te <code>Host:</code> correct 
@@ -575,7 +575,7 @@ DocumentRoot "/www/subdomain/sub1"
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

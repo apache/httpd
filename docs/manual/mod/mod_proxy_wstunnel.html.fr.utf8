@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -97,7 +97,7 @@ tout protocole demand&eacute; par le client.
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketasync" id="proxywebsocketasync">Directive</a> <a name="ProxyWebsocketAsync" id="ProxyWebsocketAsync">ProxyWebsocketAsync</a> <a title="Lien permanent" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxywebsocketasync">Directive <span id="ProxyWebsocketAsync">ProxyWebsocketAsync</span> <a title="Lien permanent" href="#proxywebsocketasync" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Cr&eacute;ation d'un tunnel asynchrone</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsync ON|OFF</code></td></tr>
@@ -113,7 +113,7 @@ tout protocole demand&eacute; par le client.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketasyncdelay" id="proxywebsocketasyncdelay">Directive</a> <a name="ProxyWebsocketAsyncDelay" id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</a> <a title="Lien permanent" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxywebsocketasyncdelay">Directive <span id="ProxyWebsocketAsyncDelay">ProxyWebsocketAsyncDelay</span> <a title="Lien permanent" href="#proxywebsocketasyncdelay" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente synchrone maximum pour des donn&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketAsyncDelay <var>num</var>[ms]</code></td></tr>
@@ -133,7 +133,7 @@ tout protocole demand&eacute; par le client.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketfallbacktoproxyhttp" id="proxywebsocketfallbacktoproxyhttp">Directive</a> <a name="ProxyWebsocketFallbackToProxyHttp" id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</a> <a title="Lien permanent" href="#proxywebsocketfallbacktoproxyhttp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxywebsocketfallbacktoproxyhttp">Directive <span id="ProxyWebsocketFallbackToProxyHttp">ProxyWebsocketFallbackToProxyHttp</span> <a title="Lien permanent" href="#proxywebsocketfallbacktoproxyhttp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Demande &agrave; ce module de laisser <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
 g&eacute;rer la requ&ecirc;te</td></tr>
@@ -155,7 +155,7 @@ g&eacute;rer la requ&ecirc;te</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxywebsocketidletimeout" id="proxywebsocketidletimeout">Directive</a> <a name="ProxyWebsocketIdleTimeout" id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</a> <a title="Lien permanent" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxywebsocketidletimeout">Directive <span id="ProxyWebsocketIdleTimeout">ProxyWebsocketIdleTimeout</span> <a title="Lien permanent" href="#proxywebsocketidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps d'attente maximum pour des donn&eacute;es sur le tunnel websockets</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyWebsocketIdleTimeout <var>num</var>[ms]</code></td></tr>
@@ -176,7 +176,7 @@ g&eacute;rer la requ&ecirc;te</td></tr>
 <a href="../fr/mod/mod_proxy_wstunnel.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

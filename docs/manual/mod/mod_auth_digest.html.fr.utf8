@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -76,8 +76,8 @@ l'authentification</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="using" id="using">Utilisation de l'authentification &agrave; base de
-condens&eacute;s</a> <a title="Lien permanent" href="#using" class="permalink">&para;</a></h2>
+<h2 id="using">Utilisation de l'authentification &agrave; base de
+condens&eacute;s <a title="Lien permanent" href="#using" class="permalink">&para;</a></h2>
 
     <p>Pour utiliser l'authentification &agrave; base de condens&eacute;s MD5, configurez la
     protection de la section Location comme dans l'exemple ci-dessous :</p>
@@ -117,7 +117,7 @@ condens&eacute;s</a> <a title="Lien permanent" href="#using" class="permalink">&
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a> <a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a title="Lien permanent" href="#authdigestalgorithm" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestalgorithm">Directive <span id="AuthDigestAlgorithm">AuthDigestAlgorithm</span> <a title="Lien permanent" href="#authdigestalgorithm" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>S&eacute;lectionne l'algorithme utilis&eacute; pour calculer les
 condens&eacute;s du d&eacute;fit et de sa r&eacute;ponse</td></tr>
@@ -139,7 +139,7 @@ condens&eacute;s du d&eacute;fit et de sa r&eacute;ponse</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestdomain" id="authdigestdomain">Directive</a> <a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a> <a title="Lien permanent" href="#authdigestdomain" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestdomain">Directive <span id="AuthDigestDomain">AuthDigestDomain</span> <a title="Lien permanent" href="#authdigestdomain" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URIs qui se trouvent dans le m&ecirc;me espace de protection
 concernant l'authentification &agrave; base de condens&eacute;s</td></tr>
@@ -174,7 +174,7 @@ concernant l'authentification &agrave; base de condens&eacute;s</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestnccheck" id="authdigestnccheck">Directive</a> <a name="AuthDigestNcCheck" id="AuthDigestNcCheck">AuthDigestNcCheck</a> <a title="Lien permanent" href="#authdigestnccheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestnccheck">Directive <span id="AuthDigestNcCheck">AuthDigestNcCheck</span> <a title="Lien permanent" href="#authdigestnccheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou d&eacute;sactive la v&eacute;rification du nombre d'envois du
 nombre &agrave; valeur unique (nonce) par le serveur</td></tr>
@@ -191,7 +191,7 @@ nombre &agrave; valeur unique (nonce) par le serveur</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a> <a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a title="Lien permanent" href="#authdigestnoncelifetime" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestnoncelifetime">Directive <span id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</span> <a title="Lien permanent" href="#authdigestnoncelifetime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&eacute;e de validit&eacute; du nombre &agrave; valeur unique du
 serveur (nonce)</td></tr>
@@ -216,7 +216,7 @@ serveur (nonce)</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestprovider" id="authdigestprovider">Directive</a> <a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a title="Lien permanent" href="#authdigestprovider" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestprovider">Directive <span id="AuthDigestProvider">AuthDigestProvider</span> <a title="Lien permanent" href="#authdigestprovider" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le(s) fournisseurs(s) d'authentification pour la
 zone du site web concern&eacute;e</td></tr>
@@ -243,7 +243,7 @@ zone du site web concern&eacute;e</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestqop" id="authdigestqop">Directive</a> <a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a> <a title="Lien permanent" href="#authdigestqop" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestqop">Directive <span id="AuthDigestQop">AuthDigestQop</span> <a title="Lien permanent" href="#authdigestqop" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine le niveau de protection fourni par
 l'authentification &agrave; base de condens&eacute;</td></tr>
@@ -274,7 +274,7 @@ l'authentification &agrave; base de condens&eacute;</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a> <a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a> <a title="Lien permanent" href="#authdigestshmemsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authdigestshmemsize">Directive <span id="AuthDigestShmemSize">AuthDigestShmemSize</span> <a title="Lien permanent" href="#authdigestshmemsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantit&eacute; de m&eacute;moire partag&eacute;e &agrave; allouer afin de conserver
 les informations &agrave; propos des clients</td></tr>
@@ -314,7 +314,7 @@ AuthDigestShmemSize 1M</pre>
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

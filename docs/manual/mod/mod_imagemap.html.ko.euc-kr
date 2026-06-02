@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -70,7 +70,7 @@
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_imagemap">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_imagemap">Report a bug</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="features" id="features">새로운 기능</a> <a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
+<h2 id="features">새로운 기능 <a title="Permanent link" href="#features" class="permalink">&para;</a></h2>
 
     <p>이미지맵 모듈에는 이전 이미지맵 프로그램에는 없는 몇가지
     새로운 기능이 있다.</p>
@@ -89,7 +89,7 @@
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="imapfile" id="imapfile">이미지맵 파일</a> <a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
+<h2 id="imapfile">이미지맵 파일 <a title="Permanent link" href="#imapfile" class="permalink">&para;</a></h2>
 
     <p>이미지맵 파일은 아래와 같은 형식으로 작성한다.</p>
 
@@ -108,7 +108,7 @@
     묶은 문구는 이미지맵 메뉴를 만들때 링크 제목으로 사용한다.
     '#'로 시작하는 줄은 주석이다.</p>
 
-    <h3><a name="imapfile.directives" id="imapfile.directives">이미지맵 파일 지시어</a></h3>
+    <h3 id="imapfile.directives">이미지맵 파일 지시어</h3>
       <p>이미지맵 파일에서 6가지 지시어를 사용할 수 있다. 지시어는
       특별한 순서없이 사용할 수 있지만, 이미지맵 파일에 나온
       순서대로 처리한다.</p>
@@ -161,7 +161,7 @@
       </dl>
     
 
-    <h3><a name="imapfile.values" id="imapfile.values">지시어에 사용할 수 있는 값들</a></h3>
+    <h3 id="imapfile.values">지시어에 사용할 수 있는 값들</h3>
 
       <p>지시어에 아래 value를 사용할 수 있다.</p>
 
@@ -202,7 +202,7 @@
       </dl>
     
 
-    <h3><a name="imapfile.coords" id="imapfile.coords">좌표</a></h3>
+    <h3 id="imapfile.coords">좌표</h3>
 
       <dl>
       <dt><code>0,0 200,200</code></dt>
@@ -215,7 +215,7 @@
 
     
 
-    <h3><a name="imapfile.quotedtext" id="imapfile.quotedtext">따옴표로 묶은 문구</a></h3>
+    <h3 id="imapfile.quotedtext">따옴표로 묶은 문구</h3>
 
       <dl>
       <dt><code>"<var>Menu Text</var>"</code></dt>
@@ -241,7 +241,7 @@
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="example" id="example">맵파일 예제</a> <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
+<h2 id="example">맵파일 예제 <a title="Permanent link" href="#example" class="permalink">&para;</a></h2>
 
     <div class="example"><p><code>
       #'formatted'나 'semiformatted' 메뉴는 주석을 출력한다.<br>
@@ -258,7 +258,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="referencing" id="referencing">맵파일 사용하기</a> <a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
+<h2 id="referencing">맵파일 사용하기 <a title="Permanent link" href="#referencing" class="permalink">&para;</a></h2>
 
     <div class="example"><h3>HTML 에제</h3><p><code>
       &lt;a href="/maps/imagemap1.map"&gt;<br>
@@ -278,7 +278,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ImapBase" id="ImapBase">ImapBase</a> <a name="imapbase" id="imapbase">지시어</a> <a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="imapbase"><span id="ImapBase">ImapBase</span> 지시어 <a title="Permanent link" href="#imapbase" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>이미지맵 파일에서 <code>base</code> 기본값</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ImapBase map|referer|<var>URL</var></code></td></tr>
@@ -300,7 +300,7 @@
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ImapDefault" id="ImapDefault">ImapDefault</a> <a name="imapdefault" id="imapdefault">지시어</a> <a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="imapdefault"><span id="ImapDefault">ImapDefault</span> 지시어 <a title="Permanent link" href="#imapdefault" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>이미지맵에 어느 영역에도 해당하지 않는 좌표를 준
 경우 기본 행동</td></tr>
@@ -321,7 +321,7 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ImapMenu" id="ImapMenu">ImapMenu</a> <a name="imapmenu" id="imapmenu">지시어</a> <a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="imapmenu"><span id="ImapMenu">ImapMenu</span> 지시어 <a title="Permanent link" href="#imapmenu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">설명:</a></th><td>좌표없이 이미지맵 요청시 취할 행동</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">문법:</a></th><td><code>ImapMenu none|formatted|semiformatted|unformatted</code></td></tr>
@@ -366,7 +366,7 @@
 <a href="../ko/mod/mod_imagemap.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -141,7 +141,7 @@ disponibles</td></tr>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=core">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=core">Signaler un bug</a></li></ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="acceptfilter" id="acceptfilter">Directive</a> <a name="AcceptFilter" id="AcceptFilter">AcceptFilter</a> <a title="Lien permanent" href="#acceptfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="acceptfilter">Directive <span id="AcceptFilter">AcceptFilter</span> <a title="Lien permanent" href="#acceptfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet d'optimiser la configuration d'une socket pour
 l'&eacute;coute d'un protocole</td></tr>
@@ -237,7 +237,7 @@ AcceptFilter https connect</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="acceptpathinfo" id="acceptpathinfo">Directive</a> <a name="AcceptPathInfo" id="AcceptPathInfo">AcceptPathInfo</a> <a title="Lien permanent" href="#acceptpathinfo" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="acceptpathinfo">Directive <span id="AcceptPathInfo">AcceptPathInfo</span> <a title="Lien permanent" href="#acceptpathinfo" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les ressources acceptent des informations sous forme d'un
 nom de chemin en fin de requ&ecirc;te.</td></tr>
@@ -304,7 +304,7 @@ nom de chemin en fin de requ&ecirc;te.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="accessfilename" id="accessfilename">Directive</a> <a name="AccessFileName" id="AccessFileName">AccessFileName</a> <a title="Lien permanent" href="#accessfilename" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="accessfilename">Directive <span id="AccessFileName">AccessFileName</span> <a title="Lien permanent" href="#accessfilename" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom du fichier de configuration distribu&eacute;</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AccessFileName <var>nom-du-fichier</var>
@@ -354,7 +354,7 @@ nom de chemin en fin de requ&ecirc;te.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="adddefaultcharset" id="adddefaultcharset">Directive</a> <a name="AddDefaultCharset" id="AddDefaultCharset">AddDefaultCharset</a> <a title="Lien permanent" href="#adddefaultcharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="adddefaultcharset">Directive <span id="AddDefaultCharset">AddDefaultCharset</span> <a title="Lien permanent" href="#adddefaultcharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Param&egrave;tre jeu de caract&egrave;res par d&eacute;faut &agrave; ajouter quand le
 type de contenu d'une r&eacute;ponse est <code>text/plain</code> ou
@@ -406,7 +406,7 @@ type de contenu d'une r&eacute;ponse est <code>text/plain</code> ou
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="allowencodedslashes" id="allowencodedslashes">Directive</a> <a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a title="Lien permanent" href="#allowencodedslashes" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowencodedslashes">Directive <span id="AllowEncodedSlashes">AllowEncodedSlashes</span> <a title="Lien permanent" href="#allowencodedslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine si les s&eacute;parateurs de chemin encod&eacute;s sont
 autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
@@ -452,7 +452,7 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="allowoverride" id="allowoverride">Directive</a> <a name="AllowOverride" id="AllowOverride">AllowOverride</a> <a title="Lien permanent" href="#allowoverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowoverride">Directive <span id="AllowOverride">AllowOverride</span> <a title="Lien permanent" href="#allowoverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Types de directives autoris&eacute;es dans les fichiers
 <code>.htaccess</code></td></tr>
@@ -619,7 +619,7 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="allowoverridelist" id="allowoverridelist">Directive</a> <a name="AllowOverrideList" id="AllowOverrideList">AllowOverrideList</a> <a title="Lien permanent" href="#allowoverridelist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="allowoverridelist">Directive <span id="AllowOverrideList">AllowOverrideList</span> <a title="Lien permanent" href="#allowoverridelist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverrideList None|<var>directive</var>
@@ -688,7 +688,7 @@ AllowOverrideList CookieTracking CookieName</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="asyncfilter" id="asyncfilter">Directive</a> <a name="AsyncFilter" id="AsyncFilter">AsyncFilter</a> <a title="Lien permanent" href="#asyncfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="asyncfilter">Directive <span id="AsyncFilter">AsyncFilter</span> <a title="Lien permanent" href="#asyncfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le type de filtrage minimal disponible pour le
     traitement asynchrone</td></tr>
@@ -715,7 +715,7 @@ AllowOverrideList CookieTracking CookieName</pre>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cgimapextension" id="cgimapextension">Directive</a> <a name="CGIMapExtension" id="CGIMapExtension">CGIMapExtension</a> <a title="Lien permanent" href="#cgimapextension" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgimapextension">Directive <span id="CGIMapExtension">CGIMapExtension</span> <a title="Lien permanent" href="#cgimapextension" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Technique permettant de localiser l'interpr&eacute;teur des
 scripts CGI</td></tr>
@@ -734,7 +734,7 @@ scripts CGI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cgipassauth" id="cgipassauth">Directive</a> <a name="CGIPassAuth" id="CGIPassAuth">CGIPassAuth</a> <a title="Lien permanent" href="#cgipassauth" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgipassauth">Directive <span id="CGIPassAuth">CGIPassAuth</span> <a title="Lien permanent" href="#cgipassauth" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la transmission d'en-t&ecirc;tes d'autorisation HTTP aux scripts en
 tant que variables CGI</td></tr>
@@ -775,7 +775,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cgivar" id="cgivar">Directive</a> <a name="CGIVar" id="CGIVar">CGIVar</a> <a title="Lien permanent" href="#cgivar" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgivar">Directive <span id="CGIVar">CGIVar</span> <a title="Lien permanent" href="#cgivar" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;le la mani&egrave;re dont certaines variables CGI sont d&eacute;finies</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIVar <var>variable</var> <var>rule</var></code></td></tr>
@@ -824,7 +824,7 @@ CGIVar REQUEST_URI current-uri</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="defaultruntimedir" id="defaultruntimedir">Directive</a> <a name="DefaultRuntimeDir" id="DefaultRuntimeDir">DefaultRuntimeDir</a> <a title="Lien permanent" href="#defaultruntimedir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaultruntimedir">Directive <span id="DefaultRuntimeDir">DefaultRuntimeDir</span> <a title="Lien permanent" href="#defaultruntimedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>R&eacute;pertoire de base des fichiers cr&eacute;&eacute;s au cours de l'ex&eacute;cution du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultRuntimeDir <var>chemin-r&eacute;pertoire</var></code></td></tr>
@@ -865,7 +865,7 @@ permissions sur la racine du serveur <code class="directive">ServerRoot</code></
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="defaultstatedir" id="defaultstatedir">Directive</a> <a name="DefaultStateDir" id="DefaultStateDir">DefaultStateDir</a> <a title="Lien permanent" href="#defaultstatedir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaultstatedir">Directive <span id="DefaultStateDir">DefaultStateDir</span> <a title="Lien permanent" href="#defaultstatedir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>R&eacute;pertoire racine des fichiers d'&eacute;tat persistants</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultStateDir <var>directory-path</var></code></td></tr>
@@ -904,7 +904,7 @@ serveur</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="defaulttype" id="defaulttype">Directive</a> <a name="DefaultType" id="DefaultType">DefaultType</a> <a title="Lien permanent" href="#defaulttype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="defaulttype">Directive <span id="DefaultType">DefaultType</span> <a title="Lien permanent" href="#defaulttype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les seuls effets de cette directive sont des &eacute;missions
 d'avertissements si sa valeur est diff&eacute;rente de <code>none</code>. Dans
@@ -943,7 +943,7 @@ DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="define" id="define">Directive</a> <a name="Define" id="Define">Define</a> <a title="Lien permanent" href="#define" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="define">Directive <span id="Define">Define</span> <a title="Lien permanent" href="#define" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de d&eacute;finir une variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Define <var>nom-param&egrave;tre</var> [<var>valeur-param&egrave;tre</var>]</code></td></tr>
@@ -990,7 +990,7 @@ DESACTIV&Eacute;S &agrave; partir de la version 2.3.0.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directory" id="directory">Directive</a> <a name="Directory" id="Directory">&lt;Directory&gt;</a> <a title="Lien permanent" href="#directory" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directory">Directive <span id="Directory">&lt;Directory&gt;</span> <a title="Lien permanent" href="#directory" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe un ensemble de directives qui ne s'appliquent
 qu'au r&eacute;pertoire concern&eacute; du syst&egrave;me de fichiers, &agrave; ses
@@ -1131,7 +1131,7 @@ combinent entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="directorymatch" id="directorymatch">Directive</a> <a name="DirectoryMatch" id="DirectoryMatch">&lt;DirectoryMatch&gt;</a> <a title="Lien permanent" href="#directorymatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="directorymatch">Directive <span id="DirectoryMatch">&lt;DirectoryMatch&gt;</span> <a title="Lien permanent" href="#directorymatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui s'appliquent au contenu de r&eacute;pertoires
 du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle</td></tr>
@@ -1202,7 +1202,7 @@ combinent entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="documentroot" id="documentroot">Directive</a> <a name="DocumentRoot" id="DocumentRoot">DocumentRoot</a> <a title="Lien permanent" href="#documentroot" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="documentroot">Directive <span id="DocumentRoot">DocumentRoot</span> <a title="Lien permanent" href="#documentroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Racine principale de l'arborescence des documents visible
 depuis Internet</td></tr>
@@ -1237,7 +1237,7 @@ correspondance des URLs avec le syst&egrave;me de fichiers</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="else" id="else">Directive</a> <a name="Else" id="Else">&lt;Else&gt;</a> <a title="Lien permanent" href="#else" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="else">Directive <span id="Else">&lt;Else&gt;</span> <a title="Lien permanent" href="#else" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent que si la
 condition correspondant &agrave; la section <code class="directive"><a href="#if">&lt;If&gt;</a></code> ou <code class="directive"><a href="#elseif">&lt;ElseIf&gt;</a></code> pr&eacute;c&eacute;dente n'est pas satisfaite par la
@@ -1283,7 +1283,7 @@ requ&ecirc;te &agrave; l'ex&eacute;cution</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="elseif" id="elseif">Directive</a> <a name="ElseIf" id="ElseIf">&lt;ElseIf&gt;</a> <a title="Lien permanent" href="#elseif" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="elseif">Directive <span id="ElseIf">&lt;ElseIf&gt;</span> <a title="Lien permanent" href="#elseif" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent que si la
 condition correspondante est satisfaite par une requ&ecirc;te &agrave; l'ex&eacute;cution,
@@ -1333,7 +1333,7 @@ Apache</a>, pour une r&eacute;f&eacute;rence compl&egrave;te et d'autres exemple
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="enablemmap" id="enablemmap">Directive</a> <a name="EnableMMAP" id="EnableMMAP">EnableMMAP</a> <a title="Lien permanent" href="#enablemmap" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="enablemmap">Directive <span id="EnableMMAP">EnableMMAP</span> <a title="Lien permanent" href="#enablemmap" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise la projection en m&eacute;moire (Memory-Mapping) pour
 lire les fichiers pendant qu'ils sont servis</td></tr>
@@ -1385,7 +1385,7 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="enablesendfile" id="enablesendfile">Directive</a> <a name="EnableSendfile" id="EnableSendfile">EnableSendfile</a> <a title="Lien permanent" href="#enablesendfile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="enablesendfile">Directive <span id="EnableSendfile">EnableSendfile</span> <a title="Lien permanent" href="#enablesendfile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Utilise le support sendfile du noyau pour servir les
 fichiers aux clients</td></tr>
@@ -1457,7 +1457,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="error" id="error">Directive</a> <a name="Error" id="Error">Error</a> <a title="Lien permanent" href="#error" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="error">Directive <span id="Error">Error</span> <a title="Lien permanent" href="#error" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interrompt la lecture de la configuration avec un message
 d'erreur personnalis&eacute;</td></tr>
@@ -1501,7 +1501,7 @@ d'erreur personnalis&eacute;</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="errordocument" id="errordocument">Directive</a> <a name="ErrorDocument" id="ErrorDocument">ErrorDocument</a> <a title="Lien permanent" href="#errordocument" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errordocument">Directive <span id="ErrorDocument">ErrorDocument</span> <a title="Lien permanent" href="#errordocument" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Document que le serveur renvoie au client en cas
 d'erreur</td></tr>
@@ -1626,7 +1626,7 @@ personnalisation des r&eacute;ponses</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="errorlog" id="errorlog">Directive</a> <a name="ErrorLog" id="ErrorLog">ErrorLog</a> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errorlog">Directive <span id="ErrorLog">ErrorLog</span> <a title="Lien permanent" href="#errorlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finition du chemin du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:[<var>facility</var>][:<var>tag</var>]]</code></td></tr>
@@ -1698,7 +1698,7 @@ ErrorLog syslog::httpd.srv2</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="errorlogformat" id="errorlogformat">Directive</a> <a name="ErrorLogFormat" id="ErrorLogFormat">ErrorLogFormat</a> <a title="Lien permanent" href="#errorlogformat" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="errorlogformat">Directive <span id="ErrorLogFormat">ErrorLogFormat</span> <a title="Lien permanent" href="#errorlogformat" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sp&eacute;cification du format des entr&eacute;es du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLogFormat [connection|request] <var>format</var></code></td></tr>
@@ -1902,7 +1902,7 @@ ErrorLogFormat connection "[%{uc}t] [C:%{c}L] remote\ %a local\ %A"</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="extendedstatus" id="extendedstatus">Directive</a> <a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a title="Lien permanent" href="#extendedstatus" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="extendedstatus">Directive <span id="ExtendedStatus">ExtendedStatus</span> <a title="Lien permanent" href="#extendedstatus" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Extrait des informations d'&eacute;tat &eacute;tendues pour chaque
 requ&ecirc;te</td></tr>
@@ -1939,7 +1939,7 @@ requ&ecirc;te</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="fileetag" id="fileetag">Directive</a> <a name="FileETag" id="FileETag">FileETag</a> <a title="Lien permanent" href="#fileetag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="fileetag">Directive <span id="FileETag">FileETag</span> <a title="Lien permanent" href="#fileetag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caract&eacute;ristiques de fichier utilis&eacute;es lors de la g&eacute;n&eacute;ration
 de l'en-t&ecirc;te de r&eacute;ponse HTTP ETag pour les fichiers statiques</td></tr>
@@ -2009,7 +2009,7 @@ dans les versions 2.3.14 et ant&eacute;rieures.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="files" id="files">Directive</a> <a name="Files" id="Files">&lt;Files&gt;</a> <a title="Lien permanent" href="#files" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="files">Directive <span id="Files">&lt;Files&gt;</span> <a title="Lien permanent" href="#files" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent aux fichiers
 pr&eacute;cis&eacute;s</td></tr>
@@ -2074,7 +2074,7 @@ entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="filesmatch" id="filesmatch">Directive</a> <a name="FilesMatch" id="FilesMatch">&lt;FilesMatch&gt;</a> <a title="Lien permanent" href="#filesmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="filesmatch">Directive <span id="FilesMatch">&lt;FilesMatch&gt;</span> <a title="Lien permanent" href="#filesmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui s'appliquent &agrave; des fichiers
 sp&eacute;cifi&eacute;s sous la forme d'expressions rationnelles</td></tr>
@@ -2128,7 +2128,7 @@ entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="flushmaxpipelined" id="flushmaxpipelined">Directive</a> <a name="FlushMaxPipelined" id="FlushMaxPipelined">FlushMaxPipelined</a> <a title="Lien permanent" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="flushmaxpipelined">Directive <span id="FlushMaxPipelined">FlushMaxPipelined</span> <a title="Lien permanent" href="#flushmaxpipelined" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de r&eacute;ponses en attente (pipelined) au-del&agrave; duquel
 elles sont envoy&eacute;es sur le r&eacute;seau</td></tr>
@@ -2153,7 +2153,7 @@ elles sont envoy&eacute;es sur le r&eacute;seau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="flushmaxthreshold" id="flushmaxthreshold">Directive</a> <a name="FlushMaxThreshold" id="FlushMaxThreshold">FlushMaxThreshold</a> <a title="Lien permanent" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="flushmaxthreshold">Directive <span id="FlushMaxThreshold">FlushMaxThreshold</span> <a title="Lien permanent" href="#flushmaxthreshold" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Seuil au-del&agrave; duquel les donn&eacute;es en attente sont envoy&eacute;es sur le
 r&eacute;seau</td></tr>
@@ -2178,7 +2178,7 @@ r&eacute;seau</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="forcetype" id="forcetype">Directive</a> <a name="ForceType" id="ForceType">ForceType</a> <a title="Lien permanent" href="#forcetype" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="forcetype">Directive <span id="ForceType">ForceType</span> <a title="Lien permanent" href="#forcetype" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force le type de m&eacute;dium sp&eacute;cifi&eacute; dans le champ d'en-t&ecirc;te
 HTTP Content-Type pour les fichiers correspondants</td></tr>
@@ -2252,7 +2252,7 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="gprofdir" id="gprofdir">Directive</a> <a name="GprofDir" id="GprofDir">GprofDir</a> <a title="Lien permanent" href="#gprofdir" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="gprofdir">Directive <span id="GprofDir">GprofDir</span> <a title="Lien permanent" href="#gprofdir" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>R&eacute;pertoire dans lequel &eacute;crire les donn&eacute;es de profiling
 gmon.out.</td></tr>
@@ -2273,7 +2273,7 @@ gmon.out.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="hostnamelookups" id="hostnamelookups">Directive</a> <a name="HostnameLookups" id="HostnameLookups">HostnameLookups</a> <a title="Lien permanent" href="#hostnamelookups" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="hostnamelookups">Directive <span id="HostnameLookups">HostnameLookups</span> <a title="Lien permanent" href="#hostnamelookups" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active la recherche DNS sur les adresses IP des
 clients</td></tr>
@@ -2325,7 +2325,7 @@ clients</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="httpprotocoloptions" id="httpprotocoloptions">Directive</a> <a name="HttpProtocolOptions" id="HttpProtocolOptions">HttpProtocolOptions</a> <a title="Lien permanent" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="httpprotocoloptions">Directive <span id="HttpProtocolOptions">HttpProtocolOptions</span> <a title="Lien permanent" href="#httpprotocoloptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Modifie les contraintes sur le format des requ&ecirc;tes HTTP</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>HttpProtocolOptions [Strict|Unsafe] [RegisteredMethods|LenientMethods]
@@ -2450,7 +2450,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="if" id="if">Directive</a> <a name="If" id="If">&lt;If&gt;</a> <a title="Lien permanent" href="#if" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="if">Directive <span id="If">&lt;If&gt;</span> <a title="Lien permanent" href="#if" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent que si une
 condition est satisfaite au cours du traitement d'une
@@ -2521,7 +2521,7 @@ directives <code class="directive">&lt;If&gt;</code>, <code class="directive">&l
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ifdefine" id="ifdefine">Directive</a> <a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a title="Lien permanent" href="#ifdefine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifdefine">Directive <span id="IfDefine">&lt;IfDefine&gt;</span> <a title="Lien permanent" href="#ifdefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliqueront que si un
 test retourne "vrai" au d&eacute;marrage du serveur</td></tr>
@@ -2581,7 +2581,7 @@ test retourne "vrai" au d&eacute;marrage du serveur</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ifdirective" id="ifdirective">Directive</a> <a name="IfDirective" id="IfDirective">&lt;IfDirective&gt;</a> <a title="Lien permanent" href="#ifdirective" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifdirective">Directive <span id="IfDirective">&lt;IfDirective&gt;</span> <a title="Lien permanent" href="#ifdirective" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives dont le traitement est conditionn&eacute; par la
 pr&eacute;sence ou l'absence d'une directive particuli&egrave;re</td></tr>
@@ -2628,7 +2628,7 @@ pr&eacute;sence ou l'absence d'une directive particuli&egrave;re</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="iffile" id="iffile">Directive</a> <a name="IfFile" id="IfFile">&lt;IfFile&gt;</a> <a title="Lien permanent" href="#iffile" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="iffile">Directive <span id="IfFile">&lt;IfFile&gt;</span> <a title="Lien permanent" href="#iffile" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives qui ne seront trait&eacute;es que si un fichier
 existe au d&eacute;marrage</td></tr>
@@ -2671,7 +2671,7 @@ existe au d&eacute;marrage</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ifmodule" id="ifmodule">Directive</a> <a name="IfModule" id="IfModule">&lt;IfModule&gt;</a> <a title="Lien permanent" href="#ifmodule" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifmodule">Directive <span id="IfModule">&lt;IfModule&gt;</span> <a title="Lien permanent" href="#ifmodule" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent qu'en fonction
 de la pr&eacute;sence ou de l'absence d'un module sp&eacute;cifique</td></tr>
@@ -2725,7 +2725,7 @@ module</var>&gt; ... &lt;/IfModule&gt;</code></td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="ifsection" id="ifsection">Directive</a> <a name="IfSection" id="IfSection">&lt;IfSection&gt;</a> <a title="Lien permanent" href="#ifsection" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="ifsection">Directive <span id="IfSection">&lt;IfSection&gt;</span> <a title="Lien permanent" href="#ifsection" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Regroupe des directives dont le traitement est conditionn&eacute; par la
 pr&eacute;sence ou l'absence d'une section particuli&egrave;re</td></tr>
@@ -2781,7 +2781,7 @@ pr&eacute;sence ou l'absence d'une section particuli&egrave;re</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="include" id="include">Directive</a> <a name="Include" id="Include">Include</a> <a title="Lien permanent" href="#include" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="include">Directive <span id="Include">Include</span> <a title="Lien permanent" href="#include" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
@@ -2855,7 +2855,7 @@ Include conf/vhosts/*.conf</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="includeoptional" id="includeoptional">Directive</a> <a name="IncludeOptional" id="IncludeOptional">IncludeOptional</a> <a title="Lien permanent" href="#includeoptional" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="includeoptional">Directive <span id="IncludeOptional">IncludeOptional</span> <a title="Lien permanent" href="#includeoptional" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclusion de fichiers dans le fichier de configuration</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>IncludeOptional
@@ -2882,7 +2882,7 @@ provoquent plus d'erreur de syntaxe apr&egrave;s de la version 2.4.30</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="keepalive" id="keepalive">Directive</a> <a name="KeepAlive" id="KeepAlive">KeepAlive</a> <a title="Lien permanent" href="#keepalive" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="keepalive">Directive <span id="KeepAlive">KeepAlive</span> <a title="Lien permanent" href="#keepalive" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active les connexions HTTP persistantes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>KeepAlive On|Off</code></td></tr>
@@ -2923,7 +2923,7 @@ provoquent plus d'erreur de syntaxe apr&egrave;s de la version 2.4.30</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="keepalivetimeout" id="keepalivetimeout">Directive</a> <a name="KeepAliveTimeout" id="KeepAliveTimeout">KeepAliveTimeout</a> <a title="Lien permanent" href="#keepalivetimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="keepalivetimeout">Directive <span id="KeepAliveTimeout">KeepAliveTimeout</span> <a title="Lien permanent" href="#keepalivetimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&eacute;e pendant laquelle le serveur va attendre une requ&ecirc;te
 avant de fermer une connexion persistante</td></tr>
@@ -2952,7 +2952,7 @@ avant de fermer une connexion persistante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limit" id="limit">Directive</a> <a name="Limit" id="Limit">&lt;Limit&gt;</a> <a title="Lien permanent" href="#limit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limit">Directive <span id="Limit">&lt;Limit&gt;</span> <a title="Lien permanent" href="#limit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite les contr&ocirc;les d'acc&egrave;s que la section contient &agrave;
 certaines m&eacute;thodes HTTP</td></tr>
@@ -3030,7 +3030,7 @@ certaines m&eacute;thodes HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitexcept" id="limitexcept">Directive</a> <a name="LimitExcept" id="LimitExcept">&lt;LimitExcept&gt;</a> <a title="Lien permanent" href="#limitexcept" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitexcept">Directive <span id="LimitExcept">&lt;LimitExcept&gt;</span> <a title="Lien permanent" href="#limitexcept" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Applique les contr&ocirc;les d'acc&egrave;s &agrave; toutes les m&eacute;thodes HTTP,
 sauf celles qui sont sp&eacute;cifi&eacute;es</td></tr>
@@ -3062,7 +3062,7 @@ sauf celles qui sont sp&eacute;cifi&eacute;es</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitinternalrecursion" id="limitinternalrecursion">Directive</a> <a name="LimitInternalRecursion" id="LimitInternalRecursion">LimitInternalRecursion</a> <a title="Lien permanent" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitinternalrecursion">Directive <span id="LimitInternalRecursion">LimitInternalRecursion</span> <a title="Lien permanent" href="#limitinternalrecursion" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine le nombre maximal de redirections internes et de
 sous-requ&ecirc;tes imbriqu&eacute;es</td></tr>
@@ -3097,7 +3097,7 @@ sous-requ&ecirc;tes imbriqu&eacute;es</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitrequestbody" id="limitrequestbody">Directive</a> <a name="LimitRequestBody" id="LimitRequestBody">LimitRequestBody</a> <a title="Lien permanent" href="#limitrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestbody">Directive <span id="LimitRequestBody">LimitRequestBody</span> <a title="Lien permanent" href="#limitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>limite la taille maximale du corps de la requ&ecirc;te HTTP
 envoy&eacute;e par le client</td></tr>
@@ -3145,7 +3145,7 @@ la valeur par d&eacute;faut &eacute;tait 0 (aucune limite)</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitrequestfields" id="limitrequestfields">Directive</a> <a name="LimitRequestFields" id="LimitRequestFields">LimitRequestFields</a> <a title="Lien permanent" href="#limitrequestfields" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestfields">Directive <span id="LimitRequestFields">LimitRequestFields</span> <a title="Lien permanent" href="#limitrequestfields" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de champs d'en-t&ecirc;te autoris&eacute;s dans une
 requ&ecirc;te HTTP</td></tr>
@@ -3194,7 +3194,7 @@ requ&ecirc;te HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitrequestfieldsize" id="limitrequestfieldsize">Directive</a> <a name="LimitRequestFieldSize" id="LimitRequestFieldSize">LimitRequestFieldSize</a> <a title="Lien permanent" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestfieldsize">Directive <span id="LimitRequestFieldSize">LimitRequestFieldSize</span> <a title="Lien permanent" href="#limitrequestfieldsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;dinit la taille maximale autoris&eacute;e d'un en-t&ecirc;te de
 requ&ecirc;te HTTP</td></tr>
@@ -3240,7 +3240,7 @@ requ&ecirc;te HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitrequestline" id="limitrequestline">Directive</a> <a name="LimitRequestLine" id="LimitRequestLine">LimitRequestLine</a> <a title="Lien permanent" href="#limitrequestline" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitrequestline">Directive <span id="LimitRequestLine">LimitRequestLine</span> <a title="Lien permanent" href="#limitrequestline" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la taille maximale d'une ligne de requ&ecirc;te
 HTTP</td></tr>
@@ -3287,7 +3287,7 @@ HTTP</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="limitxmlrequestbody" id="limitxmlrequestbody">Directive</a> <a name="LimitXMLRequestBody" id="LimitXMLRequestBody">LimitXMLRequestBody</a> <a title="Lien permanent" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="limitxmlrequestbody">Directive <span id="LimitXMLRequestBody">LimitXMLRequestBody</span> <a title="Lien permanent" href="#limitxmlrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la taille maximale du corps d'une requ&ecirc;te au format
 XML</td></tr>
@@ -3316,7 +3316,7 @@ LimitXMLRequestBody 1048576</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="location" id="location">Directive</a> <a name="Location" id="Location">&lt;Location&gt;</a> <a title="Lien permanent" href="#location" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="location">Directive <span id="Location">&lt;Location&gt;</span> <a title="Lien permanent" href="#location" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 sp&eacute;cifi&eacute;es</td></tr>
@@ -3470,7 +3470,7 @@ entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="locationmatch" id="locationmatch">Directive</a> <a name="LocationMatch" id="LocationMatch">&lt;LocationMatch&gt;</a> <a title="Lien permanent" href="#locationmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="locationmatch">Directive <span id="LocationMatch">&lt;LocationMatch&gt;</span> <a title="Lien permanent" href="#locationmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>N'applique les directives contenues qu'aux URLs
 correspondant &agrave; une expression rationnelle</td></tr>
@@ -3548,7 +3548,7 @@ entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te.</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="loglevel" id="loglevel">Directive</a> <a name="LogLevel" id="LogLevel">LogLevel</a> <a title="Lien permanent" href="#loglevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="loglevel">Directive <span id="LogLevel">LogLevel</span> <a title="Lien permanent" href="#loglevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contr&ocirc;le la verbosit&eacute; du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogLevel [<var>module</var>:]<var>niveau</var>
@@ -3765,7 +3765,7 @@ LogLevel info ssl_module:warn</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="logleveloverride" id="logleveloverride">Directive</a> <a name="LogLevelOverride" id="LogLevelOverride">LogLevelOverride</a> <a title="Lien permanent" href="#logleveloverride" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="logleveloverride">Directive <span id="LogLevelOverride">LogLevelOverride</span> <a title="Lien permanent" href="#logleveloverride" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Surcharge la verbosit&eacute; du journal des erreurs pour certains
 clients</td></tr>
@@ -3817,7 +3817,7 @@ Apache.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxkeepaliverequests" id="maxkeepaliverequests">Directive</a> <a name="MaxKeepAliveRequests" id="MaxKeepAliveRequests">MaxKeepAliveRequests</a> <a title="Lien permanent" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxkeepaliverequests">Directive <span id="MaxKeepAliveRequests">MaxKeepAliveRequests</span> <a title="Lien permanent" href="#maxkeepaliverequests" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de requ&ecirc;tes permises pour une connexion
 persistante</td></tr>
@@ -3841,7 +3841,7 @@ persistante</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxrangeoverlaps" id="maxrangeoverlaps">Directive</a> <a name="MaxRangeOverlaps" id="MaxRangeOverlaps">MaxRangeOverlaps</a> <a title="Lien permanent" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxrangeoverlaps">Directive <span id="MaxRangeOverlaps">MaxRangeOverlaps</span> <a title="Lien permanent" href="#maxrangeoverlaps" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de chevauchements de segments de donn&eacute;es autoris&eacute;
     (par exemple <code>100-200,150-300</code>) avant le renvoi de la
@@ -3879,7 +3879,7 @@ persistante</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxrangereversals" id="maxrangereversals">Directive</a> <a name="MaxRangeReversals" id="MaxRangeReversals">MaxRangeReversals</a> <a title="Lien permanent" href="#maxrangereversals" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxrangereversals">Directive <span id="MaxRangeReversals">MaxRangeReversals</span> <a title="Lien permanent" href="#maxrangereversals" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre d'inversions d'ordre autoris&eacute; dans la sp&eacute;cification des
     segments de donn&eacute;es (par exemple <code>100-200,50-70</code>) avant le renvoi de la
@@ -3918,7 +3918,7 @@ persistante</td></tr>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="maxranges" id="maxranges">Directive</a> <a name="MaxRanges" id="MaxRanges">MaxRanges</a> <a title="Lien permanent" href="#maxranges" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="maxranges">Directive <span id="MaxRanges">MaxRanges</span> <a title="Lien permanent" href="#maxranges" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre de segments de donn&eacute;es autoris&eacute; avant le renvoi de
 l'int&eacute;gralit&eacute; de la ressource</td></tr>
@@ -3953,7 +3953,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mergeslashes" id="mergeslashes">Directive</a> <a name="MergeSlashes" id="MergeSlashes">MergeSlashes</a> <a title="Lien permanent" href="#mergeslashes" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mergeslashes">Directive <span id="MergeSlashes">MergeSlashes</span> <a title="Lien permanent" href="#mergeslashes" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Fusion des slashes cons&eacute;cutifs dans les URLs par le serveur.
 </td></tr>
@@ -3987,7 +3987,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mergetrailers" id="mergetrailers">Directive</a> <a name="MergeTrailers" id="MergeTrailers">MergeTrailers</a> <a title="Lien permanent" href="#mergetrailers" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mergetrailers">Directive <span id="MergeTrailers">MergeTrailers</span> <a title="Lien permanent" href="#mergetrailers" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine si les donn&eacute;es suppl&eacute;mentaires (trailers) sont
 fusionn&eacute;es avec les en-t&ecirc;tes</td></tr>
@@ -4011,7 +4011,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="mutex" id="mutex">Directive</a> <a name="Mutex" id="Mutex">Mutex</a> <a title="Lien permanent" href="#mutex" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="mutex">Directive <span id="Mutex">Mutex</span> <a title="Lien permanent" href="#mutex" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les m&eacute;canismes de mutex et le repertoire du fichier
 verrou pour tous les mutex ou seulement les mutex sp&eacute;cifi&eacute;s</td></tr>
@@ -4253,7 +4253,7 @@ Mutex fcntl:/var/httpd/locks mpm-accept</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="namevirtualhost" id="namevirtualhost">Directive</a> <a name="NameVirtualHost" id="NameVirtualHost">NameVirtualHost</a> <a title="Lien permanent" href="#namevirtualhost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="namevirtualhost">Directive <span id="NameVirtualHost">NameVirtualHost</span> <a title="Lien permanent" href="#namevirtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>OBSOLETE : D&eacute;finit une adresse IP pour les serveurs virtuels &agrave; base de
 nom</td></tr>
@@ -4280,7 +4280,7 @@ virtuels</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="options" id="options">Directive</a> <a name="Options" id="Options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="options">Directive <span id="Options">Options</span> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les fonctionnalit&eacute;s disponibles pour un r&eacute;pertoire
 particulier</td></tr>
@@ -4461,7 +4461,7 @@ particulier</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="protocol" id="protocol">Directive</a> <a name="Protocol" id="Protocol">Protocol</a> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocol">Directive <span id="Protocol">Protocol</span> <a title="Lien permanent" href="#protocol" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocole pour une socket d'&eacute;coute</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocol <var>protocole</var></code></td></tr>
@@ -4501,7 +4501,7 @@ serveur HTTP Apache.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="protocols" id="protocols">Directive</a> <a name="Protocols" id="Protocols">Protocols</a> <a title="Lien permanent" href="#protocols" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocols">Directive <span id="Protocols">Protocols</span> <a title="Lien permanent" href="#protocols" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Protocoles disponibles pour un serveur virtuel ou non</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Protocols <var>protocole</var> ...</code></td></tr>
@@ -4559,7 +4559,7 @@ serveur HTTP Apache.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="protocolshonororder" id="protocolshonororder">Directive</a> <a name="ProtocolsHonorOrder" id="ProtocolsHonorOrder">ProtocolsHonorOrder</a> <a title="Lien permanent" href="#protocolshonororder" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="protocolshonororder">Directive <span id="ProtocolsHonorOrder">ProtocolsHonorOrder</span> <a title="Lien permanent" href="#protocolshonororder" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine qui du client ou du serveur d&eacute;termine l'ordre
     des protocoles au cours de la n&eacute;gociation de la connexion</td></tr>
@@ -4593,7 +4593,7 @@ serveur HTTP Apache.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="qualifyredirecturl" id="qualifyredirecturl">Directive</a> <a name="QualifyRedirectURL" id="QualifyRedirectURL">QualifyRedirectURL</a> <a title="Lien permanent" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="qualifyredirecturl">Directive <span id="QualifyRedirectURL">QualifyRedirectURL</span> <a title="Lien permanent" href="#qualifyredirecturl" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>V&eacute;rifie si la variable d'environnement REDIRECT_URL est
 pleinement qualifi&eacute;e</td></tr>
@@ -4621,7 +4621,7 @@ comme si la directive QualifyRedirectURL &eacute;tait d&eacute;finie &agrave; On
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="readbuffersize" id="readbuffersize">Directive</a> <a name="ReadBufferSize" id="ReadBufferSize">ReadBufferSize</a> <a title="Lien permanent" href="#readbuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="readbuffersize">Directive <span id="ReadBufferSize">ReadBufferSize</span> <a title="Lien permanent" href="#readbuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille des tampons utilis&eacute;s pour lire les donn&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ReadBufferSize <var>bytes</var></code></td></tr>
@@ -4641,7 +4641,7 @@ Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="regexdefaultoptions" id="regexdefaultoptions">Directive</a> <a name="RegexDefaultOptions" id="RegexDefaultOptions">RegexDefaultOptions</a> <a title="Lien permanent" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="regexdefaultoptions">Directive <span id="RegexDefaultOptions">RegexDefaultOptions</span> <a title="Lien permanent" href="#regexdefaultoptions" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configuration des options globales par d&eacute;faut pour les
     expressions rationnelles</td></tr>
@@ -4705,7 +4705,7 @@ RegexDefaultOptions DOTALL +ICASE
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="registerhttpmethod" id="registerhttpmethod">Directive</a> <a name="RegisterHttpMethod" id="RegisterHttpMethod">RegisterHttpMethod</a> <a title="Lien permanent" href="#registerhttpmethod" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="registerhttpmethod">Directive <span id="RegisterHttpMethod">RegisterHttpMethod</span> <a title="Lien permanent" href="#registerhttpmethod" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistrement de m&eacute;thodes HTTP non standards</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RegisterHttpMethod <var>method</var> [<var>method</var> [...]]</code></td></tr>
@@ -4728,7 +4728,7 @@ configur&eacute; pour ne transmettre que des m&eacute;thodes reconnues aux modul
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rlimitcpu" id="rlimitcpu">Directive</a> <a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a title="Lien permanent" href="#rlimitcpu" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitcpu">Directive <span id="RLimitCPU">RLimitCPU</span> <a title="Lien permanent" href="#rlimitcpu" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
@@ -4767,7 +4767,7 @@ d'exploitation</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rlimitmem" id="rlimitmem">Directive</a> <a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a title="Lien permanent" href="#rlimitmem" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitmem">Directive <span id="RLimitMEM">RLimitMEM</span> <a title="Lien permanent" href="#rlimitmem" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
@@ -4806,7 +4806,7 @@ d'exploitation</code></td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="rlimitnproc" id="rlimitnproc">Directive</a> <a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a title="Lien permanent" href="#rlimitnproc" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="rlimitnproc">Directive <span id="RLimitNPROC">RLimitNPROC</span> <a title="Lien permanent" href="#rlimitnproc" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de processus qui peuvent &ecirc;tre initi&eacute;s par
 les processus initi&eacute;s par les processus enfants d'Apache httpd</td></tr>
@@ -4853,7 +4853,7 @@ les processus initi&eacute;s par les processus enfants d'Apache httpd</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptinterpretersource" id="scriptinterpretersource">Directive</a> <a name="ScriptInterpreterSource" id="ScriptInterpreterSource">ScriptInterpreterSource</a> <a title="Lien permanent" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptinterpretersource">Directive <span id="ScriptInterpreterSource">ScriptInterpreterSource</span> <a title="Lien permanent" href="#scriptinterpretersource" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permet de localiser l'interpr&eacute;teur des scripts
 CGI</td></tr>
@@ -4917,7 +4917,7 @@ CGI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="seerequesttail" id="seerequesttail">Directive</a> <a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a title="Lien permanent" href="#seerequesttail" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="seerequesttail">Directive <span id="SeeRequestTail">SeeRequestTail</span> <a title="Lien permanent" href="#seerequesttail" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine si mod_status affiche les 63 premiers caract&egrave;res
 d'une requ&ecirc;te ou les 63 derniers, en supposant que la requ&ecirc;te
@@ -4956,7 +4956,7 @@ elle-m&ecirc;me poss&egrave;de plus de 63 caract&egrave;res.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serveradmin" id="serveradmin">Directive</a> <a name="ServerAdmin" id="ServerAdmin">ServerAdmin</a> <a title="Lien permanent" href="#serveradmin" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serveradmin">Directive <span id="ServerAdmin">ServerAdmin</span> <a title="Lien permanent" href="#serveradmin" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'adresse &eacute;lectronique que le serveur inclut dans les
 messages d'erreur envoy&eacute;s au client</td></tr>
@@ -4987,7 +4987,7 @@ messages d'erreur envoy&eacute;s au client</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serveralias" id="serveralias">Directive</a> <a name="ServerAlias" id="ServerAlias">ServerAlias</a> <a title="Lien permanent" href="#serveralias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serveralias">Directive <span id="ServerAlias">ServerAlias</span> <a title="Lien permanent" href="#serveralias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Autres noms d'un serveur utilisables pour atteindre des
 serveurs virtuels &agrave; base de nom</td></tr>
@@ -5031,7 +5031,7 @@ du serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="servername" id="servername">Directive</a> <a name="ServerName" id="ServerName">ServerName</a> <a title="Lien permanent" href="#servername" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="servername">Directive <span id="ServerName">ServerName</span> <a title="Lien permanent" href="#servername" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom d'h&ocirc;te et port que le serveur utilise pour
 s'authentifier lui-m&ecirc;me</td></tr>
@@ -5137,7 +5137,7 @@ du serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serverpath" id="serverpath">Directive</a> <a name="ServerPath" id="ServerPath">ServerPath</a> <a title="Lien permanent" href="#serverpath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serverpath">Directive <span id="ServerPath">ServerPath</span> <a title="Lien permanent" href="#serverpath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nom de chemin d'URL h&eacute;rit&eacute; pour un serveur virtuel &agrave; base
 de nom acc&eacute;d&eacute; par un navigateur incompatible</td></tr>
@@ -5168,7 +5168,7 @@ ServerPath</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serverroot" id="serverroot">Directive</a> <a name="ServerRoot" id="ServerRoot">ServerRoot</a> <a title="Lien permanent" href="#serverroot" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serverroot">Directive <span id="ServerRoot">ServerRoot</span> <a title="Lien permanent" href="#serverroot" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Racine du r&eacute;pertoire d'installation du
 serveur</td></tr>
@@ -5205,7 +5205,7 @@ correctement les permissions sur le r&eacute;pertoire indiqu&eacute; par la dire
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="serversignature" id="serversignature">Directive</a> <a name="ServerSignature" id="ServerSignature">ServerSignature</a> <a title="Lien permanent" href="#serversignature" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="serversignature">Directive <span id="ServerSignature">ServerSignature</span> <a title="Lien permanent" href="#serversignature" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit un pied de page pour les documents g&eacute;n&eacute;r&eacute;s par le
 serveur</td></tr>
@@ -5244,7 +5244,7 @@ serveur</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="servertokens" id="servertokens">Directive</a> <a name="ServerTokens" id="ServerTokens">ServerTokens</a> <a title="Lien permanent" href="#servertokens" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="servertokens">Directive <span id="ServerTokens">ServerTokens</span> <a title="Lien permanent" href="#servertokens" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure l'en-t&ecirc;te <code>Server</code> de la r&eacute;ponse
 HTTP</td></tr>
@@ -5319,7 +5319,7 @@ HTTP</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="sethandler" id="sethandler">Directive</a> <a name="SetHandler" id="SetHandler">SetHandler</a> <a title="Lien permanent" href="#sethandler" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="sethandler">Directive <span id="SetHandler">SetHandler</span> <a title="Lien permanent" href="#sethandler" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force le traitement des fichiers sp&eacute;cifi&eacute;s par un
 gestionnaire particulier</td></tr>
@@ -5390,7 +5390,7 @@ gestionnaire particulier</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="setinputfilter" id="setinputfilter">Directive</a> <a name="SetInputFilter" id="SetInputFilter">SetInputFilter</a> <a title="Lien permanent" href="#setinputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="setinputfilter">Directive <span id="SetInputFilter">SetInputFilter</span> <a title="Lien permanent" href="#setinputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les filtres par lesquels vont passer les requ&ecirc;tes
 client et les donn&eacute;es POST</td></tr>
@@ -5416,7 +5416,7 @@ client et les donn&eacute;es POST</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="setoutputfilter" id="setoutputfilter">Directive</a> <a name="SetOutputFilter" id="SetOutputFilter">SetOutputFilter</a> <a title="Lien permanent" href="#setoutputfilter" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="setoutputfilter">Directive <span id="SetOutputFilter">SetOutputFilter</span> <a title="Lien permanent" href="#setoutputfilter" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit les filtres par lesquels vont passer les r&eacute;ponses
 du serveur</td></tr>
@@ -5451,7 +5451,7 @@ du serveur</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="stricthostcheck" id="stricthostcheck">Directive</a> <a name="StrictHostCheck" id="StrictHostCheck">StrictHostCheck</a> <a title="Lien permanent" href="#stricthostcheck" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="stricthostcheck">Directive <span id="StrictHostCheck">StrictHostCheck</span> <a title="Lien permanent" href="#stricthostcheck" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine si le nom d'h&ocirc;te contenu dans une requ&ecirc;te doit &ecirc;tre
 explicitement sp&eacute;cifi&eacute; au niveau du serveur virtuel qui a pris en compte cette
@@ -5490,7 +5490,7 @@ derni&egrave;re.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="timeout" id="timeout">Directive</a> <a name="TimeOut" id="TimeOut">TimeOut</a> <a title="Lien permanent" href="#timeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="timeout">Directive <span id="TimeOut">TimeOut</span> <a title="Lien permanent" href="#timeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Temps pendant lequel le serveur va attendre certains
 &eacute;v&egrave;nements avant de consid&eacute;rer qu'une requ&ecirc;te a &eacute;chou&eacute;</td></tr>
@@ -5532,7 +5532,7 @@ derni&egrave;re.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="traceenable" id="traceenable">Directive</a> <a name="TraceEnable" id="TraceEnable">TraceEnable</a> <a title="Lien permanent" href="#traceenable" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="traceenable">Directive <span id="TraceEnable">TraceEnable</span> <a title="Lien permanent" href="#traceenable" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;termine le comportement des requ&ecirc;tes
 <code>TRACE</code></td></tr>
@@ -5576,7 +5576,7 @@ derni&egrave;re.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="unclist" id="unclist">Directive</a> <a name="UNCList" id="UNCList">UNCList</a> <a title="Lien permanent" href="#unclist" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="unclist">Directive <span id="UNCList">UNCList</span> <a title="Lien permanent" href="#unclist" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit quels sont les noms d'h&ocirc;te UNC auxquels le serveur peut acc&eacute;der
 </td></tr>
@@ -5615,7 +5615,7 @@ serveur HTTP Apache.</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="undefine" id="undefine">Directive</a> <a name="UnDefine" id="UnDefine">UnDefine</a> <a title="Lien permanent" href="#undefine" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="undefine">Directive <span id="UnDefine">UnDefine</span> <a title="Lien permanent" href="#undefine" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Invalide la d&eacute;finition d'une variable</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UnDefine <var>nom-variable</var></code></td></tr>
@@ -5648,7 +5648,7 @@ serveur HTTP Apache.</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="usecanonicalname" id="usecanonicalname">Directive</a> <a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a title="Lien permanent" href="#usecanonicalname" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="usecanonicalname">Directive <span id="UseCanonicalName">UseCanonicalName</span> <a title="Lien permanent" href="#usecanonicalname" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la mani&egrave;re dont le serveur d&eacute;termine son propre nom
 et son port</td></tr>
@@ -5718,7 +5718,7 @@ et son port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="usecanonicalphysicalport" id="usecanonicalphysicalport">Directive</a> <a name="UseCanonicalPhysicalPort" id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</a> <a title="Lien permanent" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="usecanonicalphysicalport">Directive <span id="UseCanonicalPhysicalPort">UseCanonicalPhysicalPort</span> <a title="Lien permanent" href="#usecanonicalphysicalport" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit la mani&egrave;re dont le serveur
 d&eacute;termine son propre port</td></tr>
@@ -5778,7 +5778,7 @@ d&eacute;termine son propre port</td></tr>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="virtualhost" id="virtualhost">Directive</a> <a name="VirtualHost" id="VirtualHost">&lt;VirtualHost&gt;</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="virtualhost">Directive <span id="VirtualHost">&lt;VirtualHost&gt;</span> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contient des directives qui ne s'appliquent qu'&agrave; un nom
 d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</td></tr>
@@ -5899,7 +5899,7 @@ entre elles &agrave; la r&eacute;ception d'une requ&ecirc;te</li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="warning" id="warning">Directive</a> <a name="Warning" id="Warning">Warning</a> <a title="Lien permanent" href="#warning" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="warning">Directive <span id="Warning">Warning</span> <a title="Lien permanent" href="#warning" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Message d'avertissement personnalisable en provenance de
 l'interpr&eacute;tation du fichier de configuration</td></tr>
@@ -5948,7 +5948,7 @@ Apache.</td></tr>
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

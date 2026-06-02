@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -52,7 +52,7 @@
 </ul><h3>Âü°í</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">ëª¨ë&#65533;&#65533; ë¬¸ì&#65533;&#65533;</a></li><li><a href="remapping.html">ë¦¬ë&#65533;¤ì&#65533;´ë&#65533;&#65533;&#65533;&#65533;ê³&#65533; &#65533;¬ë§¤&#65533;&#65533;</a></li><li><a href="access.html">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;</a></li><li><a href="vhosts.html">ê°&#65533;&#65533;&#65533; &#65533;¸ì&#65533;¤í&#65533;&#65533;</a></li><li><a href="proxy.html">&#65533;&#65533;ë¡&#65533;&#65533;&#65533;</a></li><li><a href="rewritemap.html">RewriteMap &#65533;¬ì&#65533;©í&#65533;&#65533;ê¸&#65533;</a></li><li><a href="advanced.html">ê³&#65533;ê¸&#65533; ê¸°ì&#65533;&#65533;</a></li><li><a href="avoid.html">mod_rewriteë¥&#65533; &#65533;¬ì&#65533;©í&#65533;&#65533;ì§&#65533; ë§&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; ê²½ì&#65533;&#65533;</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">&#65533;&#65533;ê°&#65533;</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">&#65533;&#65533;ê°&#65533; <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
 <p>Apache ëª¨ë&#65533;&#65533; <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; URL ì¡°ì&#65533;&#65533;&#65533;&#65533;
 &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; ë°©ë&#65533;&#65533;&#65533; &#65533;&#65533;ê³µí&#65533;&#65533;&#65533;&#65533; ë§¤ì&#65533;&#65533; ê°&#65533;&#65533;¥í&#65533;&#65533;ê³&#65533; &#65533;&#65533;êµ&#65533;&#65533;&#65533; ëª¨ë&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;.
 &#65533;´ë&#65533;&#65533; &#65533;¬ì&#65533;©í&#65533;&#65533;ë©&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; ê±°ì&#65533;&#65533; ëª¨ë&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; URL &#65533;¬ì&#65533;&#65533;&#65533;±ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;
@@ -80,7 +80,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>&#65533;&#65533; <a href="http://pcre.org/">Perl
 &#65533;¸í&#65533;&#65533; &#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;</a> &#65533;´í&#65533;&#65533;ë¥&#65533; &#65533;¬ì&#65533;©í&#65533;©ë&#65533;&#65533;&#65533;&#65533;. &#65533;&#65533; ë¬¸ì&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;
@@ -98,7 +98,7 @@ Friedl&#65533;&#65533; Mastering Regular Expressions</a>(3&#65533;&#65533;&#6553
 &#65533;&#65533;&#65533;&#65533; ê³¼í&#65533;&#65533;&#65533;&#65533; ê³µì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;ë¡&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;´ì&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ì¤&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;ê¸°ì&#65533;&#65533;
 ì¶©ë&#65533;&#65533;&#65533; &#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;´í&#65533;&#65533;ë¥&#65533; &#65533;&#65533;ê³µí&#65533;&#65533;ê³&#65533;&#65533;&#65533; &#65533;©ë&#65533;&#65533;&#65533;&#65533;.</p>
 
-<h3><a name="regexvocab" id="regexvocab">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;´í&#65533;&#65533;</a></h3>
+<h3 id="regexvocab">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;´í&#65533;&#65533;</h3>
 
 <p>&#65533;¤ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;ê³&#65533; <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>&#65533;&#65533; &#65533;&#65533;&#65533;±í&#65533;&#65533;ê¸&#65533; &#65533;&#65533;&#65533;&#65533;
 &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; ìµ&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533; êµ¬ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;. &#65533;´ê&#65533;&#65533;¤ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;
@@ -182,7 +182,7 @@ Friedl&#65533;&#65533; Mastering Regular Expressions</a>(3&#65533;&#65533;&#6553
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ì°¸ì&ldquo; &#65533;¬ì&#65533;&#65533; ê°&#65533;&#65533;¥ì&#65533;&#65533;</a></h3>
+<h3 id="InternalBackRefs">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ì°¸ì&ldquo; &#65533;¬ì&#65533;&#65533; ê°&#65533;&#65533;¥ì&#65533;&#65533;</h3>
 
       <p>&#65533;¬ê¸°&#65533;&#65533; ê¸°ì&#65533;µí&#65533;´ì&#65533;&#65533; &#65533;&#65533; ì¤&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;µë&#65533;&#65533;&#65533;&#65533;:
       <em>Pattern</em>&#65533;´ë&#65533;&#65533; <em>CondPattern</em> ì¤&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;&#65533;
@@ -217,7 +217,7 @@ Friedl&#65533;&#65533; Mastering Regular Expressions</a>(3&#65533;&#65533;&#6553
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule ê¸°ë³¸</a> <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">RewriteRule ê¸°ë³¸ <a title="Permanent link" href="#rewriterule" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>&#65533;&#65533;
 ê³µë°±&#65533;¼ë&#65533; êµ¬ë&#65533;&#65533;&#65533; &#65533;&#65533; ê°&#65533;&#65533;&#65533; &#65533;¸ì&#65533;&#65533;ë¡&#65533; êµ¬ì&#65533;±ë&#65533;©ë&#65533;&#65533;&#65533;&#65533;. &#65533;¸ì&#65533;&#65533;&#65533;&#65533; &#65533;¤ì&#65533;&#65533;ê³&#65533;
 ê°&#65533;&#65533;µë&#65533;&#65533;&#65533;&#65533;:</p>
@@ -297,7 +297,7 @@ Friedl&#65533;&#65533; Mastering Regular Expressions</a>(3&#65533;&#65533;&#6553
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;ê·&#65533;</a> <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;ê·&#65533; <a title="Permanent link" href="#flags" class="permalink">&para;</a></h2>
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>&#65533;&#65533;
 &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; ê·&#65533;ì¹&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;´ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;ê·¸ë&#65533;&#65533; &#65533;&#65533;&#65533;©í&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;
 &#65533;&#65533;&#65533;µë&#65533;&#65533;&#65533;&#65533;. &#65533;&#65533;ë¥&#65533; &#65533;¤ì&#65533;&#65533;, ê·&#65533;ì¹&#65533;&#65533;&#65533; ë§¤ì¹­ &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; <code>[NC]</code>
@@ -313,7 +313,7 @@ Friedl&#65533;&#65533; Mastering Regular Expressions</a>(3&#65533;&#65533;&#6553
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; ì¡°ê±´</a> <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; ì¡°ê±´ <a title="Permanent link" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>&#65533;&#65533;&#65533;&#65533; &#65533;´ì&#65533;&#65533;&#65533;&#65533; <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 ì§&#65533;&#65533;&#65533;&#65533;´ë&#65533;&#65533; &#65533;¬ì&#65533;©í&#65533;&#65533;&#65533;&#65533; &#65533;¤ì&#65533;&#65533;
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533;
@@ -364,7 +364,7 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; ë§&#65533;</a> <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">&#65533;¬ì&#65533;&#65533;&#65533;&#65533; ë§&#65533; <a title="Permanent link" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ì§&#65533;&#65533;&#65533;&#65533;´ë&#65533;&#65533;
 &#65533;¬ì&#65533;&#65533;&#65533;±ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;¸ë&#65533; &#65533;¨ì&#65533;&#65533;ë¥&#65533; &#65533;¸ì&#65533;&#65533;&#65533;&#65533;&#65533; ë°©ë&#65533;&#65533;&#65533; &#65533;&#65533;ê³µí&#65533;©ë&#65533;&#65533;&#65533;&#65533;.
@@ -372,7 +372,7 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 ë³´ì¶© ë¬¸ì&#65533;&#65533;</a>&#65533;&#65533;&#65533;&#65533; &#65533;¼ì&#65533;&#65533;&#65533;©ë&#65533;&#65533;&#65533;&#65533;.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">.htaccess &#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">.htaccess &#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>&#65533;¬ì&#65533;&#65533;&#65533;±ì&#65533;&#65533; &#65533;¼ë&#65533;&#65533;&#65533;&#65533;¼ë&#65533; ì£&#65533; &#65533;&#65533;ë²&#65533; &#65533;¤ì&#65533;&#65533;(
 <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
@@ -405,7 +405,7 @@ RewriteRule "^/(.*)"       "/sites/%1/$1"</pre>
 <a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

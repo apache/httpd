@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -42,7 +42,7 @@ hacer. Este documento le guiar&aacute; a trav&eacute;s de los conceptos b&aacute
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="clientserver" id="clientserver">Clientes, Servidores y URLs</a> <a title="Enlace permanente" href="#clientserver" class="permalink">&para;</a></h2>
+<h2 id="clientserver">Clientes, Servidores y URLs <a title="Enlace permanente" href="#clientserver" class="permalink">&para;</a></h2>
 
 
 <p>
@@ -77,7 +77,7 @@ de log. Esto se comenta en mayor detalle m&aacute;s abajo en la secci&oacute;n <
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dns" id="dns">Nombres de Host y DNS</a> <a title="Enlace permanente" href="#dns" class="permalink">&para;</a></h2>
+<h2 id="dns">Nombres de Host y DNS <a title="Enlace permanente" href="#dns" class="permalink">&para;</a></h2>
 
 
 <p>Para conectar con un servidor, el cliente debe primero resolver
@@ -110,7 +110,7 @@ para hacer pruebas. Esta entrada ser&iacute;a parecida a esto:</p>
 y m&aacute;s sobre DNS en <a href="http://en.wikipedia.org/wiki/Domain_Name_System">Wikipedia.org/wiki/Domain_Name_System</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configuration" id="configuration">Ficheros de Configuraci&oacute;n y Directivas</a> <a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
+<h2 id="configuration">Ficheros de Configuraci&oacute;n y Directivas <a title="Enlace permanente" href="#configuration" class="permalink">&para;</a></h2>
 
 
 <p>El Servidor Apache HTTP se configura con ficheros de texto.
@@ -152,7 +152,7 @@ ficheros <code>.htaccess</code> en el <a href="howto/htaccess.html"><code>.htacc
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="content" id="content">Contenido del Sitio Web</a> <a title="Enlace permanente" href="#content" class="permalink">&para;</a></h2>
+<h2 id="content">Contenido del Sitio Web <a title="Enlace permanente" href="#content" class="permalink">&para;</a></h2>
 
 
 <p>El contenido del sitio web puede tener distintas formas, pero puede dividirse
@@ -185,7 +185,7 @@ su documentaci&oacute;n en otros foros de soporte para responder a preguntas sob
 ellas.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="logs" id="logs">Ficheros de Log y Soluci&oacute;n de Problemas</a> <a title="Enlace permanente" href="#logs" class="permalink">&para;</a></h2>
+<h2 id="logs">Ficheros de Log y Soluci&oacute;n de Problemas <a title="Enlace permanente" href="#logs" class="permalink">&para;</a></h2>
 
 <p>Como administrador de un Servidor Apache HTTP, tus activos m&aacute;s valiosos
 son los ficheros de log, y en el particular, el log de errores. Intentar hacer
@@ -206,7 +206,7 @@ de error.</p>
 documentaci&oacute;n de logs</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="other" id="other">&iquest;Qu&eacute; viene a continuaci&oacute;n?</a> <a title="Enlace permanente" href="#other" class="permalink">&para;</a></h2>
+<h2 id="other">&iquest;Qu&eacute; viene a continuaci&oacute;n? <a title="Enlace permanente" href="#other" class="permalink">&para;</a></h2>
 
 
 <p>Una vez que cumples los pre-requisitos es hora de avanzar.</p>
@@ -231,7 +231,7 @@ aprender.</p>
 <a href="./ru/getting-started.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

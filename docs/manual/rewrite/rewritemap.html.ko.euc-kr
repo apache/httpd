@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -57,7 +57,7 @@
 </ul><h3>Âü°í</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">ëª¨ë&#65533;&#65533; ë¬¸ì&#65533;&#65533;</a></li><li><a href="intro.html">mod_rewrite &#65533;&#65533;ê°&#65533;</a></li><li><a href="remapping.html">ë¦¬ë&#65533;¤ì&#65533;´ë&#65533;&#65533;&#65533;&#65533;ê³&#65533; &#65533;¬ë§¤&#65533;&#65533;</a></li><li><a href="access.html">&#65533;&#65533;ê·&#65533; &#65533;&#65533;&#65533;&#65533;</a></li><li><a href="vhosts.html">ê°&#65533;&#65533;&#65533; &#65533;¸ì&#65533;¤í&#65533;&#65533;</a></li><li><a href="proxy.html">&#65533;&#65533;ë¡&#65533;&#65533;&#65533;</a></li><li><a href="advanced.html">ê³&#65533;ê¸&#65533; ê¸°ì&#65533;&#65533;</a></li><li><a href="avoid.html">mod_rewriteë¥&#65533; &#65533;¬ì&#65533;©í&#65533;&#65533;ì§&#65533; ë§&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533; ê²½ì&#65533;&#65533;</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">&#65533;&#65533;ê°&#65533;</a> <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">&#65533;&#65533;ê°&#65533; <a title="Permanent link" href="#introduction" class="permalink">&para;</a></h2>
     
 
    <p>
@@ -128,7 +128,7 @@
 &#65533;¤ë&#65533;&#65533;&#65533;ê³&#65533; ê°&#65533;ê°&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;ë¥&#65533; &#65533;&#65533;ê³µí&#65533;©ë&#65533;&#65533;&#65533;&#65533;.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="int" id="int">int: &#65533;´ë&#65533; &#65533;¨ì&#65533;&#65533;</a> <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
+<h2 id="int">int: &#65533;´ë&#65533; &#65533;¨ì&#65533;&#65533; <a title="Permanent link" href="#int" class="permalink">&para;</a></h2>
     
 
     <p>MapType&#65533;&#65533; <code>int</code>&#65533;&#65533; ê²½ì&#65533;&#65533; MapSource&#65533;&#65533; &#65533;¬ì&#65533;&#65533; ê°&#65533;&#65533;¥í&#65533;&#65533;
@@ -171,7 +171,7 @@ RewriteRule "(.*)" "${lc:$1}" [R]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="txt" id="txt">txt: &#65533;¼ë&#65533; &#65533;&#65533;&#65533;¤í&#65533;&#65533; ë§&#65533;</a> <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
+<h2 id="txt">txt: &#65533;¼ë&#65533; &#65533;&#65533;&#65533;¤í&#65533;&#65533; ë§&#65533; <a title="Permanent link" href="#txt" class="permalink">&para;</a></h2>
     
 
     <p>MapType&#65533;&#65533; <code>txt</code>&#65533;&#65533; ê²½ì&#65533;&#65533; MapSource&#65533;&#65533;
@@ -244,7 +244,7 @@ telephone  328
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rnd" id="rnd">rnd: ë¬´ì&#65533;&#65533;&#65533;&#65533; &#65533;¼ë&#65533; &#65533;&#65533;&#65533;¤í&#65533;&#65533;</a> <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
+<h2 id="rnd">rnd: ë¬´ì&#65533;&#65533;&#65533;&#65533; &#65533;¼ë&#65533; &#65533;&#65533;&#65533;¤í&#65533;&#65533; <a title="Permanent link" href="#rnd" class="permalink">&para;</a></h2>
     
 
     <p>MapType&#65533;&#65533; <code>rnd</code>&#65533;&#65533; ê²½ì&#65533;&#65533; MapSource&#65533;&#65533; &#65533;¼ë&#65533;
@@ -290,7 +290,7 @@ static   www1|www1|www2|www3|www4
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbm" id="dbm">dbm: DBM &#65533;´ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
+<h2 id="dbm">dbm: DBM &#65533;´ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#dbm" class="permalink">&para;</a></h2>
     
 
     <p>MapType&#65533;&#65533; <code>dbm</code>&#65533;&#65533; ê²½ì&#65533;&#65533; MapSource&#65533;&#65533;
@@ -346,7 +346,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="prg" id="prg">prg: &#65533;¸ë&#65533; &#65533;¬ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ë¡&#65533;ê·¸ë&#65533;&#65533;</a> <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
+<h2 id="prg">prg: &#65533;¸ë&#65533; &#65533;¬ì&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ë¡&#65533;ê·¸ë&#65533;&#65533; <a title="Permanent link" href="#prg" class="permalink">&para;</a></h2>
 
     <p>MapType&#65533;&#65533; <code>prg</code>&#65533;&#65533; ê²½ì&#65533;&#65533; MapSource&#65533;&#65533;
     ë§¤í&#65533;&#65533; &#65533;&#65533;&#65533;&#65533;&#65533;&#65533; &#65533;&#65533;ê³µí&#65533;&#65533; &#65533;¤í&#65533;&#65533; ê°&#65533;&#65533;¥í&#65533;&#65533; &#65533;&#65533;ë¡&#65533;ê·¸ë&#65533;¨ì&#65533;&#65533; &#65533;&#65533;&#65533;&#65533; &#65533;&#65533;&#65533;¤í&#65533;&#65533;
@@ -434,7 +434,7 @@ for line in sys.stdin:
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="dbd" id="dbd">dbd &#65533;&#65533;&#65533;&#65533; fastdbd: SQL ì¿¼ë¦¬</a> <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
+<h2 id="dbd">dbd &#65533;&#65533;&#65533;&#65533; fastdbd: SQL ì¿¼ë¦¬ <a title="Permanent link" href="#dbd" class="permalink">&para;</a></h2>
     
 
     <p>MapType&#65533;&#65533; <code>dbd</code> &#65533;&#65533;&#65533;&#65533; <code>fastdbd</code>&#65533;&#65533;
@@ -465,7 +465,7 @@ for line in sys.stdin:
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="summary" id="summary">&#65533;&#65533;&#65533;&#65533;</a> <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
+<h2 id="summary">&#65533;&#65533;&#65533;&#65533; <a title="Permanent link" href="#summary" class="permalink">&para;</a></h2>
     
 
     <p><code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ì§&#65533;&#65533;&#65533;&#65533;´ë&#65533;&#65533;
@@ -491,7 +491,7 @@ for line in sys.stdin:
 <a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">¸ðµâ</a> | <a href="../mod/quickreference.html">Áö½Ã¾îµé</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">¿ë¾î</a> | <a href="../sitemap.html">»çÀÌÆ®¸Ê</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

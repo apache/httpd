@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -46,7 +46,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Kullanım</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Kullanım <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong>
     [ -<strong>T</strong><var>VTt&uuml;r&uuml;</var> ]
     [ -<strong>c</strong> ]
@@ -125,7 +125,7 @@
     </code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Se&ccedil;enekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
     <dl>
     <dt><code><strong>-b</strong></code></dt>
     <dd>Betik kipi; parola i&ccedil;in istek yapmak yerine parola komut satırından
@@ -205,7 +205,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="bugs" id="bugs">Hatalar</a> <a title="Permanent link" href="#bugs" class="permalink">&para;</a></h2>
+<h2 id="bugs">Hatalar <a title="Permanent link" href="#bugs" class="permalink">&para;</a></h2>
     <p>Birden fazla DBM dosya bi&ccedil;emi vardır ve b&uuml;y&uuml;k bir olasılıkla da
     sisteminizde bu birden fazla bi&ccedil;emle ilgili k&uuml;t&uuml;phaneler vardır. SDBM,
     NDBM, GNU'nun GDBM projesi ve Berkeley/Sleepycat DB 2/3/4 bunların
@@ -223,7 +223,7 @@
     <code><strong>file</strong></code> programı kullanılabilir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exit" id="exit">&Ccedil;ıkış Durumu</a> <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
+<h2 id="exit">&Ccedil;ıkış Durumu <a title="Permanent link" href="#exit" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong></code>, kullanıcı ismi ve parolasını DBM
     dosyasına başarıyla eklemiş veya g&uuml;ncellemişse <code>0</code>, dosyalara
     erişirken bir sorun &ccedil;ıkmışsa <code>1</code>, komut satırında bir
@@ -236,7 +236,7 @@
     <code>7</code> değeriyle d&ouml;ner.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">&Ouml;rnekler</a> <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">&Ouml;rnekler <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
     <div class="example"><p><code>
       htdbm /usr/local/etc/apache/.htdbm-users jsmith
     </code></p></div>
@@ -266,7 +266,7 @@
     algoritmasıyla şifreler ve bunu belirtilen dosyada saklar.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="security" id="security">G&uuml;venlik Değerlendirmeleri</a> <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
+<h2 id="security">G&uuml;venlik Değerlendirmeleri <a title="Permanent link" href="#security" class="permalink">&para;</a></h2>
     <p><code><strong>htdbm</strong></code> tarafından y&ouml;netilen parola
     dosyalarına sunucunun URI uzayından erişilememelidir; yani dosya bir
     tarayıcı ile okunabilecek bir yerde bulunmamalıdır.</p>
@@ -276,7 +276,7 @@
     &ouml;neriyoruz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="restrictions" id="restrictions">Kısıtlamalar</a> <a title="Permanent link" href="#restrictions" class="permalink">&para;</a></h2>
+<h2 id="restrictions">Kısıtlamalar <a title="Permanent link" href="#restrictions" class="permalink">&para;</a></h2>
     <p>Windows platformunda, <code><strong>htdbm</strong></code>
     ile şifrelenen parolalar <code>255</code> karakterden daha uzun olamaz.
     255 karakterden sonrası kırpılır.</p>
@@ -294,7 +294,7 @@
 <a href="../tr/programs/htdbm.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

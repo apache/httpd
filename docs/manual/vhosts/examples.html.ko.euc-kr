@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -62,8 +62,8 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="purename" id="purename">IP 주소 한개에 여러 이름기반
-    웹사이트 운영하기.</a> <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
+<h2 id="purename">IP 주소 한개에 여러 이름기반
+    웹사이트 운영하기. <a title="Permanent link" href="#purename" class="permalink">&para;</a></h2>
 
     <p>서버에 IP 주소가 한개 있고, DNS에서 여러 주소(CNAMES)가
     이 컴퓨터를 가리킨다. 이 컴퓨터에서 <code>www.example.com</code>과
@@ -144,8 +144,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="twoips" id="twoips">여러 IP 주소에서 이름기반
-    호스트.</a> <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
+<h2 id="twoips">여러 IP 주소에서 이름기반
+    호스트. <a title="Permanent link" href="#twoips" class="permalink">&para;</a></h2>
 
   	<div class="note">
 		  <h3>주의</h3><p>여기서 설명한 방법은 IP 주소가
@@ -198,8 +198,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="intraextra" id="intraextra">(내부와 외부 주소와 같이)
-    다른 IP 주소로 같은 내용을 서비스하기.</a> <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
+<h2 id="intraextra">(내부와 외부 주소와 같이)
+    다른 IP 주소로 같은 내용을 서비스하기. <a title="Permanent link" href="#intraextra" class="permalink">&para;</a></h2>
 
     <p>서버 컴퓨터에 IP 주소가 두개 (<code>192.168.1.1</code>과
     <code>172.20.30.40</code>) 있다. 컴퓨터는 내부 (인트라넷)
@@ -241,8 +241,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="port" id="port">여러 포트에서 서로 다른 사이트
-    운영하기.</a> <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
+<h2 id="port">여러 포트에서 서로 다른 사이트
+    운영하기. <a title="Permanent link" href="#port" class="permalink">&para;</a></h2>
 
     <p>같은 IP의 여러 포트에서 서로 다른 도메인을 서비스한다고
     가정하자. 이는 "NameVirtualHost" 태그에 포트를 정의하면
@@ -289,7 +289,7 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ip" id="ip">IP기반 가상호스트</a> <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
+<h2 id="ip">IP기반 가상호스트 <a title="Permanent link" href="#ip" class="permalink">&para;</a></h2>
 
     <p>서버는 각각 <code>www.example.com</code>과
     <code>www.example.org</code>에 해당하는 두 IP 주소를
@@ -322,8 +322,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipport" id="ipport">포트기반과 ip기반이 혼합된
-    가상호스트</a> <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
+<h2 id="ipport">포트기반과 ip기반이 혼합된
+    가상호스트 <a title="Permanent link" href="#ipport" class="permalink">&para;</a></h2>
 
     <p>서버는 각각 <code>www.example.com</code>과
     <code>www.example.org</code>에 해당하는 두 IP 주소를
@@ -369,8 +369,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mixed" id="mixed">이름기반과 IP기반이 혼합된
-    가상호스트</a> <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
+<h2 id="mixed">이름기반과 IP기반이 혼합된
+    가상호스트 <a title="Permanent link" href="#mixed" class="permalink">&para;</a></h2>
 
     <p>주소중 몇몇은 이름기반 가상호스트로, 다른 것은 IP기반
     가상호스트로 서비스하고 싶다.</p>
@@ -421,11 +421,11 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="default" id="default"><code>_default_</code> 가상호스트
-    사용하기</a> <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
+<h2 id="default"><code>_default_</code> 가상호스트
+    사용하기 <a title="Permanent link" href="#default" class="permalink">&para;</a></h2>
 
-  	<h3><a name="defaultallports" id="defaultallports">모든 포트에 대한
-    <code>_default_</code> 가상호스트</a></h3>
+  	<h3 id="defaultallports">모든 포트에 대한
+    <code>_default_</code> 가상호스트</h3>
 
     <p>어떤 가상호스트에도 해당하지않은 IP 주소와 포트에 대한
     <em>모든</em> 요청을 처리하기.</p>
@@ -455,8 +455,8 @@
     재작성할(rewrite) 수 있다.</p>
     
 
-    <h3><a name="defaultdifferentports" id="defaultdifferentports">여러 포트에 대한
-    <code>_default_</code> 가상호스트</a></h3>
+    <h3 id="defaultdifferentports">여러 포트에 대한
+    <code>_default_</code> 가상호스트</h3>
 
     <p>위의 경우와 같지만, 서버는 여러 포트를 기다리고 80번
     포트에 대해서 추가로 <code>_default_</code> 가상호스트를
@@ -486,8 +486,8 @@
     주서버는 절대로 요청을 서비스하지 못한다.</p>
     
 
-    <h3><a name="defaultoneport" id="defaultoneport">한 포트에 대한
-    <code>_default_</code> 가상호스트</a></h3>
+    <h3 id="defaultoneport">한 포트에 대한
+    <code>_default_</code> 가상호스트</h3>
 
     <p>80번 포트에 대해서만 default 가상호스트를 만들고 싶다.</p>
 
@@ -507,8 +507,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="migrate" id="migrate">이름기반 가상호스트를 IP기반
-    가상호스트로 옮기기</a> <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
+<h2 id="migrate">이름기반 가상호스트를 IP기반
+    가상호스트로 옮기기 <a title="Permanent link" href="#migrate" class="permalink">&para;</a></h2>
 
     <p>(<a href="#name">이름기반</a>의 첫번째 예에서) 호스트명
     <code>www.example.org</code>에 대한 이름기반 가상호스트는
@@ -553,8 +553,8 @@
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="serverpath" id="serverpath"><code>ServerPath</code>
-	지시어 사용하기</a> <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
+<h2 id="serverpath"><code>ServerPath</code>
+	지시어 사용하기 <a title="Permanent link" href="#serverpath" class="permalink">&para;</a></h2>
 
     <p>두 이름기반 가상호스트를 가진 서버가 있다. 올바른
     가상호스트를 선택하기위해 클라이언트는 올바른
@@ -632,7 +632,7 @@
 <a href="../tr/vhosts/examples.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/quickreference.html">지시어들</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

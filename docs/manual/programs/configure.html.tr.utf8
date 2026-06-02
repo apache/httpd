@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -46,7 +46,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../install.html">Derleme ve Kurulum</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Komut Satırı</a> <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Komut Satırı <a title="Permanent link" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code>configure</code> betiğini kaynak paketinin k&ouml;k dizininden başka
       bir yere kopyalayıp &ccedil;alıştırmamalısınız.</p>
 
@@ -58,7 +58,7 @@
       kullanabilirsiniz. Kullanışlı değişkenlerin bazıları <a href="#env">aşağıda</a> a&ccedil;ıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Se&ccedil;enekler</a> <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
+<h2 id="options">Se&ccedil;enekler <a title="Permanent link" href="#options" class="permalink">&para;</a></h2>
   <ul>
     <li><a href="#configurationoptions">Yapılandırma se&ccedil;enekleri</a></li>
     <li><a href="#installationdirectories">Kurulum dizinleri</a></li>
@@ -67,7 +67,7 @@
     <li><a href="#supportopt">Destek programları i&ccedil;in se&ccedil;enekler</a></li>
   </ul>
 
-  <h3><a name="configurationoptions" id="configurationoptions">Yapılandırma se&ccedil;enekleri</a></h3>
+  <h3 id="configurationoptions">Yapılandırma se&ccedil;enekleri</h3>
 
     <p>Aşağıdaki se&ccedil;enekler <code>configure</code> betiğinin kendi davranışını
       belirlemekte kullanılır.</p>
@@ -114,7 +114,7 @@
     </dl>
   
 
-  <h3><a name="installationdirectories" id="installationdirectories">Kurulum dizinleri</a></h3>
+  <h3 id="installationdirectories">Kurulum dizinleri</h3>
 
     <p>Bu se&ccedil;enekler kurulum dizinlerini tanımlar. Kurulum dizinleri se&ccedil;ilmiş
       yerleşime bağımlıdır.</p>
@@ -244,7 +244,7 @@
     
   
 
-  <h3><a name="systemtypes" id="systemtypes">Sistem t&uuml;rleri</a></h3>
+  <h3 id="systemtypes">Sistem t&uuml;rleri</h3>
 
     <p>Bu se&ccedil;enekleri Apache HTTP Sunucusunu başka bir platformda &ccedil;alıştırmak
       &uuml;zere &ccedil;apraz derleme yaparken kullanılır. Normal durumlarda sunucu
@@ -269,7 +269,7 @@
     </dl>
   
 
-  <h3><a name="optionalfeatures" id="optionalfeatures">Se&ccedil;imlik &ouml;zellikler</a></h3>
+  <h3 id="optionalfeatures">Se&ccedil;imlik &ouml;zellikler</h3>
 
     <p>Bu se&ccedil;enekler HTTP sunucunuzun sahip olmasını istediğiniz &ouml;zelliklerin
       hassas olarak ayarlanmasını sağlar.</p>
@@ -506,7 +506,7 @@
     
   
 
-  <h3><a name="packages" id="packages">Se&ccedil;imlik paketler</a></h3>
+  <h3 id="packages">Se&ccedil;imlik paketler</h3>
     <p>Buradaki se&ccedil;enekler se&ccedil;imlik paketleri tanımlamak i&ccedil;in kullanılır.</p>
 
     <h4><a name="generalpackages" id="generalpackages">Genel s&ouml;zdizimi</a></h4>
@@ -605,7 +605,7 @@
     
   
 
-  <h3><a name="supportopt" id="supportopt">Destek programları i&ccedil;in se&ccedil;enekler</a></h3>
+  <h3 id="supportopt">Destek programları i&ccedil;in se&ccedil;enekler</h3>
     <dl>
       <dt><code>--enable-static-support</code></dt>
       <dd>Destek programlarını durağan ilintili olarak derler. Yani
@@ -721,7 +721,7 @@
   
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Ortam Değişkenleri</a> <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Ortam Değişkenleri <a title="Permanent link" href="#env" class="permalink">&para;</a></h2>
   <p><code>configure</code> betiğinin yerleri ve isimleri standartlara uygun
     olmayan k&uuml;t&uuml;phaneleri ve programları bulmasını yardımcı olan veya
     <code>configure</code> betiği tarafından yapılan bazı se&ccedil;imleri
@@ -762,7 +762,7 @@
 <a href="../tr/programs/configure.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Mod&uuml;ller</a> | <a href="../mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

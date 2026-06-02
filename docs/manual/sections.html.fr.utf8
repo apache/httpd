@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -48,8 +48,8 @@ arborescence du site web et expressions bool&eacute;ennes</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="types" id="types">Types de conteneurs de sections de
-configuration</a> <a title="Lien permanent" href="#types" class="permalink">&para;</a></h2>
+<h2 id="types">Types de conteneurs de sections de
+configuration <a title="Lien permanent" href="#types" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_md.html#mdomainsetsection">&lt;MDomainSet&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -119,8 +119,8 @@ De plus, ces sections peuvent &ecirc;tre imbriqu&eacute;es afin de d&eacute;fini
 plus complexes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Syst&egrave;me de fichiers,
-arborescence du site web et expressions bool&eacute;ennes</a> <a title="Lien permanent" href="#file-and-web" class="permalink">&para;</a></h2>
+<h2 id="file-and-web">Syst&egrave;me de fichiers,
+arborescence du site web et expressions bool&eacute;ennes <a title="Lien permanent" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>Les conteneurs de sections de configuration les plus couramment utilis&eacute;s
 sont ceux qui modifient la configuration de points particuliers du syst&egrave;me de
@@ -141,7 +141,7 @@ l'arborescence du site web n'a pas besoin de correspondre en permanence au
 syst&egrave;me de fichiers, car les pages web peuvent &ecirc;tre g&eacute;n&eacute;r&eacute;es dynamiquement &agrave;
 partir de bases de donn&eacute;es ou d'autres emplacements.</p>
 
-<h3><a name="filesystem" id="filesystem">Conteneurs de syst&egrave;me de fichiers</a></h3>
+<h3 id="filesystem">Conteneurs de syst&egrave;me de fichiers</h3>
 
 <p>Les conteneurs <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>,
@@ -191,7 +191,7 @@ l'acc&egrave;s &agrave; <code>/var/web/dir1/private.html</code>,
 
 
 
-<h3><a name="webspace" id="webspace">Conteneurs de l'arborescence du site web</a></h3>
+<h3 id="webspace">Conteneurs de l'arborescence du site web</h3>
 
 <p>le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 et son &eacute;quivalent acceptant les
@@ -224,7 +224,7 @@ dans le syst&egrave;me de fichiers.</p>
 
 
 
-<h3><a name="overlapping-webspace" id="overlapping-webspace">Espace web imbriqu&eacute;</a></h3>
+<h3 id="overlapping-webspace">Espace web imbriqu&eacute;</h3>
 <p>Pour contr&ocirc;ler deux URLs imbriqu&eacute;es, on doit tenir compte de l'ordre
 dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, on doit
@@ -245,8 +245,8 @@ ProxyPass "/" "balancer://mycluster/" stickysession=JSESSIONID|jsessionid nofail
 
 
 
-<h3><a name="wildcards" id="wildcards">Caract&egrave;res de remplacement
-et expressions rationnelles</a></h3>
+<h3 id="wildcards">Caract&egrave;res de remplacement
+et expressions rationnelles</h3>
 
 <p>Les conteneurs <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> et <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> peuvent utiliser des caract&egrave;res de
 remplacement de style shell comme dans la fonction <code>fnmatch</code> de la
@@ -293,7 +293,7 @@ chemins de fichiers et d'URLs depuis une <a href="expr.html">expression</a> et a
 
 
 
-<h3><a name="expressions" id="expressions">Expressions bool&eacute;ennes</a></h3>
+<h3 id="expressions">Expressions bool&eacute;ennes</h3>
 <p>La directive <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code>
 permet de modifier la configuration en fonction d'une condition qui peut
 &ecirc;tre d&eacute;finie sous la forme d'une expression bool&eacute;enne. Dans l'exemple
@@ -306,7 +306,7 @@ par &laquo;&nbsp;http://www.example.com/&nbsp;&raquo;.</p>
 
 
 
-<h3><a name="whichwhen" id="whichwhen">Que faut-il utiliser et quand ?</a></h3>
+<h3 id="whichwhen">Que faut-il utiliser et quand ?</h3>
 
 <p>Choisir entre des conteneurs de syst&egrave;me de fichiers et des conteneurs
 d'arborescence du site web est vraiment tr&egrave;s simple.
@@ -350,7 +350,7 @@ configuration dans un conteneur <code>&lt;Location
 toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
 
 
-<h3><a name="nesting" id="nesting">Imbrication des sections</a></h3>
+<h3 id="nesting">Imbrication des sections</h3>
 
 <p>Certains types de sections peuvent &ecirc;tre imbriqu&eacute;s&nbsp;: d'une part, on peut
 utiliser les sections <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
@@ -369,7 +369,7 @@ non-imbriqu&eacute;es de m&ecirc;me type.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Serveurs virtuels</a> <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Serveurs virtuels <a title="Lien permanent" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 contient des directives qui s'appliquent &agrave; des serveurs virtuels sp&eacute;cifiques.
@@ -378,7 +378,7 @@ partir de la m&ecirc;me machine, chacun d'entre eux poss&eacute;dant une configu
 diff&eacute;rente. Pour de plus amples informations, voir la <a href="vhosts/">Documentation sur les serveurs virtuels</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Mandataire</a> <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Mandataire <a title="Lien permanent" href="#proxy" class="permalink">&para;</a></h2>
 
 <p>Les conteneurs
 <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
@@ -396,7 +396,7 @@ mandataire&nbsp;:</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">Quelles sont les directives autoris&eacute;es&nbsp;?</a> <a title="Lien permanent" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2 id="whatwhere">Quelles sont les directives autoris&eacute;es&nbsp;? <a title="Lien permanent" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>Pour d&eacute;terminer quelles sont les directives autoris&eacute;es pour tel type de
 section de configuration, v&eacute;rifiez le <a href="mod/directive-dict.html#Context">Contexte</a> de la directive.
@@ -429,7 +429,7 @@ et <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&g
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="merging" id="merging">Comment les sections sont combin&eacute;es entre elles</a> <a title="Lien permanent" href="#merging" class="permalink">&para;</a></h2>
+<h2 id="merging">Comment les sections sont combin&eacute;es entre elles <a title="Lien permanent" href="#merging" class="permalink">&para;</a></h2>
 
 <p>Les sections de configuration sont appliqu&eacute;es dans un ordre tr&egrave;s particulier.
 Il est important de savoir comment cet ordre est d&eacute;fini car il peut avoir
@@ -508,8 +508,8 @@ sont interpr&eacute;t&eacute;es.</p>
       la traduction est termin&eacute;e.
 	</div>
 
-<h3><a name="relationship-module-configuration" id="relationship-module-configuration">Interactions entre
-modules et sections de configuration</a></h3>
+<h3 id="relationship-module-configuration">Interactions entre
+modules et sections de configuration</h3>
     <p>Une question se pose souvent apr&egrave;s avoir lu comment les sections de
     configuration sont fusionn&eacute;es&nbsp;: comment et quand les directives de modules
     particuliers comme <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> sont-elles interpr&eacute;t&eacute;es&nbsp;? La
@@ -581,7 +581,7 @@ modules et sections de configuration</a></h3>
     </p>
 
 
-<h3><a name="merge-examples" id="merge-examples">Quelques exemples utiles</a></h3>
+<h3 id="merge-examples">Quelques exemples utiles</h3>
 
 <p>Voici un exemple imaginaire qui montre l'ordre de combinaison des sections.
 En supposant qu'elles s'appliquent toutes &agrave; la requ&ecirc;te, les directives de
@@ -641,7 +641,7 @@ soyez donc prudent&nbsp;!</p>
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

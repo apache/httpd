@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -57,7 +57,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="req" id="req">Pr&eacute;requis du syst&egrave;me d'exploitation</a> <a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
+<h2 id="req">Pr&eacute;requis du syst&egrave;me d'exploitation <a title="Lien permanent" href="#req" class="permalink">&para;</a></h2>
     
 
     <p>La plate-forme Windows de base pour l'ex&eacute;cution de httpd 2.5 est
@@ -71,7 +71,7 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="down" id="down">T&eacute;l&eacute;chargement de httpd pour Windows</a> <a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
+<h2 id="down">T&eacute;l&eacute;chargement de httpd pour Windows <a title="Lien permanent" href="#down" class="permalink">&para;</a></h2>
     
 
     <p>Le projet du serveur HTTP Apache proprement dit ne fournit pas de
@@ -93,7 +93,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cust" id="cust">Personnaliser httpd pour Windows</a> <a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
+<h2 id="cust">Personnaliser httpd pour Windows <a title="Lien permanent" href="#cust" class="permalink">&para;</a></h2>
     
 
     <p>La configuration de httpd est enregistr&eacute;e dans les fichiers du
@@ -229,7 +229,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="winsvc" id="winsvc">Ex&eacute;cuter httpd en tant que service</a> <a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
+<h2 id="winsvc">Ex&eacute;cuter httpd en tant que service <a title="Lien permanent" href="#winsvc" class="permalink">&para;</a></h2>
     
 
     <p>httpd fournit un utilitaire nomm&eacute; Apache Service Monitor
@@ -410,7 +410,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="wincons" id="wincons">Ex&eacute;cuter httpd depuis la console</a> <a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
+<h2 id="wincons">Ex&eacute;cuter httpd depuis la console <a title="Lien permanent" href="#wincons" class="permalink">&para;</a></h2>
     
 
     <p>Il est en g&eacute;n&eacute;ral recommand&eacute; d'ex&eacute;cuter httpd en tant que
@@ -588,7 +588,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">V&eacute;rification de l'installation</a> <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">V&eacute;rification de l'installation <a title="Lien permanent" href="#test" class="permalink">&para;</a></h2>
     
 
     <p>Une fois httpd d&eacute;marr&eacute; (soit &agrave; partir d'une console Windows,
@@ -638,7 +638,7 @@ RewriteRule "(.*)" "${lowercase:$1}" [R,L]</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="windrivemap" id="windrivemap">Configuration de l'acc&egrave;s aux ressources r&eacute;seau</a> <a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
+<h2 id="windrivemap">Configuration de l'acc&egrave;s aux ressources r&eacute;seau <a title="Lien permanent" href="#windrivemap" class="permalink">&para;</a></h2>
     
 
   <p>L'acc&egrave;s &agrave; des fichiers par le r&eacute;seau peut &ecirc;tre sp&eacute;cifi&eacute; via deux
@@ -692,7 +692,7 @@ Alias "/images2/" "//imagehost2/www/images/"
   d&eacute;crit ci-dessus.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="tuning" id="tuning">Personnalisation sous Windows</a> <a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
+<h2 id="tuning">Personnalisation sous Windows <a title="Lien permanent" href="#tuning" class="permalink">&para;</a></h2>
     
     <ul>
       <li><p>Si on utilise un grand nombre de redirections de journaux
@@ -707,7 +707,7 @@ Alias "/images2/" "//imagehost2/www/images/"
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

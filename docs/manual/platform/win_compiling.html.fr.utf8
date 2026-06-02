@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -56,7 +56,7 @@ l'arborescence de d&eacute;veloppement</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Pr&eacute;requis</a> <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Pr&eacute;requis <a title="Lien permanent" href="#requirements" class="permalink">&para;</a></h2>
 
     
 
@@ -302,7 +302,7 @@ l'arborescence de d&eacute;veloppement</a></li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="unixsrcbuild" id="unixsrcbuild">Compilation &agrave; partir des sources Unix</a> <a title="Lien permanent" href="#unixsrcbuild" class="permalink">&para;</a></h2>
+<h2 id="unixsrcbuild">Compilation &agrave; partir des sources Unix <a title="Lien permanent" href="#unixsrcbuild" class="permalink">&para;</a></h2>
 
     
 
@@ -337,7 +337,7 @@ l'arborescence de d&eacute;veloppement</a></li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="commandbuild" id="commandbuild">Compilation &agrave; partir de la ligne de commandes</a> <a title="Lien permanent" href="#commandbuild" class="permalink">&para;</a></h2>
+<h2 id="commandbuild">Compilation &agrave; partir de la ligne de commandes <a title="Lien permanent" href="#commandbuild" class="permalink">&para;</a></h2>
 
     
 
@@ -366,8 +366,8 @@ l'arborescence de d&eacute;veloppement</a></li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="workspacebuild" id="workspacebuild">Compilation depuis l'espace de travail IDE de Developer
-    Studio</a> <a title="Lien permanent" href="#workspacebuild" class="permalink">&para;</a></h2>
+<h2 id="workspacebuild">Compilation depuis l'espace de travail IDE de Developer
+    Studio <a title="Lien permanent" href="#workspacebuild" class="permalink">&para;</a></h2>
 
     
 
@@ -437,7 +437,7 @@ l'arborescence de d&eacute;veloppement</a></li>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="exportingmakfiles" id="exportingmakfiles">Export des fichiers .mak de la ligne de commandes</a> <a title="Lien permanent" href="#exportingmakfiles" class="permalink">&para;</a></h2>
+<h2 id="exportingmakfiles">Export des fichiers .mak de la ligne de commandes <a title="Lien permanent" href="#exportingmakfiles" class="permalink">&para;</a></h2>
 
     
 
@@ -491,7 +491,7 @@ l'arborescence de d&eacute;veloppement</a></li>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="installation" id="installation">Installation</a> <a title="Lien permanent" href="#installation" class="permalink">&para;</a></h2>
+<h2 id="installation">Installation <a title="Lien permanent" href="#installation" class="permalink">&para;</a></h2>
 
 
     
@@ -516,8 +516,8 @@ l'arborescence de d&eacute;veloppement</a></li>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="projectcomponents-warn" id="projectcomponents-warn">Avertissement &agrave; propos de la compilation d'Apache &agrave; partir de
-l'arborescence de d&eacute;veloppement</a> <a title="Lien permanent" href="#projectcomponents-warn" class="permalink">&para;</a></h2>
+<h2 id="projectcomponents-warn">Avertissement &agrave; propos de la compilation d'Apache &agrave; partir de
+l'arborescence de d&eacute;veloppement <a title="Lien permanent" href="#projectcomponents-warn" class="permalink">&para;</a></h2>
 
 
 
@@ -534,7 +534,7 @@ l'arborescence de d&eacute;veloppement</a> <a title="Lien permanent" href="#proj
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cmake" id="cmake">Compilation de httpd avec cmake</a> <a title="Lien permanent" href="#cmake" class="permalink">&para;</a></h2>
+<h2 id="cmake">Compilation de httpd avec cmake <a title="Lien permanent" href="#cmake" class="permalink">&para;</a></h2>
   
 
   <p>La documentation principale pour ce m&eacute;canisme de compilation se trouve
@@ -569,7 +569,7 @@ l'arborescence de d&eacute;veloppement</a> <a title="Lien permanent" href="#proj
 <a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -67,7 +67,7 @@
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authtjwtclaim" id="authtjwtclaim">Directive</a> <a name="AuthtJwtClaim" id="AuthtJwtClaim">AuthtJwtClaim</a> <a title="Lien permanent" href="#authtjwtclaim" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authtjwtclaim">Directive <span id="AuthtJwtClaim">AuthtJwtClaim</span> <a title="Lien permanent" href="#authtjwtclaim" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit une demande avec le nom et l'expression donn&eacute;s ou annule la
 d&eacute;finition d'une demande avec le nom donn&eacute;</td></tr>
@@ -106,7 +106,7 @@ d&eacute;finition d'une demande avec le nom donn&eacute;</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authtjwtdriver" id="authtjwtdriver">Directive</a> <a name="AuthtJwtDriver" id="AuthtJwtDriver">AuthtJwtDriver</a> <a title="Lien permanent" href="#authtjwtdriver" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authtjwtdriver">Directive <span id="AuthtJwtDriver">AuthtJwtDriver</span> <a title="Lien permanent" href="#authtjwtdriver" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le nom du pilote de chiffrement sous-jacent &agrave; utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthtJwtDriver <var>name</var> <var>[param[=value]]</var></code></td></tr>
@@ -124,7 +124,7 @@ d&eacute;finition d'une demande avec le nom donn&eacute;</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authtjwtsign" id="authtjwtsign">Directive</a> <a name="AuthtJwtSign" id="AuthtJwtSign">AuthtJwtSign</a> <a title="Lien permanent" href="#authtjwtsign" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authtjwtsign">Directive <span id="AuthtJwtSign">AuthtJwtSign</span> <a title="Lien permanent" href="#authtjwtsign" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme de signature JWS et les mot de passe/cl&eacute; pour signer
 un jeton JWT sortant</td></tr>
@@ -168,7 +168,7 @@ un jeton JWT sortant</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="authtjwtverify" id="authtjwtverify">Directive</a> <a name="AuthtJwtVerify" id="AuthtJwtVerify">AuthtJwtVerify</a> <a title="Lien permanent" href="#authtjwtverify" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="authtjwtverify">Directive <span id="AuthtJwtVerify">AuthtJwtVerify</span> <a title="Lien permanent" href="#authtjwtverify" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>L'algorithme de signature JWS et les mot de passe/cl&eacute; pour v&eacute;rifier
 un jeton JWT entrant</td></tr>
@@ -225,7 +225,7 @@ un jeton JWT entrant</td></tr>
 <a href="../fr/mod/mod_autht_jwt.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

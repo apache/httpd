@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -88,7 +88,7 @@ CacheSocacheMaxSize 102400
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocache" id="cachesocache">Directive</a> <a name="CacheSocache" id="CacheSocache">CacheSocache</a> <a title="Lien permanent" href="#cachesocache" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocache">Directive <span id="CacheSocache">CacheSocache</span> <a title="Lien permanent" href="#cachesocache" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Impl&eacute;mentation du cache d'objets partag&eacute;s &agrave; utiliser</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocache <var>type[:args]</var></code></td></tr>
@@ -109,7 +109,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocachemaxsize" id="cachesocachemaxsize">Directive</a> <a name="CacheSocacheMaxSize" id="CacheSocacheMaxSize">CacheSocacheMaxSize</a> <a title="Lien permanent" href="#cachesocachemaxsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocachemaxsize">Directive <span id="CacheSocacheMaxSize">CacheSocacheMaxSize</span> <a title="Lien permanent" href="#cachesocachemaxsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille maximale d'une entr&eacute;e pouvant &ecirc;tre plac&eacute;e dans le
 cache</td></tr>
@@ -140,7 +140,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocachemaxtime" id="cachesocachemaxtime">Directive</a> <a name="CacheSocacheMaxTime" id="CacheSocacheMaxTime">CacheSocacheMaxTime</a> <a title="Lien permanent" href="#cachesocachemaxtime" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocachemaxtime">Directive <span id="CacheSocacheMaxTime">CacheSocacheMaxTime</span> <a title="Lien permanent" href="#cachesocachemaxtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&eacute;e maximale de stockage d'un document dans le cache
 avant p&eacute;remption</td></tr>
@@ -162,7 +162,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocachemintime" id="cachesocachemintime">Directive</a> <a name="CacheSocacheMinTime" id="CacheSocacheMinTime">CacheSocacheMinTime</a> <a title="Lien permanent" href="#cachesocachemintime" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocachemintime">Directive <span id="CacheSocacheMinTime">CacheSocacheMinTime</span> <a title="Lien permanent" href="#cachesocachemintime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&eacute;e minimale de stockage d'un document dans le cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheMinTime <var>seconds</var></code></td></tr>
@@ -185,7 +185,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocachereadsize" id="cachesocachereadsize">Directive</a> <a name="CacheSocacheReadSize" id="CacheSocacheReadSize">CacheSocacheReadSize</a> <a title="Lien permanent" href="#cachesocachereadsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocachereadsize">Directive <span id="CacheSocacheReadSize">CacheSocacheReadSize</span> <a title="Lien permanent" href="#cachesocachereadsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantit&eacute; minimale de donn&eacute;es du document &agrave; lire et
 mettre en cache avant envoi au client</td></tr>
@@ -216,7 +216,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cachesocachereadtime" id="cachesocachereadtime">Directive</a> <a name="CacheSocacheReadTime" id="CacheSocacheReadTime">CacheSocacheReadTime</a> <a title="Lien permanent" href="#cachesocachereadtime" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cachesocachereadtime">Directive <span id="CacheSocacheReadTime">CacheSocacheReadTime</span> <a title="Lien permanent" href="#cachesocachereadtime" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La dur&eacute;e minimale de lecture avant l'envoi des donn&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheSocacheReadTime <var>millisecondes</var></code></td></tr>
@@ -254,7 +254,7 @@ Apache</td></tr>
 <a href="../fr/mod/mod_cache_socache.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

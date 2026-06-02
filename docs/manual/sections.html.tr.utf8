@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -48,7 +48,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="types" id="types">Yapılandırma B&ouml;l&uuml;m&uuml; Taşıyıcılarının T&uuml;rleri</a> <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
+<h2 id="types">Yapılandırma B&ouml;l&uuml;m&uuml; Taşıyıcılarının T&uuml;rleri <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
     <table class="related"><tr><th>İlgili Mod&uuml;ller</th><th>İlgili Y&ouml;nergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -124,7 +124,7 @@
       diğerinin i&ccedil;inde kullanılabilirler.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">Dosya Sistemi, Site Alanı ve Mantıksal İfadeler</a> <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
+<h2 id="file-and-web">Dosya Sistemi, Site Alanı ve Mantıksal İfadeler <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
     
 
     <p>En sık kullanılan yapılandırma b&ouml;l&uuml;m&uuml; taşıyıcıları dosya sistemindeki
@@ -145,7 +145,7 @@
       &uuml;retilebildiğinden site alanlarının doğrudan dosya sistemine eşlenmesi
       gerekli değildir.</p>
 
-  <h3><a name="filesystem" id="filesystem">Dosya Sistemi Taşıyıcıları</a></h3>
+  <h3 id="filesystem">Dosya Sistemi Taşıyıcıları</h3>
 
     <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
       ve <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>
@@ -206,7 +206,7 @@
     </code></p></div>
   
 
-  <h3><a name="webspace" id="webspace">Site Alanı Taşıyıcıları</a></h3>
+  <h3 id="webspace">Site Alanı Taşıyıcıları</h3>
 
     <p><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> y&ouml;nergesi
       ve y&ouml;nergenin <a class="glossarylink" href="./glossary.html#regex" title="s&ouml;zl&uuml;ğe bakınız">d&uuml;zenli ifade</a> karşılığı
@@ -244,7 +244,7 @@
     </code></p></div>
   
 
-  <h3><a name="overlapping-webspace" id="overlapping-webspace">Site Alanında &Ccedil;akışma</a></h3>
+  <h3 id="overlapping-webspace">Site Alanında &Ccedil;akışma</h3>
     <p>Belli b&ouml;l&uuml;mler ve y&ouml;nergeler değerlendirilirken &ccedil;akışan iki URL bir URL
     olarak dikkate alınır. <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> y&ouml;nergesi i&ccedil;in bu ş&ouml;yle olurdu:</p>
 
@@ -272,7 +272,7 @@
     </code></p></div>
   
 
-  <h3><a name="wildcards" id="wildcards">Dosya Adı Şablonları ve D&uuml;zenli İfadeler</a></h3>
+  <h3 id="wildcards">Dosya Adı Şablonları ve D&uuml;zenli İfadeler</h3>
     
 
     <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
@@ -317,7 +317,7 @@
     </code></p></div>
   
 
-  <h3><a name="expressions" id="expressions">Mantıksal İfadeler</a></h3>
+  <h3 id="expressions">Mantıksal İfadeler</h3>
     <p><code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> y&ouml;nergesi bir
       mantıksal ifade olarak belirtilebilen bir kurala bağlı olarak
       yapılandırmayı değiştirebilir. &Ouml;rneğin, aşağıdaki yapılandırmada,
@@ -333,7 +333,7 @@
     </code></p></div>
   
 
-  <h3><a name="whichwhen" id="whichwhen">Ne, Ne Zaman Kullanılır?</a></h3>
+  <h3 id="whichwhen">Ne, Ne Zaman Kullanılır?</h3>
     <p>Dosya sistemi taşıyıcıları ile site alanı taşıyıcıları arasında se&ccedil;im
       yapmak aslında olduk&ccedil;a kolaydır. Dosya sisteminde bulunan nesnelere
       uygulanacak y&ouml;nergeler i&ccedil;in daima <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> veya <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> kullanılır. Dosya sisteminde bulunmayan nesnelere
@@ -380,7 +380,7 @@
       ile sınırlı olmaması nedeniyle m&uuml;kemmelen g&uuml;venlidir.</p>
   
 
-  <h3><a name="nesting" id="nesting">B&ouml;l&uuml;m i&ccedil; i&ccedil;eliği</a></h3>
+  <h3 id="nesting">B&ouml;l&uuml;m i&ccedil; i&ccedil;eliği</h3>
     <p>Bazı b&ouml;l&uuml;m t&uuml;rleri başka b&ouml;l&uuml;m t&uuml;rlerinin i&ccedil;inde olabilir. Bir yandan,
       <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> b&ouml;l&uuml;m&uuml;
       <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;m&uuml;n&uuml;n
@@ -393,7 +393,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Sanal Konaklar</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Sanal Konaklar <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
     <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
       taşıyıcısının i&ccedil;inde belli bir konağa uygulanan y&ouml;nergeler bulunur.
@@ -402,7 +402,7 @@
       <a href="vhosts/">Sanal Konak Belgeleri</a> b&ouml;l&uuml;m&uuml;ne bakınız.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">Vekil</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">Vekil <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
     <p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
       ve <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
       taşıyıcıları, sadece belli bir URL ile eşleşen <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>
@@ -421,7 +421,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">Hangi Y&ouml;nergelere İzin Veriliyor?</a> <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2 id="whatwhere">Hangi Y&ouml;nergelere İzin Veriliyor? <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
     <p>Hangi y&ouml;nergelere hangi yapılandırma b&ouml;l&uuml;mlerinde izin verildiğini
       &ouml;ğrenmek i&ccedil;in y&ouml;nerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> b&ouml;l&uuml;mlerinde
       izin verilen herşeye s&ouml;zdizimsel olarak ayrıca
@@ -452,7 +452,7 @@
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">B&ouml;l&uuml;mler Nasıl Katıştırılır?</a> <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
+<h2 id="mergin">B&ouml;l&uuml;mler Nasıl Katıştırılır? <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
 
     <p>Yapılandırma b&ouml;l&uuml;mleri belli bir sıra ile uygulanır. Yapılandırma
       y&ouml;nergelerinin yorumlanışı &uuml;zerinde &ouml;nemli etkilere sahip olabilmesi
@@ -516,7 +516,7 @@
       tamamen elden &ccedil;ıkarılır.
     </div>
 
-  <h3><a name="merge-examples" id="merge-examples">Bazı &Ouml;rnekler</a></h3>
+  <h3 id="merge-examples">Bazı &Ouml;rnekler</h3>
 
     <p>Aşağıdaki yapay &ouml;rnekte katıştırma sırası g&ouml;sterilmiştir. Hepsinin aynı
       isteğe uygulandığı varsayımıyla, bu &ouml;rnekteki y&ouml;nergeler A &gt; B &gt; C
@@ -582,7 +582,7 @@
 <a href="./tr/sections.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

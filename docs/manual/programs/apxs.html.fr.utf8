@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -90,7 +90,7 @@ $ _</pre>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="synopsis" id="synopsis">Syntaxe</a> <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
+<h2 id="synopsis">Syntaxe <a title="Lien permanent" href="#synopsis" class="permalink">&para;</a></h2>
     <p><code><strong>apxs</strong> -<strong>g</strong>
     [ -<strong>S</strong> <var>nom</var>=<var>valeur</var> ]
     -<strong>n</strong> <var>nom-module</var></code></p>
@@ -126,8 +126,8 @@ $ _</pre>
     <var>fichier-dso</var> ...</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="options" id="options">Options</a> <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
-    <h3><a name="options.common" id="options.common">Options courantes</a></h3>
+<h2 id="options">Options <a title="Lien permanent" href="#options" class="permalink">&para;</a></h2>
+    <h3 id="options.common">Options courantes</h3>
       <dl>
       <dt><code>-n <var>nom-module</var></code></dt>
       <dd>D&eacute;finit explicitement le nom du module pour les options
@@ -141,7 +141,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.query" id="options.query">Options de requ&ecirc;te</a></h3>
+    <h3 id="options.query">Options de requ&ecirc;te</h3>
       <dl>
       <dt><code>-q</code></dt>
       <dd>Effectue une requ&ecirc;te &agrave; propos des variables et de
@@ -162,7 +162,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.conf" id="options.conf">Options de configuration</a></h3>
+    <h3 id="options.conf">Options de configuration</h3>
       <dl>
       <dt><code>-S <var>nom</var>=<var>valeur</var></code></dt>
       <dd>Cette option permet de modifier la configuration d'apxs
@@ -170,8 +170,8 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.template" id="options.template">Option de g&eacute;n&eacute;ration des
-    mod&egrave;les</a></h3>
+    <h3 id="options.template">Option de g&eacute;n&eacute;ration des
+    mod&egrave;les</h3>
       <dl>
       <dt><code>-g</code></dt>
       <dd>Cette option permet de g&eacute;n&eacute;rer un sous-r&eacute;pertoire
@@ -184,7 +184,7 @@ $ _</pre>
       facilitant la compilation et l'installation de ce module.</dd>
       </dl>
     
-    <h3><a name="options.dso" id="options.dso">Options de compilation DSO</a></h3>
+    <h3 id="options.dso">Options de compilation DSO</h3>
       <dl>
       <dt><code>-c</code></dt>
       <dd>Cette option indique une op&eacute;ration de compilation. Tout
@@ -246,7 +246,7 @@ $ _</pre>
       </dl>
     
 
-    <h3><a name="options.dsoinstall" id="options.dsoinstall">Options d'installation et de configuration DSO</a></h3>
+    <h3 id="options.dsoinstall">Options d'installation et de configuration DSO</h3>
     
       <dl>
       <dt><code>-i</code></dt>
@@ -277,7 +277,7 @@ $ _</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="examples" id="examples">Exemples</a> <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
+<h2 id="examples">Exemples <a title="Lien permanent" href="#examples" class="permalink">&para;</a></h2>
     <p>Supposons que vous disposiez d'un module Apache nomm&eacute;
     <code>mod_foo.c</code> et destin&eacute; &agrave; &eacute;tendre les fonctionnalit&eacute;s du
     serveur. Pour ce faire, vous devez tout d'abord compiler le fichier
@@ -361,7 +361,7 @@ $ _</pre>
 <a href="../tr/programs/apxs.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

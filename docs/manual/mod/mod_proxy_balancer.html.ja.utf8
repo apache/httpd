@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="scheduler" id="scheduler">ロードバランサのスケジューラのアルゴリズム</a> <a title="Permanent link" href="#scheduler" class="permalink">&para;</a></h2>
+<h2 id="scheduler">ロードバランサのスケジューラのアルゴリズム <a title="Permanent link" href="#scheduler" class="permalink">&para;</a></h2>
     
     <p>現時点では 2 種類のロードバランサスケジューラアルゴリズムから選べます。
     リクエスト回数によるもの <span class="transnote">(<em>訳注:</em> Request Counting)</span>
@@ -80,7 +80,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requests" id="requests">Request Counting アルゴリズム</a> <a title="Permanent link" href="#requests" class="permalink">&para;</a></h2>
+<h2 id="requests">Request Counting アルゴリズム <a title="Permanent link" href="#requests" class="permalink">&para;</a></h2>
     
     <p><code>lbmethod=byrequests</code> で有効になります。
     このスケジューラの背景にある考え方は、様々なワーカーがそれぞれ、
@@ -254,7 +254,7 @@ candidate lbstatus -= total factor</code></pre></div>
     <var>b</var> 3 回でまばらに選ばれます。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="traffic" id="traffic">Weighted Traffic Counting アルゴリズム</a> <a title="Permanent link" href="#traffic" class="permalink">&para;</a></h2>
+<h2 id="traffic">Weighted Traffic Counting アルゴリズム <a title="Permanent link" href="#traffic" class="permalink">&para;</a></h2>
     
     <p><code>lbmethod=bytraffic</code> で有効になります。
     このスケジューラの背景にある考え方は、Request Counting 
@@ -287,7 +287,7 @@ candidate lbstatus -= total factor</code></pre></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">バランサマネージャのサポートを有効にする</a> <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">バランサマネージャのサポートを有効にする <a title="Permanent link" href="#enable" class="permalink">&para;</a></h2>
     
     <p>このモジュールは <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> のサービスを
     <em>必要とします</em>。
@@ -324,7 +324,7 @@ candidate lbstatus -= total factor</code></pre></div>
 <a href="../ja/mod/mod_proxy_balancer.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

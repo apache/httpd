@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -81,7 +81,7 @@ utilisateurs diff&eacute;rents</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="env" id="env">Les variables d'environnement CGI</a> <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
+<h2 id="env">Les variables d'environnement CGI <a title="Lien permanent" href="#env" class="permalink">&para;</a></h2>
     <p>Le serveur va d&eacute;finir les variables d'environnement CGI comme
     d&eacute;crit dans la sp&eacute;cification CGI (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>), de la
     mani&egrave;re suivante :</p>
@@ -149,7 +149,7 @@ utilisateurs diff&eacute;rents</a></li>
     </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="cgi-debug" id="cgi-debug">D&eacute;bogage des scripts CGI</a> <a title="Lien permanent" href="#cgi-debug" class="permalink">&para;</a></h2>
+<h2 id="cgi-debug">D&eacute;bogage des scripts CGI <a title="Lien permanent" href="#cgi-debug" class="permalink">&para;</a></h2>
     <p>Le d&eacute;bogage des scripts CGI &eacute;tait difficile par le pass&eacute;,
     principalement parce qu'il n'&eacute;tait pas possible d'&eacute;tudier la sortie
     (sortie standard et erreurs) des scripts dont l'ex&eacute;cution &eacute;chouait.
@@ -199,7 +199,7 @@ utilisateurs diff&eacute;rents</a></li>
     
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="cgiscripttimeout" id="cgiscripttimeout">Directive</a> <a name="CGIScriptTimeout" id="CGIScriptTimeout">CGIScriptTimeout</a> <a title="Lien permanent" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="cgiscripttimeout">Directive <span id="CGIScriptTimeout">CGIScriptTimeout</span> <a title="Lien permanent" href="#cgiscripttimeout" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le temps d'attente maximum pour une sortie du programme CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CGIScriptTimeout <var>time</var>[s|ms]</code></td></tr>
@@ -219,7 +219,7 @@ utilisateurs diff&eacute;rents</a></li>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptlog" id="scriptlog">Directive</a> <a name="ScriptLog" id="ScriptLog">ScriptLog</a> <a title="Lien permanent" href="#scriptlog" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptlog">Directive <span id="ScriptLog">ScriptLog</span> <a title="Lien permanent" href="#scriptlog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Chemin du fichier journal des erreurs du script
 CGI</td></tr>
@@ -260,7 +260,7 @@ CGI</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptlogbuffer" id="scriptlogbuffer">Directive</a> <a name="ScriptLogBuffer" id="ScriptLogBuffer">ScriptLogBuffer</a> <a title="Lien permanent" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptlogbuffer">Directive <span id="ScriptLogBuffer">ScriptLogBuffer</span> <a title="Lien permanent" href="#scriptlogbuffer" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des requ&ecirc;tes PUT ou POST qui seront
 enregistr&eacute;es dans le journal du script</td></tr>
@@ -279,7 +279,7 @@ enregistr&eacute;es dans le journal du script</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptloglength" id="scriptloglength">Directive</a> <a name="ScriptLogLength" id="ScriptLogLength">ScriptLogLength</a> <a title="Lien permanent" href="#scriptloglength" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptloglength">Directive <span id="ScriptLogLength">ScriptLogLength</span> <a title="Lien permanent" href="#scriptloglength" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale du fichier journal des scripts
 CGI</td></tr>
@@ -308,7 +308,7 @@ CGI</td></tr>
 <a href="../ko/mod/mod_cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

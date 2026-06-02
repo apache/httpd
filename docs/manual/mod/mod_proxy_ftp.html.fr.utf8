@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -79,8 +79,8 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mimetypes" id="mimetypes">Pourquoi les fichiers du type
-    <var>xxx</var> ne sont-ils pas t&eacute;l&eacute;chargeables par FTP ?</a> <a title="Lien permanent" href="#mimetypes" class="permalink">&para;</a></h2>
+<h2 id="mimetypes">Pourquoi les fichiers du type
+    <var>xxx</var> ne sont-ils pas t&eacute;l&eacute;chargeables par FTP ? <a title="Lien permanent" href="#mimetypes" class="permalink">&para;</a></h2>
       <p>Ce type particulier de fichier n'est probablement pas d&eacute;fini en
       temps que <code>application/octet-stream</code> dans le fichier
       de configuration mime.types de votre mandataire. La ligne suivante
@@ -93,8 +93,8 @@
 </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="type" id="type">Comment puis-je forcer le t&eacute;l&eacute;chargement
-    FTP en mode ASCII du fichier <var>xxx</var> ?</a> <a title="Lien permanent" href="#type" class="permalink">&para;</a></h2>
+<h2 id="type">Comment puis-je forcer le t&eacute;l&eacute;chargement
+    FTP en mode ASCII du fichier <var>xxx</var> ? <a title="Lien permanent" href="#type" class="permalink">&para;</a></h2>
       <p>Dans les rares siruations o&ugrave; vous devez t&eacute;l&eacute;charger un fichier
       sp&eacute;cifique en utilisant la m&eacute;thode de transfert FTP
       <code>ASCII</code> (alors que le mode transfert par d&eacute;faut est
@@ -105,15 +105,15 @@
       mode ASCII).</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ftpnonget" id="ftpnonget">Comment puis-je effectuer un
-    chargement FTP ?</a> <a title="Lien permanent" href="#ftpnonget" class="permalink">&para;</a></h2>
+<h2 id="ftpnonget">Comment puis-je effectuer un
+    chargement FTP ? <a title="Lien permanent" href="#ftpnonget" class="permalink">&para;</a></h2>
     <p>Actuellement, seule la m&eacute;thode GET est support&eacute;e pour FTP dans
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Vous pouvez par contre utiliser le chargement HTTP (POST
     or PUT) via un mandataire Apache.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="percent2fhck" id="percent2fhck">Comment puis-je acc&eacute;der par FTP &agrave;
-    des fichiers situ&eacute;s en dehors de mon r&eacute;pertoire home ?</a> <a title="Lien permanent" href="#percent2fhck" class="permalink">&para;</a></h2>
+<h2 id="percent2fhck">Comment puis-je acc&eacute;der par FTP &agrave;
+    des fichiers situ&eacute;s en dehors de mon r&eacute;pertoire home ? <a title="Lien permanent" href="#percent2fhck" class="permalink">&para;</a></h2>
       <p>Un URI FTP est consid&eacute;r&eacute; comme relatif au r&eacute;pertoire home de
       l'utilisateur connect&eacute;. H&eacute;las, vous ne pouvez pas utiliser /../
       pour atteindre des r&eacute;pertoires de niveau sup&eacute;rieur, car les points
@@ -133,9 +133,9 @@
       </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ftppass" id="ftppass">Comment puis-je dissimuler le mot de
+<h2 id="ftppass">Comment puis-je dissimuler le mot de
     passe FTP apparaissant en clair dans la ligne d'URL de mon
-    navigateur ?</a> <a title="Lien permanent" href="#ftppass" class="permalink">&para;</a></h2>
+    navigateur ? <a title="Lien permanent" href="#ftppass" class="permalink">&para;</a></h2>
       <p>Apache utilise diff&eacute;rentes strat&eacute;gies pour effectuer une
       connexion &agrave; un serveur FTP &agrave; l'aide d'un nom d'utilisateur et d'un
       mot de passe. En l'absence de nom d'utilisateur et de mot de passe
@@ -194,9 +194,9 @@
       </div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="wildcard" id="wildcard">Pourquoi re&ccedil;ois-je un listing de
+<h2 id="wildcard">Pourquoi re&ccedil;ois-je un listing de
     fichiers alors que j'ai demand&eacute; le t&eacute;l&eacute;chargement d'un fichier
-    ?</a> <a title="Lien permanent" href="#wildcard" class="permalink">&para;</a></h2>
+    ? <a title="Lien permanent" href="#wildcard" class="permalink">&para;</a></h2>
       <p>Apache examine l'URL de la requ&ecirc;te afin de permettre la
       navigation dans les r&eacute;pertoires d'un serveur FTP ainsi que le
       t&eacute;l&eacute;chargement de fichiers. Si elle ressemble &agrave; un r&eacute;pertoire, ou
@@ -209,7 +209,7 @@
       </p>
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a> <a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a> <a title="Lien permanent" href="#proxyftpdircharset" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyftpdircharset">Directive <span id="ProxyFtpDirCharset">ProxyFtpDirCharset</span> <a title="Lien permanent" href="#proxyftpdircharset" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finit le jeu de caract&egrave;res des listings FTP
 mandat&eacute;s</td></tr>
@@ -227,7 +227,7 @@ depuis <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyftpescapewildcards" id="proxyftpescapewildcards">Directive</a> <a name="ProxyFtpEscapeWildcards" id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</a> <a title="Lien permanent" href="#proxyftpescapewildcards" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyftpescapewildcards">Directive <span id="ProxyFtpEscapeWildcards">ProxyFtpEscapeWildcards</span> <a title="Lien permanent" href="#proxyftpescapewildcards" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&egrave;res g&eacute;n&eacute;riques dans les noms de fichiers
 doivent-ils &ecirc;tre &eacute;chapp&eacute;s lorsqu'ils sont envoy&eacute;s au serveur FTP ?</td></tr>
@@ -253,7 +253,7 @@ doivent-ils &ecirc;tre &eacute;chapp&eacute;s lorsqu'ils sont envoy&eacute;s au 
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="proxyftplistonwildcard" id="proxyftplistonwildcard">Directive</a> <a name="ProxyFtpListOnWildcard" id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</a> <a title="Lien permanent" href="#proxyftplistonwildcard" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="proxyftplistonwildcard">Directive <span id="ProxyFtpListOnWildcard">ProxyFtpListOnWildcard</span> <a title="Lien permanent" href="#proxyftplistonwildcard" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les caract&egrave;res g&eacute;n&eacute;riques dans les noms de fichiers
 demand&eacute;s doivent-ils d&eacute;clencher l'affichage d'un listing ?</td></tr>
@@ -279,7 +279,7 @@ demand&eacute;s doivent-ils d&eacute;clencher l'affichage d'un listing ?</td></t
 <a href="../fr/mod/mod_proxy_ftp.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

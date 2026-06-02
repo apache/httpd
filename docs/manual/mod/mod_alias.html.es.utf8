@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -86,7 +86,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="order" id="order">Orden de Procesamiento</a> <a title="Enlace permanente" href="#order" class="permalink">&para;</a></h2>
+<h2 id="order">Orden de Procesamiento <a title="Enlace permanente" href="#order" class="permalink">&para;</a></h2>
 
     <p>Aliases y Redirects que se dan en diferentes contextos se procesan como otras directivas seg&uacute;n las <a href="../sections.html#mergin">reglas de fusi&oacute;n</a> est&aacute;ndar.  Pero cuando se dan m&uacute;ltiples 
     Aliases o Redirects en el mismo contexto (por ejemplo, en la misma secci&oacute;n 
@@ -120,7 +120,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="alias" id="alias">Directiva</a> <a name="Alias" id="Alias">Alias</a> <a title="Enlace permanente" href="#alias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="alias">Directiva <span id="Alias">Alias</span> <a title="Enlace permanente" href="#alias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Mapea URLs a rutas del sistema de ficheros</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Alias [<var>URL-path</var>]
@@ -188,7 +188,7 @@ Alias "/foo" "/gaq"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="aliasmatch" id="aliasmatch">Directiva</a> <a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a title="Enlace permanente" href="#aliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliasmatch">Directiva <span id="AliasMatch">AliasMatch</span> <a title="Enlace permanente" href="#aliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Mapea URLs a ubicaciones del sistema de ficheros usando expresiones regulares</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AliasMatch <var>regex</var>
@@ -256,7 +256,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="aliaspreservepath" id="aliaspreservepath">Directiva</a> <a name="AliasPreservePath" id="AliasPreservePath">AliasPreservePath</a> <a title="Enlace permanente" href="#aliaspreservepath" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="aliaspreservepath">Directiva <span id="AliasPreservePath">AliasPreservePath</span> <a title="Enlace permanente" href="#aliaspreservepath" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Map the full path after the alias in a location.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>AliasPreservePath OFF|ON</code></td></tr>
@@ -269,7 +269,7 @@ AliasMatch "^/image/(.*)\.gif$" "/files/gif.images/$1.gif"</pre>
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="redirect" id="redirect">Directiva</a> <a name="Redirect" id="Redirect">Redirect</a> <a title="Enlace permanente" href="#redirect" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirect">Directiva <span id="Redirect">Redirect</span> <a title="Enlace permanente" href="#redirect" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Env&iacute;a una redirecci&oacute;n externa indicando al cliente que solicite una URL distinta</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>Redirect [<var>status</var>] [<var>URL-path</var>]
@@ -366,7 +366,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="redirectmatch" id="redirectmatch">Directiva</a> <a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a title="Enlace permanente" href="#redirectmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectmatch">Directiva <span id="RedirectMatch">RedirectMatch</span> <a title="Enlace permanente" href="#redirectmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Env&iacute;a una redirecci&oacute;n externa basada en una coincidencia de expresi&oacute;n regular con la URL actual
 </td></tr>
@@ -400,7 +400,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="redirectpermanent" id="redirectpermanent">Directiva</a> <a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a title="Enlace permanente" href="#redirectpermanent" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectpermanent">Directiva <span id="RedirectPermanent">RedirectPermanent</span> <a title="Enlace permanente" href="#redirectpermanent" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Env&iacute;a una redirecci&oacute;n externa permanente indicando al cliente que solicite una URL diferente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RedirectPermanent <var>URL-path</var> <var>URL</var></code></td></tr>
@@ -415,7 +415,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="redirectrelative" id="redirectrelative">Directiva</a> <a name="RedirectRelative" id="RedirectRelative">RedirectRelative</a> <a title="Enlace permanente" href="#redirectrelative" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirectrelative">Directiva <span id="RedirectRelative">RedirectRelative</span> <a title="Enlace permanente" href="#redirectrelative" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Allows relative redirect targets.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RedirectRelative On|Off</code></td></tr>
@@ -428,7 +428,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
             not been translated yet. Please have a look at the English
             version.</p></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="redirecttemp" id="redirecttemp">Directiva</a> <a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a title="Enlace permanente" href="#redirecttemp" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="redirecttemp">Directiva <span id="RedirectTemp">RedirectTemp</span> <a title="Enlace permanente" href="#redirecttemp" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Env&iacute;a una redirecci&oacute;n externa temporal indicando al cliente que solicite una URL diferente</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>RedirectTemp <var>URL-path</var> <var>URL</var></code></td></tr>
@@ -442,7 +442,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptalias" id="scriptalias">Directiva</a> <a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a title="Enlace permanente" href="#scriptalias" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptalias">Directiva <span id="ScriptAlias">ScriptAlias</span> <a title="Enlace permanente" href="#scriptalias" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Mapea una URL a una ubicaci&oacute;n del sistema de ficheros y designa el destino como un script CGI</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sintaxis:</a></th><td><code>ScriptAlias [<var>URL-path</var>]
@@ -511,7 +511,7 @@ Redirect 303 "/three" "http://example.com/other"</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="scriptaliasmatch" id="scriptaliasmatch">Directiva</a> <a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a title="Enlace permanente" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="scriptaliasmatch">Directiva <span id="ScriptAliasMatch">ScriptAliasMatch</span> <a title="Enlace permanente" href="#scriptaliasmatch" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Descripci&oacute;n:</a></th><td>Mapea una URL a una ubicaci&oacute;n del sistema de ficheros usando 
 una expresi&oacute;n regular y designa el destino como un script CGI</td></tr>
@@ -559,7 +559,7 @@ una expresi&oacute;n regular y designa el destino como un script CGI</td></tr>
 <a href="../tr/mod/mod_alias.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

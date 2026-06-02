@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@ client</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="supportedencodings" id="supportedencodings">Codages support&eacute;s</a> <a title="Lien permanent" href="#supportedencodings" class="permalink">&para;</a></h2>
+<h2 id="supportedencodings">Codages support&eacute;s <a title="Lien permanent" href="#supportedencodings" class="permalink">&para;</a></h2>
   <p>Le seul codage support&eacute; est <code>gzip</code> afin d'assurer une compl&egrave;te
   compatibilit&eacute; avec les anciens navigateurs. Le codage <code>deflate</code>
   n'est donc pas support&eacute; ; voir &agrave; ce sujet la <a href="https://zlib.net/zlib_faq.html#faq39">documentation de zlib</a> pour une
@@ -77,7 +77,7 @@ client</td></tr>
   </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="recommended" id="recommended">Exemples de configurations</a> <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
+<h2 id="recommended">Exemples de configurations <a title="Lien permanent" href="#recommended" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
         <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
@@ -92,7 +92,7 @@ client</td></tr>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="enable" id="enable">Activation de la compression</a> <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
+<h2 id="enable">Activation de la compression <a title="Lien permanent" href="#enable" class="permalink">&para;</a></h2>
     <div class="warning"><h3>Compression et TLS</h3>
         <p>Certaines applications web sont vuln&eacute;rables &agrave; une attaque pour
 	vol d'informations lorsqu'une connexion TLS transporte des
@@ -100,7 +100,7 @@ client</td></tr>
 	documentez-vous sur la famille d'attaques "BREACH".</p>
     </div>
 
-    <h3><a name="output" id="output">Compression de la sortie</a></h3>
+    <h3 id="output">Compression de la sortie</h3>
       <p>La compression est impl&eacute;ment&eacute;e par le <a href="../filter.html">filtre</a> <code>DEFLATE</code>. La
       directive suivante active la compression des documents dans le
       conteneur o&ugrave; elle est plac&eacute;e :</p>
@@ -132,7 +132,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
       </div>
 
     
-    <h3><a name="inflate" id="inflate">D&eacute;compression de la sortie</a></h3>
+    <h3 id="inflate">D&eacute;compression de la sortie</h3>
       <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> fournit aussi un filtre
       permettant de d&eacute;comprimer un corps de r&eacute;ponse comprim&eacute; par gzip.
       Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
@@ -153,7 +153,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
       </p>
 
     
-    <h3><a name="input" id="input">D&eacute;compression de l'entr&eacute;e</a></h3>
+    <h3 id="input">D&eacute;compression de l'entr&eacute;e</h3>
       <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> fournit &eacute;galement un filtre
       permettant de d&eacute;comprimer un corps de requ&ecirc;te comprim&eacute; par gzip.
       Pour activer cette fonctionnalit&eacute;, vous devez ins&eacute;rer le filtre
@@ -186,7 +186,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxies" id="proxies">Prise en compte des serveurs mandataires</a> <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
+<h2 id="proxies">Prise en compte des serveurs mandataires <a title="Lien permanent" href="#proxies" class="permalink">&para;</a></h2>
 
     <p>Le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> envoie un en-t&ecirc;te de
     r&eacute;ponse HTTP <code>Vary: Accept-Encoding</code> pour avertir les
@@ -217,7 +217,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="precompressed" id="precompressed">Servir du contenu pr&eacute;compress&eacute;</a> <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
+<h2 id="precompressed">Servir du contenu pr&eacute;compress&eacute; <a title="Lien permanent" href="#precompressed" class="permalink">&para;</a></h2>
 
     <p>Comme <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> recompresse le contenu demand&eacute; &agrave;
     chaque requ&ecirc;te, il est possible de gagner en performances en pr&eacute;compressant
@@ -251,7 +251,7 @@ SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png)$" no-gzip</pre>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatealteretag" id="deflatealteretag">Directive</a> <a name="DeflateAlterETag" id="DeflateAlterETag">DeflateAlterETag</a> <a title="Lien permanent" href="#deflatealteretag" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatealteretag">Directive <span id="DeflateAlterETag">DeflateAlterETag</span> <a title="Lien permanent" href="#deflatealteretag" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
 de la compression</td></tr>
@@ -288,7 +288,7 @@ de la compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatebuffersize" id="deflatebuffersize">Directive</a> <a name="DeflateBufferSize" id="DeflateBufferSize">DeflateBufferSize</a> <a title="Lien permanent" href="#deflatebuffersize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatebuffersize">Directive <span id="DeflateBufferSize">DeflateBufferSize</span> <a title="Lien permanent" href="#deflatebuffersize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille du fragment que zlib devra comprimer en une seule
 fois</td></tr>
@@ -313,7 +313,7 @@ fois</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatecompressionlevel" id="deflatecompressionlevel">Directive</a> <a name="DeflateCompressionLevel" id="DeflateCompressionLevel">DeflateCompressionLevel</a> <a title="Lien permanent" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatecompressionlevel">Directive <span id="DeflateCompressionLevel">DeflateCompressionLevel</span> <a title="Lien permanent" href="#deflatecompressionlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le niveau de compression que nous appliquons &agrave; la
 sortie</td></tr>
@@ -333,7 +333,7 @@ sortie</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatefilternote" id="deflatefilternote">Directive</a> <a name="DeflateFilterNote" id="DeflateFilterNote">DeflateFilterNote</a> <a title="Lien permanent" href="#deflatefilternote" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatefilternote">Directive <span id="DeflateFilterNote">DeflateFilterNote</span> <a title="Lien permanent" href="#deflatefilternote" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression sous la forme d'une note
 &agrave; des fins de journalisation</td></tr>
@@ -391,7 +391,7 @@ CustomLog "logs/deflate_log" deflate</pre>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflateinflatelimitrequestbody" id="deflateinflatelimitrequestbody">Directive</a> <a name="DeflateInflateLimitRequestBody" id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</a> <a title="Lien permanent" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflatelimitrequestbody">Directive <span id="DeflateInflateLimitRequestBody">DeflateInflateLimitRequestBody</span> <a title="Lien permanent" href="#deflateinflatelimitrequestbody" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale des corps de requ&ecirc;te d&eacute;compress&eacute;s</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateLimitRequestBody <var>value</var></code></td></tr>
@@ -412,7 +412,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflateinflateratioburst" id="deflateinflateratioburst">Directive</a> <a name="DeflateInflateRatioBurst" id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</a> <a title="Lien permanent" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflateratioburst">Directive <span id="DeflateInflateRatioBurst">DeflateInflateRatioBurst</span> <a title="Lien permanent" href="#deflateinflateratioburst" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Nombre maximal de fois que le ratio de d&eacute;compression d'un
 corps de requ&ecirc;te peut &ecirc;tre d&eacute;pass&eacute;</td></tr>
@@ -431,7 +431,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflateinflateratiolimit" id="deflateinflateratiolimit">Directive</a> <a name="DeflateInflateRatioLimit" id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</a> <a title="Lien permanent" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflateinflateratiolimit">Directive <span id="DeflateInflateRatioLimit">DeflateInflateRatioLimit</span> <a title="Lien permanent" href="#deflateinflateratiolimit" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ratio de d&eacute;compression maximum pour les corps de requ&ecirc;tes</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateInflateRatioLimit <var>value</var></code></td></tr>
@@ -451,7 +451,7 @@ Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatememlevel" id="deflatememlevel">Directive</a> <a name="DeflateMemLevel" id="DeflateMemLevel">DeflateMemLevel</a> <a title="Lien permanent" href="#deflatememlevel" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatememlevel">Directive <span id="DeflateMemLevel">DeflateMemLevel</span> <a title="Lien permanent" href="#deflatememlevel" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantit&eacute; de m&eacute;moire utilisable par zlib pour la
 compression</td></tr>
@@ -467,7 +467,7 @@ compression</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
-<div class="directive-section"><h2><a name="deflatewindowsize" id="deflatewindowsize">Directive</a> <a name="DeflateWindowSize" id="DeflateWindowSize">DeflateWindowSize</a> <a title="Lien permanent" href="#deflatewindowsize" class="permalink">&para;</a></h2>
+<div class="directive-section"><h2 id="deflatewindowsize">Directive <span id="DeflateWindowSize">DeflateWindowSize</span> <a title="Lien permanent" href="#deflatewindowsize" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille de la fen&ecirc;tre de compression zlib</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DeflateWindowSize <var>valeur</var></code></td></tr>
@@ -490,7 +490,7 @@ compression</td></tr>
 <a href="../ko/mod/mod_deflate.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

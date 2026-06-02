@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -48,7 +48,7 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="types" id="types">設定用セクションコンテナの種類</a> <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
+<h2 id="types">設定用セクションコンテナの種類 <a title="Permanent link" href="#types" class="permalink">&para;</a></h2>
 
 <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
@@ -121,7 +121,7 @@ MimeMagicFile conf/magic<br>
 </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="file-and-web" id="file-and-web">ファイルシステムとウェブ空間</a> <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
+<h2 id="file-and-web">ファイルシステムとウェブ空間 <a title="Permanent link" href="#file-and-web" class="permalink">&para;</a></h2>
 
 <p>最もよく使われる設定のセクションコンテナはファイルシステムやウェブ空間の
 特定の場所の設定を変更するものです。まず、この二つの違いを理解することが
@@ -138,7 +138,7 @@ MimeMagicFile conf/magic<br>
 ウェブページはデータベースや他の場所から動的に生成することもできますので、
 ウェブ空間はファイルシステムに直接マップする必要はありません。</p>
 
-<h3><a name="filesystem" id="filesystem">ファイルシステムコンテナ</a></h3>
+<h3 id="filesystem">ファイルシステムコンテナ</h3>
 
 <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ディレクティブと
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ディレクティブ、それと
@@ -189,7 +189,7 @@ Deny from all<br>
 </code></p></div>
 
 
-<h3><a name="webspace" id="webspace">ウェブ空間コンテナ</a></h3>
+<h3 id="webspace">ウェブ空間コンテナ</h3>
 
 <p>一方、<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 ディレクティブとその<a class="glossarylink" href="./glossary.html#regex" title="用語集を参照">正規表現</a>版は
@@ -224,7 +224,7 @@ SetHandler server-status<br>
 </code></p></div>
 
 
-<h3><a name="wildcards" id="wildcards">ワイルドカードと正規表現</a></h3>
+<h3 id="wildcards">ワイルドカードと正規表現</h3>
 
 <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, 
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, 
@@ -265,7 +265,7 @@ Deny from all<br>
 
 
 
-<h3><a name="whichwhen" id="whichwhen">いつ何を使うか</a></h3>
+<h3 id="whichwhen">いつ何を使うか</h3>
 
 <p>ファイルシステムコンテナとウェブ空間コンテナを使い分けるのは、
 実際には非常に簡単です。ファイルシステムに依存する
@@ -320,7 +320,7 @@ Deny from all<br>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">バーチャルホスト</a> <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">バーチャルホスト <a title="Permanent link" href="#virtualhost" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
 コンテナは特定のホストに適用するディレクティブを格納します。
@@ -329,7 +329,7 @@ Deny from all<br>
 ご覧下さい。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="proxy" id="proxy">プロクシ</a> <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
+<h2 id="proxy">プロクシ <a title="Permanent link" href="#proxy" class="permalink">&para;</a></h2>
 
 <p><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
 と <code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code>
@@ -347,7 +347,7 @@ Deny from all<br>
 </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="whatwhere" id="whatwhere">どのディレクティブが使えるの?</a> <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
+<h2 id="whatwhere">どのディレクティブが使えるの? <a title="Permanent link" href="#whatwhere" class="permalink">&para;</a></h2>
 
 <p>どのタイプの設定セクションでどのディレクティブが使用できるかは、
 ディレクティブの <a href="mod/directive-dict.html#Context">Context</a>
@@ -380,7 +380,7 @@ Deny from all<br>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="mergin" id="mergin">セクションのマージ方法</a> <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
+<h2 id="mergin">セクションのマージ方法 <a title="Permanent link" href="#mergin" class="permalink">&para;</a></h2>
 
     <p>マージの順番は以下のようになっています:</p>
 
@@ -435,7 +435,7 @@ Deny from all<br>
       が行なわれます。
       これらを適用した結果は変換が終わった後に完全に捨てられます。
 </div>
-<h3><a name="merge-examples" id="merge-examples">例</a></h3>
+<h3 id="merge-examples">例</h3>
 
 <p>次はマージの順番を示すための恣意的な例になっています。
 リクエスト全てに適用されるとして、本例のディレクティブは
@@ -498,7 +498,7 @@ Deny from badguy.example.com<br>
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>この文書は <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> のライセンスで提供されています。.</p>
-<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/quickreference.html">ディレクティブ</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

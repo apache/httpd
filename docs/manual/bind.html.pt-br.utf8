@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -43,7 +43,7 @@
 </ul><h3>Veja tamb&eacute;m</h3><ul class="seealso"><li><a href="vhosts/">Hosts Virtuais</a></li><li><a href="dns-caveats.html">Problemas com DNS</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Vis&atilde;o Geral</a> <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Vis&atilde;o Geral <a title="Link permanente" href="#overview" class="permalink">&para;</a></h2>
     
 
     <table class="related"><tr><th>M&oacute;dulos Relacionados</th><th>Diretrizes Relacionadas</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
@@ -104,7 +104,7 @@ Listen 192.0.2.5:8000</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="reload" id="reload">Alterando a configura&ccedil;&atilde;o de Listen no rein&iacute;cio</a> <a title="Link permanente" href="#reload" class="permalink">&para;</a></h2>
+<h2 id="reload">Alterando a configura&ccedil;&atilde;o de Listen no rein&iacute;cio <a title="Link permanente" href="#reload" class="permalink">&para;</a></h2>
     
 
     <p>Quando o httpd &eacute; reiniciado, uma considera&ccedil;&atilde;o especial precisa ser feita para
@@ -132,7 +132,7 @@ Listen 192.0.2.5:8000</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="ipv6" id="ipv6">Considera&ccedil;&otilde;es Especiais sobre IPv6</a> <a title="Link permanente" href="#ipv6" class="permalink">&para;</a></h2>
+<h2 id="ipv6">Considera&ccedil;&otilde;es Especiais sobre IPv6 <a title="Link permanente" href="#ipv6" class="permalink">&para;</a></h2>
     
 
     <p>Um n&uacute;mero crescente de plataformas implementa IPv6 e o
@@ -175,7 +175,7 @@ Listen 192.0.2.1:80</pre>
     no FreeBSD, NetBSD, e OpenBSD.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="protocol" id="protocol">Especificando o protocolo com Listen</a> <a title="Link permanente" href="#protocol" class="permalink">&para;</a></h2>
+<h2 id="protocol">Especificando o protocolo com Listen <a title="Link permanente" href="#protocol" class="permalink">&para;</a></h2>
     
     <p>O segundo argumento opcional <var>protocol</var> de
        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
@@ -193,7 +193,7 @@ Listen 192.0.2.1:80</pre>
 </div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">Como Isto Funciona com Hosts Virtuais</a> <a title="Link permanente" href="#virtualhost" class="permalink">&para;</a></h2>
+<h2 id="virtualhost">Como Isto Funciona com Hosts Virtuais <a title="Link permanente" href="#virtualhost" class="permalink">&para;</a></h2>
     
 
     <p>A diretiva <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> n&atilde;o implementa
@@ -225,7 +225,7 @@ Listen 192.0.2.1:80</pre>
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licenciado sob a <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">M&oacute;dulos</a> | <a href="./mod/quickreference.html">Diretivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Perguntas Frequentes</a> | <a href="./glossary.html">Gloss&aacute;rio</a> | <a href="./sitemap.html">Mapa do Site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Relate um problema</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

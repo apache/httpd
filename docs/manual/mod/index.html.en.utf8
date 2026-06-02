@@ -59,6 +59,8 @@ available</dd>
 more than one multi-processing module (MPM)</dd>
 <dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
 of consuming threads only for connections with active processing</dd>
+<dt><a href="motorz.html">motorz</a></dt><dd>A lean, fast, self-contained event-driven Multi-Processing Module
+built on the APR pollset and thread pool especially suited as a reverse proxy</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>

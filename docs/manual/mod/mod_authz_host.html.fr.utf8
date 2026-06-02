@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -69,7 +69,7 @@ d&rsquo;autorisation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a> <a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
+<h2 id="requiredirectives">Les directives Require <a title="Lien permanent" href="#requiredirectives" class="permalink">&para;</a></h2>
 
     <p>La directive Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est utilis&eacute;e au cours de
     la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
@@ -87,7 +87,7 @@ d&rsquo;autorisation</a></li>
     <p>A partir de la version 2.4.8, les directives require host
     supportent les <a href="../expr.html">expressions</a>.</p>
 
-<h3><a name="reqip" id="reqip">Require ip</a></h3>
+<h3 id="reqip">Require ip</h3>
 
     <p>Le fournisseur <code>ip</code> permet de contr&ocirc;ler l'acc&egrave;s au
     serveur en fonction de l'adresse IP du client distant. Lorsque
@@ -142,7 +142,7 @@ Require ip 2001:db8:3::/48</pre>
 
 
 
-<h3><a name="reqhost" id="reqhost">Require host</a></h3>
+<h3 id="reqhost">Require host</h3>
 
     <p>Le fournisseur <code>host</code> permet de contr&ocirc;ler l'acc&egrave;s au
     serveur en fonction du nom d'h&ocirc;te du client distant. Lorsque
@@ -170,7 +170,7 @@ Require host .net example.edu</pre>
     recherches DNS inverse et directe sont coh&eacute;rentes.</p>
 
 
-<h3><a name="reqfwddns" id="reqfwddns">Require forward-dns</a></h3>
+<h3 id="reqfwddns">Require forward-dns</h3>
 
     <p>Le fournisseur <code>forward-dns</code> permet d'acc&eacute;der au serveur
     s&eacute;curis&eacute; en fonction de simples noms d'h&ocirc;te. Lorsque <code>Require
@@ -197,7 +197,7 @@ Require host .net example.edu</pre>
     version 2.4.19 du serveur HTTP Apache.</p>
 
 
-<h3><a name="reqlocal" id="reqlocal">Require local</a></h3>
+<h3 id="reqlocal">Require local</h3>
 
     <p>Le fournisseur <code>local</code> autorise l'acc&egrave;s au serveur si
     l'une au moins de ces conditions est satisfaite :</p>
@@ -216,7 +216,7 @@ Require host .net example.edu</pre>
 
 
 
-<h3><a name="proxy" id="proxy">Note concernant la s&eacute;curit&eacute;</a></h3>
+<h3 id="proxy">Note concernant la s&eacute;curit&eacute;</h3>
 
     <p>Si le contenu de votre serveur est mandat&eacute;, vous devez garder &agrave;
     l'esprit que l'adresse client correspondra &agrave; l'adresse de votre
@@ -234,7 +234,7 @@ Require host .net example.edu</pre>
 <a href="../fr/mod/mod_authz_host.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Autoris&eacute; sous <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Signaler un bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

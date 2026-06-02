@@ -10,7 +10,7 @@
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
-<script src="../style/scripts/prettify.min.js" type="text/javascript">
+<script src="../style/scripts/prettify.min.js">
 </script>
 
 <link href="../images/favicon.png" rel="shortcut icon"></head>
@@ -54,7 +54,7 @@ pero este documento deber&iacute;a ayudar al principiante a mojarse los pies.
 </ul><h3>Consulte tambi&eacute;n</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentaci&oacute;n del m&oacute;dulo</a></li><li><a href="remapping.html">Redirecci&oacute;n y remapeo</a></li><li><a href="access.html">Control de acceso</a></li><li><a href="vhosts.html">Hosts virtuales</a></li><li><a href="proxy.html">Proxy</a></li><li><a href="rewritemap.html">Uso de RewriteMap</a></li><li><a href="advanced.html">T&eacute;cnicas avanzadas</a></li><li><a href="avoid.html">Cu&aacute;ndo no usar mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="introduction" id="introduction">Introducci&oacute;n</a> <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
+<h2 id="introduction">Introducci&oacute;n <a title="Enlace permanente" href="#introduction" class="permalink">&para;</a></h2>
 <p>El m&oacute;dulo de Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> es un m&oacute;dulo muy potente y
 sofisticado que proporciona una forma de hacer manipulaciones de URL. Con
 &eacute;l, puede hacer casi todos los tipos de reescritura de URL que pueda necesitar. Es,
@@ -81,7 +81,7 @@ le dir&aacute; exactamente c&oacute;mo se procesa cada regla.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="regex" id="regex">Expresiones Regulares</a> <a title="Enlace permanente" href="#regex" class="permalink">&para;</a></h2>
+<h2 id="regex">Expresiones Regulares <a title="Enlace permanente" href="#regex" class="permalink">&para;</a></h2>
 
 <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> usa el vocabulario de <a href="http://pcre.org/">Expresiones
 Regulares Compatibles con Perl</a>. En este documento, no intentamos
@@ -98,7 +98,7 @@ para que pueda comenzar, sin ser abrumador, con la esperanza de que
 las <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s sean f&oacute;rmulas
 cient&iacute;ficas, en lugar de encantamientos m&aacute;gicos.</p>
 
-<h3><a name="regexvocab" id="regexvocab">Vocabulario de Regex</a></h3>
+<h3 id="regexvocab">Vocabulario de Regex</h3>
 
 <p>Los siguientes son los bloques de construcci&oacute;n m&iacute;nimos que necesitar&aacute;, para
 escribir expresiones regulares y <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s. Ciertamente no
@@ -181,7 +181,7 @@ la expresi&oacute;n.</p>
 
 
 
-<h3><a name="InternalBackRefs" id="InternalBackRefs">Disponibilidad de Referencias Inversas de Regex</a></h3>
+<h3 id="InternalBackRefs">Disponibilidad de Referencias Inversas de Regex</h3>
 
       <p>Una cosa importante que debe recordarse aqu&iacute;: Siempre que
       use par&eacute;ntesis en <em>Pattern</em> o en uno de los
@@ -215,7 +215,7 @@ la expresi&oacute;n.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">Conceptos B&aacute;sicos de RewriteRule</a> <a title="Enlace permanente" href="#rewriterule" class="permalink">&para;</a></h2>
+<h2 id="rewriterule">Conceptos B&aacute;sicos de RewriteRule <a title="Enlace permanente" href="#rewriterule" class="permalink">&para;</a></h2>
 <p>Una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consiste
 en tres argumentos separados por espacios. Los argumentos son</p>
 <ol>
@@ -291,7 +291,7 @@ sucesivamente.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="flags" id="flags">Banderas de Reescritura</a> <a title="Enlace permanente" href="#flags" class="permalink">&para;</a></h2>
+<h2 id="flags">Banderas de Reescritura <a title="Enlace permanente" href="#flags" class="permalink">&para;</a></h2>
 <p>El comportamiento de una <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> puede ser modificado por la
 aplicaci&oacute;n de una o m&aacute;s banderas al final de la regla. Por ejemplo, el
 comportamiento de coincidencia de una regla puede hacerse insensible a may&uacute;sculas/min&uacute;sculas mediante la
@@ -305,7 +305,7 @@ ejemplos, consulte el documento de <a href="flags.html">Banderas de Reescritura<
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Condiciones de Reescritura</a> <a title="Enlace permanente" href="#rewritecond" class="permalink">&para;</a></h2>
+<h2 id="rewritecond">Condiciones de Reescritura <a title="Enlace permanente" href="#rewritecond" class="permalink">&para;</a></h2>
 <p>Una o m&aacute;s directivas <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 pueden usarse para restringir los tipos de solicitudes que estar&aacute;n
 sujetas a la
@@ -357,14 +357,14 @@ y <code>$1</code> contendr&aacute; <code>foo/bar</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="rewritemap" id="rewritemap">Mapas de reescritura</a> <a title="Enlace permanente" href="#rewritemap" class="permalink">&para;</a></h2>
+<h2 id="rewritemap">Mapas de reescritura <a title="Enlace permanente" href="#rewritemap" class="permalink">&para;</a></h2>
 
 <p>La directiva <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
 proporciona una forma de llamar a una funci&oacute;n externa, por as&iacute; decirlo, para hacer su
 reescritura por usted. Esto se discute con mayor detalle en la <a href="rewritemap.html">documentaci&oacute;n complementaria de RewriteMap</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2><a name="htaccess" id="htaccess">Archivos .htaccess</a> <a title="Enlace permanente" href="#htaccess" class="permalink">&para;</a></h2>
+<h2 id="htaccess">Archivos .htaccess <a title="Enlace permanente" href="#htaccess" class="permalink">&para;</a></h2>
 
 <p>La reescritura se configura t&iacute;picamente en la configuraci&oacute;n principal del servidor
 (fuera de cualquier secci&oacute;n <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>) o
@@ -393,7 +393,7 @@ la <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">Rewrite
 <a href="../zh-cn/rewrite/intro.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licencia bajo los t&eacute;rminos de la <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="../mod/">M&oacute;dulos</a> | <a href="../mod/quickreference.html">Directivas</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa del sitio web</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Reportar un error</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }

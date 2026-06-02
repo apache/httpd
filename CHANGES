@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.5.1
 
+  *) mpm_motorz, mod_http2: Rework the MotorZ MPM with
+     multi-poller scale-out (new PollersPerChild directive) and async
+     keep-alive/HTTP/2 handoff, plus concurrency hardening and bug
+     fixes. Includes a required mod_http2 fix so a client's graceful
+     GOAWAY does not drop an in-flight response under async MPMs, and
+     a self-contained motorz test suite.  [Jim Jagielski]
+
   *) mod_http2: improved early cleanup of streams.
      [Stefan Eissing]
 

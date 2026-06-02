@@ -10,7 +10,7 @@
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="./style/css/prettify.css">
-<script src="./style/scripts/prettify.min.js" type="text/javascript">
+<script src="./style/scripts/prettify.min.js">
 </script>
 
 <link href="./images/favicon.png" rel="shortcut icon"></head>
@@ -65,7 +65,7 @@
 </ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="programs/configure.html">Kaynak ağacının yapılandırılması</a></li><li><a href="invoking.html">Apache httpd'nin başlatılması</a></li><li><a href="stopping.html">Durdurma ve yeniden başlatma</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="overview" id="overview">Tez canlılar i&ccedil;in genel bir bakış</a> <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
+<h2 id="overview">Tez canlılar i&ccedil;in genel bir bakış <a title="Permanent link" href="#overview" class="permalink">&para;</a></h2>
 
     <table>
       
@@ -127,7 +127,7 @@
       ayrıntılı olarak a&ccedil;ıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="requirements" id="requirements">Gereksinimler</a> <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
+<h2 id="requirements">Gereksinimler <a title="Permanent link" href="#requirements" class="permalink">&para;</a></h2>
 
     <p>Apache httpd'yi derleyebilmek i&ccedil;in şunlar mevcut olmalıdır:</p>
 
@@ -194,7 +194,7 @@
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="download" id="download">İndirme</a> <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
+<h2 id="download">İndirme <a title="Permanent link" href="#download" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusunu, &ccedil;eşitli yansıların da listelendiği <a href="http://httpd.apache.org/download.cgi">Apache HTTP Sunucusu
       indirme sayfasından</a> indirebilirsiniz. Unix benzeri sistemler
@@ -215,7 +215,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="extract" id="extract">Paketi a&ccedil;ma</a> <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
+<h2 id="extract">Paketi a&ccedil;ma <a title="Permanent link" href="#extract" class="permalink">&para;</a></h2>
 
     <p>Apache HTTP Sunucusu tar paketinden sıkıştırmayı kaldırdıktan sonra tar
       arşivinden dosyaları &ccedil;ıkarmak basit bir işlemdir:</p>
@@ -230,7 +230,7 @@
       başlayabilmek i&ccedil;in &ouml;nce <code>cd</code> ile bu dizine ge&ccedil;melisiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="configure" id="configure">Kaynak ağacının yapılandırılması</a> <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
+<h2 id="configure">Kaynak ağacının yapılandırılması <a title="Permanent link" href="#configure" class="permalink">&para;</a></h2>
 
     <p>Sonraki adım, Apache HTTPd kaynak ağacının platformunuza ve kişisel
       gereksinimlerinize uygun olarak yapılandırılmasıdır. Bu işlem dağıtımın
@@ -299,7 +299,7 @@
       <code class="program"><a href="./programs/configure.html">configure</a></code> kılavuz sayfasında a&ccedil;ıklanmıştır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="compile" id="compile">Derleme</a> <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
+<h2 id="compile">Derleme <a title="Permanent link" href="#compile" class="permalink">&para;</a></h2>
 
     <p>Artık, Apache HTTPd paketini şekillendiren &ccedil;eşitli par&ccedil;aları derlemek
       i&ccedil;in basit&ccedil;e aşağıdaki komutu verebilirsiniz:</p>
@@ -312,7 +312,7 @@
       gerektirecektir.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="install" id="install">Kurulum</a> <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
+<h2 id="install">Kurulum <a title="Permanent link" href="#install" class="permalink">&para;</a></h2>
 
     <p>Şimdi sıra <code><em>&Ouml;NEK</em></code> dizini altına kurulmak &uuml;zere
       yapılandırdığınız (yukarı <code>--prefix</code> se&ccedil;eneğine bakınız)
@@ -328,7 +328,7 @@
       dosyalarının ve belgelerin &uuml;zerine yazılmayacaktır.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="customize" id="customize">Kişiselleştirme</a> <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
+<h2 id="customize">Kişiselleştirme <a title="Permanent link" href="#customize" class="permalink">&para;</a></h2>
 
     <p>Bu adımda, Apache HTTP Sunucunuzu <code><em>&Ouml;NEK</em>/conf/</code>
       dizini altındaki <a href="configuring.html">yapılandırma
@@ -342,7 +342,7 @@
       bulabilirsiniz.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="test" id="test">Deneme</a> <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
+<h2 id="test">Deneme <a title="Permanent link" href="#test" class="permalink">&para;</a></h2>
 
     <p>Artık Apache HTTP Sunucunuzu <a href="invoking.html">başlatmaya</a>
       hazırsınız. Hemen şu komutu verin:</p>
@@ -358,7 +358,7 @@
     <div class="example"><p><code>$ <em>&Ouml;NEK</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="upgrading" id="upgrading">Y&uuml;kseltme</a> <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
+<h2 id="upgrading">Y&uuml;kseltme <a title="Permanent link" href="#upgrading" class="permalink">&para;</a></h2>
 
     <p>S&uuml;r&uuml;m y&uuml;kseltme işleminin ilk adımı, sitenizi etkileyen değişiklikleri
       &ouml;ğrenmek i&ccedil;in dağıtım duyurusunu ve kaynak paketindeki
@@ -411,7 +411,7 @@
     </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
-<h2><a name="thirdp" id="thirdp">&Uuml;&ccedil;&uuml;nc&uuml; parti paketler</a> <a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
+<h2 id="thirdp">&Uuml;&ccedil;&uuml;nc&uuml; parti paketler <a title="Permanent link" href="#thirdp" class="permalink">&para;</a></h2>
 
     <p>&Uuml;&ccedil;&uuml;nc&uuml; partilerin &ccedil;oğunun, Apache HTTP Sunucusunun belli bir platforma
       kurulumu i&ccedil;in paketlenmiş kendi dağıtımları vardır. &Ccedil;eşitli Linux
@@ -442,7 +442,7 @@
 <a href="./tr/install.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2026 The Apache Software Foundation.<br><a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> adı altında lisanslıdır.</p>
-<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script type="text/javascript"><!--//--><![CDATA[//><!--
+<p class="menu"><a href="./mod/">Mod&uuml;ller</a> | <a href="./mod/quickreference.html">Y&ouml;nergeler</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
 if (typeof(prettyPrint) !== 'undefined') {
     prettyPrint();
 }
