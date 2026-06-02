@@ -2261,7 +2261,7 @@ static int parse_url(const char *url)
     }
 #endif
 
-    if ((cp = strchr(url, '/')) == NULL)
+    if ((cp = strchr((char *)url, '/')) == NULL)
         return 1;
     h = apr_pstrmemdup(cntxt, url, cp - url);
     rv = apr_parse_addr_port(&hostname, &scope_id, &port, h, cntxt);
@@ -2537,7 +2537,7 @@ int main(int argc, const char * const argv[])
                     /*
                      * assume proxy-name[:port]
                      */
-                    if ((p = strchr(opt_arg, ':'))) {
+                    if ((p = strchr((char *)opt_arg, ':'))) {
                         *p = '\0';
                         p++;
                         proxyport = atoi(p);
