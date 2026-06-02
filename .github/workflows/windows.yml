@@ -52,7 +52,10 @@ jobs:
       - name: Configure CMake
         shell: cmd
         run: |
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            where /R "C:\Program Files\Microsoft Visual Studio" VsDevCmd.bat > vs_setup_path
+            set /p SETUP_VS=< vs_setup_path
+            call "%SETUP_VS%" -arch=${{ matrix.arch }}
+
             cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} ^
                 -G "${{ matrix.generator }}" ^
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake ^
@@ -62,5 +65,7 @@ jobs:
       - name: Build
         shell: cmd
         run: |
-            call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=${{ matrix.arch }}
+            set /p SETUP_VS=< vs_setup_path
+            call "%SETUP_VS%" -arch=${{ matrix.arch }}
+            del vs_setup_path
             cmake --build ${{github.workspace}}/build --config ${{ matrix.build-type }}
