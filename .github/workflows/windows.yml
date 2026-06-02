@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: vcpkg install --triplet ${{ matrix.triplet }} apr[private-headers] apr-util pcre2 openssl
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Configure CMake
         shell: cmd
