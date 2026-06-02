@@ -664,9 +664,15 @@ static int log_ctime(const ap_errorlog_info *info, const char *arg,
         if (arg[0] == 'u' && !arg[1]) { /* no ErrorLogFormat (fast path) */
             option |= AP_CTIME_OPTION_USEC;
         }
-        else if (!ap_strchr_c(arg, '%')) { /* special "%{cuz}t" formats */
+        else if (arg[0] == 'm' && !arg[1]) { /* no ErrorLogFormat (fast path) - msec */
+            option |= AP_CTIME_OPTION_MSEC;
+        }
+        else if (!ap_strchr_c(arg, '%')) { /* special "%{mcuz}t" formats */
             while (*arg) {
                 switch (*arg++) {
+                case 'm':
+                    option |= AP_CTIME_OPTION_MSEC;
+                    break;
                 case 'u':
                     option |= AP_CTIME_OPTION_USEC;
                     break;

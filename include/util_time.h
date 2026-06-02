@@ -49,6 +49,8 @@ extern "C" {
 #define AP_CTIME_OPTION_COMPACT 0x2
 /* Add timezone offset from GMT ([+-]hhmm) */
 #define AP_CTIME_OPTION_GMTOFF  0x4
+/* Add sub second timestamps with millisecond resolution */
+#define AP_CTIME_OPTION_MSEC    0x8
 
 
 /**
