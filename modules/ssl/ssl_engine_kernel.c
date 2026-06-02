@@ -1120,8 +1120,10 @@ int ssl_hook_Access(request_rec *r)
     if ((dc->nOptions & SSL_OPT_FAKEBASICAUTH) == 0 && dc->szUserName) {
         char *val = ssl_var_lookup(r->pool, r->server, r->connection,
                                    r, (char *)dc->szUserName);
-        if (val && val[0])
+        if (val && val[0]) {
             r->user = val;
+            r->ap_auth_type = "ClientCert";
+        }
         else
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(02227)
                           "Failed to set r->user to '%s'", dc->szUserName);
