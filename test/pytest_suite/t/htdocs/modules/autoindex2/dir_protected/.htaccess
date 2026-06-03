@@ -1,4 +1,0 @@
-AuthType Basic
-AuthName "Restricted Directory"
-AuthUserFile htdocs/modules/autoindex2/dir_protected/htpasswd
-Require valid user

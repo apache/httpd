@@ -1,1 +1,1 @@
-SetEnvIfExpr "file('%{DOCUMENT_ROOT}/foobar.html') =~ /(.+)/" VAR_ONE=$0
+SetEnvIfExpr "file('/Users/jim/src/asf/code/dev/httpd-trunk/test/pytest_suite/t/htdocs/foobar.html') =~ /(.+)/" VAR_ONE=$0
