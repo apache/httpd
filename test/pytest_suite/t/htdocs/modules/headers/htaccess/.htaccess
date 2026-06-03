@@ -1,2 +1,0 @@
-Header echo Test-Header
-Header edit* Test-Header ^(.*)$ $1;httpOnly;secure

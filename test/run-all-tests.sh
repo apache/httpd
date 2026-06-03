@@ -136,37 +136,11 @@ run_pyhttpd() {
         echo "  build httpd with its test config (configure) to run these." >&2
         return 0
     fi
-    # pyhttpd tests use the system pytest + pyhttpd/config.ini (not our venv).
-    if ! command -v pytest >/dev/null 2>&1; then
-        echo "run-all-tests.sh: note: no 'pytest' on PATH for the pyhttpd suites; skipping." >&2
-        return 0
-    fi
-    # Default to every modules/* dir whose conftest actually imports in this
-    # environment -- so an optional missing dep (e.g. pyOpenSSL for md/) skips
-    # just that area instead of aborting the whole pyhttpd run. Override with
-    # PYHTTPD_TARGETS or by passing explicit paths.
-    if [ -n "${PYHTTPD_TARGETS:-}" ]; then
-        targets="$PYHTTPD_TARGETS"
-    else
-        targets=""
-        for d in "$here"/modules/*/; do
-            [ -d "$d" ] || continue
-            name="modules/$(basename "$d")"
-            if ( cd "$here" && pytest "$name" --co -q >/dev/null 2>&1 ); then
-                targets="$targets $name"
-            else
-                echo "run-all-tests.sh: note: skipping $name (conftest not importable; missing dep?)" >&2
-            fi
-        done
-    fi
-    if [ -z "$targets" ]; then
-        echo "run-all-tests.sh: note: no collectable pyhttpd module dirs; skipping." >&2
-        return 0
-    fi
-    # pyhttpd gets the shared flags only; its test selection is $targets (a
-    # pytest_suite positional path would be meaningless here).
+    # runtests-pyhttpd.sh manages the venv, prepends its bin/ to PATH (so CGI
+    # scripts forked by httpd also use the venv's Python), and runs pytest.
+    # PYHTTPD_TARGETS can override which modules/ subdirs are run.
     # shellcheck disable=SC2086
-    ( cd "$here" && pytest $targets $flags ) || return $?
+    ( cd "$here" && ./runtests-pyhttpd.sh $flags ) || return $?
 }
 
 case "$only" in
