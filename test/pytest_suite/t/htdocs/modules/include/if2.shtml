@@ -1,0 +1,10 @@
+<!--#if expr="\"1\" = \"1\""-->
+pass
+<!--#else -->
+fail
+<!--#endif -->
+<!--#if expr="\"1\" = \"2\""-->
+fail
+<!--#else -->
+pass
+<!--#endif -->

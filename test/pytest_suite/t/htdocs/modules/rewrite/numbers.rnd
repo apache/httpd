@@ -1,0 +1,10 @@
+#
+# numbers.rnd
+# random number rewrite map for mod_rewrite testing
+#
+1 one|two|three|four|five|six
+2 two|three|four|five|six
+3 three|four|five|six
+4 four|five|six
+5 five|six
+6 six

@@ -1,0 +1,3 @@
+<!--#set var="encode" value="# %^"-->
+<!--#echo encoding="none" var="encode"-->
+<!--#echo encoding="url" var="encode"-->

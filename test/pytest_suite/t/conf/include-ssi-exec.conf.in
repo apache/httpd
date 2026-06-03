@@ -1,0 +1,499 @@
+# Test cases for Includes options inheritance, see test case
+# t/security/CVE-2009-1195.t
+
+<IfDefine !APACHE1>
+<IfVersion >= 2.1.0>
+<IfModule mod_include.c>
+
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/1">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/2">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/3">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/4">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/5">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/6">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/7">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/8">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/9">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/10">
+   Options None
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/11">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/12">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/13">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/14">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/15">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/16">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/17">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/18">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/19">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/20">
+   Options None
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/21">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/22">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/23">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/24">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/25">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/26">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/27">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/28">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/29">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/30">
+   Options None
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/31">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/32">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/33">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/34">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/35">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/36">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/37">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/38">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/39">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/40">
+   Options None
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/41">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/42">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/43">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/44">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/45">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/46">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/47">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/48">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/49">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/50">
+   Options IncludesNoExec
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/51">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/52">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/53">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/54">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/55">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/56">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/57">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/58">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/59">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/60">
+   Options IncludesNoExec
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/61">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/62">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/63">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/64">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/65">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/66">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/67">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/68">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/69">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/70">
+   Options IncludesNoExec
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/71">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/72">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/73">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/74">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/75">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/76">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/77">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/78">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/79">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/80">
+   Options IncludesNoExec
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/81">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/82">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/83">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/84">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/85">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/86">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/87">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/88">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/89">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/90">
+   Options Includes
+   AllowOverride Options=IncludesNoExec
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/91">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/92">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/93">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/94">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/95">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/96">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/97">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/98">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/99">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/100">
+   Options Includes
+   AllowOverride Options=Includes
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/101">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/102">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/103">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/104">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/105">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/106">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/107">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/108">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/109">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/110">
+   Options Includes
+   AllowOverride All
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/111">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/112">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/113">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/114">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/115">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/116">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/117">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/118">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/119">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/120">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/121">
+   Options Includes
+   AllowOverride None
+</Directory>
+<Directory "@SERVERROOT@/htdocs/modules/include/ssi-exec/120/subdir">
+# Just a dummy directive that is always available to make this a valid block
+   FileETag All
+</Directory>
+
+</IfModule>
+</IfVersion>
+</IfDefine>

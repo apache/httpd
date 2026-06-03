@@ -1,0 +1,1 @@
+SetEnvIfExpr "file('/Users/jjagielski/src/asf/httpd/test/pytest_suite/t/htdocs/foobar.html') =~ /(.+)/" VAR_ONE=$0

@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Restricted Directory"
+AuthUserFile /Users/jjagielski/src/asf/httpd/test/pytest_suite/t/htdocs/modules/autoindex2/dir_protected/htpasswd
+Require valid user

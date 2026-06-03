@@ -1,0 +1,3 @@
+before
+<!--#include virtual="included.shtml" -->
+after
