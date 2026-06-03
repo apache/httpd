@@ -35,11 +35,12 @@ if [ ! -x "$PYTEST" ]; then
     if command -v uv >/dev/null 2>&1; then
         echo "runtests.sh: .venv not found; running 'uv sync' to create it..." >&2
         uv sync
+    elif command -v python3 >/dev/null 2>&1; then
+        echo "runtests.sh: .venv not found; creating it with python3 + pip..." >&2
+        python3 -m venv .venv
+        .venv/bin/pip install --quiet -e .
     else
-        echo "runtests.sh: ERROR: $PYTEST not found and 'uv' is not installed." >&2
-        echo "  Create the environment with one of:" >&2
-        echo "    uv sync" >&2
-        echo "    python3 -m venv .venv && .venv/bin/pip install pytest httpx" >&2
+        echo "runtests.sh: ERROR: $PYTEST not found and neither 'uv' nor 'python3' is installed." >&2
         exit 1
     fi
 fi
