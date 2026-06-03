@@ -18,6 +18,8 @@
 #   ./run-all-tests.sh --only=pyhttpd  # run only the pyhttpd modules/ tests
 #   ./run-all-tests.sh --apxs /path/to/apxs   # override the httpd build
 #   ./run-all-tests.sh -k status -v    # extra args pass through to BOTH pytests
+#   ./run-all-tests.sh --clean-modules # wipe compiled C-module artifacts before
+#                                      # building (emulate make clean; pytest_suite only)
 #
 # Environment overrides:
 #   APXS       path to apxs (default: read from pyhttpd/config.ini, else $PATH)
@@ -25,6 +27,37 @@
 #   PYHTTPD_TARGETS  pyhttpd test paths (default: "modules")
 #
 set -eu
+
+usage() {
+    cat <<'EOF'
+Usage: run-all-tests.sh [OPTIONS] [PATHS...]
+
+Run both Python test suites against a built httpd.
+
+Suites (run in order):
+  1. pytest_suite/  -- classic Apache::Test port (HTTP, modules, SSL, CVEs)
+  2. modules/       -- pyhttpd tests (HTTP/2, mod_md, proxy, core)
+
+Options:
+  --only=pysuite     run only pytest_suite
+  --only=pyhttpd     run only the pyhttpd modules/ tests
+  --apxs=PATH        path to apxs for the pytest_suite build
+  --clean-modules    wipe compiled C-module artifacts before building
+                     (emulate make clean; pytest_suite only)
+  -k EXPR            pytest keyword filter (passed to both suites)
+  -m EXPR            pytest marker filter (passed to both suites)
+  -v, -x, ...        other pytest flags (passed to both suites)
+  -h, --help         show this help and exit
+
+Positional PATHS are forwarded to pytest_suite only (e.g. tests/t/modules/foo).
+The pyhttpd suite selects tests via PYHTTPD_TARGETS or auto-detection.
+
+Environment:
+  APXS             path to apxs (default: config.ini, then \$PATH)
+  PHP_FPM          path to php-fpm for PHP tests in pytest_suite (optional)
+  PYHTTPD_TARGETS  space-separated list of pyhttpd test paths (default: modules/*)
+EOF
+}
 
 here="$(cd "$(dirname "$0")" && pwd)"
 suite_dir="$here/pytest_suite"
@@ -49,6 +82,7 @@ for arg in "$@"; do
     if [ "$expect_apxs" = "1" ]; then apxs_opt="$arg"; expect_apxs=0; continue; fi
     if [ "$expect_flagval" = "1" ]; then flags="$flags $arg"; expect_flagval=0; continue; fi
     case "$arg" in
+        -h|--help) usage; exit 0 ;;
         --only=*) only="${arg#--only=}" ;;
         --apxs)   expect_apxs=1 ;;
         --apxs=*) apxs_opt="${arg#--apxs=}" ;;
