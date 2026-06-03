@@ -14,7 +14,9 @@ URI = "/modules/filter/pr49328/pr49328.shtml"
 
 @need_module("filter", "include", "deflate")
 def test_pr49328(http):
-    content = http.GET(URI, headers={"Accept-Encoding": "gzip"}).content
+    # GET_RAW: keep the gzip stream undecoded so we can re-POST it through the
+    # inflate input filter (httpx would otherwise auto-decompress .content).
+    content = http.GET_RAW(URI, headers={"Accept-Encoding": "gzip"})
     deflated = http.POST_BODY(
         INFLATOR, content=content, headers={"Content-Encoding": "gzip"}
     )

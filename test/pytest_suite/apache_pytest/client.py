@@ -272,6 +272,34 @@ class TestClient:
     def GET(self, path: str, **kwargs: object) -> httpx.Response:
         return self._request("GET", path, **kwargs)
 
+    def _raw_body(
+        self,
+        method: str,
+        path: str,
+        *,
+        cert: str | None = None,
+        **kwargs: object,
+    ) -> bytes:
+        """Return the response body WITHOUT content-decoding.
+
+        httpx transparently inflates gzip/deflate responses, so ``.content`` is
+        the decoded plaintext. The mod_deflate round-trip tests need the raw
+        compressed bytes (to re-POST them through the inflate input filter), so
+        stream the response and read ``iter_raw()``, which yields the bytes as
+        they came off the wire -- the analog of LWP not auto-decoding.
+        """
+        client = self._client_for(cert) if cert is not None else self._client
+        request = client.build_request(method, self._url(path), **kwargs)  # type: ignore[arg-type]
+        response = client.send(request, stream=True)
+        try:
+            return b"".join(response.iter_raw())
+        finally:
+            response.close()
+
+    def GET_RAW(self, path: str, **kwargs: object) -> bytes:
+        """GET ``path`` and return the raw, undecoded response body bytes."""
+        return self._raw_body("GET", path, **kwargs)
+
     def HEAD(self, path: str, **kwargs: object) -> httpx.Response:
         return self._request("HEAD", path, **kwargs)
 

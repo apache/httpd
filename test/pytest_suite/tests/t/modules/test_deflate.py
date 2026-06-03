@@ -54,16 +54,10 @@ def test_deflate(http):
     for uri in _uris(http):
         original = http.GET_BODY(uri)
 
-        # httpx auto-decompresses; ask the server explicitly for the raw gzip
-        # by reading .content with the gzip Accept-Encoding, then re-POST it.
-        deflated_resp = http.GET(uri, headers=DEFLATE_HEADERS)
-        # We need the raw gzip bytes to re-inflate; httpx exposes the (already
-        # decoded) text, so reconstruct via the same endpoint the Perl test
-        # used: POST the deflated bytes back. To obtain the raw deflated bytes
-        # without httpx auto-decoding we disable decoding through a header probe;
-        # fall back to comparing decoded bodies, which is what the round-trip
-        # asserts anyway.
-        deflated = deflated_resp.content
+        # httpx auto-decompresses, so GET_RAW reads the body undecoded to get
+        # the actual gzip stream; re-POST it through the inflate input filter
+        # (echo_post) and assert it round-trips back to the original.
+        deflated = http.GET_RAW(uri, headers=DEFLATE_HEADERS)
 
         deflated_str_q0 = http.GET_BODY(uri, headers=DEFLATE_HEADERS_Q0)
 
