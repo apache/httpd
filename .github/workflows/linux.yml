@@ -344,9 +344,6 @@ jobs:
         echo "${{ matrix.env }}" >> $GITHUB_ENV
         echo JOBID=`echo "OS=$ImageOS ${{ matrix.notest-cflags }} ${{ matrix.env }} ${{ matrix.config }}" \
            | md5sum - | sed 's/ .*//'` >> $GITHUB_ENV
-    # https://github.com/actions/runner-images/issues/9491#issuecomment-1989718917
-    - name: Workaround ASAN issue in Ubuntu 22.04
-      run: sudo sysctl vm.mmap_rnd_bits=28
     - name: apt refresh
       run: sudo apt-get -o Acquire::Retries=5 update
     - name: Install prerequisites
@@ -375,7 +372,7 @@ jobs:
     - name: Configure environment
       run: ./test/travis_before_linux.sh
       timeout-minutes: 15
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: config.log-${{ env.JOBID }}
@@ -383,7 +380,7 @@ jobs:
           /home/runner/build/**/config.log
     - name: Build and test
       run: ./test/travis_run_linux.sh
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       if: failure()
       with:
         name: error_log-${{ env.JOBID }}
