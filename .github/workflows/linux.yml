@@ -62,6 +62,9 @@ jobs:
           - name: Event MPM, all-modules, no CMSG_DATA
             config: --enable-mods-shared=reallyall --with-mpm=event ac_cv_have_decl_CMSG_DATA=no
           # -------------------------------------------------------------------------
+          - name: MotorZ MPM, all-modules (except cgid)
+            config: --enable-mods-shared=reallyall --with-mpm=motorz --disable-cgid
+          # -------------------------------------------------------------------------
           - name: Default, all-modules + install
             config: --enable-mods-shared=reallyall
             env: |
@@ -131,6 +134,17 @@ jobs:
           # -------------------------------------------------------------------------
           - name: Shared MPMs (prefork), pool-debug, SSL/TLS variants
             config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=prefork
+            env: |
+              APR_VERSION=1.7.x
+              APR_CONFIG="--enable-pool-debug"
+              APU_VERSION=1.7.x
+              APU_CONFIG="--with-crypto --with-ldap"
+              TEST_MALLOC=1
+              TEST_SSL=1
+              CLEAR_CACHE=1
+          # -------------------------------------------------------------------------
+          - name: Shared MPMs (motorz), pool-debug, SSL/TLS variants
+            config: --enable-mods-shared=reallyall --enable-mpms-shared=all --with-mpm=motorz
             env: |
               APR_VERSION=1.7.x
               APR_CONFIG="--enable-pool-debug"
