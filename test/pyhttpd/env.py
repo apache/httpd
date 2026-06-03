@@ -685,7 +685,7 @@ class HttpdTestEnv:
             p for p in os.environ.get('PATH', '').split(os.pathsep)
             if '/shims' not in p
         ]
-        venv_bin = os.path.join(os.path.dirname(self._our_dir), '.venv', 'bin')
+        venv_bin = os.path.join(self._our_dir, '.venv', 'bin')
         if os.path.isdir(venv_bin) and venv_bin not in parts:
             parts.insert(0, venv_bin)
         env = os.environ.copy()

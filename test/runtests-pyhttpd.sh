@@ -2,7 +2,7 @@
 #
 # runtests-pyhttpd.sh -- run the pyhttpd modules/ test suite.
 #
-# Manages a local .venv under test/ so that pytest and the CGI helper scripts
+# Manages a local .venv under test/pyhttpd/ so that pytest and the CGI helper scripts
 # (which httpd forks) both use the same Python with all required packages
 # (cryptography, python-multipart, websockets, etc.) available.
 #
@@ -19,16 +19,16 @@ set -eu
 here="$(cd "$(dirname "$0")" && pwd)"
 cd "$here"
 
-PYTEST="$here/.venv/bin/pytest"
+PYTEST="$here/pyhttpd/.venv/bin/pytest"
 if [ ! -x "$PYTEST" ]; then
     if command -v uv >/dev/null 2>&1; then
         echo "runtests-pyhttpd.sh: .venv not found; running 'uv sync' to create it..." >&2
-        uv sync
+        uv sync --project "$here/pyhttpd"
     elif command -v python3 >/dev/null 2>&1; then
         echo "runtests-pyhttpd.sh: .venv not found; creating with python3 + pip..." >&2
-        python3 -m venv .venv
-        # Keep this list in sync with pyproject.toml [project].dependencies
-        .venv/bin/pip install --quiet \
+        python3 -m venv "$here/pyhttpd/.venv"
+        # Keep this list in sync with pyhttpd/pyproject.toml [project].dependencies
+        "$here/pyhttpd/.venv/bin/pip" install --quiet \
             "pytest>=7.0" cryptography filelock "python-multipart" pyopenssl packaging websockets
     else
         echo "runtests-pyhttpd.sh: ERROR: $PYTEST not found and neither 'uv' nor 'python3' is on PATH." >&2
@@ -39,7 +39,7 @@ fi
 # Prepend the venv's bin dir so that CGI scripts forked by httpd also resolve
 # python3 to the venv's interpreter (which has all packages installed), and so
 # that any shim wrappers earlier on PATH are shadowed.
-export PATH="$here/.venv/bin:$PATH"
+export PATH="$here/pyhttpd/.venv/bin:$PATH"
 
 targets="${PYHTTPD_TARGETS:-modules}"
 
