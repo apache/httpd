@@ -58,6 +58,7 @@ jobs:
 
       - name: Configure CMake
         run: |
+            cmake --version
             cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} `
                 -G "${{ matrix.generator }}" `
                 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake `
