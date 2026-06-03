@@ -1,1 +1,0 @@
-LogMessage "%{: 'IP Address:%{REMOTE_ADDR}' -in split/, /, join { 'email:<redacted1>, email:<redacted2>, IP Address:127.0.0.1, IP Address:0:0:0:0:0:0:0:1, IP Address:192.168.169.170' } :}"
