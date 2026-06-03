@@ -1288,7 +1288,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
                  */
                 r->headers_out = apr_table_make(r->pool,1);
                 r->status = HTTP_BAD_GATEWAY;
-                r->status_line = "bad gateway";
+                r->status_line = ap_get_status_line(r->status);
                 return r->status;
             }
 
@@ -1414,7 +1414,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
             /* an http/0.9 response */
             backasswards = 1;
             r->status = proxy_status = HTTP_OK;
-            r->status_line = "200 OK";
+            r->status_line = ap_get_status_line(r->status);
             backend->close = 1;
         }
 
