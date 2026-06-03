@@ -258,7 +258,7 @@ static apr_status_t policy_length_out_filter(ap_filter_t *f,
             &policy_module);
     policy_result result = check_enabled(r, conf, conf->length_action);
 
-    if (result != policy_ignore && r->status >= 200 && r->status < 300
+    if (result != policy_ignore && ap_is_HTTP_SUCCESS(r->status)
             && r->status != HTTP_NO_CONTENT) {
 
         if (!apr_table_get(r->headers_out, "Content-Length")) {

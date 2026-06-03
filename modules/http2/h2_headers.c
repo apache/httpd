@@ -199,7 +199,7 @@ h2_headers *h2_headers_die(apr_status_t type,
     char *date;
     
     headers = apr_pcalloc(pool, sizeof(h2_headers));
-    headers->status    = (type >= 200 && type < 600)? type : 500;
+    headers->status    = (type >= HTTP_OK && type < 600)? type : HTTP_INTERNAL_SERVER_ERROR;
     headers->headers        = apr_table_make(pool, 5);
     headers->notes          = apr_table_make(pool, 5);
 
@@ -213,7 +213,7 @@ h2_headers *h2_headers_die(apr_status_t type,
 
 int h2_headers_are_final_response(h2_headers *headers)
 {
-    return headers->status >= 200;
+    return headers->status >= HTTP_OK;
 }
 
 #endif /* !AP_HAS_RESPONSE_BUCKETS */

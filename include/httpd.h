@@ -1161,7 +1161,7 @@ struct request_rec {
      * to conclude that no body is there.
      */
     unsigned int body_indeterminate :1;
-    /** Whether a final (status >= 200) RESPONSE BUCKET has been passed down
+    /** Whether a final (status >= HTTP_OK) RESPONSE BUCKET has been passed down
      * the output filters already. Relevant for ap_die().
      *  TODO: compact elsewhere
      */

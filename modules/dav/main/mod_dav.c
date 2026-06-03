@@ -1190,7 +1190,7 @@ static int dav_method_put(request_rec *r)
     if ((err = (*resource->hooks->open_stream)(resource, mode,
                                                &stream)) != NULL) {
         int status = err->status ? err->status : HTTP_FORBIDDEN;
-        if (status > 299) {
+        if (status >= HTTP_MULTIPLE_CHOICES) {
             err = dav_push_error(r->pool, status, 0,
                                  apr_psprintf(r->pool,
                                               "Unable to PUT new contents for %s.",

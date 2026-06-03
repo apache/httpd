@@ -1803,7 +1803,7 @@ DAV_DECLARE_NONSTD(void) dav_prop_exec(dav_prop_ctx *ctx);
 DAV_DECLARE_NONSTD(void) dav_prop_commit(dav_prop_ctx *ctx);
 DAV_DECLARE_NONSTD(void) dav_prop_rollback(dav_prop_ctx *ctx);
 
-#define DAV_PROP_CTX_HAS_ERR(dpc)  ((dpc).err && (dpc).err->status >= 300)
+#define DAV_PROP_CTX_HAS_ERR(dpc)  ((dpc).err && (dpc).err->status >= HTTP_MULTIPLE_CHOICES)
 
 
 /* --------------------------------------------------------------------
