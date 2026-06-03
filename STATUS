@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) Fix compatibility with OpenSSL 4.0
      trunk patch: https://svn.apache.org/1933612 [plus many CI changes]
      2.4.x patch: https://github.com/apache/httpd/pull/642
-     +1: jorton, covener (skimmed+CI results)
+     +1: jorton, covener (skimmed+CI results), rpluem
 
   *) test/h2: ignore AH02430 for the whole TestRfc9113 class.
      trunk patch: http://svn.apache.org/r1934891
