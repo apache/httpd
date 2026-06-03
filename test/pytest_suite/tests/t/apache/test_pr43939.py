@@ -21,13 +21,15 @@ def test_pr43939(http):
     content = http.GET_BODY(URI)
     assert t_cmp(content, EXPECTED)
 
-    r = http.GET(URI, headers={"Accept-Encoding": "gzip"})
+    # raw_response keeps the gzip stream undecoded (httpx would auto-decompress
+    # .content) so we can re-POST it through the inflate input filter.
+    r = http.raw_response("GET", URI, headers={"Accept-Encoding": "gzip"})
     assert t_cmp(r.status_code, 200)
 
     renc = r.headers.get("Content-Encoding", "")
     assert t_cmp(renc, "gzip"), "response was gzipped"
 
     deflated = http.POST_BODY(
-        INFLATOR, content=r.content, headers={"Content-Encoding": "gzip"}
+        INFLATOR, content=r.raw_content, headers={"Content-Encoding": "gzip"}
     )
     assert t_cmp(deflated, EXPECTED)

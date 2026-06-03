@@ -29,18 +29,22 @@ HEADERS = {
 @need_module("mod_reflector", "mod_deflate")
 @pytest.mark.parametrize("url,payload", TESTCASES, ids=lambda v: str(v))
 def test_reflector(http, url, payload):
-    r = http.POST(url, content=payload, headers=HEADERS)
+    # raw_response keeps the body undecoded: the deflate case must observe that
+    # the gzip body differs from the payload, but httpx would auto-decompress
+    # .text/.content back to the payload and mask the transformation.
+    r = http.raw_response("POST", url, content=payload, headers=HEADERS)
+    body = r.raw_content.decode("latin-1")
 
     assert t_cmp(r.status_code, 200), "Checking return code is '200'"
 
     if "_nodeflate" in url:
         # With no filter, we should receive what we have sent.
-        assert t_cmp(r.text, payload)
+        assert t_cmp(body, payload)
         assert t_cmp(r.headers.get("Content-Encoding"), None), \
             "'Content-Encoding' has not been added because there was no filter"
     else:
         # With DEFLATE, input was updated and 'Content-Encoding' added.
-        assert r.text != payload
+        assert body != payload
         assert t_cmp(r.headers.get("Content-Encoding"), "gzip"), \
             "'Content-Encoding' has been added by the DEFLATE filter"
 

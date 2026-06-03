@@ -272,33 +272,37 @@ class TestClient:
     def GET(self, path: str, **kwargs: object) -> httpx.Response:
         return self._request("GET", path, **kwargs)
 
-    def _raw_body(
+    def raw_response(
         self,
         method: str,
         path: str,
         *,
         cert: str | None = None,
         **kwargs: object,
-    ) -> bytes:
-        """Return the response body WITHOUT content-decoding.
+    ) -> httpx.Response:
+        """Like :meth:`_request` but WITHOUT content-decoding the body.
 
         httpx transparently inflates gzip/deflate responses, so ``.content`` is
-        the decoded plaintext. The mod_deflate round-trip tests need the raw
-        compressed bytes (to re-POST them through the inflate input filter), so
-        stream the response and read ``iter_raw()``, which yields the bytes as
-        they came off the wire -- the analog of LWP not auto-decoding.
+        the decoded plaintext (while ``Content-Encoding`` is left in place).
+        Tests that need the bytes exactly as they came off the wire -- e.g. the
+        mod_deflate round-trips that re-POST the gzip through an inflate filter,
+        or mod_reflector asserting the body was actually transformed -- can't use
+        that. Stream the response, read ``iter_raw()`` (the undecoded bytes, the
+        analog of LWP not auto-decoding), and stash them on ``.raw_content`` so
+        callers still see ``.status_code`` and ``.headers``.
         """
         client = self._client_for(cert) if cert is not None else self._client
         request = client.build_request(method, self._url(path), **kwargs)  # type: ignore[arg-type]
         response = client.send(request, stream=True)
         try:
-            return b"".join(response.iter_raw())
+            response.raw_content = b"".join(response.iter_raw())  # type: ignore[attr-defined]
         finally:
             response.close()
+        return response
 
     def GET_RAW(self, path: str, **kwargs: object) -> bytes:
         """GET ``path`` and return the raw, undecoded response body bytes."""
-        return self._raw_body("GET", path, **kwargs)
+        return self.raw_response("GET", path, **kwargs).raw_content  # type: ignore[attr-defined]
 
     def HEAD(self, path: str, **kwargs: object) -> httpx.Response:
         return self._request("HEAD", path, **kwargs)
