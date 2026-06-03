@@ -12,6 +12,19 @@ import pytest
 
 from apache_pytest import need_module, t_cmp
 
+
+def _lwp_text(r):
+    """Decode the body the way the original Perl client (LWP) did.
+
+    For a body with no ``charset`` in Content-Type, LWP defaults to ISO-8859-1
+    while httpx defaults to UTF-8. The /doc.notxml case here proxies a raw
+    Latin-1 body with media type ``application/notreallyxml`` (no charset), so
+    httpx's ``r.text`` would UTF-8-decode it into replacement chars and fail the
+    match. Mirror LWP: use the header charset if present, else Latin-1.
+    """
+    return r.content.decode(r.charset_encoding or "latin-1", errors="replace")
+
+
 # (path, expected Content-Type, expected body regex)
 TESTCASES = [
     ("/doc.xml", "application/xml; charset=utf-8", "fóó\n"),
@@ -34,4 +47,4 @@ def test_pr64339(http, path, ctype, body):
     assert t_cmp(r.headers.get("Content-Type"), ctype), (
         f"content-type header test for {path}"
     )
-    assert t_cmp(r.text, re.compile(body, re.DOTALL)), f"content test for {path}"
+    assert t_cmp(_lwp_text(r), re.compile(body, re.DOTALL)), f"content test for {path}"

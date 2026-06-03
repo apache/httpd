@@ -51,9 +51,19 @@ TESTS = [
     {"type": "meta", "path": "meta_special_chars.html", "header": "X-Mixed",
      "value": "text/html; charset=utf-8", "desc": "complex content value"},
     {"type": "meta", "path": "meta_contenttype.html", "header": "X-Other",
-     "value": "OtherValue", "desc": "other header with Content-Type present"},
+     "value": "OtherValue", "desc": "other header with Content-Type present",
+     # 2.4.x: a page whose Content-Type meta declares a charset is consumed by
+     # the xml2enc charset path, so mod_proxy_html's metafix emits no http-equiv
+     # headers for it and the trailing X-Other is never extracted.
+     "xfail_24": "mod_proxy_html metafix extracts no header when a charset "
+                 "Content-Type meta precedes it (2.4.x)"},
     {"type": "meta", "path": "meta_edge_cases.html", "header": "X-Empty-Content",
-     "value": "", "desc": "empty content value"},
+     "value": "", "desc": "empty content value",
+     # metafix locates the value via a case-insensitive search for "content";
+     # the header name "X-Empty-Content" matches first, so no value is
+     # extracted. A metafix limitation (header name containing "content").
+     "xfail_24": "metafix cannot extract a header whose name contains "
+                 "'content' (X-Empty-Content)"},
     {"type": "meta", "path": "meta_edge_cases.html",
      "header": "X-Very-Long-Name-With-Many-Characters",
      "value": "LongNameTest", "desc": "long header name"},
@@ -161,6 +171,8 @@ def test_proxy_html(http, t):
         assert t_cmp(r.status_code, 200), f"fetching {t['path']} for {t['desc']}"
         assert t_cmp(r.headers.get("Content-Type"), re.compile(r"text/html")), \
             f"content-type for {t['path']}"
+        if t.get("xfail_24") and not http.have_min_apache_version("2.5.0"):
+            pytest.xfail(t["xfail_24"])
         assert t_cmp(r.headers.get(t["header"]), t["value"]), \
             f"meta header {t['header']} = '{t['value']}' ({t['desc']})"
 

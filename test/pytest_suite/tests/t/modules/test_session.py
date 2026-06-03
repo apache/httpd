@@ -15,6 +15,7 @@ preserved.
 
 import re
 import time
+import warnings
 
 import pytest
 
@@ -28,7 +29,32 @@ def _expiry_from_seconds(seconds):
     return str(seconds) + "0" * (len(str(APR_TIME_PER_SEC)) - 1)
 
 
-def _check_result(name, res, session=None, dirty=None, expiry=None, response=None):
+def _check(cond, msg, todo):
+    """Assert ``cond``, but tolerate failure for Perl-``todo`` subtests.
+
+    The original session.t lists certain subtest checks in its ``todo`` array
+    (PR 58171 "writable after decode failure", PR 56052 "writable after
+    expired"): on an httpd without the relevant fix they fail, on a fixed build
+    they pass, and either way the harness must not error. mod_session on trunk
+    resets a session that fails to decode/expire *in place* (``memset`` --
+    "preserve pointers to zz in load/save providers"), so a provider that
+    memoizes the session in ``r->notes`` (the test_session C module does) still
+    sees the reset and saves it; 2.4.x instead drops it (``zz = NULL``) and
+    allocates a fresh one the provider never sees, so nothing is saved.
+
+    Mirror Perl's ``todo``: when ``todo`` is set, downgrade a failed check to a
+    warning and continue (``pytest.xfail`` would abort the rest of the test).
+    """
+    if cond:
+        return
+    if todo:
+        warnings.warn(f"known TODO failure: {msg}", stacklevel=2)
+    else:
+        raise AssertionError(msg)
+
+
+def _check_result(name, res, session=None, dirty=None, expiry=None,
+                  response=None, todo=False):
     # Perl defaults via // : undef -> '(none)'/0/0/''.
     session = "(none)" if session is None else session
     dirty = 0 if dirty is None else dirty
@@ -45,18 +71,18 @@ def _check_result(name, res, session=None, dirty=None, expiry=None, response=Non
     m = re.match(r"^(?:(.+)&)?expiry=([0-9]+)(?:&(.*))?$", got_session, re.IGNORECASE)
     if m:
         got_expiry = m.group(2)[: -(len(str(APR_TIME_PER_SEC)) - 1)]
-        assert expiry and time.time() < int(got_expiry), f"expiry ({name})"
+        _check(bool(expiry) and time.time() < int(got_expiry), f"expiry ({name})", todo)
         parts = [p for p in (m.group(1), m.group(3)) if p is not None]
         session_data = "&".join(parts)
     else:
-        assert not expiry, f"no expiry ({name})"
+        _check(not expiry, f"no expiry ({name})", todo)
 
-    assert t_cmp(session_data, session), f"session header ({name})"
+    _check(t_cmp(session_data, session), f"session header ({name})", todo)
     got_dirty = res.headers.get("X-Test-Session-Dirty")
     got_dirty = 0 if got_dirty is None else got_dirty
-    assert t_cmp(got_dirty, dirty), f"session dirty ({name})"
+    _check(t_cmp(got_dirty, dirty), f"session dirty ({name})", todo)
     body = res.text.rstrip("\r\n")
-    assert t_cmp(body, response), f"body ({name})"
+    _check(t_cmp(body, response), f"body ({name})", todo)
     return got_session
 
 
@@ -102,9 +128,11 @@ def test_session(http):
                 READ_SESSION, session=None, dirty=0, expiry=0, response="value")
     _check_get(http, "Custom decoder failure", f"/on/encode?{SESSION}")
     _check_get(http, "Identity decoder failure", "/on?&=test")
+    # PR 58171 todo: only fixed on trunk (mod_session resets the undecodable
+    # session in place); 2.4.x discards it, so nothing is saved here.
     _check_post(http, "Session writable after decode failure",
                 f"/on/encode?{SESSION}", CREATE_SESSION,
-                session=ENCODED_SESSION, dirty=1)
+                session=ENCODED_SESSION, dirty=1, todo=True)
 
     # SessionEnv directive - requires mod_include
     if http.have_module("include"):
@@ -131,8 +159,9 @@ def test_session(http):
     _check_get(http, "Keep non-expired session",
                f"/on/expire?{SESSION}&expiry={future_expiry}",
                session=SESSION, dirty=0, expiry=1)
+    # PR 56052 todo: like the decode-failure case, only saved on a fixed build.
     _check_post(http, "Session writable after expired", "/on/expire?expiry=1",
-                CREATE_SESSION, session=SESSION, dirty=1, expiry=1)
+                CREATE_SESSION, session=SESSION, dirty=1, expiry=1, todo=True)
 
     # SessionExpiryUpdateInterval directive - new in 2.4.41
     if http.have_module("version") and http.have_min_apache_version("2.4.41"):
