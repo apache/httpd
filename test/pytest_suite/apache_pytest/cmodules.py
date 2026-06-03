@@ -21,6 +21,7 @@ actually compiling and loading in the smoke test.
 from __future__ import annotations
 
 import re
+import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
@@ -199,6 +200,25 @@ def _apxs_cmd(apxs: Path, defines: list[str], include_dir: Path, src: Path) -> l
     return cmd
 
 
+def clean_modules(cmodules_dir: Path) -> None:
+    """Remove all apxs build artifacts from ``cmodules_dir`` (emulate ``make clean``).
+
+    Deletes the ``.libs/`` directory and libtool intermediates (``*.o``, ``*.lo``,
+    ``*.slo``, ``*.la``) from every module subdirectory, and the generated
+    ``apache_httpd_test.h`` header.  Safe to call when nothing has been built yet.
+    The next ``compile_all`` call will rebuild everything from scratch.
+    """
+    for sub in sorted(p for p in cmodules_dir.iterdir() if p.is_dir()):
+        libs = sub / _LIB_SUBDIR
+        if libs.is_dir():
+            shutil.rmtree(libs)
+        for pattern in ("*.o", "*.lo", "*.slo", "*.la"):
+            for f in sub.glob(pattern):
+                f.unlink(missing_ok=True)
+    header = cmodules_dir / "apache_httpd_test.h"
+    header.unlink(missing_ok=True)
+
+
 def compile_all(
     cmodules_dir: Path,
     apxs: Path,
@@ -216,10 +236,13 @@ def compile_all(
     generate_header(cmodules_dir / "apache_httpd_test.h")
 
     mods, skipped = discover(cmodules_dir, info)
+    apxs_mtime = apxs.stat().st_mtime
     loads: list[tuple[str, Path]] = []
     for mod in mods:
         needs = force or not mod.so.exists() or (
             mod.so.stat().st_mtime < mod.src.stat().st_mtime
+        ) or (
+            mod.so.stat().st_mtime < apxs_mtime
         )
         if needs:
             cmd = _apxs_cmd(apxs, defines, cmodules_dir, mod.src)

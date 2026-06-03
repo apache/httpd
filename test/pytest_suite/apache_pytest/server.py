@@ -108,6 +108,7 @@ class HttpdServer:
             vars_["serverroot"],
             "-f",
             vars_["t_conf_file"],
+            "-DFOREGROUND",
         ]
         for d in self.dversion_defines():
             argv += ["-D", d]

@@ -41,6 +41,7 @@ config_ini="$here/pyhttpd/config.ini"
 only=""
 apxs_opt=""
 flags=""
+pysuite_flags=""
 paths=""
 expect_apxs=0
 expect_flagval=0
@@ -51,6 +52,7 @@ for arg in "$@"; do
         --only=*) only="${arg#--only=}" ;;
         --apxs)   expect_apxs=1 ;;
         --apxs=*) apxs_opt="${arg#--apxs=}" ;;
+        --clean-modules) pysuite_flags="$pysuite_flags $arg" ;;  # pysuite-only; pyhttpd has no C modules
         -k|-m|-p) flags="$flags $arg"; expect_flagval=1 ;;  # take a value next
         -*)       flags="$flags $arg" ;;
         *)        paths="$paths $arg" ;;
@@ -86,8 +88,9 @@ run_pysuite() {
     fi
     # runtests.sh handles venv + cgisock cleanup + flag assembly.
     # pytest_suite gets both the shared flags and any positional paths.
+    # pysuite_flags holds options only meaningful to this suite (e.g. --clean-modules).
     # shellcheck disable=SC2086
-    ( cd "$suite_dir" && ./runtests.sh --apxs="$apxs_opt" $php_args $flags $paths ) || return $?
+    ( cd "$suite_dir" && ./runtests.sh --apxs="$apxs_opt" $php_args $flags $pysuite_flags $paths ) || return $?
 }
 
 run_pyhttpd() {

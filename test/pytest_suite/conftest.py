@@ -24,6 +24,7 @@ from pathlib import Path
 import pytest
 
 from apache_pytest import HttpdServer, TestClient, TestConfig, compile_all, probe
+from apache_pytest.cmodules import clean_modules
 from apache_pytest.probe import HttpdInfo
 
 # The suite is self-contained: all assets it needs (t/conf templates, t/htdocs
@@ -57,6 +58,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         type=int,
         default=8999,
         help="TCP port for the managed php-fpm pool (default 8999)",
+    )
+    group.addoption(
+        "--clean-modules",
+        action="store_true",
+        default=False,
+        help="remove all compiled C-module artifacts before building (emulate make clean)",
     )
 
 
@@ -224,8 +231,11 @@ def framework(request: pytest.FixtureRequest):
 
     cmodule_loads: list[tuple[str, Path]] = []
     if apxs is not None:
+        cmodules_dir = REPO_ROOT / "c-modules"
+        if request.config.getoption("--clean-modules"):
+            clean_modules(cmodules_dir)
         cmodule_loads, _skipped = compile_all(
-            REPO_ROOT / "c-modules", apxs, info, defines=["APACHE2", "APACHE2_4", *defines]
+            cmodules_dir, apxs, info, defines=["APACHE2", "APACHE2_4", *defines]
         )
 
     config.generate(cmodule_loads=cmodule_loads)

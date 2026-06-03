@@ -5,7 +5,7 @@ Phase 2: test-facing API (t_cmp, need_* markers) used by the translated tests.
 """
 
 from .client import TestClient
-from .cmodules import compile_all
+from .cmodules import clean_modules, compile_all
 from .config import TestConfig
 from .probe import HttpdInfo, probe
 from .server import HttpdServer
@@ -24,6 +24,7 @@ __all__ = [
     "HttpdServer",
     "TestClient",
     "TestConfig",
+    "clean_modules",
     "compile_all",
     "need_cgi",
     "need_lwp",
