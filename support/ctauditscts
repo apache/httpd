@@ -20,6 +20,7 @@ import os
 import sqlite3
 import ssl
 import struct
+import subprocess
 import sys
 import tempfile
 
@@ -111,7 +112,7 @@ def audit(fn, tmp, already_checked, cur):
 
             already_checked[key] = True
 
-            log_url_arg = ''
+            log_url = None
             if cur:
                 stmt = 'SELECT * FROM loginfo WHERE log_id = ?'
                 cur.execute(stmt, [log_id_hex])
@@ -122,14 +123,15 @@ def audit(fn, tmp, already_checked, cur):
                     # verify_single_proof doesn't accept <scheme>://
                     if '://' in log_url:
                         log_url = log_url.split('://')[1]
-                    log_url_arg = '--log_url %s' % log_url
 
                     print '    Log URL: ' + log_url
 
-            cmd = 'verify_single_proof.py --cert %s --timestamp %s %s' % \
-                  (tmp_leaf_pem[1], timestamp_ms, log_url_arg)
-            print '>%s<' % cmd
-            os.system(cmd)
+            cmd = ['verify_single_proof.py', '--cert', tmp_leaf_pem[1],
+                   '--timestamp', str(timestamp_ms)]
+            if log_url:
+                cmd += ['--log_url', log_url]
+            print '>%s<' % ' '.join(cmd)
+            subprocess.call(cmd)
 
         os.unlink(tmp_leaf_pem[1])
 
