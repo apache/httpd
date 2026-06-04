@@ -182,13 +182,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Already part of mod_md upstream repos.
      trunk patch: https://svn.apache.org/1930710
      2.4.x patch: svn merge -c 1930710 ^/httpd/httpd/trunk .
-     +1: rjung, 
+     +1: rjung, jorton, 
 
   *) modules/ssl/ssl_engine_vars.c (ssl_var_lookup_ssl_cert_remain):
      Fix off-by-one in tm_mday calculation, identified by Gemini.
      trunk patch: https://svn.apache.org/1931420
      2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
-     +1: rjung, 
+     +1: rjung, jorton, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
