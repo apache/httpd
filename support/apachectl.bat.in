@@ -1,0 +1,71 @@
+echo off
+SETLOCAL EnableDelayedExpansion
+set "BIN_INSTALL_DIR=@SERVER_ROOT@/bin"
+
+:: -----------------------------------------------------------------------------
+:: Apache Control Script for Windows
+:: By Paul Lodge 
+:: March 2026
+:: Version 0.0.1
+:: -----------------------------------------------------------------------------
+
+set "APACHE24=Apache2.x"
+set "HTTPD=%BIN_INSTALL_DIR%\httpd.exe"
+set "ACMD=%~1"
+
+:: Check if a command was provided
+if "%ACMD%"=="" goto DEFAULT
+
+:: Switch Logic
+if /I "%ACMD%"=="install"    goto INSTALL
+if /I "%ACMD%"=="uninstall"  goto UNINSTALL
+if /I "%ACMD%"=="start"      goto START
+if /I "%ACMD%"=="stop"       goto STOP
+if /I "%ACMD%"=="restart"    goto RESTART
+if /I "%ACMD%"=="graceful"   goto RESTART
+if /I "%ACMD%"=="startssl"   goto SSL_ERROR
+if /I "%ACMD%"=="sslstart"   goto SSL_ERROR
+if /I "%ACMD%"=="start-SSL"  goto SSL_ERROR
+if /I "%ACMD%"=="configtest" goto NOT_SUPPORTED
+if /I "%ACMD%"=="status"     goto NOT_SUPPORTED
+if /I "%ACMD%"=="fullstatus" goto NOT_SUPPORTED
+
+goto DEFAULT
+
+:INSTALL
+    "%HTTPD%" -k install
+    goto END
+
+:UNINSTALL
+    "%HTTPD%" -k uninstall -n %APACHE24%
+    goto END
+
+:START
+    net start %APACHE24%
+    goto END
+
+:STOP
+    net stop %APACHE24%
+    goto END
+
+:RESTART
+    net stop %APACHE24%
+    net start %APACHE24%
+    goto END
+
+:SSL_ERROR
+    echo The startssl option is no longer supported.
+    echo Please edit httpd.conf to include the SSL configuration settings
+    echo and then use 'apachectl start'.
+    goto END
+
+:NOT_SUPPORTED
+    echo Not supported!
+    goto END
+
+:DEFAULT
+    "%HTTPD%" %*
+    goto END
+
+:END
+ENDLOCAL

@@ -21,6 +21,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.16...3.29)
 
 PROJECT(HTTPD C)
 
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}../vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "toolchain")
+
 INCLUDE(CheckSymbolExists)
 INCLUDE(CheckCSourceCompiles)
 INCLUDE("build/build-modules-c.cmake")
@@ -428,7 +430,13 @@ SET(MODULE_LIST
   "modules/test/mod_optional_hook_import+O+example optional hook importer"
   "modules/test/mod_policy+I+HTTP protocol compliance filters"
 )
-
+IF(BUILD_PYHTTPD_MODULES)
+  LIST(APPEND MODULE_LIST
+    "test/pyhttpd/mod_aptest/mod_aptest+A+Test module. Useful only for developers and testing purposes."
+    "test/modules/http1/mod_h1test/mod_h1test+A+Http/1 Test module. Useful only for developers and testing purposes."
+    "test/modules/http2/mod_h2test/mod_h2test+A+Http/2 Test module. Useful only for developers and testing purposes."
+  )
+ENDIF()
 # Track which modules actually built have APIs to link against.
 SET(installed_mod_libs_exps)
 
@@ -1065,6 +1073,40 @@ INSTALL(TARGETS ${install_targets}
 INSTALL(TARGETS ${install_modules}
         RUNTIME DESTINATION modules
        )
+INSTALL(CODE [[
+  SET(SERVER_ROOT "${CMAKE_INSTALL_PREFIX}")
+
+  CONFIGURE_FILE(
+    "../support/apachectl.bat.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/support/apachectl.bat"
+    @ONLY
+  )
+]])
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/support/apachectl.bat"
+        DESTINATION bin
+      )
+
+  INSTALL(CODE [[
+  find_package(Git QUIET)
+
+  if(GIT_FOUND)
+    execute_process(
+          COMMAND ${GIT_EXECUTABLE} branch --show-current
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+          OUTPUT_VARIABLE GIT_BRANCH
+          OUTPUT_STRIP_TRAILING_WHITESPACE
+          ERROR_QUIET
+    )
+  endif()
+
+  SET(SERVER_ROOT "${CMAKE_INSTALL_PREFIX}")
+
+  CONFIGURE_FILE(
+    "../test/pyhttpd/config_win.ini.in"
+    "../test/pyhttpd/config.ini"
+    @ONLY
+  )
+]])
 
 IF(INSTALL_PDB)
   INSTALL(FILES ${install_bin_pdb}
