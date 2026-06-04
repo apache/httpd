@@ -225,6 +225,10 @@ class HttpdTestEnv:
 
     LIBEXEC_DIR = None
 
+    @staticmethod
+    def has_tool(name: str) -> bool:
+        return bool(shutil.which(name))
+
     @classmethod
     def has_python_package(cls, name: str) -> bool:
         if name in sys.modules:
