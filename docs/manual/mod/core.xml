@@ -474,14 +474,35 @@ NoDecode option available in 2.3.12 and later.</compatibility>
       followed by a comma-separated list, without spaces, of options that
       may be set using the <directive module="core">Options</directive> directive.
 
-      <note><title>Implicit disabling of Options</title>
-      <p>Even though the list of options that may be used in .htaccess files
-         can be limited with this directive, as long as any <directive
-         module="core">Options</directive> directive is allowed any
-         other inherited option can be disabled by using the non-relative
-         syntax.  In other words, this mechanism cannot force a specific option
-         to remain <em>set</em> while allowing any others to be set.
-      </p></note>
+      <note type="warning"><title>Implicit disabling of Options</title>
+      <p>This restriction only controls which options a
+         <code>.htaccess</code> file may <em>enable</em>. It does not
+         prevent inherited options from being <em>disabled</em>.</p>
+
+      <p>When a <directive module="core">Options</directive> directive
+         in <code>.htaccess</code> uses absolute syntax (without
+         <code>+</code> or <code>-</code> prefixes), it <em>replaces</em>
+         the entire inherited option set. Any previously active options
+         not listed are implicitly turned off&mdash;even options that are
+         not in the <code>AllowOverride</code> permitted list.</p>
+
+      <p>For example, if the server configuration sets:</p>
+      <highlight language="config">
+Options Indexes FollowSymLinks ExecCGI
+AllowOverride Options=Indexes
+      </highlight>
+      <p>and a <code>.htaccess</code> file contains:</p>
+      <highlight language="config">
+Options Indexes
+      </highlight>
+      <p>then <code>FollowSymLinks</code> and <code>ExecCGI</code> are
+         implicitly disabled for that directory, even though the
+         <code>AllowOverride</code> line only permits setting
+         <code>Indexes</code>.</p>
+
+      <p>In short, this mechanism cannot force a specific option to
+         remain <em>set</em> while allowing any others to be set.</p>
+      </note>
 
       <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
