@@ -164,6 +164,7 @@ static void fix_skipto(request_rec* r, xml2ctx* ctx)
                         apr_bucket_delete(b);
                     }
                     ctx->bytes -= (p-ctx->buf);
+                    ctx->bblen -= (p-ctx->buf);
                     ctx->buf = p ;
                     found = 1;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01428)
