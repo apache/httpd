@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.68
 
+  *) mod_ssl, ab: Add support for OpenSSL 4.0.  [Joe Orton]
+
   *) mod_ssl: Add SerialNumber as a recognized attribute type for SSL
      distinguished name variables.  [Michael Osipov <michaelo apache.org>,
      Benjamin Demarteau <benjamin.demarteau liege.be>]

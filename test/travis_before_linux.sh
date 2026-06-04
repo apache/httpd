@@ -120,6 +120,13 @@ if ! test -v SKIP_TESTING -o -v NO_TEST_FRAMEWORK; then
 
     # Make a shallow clone of httpd-tests git repo.
     git clone -q --depth=1 https://github.com/apache/httpd-tests.git test/perl-framework
+
+    # For OpenSSL 3.2+ testing, Apache::Test r1916067 is required, so
+    # use a checkout of trunk until there is an updated CPAN release
+    # with that revision.
+    if test -v TEST_OPENSSL3; then
+       svn co -q https://svn.apache.org/repos/asf/perl/Apache-Test/trunk test/perl-framework/Apache-Test
+    fi
 fi
 
 # For LDAP testing, run slapd listening on port 8389 and populate the
@@ -138,22 +145,46 @@ if test -v TEST_SSL; then
     popd
 fi
 
+# Build the requested version of OpenSSL if it's not already installed
+# in the cached ~/root
 if test -v TEST_OPENSSL3; then
-    # Build the requested version of OpenSSL if it's not already
-    # installed in the cached ~/root
+    # For a branch, rebuild if the remote branch has updated.
+    if test -v TEST_OPENSSL3_BRANCH -a -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+        latest=`git ls-remote https://github.com/openssl/openssl refs/heads/${TEST_OPENSSL3_BRANCH} | cut -f1`
+        : Got branch latest commit ${latest}
+        if grep -q ^${latest} $HOME/root/openssl-is-${TEST_OPENSSL3}; then
+            : Cached repos already at ${latest}
+        else
+            : Forcing rebuild
+            rm -f $HOME/root/openssl-is-${TEST_OPENSSL3}
+        fi
+    fi
+
     if ! test -f $HOME/root/openssl-is-${TEST_OPENSSL3}; then
         # Remove any previous install.
         rm -rf $HOME/root/openssl3
 
         mkdir -p build/openssl
         pushd build/openssl
-           curl "https://www.openssl.org/source/openssl-${TEST_OPENSSL3}.tar.gz" |
-              tar -xzf -
+           if test -v TEST_OPENSSL3_BRANCH; then
+               git clone --depth=1 -b $TEST_OPENSSL3_BRANCH -q https://github.com/openssl/openssl openssl-${TEST_OPENSSL3}
+           else
+               curl -L "https://github.com/openssl/openssl/releases/download/openssl-${TEST_OPENSSL3}/openssl-${TEST_OPENSSL3}.tar.gz" |
+                   tar -xzf -
+           fi
            cd openssl-${TEST_OPENSSL3}
-           ./Configure --prefix=$HOME/root/openssl3 shared no-tests
+           # Build with RPATH so ./bin/openssl doesn't require $LD_LIBRARY_PATH
+           ./Configure --prefix=$HOME/root/openssl3 \
+                       shared no-tests ${OPENSSL_CONFIG} \
+                       '-Wl,-rpath=$(LIBRPATH)'
            make $MFLAGS
            make install_sw
-           touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+           if test -d .git; then
+               : Caching git commit hash:
+               git rev-parse HEAD | tee $HOME/root/openssl-is-${TEST_OPENSSL3}
+           else
+               touch $HOME/root/openssl-is-${TEST_OPENSSL3}
+           fi
        popd
     fi
 

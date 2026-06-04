@@ -71,12 +71,18 @@ EVP_PKEY   *modssl_read_privatekey(const char *filename, pem_password_cb *cb, vo
 
 int         modssl_smart_shutdown(SSL *ssl);
 BOOL        modssl_X509_getBC(X509 *, int *, int *);
-char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, X509_NAME_ENTRY *xsne,
+char       *modssl_X509_NAME_ENTRY_to_string(apr_pool_t *p, const X509_NAME_ENTRY *xsne,
                                              int raw);
-char       *modssl_X509_NAME_to_string(apr_pool_t *, X509_NAME *, int);
+char       *modssl_X509_NAME_to_string(apr_pool_t *, const X509_NAME *, int);
 BOOL        modssl_X509_getSAN(apr_pool_t *, X509 *, int, const char *, int, apr_array_header_t **);
 BOOL        modssl_X509_match_name(apr_pool_t *, X509 *, const char *, BOOL, server_rec *);
 char       *modssl_SSL_SESSION_id2sz(IDCONST unsigned char *, int, char *, int);
+
+/* Convert ASN.1 string to a pool-allocated char * string, escaping
+ * control characters.  If raw is zero, convert to UTF-8, otherwise
+ * unchanged from the character set. */
+char *modssl_ASN1_STRING_convert(apr_pool_t *p, const ASN1_STRING *asn1str,
+                                 int raw);
 
 /* Reads the remaining data in BIO, if not empty, and copies it into a
  * pool-allocated string.  If empty, returns NULL.  BIO_free(bio) is

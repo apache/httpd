@@ -1256,7 +1256,7 @@ int ssl_hook_UserCheck(request_rec *r)
     }
 
     if (!sslconn->client_dn) {
-        X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
+        const X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
         sslconn->client_dn = apr_pstrdup(r->connection->pool, cp);
         OPENSSL_free(cp);
@@ -1780,7 +1780,7 @@ int ssl_callback_proxy_cert(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = myDirConfigFromConn(c);
-    X509_NAME *ca_name, *issuer, *ca_issuer;
+    const X509_NAME *ca_name, *issuer, *ca_issuer;
     X509_INFO *info;
     X509 *ca_cert;
     STACK_OF(X509_NAME) *ca_list;
