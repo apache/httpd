@@ -127,9 +127,9 @@ processes (an ACME test server).
 
 Infrastructure
 --------------
-The test cases rely on the classes provided in 'test/pyhttpd'
-for common code in managing a httpd test instance and do
-provide some base setups:
+The test cases rely on the classes provided in `test/pyhttpd/` (where
+`test/pyhttpd/runtests.sh` runs the suite) for common code in managing
+a httpd test instance and do provide some base setups:
 - a small set of virtual hosts with some files
 - access to paths and definitions (env fixture)
 - start/stop httpd and inspect the error log

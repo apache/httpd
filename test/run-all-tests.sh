@@ -136,11 +136,11 @@ run_pyhttpd() {
         echo "  build httpd with its test config (configure) to run these." >&2
         return 0
     fi
-    # runtests-pyhttpd.sh manages the venv, prepends its bin/ to PATH (so CGI
+    # runtests.sh manages the venv, prepends its bin/ to PATH (so CGI
     # scripts forked by httpd also use the venv's Python), and runs pytest.
     # PYHTTPD_TARGETS can override which modules/ subdirs are run.
     # shellcheck disable=SC2086
-    ( cd "$here" && ./runtests-pyhttpd.sh $flags ) || return $?
+    ( cd "$here/pyhttpd" && ./runtests.sh $flags ) || return $?
 }
 
 case "$only" in
