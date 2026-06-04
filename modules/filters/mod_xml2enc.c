@@ -604,6 +604,7 @@ static void xml2enc_hooks(apr_pool_t* pool)
                                   AP_REG_EXTENDED|AP_REG_ICASE) ;
     seek_charset = ap_pregcomp(pool, "charset=([A-Za-z0-9_-]+)",
                                AP_REG_EXTENDED|AP_REG_ICASE) ;
+    ap_assert(seek_meta_ctype && seek_charset);
 }
 static const char* set_alias(cmd_parms* cmd, void* CFG,
                              const char* charset, const char* alias)
