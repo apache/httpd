@@ -675,7 +675,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             *(link_ptr++) = '\0';
             str = apr_psprintf(p, "%s <a href=\"%s\">%s %s</a>\n",
                                ap_escape_html(p, ctx->buffer),
-                               ap_escape_uri(p, filename),
+                               ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                ap_escape_html(p, filename),
                                ap_escape_html(p, link_ptr));
         }
@@ -721,13 +721,13 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             if (!strcmp(filename, ".") || !strcmp(filename, "..") || ctx->buffer[0] == 'd') {
                 str = apr_psprintf(p, "%s <a href=\"%s/\">%s</a>\n",
                                    ap_escape_html(p, ctx->buffer),
-                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                    ap_escape_html(p, filename));
             }
             else {
                 str = apr_psprintf(p, "%s <a href=\"%s\">%s</a>\n",
                                    ap_escape_html(p, ctx->buffer),
-                                   ap_escape_uri(p, filename),
+                                   ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
                                    ap_escape_html(p, filename));
             }
         }
@@ -740,7 +740,9 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
             filename = apr_pstrndup(p, &ctx->buffer[re_result[2].rm_so], re_result[2].rm_eo - re_result[2].rm_so);
 
             str = apr_pstrcat(p, ap_escape_html(p, apr_pstrndup(p, ctx->buffer, re_result[2].rm_so)),
-                              "<a href=\"", ap_escape_uri(p, filename), "\">",
+                              "<a href=\"",
+                              ap_escape_html(p, ap_os_escape_path(p, filename, 0)),
+                              "\">",
                               ap_escape_html(p, filename), "</a>\n", NULL);
         }
         else {
