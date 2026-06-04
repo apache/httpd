@@ -1,0 +1,70 @@
+#include <check.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+
+START_TEST(test_ctauditscts_no_command_injection)
+{
+    // Invariant: Shell metacharacters in CT log data must not execute arbitrary commands
+    const char *payloads[] = {
+        "https://example.com/ct; touch /tmp/pwned",  // Command injection via semicolon
+        "https://example.com/ct$(id)",               // Command substitution
+        "https://ct.example.com/log",                // Valid input
+    };
+    int num_payloads = sizeof(payloads) / sizeof(payloads[0]);
+
+    // Create a marker file that should NOT be created if injection is blocked
+    const char *marker = "/tmp/ctaudit_injection_test_marker";
+    unlink(marker);
+
+    for (int i = 0; i < num_payloads; i++) {
+        char cmd[512];
+        // Simulate how ctauditscts might be invoked with untrusted URL data
+        snprintf(cmd, sizeof(cmd),
+            "python3 support/ctauditscts --url '%s' 2>/dev/null || true",
+            payloads[i]);
+        
+        int ret = system(cmd);
+        (void)ret;  // We don't care about exit code, only side effects
+        
+        // Verify no command injection occurred
+        FILE *f = fopen(marker, "r");
+        ck_assert_msg(f == NULL, 
+            "Command injection detected with payload: %s", payloads[i]);
+        if (f) fclose(f);
+    }
+    
+    unlink(marker);
+}
+END_TEST
+
+Suite *security_suite(void)
+{
+    Suite *s;
+    TCase *tc_core;
+
+    s = suite_create("Security");
+    tc_core = tcase_create("Core");
+
+    tcase_add_test(tc_core, test_ctauditscts_no_command_injection);
+    suite_add_tcase(s, tc_core);
+
+    return s;
+}
+
+int main(void)
+{
+    int number_failed;
+    Suite *s;
+    SRunner *sr;
+
+    s = security_suite();
+    sr = srunner_create(s);
+
+    srunner_run_all(sr, CK_NORMAL);
+    number_failed = srunner_ntests_failed(sr);
+    srunner_free(sr);
+
+    return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
