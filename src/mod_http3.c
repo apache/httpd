@@ -571,6 +571,10 @@ apr_status_t process_request(request_rec* r, h3_conn_ctx_t* h3ctx)
     r->per_dir_config = ap_create_per_dir_config(r->pool);
     r->per_dir_config = ap_merge_per_dir_configs(r->pool, r->server->lookup_defaults, r->per_dir_config);
     ap_set_module_config(r->request_config, &http3_module, h3ctx);
+    if (!r->the_request && r->method && r->uri && r->protocol)
+    {
+        r->the_request = apr_psprintf(r->pool, "%s %s %s", r->method, r->uri, r->protocol);
+    }
     ap_process_request(r);
     ap_log_rerror(APLOG_MARK, APLOG_TRACE8, 0, r, "process_request after ap_process_request()");
     return OK;
