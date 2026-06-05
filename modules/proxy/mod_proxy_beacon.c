@@ -415,7 +415,7 @@ static apr_status_t beacon_resolve(apr_pool_t *p, const char *url,
 
     if (url && *url) {
         const char *hostport = url, *sep;
-        if ((sep = strstr(url, "://")) != NULL) {
+        if ((sep = ap_strstr_c(url, "://")) != NULL) {
             hostport = sep + 3;
         }
         rv = apr_parse_addr_port(&host, &scope, &port, hostport, p);
@@ -877,7 +877,7 @@ static int beacon_parse_url(const char *msg, char *buf, apr_size_t buflen)
             return (i > 0);
         }
         /* advance to the next space-separated token */
-        p = strchr(p, ' ');
+        p = ap_strchr_c(p, ' ');
         if (p) {
             p++;
         }
@@ -940,7 +940,7 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
     apr_int64_t ts, skew, delta;
 
     /* Locate the last " mac=" -- the MAC covers everything before it. */
-    for (p = msg; (p = strstr(p, " mac=")) != NULL; p += 5) {
+    for (p = msg; (p = ap_strstr_c(p, " mac=")) != NULL; p += 5) {
         macp = p;
     }
     if (!macp) {
@@ -971,7 +971,7 @@ static int beacon_verify(beacon_ctx_t *ctx, const char *msg, apr_time_t now,
      * less than a second apart still have strictly-increasing timestamps for
      * the caller's per-url check. */
     tsp = NULL;
-    for (p = msg; (p = strstr(p, "ts=")) != NULL && p < macp; p += 3) {
+    for (p = msg; (p = ap_strstr_c(p, "ts=")) != NULL && p < macp; p += 3) {
         /* token-start: beginning of message or preceded by a space */
         if (p == msg || *(p - 1) == ' ') {
             tsp = p;
