@@ -46,4 +46,8 @@ def test_case_filter_root(http):
 def test_case_filter_module(http, module):
     if not http.have_module(module):
         pytest.skip(f"{module} not available")
+    # The mod_alias URL downloads from the /getfiles-perl-pod alias, which is
+    # only generated when perl's 'pods' dir was found (perl-doc installed).
+    if module == "mod_alias" and not http.vars("perlpod"):
+        pytest.skip("no perl 'pods' dir (perl-doc) for the getfiles-perl-pod alias")
     _verify(http.GET(URLS[module], headers=FILTER))

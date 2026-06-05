@@ -30,6 +30,28 @@ from .probe import HttpdInfo
 
 DEFAULT_PORT = 8529
 
+
+def _find_perl_pods(perl: str) -> str:
+    """Locate perl's 'pods' directory, like Apache::TestConfig's
+    find_in_inc('pods') (TestConfig.pm:297): the first 'pods' dir under @INC.
+
+    Returns the absolute path, or "" if perl is unavailable or has no pods dir
+    (e.g. a perl without perl-doc installed). Used for the /getfiles-perl-pod
+    alias that t/filter/case.t downloads from.
+    """
+    if not perl:
+        return ""
+    import subprocess
+
+    code = "for (@INC){ if (-d qq($_/pods)){ print qq($_/pods); last } }"
+    try:
+        out = subprocess.run(
+            [perl, "-e", code], capture_output=True, text=True, timeout=10
+        ).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    return out if out and Path(out).is_dir() else ""
+
 # @CGI_MODULE@ etc. -> first candidate that is actually loaded, else first candidate.
 # Mirrors the default_module() calls in TestConfig.pm:435-440.
 MODULE_NAME_CANDIDATES: dict[str, list[str]] = {
@@ -284,13 +306,16 @@ class TestConfig:
         v["serveradmin"] = f"unknown@{servername}"
         v["inherit_documentroot"] = v["documentroot"]
         # getfiles-* download aliases (see generate_httpd_conf %aliases). httpd
-        # is the probed binary; perl is whatever runs the helper scripts. perlpod
-        # is left empty (its alias is only emitted when the var is set).
+        # is the probed binary; perl is whatever runs the helper scripts.
         v["httpd"] = str(self.info.httpd)
         from shutil import which
 
         v["perl"] = which("perl") or ""
-        v["perlpod"] = ""
+        # perlpod: a 'pods' dir under @INC, like Perl's find_in_inc('pods')
+        # (TestConfig.pm:297). Drives the /getfiles-perl-pod alias that
+        # t/filter/case.t (mod_alias case) downloads from. Left "" if not found,
+        # in which case the alias is not emitted and that subtest skips.
+        v["perlpod"] = _find_perl_pods(v["perl"])
 
         # MPM tuning math (TestConfig.pm:331-373) with proxy off (no bump).
         tpc = 10
