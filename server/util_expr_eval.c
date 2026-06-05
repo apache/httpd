@@ -639,6 +639,12 @@ AP_DECLARE(ap_expr_info_t*) ap_expr_parse_cmd_mi(const cmd_parms *cmd,
     info->line_number = cmd->directive->line_num;
     info->flags = flags;
     info->module_index = module_index;
+
+    /* Use restricted-contents ap_expr() parser in htaccess context. */
+    if (cmd->pool == cmd->temp_pool) {
+        info->flags |= AP_EXPR_FLAG_RESTRICTED_FILE_FUNC;
+    }
+
     *err = ap_expr_parse(cmd->pool, cmd->temp_pool, info, expr, lookup_fn);
 
     if (*err)
@@ -2079,11 +2085,15 @@ static int op_strcmatch(ap_expr_eval_ctx_t *ctx, const void *data,
     return (APR_SUCCESS == apr_fnmatch(arg2, arg1, APR_FNM_CASE_BLIND));
 }
 
+#define RESTRICTED_FILE_TEST 0x01
+#define RESTRICTED_FILE_FUNC 0x02
+#define RESTRICTED_ALL      (RESTRICTED_FILE_TEST | RESTRICTED_FILE_FUNC)
+
 struct expr_provider_single {
     const void *func;
     const char *name;
     ap_expr_lookup_fn_t *arg_parsing_func;
-    int restricted;
+    unsigned int restricted;
 };
 
 struct expr_provider_multi {
@@ -2113,9 +2123,9 @@ static const struct expr_provider_single string_func_providers[] = {
     { toupper_func,         "toupper",        NULL, 0 },
     { escape_func,          "escape",         NULL, 0 },
     { unescape_func,        "unescape",       NULL, 0 },
-    { file_func,            "file",           NULL, 1 },
-    { filesize_func,        "filesize",       NULL, 1 },
-    { filemod_func,         "filemod",        NULL, 1 },
+    { file_func,            "file",           NULL, RESTRICTED_FILE_FUNC },
+    { filesize_func,        "filesize",       NULL, RESTRICTED_FILE_FUNC },
+    { filemod_func,         "filemod",        NULL, RESTRICTED_FILE_FUNC },
     { base64_func,          "base64",         NULL, 0 },
     { unbase64_func,        "unbase64",       NULL, 0 },
     { sha1_func,            "sha1",           NULL, 0 },
@@ -2133,13 +2143,13 @@ static const struct expr_provider_single unary_op_providers[] = {
     { op_nz,        "z", NULL,             0 },
     { op_R,         "R", subnet_parse_arg, 0 },
     { op_T,         "T", NULL,             0 },
-    { op_file_min,  "d", NULL,             1 },
-    { op_file_min,  "e", NULL,             1 },
-    { op_file_min,  "f", NULL,             1 },
-    { op_file_min,  "s", NULL,             1 },
-    { op_file_link, "L", NULL,             1 },
-    { op_file_link, "h", NULL,             1 },
-    { op_file_xbit, "x", NULL,             1 },
+    { op_file_min,  "d", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_min,  "e", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_min,  "f", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_min,  "s", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_link, "L", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_link, "h", NULL,             RESTRICTED_FILE_TEST },
+    { op_file_xbit, "x", NULL,             RESTRICTED_FILE_TEST },
     { op_file_subr, "F", NULL,             0 },
     { op_url_subr,  "U", NULL,             0 },
     { op_url_subr,  "A", NULL,             0 },
@@ -2197,8 +2207,10 @@ static int core_expr_lookup(ap_expr_lookup_parms *parms)
                 else
                     match = !ap_cstr_casecmp(prov->name, parms->name);
                 if (match) {
-                    if ((parms->flags & AP_EXPR_FLAG_RESTRICTED)
-                        && prov->restricted) {
+                    if (((parms->flags & AP_EXPR_FLAG_RESTRICTED)
+                         && (prov->restricted & RESTRICTED_ALL))
+                        || ((parms->flags & AP_EXPR_FLAG_RESTRICTED_FILE_FUNC)
+                            && (prov->restricted & RESTRICTED_FILE_FUNC))) {
                         *parms->err =
                             apr_psprintf(parms->ptemp,
                                          "%s%s not available in restricted context",
