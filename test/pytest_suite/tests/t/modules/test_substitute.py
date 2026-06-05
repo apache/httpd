@@ -110,7 +110,11 @@ def _httpd_rule_to_python(content, rule):
         return re.sub(pattern, lambda m: repl, content, flags=flags)
 
     # Map HTTPD $0 (whole match) and $N backrefs to python \g<0> / \N.
-    # Also handle perl '&' meaning whole match (used in s/<body>/&/).
+    # NOTE: '&' is NOT a whole-match metachar here. mod_substitute uses $0/$N
+    # for backrefs only, and the Perl reference test computes its expectation by
+    # running the rule through perl's own s/// (substitute.t:73-80), where a bare
+    # '&' in the replacement is a literal '&' ($& is the match var, not &). So
+    # s/<body>/&/ yields a literal 'x&x' -- which is what the server returns.
     def to_py_repl(s):
         out = []
         i = 0
@@ -140,7 +144,9 @@ def _httpd_rule_to_python(content, rule):
                 i += 2
                 continue
             if c == "&":
-                out.append("\\g<0>")
+                # literal '&' (see note above), not whole-match. '&' has no
+                # special meaning in an re.sub replacement, so emit it as-is.
+                out.append("&")
                 i += 1
                 continue
             out.append(c)
