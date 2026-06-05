@@ -293,6 +293,14 @@ static int on_frame_recv(nghttp2_session *ngh2, const nghttp2_frame *frame,
                             forward = 1;
                         } 
                         break;
+#ifndef HTTP_EARLY_HINTS
+                    case 103:
+                        /* workaround until we get this into http protocol base
+                         * parts. without this, unknown codes are converted to
+                         * 500... */
+                        r->status_line = "103 Early Hints";
+                        break;
+#endif
                     default:
                         r->status_line = ap_get_status_line(r->status);
                         break;

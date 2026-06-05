@@ -1709,7 +1709,11 @@ static apr_status_t stream_do_response(h2_stream *stream)
     }
     h2_session_set_prio(stream->session, stream, stream->pref_priority);
 
+#ifdef HTTP_EARLY_HINTS
     if (resp->status == HTTP_EARLY_HINTS
+#else
+    if (resp->status == 103
+#endif
         && !h2_config_sgeti(stream->session->s, H2_CONF_EARLY_HINTS)) {
         /* suppress sending this to the client, it might have triggered
          * pushes and served its purpose nevertheless */

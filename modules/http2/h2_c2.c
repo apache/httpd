@@ -461,8 +461,13 @@ static void check_early_hints(request_rec *r, const char *tag)
           }
           old_status = r->status;
           old_line = r->status_line;
+#ifdef HTTP_EARLY_HINTS
           r->status = HTTP_EARLY_HINTS;
           r->status_line = ap_get_status_line(r->status);
+#else
+          r->status = 103;
+          r->status_line = "103 Early Hints";
+#endif
           ap_send_interim_response(r, 1);
           r->status = old_status;
           r->status_line = old_line;
