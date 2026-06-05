@@ -2886,7 +2886,9 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
 
     if (r) {
         conf->refs = apr_array_make(cmd->pool, 8, sizeof(char *));
-        ap_regname(r, conf->refs, AP_REG_MATCH, 1);
+        if (ap_regname(r, conf->refs, AP_REG_MATCH, 1) < 0) {
+            return "Error processing regex captures";
+        }
     }
 
     ap_add_per_proxy_conf(cmd->server, new_dir_conf);
