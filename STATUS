@@ -174,7 +174,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_md: change types of fields of ocsp_summary_ctx_t
      More info in the trunk commit message.
-     Already part of mod_md upstream repos.
+     Already part of mod_md upstream repos, so
+     will happen automatically when the 2.6.11 update
+     proposed below takes place.
      trunk patch: https://svn.apache.org/1930710
      2.4.x patch: svn merge -c 1930710 ^/httpd/httpd/trunk .
      +1: rjung, jorton, 
@@ -184,6 +186,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: https://svn.apache.org/1931420
      2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
      +1: rjung, jorton, 
+
+  *) mod_md: Update to upstream 2.6.11
+     Contains OpenSSL 4.0.0 patch but also new functionality.
+     mod_md is CTR, so this item here is for making
+     the missing update visible. I guess Stefan will take care.
+     +1: rjung,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
