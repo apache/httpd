@@ -1,0 +1,367 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_proxy_beacon.xml.meta">
+
+<name>mod_proxy_beacon</name>
+<description>Dynamic Balancer membership where backends announce themselves
+to the reverse proxy over unicast UDP datagrams</description>
+<status>Extension</status>
+<sourcefile>mod_proxy_beacon.c</sourcefile>
+<identifier>proxy_beacon_module</identifier>
+<compatibility>Available in Apache 2.5 and later</compatibility>
+
+<summary>
+    <p>This module lets backend servers <em>announce themselves</em> to a
+    front-end reverse proxy, which then adds each announcing backend as a live
+    member (worker) of a <module>mod_proxy_balancer</module> balancer. When a
+    backend stops announcing, the proxy takes it out of rotation. This provides
+    self-registering, self-healing balancer membership without editing the proxy
+    configuration or driving the <code>balancer-manager</code> by hand.</p>
+
+    <p>Communication uses plain <strong>unicast UDP</strong> datagrams (not
+    multicast, which is filtered on most networks and does not traverse the
+    public Internet). The data flows from backend to proxy:</p>
+
+    <ul>
+      <li>The reverse proxy binds a UDP socket and <em>receives</em> on a
+          stable address (<directive>ProxyBeaconListen</directive>).</li>
+      <li>Each backend periodically <em>sends</em> a short announcement datagram
+          to the proxy (<directive>ProxyBeaconAddress</directive>), advertising
+          its own routable URL
+          (<directive>ProxyBeaconAdvertise</directive>).</li>
+    </ul>
+
+    <p>Datagrams are fire-and-forget: a lost announcement is recovered by the
+    next periodic one, and reordering is rejected by a per-backend timestamp
+    check, so no connection, reconnect, or framing layer is needed.</p>
+
+    <p>On the proxy, <directive>ProxyBeaconBalancer</directive> names the balancer
+    that announced backends are added to. Membership changes are applied using
+    the same internal mechanism as the <code>balancer-manager</code> web
+    interface, so a backend added this way behaves exactly like a statically
+    configured or manually added
+    <directive module="mod_proxy">BalancerMember</directive>, and is visible and
+    editable in the <code>balancer-manager</code>.</p>
+
+    <p>This module <em>requires</em> the service of
+    <module>mod_watchdog</module> and <module>mod_proxy_balancer</module>. The
+    background work (listening, publishing, adding and evicting members) runs in
+    a single <module>mod_watchdog</module> child process, so it is not available
+    under the <code>prefork</code> MPM behaviour where that singleton cannot
+    run.</p>
+
+<note type="warning"><title>Authentication</title>
+    <p>Any host that can reach the proxy's receive port could otherwise announce
+    an arbitrary backend URL and cause the proxy to send client traffic to it
+    (and a UDP source address is trivially spoofable). Set
+    <directive>ProxyBeaconSecret</directive> to the same value on the proxy and on
+    every backend so that announcements are authenticated with a keyed
+    message-authentication code (MAC) and a timestamp. When a secret is
+    configured the proxy drops any announcement that is not validly signed and
+    recent. If no secret is configured the channel is <strong>unauthenticated</strong>
+    and the proxy logs a warning at startup.</p>
+</note>
+
+<note><title>Confidentiality</title>
+    <p>Announcements are authenticated but not encrypted; the payload is
+    operational metadata (backend URLs), not secret data. Transport
+    confidentiality (e.g. DTLS) is not currently provided and would be a separate
+    future layer.</p>
+</note>
+
+</summary>
+<seealso><module>mod_proxy</module></seealso>
+<seealso><module>mod_proxy_balancer</module></seealso>
+<seealso><module>mod_proxy_hcheck</module></seealso>
+<seealso><module>mod_watchdog</module></seealso>
+
+<section id="examples">
+    <title>Usage example</title>
+
+    <p>The following pair of configurations sets up a self-registering balancer.
+    The backends require no knowledge of each other and the proxy needs no
+    pre-declared <directive module="mod_proxy">BalancerMember</directive>
+    entries &mdash; only an empty balancer with room to grow.</p>
+
+    <p>On the <strong>reverse proxy</strong>:</p>
+    <highlight language="config">
+# Receive backend announcements on the cluster network interface (UDP).
+ProxyBeaconListen 0.0.0.0:5555
+ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconBalancer  cluster
+
+# A backend is dropped from rotation if it does not announce for 30 seconds.
+ProxyBeaconTimeout   30
+
+# An initially-empty balancer with spare slots for the dynamic members.
+&lt;Proxy balancer://cluster&gt;
+  ProxySet growth=16
+&lt;/Proxy&gt;
+ProxyPass        "/" "balancer://cluster/"
+ProxyPassReverse "/" "balancer://cluster/"
+    </highlight>
+
+    <p>On each <strong>backend</strong> server:</p>
+    <highlight language="config">
+# Announce this backend's routable origin to the proxy every 10 seconds (UDP).
+ProxyBeaconAddress   proxy.example.com:5555
+ProxyBeaconAdvertise http://10.0.0.5:8080
+ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconInterval  10
+    </highlight>
+
+    <p>When a backend starts it begins sending announcements. The proxy
+    verifies each announcement against the shared secret, adds
+    <code>http://10.0.0.5:8080</code> as a member of
+    <code>balancer://cluster</code>, and enables it. If that backend later stops
+    announcing for longer than <directive>ProxyBeaconTimeout</directive>, the proxy
+    disables the member (taking it out of rotation); a subsequent announcement
+    re-enables it.</p>
+
+    <note>
+    <p>A backend added at runtime occupies one of the balancer's growth slots
+    for the lifetime of the server process; it is disabled rather than removed
+    when it stops announcing, matching the behaviour of the
+    <code>balancer-manager</code> (which can add, but not remove, workers at
+    runtime). Size <code>growth</code> for the maximum number of backends you
+    expect to register.</p>
+    </note>
+
+</section>
+
+<directivesynopsis>
+<name>ProxyBeaconListen</name>
+<description>Address on which the reverse proxy receives backend
+beacons</description>
+<syntax>ProxyBeaconListen [<em>address</em>][:<em>port</em>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconListen</directive> directive marks a server as
+    the beacon <em>receiver</em> (the reverse proxy). It binds a UDP socket to
+    the given address, e.g. <code>0.0.0.0:5555</code> to receive on all
+    interfaces. A leading scheme (such as <code>tcp://</code>) is accepted and
+    ignored.</p>
+
+    <p>The address and port are both optional and, when omitted, are inherited
+    from this server's own address and port (its <directive
+    module="core">Listen</directive>/<directive
+    module="core">ServerName</directive>). With no argument at all, the beacon
+    listener binds the server's own address and port; given just an address it
+    inherits the port, and so on. Because UDP and TCP are independent port
+    spaces, binding the beacon socket to the server's port does <em>not</em>
+    collide with the server's TCP listener &mdash; letting the beacon channel
+    share the service endpoint, which also identifies the proxy to backends by
+    its real address. (The listener binds in an unprivileged child, so a
+    privileged port such as 80 or 443 cannot be shared this way; use the
+    server's port only when it is non-privileged.)</p>
+
+    <p>Backends send to this address via
+    <directive>ProxyBeaconAddress</directive>. The directive should be used
+    together with <directive>ProxyBeaconBalancer</directive>; without it,
+    announcements are received and logged but no members are added.
+    <directive>ProxyBeaconListen</directive> and
+    <directive>ProxyBeaconAddress</directive> are mutually exclusive on the same
+    server.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconAddress</name>
+<description>Address of the reverse proxy to which a backend sends its
+announcements</description>
+<syntax>ProxyBeaconAddress <em>address:port</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconAddress</directive> directive marks a server as an
+    announcement <em>sender</em> (a backend). It sends UDP datagrams to the
+    proxy's <directive>ProxyBeaconListen</directive> address given by
+    <em>address:port</em>, e.g. <code>proxy.example.com:5555</code> (a leading
+    scheme such as <code>tcp://</code> is accepted and ignored). Because UDP is
+    connectionless, a backend may be started before the proxy is available:
+    early datagrams are simply dropped and the next interval retries.</p>
+
+    <p>Use <directive>ProxyBeaconAdvertise</directive> to specify the routable URL
+    the backend announces. <directive>ProxyBeaconAddress</directive> and
+    <directive>ProxyBeaconListen</directive> are mutually exclusive on the same
+    server.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconAdvertise</name>
+<description>The routable URL a backend announces to the reverse proxy</description>
+<syntax>ProxyBeaconAdvertise <em>url</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconAdvertise</directive> directive sets the backend's
+    own reachable origin (for example <code>http://10.0.0.5:8080</code>) that the
+    proxy will add as a <directive module="mod_proxy">BalancerMember</directive>.
+    It must be a full <code>scheme://host[:port]</code> URL that the proxy can
+    reach &mdash; not the local listen address &mdash; and is validated when the
+    configuration is parsed.</p>
+
+    <p>This directive is used on a backend, alongside
+    <directive>ProxyBeaconAddress</directive>. If it is omitted, the backend still
+    sends a heartbeat but advertises no URL, so the proxy logs the
+    announcement without adding a member.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconBalancer</name>
+<description>Name of the balancer that announced backends are added to</description>
+<syntax>ProxyBeaconBalancer <em>name</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconBalancer</directive> directive names the balancer,
+    on the reverse proxy, into which announced backends are inserted as members.
+    Give the bare balancer name (for example <code>cluster</code> for
+    <code>balancer://cluster</code>); a leading <code>balancer://</code> is
+    accepted and stripped.</p>
+
+    <p>The named balancer must exist and have spare capacity. Declare it with a
+    <directive module="mod_proxy">&lt;Proxy&gt;</directive> block and a
+    <code>growth</code> setting (or rely on
+    <directive module="mod_proxy">BalancerGrowth</directive>) so there are free
+    slots for the dynamically added members. This directive is used together
+    with <directive>ProxyBeaconListen</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconInterval</name>
+<description>How often a backend publishes its announcement</description>
+<syntax>ProxyBeaconInterval <em>interval</em></syntax>
+<default>ProxyBeaconInterval 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconInterval</directive> directive sets how frequently
+    a backend (a <directive>ProxyBeaconAddress</directive> server) publishes its
+    announcement. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds; the default is 5 seconds.</p>
+
+    <p>The interval must be meaningfully smaller than the proxy's
+    <directive>ProxyBeaconTimeout</directive>, so that the occasional lost or
+    delayed announcement does not cause a healthy backend to be evicted.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconTimeout</name>
+<description>How long the proxy waits, without an announcement, before a backend
+is taken out of rotation</description>
+<syntax>ProxyBeaconTimeout <em>interval</em></syntax>
+<default>ProxyBeaconTimeout 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconTimeout</directive> directive sets how long the
+    reverse proxy will wait for an announcement from a backend before disabling
+    that backend's balancer member (taking it out of rotation). A later
+    announcement from the same backend re-enables it. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds.</p>
+
+    <p>The default, <code>0</code>, disables eviction entirely: backends are
+    added when they announce but are never automatically removed. Set this to a
+    small multiple of the backends' <directive>ProxyBeaconInterval</directive> to
+    enable self-healing membership. This directive is used on the proxy.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconSecret</name>
+<description>Pre-shared secret used to authenticate announcements</description>
+<syntax>ProxyBeaconSecret <em>secret</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconSecret</directive> directive sets a pre-shared
+    cluster secret. It must be configured with the <em>same</em> value on the
+    reverse proxy and on every backend. The backend (sender) signs each
+    announcement with a keyed message-authentication code (a SipHash MAC) derived
+    from the secret, together with a timestamp; the proxy (receiver) recomputes the MAC and
+    checks the timestamp, dropping any announcement that is forged, tampered
+    with, or replayed. Replayed messages are caught two ways: a freshness window
+    (<directive>ProxyBeaconMaxSkew</directive>) rejects old timestamps, and a
+    per-backend check rejects any announcement whose timestamp does not strictly
+    advance, so a captured-and-resent message (for example, one replayed to keep
+    a dead backend from being evicted) is dropped.</p>
+
+    <p>If <directive>ProxyBeaconSecret</directive> is set on the proxy, every
+    announcement must carry a valid, recent MAC or it is rejected. If the
+    secrets on the proxy and a backend differ, that backend's announcements are
+    silently rejected (and logged), which appears as the backend never joining
+    the balancer.</p>
+
+    <p>If no secret is configured the channel is unauthenticated and the proxy
+    emits a warning when it starts listening. Because the secret is stored in
+    the configuration file, restrict that file's permissions as you would for a
+    private key.</p>
+
+    <note><title>Clock synchronisation</title>
+    <p>The timestamp-based replay protection compares the announcement's time
+    against the proxy's clock, so the proxy and backends must have reasonably
+    synchronised clocks (for example via NTP). See
+    <directive>ProxyBeaconMaxSkew</directive>.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyBeaconMaxSkew</name>
+<description>Maximum allowed age of a signed announcement</description>
+<syntax>ProxyBeaconMaxSkew <em>interval</em></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>ProxyBeaconMaxSkew</directive> directive sets the anti-replay
+    window used when <directive>ProxyBeaconSecret</directive> is configured: the
+    proxy rejects any announcement whose signed timestamp differs from the
+    current time by more than this amount, in either direction. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds.</p>
+
+    <p>If unset, the default is 30 seconds. A larger window tolerates greater
+    clock skew between hosts; a smaller window bounds the freshness check. Note
+    that the per-backend strictly-increasing-timestamp check (see
+    <directive>ProxyBeaconSecret</directive>) blocks replays regardless of this
+    window. This directive is used on the proxy.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,127 @@
+mod_proxy_beacon
+
+Self-registering reverse-proxy balancer membership: backend servers announce
+themselves to a front-end proxy over UDP datagrams, and the proxy adds, enables,
+and evicts them as live balancer members. See
+docs/manual/mod/mod_proxy_beacon.xml for the user-facing directive reference;
+this file describes the architecture.
+
+The transport is plain APR UDP sockets -- small, periodic, fire-and-forget
+announcements with no third-party dependency.
+
+
+Dependencies:
+  Requires mod_watchdog and mod_proxy_balancer. No external library: the UDP
+  transport uses APR sockets and authentication uses SipHash from APR-util (no
+  OpenSSL dependency).
+
+
+Transport (unicast UDP, not multicast):
+  Each backend sends a point-to-point UDP datagram (apr_socket_sendto) to the
+  proxy's configured address. This is deliberately UNICAST -- unlike
+  mod_heartbeat, which multicasts to a group. Multicast is filtered on most
+  networks and does not traverse the public Internet, so a cross-host control
+  plane must be unicast. The socket-handling pattern is adapted from
+  mod_heartmonitor's unicast receive path.
+
+  Datagrams are fire-and-forget. The design tolerates UDP loss and reordering
+  without a reconnect or framing layer: a lost announcement just delays an update
+  by one interval (announcements are periodic and idempotent), and an out-of-order
+  datagram is rejected by the per-url monotonic timestamp (see Authentication).
+
+
+Roles:
+  Backend  = sender   (ProxyBeaconAddress): sends to the proxy, advertising its
+             own routable URL (ProxyBeaconAdvertise) periodically.
+  Proxy    = receiver (ProxyBeaconListen): binds a stable address, receives
+             announcements, and manages balancer://<name> (ProxyBeaconBalancer).
+
+  The proxy is the fixed unicast rendezvous; each backend is configured with its
+  address. One proxy receiver serves many backend senders. A leading scheme in
+  an address (e.g. tcp://) is accepted and ignored.
+
+  ProxyBeaconListen's host and port are both optional: an omitted host/port (or
+  no argument at all) is inherited from the server's own address/port. Since UDP
+  and TCP are independent port spaces, the beacon socket can share the server's
+  service port without colliding with its TCP listener -- so a backend can beacon
+  to the proxy at its real service endpoint. (The listener binds in an
+  unprivileged watchdog child, so privileged ports like 80/443 cannot be shared
+  this way.) The sender's ProxyBeaconAddress targets the proxy and must be given
+  in full.
+
+
+Where it runs:
+  All background work runs in a single mod_watchdog SINGLETON callback -- exactly
+  one child process owns the socket (so only one process binds the receive port
+  and performs membership changes). The watchdog fires every ~100ms:
+
+    STARTING  open the UDP socket; receiver binds, sender resolves its dest.
+    RUNNING   sender:   send a throttled announcement (ProxyBeaconInterval).
+              receiver: drain the socket, then run a throttled (~1s) eviction
+                        sweep.
+    STOPPING  close the socket.
+
+  Because this relies on a singleton watchdog child, it is inactive under the
+  prefork MPM.
+
+
+Adding/removing members (reuses the balancer-manager path):
+  Runtime worker *removal* does not exist in httpd, so membership is managed
+  entirely as status-flag changes via mod_proxy_balancer's exported
+  balancer_manage() optional function -- the same code the balancer-manager web
+  UI calls. The receiver synthesizes a minimal request_rec (no real client
+  request exists in the watchdog thread; see beacon_make_fake_request) and calls:
+
+    add     b=<name> b_nwrkr=<url> b_wyes=1     (worker created, disabled)
+    enable  b=<name> w=<url> w_status_D=0       (cleared -> serves traffic)
+    evict   b=<name> w=<url> w_status_D=1       (disabled -> out of rotation)
+
+  Adds bump the balancer's shm "updated" timestamp, so every other child picks
+  up the new worker through the normal ap_proxy_sync_balancer() path -- the
+  change made in the singleton propagates fleet-wide. The target balancer must
+  have spare slots (ProxySet growth / BalancerGrowth).
+
+  Per-backend state (last-seen time, added/evicted flags) is kept in a hash in
+  the singleton's own pool -- no shared memory is needed, since the singleton is
+  the only process that adds or evicts. A re-announcement after eviction
+  re-enables the worker; the flags make these transitions idempotent.
+
+
+Message format:
+  Plain ASCII, space-separated key=value tokens, one datagram per announcement:
+
+    BEACON url=http://host:port host=<h> pid=<n> seq=<n> ts=<usec> mac=<hex>
+
+  url= is the routable backend origin the proxy adds as a BalancerMember. ts=
+  (microseconds since the epoch) and mac= are present only when a shared secret
+  is configured (see below). host=/pid=/seq= are informational.
+
+  A UDP datagram is delivered whole, so the receiver reads each message into a
+  fixed stack buffer and NUL-terminates it (buf[len] = '\0') before parsing.
+  The sender transmits strlen(msg) bytes (no trailing NUL on the wire).
+
+
+Authentication (ProxyBeaconSecret, optional but recommended):
+  Without a secret the channel is unauthenticated: anyone who can reach the
+  receiver port could announce a URL and hijack client traffic (the proxy logs a
+  warning at startup in this case). A UDP source address is trivially spoofable,
+  so authentication matters at least as much here as it would over a connection.
+
+  With ProxyBeaconSecret set identically on the proxy and all backends, each
+  announcement is signed with a SipHash-2-4 MAC over the message prefix (the key
+  is derived from the passphrase via apr_md5, as in mod_session_crypto). The
+  receiver recomputes the MAC (constant-time compare) and rejects anything that
+  does not match -- before the URL is parsed or acted on. Replay protection has
+  two parts, both keyed on the signed ts= (microseconds): (1) a freshness window
+  (ProxyBeaconMaxSkew) rejects messages whose timestamp is too far from now,
+  which assumes proxy and backend clocks are roughly synchronized (NTP); (2) a
+  per-url high-water mark rejects any ts= that does not strictly exceed the last
+  one accepted for that url, so a byte-identical replay (same ts, same MAC) --
+  e.g. replaying a dead backend's last announcement to keep it from being evicted
+  -- is dropped even within the freshness window. Microsecond granularity ensures
+  genuine sub-second announcements always advance. seq= is NOT used for replay
+  (it resets when a backend restarts); the wall-clock ts= does not.
+
+  Announcements are authenticated, not encrypted -- the payload is operational
+  metadata, not secret. For transport confidentiality, DTLS would be a separate,
+  orthogonal future layer.
