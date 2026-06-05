@@ -187,12 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
      +1: rjung, jorton, 
 
-  *) mod_md: Update to upstream 2.6.11
-     Contains OpenSSL 4.0.0 patch but also new functionality.
-     mod_md is CTR, so this item here is for making
-     the missing update visible. I guess Stefan will take care.
-     +1: rjung,
-
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
@@ -216,6 +210,12 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
      minfrin: Two new directives need to be documented.
+
+  *) mod_md: Update to upstream 2.6.11
+     Contains OpenSSL 4.0.0 patch but also new functionality.
+     mod_md is CTR, so this item here is for making
+     the missing update visible. Needs check, whether upstream
+     includes all trunk changes.
 
 PATCHES/ISSUES THAT ARE STALLED
 
