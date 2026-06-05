@@ -1206,10 +1206,12 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         time_t secs;
 
         /* Look for a number, preceded by whitespace */
-        while (*secs_str)
+        while (*secs_str) {
             if ((secs_str==ftpmessage || apr_isspace(secs_str[-1])) &&
                 apr_isdigit(secs_str[0]))
                 break;
+            secs_str++;
+        }
         if (*secs_str != '\0') {
             secs = atol(secs_str);
             apr_table_addn(r->headers_out, "Retry-After",
