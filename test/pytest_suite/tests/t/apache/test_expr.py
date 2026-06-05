@@ -202,13 +202,15 @@ def _build_cases(http):
     url_foo = "/apache/"
     url_notexist = "/apache/expr/none"
 
-    cases.append((rf"file('{file_foo}') = 'foo\n' ", 1))
-
     if http.have_min_apache_version("2.3.13"):
+        # file() and filesize() are restricted in 2.4.68+ (e.g. in .htaccess
+        # context), turning these into parse errors (None => expect 500).
+        restrict2 = None if http.have_min_apache_version("2.4.68") else 1
         cases += [
-            (f"filesize('{file_foo}') = 4 ", 1),
-            (f"filesize('{file_notexist}') = 0 ", 1),
-            (f"filesize('{file_zero}') = 0 ", 1),
+            (f"filesize('{file_foo}') = 4 ", restrict2),
+            (f"filesize('{file_notexist}') = 0 ", restrict2),
+            (f"filesize('{file_zero}') = 0 ", restrict2),
+            (rf"file('{file_foo}') = 'foo\n' ", restrict2),
             (f"-d '{file_foo}' ", 0),
             (f"-e '{file_foo}' ", 1),
             (f"-f '{file_foo}' ", 1),

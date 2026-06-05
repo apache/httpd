@@ -186,7 +186,20 @@ def test_dav(http):
         assert resp.status_code == 400, \
             f"PR 49825: expect 400 bad request, got {resp.status_code}"
 
+    # PUT to a .DAV state subdirectory should be blocked (403) in 2.4.68+,
+    # else allowed (201).
+    dav_uri = f"/{DIR}/.DAV/test.html"
+    expected = 403 if http.have_min_apache_version("2.4.68") else 201
+    with httpx.Client(timeout=30.0) as c:
+        resp = c.put(base + dav_uri, content=BODY)
+        assert t_cmp(resp.status_code, expected), \
+            f"PUT to .DAV subdir: expect {expected}, got {resp.status_code}"
+
     # clean up
+    try:
+        os.unlink(os.path.join(htdocs, DIR, ".DAV", "test.html"))
+    except OSError:
+        pass
     for sub in (".DAV",):
         p = os.path.join(htdocs, DIR, sub)
         if os.path.isdir(p):

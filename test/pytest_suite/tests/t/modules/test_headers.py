@@ -115,7 +115,8 @@ def test_header_combinations(http):
                         f"[{h1},{h2},{h3},{h4}]"
 
 
-# (htaccess content, [request header pairs], [expected response header pairs])
+# (htaccess content, [request header pairs], [expected response header pairs],
+#  [optional expected status; defaults to 200])
 TESTCASES = [
     # echo
     ("Header echo Test-Header\nHeader echo ^Aaa$\nHeader echo ^Aa$",
@@ -163,6 +164,9 @@ TESTCASES = [
     # expr=
     ('Header set Test-Header foo "expr=%{REQUEST_URI} =~ m#htaccess#"',
      [], ["Test-Header", "foo"]),
+    # 500 error test - malformed regex (unmatched parenthesis)
+    ("Header edit Test-Header (unclosed bar",
+     [], [], 500),
 ]
 
 TESTCASES_251 = [
@@ -197,15 +201,29 @@ def _pairs_to_dict(pairs):
 @need_module("headers")
 def test_header_directives(http):
     cases = list(TESTCASES)
+    if http.have_min_apache_version("2.4.68"):
+        # file() is not permitted in an .htaccess expr context -> 500.
+        htaccess = _htaccess_path(http)
+        cases.append((
+            f'Header set Test-Header "expr=%{{base64:%{{file:{htaccess}}}}}"',
+            [], [], 500))
     if http.have_min_apache_version("2.5.1"):
         cases += TESTCASES_251
 
-    for htaccess, req_pairs, exp_pairs in cases:
+    for case in cases:
+        htaccess, req_pairs, exp_pairs = case[0], case[1], case[2]
+        # Optional 4th element is the expected status; defaults to 200.
+        expected_status = case[3] if len(case) > 3 else 200
         with open(_htaccess_path(http), "w") as f:
             f.write(htaccess)
         req_headers = _pairs_to_dict(req_pairs)
         r = http.GET("/modules/headers/htaccess/", headers=req_headers)
-        assert t_cmp(r.status_code, 200), "Checking return code is '200'"
+        assert t_cmp(r.status_code, expected_status), \
+            f"Checking return code is '{expected_status}' [htaccess: {htaccess!r}]"
+
+        # Only validate response headers for successful responses.
+        if expected_status != 200:
+            continue
 
         for i in range(0, len(exp_pairs), 2):
             name, expected = exp_pairs[i], exp_pairs[i + 1]

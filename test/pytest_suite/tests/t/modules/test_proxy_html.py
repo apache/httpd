@@ -146,6 +146,39 @@ TESTS = [
     # ProxyHTMLDocType test
     {"type": "url_rewrite", "path": "doctype/doctype.html",
      "pattern": r"<!DOCTYPE html", "desc": "DOCTYPE declaration added"},
+
+    # Multi-substitution buffer reallocation tests
+    # Tests that many literal substitutions (where replacement > match) in a
+    # single buffer don't truncate content when ap_varbuf_grow reallocates.
+    {"type": "url_rewrite", "path": "multi_subst/multi_subst.html",
+     "pattern": r"http://long-rewritten-path\.example\.com/u01",
+     "desc": "CDATA multi-subst first URL rewritten"},
+    {"type": "url_rewrite", "path": "multi_subst/multi_subst.html",
+     "pattern": r"http://long-rewritten-path\.example\.com/u40",
+     "desc": "CDATA multi-subst last URL rewritten"},
+    {"type": "url_rewrite", "path": "multi_subst/multi_subst.html",
+     "pattern": r"CDATA_END_OK",
+     "desc": "CDATA content preserved after multi-substitution"},
+    {"type": "url_rewrite", "path": "multi_subst/multi_subst.html",
+     "pattern": r"EVENT_END_OK",
+     "desc": "event attr preserved after multi-substitution"},
+
+    # Multi-substitution regex buffer tests
+    # Tests that many regex substitutions in a single CDATA/event buffer
+    # don't cause heap overflow or content truncation.
+    {"type": "url_rewrite", "path": "multi_subst_rx/multi_subst_rx.html",
+     "pattern": r"http://regex-rewritten-path\.example\.com/u01",
+     "desc": "CDATA regex multi-subst first URL rewritten"},
+    {"type": "url_rewrite", "path": "multi_subst_rx/multi_subst_rx.html",
+     "pattern": r"http://regex-rewritten-path\.example\.com/u40",
+     "desc": "CDATA regex multi-subst last URL rewritten"},
+    {"type": "url_rewrite", "path": "multi_subst_rx/multi_subst_rx.html",
+     "pattern": r"RX_CDATA_END_OK",
+     "desc": "CDATA content preserved after regex multi-substitution"},
+    {"type": "url_rewrite", "path": "multi_subst_rx/multi_subst_rx.html",
+     "pattern": r"RX_EVENT_END_OK",
+     "desc": "event attr preserved after regex multi-substitution"},
+
     # Multiple URL maps tests
     {"type": "url_rewrite", "path": "multiple_maps/multiple_maps.html",
      "pattern": r"http://new-a\.example\.com/page1\.html", "desc": "first URL map"},

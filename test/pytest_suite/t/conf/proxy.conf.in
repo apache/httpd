@@ -338,6 +338,28 @@ Alias /modules/proxy/fcgi-uds-sethandler @SERVERROOT@/htdocs/modules/proxy/fcgi
 	     ProxyPass http://@SERVERNAME@:@PORT@/modules/proxy_html
 	 </Location>
 
+	 # Multi-substitution buffer reallocation test
+	 <Location /modules/html_proxy/multi_subst>
+	     ProxyHTMLEnable on
+	     ProxyHTMLExtended on
+	     ProxyHTMLLinks a href
+	     ProxyHTMLEvents onclick
+	     ProxyHTMLBufSize 256
+	     ProxyHTMLURLMap http://x/ http://long-rewritten-path.example.com/
+	     ProxyPass http://@SERVERNAME@:@PORT@/modules/proxy_html
+	 </Location>
+
+	 # Multi-substitution regex buffer test
+	 <Location /modules/html_proxy/multi_subst_rx>
+	     ProxyHTMLEnable on
+	     ProxyHTMLExtended on
+	     ProxyHTMLLinks a href
+	     ProxyHTMLEvents onclick
+	     ProxyHTMLBufSize 256
+	     ProxyHTMLURLMap "http://rx/" "http://regex-rewritten-path.example.com/" R
+	     ProxyPass http://@SERVERNAME@:@PORT@/modules/proxy_html
+	 </Location>
+
 	 # Multiple URL maps test
 	 <Location /modules/html_proxy/multiple_maps>
 	     ProxyHTMLEnable on
