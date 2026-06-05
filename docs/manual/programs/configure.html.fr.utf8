@@ -28,8 +28,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le script <code class="program"><a href="../programs/configure.html">configure</a></code> permet de configurer
     l'arborescence des sources afin de compiler et installer le serveur
@@ -240,7 +238,8 @@
 	<code class="program"><a href="../programs/suexec.html">suexec</a></code>, etc..., qui sont n&eacute;cessaires &agrave;
 	l'ex&eacute;cution du serveur HTTP Apache. Par d&eacute;faut,
 	<code>sbindir</code> est d&eacute;fini &agrave;
-	<code><var>EPREFIX</var>/sbin</code>.</dd>
+	<code><var>EPREFIX</var>/bin</code> (comme
+          <code>bindir</code>).</dd>
 
         <dt><code>--sharedstatedir=<var>DIR</var></code></dt>
         <dd>Installe les donn&eacute;es modifiables ind&eacute;pendantes de

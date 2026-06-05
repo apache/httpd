@@ -126,7 +126,7 @@ particulier</td></tr>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Associe les extensions de noms de fichiers au type de
 contenu sp&eacute;cifi&eacute;</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias [<var>chemin URL</var>]
-<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du syst&egrave;me
+<var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Met en correspondance des URLs avec des chemins du syst&egrave;me
 de fichiers</td></tr>
 <tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
 <var>chemin fichier</var>|<var>chemin r&eacute;pertoire</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Met en correspondance des URLs avec le syst&egrave;me de fichiers
@@ -144,10 +144,10 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
 <tr class="odd"><td><a href="mod_allowmethods.html#allowmethods">AllowMethods reset|<em>HTTP-method</em>
 [<em>HTTP-method</em>]...</a></td><td> reset </td><td>d</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Restreint l'acc&egrave;s aux m&eacute;thodes HTTP sp&eacute;cifi&eacute;es</td></tr>
 <tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>type directive</var>
-[<var>type directive</var>] ...</a></td><td> None &agrave; partir de la +</td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autoris&eacute;es dans les fichiers
+[<var>type directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types de directives autoris&eacute;es dans les fichiers
 <code>.htaccess</code></td></tr>
 <tr class="odd"><td><a href="core.html#allowoverridelist">AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
+[<var>directive</var>] ...</a></td><td> None </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>utilisateur</var> [<var>utilisateur</var>]
 ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit la liste des identifiants utilisateur autoris&eacute;s &agrave;
 acc&eacute;der sans v&eacute;rification du mot de passe</td></tr>
@@ -314,8 +314,7 @@ de requ&ecirc;te <code>Referer</code> est pr&eacute;sent</td></tr>
 rediriger l'utilisateur apr&egrave;s une connexion r&eacute;ussie</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit le type de fichier de base de donn&eacute;es contenant
 la liste des groupes d'utilisateurs</td></tr>
-<tr><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>fournisseur-de-base Alias
-Param&egrave;tres-Require</var>&gt;
+<tr><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt;
 ... &lt;/AuthzProviderAlias&gt;
 </a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Regroupe des directives repr&eacute;sentant une extension d'un
 fournisseur d'autorisation de base qui pourra &ecirc;tre r&eacute;f&eacute;renc&eacute;e &agrave; l'aide
@@ -348,7 +347,7 @@ contenu de l'en-t&ecirc;te HTTP User-Agent sans tenir compte de la
 casse</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enregistre les entr&eacute;es du journal dans un tampon en m&eacute;moire
 avant de les &eacute;crire sur disque</td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize entier</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale en octets du filtre par tampon</td></tr>
+<tr><td><a href="mod_buffer.html#buffersize">BufferSize entier</a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille maximale en octets du filtre par tampon</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>secondes</var></a></td><td> 3600 (une heure) </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">La dur&eacute;e par d&eacute;faut de mise en cache d'un document
 lorsqu'aucune date d'expiration n'a &eacute;t&eacute; sp&eacute;cifi&eacute;e.</td></tr>
 <tr><td><a href="mod_cache.html#cachedetailheader">CacheDetailHeader <var>on|off</var></a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute un en-t&ecirc;te X-Cache-Detail &agrave; la r&eacute;ponse.</td></tr>

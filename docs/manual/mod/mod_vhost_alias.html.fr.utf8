@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_vhost_alias.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_vhost_alias.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de configurer dynamiquement l'h&eacute;bergement virtuel de
 masse</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -91,6 +89,11 @@ l'h&eacute;bergement virtuel de masse</a></li>
     d'octets s&eacute;par&eacute;s par des points. L'insertion est contr&ocirc;l&eacute;e par des
     sp&eacute;cificateurs inspir&eacute;s de <code>printf</code> et poss&egrave;dant de
     nombreux formats :</p>
+
+    <div class="note"><h3>Note</h3>
+    <p>Le r&eacute;pertoire interpol&eacute; doit &ecirc;tre un chemin absolu. La valeur sp&eacute;ciale
+    <code>none</code> d&eacute;sactive cette directive.</p>
+    </div>
 
 <table>
 

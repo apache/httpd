@@ -27,8 +27,6 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le contr&ocirc;le d'acc&egrave;s fait r&eacute;f&eacute;rence &agrave; tout concept de contr&ocirc;le
     d'acc&egrave;s &agrave; une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -212,6 +210,11 @@ RewriteRule "^/fridge"     "-" [F]</pre>
 
     <p>Voir aussi le How-To <a href="auth.html">Authentification and
     autorisation</a>.</p>
+
+    <p>Voir la <a href="../sections.html#merging">documentation sur la fusion
+    des sections de configuration</a> pour un avertissement &agrave; propos de la
+    mani&egrave;re dont la directive <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> au sein d&rsquo;une section <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> peut outrepasser
+    silencieusement les restrictions d&rsquo;acc&egrave;s d&rsquo;une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/access.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

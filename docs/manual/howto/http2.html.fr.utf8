@@ -27,8 +27,6 @@
 <a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document est le guide de l'utilisateur de l'impl&eacute;mentation de HTTP/2
     dans Apache httpd. Cette fonctionnalit&eacute; en est au stade
@@ -57,8 +55,8 @@
     requ&ecirc;tes, des r&eacute;ponses et des en-t&ecirc;tes. Par cons&eacute;quent, si vous connaissez
     HTTP/1, vous connaissez d&eacute;j&agrave; 95% de HTTP/2.</p>
     <p>Beaucoup a d&eacute;j&agrave; &eacute;t&eacute; &eacute;crit &agrave; propos de HTTP/2 et de son fonctionnement. La
-    documentation la plus officielle est bien entendu sa <a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a> (ou <a href="http://httpwg.org/specs/rfc7540.html">cette version au format plus
-    lisible</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
+    documentation la plus officielle est bien entendu sa <a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a> (ou cette version au format plus
+    lisible : YMMV (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>). Vous trouverez ici une description des rouages de HTTP/2 dans
     leurs moindres d&eacute;tails.</p>
     <p>Le premier document &agrave; lire lorsqu'on ne conna&icirc;t pas un m&eacute;canisme n'est
     cependant pas sa RFC. Il est pr&eacute;f&eacute;rable de comprendre tout d'abord <em>ce
@@ -83,13 +81,13 @@
 	<li>Une <strong>frame</strong> ou trame est la plus petite unit&eacute; de
 	communication au sein d'une connexion HTTP/2 et comporte une en-t&ecirc;te et
 	une s&eacute;quence d'octets de longueur variable dont la structure correspond
-	au type de trame. Voir la <a href="http://httpwg.org/specs/rfc7540.html#FramingLayer">section
-	correspondante</a> de la documentation officielle pour plus de
-	d&eacute;tails.</li>
-        <li>Un <strong>stream</strong> est un flux bidirectionnel de frames au
-	sein d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
-	&eacute;change de messages de type requ&ecirc;te et r&eacute;ponse. Voir la <a href="http://httpwg.org/specs/rfc7540.html#StreamsLayer">section
-	correspondante</a> de la documentation officielle pour plus de d&eacute;tails.</li>
+	au type de trame. Voir la section correspondante de la documentation
+	officielle pour plus de d&eacute;tails (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</li> <li>Un
+	<strong>stream</strong> est un flux bidirectionnel de frames au sein
+	d'une connexion HTTP/2. La notion correspondante dans HTTP/1 est un
+	&eacute;change de messages de type requ&ecirc;te et r&eacute;ponse. Voir la section
+	correspondante de la documentation officielle pour plus de d&eacute;tails
+	(<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</li>
         <li>HTTP/2 peut g&eacute;rer <strong>plusieurs streams</strong> de donn&eacute;es sur
 	la m&ecirc;me connexion TCP, ce qui permet d'&eacute;viter le point de blocage
 	classique de HTTP/1 pour les requ&ecirc;tes lentes, et de ne pas avoir &agrave;
@@ -182,8 +180,8 @@
     lorsqu'on configure httpd pour HTTP/2 pour la premi&egrave;re fois ; donc gardez la
     &agrave; l'esprit si vous voulez &eacute;viter de longues sessions de d&eacute;bogage ! Si vous
     voulez &ecirc;tre s&ucirc;r de d&eacute;finir une cha&icirc;ne d'algorithmes de chiffrement
-    appropri&eacute;e, &eacute;vitez ceux qui sont list&eacute;s dans la <a href="http://httpwg.org/specs/rfc7540.html#BadCipherSuites"> </a>liste des
-    algorithmes de chiffrement TLS HTTP/2 &agrave; proscrire.</p>
+    appropri&eacute;e, &eacute;vitez ceux qui sont list&eacute;s dans la liste des
+    algorithmes de chiffrement TLS HTTP/2 &agrave; proscrire (<a href="https://www.rfc-editor.org/rfc/rfc7540">RFC 7540</a>).</p>
     </div>
     <p>L'ordre des protocoles indiqu&eacute;s est aussi important. Par d&eacute;faut, le
     premier sera le protocole pr&eacute;f&eacute;r&eacute;. Lorsqu'un client offre plusieurs choix,
@@ -343,7 +341,7 @@
     d'informer le serveur des ressources qu'il poss&egrave;de d&eacute;j&agrave; dans son cache afin
     d'&eacute;viter les PUSHes pour ces derni&egrave;res, mais ceci n'en est actuellement qu'&agrave;
     un stade tr&egrave;s exp&eacute;rimental.</p>
-    <p>L'<a href="https://tools.ietf.org/html/draft-ruellan-http-accept-push-policy-00">
+    <p>L'<a href="https://datatracker.ietf.org/doc/html/draft-ruellan-http-accept-push-policy-00">
     en-t&ecirc;te Accept-Push-Policy</a> est un autre dispositif exp&eacute;rimental
     impl&eacute;ment&eacute; dans <code class="module"><a href="../mod/mod_http2.html">mod_http2</a></code> ; il permet au client de d&eacute;finir pour
     chaque requ&ecirc;te quels genres de PUSHes il accepte.</p>
@@ -377,7 +375,7 @@
     <p>A l'instar des ressources PUSH&eacute;es, une autre m&eacute;thode consiste &agrave; envoyer
     des en-t&ecirc;tes <code>Link</code> au client avant m&ecirc;me que la r&eacute;ponse ne soit
     pr&ecirc;te. Cette m&eacute;thode utilise la fonctionnalit&eacute; appel&eacute;e "Suggestions
-    pr&eacute;coces" (Early Hints) d&eacute;crite dans la <a href="https://tools.ietf.org/html/rfc8297">RFC 8297</a>.</p>
+    pr&eacute;coces" (Early Hints) d&eacute;crite dans la <a href="https://www.rfc-editor.org/rfc/rfc8297">RFC 8297</a>.</p>
     <p>Pour utiliser cette fonctionnalit&eacute;, vous devez l'activer explicitement
     sur le serveur via :</p>
     <pre class="prettyprint lang-config">H2EarlyHints on</pre>

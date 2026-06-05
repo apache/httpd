@@ -31,8 +31,6 @@
 <a href="./pt-br/bind.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Configuration du serveur HTTP Apache pour l'&eacute;coute
     sur un port et une adresse IP sp&eacute;cifiques.</p>

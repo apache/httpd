@@ -28,8 +28,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document propose quelques conseils et astuces concernant les
     probl&egrave;mes de s&eacute;curit&eacute; li&eacute;s
@@ -45,6 +43,7 @@
 <li><img alt="" src="../images/down.gif"> <a href="#nsaliasedcgi">CGI sans alias de script</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#saliasedcgi">CGI avec alias de script</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#dynamic">Autres sources de contenu dynamique</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#dynamicsec">S&eacute;curit&eacute; des contenus dynamiques</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#systemsettings">Protection de la configuration du syst&egrave;me</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#protectserverfiles">Protection par d&eacute;faut des fichiers du serveur</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#watchyourlogs">Surveillez vos journaux</a></li>
@@ -332,6 +331,33 @@
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
+<h2 id="dynamicsec">S&eacute;curit&eacute; des contenus dynamiques <a title="Lien permanent" href="#dynamicsec" class="permalink">&para;</a></h2>
+
+  
+
+  <p>Quand vous utilisez des cadriciels &agrave; contenu dynamique &mdash;&nbsp;que ce soit &agrave;
+  travers <code>mod_php</code>, <code>mod_perl</code>, <code>mod_python</code>
+  ou tout autre g&eacute;n&eacute;rateur de contenu int&eacute;gr&eacute; ou externe &mdash;&nbsp;les responsabilit&eacute;s
+  en mati&egrave;re de s&eacute;curit&eacute; s&rsquo;&eacute;tendent au-del&agrave; de httpd lui-m&ecirc;me. Chaque cadriciel
+  poss&egrave;de ses propres mod&egrave;le de s&eacute;curit&eacute;, options de configuration et guides de
+  durcissement. Consultez la documentation de la technologie que vous utilisez
+  pour g&eacute;n&eacute;rer du contenu dynamique et maintenez cette derni&egrave;re &agrave; jour.</p>
+
+  <p>Les principes g&eacute;n&eacute;raux s&rsquo;appliquent &agrave; tout cadriciel&nbsp;:</p>
+  <ul>
+  <li>Accordez des privil&egrave;ges minimaux &agrave; vos scripts et applications.</li>
+  <li>V&eacute;rifiez et nettoyez toute entr&eacute;e de l&rsquo;utilisateur.</li>
+  <li>Maintenez &agrave; jour votre cadriciel de contenu et ses d&eacute;pendances.</li>
+  <li>V&eacute;rifiez la configuration de la s&eacute;curit&eacute; de votre cadriciel &mdash;&nbsp;les valeurs
+  par d&eacute;faut ne sont pas toujours appropri&eacute;es en mati&egrave;re de s&eacute;curit&eacute;.</li>
+  </ul>
+
+  <p>Au niveau de httpd, un pare-feu d&rsquo;application web tel que <a href="https://modsecurity.org/">ModSecurity</a> peut fournir une couche
+  suppl&eacute;mentaire de d&eacute;fense en inspectant et filtrant le trafic HTTP avant qu&rsquo;il
+  n&rsquo;atteigne votre application.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
 <h2 id="systemsettings">Protection de la configuration du syst&egrave;me <a title="Lien permanent" href="#systemsettings" class="permalink">&para;</a></h2>
 
     
@@ -398,7 +424,7 @@
     <p>Portez une attention particuli&egrave;re aux interactions entre les directives
     <code class="directive"><a href="../mod/core.html#location">Location</a></code> et
     <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> ; par exemple, si une
-    directive <code>&lt;Directory ""/&gt;</code> interdit un acc&egrave;s, une
+    directive <code>&lt;Directory "/"&gt;</code> interdit un acc&egrave;s, une
     directive <code>&lt;Location "/"&gt;</code> pourra passer outre.</p>
 
     <p>De m&ecirc;me, soyez m&eacute;fiant en jouant avec la directive
@@ -417,47 +443,38 @@
 
     
 
-    <p>Pour vous tenir inform&eacute; de ce qui se passe r&eacute;ellement dans votre
-    serveur, vous devez consulter vos
-    <a href="../logs.html">fichiers journaux</a>. M&ecirc;me si les fichiers journaux
-    ne consignent que des &eacute;v&egrave;nements qui se sont d&eacute;j&agrave; produits, ils vous
-    informeront sur la nature des attaques qui sont lanc&eacute;es contre le serveur
-    et vous permettront de v&eacute;rifier si le niveau de s&eacute;curit&eacute; n&eacute;cessaire est
-    atteint.</p>
+    <p>Pour vous tenir inform&eacute; de ce qui se passe r&eacute;ellement dans votre serveur,
+    consultez r&eacute;guli&egrave;rement vos <a href="../logs.html">fichiers journaux</a>.
+    Les fichiers journaux ne consignent que des &eacute;v&egrave;nements qui se sont d&eacute;j&agrave;
+    produits, mais ils vous informeront sur la nature des attaques qui sont
+    lanc&eacute;es et vous permettront de v&eacute;rifier si la configuration de votre
+    s&eacute;curit&eacute; est efficace.</p>
 
     <p>Quelques exemples :</p>
 
+    <pre class="prettyprint lang-sh">grep -c "\.\.\/" access_log
+grep "client denied" error_log | tail -n 10</pre>
+
+
+    <p>Le premier exemple compte les requ&ecirc;tes qui contiennent des s&eacute;quences de
+    travers&eacute;e de chemin &mdash;&nbsp;un signe connu de recherche de vuln&eacute;rabilit&eacute;s. Le
+    second liste les dix &laquo;&nbsp;client denied&nbsp;&raquo; les plus r&eacute;cents&nbsp;; par exemple&nbsp;:</p>
     <div class="example"><p><code>
-      grep -c "/jsp/source.jsp?/jsp/ /jsp/source.jsp??" access_log <br>
-      grep "client denied" error_log | tail -n 10
+      [Mon Apr 14 09:42:03.817295 2026] [authz_core:error] [pid 1234:tid 5678]
+      [client 192.168.1.100:54312] AH01630: client denied by server configuration:
+      /usr/local/apache2/htdocs/.env
     </code></p></div>
 
-    <p>Le premier exemple listera les attaques essayant d'exploiter la
-    <a href="http://online.securityfocus.com/bid/4876/info/">vuln&eacute;rabilit&eacute;
-    d'Apache Tomcat pouvant provoquer la divulgation d'informations par des
-    requ&ecirc;tes Source.JSP mal form&eacute;es</a>, le second donnera la liste des dix
-    derni&egrave;res interdictions client ; par exemple :</p>
+    <p>Comme vous pouvez le voir, les fichiers journaux ne mentionnent que ce
+    qu&rsquo;il s&rsquo;est d&eacute;j&agrave; produit. Si le client avait pu acc&eacute;der au fichier
+    <code>.env</code>, vous auriez vu une r&eacute;ponse <code>200</code> dans votre
+    fichier <a href="../logs.html#accesslog">Access Log</a> &mdash; ce qui aurait
+    signifi&eacute; que la configuration de votre serveur devait &ecirc;tre plus restrictive.
+    Assurez-vous d&rsquo;interdire l&rsquo;acc&egrave;s aux fichiers sensibles&nbsp;:</p>
 
-    <div class="example"><p><code>
-      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied
-      by server configuration: /usr/local/apache/htdocs/.htpasswd
-    </code></p></div>
-
-    <p>Comme vous le voyez, les fichiers journaux ne consignent que ce qui
-    s'est d&eacute;j&agrave; produit ; ainsi, si le client a pu acc&eacute;der au fichier
-    <code>.htpasswd</code>, vous devriez avoir quelque chose du style :</p>
-
-    <div class="example"><p><code>
-      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
-    </code></p></div>
-
-    <p>dans votre <a href="../logs.html#accesslog">journal des acc&egrave;s</a> ; ce
-    qui signifie que vous avez probablement mis en commentaire ce qui suit dans
-    le fichier de configuration de votre serveur :</p>
-
-    <pre class="prettyprint lang-config">&lt;Files ".ht*"&gt;
+    <pre class="prettyprint lang-config">&lt;FilesMatch "^\.(?!well-known)"&gt;
     Require all denied
-&lt;/Files&gt;</pre>
+&lt;/FilesMatch&gt;</pre>
 
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

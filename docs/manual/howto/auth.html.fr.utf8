@@ -30,8 +30,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>L'authentification est un processus qui vous permet de v&eacute;rifier
     qu'une personne est bien celle qu'elle pr&eacute;tend &ecirc;tre. L'autorisation
@@ -509,7 +507,10 @@ autorisation <a title="Lien permanent" href="#beyond" class="permalink">&para;</
 	l'autorisation d'acc&egrave;s. Voir <a href="../mod/mod_authz_core.html#logic">Conteneurs
 	d'autorisations</a> pour un exemple de la mani&egrave;re de les
 	utiliser pour exprimer des logiques d'autorisation
-	complexes.</p>
+	complexes. Chaque fournisseur d&rsquo;autorisation renvoie un des trois
+	r&eacute;sultats possibles&nbsp;; voir <a href="../mod/mod_authz_core.html#authzresults">&Eacute;tats des r&eacute;sultats
+	d&rsquo;autorisation</a> pour des d&eacute;tails sur la mani&egrave;re dont les conteneurs
+	interpr&egrave;tent ces r&eacute;sultats.</p>
 
         <p>Par d&eacute;faut, toutes les directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> sont
 	trait&eacute;es comme si elles &eacute;taient contenues dans une directive
@@ -597,7 +598,7 @@ autorisation <a title="Lien permanent" href="#beyond" class="permalink">&para;</
     <h3 id="filesystem">Compatibilit&eacute; ascendante du contr&ocirc;le
     d'acc&egrave;s</h3>
         <p>L'adoption d'un m&eacute;canisme &agrave; base de fournisseurs pour
-	l'authentification, a pour effet colat&eacute;ral de rendre inutiles
+	l'autorisation, a pour effet colat&eacute;ral de rendre inutiles
 	les directives <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code>. Cependant, et &agrave;
 	des fins de compatibilit&eacute; ascendante vers les anciennes
 	configurations, ces directives ont &eacute;t&eacute; d&eacute;plac&eacute;es vers le module

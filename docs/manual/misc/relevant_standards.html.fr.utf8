@@ -27,8 +27,6 @@
 <a href="../fr/misc/relevant_standards.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/relevant_standards.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Cette page documente tous les standards applicables que suit le
     serveur HTTP Apache, accompagn&eacute;s d'une br&egrave;ve description.</p>
@@ -38,17 +36,17 @@
 
     <ul>
       <li>
-        <a href="http://purl.org/NET/http-errata">
-        http://purl.org/NET/http-errata</a> - Corrections de la
+        <a href="https://www.skrb.org/ietf/http_errata.html">
+        https://www.skrb.org/ietf/http_errata.html</a> - Corrections de la
 	sp&eacute;cification HTTP/1.1
       </li>
       <li>
-      <a href="http://www.rfc-editor.org/errata.php">
-        http://www.rfc-editor.org/errata.php</a>   - Corrections des RFCs
+        <a href="https://www.rfc-editor.org/errata.php">
+        https://www.rfc-editor.org/errata.php</a> - Corrections des RFCs
       </li>
       <li>
-        <a href="http://ftp.ics.uci.edu/pub/ietf/http/#RFC">
-        http://ftp.ics.uci.edu/pub/ietf/http/#RFC</a> - Une liste
+        <a href="https://httpwg.org/specs/">
+        https://httpwg.org/specs/</a> - Une liste
 	pr&eacute;compil&eacute;e des RFCs en rapport avec HTTP
       </li>
     </ul>
@@ -61,19 +59,19 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#http_recommendations">Recommandations HTTP</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#html_recommendations">Recommandations HTML</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#authentication">Authentification</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#language_country_codes">Codes de langues et de
+<li><img alt="" src="../images/down.gif"> <a href="#language_country_codes">Codes de langages et de
   pays</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="http_recommendations">Recommandations HTTP <a title="Lien permanent" href="#http_recommendations" class="permalink">&para;</a></h2>
 
-    <p>Ind&eacute;pendamment des modules compil&eacute;s et utilis&eacute;s, Apache en
+    <p>Sans tenir compte des modules compil&eacute;s et utilis&eacute;s, Apache en
     tant que serveur web de base respecte les recommandations IETF
     suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc1945.txt">RFC 1945</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc1945">RFC 1945</a>
       (Informations)</dt>
 
       <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
@@ -82,7 +80,7 @@
       distribu&eacute;s, collaboratifs et hyperm&eacute;dia. Cette RFC documente le
       protocole HTTP/1.0.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>
       (S&eacute;rie de standards)</dt>
 
       <dd>Le Protocole de Transfert Hypertexte (Hypertext Transfer
@@ -90,14 +88,14 @@
       syst&egrave;mes d'informations distribu&eacute;s, collaboratifs et hyperm&eacute;dia.
       Cette RFC documente le protocole HTTP/1.1.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2396.txt">RFC 2396</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2396">RFC 2396</a>
       (S&eacute;rie de standards)</dt>
 
       <dd>Un Identificateur de Ressource Uniforme (Uniform Resource
       Identifier - URI) est une cha&icirc;ne de caract&egrave;res compacte permettant
       d'identifier une ressource physique ou abstraite.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc4346">RFC 4346</a>
       (S&eacute;rie de standards)</dt>
 
       <dd>Le protocole TLS permet l'utilisation de communications
@@ -114,7 +112,7 @@
     recommandations IETF et W3C suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2854.txt">RFC 2854</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2854">RFC 2854</a>
       (Informations)</dt>
 
       <dd>Ce document r&eacute;sume l'historique du d&eacute;veloppement de HTML, et
@@ -124,7 +122,7 @@
       <dt><a href="http://www.w3.org/TR/html401">Sp&eacute;cification HTML
       4.01</a>
       (<a href="http://www.w3.org/MarkUp/html4-updates/errata">Corrections
-      d'erreurs</a>)
+      Erreurs</a>)
       </dt>
 
       <dd>Cette sp&eacute;cification d&eacute;finit le Langage &agrave; Balises HyperTexte
@@ -170,26 +168,26 @@
     Apache respecte les recommandations IETF suivantes :</p>
 
     <dl>
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc2617.txt">RFC 2617</a>
-      (Le track des standards)</dt>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc2617">RFC 2617</a>
+      (S&eacute;rie de standards)</dt>
 
-      <dd>"HTTP/1.0", y compris la sp&eacute;cification d'un protocole basique
-      d'authentification et de contr&ocirc;le d'acc&egrave;s.</dd>
+      <dd>"HTTP/1.0", y compris la sp&eacute;cification d'un protocole
+      d'authentification et de contr&ocirc;le d'acc&egrave;s basique.</dd>
 
     </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="language_country_codes">Codes de langues et de
+<h2 id="language_country_codes">Codes de langages et de
   pays <a title="Lien permanent" href="#language_country_codes" class="permalink">&para;</a></h2>
 
     <p>Les liens suivants fournissent des informations &agrave; propos des
-    codes de langues et de pays aux normes ISO ou autres :</p>
+    codes de langages et de pays aux normes ISO ou autres :</p>
 
     <dl>
       <dt><a href="http://www.loc.gov/standards/iso639-2/">ISO 639-2</a></dt>
 
-      <dd>ISO 639 fournit deux jeux de codes de langues permettant de
+      <dd>ISO 639 fournit deux jeux de codes de langages permettant de
       repr&eacute;senter les noms des langues ; le premier est
       un jeu de codes sur deux lettres (639-1), le second (celui
       pr&eacute;sent&eacute; dans le lien ci-dessus), est un jeu de codes sur trois
@@ -203,21 +201,20 @@
       pr&eacute;sent&eacute;s dans la norme ISO 3166-1 et les &eacute;l&eacute;ments de codes
       correspondants de la norme ISO 3166-1-alpha-2.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a>
-      (Les meilleurs pratiques courantes),
-      <a href="http://www.rfc-editor.org/rfc/rfc3066.txt">RFC 3066</a></dt>
+      <dt><a href="https://www.rfc-editor.org/rfc/bcp/bcp47.txt">BCP 47</a> (Les
+      meilleurs pratiques courantes), <a href="https://www.rfc-editor.org/rfc/rfc3066">RFC 3066</a></dt>
 
       <dd>Ce document d&eacute;crit une balise de langue permettant de
-      sp&eacute;cifier la langue utilis&eacute; dans un objet contenant des
+      sp&eacute;cifier la langue utilis&eacute;e dans un objet contenant des
       informations, la mani&egrave;re d'enregistrer des valeurs &agrave; utiliser dans
-      cette balise de langage, et une m&eacute;thode pour comparer les balises
+      cette balise de langue, et une m&eacute;thode pour comparer les balises
       de langue de ce style.</dd>
 
-      <dt><a href="http://www.rfc-editor.org/rfc/rfc3282.txt">RFC 3282</a>
+      <dt><a href="https://www.rfc-editor.org/rfc/rfc3282">RFC 3282</a>
       (S&eacute;rie de standards)</dt>
 
-      <dd>Ce document d&eacute;finit un en-t&ecirc;te "Content-language:" permettant
-      de sp&eacute;cifier le langage d'un &eacute;l&eacute;ment poss&eacute;dant des en-t&ecirc;tes du
+      <dd>Ce document d&eacute;finit une en-t&ecirc;te "Content-language:" permettant
+      de sp&eacute;cifier la langue d'un &eacute;l&eacute;ment poss&eacute;dant des en-t&ecirc;tes du
       style RFC 822, comme les portions de corps MIME ou les documents
       Web, et un en-t&ecirc;te "Accept-Language:" permettant de sp&eacute;cifier des
       pr&eacute;f&eacute;rences en mati&egrave;re de langue.</dd>

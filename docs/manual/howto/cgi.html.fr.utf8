@@ -29,8 +29,6 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#configuring">Configurer httpd pour autoriser CGI</a></li>
@@ -49,11 +47,11 @@
 
     <p>CGI (Common Gateway Interface) d&eacute;finit une m&eacute;thode d'interaction
     entre un serveur web et des programmes g&eacute;n&eacute;rateurs de contenu
-    externes, plus souvent appel&eacute;s programmes CGI ou scripts CGI.
-    Il s'agit d'une m&eacute;thode simple pour ajouter du contenu dynamique &agrave; votre site
+    externes, plus souvent appel&eacute;s programmes CGI ou scripts CGI. Il
+    s'agit d'une m&eacute;thode simple pour ajouter du contenu dynamique &agrave; votre site
     web en utilisant votre langage de programmation pr&eacute;f&eacute;r&eacute;.
     Ce document est une introduction &agrave; la configuration de CGI sur votre
-    serveur web httpd, et une initiation &agrave; l'&eacute;criture de programmes
+    serveur web HTTP Apache, et une initiation &agrave; l'&eacute;criture de programmes
     CGI.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -386,12 +384,11 @@ print "Hello, World.";</pre>
       d'environnement</a> non standards, vous devrez vous assurez que
       ces variables lui sont bien transmises par httpd.</p>
 
-      <p>Lorsque des en-t&ecirc;tes HTTP ne sont pas transmis &agrave;
-      l'environnement, assurez-vous qu'ils sont bien format&eacute;s selon la
-      <a href="http://tools.ietf.org/html/rfc2616">RFC 2616</a>, section
-      4.2 : les noms d'en-t&ecirc;tes doivent commencer par une lettre,
-      elle-m&ecirc;me suivie de lettres, chiffres ou traits d'union. Tout
-      en-t&ecirc;te dont le nom viole cette r&egrave;gle sera ignor&eacute;.</p>
+      <p>Lorsque des en-t&ecirc;tes HTTP ne sont pas transmis &agrave; l'environnement,
+      assurez-vous qu'ils sont bien format&eacute;s selon la <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>, section
+      4.2 : les noms d'en-t&ecirc;tes doivent commencer par une lettre, elle-m&ecirc;me
+      suivie de lettres, chiffres ou traits d'union. Tout en-t&ecirc;te dont le nom
+      viole cette r&egrave;gle sera ignor&eacute;.</p>
 
     
 
@@ -451,7 +448,7 @@ print "Hello, World.";</pre>
 
       <p>Pour savoir si vous pouvez utiliser suexec, tapez la commande
       <code>apachectl -V</code>, et regardez le chemin indiqu&eacute; par
-      <code>SUEXEC_BIN</code>. Si au d&eacute;marrage de httpd, ce dernier
+      <code>SUEXEC_BIN</code>. Si au d&eacute;marrage d'httpd, ce dernier
       trouve un ex&eacute;cutable <code class="program"><a href="../programs/suexec.html">suexec</a></code> dans ce chemin,
       suexec sera activ&eacute;.</p>
 
@@ -497,11 +494,10 @@ print "Hello, World.";</pre>
       serveur (httpd, IIS, WebSite), le nom du programme CGI en cours
       d'ex&eacute;cution, etc...</p>
 
-      <p>Ces variables sont &agrave; la disposition du programmeur CGI, et
-      elles constituent 50% de la communication client-serveur. La liste
-      compl&egrave;te des variables requises se trouve &agrave;
-      <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
-      Interface RFC</a>.</p>
+      <p>Ces variables sont &agrave; la disposition du programmeur CGI, et elles
+      constituent 50% de la communication client-serveur. La liste compl&egrave;te des
+      variables requises se trouve dans la <a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a> (Common Gateway
+      Interface).</p>
 
       <p>Ce programme CGI basique en Perl permet d'afficher toutes les
       variables d'environnement qui sont &eacute;chang&eacute;es. Deux programmes
@@ -589,14 +585,14 @@ foreach my $key (keys %ENV) {
     la majorit&eacute; des programmes.</p>
 
     <p>Si vous &eacute;crivez des programmes CGI en C, vous disposez de nombreuses
-    options. L'une d'elles est la biblioth&egrave;que <code>CGIC</code> de  <a href="https://web.mit.edu/wwwdev/www/cgic.html">https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
+    options. L'une d'elles est la biblioth&egrave;que <code>CGIC</code> de <a href="https://web.mit.edu/wwwdev/www/cgic.html">https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="moreinfo">Pour plus d'informations <a title="Lien permanent" href="#moreinfo" class="permalink">&para;</a></h2>
     
 
-    <p>La sp&eacute;cification CGI actuelle est disponible dans la <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
-    Interface RFC</a>.</p>
+    <p>La sp&eacute;cification CGI actuelle est disponible dans la <a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>
+    (Common Gateway Interface).</p>
 
     <p>Lorsque vous postez une question &agrave; propos d'un probl&egrave;me CGI que
     vous rencontrez, que ce soit dans une liste de diffusion ou dans un

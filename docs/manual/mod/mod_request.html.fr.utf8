@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_request.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/mod/mod_request.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtres permettant de traiter et de mettre &agrave; disposition
 les corps de requ&ecirc;tes HTTP</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -69,7 +67,7 @@ comme mod_include.</td></tr>
 
     <p>Lorsque l'argument de cette directive a une valeur sup&eacute;rieure &agrave;
     z&eacute;ro, les gestionnaires de requ&ecirc;te qui suppriment habituellement les
-    corps de requ&ecirc;te vont alors conserver ces corps de requ&ecirc;te, &agrave;
+    corps de requ&ecirc;te vont alors d&eacute;finir ces corps de requ&ecirc;te, &agrave;
     concurrence de la taille maximale sp&eacute;cifi&eacute;e, pour &ecirc;tre
     &eacute;ventuellement utilis&eacute;s par des filtres. Dans le cas du filtre
     mod_include, une tentative de requ&ecirc;te <code>POST</code> pour un
@@ -85,15 +83,15 @@ comme mod_include.</td></tr>
     ou d'URLs issues d'un mandataire inverse dans l'espace d'URL d'un
     autre serveur en utilisant <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
 
-    <p><strong>Note :</strong> Chaque requ&ecirc;te dont le corps est ainsi
-    conserv&eacute; doit &ecirc;tre enregistr&eacute;e temporairement en m&eacute;moire vive
+    <div class="note">Chaque requ&ecirc;te dont le corps est ainsi
+    d&eacute;fini doit &ecirc;tre enregistr&eacute;e temporairement en m&eacute;moire vive
     jusqu'&agrave; la fin du traitement de la requ&ecirc;te. Il faut donc s'assurer
     que la m&eacute;moire RAM du serveur est suffisante pour pouvoir supporter
     la charge induite. L'utilisation de cette directive doit &ecirc;tre
     limit&eacute;e &agrave; certaines portions de votre espace d'URL bien pr&eacute;cises qui
     le n&eacute;cessitent, et en sp&eacute;cifiant comme taille maximale une valeur la
     plus petite possible, mais tout de m&ecirc;me suffisante pour un corps de
-    requ&ecirc;te.</p>
+    requ&ecirc;te.</div>
 
     <p>Si la taille de la requ&ecirc;te envoy&eacute;e par le client d&eacute;passe la taille
     maximale autoris&eacute;e par cette directive, le serveur renverra l'erreur

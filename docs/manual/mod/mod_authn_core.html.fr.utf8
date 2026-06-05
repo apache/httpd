@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_authn_core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_authn_core.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Le noyau de l'authentification</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>authn_core_module</td></tr>
@@ -156,9 +154,13 @@ l'authentification HTTP</td></tr>
    <pre class="prettyprint lang-config">AuthName "Top Secret"</pre>
 
 
-    <p>La cha&icirc;ne fournie comme argument &agrave; <code>AuthName</code>
-    appara&icirc;tra dans la bo&icirc;te de dialogue d'authentification pour la
-    plupart des navigateurs.</p>
+    <p>La cha&icirc;ne fournie comme argument &agrave; <code>AuthName</code> &eacute;tait
+    historiquement affich&eacute;e dans la bo&icirc;te de dialogue de mot de passe fournie
+    par les navigateurs. La plupart des navigateurs modernes n&rsquo;affiche plus la
+    cha&icirc;ne de realm, car elle pourrait &ecirc;tre utilis&eacute;e pour du phishing. La
+    directive est toujours n&eacute;cessaire pour que l&rsquo;authentification HTTP
+    fonctionne et la valeur du realm est toujours utilis&eacute;e pour d&eacute;finir la
+    port&eacute;e des informations d'identification. </p> 
 
      <p>A partir de la version 2.4.55 du serveur HTTP Apache, il est possible de
     d&eacute;finir cette directive en utilisant la <a href="../expr.html">syntaxe des
@@ -227,7 +229,7 @@ l'alias sp&eacute;cifi&eacute;</td></tr>
 
     <p>Le type d'authentification <code>None</code> d&eacute;sactive
     l'authentification. Lorsqu'une authentification est d&eacute;finie, elle
-    est en g&eacute;n&eacute;ral h&eacute;rit&eacute;e par chacune des <a href="../sections.html#mergin">sections de configuration</a> qui
+    est en g&eacute;n&eacute;ral h&eacute;rit&eacute;e par chacune des <a href="../sections.html#merging">sections de configuration</a> qui
     suivent, &agrave; moins qu'un autre type d'authentification ne soit
     sp&eacute;cifi&eacute;. Si l'on ne souhaite pas mettre en oeuvre
     d'authentification pour une sous-section d'une section authentifi&eacute;e,

@@ -519,7 +519,7 @@ CustomLog "referer.log" referer env=!localreferer</pre>
 <div class="directive-section"><h2 id="globallog"><span id="GlobalLog">GlobalLog</span> Directive <a title="Permanent link" href="#globallog" class="permalink">&para;</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets filename and format of log file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>GlobalLog<var>file</var>|<var>pipe</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</code></td></tr>
@@ -586,7 +586,7 @@ expr=<var>expression</var>]</code></td></tr>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</pre>
 </div>
-    
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -608,7 +608,7 @@ expr=<var>expression</var>]</code></td></tr>
     other format has been specified.</p>
 
     <div class="example"><h3>Example</h3><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log</pre>
+TransferLog "logs/access_log"</pre>
 </div>
 
 </div>
