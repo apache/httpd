@@ -307,10 +307,10 @@ static h2_headers *create_response(request_rec *r)
     if (!apr_is_empty_array(r->content_languages)) {
         int i;
         char *token;
-        char **languages = (char **)(r->content_languages->elts);
         const char *field = apr_table_get(r->headers_out, "Content-Language");
 
         while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
+            char **languages = (char **)(r->content_languages->elts);
             for (i = 0; i < r->content_languages->nelts; ++i) {
                 if (!ap_cstr_casecmp(token, languages[i]))
                     break;
