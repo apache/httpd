@@ -66,6 +66,8 @@ typedef struct {
 #define AP_EXPR_FLAG_RESTRICTED            4
 /** Expression evaluates to a string, not to a bool */
 #define AP_EXPR_FLAG_STRING_RESULT         8
+/** Don't allow functions/vars that expose content from the filesystem. */
+#define AP_EXPR_FLAG_RESTRICTED_FILE_FUNC   16
 
 
 /**
