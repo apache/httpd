@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933506:1934245 (outdated) -->
+<!-- English Revision: 1934245 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -183,22 +183,21 @@ ProxyPass "/myapp/" "balancer://myappcluster/"
     </highlight>
     </example>
 
-    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que
-    requête de mandataire inverse en créant un court-circuiteur de
-    gestionnaire approprié. Dans l'exemple ci-dessous, toutes les
-    requêtes pour des scripts PHP seront transmises au serveur FastCGI
-    spécifié par mandat inverse. Cette fonctionnalité est disponible à
-    partir de la version 2.4.10 du serveur HTTP Apache. Pour des raisons
-    de performances, il est recommandé de définir un <a
-    href="mod_proxy.html#workers">worker (configuration d'un
-    mandataire)</a> représentant le même serveur fcgi:// d'arrière-plan.
-    Avec cette configuration, il est possible d'effectuer une
-    correspondance directe entre l'URI et le chemin du fichier sur le
-    serveur, et le chemin local du fichier sera alors transmis au serveur
-    d'arrière-plan. Lorsque FastCGI est configuré ainsi, le serveur est
-    en mesure de calculer le PATH_INFO le plus approprié.
-      </p>
-	<example><title>Mandataire via un gestionnaire</title>
+    <p>Vous pouvez aussi forcer le traitement d'une requête en tant que requête
+    de mandataire inverse en créant un court-circuiteur de gestionnaire
+    approprié. Dans l'exemple ci-dessous, toutes les requêtes pour des scripts
+    PHP seront transmises au serveur FastCGI spécifié par mandat inverse. Cette
+    fonctionnalité est disponible à partir de la version 2.4.10 du serveur HTTP
+    Apache. Pour des raisons de performances, il est recommandé de définir un <a
+    href="mod_proxy.html#workers">worker (configuration d'un mandataire)</a>
+    représentant le même serveur fcgi:// d'arrière-plan.  Avec cette
+    configuration, il est possible d'effectuer une correspondance directe entre
+    l'URI et le chemin du fichier sur le serveur, et le chemin local du fichier
+    sera alors transmis au serveur d'arrière-plan. Lorsque FastCGI est configuré
+    ainsi, le serveur est en mesure de calculer le <glossary
+    ref="pathinfo">PATH_INFO</glossary> le plus approprié.
+    </p>
+  <example><title>Mandataire via un gestionnaire</title>
       <highlight language="config">
 &lt;FilesMatch "\.php$"&gt;
     # Note : la seule partie variable est /path/to/app.sock

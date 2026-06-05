@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673892:1934412 (outdated) -->
+<!-- English Revision: 1934412 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -62,18 +62,18 @@ contenu particulier</description>
 <override>FileInfo</override>
 
 <usage>
-    <p>Cette directive ajoute une action qui va activer <var>script
-    cgi</var> lorsque <var>type d'action</var> est déclenché par la
-    requête. <var>script cgi</var> est un chemin URL vers une ressource
-    qui a été désignée comme script CGI à l'aide des directives
-    <directive module="mod_alias">ScriptAlias</directive> ou <directive
-    module="mod_mime">AddHandler</directive>. <var>type d'action</var>
-    peut être soit un <a href="../handler.html">gestionnaire</a>, soit
-    un <glossary ref="mime-type">type de contenu MIME</glossary>. L'URL
-    et le chemin du document correspondant sont envoyés en utilisant
-    les variables d'environnement CGI standards <code>PATH_INFO</code>
-    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilisé pour cette
-    requête particulière est transmis à l'aide de la variable
+    <p>Cette directive ajoute une action qui va activer <var>script cgi</var>
+    lorsque <var>type d'action</var> est déclenché par la requête. <var>script
+    cgi</var> est un chemin URL vers une ressource qui a été désignée comme
+    script CGI à l'aide des directives <directive
+    module="mod_alias">ScriptAlias</directive> ou <directive
+    module="mod_mime">AddHandler</directive>. <var>type d'action</var> peut être
+    soit un <a href="../handler.html">gestionnaire</a>, soit un <glossary
+    ref="mime-type">type de contenu MIME</glossary>. L'URL et le chemin du
+    document correspondant sont envoyés en utilisant les variables
+    d'environnement CGI standards <glossary ref="pathinfo">PATH_INFO</glossary>
+    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilisé pour cette requête
+    particulière est transmis à l'aide de la variable
     <code>REDIRECT_HANDLER</code>.</p>
 
     <example><title>Exemple : type MIME</title>

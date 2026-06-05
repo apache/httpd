@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933179:1933949 (outdated) -->
+<!-- English Revision: 1933949 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -226,6 +226,19 @@
     dans le cas contraire. Si une erreur est survenue au cours de la
     suppression de l'URL, <program>htcacheclean</program> renvoie
     <code>1</code>.</p>
+</section>
+
+<section id="files"><title>Fichiers</title>
+
+<p>Le répertoire racine du cache est spécifié en tant qu’argument de la ligne de
+commande et doit correspondre à la directive <code>CacheRoot</code> de la
+configuration globale du serveur.</p>
+
+<dl>
+<dt><var>chemin</var></dt>
+<dd>Le répertoire racine du cache sur disque à nettoyer.</dd>
+</dl>
+
 </section>
 
 </manualpage>
