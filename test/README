@@ -42,7 +42,7 @@ combined result.  pytest_suite runs first, then the pyhttpd modules/ tests.
   ./run-all-tests.sh                  # run both suites (pytest_suite first)
   ./run-all-tests.sh --only=pysuite   # only the pytest_suite tests
   ./run-all-tests.sh --only=pyhttpd   # only the pyhttpd modules/ tests
-  ./run-all-tests.sh --apxs /path/to/apxs   # point at a specific httpd build
+  ./run-all-tests.sh --apxs=/path/to/apxs   # point at a specific httpd build
   ./run-all-tests.sh -k status -v     # flags pass through to BOTH suites
 
 How it finds the httpd build:
@@ -77,8 +77,8 @@ pytest_suite (from its own directory; it creates its own virtualenv):
 
   cd pytest_suite
   uv sync                                   # one-time: create the venv
-  ./runtests.sh --apxs /path/to/apxs        # all tests
-  ./runtests.sh --php-fpm /path/to/php-fpm tests/t/php   # PHP tests
+  ./runtests.sh --apxs=/path/to/apxs        # all tests
+  ./runtests.sh --php-fpm=/path/to/php-fpm tests/t/php   # PHP tests
   ./runtests.sh -k rewrite -v               # any pytest args pass through
 
 pyhttpd tests (need pyhttpd/config.ini from httpd's configure, plus curl,
