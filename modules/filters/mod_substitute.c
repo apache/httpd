@@ -239,7 +239,9 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            if (vb.strlen + len + replen > cfg->max_line_length)
+                            if (vb.strlen > cfg->max_line_length
+                                    || len > cfg->max_line_length - vb.strlen
+                                    || replen > cfg->max_line_length - vb.strlen - len)
                                 return APR_ENOMEM;
                             ap_varbuf_strmemcat(&vb, buff, len);
                             ap_varbuf_strmemcat(&vb, replacement, replen);
@@ -251,7 +253,7 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                              * Check if we still have space for this string and
                              * the replacement string.
                              */
-                            if (space_left < len + replen)
+                            if (len > space_left || replen > space_left - len)
                                 return APR_ENOMEM;
                             space_left -= len + replen;
                             /*
@@ -338,7 +340,8 @@ static apr_status_t do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                             /* Note that the last param in ap_varbuf_regsub below
                              * must stay positive. If it gets 0, it would mean
                              * unlimited space available. */
-                            if (vb.strlen + regm[0].rm_so >= cfg->max_line_length)
+                            if (vb.strlen >= cfg->max_line_length
+                                    || (apr_size_t)regm[0].rm_so > cfg->max_line_length - vb.strlen)
                                 return APR_ENOMEM;
                             /* copy bytes before the match */
                             if (regm[0].rm_so > 0)
