@@ -3,7 +3,13 @@ r"""Translated from t/modules/proxy_html.t -- mod_proxy_html link/meta rewriting
 mod_proxy_html is not built locally, so these SKIP via @need_module. When the
 module is present, each case GETs an HTML page proxied through mod_proxy_html
 and checks the status plus one of: content + content-type, an extracted meta
-header (metafix), a rewritten-URL regex, or a stripped/kept comment regex.
+header (metafix), the ABSENCE of a meta header metafix declines to extract, a
+rewritten-URL regex, or a stripped/kept comment regex.
+
+Note: two http-equiv cases that the Perl original asserts as PRESENT are
+asserted ABSENT here (type "meta_absent"). httpd never emits them on the wire;
+the Perl pass is an artifact of LWP::UserAgent's parse_head=1 re-deriving them
+from the body client-side. See the inline comments on those entries.
 
 Perl original: plan tests => $total_tests, need [qw(proxy_html proxy)];
 """
@@ -50,20 +56,23 @@ TESTS = [
      "value": "123", "desc": "numbers in header name"},
     {"type": "meta", "path": "meta_special_chars.html", "header": "X-Mixed",
      "value": "text/html; charset=utf-8", "desc": "complex content value"},
-    {"type": "meta", "path": "meta_contenttype.html", "header": "X-Other",
-     "value": "OtherValue", "desc": "other header with Content-Type present",
-     # 2.4.x: a page whose Content-Type meta declares a charset is consumed by
-     # the xml2enc charset path, so mod_proxy_html's metafix emits no http-equiv
-     # headers for it and the trailing X-Other is never extracted.
-     "xfail_24": "mod_proxy_html metafix extracts no header when a charset "
-                 "Content-Type meta precedes it (2.4.x)"},
-    {"type": "meta", "path": "meta_edge_cases.html", "header": "X-Empty-Content",
-     "value": "", "desc": "empty content value",
-     # metafix locates the value via a case-insensitive search for "content";
-     # the header name "X-Empty-Content" matches first, so no value is
-     # extracted. A metafix limitation (header name containing "content").
-     "xfail_24": "metafix cannot extract a header whose name contains "
-                 "'content' (X-Empty-Content)"},
+    # The next two http-equiv values are NOT promoted to real response headers
+    # by mod_proxy_html, so we assert their ABSENCE (type "meta_absent").  The
+    # Perl suite asserts they are PRESENT, but that only "passes" because LWP's
+    # default parse_head=1 re-derives them client-side from the <meta> tags in
+    # the body -- httpd never puts them on the wire (verified via curl on
+    # 2.5.1-dev).  Asserting absence turns these into genuine regression tests
+    # for the two underlying mod_proxy_html/xml2enc quirks below.
+    {"type": "meta_absent", "path": "meta_contenttype.html", "header": "X-Other",
+     # metafix processes the leading <meta http-equiv="Content-Type"
+     # charset=...> via the xml2enc charset path, which consumes/strips that
+     # region; the X-Other http-equiv that follows it is never extracted.
+     "desc": "no header extracted after a charset Content-Type meta"},
+    {"type": "meta_absent", "path": "meta_edge_cases.html", "header": "X-Empty-Content",
+     # metafix locates the value with a case-insensitive search for "content"
+     # within the tag; when the header NAME itself contains "content"
+     # (X-Empty-Content), that search misfires and no header is emitted.
+     "desc": "no header extracted when the name contains 'content'"},
     {"type": "meta", "path": "meta_edge_cases.html",
      "header": "X-Very-Long-Name-With-Many-Characters",
      "value": "LongNameTest", "desc": "long header name"},
@@ -204,10 +213,17 @@ def test_proxy_html(http, t):
         assert t_cmp(r.status_code, 200), f"fetching {t['path']} for {t['desc']}"
         assert t_cmp(r.headers.get("Content-Type"), re.compile(r"text/html")), \
             f"content-type for {t['path']}"
-        if t.get("xfail_24") and not http.have_min_apache_version("2.5.0"):
-            pytest.xfail(t["xfail_24"])
         assert t_cmp(r.headers.get(t["header"]), t["value"]), \
             f"meta header {t['header']} = '{t['value']}' ({t['desc']})"
+
+    elif t["type"] == "meta_absent":
+        # mod_proxy_html does NOT promote this http-equiv to a response header
+        # (see the TESTS comments). Assert it is genuinely absent on the wire --
+        # unlike the Perl suite, whose LWP parse_head=1 fabricates it client-side.
+        assert t_cmp(r.status_code, 200), f"fetching {t['path']} for {t['desc']}"
+        assert r.headers.get(t["header"]) is None, \
+            f"header {t['header']} must NOT be emitted ({t['desc']}); got " \
+            f"{r.headers.get(t['header'])!r}"
 
     elif t["type"] == "url_rewrite":
         assert t_cmp(r.status_code, 200), f"fetching {t['path']} for {t['desc']}"
