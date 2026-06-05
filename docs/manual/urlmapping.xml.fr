@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1741864:1934094 (outdated) -->
+<!-- English Revision: 1934094 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -74,15 +74,14 @@
 <section id="documentroot"><title>Racine des documents (DocumentRoot)</title>
 
     <p>La méthode par défaut de httpd pour déterminer quel fichier servir pour
-    une requête donnée, consiste à extraire le chemin du fichier de la requête
-    (la partie de l'URL qui suit le nom d'hôte et le port), puis de l'ajouter
-    à la fin de la valeur de la directive
-    <directive module="core">DocumentRoot</directive> définie dans vos fichiers
-    de configuration.
-    Ainsi, les fichiers et répertoires
-    situés en dessous de <directive module="core">DocumentRoot</directive>
-    constituent l'arborescence de base des documents qui seront visibles
-    depuis le web.</p>
+    une requête donnée, consiste à extraire le <a
+    href="directive-dict.html#Syntax">chemin de la requête</a> (la partie de
+    l'URL qui suit le nom d'hôte et le port), puis de l'ajouter à la fin de la
+    valeur de la directive <directive module="core">DocumentRoot</directive>
+    définie dans vos fichiers de configuration.  Ainsi, les fichiers et
+    répertoires situés en dessous de <directive
+    module="core">DocumentRoot</directive> constituent l'arborescence de base
+    des documents qui seront visibles depuis le web.</p>
 
     <p>Par exemple, si la directive
     <directive module="core">DocumentRoot</directive> contient
