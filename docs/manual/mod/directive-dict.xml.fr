@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1544630:1934450 (outdated) -->
+<!-- English Revision: 1934450 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -67,11 +67,11 @@
 
       <dt><em>chemin-URL</em></dt>
 
-      <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'hôte comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> représente la ressource vue du web, et est
-      différente de la représentation de cette même ressource vue du
-      système de fichiers.</dd>
+      <dd>La partie de l'URL qui suit le protocole, le nom d'hôte et un port
+      optionnel, et précède la chaîne de paramètres — par exemple,
+      <code>/path/to/file.html</code>. <em>chemin-URL</em> représente la
+      ressource vue depuis le web, et est différente de la représentation de
+      cette même ressource vue depuis le système de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 
@@ -129,6 +129,7 @@
       d'environnement du système d'exploitation. Voir la <a
       href="../env.html">documentation sur les variables d'environnement</a>
       pour plus de détails.</dd>
+
     </dl>
 </section>
 
@@ -200,7 +201,7 @@
     <p>Les lieux de définition valides pour une directive résultent en
     fait d'un
     OU logique de tous les contextes spécifiés. En d'autres termes, une
-    directive spécifiée comme valide dans "<code>configuration globale,
+    directive spécifiée comme valide dans "<code>configuration globale, 
     .htaccess</code>" peut être utilisée dans le fichier
     <code>httpd.conf</code> et dans les fichiers <code>.htaccess</code>,
     mais pas dans un conteneur <directive module="core"
@@ -208,9 +209,9 @@
     type="section">VirtualHost</directive>.</p>
 </section>
 
-<section id="Override"><title>Surcharge/Écrasement</title>
+<section id="Override"><title>Surcharge .htaccess</title>
 
-    <p>Ce terme indique quelle autorisation de surcharge ("override") doit être
+    <p>Ce terme indique quelle autorisation de surcharge doit être
     active pour que la directive puisse être traitée lorsqu'elle
     apparaît dans un fichier <code>.htaccess</code>. Si le <a
     href="#Context" >context</a> de la directive ne lui permet pas
@@ -267,7 +268,7 @@
 
       <dt>Expérimental</dt>
 
-      <dd>Le statut "Expérimental" indique que la directive fait partie
+      <dd>Le statut "Experimental" indique que la directive fait partie
       du kit Apache, mais que vous l'utilisez à vos risques et périls.
       La directive est documentée à titre d'exhaustivité, et n'est pas
       obligatoirement supportée. Le module qui fournit la directive peut
