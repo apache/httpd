@@ -446,13 +446,13 @@ MDomain example2.org auto
             </p><p>
                 If you configure more than one URL, each one is tried in a round-robin
                 fashion after a number of failures. You can configure how quickly or
-                delayed that happens via the <directive>MDRetryDelay</directive> and
-                <directive>MDRetryFailover</directive> directives. The default setting
+                delayed that happens via the <directive module="mod_md">MDRetryDelay</directive> and
+                <directive module="mod_md">MDRetryFailover</directive> directives. The default setting
                 makes a failover after about half a day of trying.
             </p><p>
                 All other settings apply to each of these URLs. It is therefore
                 not possible to have two with different
-                <directive>MDExternalAccountBinding</directive>s, for example.
+                <directive module="mod_md">MDExternalAccountBinding</directive>s, for example.
             </p><p>
                 For testing, CAs commonly offer a second service URL.
                 The 'test' service does not give certificates valid in a browser,
@@ -724,7 +724,7 @@ MDPrivateKeys secp256r1 rsa3072
         </contextlist>
         <usage>
             <p>
-            If the validity of the certificate falls below duration, mod_md
+            If the validity of the certificate falls below duration, <module>mod_md</module>
             will get a new signed certificate.
             </p><p>
             Normally, certificates are valid for around 90 days and mod_md will renew 
@@ -1103,8 +1103,8 @@ MDMessageCmd /etc/apache/md-message
                 window left. With the default, this mean 9 days for certificates from
                 Let's Encrypt.
             </p><p>
-                It also applies to Managed Domains with static certificate files (
-                see <directive module="mod_md">MDCertificateFile</directive>).
+                It also applies to Managed Domains with static certificate files (see
+                <directive module="mod_md">MDCertificateFile</directive>).
             </p>
         </usage>
     </directivesynopsis>
@@ -1394,7 +1394,7 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 The number of consecutive errors on renewing a certificate before
                 another CA is selected. This only applies to configurations that
-                have more than one <directive>MDCertificateAuthority</directive>
+                have more than one <directive module="mod_md">MDCertificateAuthority</directive>
                 specified.
             </p>
         </usage>
@@ -1412,11 +1412,12 @@ MDMessageCmd /etc/apache/md-message
         <usage>
             <p>
                 Enable this to use a lock file on server startup when
-                <directive>MDStoreDir</directive> is synchronized with the server
+                <directive module="mod_md">MDStoreDir</directive> is synchronized with the server
                 configuration and renewed certificates are activated.
             </p><p>
                 Locking is intended for setups in a cluster that have a shared
-                file system for MDStoreDir. It will protect the activation of
+                file system for <directive module="mod_md">MDStoreDir</directive>.
+                It will protect the activation of
                 renewed certificates when cluster nodes are restarted/reloaded
                 at the same time. Under the condition that the shared file
                  system does support file locking.
@@ -1445,9 +1446,11 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                Set the way MDChallengeDns01 command is invoked, e.g the number and
-                types of arguments. See <directive module="mod_md">MDChallengeDns01</directive>
+                Set the way <directive module="mod_md">MDChallengeDns01</directive>
+                command is invoked, e.g the number and types of arguments.
+                See <directive module="mod_md">MDChallengeDns01</directive>
                 for the differences.
+            </p><p>
                 This setting is global and cannot be varied per domain.
             </p>
         </usage>
@@ -1464,8 +1467,10 @@ MDMessageCmd /etc/apache/md-message
         <compatibility>Available in version 2.4.58 and later</compatibility>
         <usage>
             <p>
-                The mode `all` is the behavior as in all previous versions. Both ServerName
-                and ServerAlias are inspected to find the MDomain matching a VirtualHost.
+                The mode `all` is the behavior as in all previous versions. Both
+                <directive module="core">ServerName</directive>
+                and <directive module="core">ServerAlias</directive> are inspected
+                to find the <directive module="mod_md">MDomain</directive> matching a VirtualHost.
                 This automatically detects coverage, even when you only have added
                 one of the names to an MDomain.
             </p><p>
@@ -1519,18 +1524,18 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 This about a non-standard ACME extension by Let's Encrypt.
             </p><p>
-                Lets Encrypt supports Certificate Profiles in their CA. This,
+                Let's Encrypt supports Certificate Profiles in their CA. This,
                 among some other details, let's you select the lifetime of the
                 certificates you get. The "classic" profile is the default and
                 will keep the 90 days, the "tlsserver" profile is also 90 days
                 with a max of 25 Subject Alternative Names. The "shortlived"
                 profile will issue certificates with only 6 days of validity.
             </p><p>
-                If you do not change your mod_md configuration, you will
+                If you do not change your <module>mod_md</module> configuration, you will
                 continue to get the 90 days certificates. Should you believe
                 that a shorter lifetime is beneficial for you (and take the
                 risk that the renewal time is way shorter),
-+                you can configure the profile to use via 'MDProfile shortlived'.
+                you can configure the profile to use via 'MDProfile shortlived'.
            </p><p>
                 The profile names are defined by the CA. If a profile you
                 configure is not available, no profile will be used and
@@ -1551,6 +1556,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Available in version 2.4.64 and later</compatibility>
         <usage>
             <p>
                 Controls if a <directive module="mod_md">MDProfile</directive>
@@ -1577,7 +1583,7 @@ MDMessageCmd /etc/apache/md-message
             <p>
                 En-/Disable certificate renewals triggered via the ACME ARI
                 extension (rfc9773). These renewals happen *in addition* to
-                the mechanism controlled by <directive>MDRenewWindow</directive>.
+                the mechanism controlled by <directive module="mod_md">MDRenewWindow</directive>.
            </p><p>
                 ACME ARI allows an ACME CA to somewhat shape incoming renewal
                 traffic. More importantly though, it can inform clients of
