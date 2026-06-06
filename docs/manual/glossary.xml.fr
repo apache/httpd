@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1933086:1934245 (outdated) -->
+<!-- English Revision: 1934245 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -145,6 +145,19 @@
     <glossary ref="directive">directives</glossary> sont autorisés.<br />
       Voir : <a href="mod/directive-dict.html#Context">Termes utilisés
       pour décrire les directives de httpd</a>
+    </dd>
+
+    <dt><a name="perdirectory" id="perdirectory">Contexte de répertoire</a></dt>
+    <dd>Une <glossary ref="directive">directive</glossary> est dans un contexte
+    de répertoire quand elle apparaît dans une section <directive type="section"
+    module="core">Directory</directive>, <directive type="section"
+    module="core">DirectoryMatch</directive>, <directive type="section"
+    module="core">Files</directive> ou <directive type="section"
+    module="core">FilesMatch</directive> dans les fichiers de configuration
+    principaux, ou dans un fichier <code>.htaccess</code>. Dans un contexte de
+    répertoire, les directives ne s’appliquent qu’au répertoire (ou à l’ensemble
+    de fichiers) auquel elles sont associées.<br /> Voir <a
+    href="sections.html">Sections de configuration</a>
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'accès
@@ -343,10 +356,9 @@
     (Uniform Resource Identifier)</a>
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une chaîne de caractères compacte servant à identifier une ressource
-  abstraite ou physique.  Elle est formellement définie par la <a
-      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
-      utilisées sur le world-wide web sont souvent appelées <glossary
-      ref="url">URLs</glossary>.
+  abstraite ou physique.  Elle est formellement définie par la <rfc>2396</rfc>.
+  Les URIs utilisées sur le world-wide web sont souvent appelées <glossary
+  ref="url">URLs</glossary>.
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
@@ -369,7 +381,7 @@
     Cette fonctionnalité a été ajoutée
     à SSL lorsque sont apparues les extensions TLS, RFC 3546.<br />
       Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
-      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+      et la <rfc>3546</rfc>
     </dd>
 
 
@@ -379,13 +391,11 @@ Interface commune avec les programmes externes
 (Common Gateway Interface)</a>
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La définition standard d'une interface entre un serveur web et un
-    programme externe pour permettre à ce dernier de traiter des requêtes.
-     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
-     informationnelle</a> qui en couvre les spécificités.<br />
-      Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
+    programme externe pour permettre à ce dernier de traiter des requêtes.  Il
+    existe une RFC informationnelle (<rfc>3875</rfc>) qui en couvre les
+    spécificités.<br /> Voir : <a href="howto/cgi.html">Contenu dynamique avec
+    CGI</a>
     </dd>
-
-
 
 <dt><a name="uniformresourcelocator" id="uniformresourcelocator">
 Localisation de Ressource Uniformisée
@@ -506,6 +516,17 @@ Localisation de Ressource Uniformisée
       Voir : Page de manuel : <program>apxs</program>
     </dd>
 
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>Les informations de chemin en fin d’URL. Par exemple, si
+    <code>/app/index.php/extra/path</code> correspond au fichier
+    <code>/app/index.php</code>, PATH_INFO contient <code>/extra/path</code>.
+    Cette valeur est transmise aux scripts CGI, à PHP et à d’autres
+    gestionnaires en tant que contexte additionnel pour la requête. La directive
+    <directive module="core">AcceptPathInfo</directive> permet de spécifier si
+    les requêtes avec informations de chemin en fin sont acceptées ou rejetées.<br />
+      Voir la <rfc section="4.1.5">3875</rfc>
+    </dd>
+
 <dt><a name="plaintext" id="plaintext">Plein Texte (Plaintext)</a></dt>
     <dd>Le texte non chiffré.</dd>
 
@@ -517,8 +538,7 @@ Localisation de Ressource Uniformisée
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>Le protocole de transmission standard utilisé sur le World Wide Web.
     httpd implémente la version 1.1 du protocole, référencée comme HTTP/1.1 et
-      définie par la
-      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+    définie par la <rfc>2616</rfc>.
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">Résumé de message
