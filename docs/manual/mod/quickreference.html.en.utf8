@@ -894,6 +894,17 @@ MPM for asynchronous processing</td></tr>
 <tr><td><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Inactivity timeout for asynchronous proxy connections</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
 response</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress <em>address:port</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address of the reverse proxy to which a backend sends its
+announcements</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The routable URL a backend announces to the reverse proxy</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the balancer that announced backends are added to</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval <em>interval</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How often a backend publishes its announcement</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen [<em>address</em>][:<em>port</em>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address on which the reverse proxy receives backend
+beacons</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew <em>interval</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowed age of a signed announcement</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret <em>secret</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Pre-shared secret used to authenticate announcements</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout <em>interval</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How long the proxy waits, without an announcement, before a backend
+is taken out of rotation</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>hostname</var>|<var>partial-hostname</var> [<var>hostname</var>|<var>partial-hostname</var>]...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Disallow proxy requests to certain hosts</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
 <tr><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride Off|On [<var>code</var> ...]</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Override error pages for proxied content</td></tr>

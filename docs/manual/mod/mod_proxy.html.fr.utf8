@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_module</td></tr>
@@ -934,16 +932,40 @@ en-t&ecirc;tes X-Forwarded-*</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="proxyasyncdelay">Directive <span id="ProxyAsyncDelay">ProxyAsyncDelay</span> <a title="Lien permanent" href="#proxyasyncdelay" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Time to poll synchronously before handing a connection to the
-MPM for asynchronous processing</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Dur&eacute;e de sondage synchrone avant de passer le contr&ocirc;le d&rsquo;une
+connexion au MPM pour un traitement asynchrone</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyAsyncDelay <var>time</var>[s]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Available in Apache HTTP Server 2.5 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Lorsqu&rsquo;un MPM g&eacute;rant les &eacute;v&egrave;nements est utilis&eacute;, cette directive active
+    la gestion asynchrone des connexions de mandataire. Apr&egrave;s avoir envoy&eacute; la
+    requ&ecirc;te au serveur dorsal, le thread de travail du mandataire attend une
+    r&eacute;ponse pendant la dur&eacute;e sp&eacute;cifi&eacute;e par cette directive. Si le serveur dorsal
+    r&eacute;pond pendant ce laps de temps, la r&eacute;ponse est trait&eacute;e de mani&egrave;re synchrone
+    par le m&ecirc;me thread. Dans le cas contraire, le contr&ocirc;le de la connexion est
+    pass&eacute; &agrave; la boucle d&rsquo;attente d&rsquo;&eacute;v&egrave;nement asynchrone du MPM, lib&eacute;rant de ce
+    fait le thread de travail qui pourra alors servir d&rsquo;autres requ&ecirc;tes.</p>
+
+    <p>Si cette directive est d&eacute;finie &agrave; <code>0</code>, le contr&ocirc;le de la
+    connexion est imm&eacute;diatement transmis &agrave; la boucle d&rsquo;attente d&rsquo;&eacute;v&egrave;nement. Si
+    elle est d&eacute;finie &agrave; <code>-1</code>, le traitement asynchrone est totalement
+    d&eacute;sactiv&eacute; (toutes les connexions de mandataire restent synchrones).</p>
+
+    <p>Cette directive n&rsquo;a d&rsquo;effet que si le MPM prend en charge l&rsquo;attente
+    de r&eacute;ponse (polling) &mdash;&nbsp;par exemple, <code class="module"><a href="../mod/event.html">event</a></code>).</p>
+
+    <div class="note"><h3>Quand utiliser cette directive</h3>
+    <p>La gestion asynchrone des mandataires est particuli&egrave;rement utile pour les
+    serveurs dorsaux lents ou les r&eacute;ponses en flux continu (streaming) de longue
+    dur&eacute;e, o&ugrave; le fait de bloquer un thread de travail en attente de donn&eacute;es
+    limiterait la concurrence. Pour les serveurs dorsaux rapides qui r&eacute;pondent
+    dans la milliseconde, l&rsquo;approche synchrone est plus efficace.</p>
+    </div>
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></code></li>
 <li><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></li>
@@ -952,16 +974,28 @@ MPM for asynchronous processing</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="proxyasyncidletimeout">Directive <span id="ProxyAsyncIdleTimeout">ProxyAsyncIdleTimeout</span> <a title="Lien permanent" href="#proxyasyncidletimeout" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inactivity timeout for asynchronous proxy connections</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;lai d&rsquo;inactivit&eacute; pour les connexions asynchrones de mandataire</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyAsyncIdleTimeout <var>time</var>[s]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>Value of <code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>La valeur de la directive <code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Available in Apache HTTP Server 2.5 and later</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
-	en langue anglaise.</p><h3>Voir aussi</h3>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.5 du serveur HTTP Apache</td></tr>
+</table>
+    <p>Une fois le contr&ocirc;le de la connexion de mandataire transmis &agrave; la boucle
+    d&rsquo;attente d&rsquo;&eacute;v&egrave;nement asynchrone du MPM (voir la directive <code class="directive"><a href="#proxyasyncdelay">ProxyAsyncDelay</a></code>), cette directive d&eacute;finit la
+    dur&eacute;e maximale pendant laquelle la connexion peut rester inactive (aucune
+    donn&eacute;e re&ccedil;u du serveur dorsal) avant d&rsquo;&ecirc;tre ferm&eacute;e.</p>
+
+    <p>Si elle n&rsquo;est pas explicitement d&eacute;finie, elle prend pour valeur celle du
+    param&egrave;tre <code>timeout</code> du thread de travail (si d&eacute;fini via
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="#proxyset">ProxySet</a></code>), celle de <code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code> ou en dernier recours celle de
+    la directive <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code> du serveur.</p>
+
+    <p>Cette directive n&rsquo;a d&rsquo;effet que si la directive <code class="directive"><a href="#proxyasyncdelay">ProxyAsyncDelay</a></code> est aussi d&eacute;finie pour
+    activer la gestion asynchrone.</p>
+
+<h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#proxyasyncdelay">ProxyAsyncDelay</a></code></li>
 <li><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></li>

@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_data.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_data.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Convertit un corps de r&eacute;ponse en URL de type donn&eacute;es RFC2397</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>data_module</td></tr>
@@ -38,8 +36,7 @@
 <tr><th><a href="module-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible depuis la version 2.3 du serveur HTTP Apache</td></tr></table>
 <h3>Sommaire</h3>
 
-    <p>Ce module permet de convertir une r&eacute;ponse en <a href="http://tools.ietf.org/html/rfc2397">URL de type donn&eacute;es
-    RFC2397</a>.
+    <p>Ce module permet de convertir une r&eacute;ponse en <a href="https://www.rfc-editor.org/rfc/rfc2397">RFC 2397</a> (URL de type donn&eacute;es.
     </p>
 
     <p>Les URLs de type donn&eacute;es peuvent &ecirc;tre incluses en ligne dans les

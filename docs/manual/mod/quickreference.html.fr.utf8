@@ -505,8 +505,8 @@ journal</td></tr>
 <tr class="odd"><td><a href="mod_dav.html#davbasepath">DavBasePath <var>root-path</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finir le chemin de la racine du r&eacute;pertoire</td></tr>
 <tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Autorise les requ&ecirc;tes PROPFIND avec en-t&ecirc;te Depth:
 Infinity</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davhonormtimeheader">DavHonorMtimeHeader on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow clients to set resource modification times via the
-X-OC-Mtime request header</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davhonormtimeheader">DavHonorMtimeHeader on|off</a></td><td> off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Permettre aux clients de d&eacute;finir les temps de modification des
+ressources &agrave; l&rsquo;aide de l&rsquo;en-t&ecirc;te de requ&ecirc;te X-OC-Mtime </td></tr>
 <tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>chemin fichier</var></a></td><td> DEFAULT_REL_STATEDI +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Chemin de la base de donn&eacute;es des verrous DAV</td></tr>
 <tr class="odd"><td><a href="mod_dav_fs.html#davlockdbtype">DavLockDBType <var>dbm-type</var></a></td><td> default </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type de base de donn&eacute;es pour le verrou DAV</td></tr>
 <tr><td><a href="mod_dav_fs.html#davlockdiscovery">DavLockDiscovery on|off</a></td><td> on </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active la d&eacute;couverte de verrou</td></tr>
@@ -543,7 +543,7 @@ autre type de m&eacute;dia n'avait &eacute;t&eacute; trouv&eacute;.
 <tr><td><a href="core.html#define">Define <var>nom-param&egrave;tre</var> [<var>valeur-param&egrave;tre</var>]</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Permet de d&eacute;finir une variable</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatealteretag">DeflateAlterETag AddSuffix|NoChange|Remove</a></td><td> AddSuffix </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Comment l'en-t&ecirc;te sortant ETag doit &ecirc;tre modifi&eacute; au cours
 de la compression</td></tr>
-<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du fragment que zlib devra comprimer en une seule
+<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>valeur</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Taille du fragment que zlib devra compresser en une seule
 fois</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>valeur</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Le niveau de compression que nous appliquons &agrave; la
 sortie</td></tr>
@@ -1130,11 +1130,22 @@ mandat&eacute;es</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy100continue">Proxy100Continue Off|On</a></td><td> On </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Transmission du message "100-continue" au serveur d'origine</td></tr>
 <tr><td><a href="mod_proxy.html#proxyaddheaders">ProxyAddHeaders Off|On</a></td><td> On </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Ajoute des informations &agrave; propos du mandataire aux
 en-t&ecirc;tes X-Forwarded-*</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyasyncdelay">ProxyAsyncDelay <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time to poll synchronously before handing a connection to the
-MPM for asynchronous processing</td></tr>
-<tr><td><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Inactivity timeout for asynchronous proxy connections</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyasyncdelay">ProxyAsyncDelay <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e de sondage synchrone avant de passer le contr&ocirc;le d&rsquo;une
+connexion au MPM pour un traitement asynchrone</td></tr>
+<tr><td><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;lai d&rsquo;inactivit&eacute; pour les connexions asynchrones de mandataire</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine la mani&egrave;re de traiter les lignes d'en-t&ecirc;te
 incorrectes d'une r&eacute;ponse</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress <em>address:port</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address of the reverse proxy to which a backend sends its
+announcements</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The routable URL a backend announces to the reverse proxy</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the balancer that announced backends are added to</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval <em>interval</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How often a backend publishes its announcement</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen [<em>address</em>][:<em>port</em>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address on which the reverse proxy receives backend
+beacons</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew <em>interval</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowed age of a signed announcement</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret <em>secret</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Pre-shared secret used to authenticate announcements</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout <em>interval</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How long the proxy waits, without an announcement, before a backend
+is taken out of rotation</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>
 [<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>]...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interdit les requ&ecirc;tes mandat&eacute;es vers certains h&ocirc;tes</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domaine</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom de domaine par d&eacute;faut pour les requ&ecirc;tes

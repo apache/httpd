@@ -30,8 +30,6 @@
 <a href="../ko/programs/apachectl.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/apachectl.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
      <p><code class="program"><a href="../programs/apachectl.html">apachectl</a></code> est un frontal pour le serveur HTTP
      Apache. Il a &eacute;t&eacute; con&ccedil;u pour aider l'administrateur &agrave; contr&ocirc;ler le
@@ -61,6 +59,7 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#synopsis">R&eacute;sum&eacute;</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#files">Fichiers</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../invoking.html">D&eacute;marrer Apache</a></li><li><a href="../stopping.html">Arr&ecirc;ter Apache</a></li><li><a href="../configuring.html">Fichiers de
 configuration</a></li><li><a href="../platform/">Documentation sp&eacute;cifique aux
 plates-formes</a></li><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
@@ -169,6 +168,21 @@ devez &eacute;diter votre fichier de configuration et y inclure les
 directives appropri&eacute;es, puis utiliser la commande de d&eacute;marrage normale
 <code>apachectl start</code>.</dd>
 
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="files">Fichiers <a title="Lien permanent" href="#files" class="permalink">&para;</a></h2>
+
+<p>Les chemins de fichiers list&eacute;s ci-apr&egrave;s peuvent &ecirc;tre modifi&eacute;s &agrave; la
+compilation. Consultez votre installation locale pour les emplacements r&eacute;els.</p>
+
+<dl>
+<dt><code>/usr/local/apache2/bin/envvars</code></dt>
+<dd>Fichier de d&eacute;finitions de variables d&rsquo;environnement aliment&eacute; au d&eacute;marrage.</dd>
+
+<dt><code>/usr/local/apache2/bin/httpd</code></dt>
+<dd>Le binaire httpd invoqu&eacute; par apachectl.</dd>
 </dl>
 
 </div></div>

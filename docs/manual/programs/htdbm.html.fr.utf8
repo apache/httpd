@@ -29,8 +29,6 @@ passe</h1>
 <a href="../fr/programs/htdbm.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../tr/programs/htdbm.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p><code class="program"><a href="../programs/htdbm.html">htdbm</a></code> permet de manipuler des fichiers au format DBM
     ou sont stock&eacute;s des nom d'utilisateurs et mots de passe &agrave; des fins
@@ -46,6 +44,7 @@ passe</h1>
 <li><img alt="" src="../images/down.gif"> <a href="#examples">Exemples</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#security">Consid&eacute;rations &agrave; propos de s&eacute;curit&eacute;</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#restrictions">Restrictions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#files">Fichiers</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/dbmmanage.html">dbmmanage</a></code></li><li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -368,6 +367,20 @@ passe</h1>
 
     <p>Les noms d'utilisateurs ont une taille limit&eacute;e &agrave; <code>255</code>
     octets et ne doivent pas contenir de caract&egrave;re <code>:</code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="files">Fichiers <a title="Lien permanent" href="#files" class="permalink">&para;</a></h2>
+
+<p>Le chemin du fichier de mots de passe DBM est sp&eacute;cifi&eacute; en tant qu&rsquo;argument de la ligne de
+commande et peut correspondre &agrave; n&rsquo;importe quel emplacement du syst&egrave;me de
+fichiers.</p>
+
+<dl>
+<dt><var>nom-fichier</var></dt>
+<dd>Le fichier au format DBM contenant les noms d&rsquo;utilisateur et les mots de
+passe.</dd>
+</dl>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/programs/htdbm.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_lua.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_lua.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fournit des points d'entr&eacute;e Lua dans diff&eacute;rentes parties du
 traitement des requ&ecirc;tes httpd</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -603,7 +601,8 @@ end</pre>
           <td><code>path_info</code></td>
           <td>string</td>
           <td>non</td>
-	  <td>La valeur de PATH_INFO extraite de la requ&ecirc;te.</td>
+	  <td>La valeur de <a class="glossarylink" href="../glossary.html#pathinfo" title="voir glossaire">PATH_INFO</a>
+	  extraite de la requ&ecirc;te.</td>
         </tr>
 <tr class="odd">
           <td><code>port</code></td>

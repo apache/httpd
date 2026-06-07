@@ -30,8 +30,6 @@
 <a href="../ko/mod/directive-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directive-dict.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document d&eacute;crit les termes utilis&eacute;s pour d&eacute;crire chaque <a href="directives.html">directive de configuration</a> d'Apache.</p>
 </div>
@@ -81,11 +79,11 @@
 
       <dt><em>chemin-URL</em></dt>
 
-      <dd>La partie de l'<em>url</em> qui suit le protocole et le nom
-      d'h&ocirc;te comme dans <code>/chemin/vers/fichier.html</code>. Le
-      <em>chemin-URL</em> repr&eacute;sente la ressource vue depuis le web, et est
-      diff&eacute;rente de la repr&eacute;sentation de cette m&ecirc;me ressource vue depuis le
-      syst&egrave;me de fichiers.</dd>
+      <dd>La partie de l'URL qui suit le protocole, le nom d'h&ocirc;te et un port
+      optionnel, et pr&eacute;c&egrave;de la cha&icirc;ne de param&egrave;tres &mdash;&nbsp;par exemple,
+      <code>/path/to/file.html</code>. <em>chemin-URL</em> repr&eacute;sente la
+      ressource vue depuis le web, et est diff&eacute;rente de la repr&eacute;sentation de
+      cette m&ecirc;me ressource vue depuis le syst&egrave;me de fichiers.</dd>
 
       <dt><em>chemin-fichier</em></dt>
 

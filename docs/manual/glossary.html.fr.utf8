@@ -31,8 +31,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce glossaire d&eacute;finit la terminologie courante relative au serveur HTTP
     Apache en particulier, et aux serveurs web en g&eacute;n&eacute;ral. Vous trouverez plus
@@ -147,6 +145,14 @@
     <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">directives</a> sont autoris&eacute;s.<br>
       Voir : <a href="mod/directive-dict.html#Context">Termes utilis&eacute;s
       pour d&eacute;crire les directives de httpd</a>
+    </dd>
+
+    <dt><a name="perdirectory" id="perdirectory">Contexte de r&eacute;pertoire</a></dt>
+    <dd>Une <a class="glossarylink" href="./glossary.html#directive" title="voir glossaire">directive</a> est dans un contexte
+    de r&eacute;pertoire quand elle appara&icirc;t dans une section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code> dans les fichiers de configuration
+    principaux, ou dans un fichier <code>.htaccess</code>. Dans un contexte de
+    r&eacute;pertoire, les directives ne s&rsquo;appliquent qu&rsquo;au r&eacute;pertoire (ou &agrave; l&rsquo;ensemble
+    de fichiers) auquel elles sont associ&eacute;es.<br> Voir <a href="sections.html">Sections de configuration</a>
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Contr&ocirc;le d'acc&egrave;s
@@ -337,8 +343,8 @@
     (Uniform Resource Identifier)</a>
     <a name="URI" id="URI">(URI)</a></dt>
   <dd>Une cha&icirc;ne de caract&egrave;res compacte servant &agrave; identifier une ressource
-  abstraite ou physique.  Elle est formellement d&eacute;finie par la <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  Les URIs
-      utilis&eacute;es sur le world-wide web sont souvent appel&eacute;es <a class="glossarylink" href="./glossary.html#url" title="voir glossaire">URLs</a>.
+  abstraite ou physique.  Elle est formellement d&eacute;finie par la <a href="https://www.rfc-editor.org/rfc/rfc2396">RFC 2396</a>.
+  Les URIs utilis&eacute;es sur le world-wide web sont souvent appel&eacute;es <a class="glossarylink" href="./glossary.html#url" title="voir glossaire">URLs</a>.
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
@@ -359,7 +365,7 @@
     Cette fonctionnalit&eacute; a &eacute;t&eacute; ajout&eacute;e
     &agrave; SSL lorsque sont apparues les extensions TLS, RFC 3546.<br>
       Voir <a href="ssl/ssl_faq.html">la FAQ SSL</a>
-      et <a href="http://www.ietf.org/rfc/rfc3546.txt">la RFC 3546</a>
+      et la <a href="https://www.rfc-editor.org/rfc/rfc3546">RFC 3546</a>
     </dd>
 
 
@@ -369,13 +375,11 @@ Interface commune avec les programmes externes
 (Common Gateway Interface)</a>
 	 <a name="cgi" id="cgi">(CGI)</a></dt>
     <dd>La d&eacute;finition standard d'une interface entre un serveur web et un
-    programme externe pour permettre &agrave; ce dernier de traiter des requ&ecirc;tes.
-     Il existe une <a href="http://www.ietf.org/rfc/rfc3875">RFC
-     informationnelle</a> qui en couvre les sp&eacute;cificit&eacute;s.<br>
-      Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
+    programme externe pour permettre &agrave; ce dernier de traiter des requ&ecirc;tes.  Il
+    existe une RFC informationnelle (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>) qui en couvre les
+    sp&eacute;cificit&eacute;s.<br> Voir : <a href="howto/cgi.html">Contenu dynamique avec
+    CGI</a>
     </dd>
-
-
 
 <dt><a name="uniformresourcelocator" id="uniformresourcelocator">
 Localisation de Ressource Uniformis&eacute;e
@@ -492,6 +496,17 @@ Localisation de Ressource Uniformis&eacute;e
       Voir : Page de manuel : <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     </dd>
 
+    <dt><a name="pathinfo" id="pathinfo">PATH_INFO</a></dt>
+    <dd>Les informations de chemin en fin d&rsquo;URL. Par exemple, si
+    <code>/app/index.php/extra/path</code> correspond au fichier
+    <code>/app/index.php</code>, PATH_INFO contient <code>/extra/path</code>.
+    Cette valeur est transmise aux scripts CGI, &agrave; PHP et &agrave; d&rsquo;autres
+    gestionnaires en tant que contexte additionnel pour la requ&ecirc;te. La directive
+    <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code> permet de sp&eacute;cifier si
+    les requ&ecirc;tes avec informations de chemin en fin sont accept&eacute;es ou rejet&eacute;es.<br>
+      Voir la <a href="https://www.rfc-editor.org/rfc/rfc3875#section-4.1.5">RFC 3875</a>
+    </dd>
+
 <dt><a name="plaintext" id="plaintext">Plein Texte (Plaintext)</a></dt>
     <dd>Le texte non chiffr&eacute;.</dd>
 
@@ -502,8 +517,7 @@ Localisation de Ressource Uniformis&eacute;e
       <a name="http" id="hhtp">(HTTP)</a></dt>
     <dd>Le protocole de transmission standard utilis&eacute; sur le World Wide Web.
     httpd impl&eacute;mente la version 1.1 du protocole, r&eacute;f&eacute;renc&eacute;e comme HTTP/1.1 et
-      d&eacute;finie par la
-      <a href="http://ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+    d&eacute;finie par la <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>.
     </dd>
 
     <dt><a name="messagedigest" id="messagedigest">R&eacute;sum&eacute; de message

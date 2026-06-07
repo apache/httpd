@@ -28,8 +28,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
     <p>Ce document vise &agrave; expliquer dans le d&eacute;tail comment le serveur
@@ -177,20 +175,39 @@ dynamiquement</a></li></ul></div>
 <div class="section">
 <h2 id="hostmatching">Choix du serveur virtuel <a title="Lien permanent" href="#hostmatching" class="permalink">&para;</a></h2>
 
-    <p>&Agrave; la r&eacute;ception d'une requ&ecirc;te, le serveur proc&egrave;de comme suit pour
-    d&eacute;terminer quel serveur virtuel utiliser&nbsp;:</p>
+    <p>Le serveur d&eacute;termine le serveur virtuel &agrave; utiliser pour une requ&ecirc;te en
+    deux phases&nbsp;: une recherche bas&eacute;e sur l&rsquo;IP lorsque la connexion est &eacute;tablie,
+    puis une recherche optionnelle &agrave; base de nom &agrave; la r&eacute;ception de la requ&ecirc;te.</p>
 
-    <h3 id="hashtable">Recherche de l'adresse IP</h3>
+    <h3 id="hashtable">Phase 1&nbsp;: recherche sur l&rsquo;adresse IP et
+    le port</h3>
 
-    <p>Lors d'une premi&egrave;re connexion sur une adresse/port, le serveur
-    recherche toutes les directives <code>VirtualHost</code> qui
-    poss&egrave;dent la m&ecirc;me adresse IP/port.</p>
+    <p>Lorsqu&rsquo;une connexion est &eacute;tablie, le serveur recherche l&rsquo;adresse IP et le
+    port de destination dans sa liste d&rsquo;adresses/ports des <code>serveurs
+    virtuels</code>. Cette recherche respecte un ordre de priorit&eacute; strict&nbsp;:</p>
 
-    <p>S'il n'y a aucune correspondance exacte pour cette adresse/port,
-    la recherche s'effectue sur la valeur g&eacute;n&eacute;rique (<code>*</code>).</p>
+    <table class="bordered"><tr class="header"><th>Priorit&eacute;</th><th>Type de correspondance</th><th>Exemple</th></tr>
+<tr><td>1</td><td>Adresse IP et port exacts</td>
+        <td><code>&lt;VirtualHost 10.0.0.1:80&gt;</code></td></tr>
+<tr class="odd"><td>2</td><td>Adresse IP exacte, port g&eacute;n&eacute;rique</td>
+        <td><code>&lt;VirtualHost 10.0.0.1:*&gt;</code></td></tr>
+<tr><td>3</td><td>Adresse IP g&eacute;n&eacute;rique (<code>*</code>), port exact</td>
+        <td><code>&lt;VirtualHost *:80&gt;</code></td></tr>
+<tr class="odd"><td>4</td><td>Adresse IP et port g&eacute;n&eacute;riques</td>
+        <td><code>&lt;VirtualHost *:*&gt;</code></td></tr>
+<tr><td>5</td><td>Serveur principal</td>
+        <td>(aucun <code>serveur virtuel</code> ne correspond)</td></tr>
+</table>
 
-    <p>Si aucune correspondance n'est enfin trouv&eacute;e, la requ&ecirc;te sera
-    servie par le serveur principal.</p>
+    <div class="note"><h3>Important</h3>
+    <p>Le serveur utilise la <em>premi&egrave;re correspondance trouv&eacute;e</em> en suivant
+    cet ordre. Lorsqu&rsquo;une correspondance est trouv&eacute;e &agrave; un niveau de priorit&eacute;
+    donn&eacute;, aucun niveau de priorit&eacute; inf&eacute;rieur n&rsquo;est consid&eacute;r&eacute; &mdash; m&ecirc;me si un
+    serveur virtuel de priorit&eacute; inf&eacute;rieure poss&egrave;de un <code>ServerName</code>
+    qui correspond au contenu de l&rsquo;en-t&ecirc;te <code>Host</code> de la requ&ecirc;te. La
+    recherche &agrave; base de nom (Phase 2) n&rsquo;intervient que lorsque deux serveurs
+    virtuels de m&ecirc;me niveau de priorit&eacute; peuvent correspondre.</p>
+    </div>
 
     <p>S'il existe des d&eacute;finitions <code>VirtualHost</code> pour
     l'adresse IP, l'&eacute;tape suivante consiste &agrave; d&eacute;terminer si nous avons &agrave;
@@ -200,20 +217,19 @@ dynamiquement</a></li></ul></div>
 
     <h3 id="ipbased">Serveur virtuel par IP</h3>
 
-    <p>Si une seule section <code>VirtualHost</code> pr&eacute;sente la
-    meilleure correspondance avec la paire adresse IP/port, aucune
-    action n'est entreprise et la requ&ecirc;te est
-    trait&eacute;e par le serveur virtuel qui correspond.</p>
+    <p>Si la Phase 1 ne trouve qu&rsquo;un seul <code>serveur virtuel</code>
+    correspondant, la requ&ecirc;te est servie directement depuis ce dernier sans
+    effectuer d&rsquo;autre recherche.</p>
 
     
 
-    <h3 id="namebased">Serveur virtuel par nom</h3>
+    <h3 id="namebased">Phase 2&nbsp;: recherche &agrave; base de nom</h3>
 
-    <p>Si plusieurs sections <code>VirtualHost</code> pr&eacute;sentent la
-    meilleure correspondance avec la paire adresse IP/port, le terme
-    "liste" dans les &eacute;tapes suivantes fait r&eacute;f&eacute;rence &agrave; la liste des
-    serveurs virtuels qui correspondent, selon l'ordre dans lequel ils
-    apparaissent dans le fichier de configuration.</p>
+    <p>Si la phase 1 trouve plusieurs <code>serveurs virtuels</code>
+    correspondants de m&ecirc;me niveau de priorit&eacute;, le serveur effectue une recherche
+    &agrave; base de nom parmi ces serveurs virtuels en utilisant l&rsquo;en-t&ecirc;te
+    <code>Host:</code> de la requ&ecirc;te (ou le nom d&rsquo;h&ocirc;te SNI pour les connexions
+    SSL).</p>
 
     <p>Si la connexion utilise SSL, si le serveur supporte l'<a class="glossarylink" href="../glossary.html#servernameindication" title="voir glossaire">Indication de nom de serveur</a>,
     et si la n&eacute;gociation du client SSL inclut l'extension TLS dans le
@@ -225,30 +241,42 @@ dynamiquement</a></li></ul></div>
     serveur virtuel qui d&eacute;termine quel certificat le serveur va utiliser
     pour la connexion.</p>
 
-    <p>Si la requ&ecirc;te contient un en-t&ecirc;te <code>Host:</code>, on
-    recherche dans la liste le premier serveur virtuel dont le
-    <code>ServerName</code> ou le <code>ServerAlias</code> correspond,
-    et c'est celui-ci qui va traiter la requ&ecirc;te. Un en-t&ecirc;te
-    <code>Host:</code> peut comporter un num&eacute;ro de port mais Apache
-    l'ignore syst&eacute;matiquement et utilise toujours le
-    port sur lequel il a effectivement re&ccedil;u la requ&ecirc;te.</p>
+    <p>La recherche de serveurs virtuels correspondants s&rsquo;effectue selon leur
+    ordre d&rsquo;apparition dans le fichier de configuration&nbsp;:</p>
 
-    <p>Le premier serveur virtuel du fichier de configuration qui
-    poss&egrave;de l'adresse sp&eacute;cifi&eacute;e est prioritaire et intercepte toutes les
-    requ&ecirc;tes &agrave; destination d'un nom de serveur inconnu, ou toute requ&ecirc;te
-    sans en-t&ecirc;te <code>Host:</code> (comme les requ&ecirc;tes HTTP/1.0).</p>
+    <ol>
+    <li>Les contenus des directives <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> de chaque serveur virtuel sont
+    compar&eacute;s au nom d&rsquo;h&ocirc;te de la requ&ecirc;te. La premi&egrave;re correspondance est
+    retenue.</li>
 
+    <li>Si aucun <code>ServerName</code> ou <code>ServerAlias</code> ne
+    correspond, c&rsquo;est le <em>premier serveur virtuel de la liste</em> qui sera
+    choisi. Il s&rsquo;agit du <em>serveur virtuel &agrave; base de nom par d&eacute;faut</em> pour
+    cette combinaison adresse/port.</li>
+    </ol>
+
+    <p>Un champ d&rsquo;en-t&ecirc;te <code>Host:</code> peut contenir un num&eacute;ro de port,
+    mais httpd l&rsquo;ignore toujours et effectue sa recherche de correspondance avec
+    le port r&eacute;el auquel le client a envoy&eacute; sa requ&ecirc;te.</p>
+
+    <p>Si la requ&ecirc;te ne poss&egrave;de pas d&rsquo;en-t&ecirc;te <code>Host:</code> (comme les
+    requ&ecirc;tes HTTP/1.0), le premier serveur virtuel qui correspond est choisi.
+    Mais si une directive <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> est
+    configur&eacute;e pour un des serveurs virtuels correspondants et que l&rsquo;URL de la
+    requ&ecirc;te correspond &agrave; ce chemin, la requ&ecirc;te sera servie depuis ce serveur
+    virtuel. Il s&rsquo;agit d&rsquo;un m&eacute;canisme patrimonial pour les clients HTTP/1.0&nbsp;;
+    voir l&rsquo;exemple avec <a href="examples.html#serverpath">ServerPath</a> pour
+    les d&eacute;tails.</p>
     
 
     <h3 id="persistent">Connexions persistantes</h3>
 
-    <p>La <em>recherche par adresse IP</em> d&eacute;crite ci-avant n'est faite
-    qu'<em>une fois</em> pour chaque session TCP/IP, alors que la
-    <em>recherche par nom</em> est r&eacute;alis&eacute;e pour <em>chaque</em> requ&ecirc;te au
-    cours d'une connexion persistante (KeepAlive). En d'autres termes,
-    il est possible pour un client de faire des requ&ecirc;tes sur
-    diff&eacute;rents serveurs virtuels par nom, au cours d'une unique
-    connexion persistante.</p>
+    <p>La <em>recherche par adresse IP</em> (Phase 1) n'est effectu&eacute;e qu'<em>une
+    fois</em> pour une session TCP/IP particuli&egrave;re, alors que la recherche par
+    nom (Phase 2) est effectu&eacute;e pour <em>chaque</em> requ&ecirc;te au cours d'une
+    connexion persistante (KeepAlive). En d'autres termes, il est possible pour
+    un client de faire des requ&ecirc;tes pour des pages sur diff&eacute;rents serveurs
+    virtuels par nom, au cours d'une unique connexion persistante.</p>
 
     
 
@@ -267,20 +295,19 @@ dynamiquement</a></li></ul></div>
 <h3 id="observations">Observations</h3>
 
     <ul>
-      <li>La s&eacute;lection d'un serveur virtuel en fonction de son nom est
-      un processus qui intervient apr&egrave;s la s&eacute;lection par le serveur du
-      serveur virtuel qui correspond le mieux du point de vue adresse
-      IP/port.</li>
+      <li>La s&eacute;lection d'un serveur virtuel en fonction de son nom est un
+      processus qui intervient <em>apr&egrave;s</em> que le serveur a cern&eacute; la liste de
+      candidats qui correspondent du point de vue adresse IP.</li>
 
-      <li>Si vous ne tenez pas compte de l'adresse IP &agrave; laquelle le
-      client s'est connect&eacute;, indiquez un caract&egrave;re "*" comme adresse
-      pour tous les serveurs virtuels, et la s&eacute;lection du serveur
-      virtuel en fonction du nom s'appliquera alors &agrave; tous les serveurs
-      virtuels d&eacute;finis.</li>
+      <li>Si vous ne tenez pas compte de l'adresse IP &agrave; laquelle le client s'est
+      connect&eacute;, indiquez un caract&egrave;re "<code>*</code>" comme adresse pour tous
+      les serveurs virtuels, et la s&eacute;lection du serveur virtuel en fonction du
+      nom s'appliquera alors &agrave; tous les serveurs virtuels d&eacute;finis.</li>
 
       <li>Les v&eacute;rifications sur <code>ServerName</code> et
-      <code>ServerAlias</code> ne sont jamais
-      r&eacute;alis&eacute;es pour les serveurs virtuels par IP.</li>
+      <code>ServerAlias</code> ne sont jamais r&eacute;alis&eacute;es pour les serveurs
+      virtuels par IP (celles pour lesquelles il n&rsquo;y a qu&rsquo;un seul serveur
+      virtuel pour cette adresse IP/port).</li>
 
       <li>Seul l'ordre des serveurs virtuels par nom
       pour une adresse donn&eacute;e a une importance. Le serveur virtuel

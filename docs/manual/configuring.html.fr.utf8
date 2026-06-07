@@ -30,8 +30,6 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Ce document d&eacute;crit les fichiers utilis&eacute;s pour configurer
 le Serveur HTTP Apache.</p>
@@ -91,6 +89,48 @@ le Serveur HTTP Apache.</p>
     donc indenter ces derni&egrave;res pour am&eacute;liorer la lisibilit&eacute;. Les lignes vides
     sont aussi ignor&eacute;es. les arguments de directive sont s&eacute;par&eacute;s par des blancs.
     Si un argument contient des espaces, il doit &ecirc;tre entour&eacute; de guillemets.</p>
+
+    <h3 id="quotes">Citation et &eacute;chappement</h3>
+
+    <p>Un argument qui contient des espaces doit &ecirc;tre entour&eacute; de guillemets
+    doubles (<code>"</code>) ou de guillemets simples (<code>'</code>). Les
+    guillemets eux-m&ecirc;mes ne font pas partie de l&rsquo;argument.</p>
+
+    <p>&Agrave; l&rsquo;int&eacute;rieur d&rsquo;une cha&icirc;ne entre guillemets, seules deux s&eacute;quences
+    d&rsquo;&eacute;chappement sont reconnues&nbsp;: <code>\\</code> produit une controblique
+    litt&eacute;rale et <code>\"</code> (ou <code>\'</code> si la cha&icirc;ne est entour&eacute;e
+    de guillemets simples) produit un guillemet litt&eacute;ral sans terminer la
+    cha&icirc;ne. Toutes les autres s&eacute;quences avec controblique sont conserv&eacute;es telles
+    quelles &mdash;&nbsp;par exemple, <code>\n</code> sera consid&eacute;r&eacute; comme une cha&icirc;ne
+    litt&eacute;ral de deux caract&egrave;res <code>\n</code>, pas comme une nouvelle
+    ligne.</p>
+
+    <p>En dehors des guillemets, les controbliques n&rsquo;ont aucune signification
+    sp&eacute;ciale et sont trait&eacute;es comme des caract&egrave;res litt&eacute;raux. La seule exception
+    est la controblique de continuation de ligne en fin de ligne, comme d&eacute;crit
+    ci-avant.</p>
+
+    <p>Notez que des cha&icirc;nes entre guillemets adjacentes sans espace entre elles
+    ne sont <strong>pas</strong> concat&eacute;n&eacute;es &mdash;&nbsp;elles sont trait&eacute;es comme des
+    arguments s&eacute;par&eacute;s. Par exemple&nbsp;:</p>
+
+    <div class="example"><p><code>
+    # Il ne s&rsquo;agit pas d&rsquo;un seul argument, mais de DEUX&nbsp;:<br>
+    Header set X-Foo "arg1""arg2"
+    </code></p></div>
+
+    <p>Certaines directives acceptent des arguments qui contiennent des
+    sous-expressions ayant leur propre syntaxe, telles que les drapeaux de la
+    directive <code class="directive"><a href="./mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ou les
+    expression <a href="expr.html">ap_expr</a>. Dans ces cas, l&rsquo;interpr&eacute;teur de
+    fichier de configuration enl&egrave;ve tout d&rsquo;abord les guillemets englobants et
+    traite les s&eacute;quences avec controblique comme d&eacute;crit ci-avant, puis
+    l&rsquo;interpr&eacute;teur propre &agrave; la directive traite le r&eacute;sultat. En cas de doute,
+    utiliser des guillemets simples autour d&rsquo;un argument qui contient des
+    controbliques peut &eacute;viter un double traitement inattendu des s&eacute;quenses
+    d&rsquo;&eacute;chappement.</p>
+
+        
 
     <p>Les directives dans les fichiers de configuration ne sont pas
     sensibles &agrave; la casse, mais leurs arguments le sont souvent.</p>

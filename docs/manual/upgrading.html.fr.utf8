@@ -27,8 +27,6 @@
 <a href="./fr/upgrading.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="./pt-br/upgrading.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
   <p>Afin d'assister les utilisateurs lors de leurs op&eacute;rations de mise &agrave;
   jour, nous maintenons un document
@@ -420,13 +418,11 @@ Require ip 127.0.0.1</pre>
 	configuration de la directive <code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code> au niveau r&eacute;pertoire.
         </li>
 
-	<li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>: certaines applications web
-	ne fonctionneront plus correctement avec la nouvelle
-	configuration de <code>PATH_INFO</code> qui est diff&eacute;rente de
-	celle de la version 2.2. La configuration
-	pr&eacute;c&eacute;dente peut &ecirc;tre
-	restaur&eacute;e en d&eacute;finissant la variable
-	<code>proxy-scgi-pathinfo</code>.</li>
+	<li><code class="module"><a href="./mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> : certaines applications web ne
+	fonctionneront plus correctement avec la nouvelle configuration de
+	<a class="glossarylink" href="./glossary.html#pathinfo" title="voir glossaire">PATH_INFO</a> qui est diff&eacute;rente de
+	celle de la version 2.2. La configuration pr&eacute;c&eacute;dente peut &ecirc;tre restaur&eacute;e
+	en d&eacute;finissant la variable <code>proxy-scgi-pathinfo</code>.</li>
 
 	<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: le contr&ocirc;le de r&eacute;vocation des
 	certificats bas&eacute; sur les CRL doit &ecirc;tre maintenant explicitement

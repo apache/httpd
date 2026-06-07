@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_dav.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_dav.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalit&eacute; de cr&eacute;ation et gestion de versions de
 documents via le web (<a href="http://www.webdav.org/">WebDAV</a>)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -260,16 +258,46 @@ Infinity</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="davhonormtimeheader">Directive <span id="DavHonorMtimeHeader">DavHonorMtimeHeader</span> <a title="Lien permanent" href="#davhonormtimeheader" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Allow clients to set resource modification times via the
-X-OC-Mtime request header</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Permettre aux clients de d&eacute;finir les temps de modification des
+ressources &agrave; l&rsquo;aide de l&rsquo;en-t&ecirc;te de requ&ecirc;te X-OC-Mtime </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DavHonorMtimeHeader on|off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>DavHonorMtimeHeader off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dav</td></tr>
-</table><p>La documentation de cette directive
-	n'a pas encore &eacute;t&eacute; traduite. Veuillez vous reporter &agrave; la version
-	en langue anglaise.</p></div>
+</table>
+    <p>La directive <code class="directive">DavHonorMtimeHeader</code> permet d&rsquo;indiquer
+    si <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> doit prendre en compte l&rsquo;en-t&ecirc;te de requ&ecirc;te
+    <code>X-OC-Mtime</code> lors du traitement des requ&ecirc;tes <code>PUT</code> et
+    <code>MKCOL</code>. Cet en-t&ecirc;te est utilis&eacute; par certains clients de
+    synchronisation de WebDAV pour pr&eacute;server les temps de modification originaux
+    des fichiers charg&eacute;s.</p>
+
+    <p>Lorsque cette directive est activ&eacute;e, si un client envoie une requ&ecirc;te
+    <code>PUT</code> ou <code>MKCOL</code> comportant un en-t&ecirc;te
+    <code>X-OC-Mtime</code>, le serveur d&eacute;finira le temps de modification de la
+    ressource avec la valeur sp&eacute;cifi&eacute;e dans cet en-t&ecirc;te. La valeur de l&rsquo;en-t&ecirc;te
+    doit &ecirc;tre un horodatage Unix (en secondes depuis l&rsquo;Epoch) exprim&eacute; sous la
+    forme d&rsquo;un entier d&eacute;cimal.</p>
+
+    <p>Si l&rsquo;en-t&ecirc;te est pr&eacute;sent mais mal form&eacute; (par exemple s&rsquo;il contient des
+    caract&egrave;res autres que des chiffres), le serveur r&eacute;pondra avec une erreur 400
+    Bad Request.</p>
+
+    <div class="warning">
+    <p>Activer cette directive permet aux clients de manipuler les temps de
+    modification des fichiers sur le serveur. Ne l&rsquo;activez que pour des
+    emplacements o&ugrave; les clients sont fiables et prot&eacute;gez toujours l&rsquo;acc&egrave;s avec
+    une authentification.</p>
+    </div>
+
+    <div class="example"><h3>Exemple</h3><pre class="prettyprint lang-config">&lt;Directory "/var/www/dav/sync"&gt;
+    Dav On
+    DavHonorMtimeHeader on
+&lt;/Directory&gt;</pre>
+</div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="davmintimeout">Directive <span id="DavMinTimeout">DavMinTimeout</span> <a title="Lien permanent" href="#davmintimeout" class="permalink">&para;</a></h2>
 <table class="directive">

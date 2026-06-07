@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_proxy_scgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_proxy_scgi.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module fournissant le support de la passerelle SCGI &agrave;
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -99,19 +97,17 @@
     contr&ocirc;ler le fournisseur de protocole SCGI :</p>
     <dl>
         <dt>proxy-scgi-pathinfo</dt>
-        <dd>Par d&eacute;faut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne cr&eacute;era ni
-	exportera jamais la variable d'environnement
-	<var>PATH_INFO</var>. Ceci permet au serveur SCGI d'arri&egrave;re-plan
-	de d&eacute;terminer correctement <var>SCRIPT_NAME</var> et
-	<var>Script-URI</var>, et d'&ecirc;tre en conformit&eacute; avec la section
-	3.3 de la RFC 3875. Si au contraire vous souhaitez que
-	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> g&eacute;n&egrave;re une estimation la plus
-	pr&eacute;cise possible de <var>PATH_INFO</var>, d&eacute;finissez cette
-	variable d'environnement. La variable doit &ecirc;tre d&eacute;finie avant
-	que la directive <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ne soit
-	effective. Il est possible d'utiliser &agrave; la place la directive
-	<code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf
-	Request_URI . proxy-scgi-pathinfo</code>
+	<dd>Par d&eacute;faut, <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> ne cr&eacute;era ni exportera
+	jamais la variable d'environnement <var><a class="glossarylink" href="../glossary.html#pathinfo" title="voir glossaire">PATH_INFO</a></var>. Cela permet au serveur SCGI
+	d'arri&egrave;re-plan de d&eacute;terminer correctement <var>SCRIPT_NAME</var> et
+	<var>Script-URI</var>, et d'&ecirc;tre en conformit&eacute; avec la section 3.3 de la
+	RFC 3875. Si au contraire vous souhaitez que
+	<code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> g&eacute;n&egrave;re une estimation la plus pr&eacute;cise
+	possible de <var>PATH_INFO</var>, d&eacute;finissez cette variable
+	d'environnement. La variable doit &ecirc;tre d&eacute;finie avant que la directive
+	<code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ne soit effective. Il est
+	possible d'utiliser &agrave; la place la directive <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> : <code>SetEnvIf Request_URI
+	. proxy-scgi-pathinfo</code>
 	</dd>
     </dl>
 </div>

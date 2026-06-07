@@ -88,6 +88,7 @@
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_ajp.xml</modulefile>
   <modulefile>mod_proxy_balancer.xml</modulefile>
+  <modulefile>mod_proxy_beacon.xml</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_express.xml</modulefile>
   <modulefile>mod_proxy_fcgi.xml</modulefile>

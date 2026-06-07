@@ -583,6 +583,14 @@
 <li><a href="mod_proxy.html#proxyasyncdelay">ProxyAsyncDelay</a></li>
 <li><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout</a></li>
 <li><a href="mod_proxy.html#proxybadheader">ProxyBadHeader</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret</a></li>
+<li><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout</a></li>
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
