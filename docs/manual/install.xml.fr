@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1933437:1934684 (outdated) -->
+<!-- English Revision: 1934684 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -43,7 +43,7 @@
     des projets Open Source .</p>
 
     <p>Si vous effectuez une mise à jour depuis une version mineure vers
-    la suivante (par exemple, 2.4.8 à 2.4.9), veuillez passer à la section
+    la suivante (par exemple, 2.4.66 à 2.4.67), veuillez passer à la section
     <a href="#upgrading">mise à jour</a>.</p>
 
 </summary>
@@ -58,28 +58,42 @@
     <dl>
     <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
     <dd>
-    <highlight>
-sudo yum install httpd
-sudo systemctl enable httpd
+    <highlight language="sh">
+sudo dnf install httpd
+
+# Démarrage du service
 sudo systemctl start httpd
+
+# Arrêt du service
+sudo systemctl stop httpd
+
+# Redémarrage du service
+sudo systemctl restart httpd
     </highlight>
 
-    <note type="warning">Les dernières versions de ces distributions utilisent
-    <code>dnf</code> au lieu de <code>yum</code>. Voir la <a
-    href="https://fedoraproject.org/wiki/Apache_HTTP_Server">documentation du
-    projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
+    <note type="warning">Voir la <a
+    href="https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-apache-http-server/index.html">documentation
+    du projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
     </dd>
 
     <dt>Installation sous Ubuntu/Debian</dt>
     <dd>
-<highlight>
+<highlight language="sh">
 sudo apt install apache2
-sudo service apache2 start
+
+# Démarrage du service
+sudo systemctl start apache2
+
+# Arrêt du service
+sudo systemctl stop apache2
+
+# Redémarrage du service
+sudo systemctl restart apache2
 </highlight>
 
     <note type="warning">Voir la <a
-    href="https://help.ubuntu.com/lts/serverguide/httpd.html">documentation
-    Ubuntu</a> pour des informations spécifiques à cette plateforme.</note>
+    href="https://ubuntu.com/tutorials/install-and-configure-apache">documentation
+    d’Ubuntu</a> pour des informations spécifiques à cette plateforme.</note>
 
     </dd>
 
@@ -91,16 +105,18 @@ sudo service apache2 start
       <tr>
         <td><a href="#download">Téléchargement</a></td>
 
-        <td>Téléchargez la dernière version depuis <a href="http://httpd.apache.org/download.cgi#apache24">http://httpd.apache.org/download.cgi</a>
-        </td>
+	<td>Téléchargez la dernière version depuis <a
+	href="https://httpd.apache.org/download.cgi#apache24">https://httpd.apache.org/download.cgi</a>
+	</td>
       </tr>
 
       <tr>
         <td><a href="#extract">Extraction</a></td>
 
-        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-<em>NN</em>.tar<br />
-         $ cd httpd-<em>NN</em></code></td>
+        <td><highlight language="sh">
+$ tar xzf httpd-NN.tar.gz
+$ cd httpd-NN
+</highlight></td>
       </tr>
 
       <tr>
@@ -151,7 +167,7 @@ sudo service apache2 start
 
     <note type="warning">L'installation sous votre plateforme favorite n'est pas
     traitée ici ? N'hésitez pas à nous <a
-    href="http://httpd.apache.org/docs-project/">aider à compléter cette
+    href="https://httpd.apache.org/docs-project/">aider à compléter cette
     documentation</a> en nous faisant profiter de votre expérience.</note>
 
 
@@ -159,7 +175,8 @@ sudo service apache2 start
 
 <section id="requirements"><title>Prérequis</title>
 
-    <p>Les prérequis pour la construction d'Apache httpd sont les suivants:</p>
+    <p>Les prérequis pour la construction et l’exécution d'Apache httpd sont les
+    suivants:</p>
 
     <dl>
       <dt>APR et APR-Util</dt>
@@ -167,7 +184,7 @@ sudo service apache2 start
       Si ce n'est pas le cas, ou si vous préférez ne pas utiliser les
       versions fournies par le système, téléchargez les dernières
       versions d'APR et APR-Util depuis <a
-      href="http://apr.apache.org/">Apache APR</a>, décompressez-les
+      href="https://apr.apache.org/">Apache APR</a>, décompressez-les
       respectivement dans <code>/racine_sources_httpd/srclib/apr</code> et
       <code>/racine_sources_httpd/srclib/apr-util</code> (les noms des répertoires ne
       doivent pas comporter de numéros de versions ; par exemple, la
@@ -182,7 +199,7 @@ sudo service apache2 start
       (PCRE)</dt>
       <dd>Cette bibliothèque est nécessaire mais n'est plus fournie avec la
       distribution de httpd. Téléchargez le code source depuis <a
-      href="http://www.pcre.org/">http://www.pcre.org</a> ou installez
+      href="https://www.pcre.org/">https://www.pcre.org</a> ou installez
       un portage du paquet. Si votre suite de compilation ne trouve pas
       le script pcre-config installé au cours du processus de
       construction de PCRE, indiquez son chemin via l'option
@@ -193,9 +210,9 @@ sudo service apache2 start
       installée de PCRE.</dd>
 
       <dt>Espace disque</dt>
-      <dd>Assurez-vous d'avoir au moins 50 Mo d'espace disque disponible
+      <dd>Assurez-vous d'avoir au moins 200 Mo d'espace disque disponible
       temporaire. Après l'installation le serveur occupe
-      approximativement 10 Mo d'espace disque. L'espace disque réellement
+      approximativement 50 Mo d'espace disque. L'espace disque réellement
       nécessaire va varier considérablement en fonction de vos options
       de configuration, de la présence éventuelle de
       modules tiers, et bien entendu de la taille de votre site web et
@@ -203,71 +220,58 @@ sudo service apache2 start
 
       <dt>Compilateur ANSI-C et système de construction</dt>
       <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a
-      href="http://gcc.gnu.org/">GNU C (GCC)</a> de la <a
-      href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      href="https://gcc.gnu.org/">GNU C (GCC)</a> de la <a
+      href="https://www.gnu.org/">Free Software Foundation (FSF)</a>
       est recommandé. Si vous ne possédez pas GCC,
       assurez-vous au moins que votre compilateur soit compatible ANSI.
       En outre, votre <code>PATH</code> doit contenir
       les outils de construction de base tels que <code>make</code>.</dd>
 
       <dt>Connaissance de l'heure exacte</dt>
-      <dd>Les éléments du protocole HTTP font référence à l'heure du jour.
-      Par conséquent, il est nécessaire d'équiper votre système d'un
-      dispositif de synchronisation du temps. Les programmes
-      <code>ntpdate</code> ou <code>xntpd</code>, basés sur le protocole NTP,
-      sont couramment utilisés à cet effet.
-      Voir la <a href="http://www.ntp.org">page d'accueil de NTP</a>
-      pour plus de détails à propos du logiciel NTP et des serveurs
+      <dd>Les éléments du protocole HTTP font référence à l'heure du jour. Par
+      conséquent, il est nécessaire d'équiper votre système d'un dispositif de
+      synchronisation du temps. À cet effet, la plupart des distributions
+      modernes de Linux fournissent <code>systemd-timesyncd</code> ou
+      <code>chrony</code>. Voir la <a href="https://www.ntp.org">page d'accueil
+      de NTP</a> pour plus de détails à propos du logiciel NTP et des serveurs
       de temps publics.</dd>
 
-      <dt><a href="http://www.perl.org/">Perl 5</a>
+      <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONNEL]</dt>
-      <dd>L'interpréteur Perl 5 (les versions 5.003 ou supérieures conviennent)
-      est nécessaire pour l'exécution de certains scripts comme
-      <program>apxs</program> ou <program>dbmmanage</program>
-      (qui sont écrits en Perl). 
-      Si le script <program>configure</program> ne trouve pas d'interpréteur
-      Perl 5, vous ne pourrez pas utiliser les scripts qui en ont besoin.
-      Bien entendu, vous pourrez tout de même construire et utiliser
-      Apache httpd.</dd>
+      <dd>L'interpréteur Perl 5 est nécessaire pour l'exécution de certains
+      scripts comme <program>apxs</program> ou <program>dbmmanage</program> (qui
+      sont écrits en Perl).  Si le script <program>configure</program> ne trouve
+      pas d'interpréteur Perl 5, vous ne pourrez pas utiliser les scripts qui en
+      ont besoin.  Bien entendu, vous pourrez tout de même construire et
+      utiliser Apache httpd.</dd>
 
     </dl>
 </section>
 
 <section id="download"><title>Téléchargement</title>
 
-    <p>Le serveur HTTP Apache peut être téléchargé à partir du
-    <a href="http://httpd.apache.org/download.cgi">site de téléchargement
-    du serveur HTTP Apache</a>, qui fournit la liste de nombreux miroirs.
-    Il sera plus commode à la plupart des utilisateurs d'Apache sur les
-    systèmes UNIX ou similaires de télécharger et de compiler
-    la version sources.  Le processus de construction (décrit ci-dessous) est
-    simple, et vous permet de personnaliser votre serveur selon vos besoins.
-    En outre, les versions binaires sont souvent plus anciennes que les
-    dernières versions sources. Si vous téléchargez une version binaire,
-    suivez les instructions décrites dans le fichier
-    <code>INSTALL.bindist</code> inclus dans la distribution.</p>
+    <p>Si vous voulez construire httpd depuis le code source, commencez par
+    télécharger l’archive tar du code source depuis le <a
+    href="https://httpd.apache.org/download.cgi">site de téléchargement du
+    serveur HTTP Apache</a>. Le processus de construction (décrit ci-après)
+    permet de personnaliser le serveur pour qu’il corresponde à vos besoins.</p>
 
-    <p>Après le téléchargement, il est important de vérifier que vous
-    disposez d'une version complète et non modifiée du serveur HTTP Apache.
-    Vous pouvez le faire en testant l'archive téléchargée à l'aide de
-    la signature PGP. Vous trouverez les détails de cette opération sur la <a
-    href="http://httpd.apache.org/download.cgi#verify"
-    >page de téléchargement</a> ainsi qu'un exemple précis décrivant <a
-    href="http://httpd.apache.org/dev/verification.html">l'utilisation de
-    PGP</a>.</p>
+    <p>Après le téléchargement, il est important de vérifier que vous disposez
+    d'une version complète et non modifiée du serveur HTTP Apache.  Vous pouvez
+    le faire en testant l'archive téléchargée à l'aide de la signature PGP. Vous
+    trouverez les détails de cette opération sur la <a
+    href="https://httpd.apache.org/dev/verification.html">page de
+    vérification</a>.</p>
 
 </section>
 
 <section id="extract"><title>Extraction</title>
 
-    <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
-    simplement à décompresser et à désarchiver cette dernière :</p>
+    <p>Extraire les sources depuis l'archive du serveur HTTP Apache :</p>
 
 <example>
 <highlight language="sh">
-$ gzip -d httpd-<em>NN</em>.tar.gz
-$ tar xvf httpd-<em>NN</em>.tar
+$ tar xzf httpd-<em>NN</em>.tar.gz
 </highlight>
 </example>
 
@@ -290,7 +294,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     ce qui n'est pas nécessaire pour les versions officielles).</p>
 
     <p>Pour configurer l'arborescence des sources avec les valeurs par défaut
-    pour toutes les options, entrez simplement <code>./configure</code>.
+    pour toutes les options, saisissez <code>./configure</code>.
     Pour modifier les valeurs des options, <program>configure</program>
     accepte toute une variété de variables et
     d'options de ligne de commande.</p>
@@ -320,8 +324,8 @@ $ tar xvf httpd-<em>NN</em>.tar
     vous pouvez désactiver des modules à l'aide de l'option
     <code>--disable-<var>module</var></code>.  Faites très attention
     en utilisant ces options, car <program>configure</program> n'est pas en
-    mesure de vous avertir si le module que vous avez spécifié n'existe pas;
-    il ignorera tout simplement l'option.</p>
+    mesure de vous avertir si le module que vous avez spécifié n'existe pas ;
+    il ignorera l'option.</p>
 
     <p>En outre, vous devrez peut-être fournir au script
     <program>configure</program> des informations supplémentaires sur
@@ -361,7 +365,7 @@ $ CC="pgcc" CFLAGS="-O2" \
 <section id="compile"><title>Construction</title>
 
     <p>Vous pouvez maintenant construire les différents éléments qui
-    composent le paquet Apache en lançant tout simplement la commande :</p>
+    composent le paquet Apache en lançant :</p>
 
 <example>$ make</example>
 
@@ -397,8 +401,8 @@ $ CC="pgcc" CFLAGS="-O2" \
 
     <p>Consultez le manuel d'Apache situé dans
     <code><em>PREFIX</em>/docs/manual/</code> ou
-    <a href="http://httpd.apache.org/docs/&httpd.docs;/"
-    >http://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
+    <a href="https://httpd.apache.org/docs/&httpd.docs;/"
+    >https://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
     récente de ce manuel et la liste complète des <a
     href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </section>
@@ -422,18 +426,16 @@ $ CC="pgcc" CFLAGS="-O2" \
 <section id="upgrading"><title>Mise à jour</title>
 
     <p>La première étape d'une mise à jour consiste à lire l'annonce de la
-    sortie de la nouvelle version et le fichier <code>CHANGES</code>
-    dans la distribution des sources afin de déceler toutes les modifications
-    qui pourraient affecter votre site. Lors d'un changement majeur de version
-    (par exemple de 2.0 à 2.2 ou de 2.2 à 2.4),
-    il y aura certainement des différences importantes quant à la
-    configuration de la compilation et de l'exécution qui nécessiteront des
-    ajustements manuels.  Tous les
-    modules devront aussi être mis à jour pour qu'ils s'adaptent aux
-    changements de l'API des modules.</p>
+    sortie de la nouvelle version et le fichier <code>CHANGES</code> dans la
+    distribution des sources afin de déceler toutes les modifications qui
+    pourraient affecter votre site. Lors d'un changement majeur de version (par
+    exemple de 2.4 à 2.6), il y aura certainement des différences importantes
+    quant à la configuration de la compilation et de l'exécution qui
+    nécessiteront des ajustements manuels.  Tous les modules devront aussi être
+    mis à jour pour qu'ils s'adaptent aux changements de l'API des modules.</p>
 
     <p>La mise à jour d'une version mineure à la suivante (par exemple, de
-    2.2.55 à 2.2.57) est plus aisée.  Le processus <code>make install</code>
+    2.4.66 à 2.4.67) est plus aisée.  Le processus <code>make install</code>
     n'écrasera aucun de vos documents existants, fichiers de log,
     ou fichiers de configuration.  De plus, les développeurs font tout
     leur possible pour éviter les changements entraînant une
@@ -485,10 +487,11 @@ $ <em>PREFIX</em>/bin/apachectl -k start
     </section>
 <section id="thirdp"><title>Paquets tiers</title>
 
-    <p>De nombreux tiers fournissent leur propre distribution du
-    serveur HTTP Apache à installer sur une plate-forme particulière. On
-    peut citer les différentes distributions Linux, divers
-    paquets tiers Windows, Mac OS X, Solaris et de nombreux autres.</p>
+    <p>De nombreux tiers fournissent leur propre distribution du serveur HTTP
+    Apache à installer sur une plate-forme particulière. On peut citer les
+    différentes distributions Linux, divers paquets <a
+    href="https://httpd.apache.org/docs/trunk/en/platform/windows.html">Windows</a>,
+    macOS, et de nombreux autres.</p>
 
     <p>Notre license logicielle non seulement permet, mais aussi
     encourage ce genre de redistribution. Cependant, ceci conduit à une
@@ -499,9 +502,8 @@ $ <em>PREFIX</em>/bin/apachectl -k start
 
     <p>Une  <a
     href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
-    de ces distributions tierces</a> est maintenue dans le wiki du
-    serveur HTTP, et doit en refléter l'état actuel. Vous devrez
-    cependant vous familiariser par vous-même avec la gestion du paquet
+    de ces distributions tierces</a> est dans le wiki du serveur HTTP. Vous
+    devrez cependant vous familiariser par vous-même avec la gestion du paquet
     de votre plate-forme particulière et les procédures d'installation.</p>
 
 </section>
