@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933715:1934555 (outdated) -->
+<!-- English Revision: 1934555 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -178,7 +178,6 @@ multiples</title>
 # Pour tous les fichiers sans extension :
 &lt;FilesMatch "^[^.]+$"&gt;
     ForceType text/plain
-    AddDefaultCharset UTF-8
     AddDefaultCharset UTF-8
 &lt;/FilesMatch&gt;
     </highlight>
