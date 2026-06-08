@@ -58,7 +58,7 @@
         NGHTTP2_NV_FLAG_NONE                                                   \
   }
 
-
+// dummy change to test PR cancellation
 static int verbose;
 static const char *cmd;
 
