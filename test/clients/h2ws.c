@@ -59,6 +59,7 @@
   }
 
 // dummy change to test PR cancellation
+// a second change to show cancellation
 static int verbose;
 static const char *cmd;
 
