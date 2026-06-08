@@ -24,6 +24,10 @@ env:
   # This will need updating as the ubuntu-latest image changes:
   PHP_FPM: "/usr/sbin/php-fpm8.1"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     strategy:
