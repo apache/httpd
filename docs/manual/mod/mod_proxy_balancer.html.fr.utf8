@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_proxy_balancer.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_balancer.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la r&eacute;partition de charge</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -76,14 +74,14 @@ la r&eacute;partition de charge</td></tr>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif"> <a href="#scheduler">L'algorithme de planification de la r&eacute;partition de
     charge</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#stickyness">R&eacute;partition de charge avec abonnement utilisateur
-    (stickyness)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#stickiness">R&eacute;partition de charge avec abonnement utilisateur
+    (stickiness)</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#example">Exemples de configuration d'un r&eacute;partiteur</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#environment">Variables d'environnement export&eacute;es</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#balancer_manager">Activation du support du gestionnaire de r&eacute;partiteur</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#stickyness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
-    (stickyness)</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#stickyness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
+<li><img alt="" src="../images/down.gif"> <a href="#stickiness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
+    (stickiness)</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#stickiness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
     abonnement</a></li>
 </ul><h3 class="directives">Directives</h3>
 <p>Ce module ne fournit aucune directive.</p>
@@ -111,8 +109,8 @@ la r&eacute;partition de charge</td></tr>
     particulier la configuration du r&eacute;partiteur et de ses membres.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="stickyness">R&eacute;partition de charge avec abonnement utilisateur
-    (stickyness) <a title="Lien permanent" href="#stickyness" class="permalink">&para;</a></h2>
+<h2 id="stickiness">R&eacute;partition de charge avec abonnement utilisateur
+    (stickiness) <a title="Lien permanent" href="#stickiness" class="permalink">&para;</a></h2>
     
     <p>Le r&eacute;partiteur supporte l'abonnement utilisateur. Lorsqu'une
     requ&ecirc;te est mandat&eacute;e vers un serveur d'arri&egrave;re-plan particulier,
@@ -261,8 +259,8 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     section <code>&lt;Location ...&gt;</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="stickyness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
-    (stickyness) <a title="Lien permanent" href="#stickyness_implementation" class="permalink">&para;</a></h2>
+<h2 id="stickiness_implementation">D&eacute;tails &agrave; propos de la r&eacute;partition de charge par abonnement
+    (stickiness) <a title="Lien permanent" href="#stickiness_implementation" class="permalink">&para;</a></h2>
     
     <p>Si l'abonnement s'appuie sur un cookie, vous devez d&eacute;finir le nom
     de ce cookie dont le contenu pr&eacute;cise le serveur d'arri&egrave;re-plan &agrave;
@@ -328,8 +326,8 @@ ProxyPassReverse "/test" "balancer://mycluster"</pre>
     retenue.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="stickyness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
-    abonnement <a title="Lien permanent" href="#stickyness_troubleshooting" class="permalink">&para;</a></h2>
+<h2 id="stickiness_troubleshooting">R&eacute;solution des probl&egrave;mes li&eacute;s &agrave; la r&eacute;partition de charge par
+    abonnement <a title="Lien permanent" href="#stickiness_troubleshooting" class="permalink">&para;</a></h2>
     
     <p>Si vous &ecirc;tes confront&eacute; &agrave; des erreurs d'abonnement, comme la
     n&eacute;cessit&eacute; pour les utilisateurs de se reconnecter suite &agrave; une perte

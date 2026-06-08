@@ -271,7 +271,7 @@ nom de chemin en fin de requ&ecirc;te.</td></tr>
     comme <code>/test/here.html/more</code> dans l'exemple ci-dessus
     renverra une erreur "404 NOT FOUND".</dd>
 
-    <dt><code>On</code></dt><dd>Une requ&ecirc;te sera accept&eacute;e si la partie
+ <dt><code>On</code></dt><dd>Une requ&ecirc;te sera accept&eacute;e si la partie
     principale du chemin correspond &agrave; un fichier existant. Dans
     l'exemple ci-dessus <code>/test/here.html/more</code>, la requ&ecirc;te
     sera accept&eacute;e si <code>/test/here.html</code> correspond &agrave; un nom de
@@ -313,26 +313,37 @@ nom de chemin en fin de requ&ecirc;te.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Au cours du traitement d'une requ&ecirc;te, le serveur recherche le
-    premier fichier de configuration existant &agrave; partir de la liste
-    de noms dans chaque r&eacute;pertoire composant le chemin du document, &agrave;
-    partir du moment o&ugrave; les fichiers de configuration distribu&eacute;s sont <a href="#allowoverride">activ&eacute;s pour ce r&eacute;pertoire</a>. Par exemple
-    :</p>
+    <p>La directive AccessFileName permet de modifier le nom du fichier qui sera
+    pris en compte pour les outrepassements de configuration au niveau du
+    r&eacute;pertoire, si la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> est activ&eacute;e pour le r&eacute;pertoire
+    consid&eacute;r&eacute;.</p>
 
-    <pre class="prettyprint lang-config">AccessFileName .acl</pre>
+    <div class="warning">Nous vous d&eacute;conseillons de modifier cette valeur et en
+    particulier de fournir une liste de plusieurs fichiers possibles, car cela
+    rendrait plus difficile la recherche d&rsquo;erreurs pour quelqu&rsquo;un qui n&rsquo;est pas
+    familier avec votre configuration locale.</div>
 
+    <p>Lors du traitement d&rsquo;une requ&ecirc;te, le serveur cherche les fichiers dont le
+    nom (ou les noms) sont d&eacute;finis &agrave; l&rsquo;aide de la directive <code>AccessFileName</code> dans
+    tous les r&eacute;pertoires du chemin du document, si les fichiers de configuration
+    distribu&eacute;s sont <a href="#allowoverride">autoris&eacute;s pour ce r&eacute;pertoire</a>.
+    Par exemple, avant de renvoyer le document
+    <code>/usr/local/web/index.html</code>, le serveur va rechercher des
+    directives dans les fichiers <code>/.htaccess</code>, <code>/usr/.htaccess</code>,
+    <code>/usr/local/.htaccess</code> et <code>/usr/local/web/.htaccess</code>.</p>
 
-    <p>avant de renvoyer le document
-    <code>/usr/local/web/index.html</code>, le serveur va rechercher les
-    fichiers <code>/.acl</code>, <code>/usr/.acl</code>,
-    <code>/usr/local/.acl</code> et <code>/usr/local/web/.acl</code>
-    pour y lire d'&eacute;ventuelles directives, &agrave; moins quelles n'aient &eacute;t&eacute;
-    d&eacute;sactiv&eacute;es avec</p>
-
+    <p>C&rsquo;est pour cette raison que le fichier de configuration par d&eacute;faut
+    contient les instructions suivantes&nbsp;:</p>
+    
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
     AllowOverride None
 &lt;/Directory&gt;</pre>
 
+
+    <p>Ce bloc de configuration permet de pr&eacute;venir tout acc&egrave;s non n&eacute;cessaire &agrave;
+    des fichiers dans des r&eacute;pertoires en dehors de votre racine des documents
+    <code class="directive"><a href="#documentroot">DocumentRoot</a></code>. Voir aussi la note &agrave; ce
+    sujet dans la documentation de la directive <code>AllowOverride</code>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -446,16 +457,16 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
 <code>.htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverride All|None|<var>type directive</var>
 [<var>type directive</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AllowOverride None &agrave; partir de la version 2.3.9, AllowOverride
-All pour les versions ant&eacute;rieures</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AllowOverride None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Lorsque le serveur trouve un fichier <code>.htaccess</code> (dont
-    le nom est d&eacute;fini par la directive <code class="directive"><a href="#accessfilename">AccessFileName</a></code>), il doit savoir lesquelles
-    des directives plac&eacute;es dans ce fichier sont autoris&eacute;es &agrave; modifier la
-    configuration pr&eacute;existante.</p>
+    <p>Lorsque le serveur trouve un fichier de configuration distribu&eacute;e (nomm&eacute;
+    en g&eacute;n&eacute;ral <code>.htaccess</code> &mdash;&nbsp;configurable &agrave; l&rsquo;aide de la directive
+    <code class="directive"><a href="#accessfilename">AccessFileName</a></code>), il doit savoir
+    lesquelles des directives plac&eacute;es dans ce fichier sont autoris&eacute;es &agrave; modifier
+    la configuration pr&eacute;existante.</p>
 
     <div class="note"><h3>Valable seulement dans les sections
     &lt;Directory&gt;</h3>
@@ -518,8 +529,11 @@ All pour les versions ant&eacute;rieures</code></td></tr>
       <dt><a href="overrides.html#override-limit">Limit</a></dt>
 
       <dd>
-      Permet l'utilisation des directives contr&ocirc;lant l'acc&egrave;s au serveur
-      (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>).</dd>
+      Permet l'utilisation des directives patrimoniales de contr&ocirc;le d'acc&egrave;s
+      au serveur (<code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
+      <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> et <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>). Pour un &eacute;quivalent moderne,
+      voir la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+      contr&ocirc;l&eacute;e par <code>AuthConfig</code>.</dd>
 
       <dt>Nonfatal=[Override|Unknown|All]</dt>
 
@@ -608,7 +622,7 @@ All pour les versions ant&eacute;rieures</code></td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directives autoris&eacute;es dans les fichiers <code>.htaccess</code></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowOverrideList None|<var>directive</var>
-[<var>directive-type</var>] ...</code></td></tr>
+[<var>directive</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AllowOverrideList None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>r&eacute;pertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
@@ -655,8 +669,14 @@ AllowOverrideList CookieTracking CookieName</pre>
     <p>Dans l'exemple ci-dessus, la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> autorise les directives du
     groupement <code>AuthConfig</code>, et
     <code class="directive">AllowOverrideList</code> n'autorise que deux directives du
-    groupement <code>FileInfo</code>. Toutes les autres provoqueront une erreur
-    interne du serveur.</p>
+    groupement <code>FileInfo</code>. Le jeu de directives permises effectif est
+    l&rsquo;union des deux. Toutes les autres provoqueront une erreur interne du
+    serveur.</p>
+
+    <p>En outre, certaines directives sont toujours permises dans les fichiers
+    <code>.htaccess</code>, pourvu que le m&eacute;canisme d&rsquo;outrepassement soit activ&eacute;
+    (c&rsquo;est-&agrave;-dire que la directive <code class="directive"><a href="#allowoverride">AllowOverride</a></code> ne soit pas d&eacute;finie &agrave;
+    <code>None</code>). Ces directives sont list&eacute;es dans la section <a href="overrides.html#override-all">All</a> de l&rsquo;<a href="overrides.html">index de la classe override</a>.</p>
 
 <h3>Voir aussi</h3>
 <ul>
@@ -738,19 +758,41 @@ Apache</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.21 du serveur HTTP Apache</td></tr>
 </table>
   <p>Cette directive permet de contr&ocirc;ler la mani&egrave;re dont certaines variables CGI
-  sont d&eacute;finies.</p>
+  sont d&eacute;finies lorsque des requ&ecirc;tes sont transmises &agrave; des scripts CGI ou
+  d&rsquo;autres gestionnaires qui re&ccedil;oivent un environnement CGI. Actuellement, la
+  seule variable prise en charge est <code>REQUEST_URI</code>.</p>
 
-  <p>r&egrave;gles <strong>REQUEST_URI</strong> :</p>
+  <p>Par d&eacute;faut, la variable d&rsquo;environnement CGI <code>REQUEST_URI</code>
+  contient l&rsquo;URI original de la requ&ecirc;te du client. Cela implique que m&ecirc;me si
+  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ou une redirection interne modifie la ressource
+  qui va &ecirc;tre servie, le script CGI verra quand-m&ecirc;me l&rsquo;URI original que le
+  client a envoy&eacute;.</p>
+
+  <p>Avec <code>CGIVar REQUEST_URI current-uri</code>, la valeur est d&eacute;finie &agrave;
+  l&rsquo;URI actuel apr&egrave;s l&rsquo;application de toute r&eacute;&eacute;criture ou redirection interne.</p>
+
+  <p><strong>Valeurs autoris&eacute;es :</strong></p>
   <dl>
     <dt><code>original-uri</code> (valeur par d&eacute;faut)</dt>
-    <dd>La valeur est extraite de la requ&ecirc;te originale, et ne tient pas compte
-    des redirections internes ou des sous-requ&ecirc;tes qui pourraient modifier la
-    ressource demand&eacute;e.</dd>
+    <dd>D&eacute;finit <code>REQUEST_URI</code> avec l&rsquo;URI de la requ&ecirc;te originale du
+    client, sans tenir compte d&rsquo;une r&eacute;&eacute;criture ou redirection interne
+    quelconque.</dd>
     <dt><code>current-uri</code></dt>
-    <dd>La valeur refl&egrave;te la ressource en cours de traitement ; elle peut &ecirc;tre
-    diff&eacute;rente de la ressource demand&eacute;e dans la requ&ecirc;te initiale du client suite &agrave;
-    d'&eacute;ventuelles redirections internes ou sous-requ&ecirc;tes.</dd>
+    <dd>D&eacute;finit <code>REQUEST_URI</code> avec l&rsquo;URI de la ressource en train
+    d&rsquo;&ecirc;tre trait&eacute;e, qui peut &ecirc;tre diff&eacute;rente de la requ&ecirc;te originale en cas de
+    r&eacute;&eacute;criture ou de redirection interne.</dd>
   </dl>
+
+  <pre class="prettyprint lang-config"># Montrer aux scripts CGI l&rsquo;URI r&eacute;&eacute;crit &agrave; la place de l&rsquo;original
+CGIVar REQUEST_URI current-uri</pre>
+
+
+  <div class="note"><h3>Note</h3>
+  <p>Dans tous les cas, la variable d&rsquo;environnement CGI <code>REQUEST_URI</code>
+  contient l&rsquo;URI complet, y compris la cha&icirc;ne de param&egrave;tres. Cela est diff&eacute;rent
+  pour la variable de serveur <code>%{REQUEST_URI}</code> utilis&eacute;e dans
+  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et les expressions de <a href="../expr.html">ap_expr</a>, qui ne contient que la partie chemin (pas la
+  cha&icirc;ne de param&egrave;tres).</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -1034,20 +1076,22 @@ sous-r&eacute;pertoires, et &agrave; leur contenu.</td></tr>
     et la section <code class="directive">&lt;Directory&gt;</code>
     correspondante s'appliquera.</p>
 
-   <p><strong>Notez que la politique d'acc&egrave;s par d&eacute;faut
+   <div class="warning">
+   <p>La politique d'acc&egrave;s par d&eacute;faut
    dans les sections <code>&lt;Directory "/"&gt;</code> consiste &agrave;
    autoriser tout acc&egrave;s sans restriction. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant &agrave; une URL. Il est recommand&eacute; de modifier cette
-   situation &agrave; l'aide d'un bloc du style</strong></p>
+   situation &agrave; l'aide d'un bloc du style</p>
+   </div>
 
     <pre class="prettyprint lang-config">&lt;Directory "/"&gt;
   Require all denied
 &lt;/Directory&gt;</pre>
 
 
-    <p><strong>puis d'affiner la configuration pour les r&eacute;pertoires que vous
+    <p>puis d'affiner la configuration pour les r&eacute;pertoires que vous
     voulez rendre accessibles. Voir la page <a href="../misc/security_tips.html">Conseils &agrave; propos de s&eacute;curit&eacute;</a>
-    pour plus de d&eacute;tails.</strong></p>
+    pour plus de d&eacute;tails.</p>
 
     <p>Les sections <code class="directive">&lt;Directory&gt;</code> se situent
     dans le fichier <code>httpd.conf</code>. Les directives <code class="directive">&lt;Directory&gt;</code> ne peuvent pas &ecirc;tre imbriqu&eacute;es
@@ -1072,11 +1116,16 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Les balises <code class="directive">&lt;DirectoryMatch&gt;</code>
-    et <code>&lt;/DirectoryMatch&gt;</code> permettent de regrouper un
-    ensemble de directives qui ne s'appliqueront qu'au r&eacute;pertoire
-    pr&eacute;cis&eacute; (et aux fichiers qu'il contient), comme pour la section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>. Cependant, le
-    r&eacute;pertoire est pr&eacute;cis&eacute; sous la forme d'une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>. Par exemple :</p>
+    <p>Les balises <code class="directive">&lt;DirectoryMatch&gt;</code> et
+    <code>&lt;/DirectoryMatch&gt;</code> permettent de regrouper un ensemble de
+    directives qui ne s'appliqueront qu&rsquo;aux r&eacute;pertoires (et aux fichiers qu&rsquo;ils
+    contiennent) dont le chemin du syst&egrave;me de fichiers correspond &agrave; l&rsquo;<a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> sp&eacute;cifi&eacute;e. &Agrave; la diff&eacute;rence de
+    <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, les
+    directives ne s&rsquo;appliqueront aux sous-r&eacute;pertoires que si le motif leur
+    correspond aussi. Cette balise prend comme argument une expression
+    rationnelle qui est compar&eacute;e en tant que sous-cha&icirc;ne (elle n&rsquo;est pas ancr&eacute;e au
+    d&eacute;but ou &agrave; la fin, &agrave; moins que vous n&rsquo;indiquiez explicitement <code>^</code>
+    ou <code>$</code> dans le motif. Par exemple :</p>
 
     <pre class="prettyprint lang-config">&lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}/"&gt;
     # ...
@@ -1095,10 +1144,10 @@ du syst&egrave;me de fichiers correspondant &agrave; une expression rationnelle<
     </div>
 
     <div class="note"><h3>slash de fin</h3>
-      Cette directive s'applique aux requ&ecirc;tes pour des r&eacute;pertoires avec
-      ou sans slash de fin ; les expressions contenant un symbole de fin
-      de ligne ($) doivent donc faire l'objet d'une attention
-      particuli&egrave;re.
+      Cette directive s'applique aux requ&ecirc;tes pour des r&eacute;pertoires avec ou sans
+      slash de fin. Si vous ancrez votre motif avec <code>$</code>, vous devrez
+      peut-&ecirc;tre comparer les deux formes&nbsp;; par exemple, <code>&lt;DirectoryMatch
+      "^/var/www/?$"&gt;</code>.
     </div>
     
     <p>A partir de la version 2.4.8, les groupes nomm&eacute;s et les
@@ -1475,6 +1524,21 @@ ErrorDocument 403 Forbidden!
 ErrorDocument 403 /errors/forbidden.py?referrer=%{escape:%{HTTP_REFERER}}</pre>
 
 
+    <p>Quand l&rsquo;argument est une cha&icirc;ne de texte (c&rsquo;est-&agrave;-dire ni un chemin, ni
+    un URL), il est envoy&eacute; au client avec <code>text/html</code> comme type de
+    contenu, si bien que vous pouvez inclure des balises HTML. Vous pouvez
+    utiliser une controblique comme caract&egrave;re de continuation de ligne afin de
+    r&eacute;partir le document sur plusieurs lignes&nbsp;:</p>
+
+    <pre class="prettyprint lang-config">ErrorDocument 403 "\
+&lt;html&gt;&lt;head&gt;\
+&lt;title&gt;403 Forbidden&lt;/title&gt;\
+&lt;/head&gt;&lt;body&gt;\
+&lt;h1&gt;Forbidden&lt;/h1&gt;\
+&lt;p&gt; Vous n&rsquo;&ecirc;tes pas autoris&eacute; &agrave; acc&eacute;der &agrave; cette ressource.&lt;/p&gt;\
+&lt;/body&gt;&lt;/html&gt;"</pre>
+
+
     <p>De plus, on peut sp&eacute;cifier la valeur sp&eacute;ciale <code>default</code>
     pour indiquer l'utilisation d'un simple message d'Apache httpd cod&eacute; en
     dur. Bien que non n&eacute;cessaire dans des circonstances normales, la
@@ -1626,15 +1690,15 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
     connexion ou d'une requ&ecirc;te ne g&eacute;n&egrave;re aucun message dans le journal,
     alors aucune information additionnelle n'est enregistr&eacute;e.</p>
 
-    <p>Il peut arriver que certains items de la cha&icirc;ne de format ne
+    <p>Il peut arriver que certains sp&eacute;cificateurs de format ne
     produisent aucune sortie. Par exemple, l'en-t&ecirc;te Referer n'est
     pr&eacute;sent que si le message du journal est associ&eacute; &agrave; une requ&ecirc;te et s'il
     est g&eacute;n&eacute;r&eacute; &agrave; un moment o&ugrave; l'en-t&ecirc;te Referer a d&eacute;j&agrave; &eacute;t&eacute; lu par le
     client. Si aucune sortie n'est g&eacute;n&eacute;r&eacute;e, le comportement par d&eacute;faut
     consiste &agrave; supprimer tout ce qui se trouve entre l'espace pr&eacute;c&eacute;dent
-    et le suivant. Ceci implique que la ligne de journalisation est
+    et le suivant. Ceci implique que la cha&icirc;ne de format est
     divis&eacute;e en champs ne contenant pas d'espace s&eacute;par&eacute;s par des espaces.
-    Si un item de la cha&icirc;ne de format ne g&eacute;n&egrave;re aucune sortie,
+    Si un sp&eacute;cificateur de format ne g&eacute;n&egrave;re aucune sortie,
     l'ensemble du champ est omis. Par exemple, si l'adresse distante
     <code>%a</code> du format <code>[%t] [%l] [%a] %M&nbsp;</code> n'est
     pas disponible, les crochets qui l'entourent ne seront eux-m&ecirc;mes pas
@@ -1654,8 +1718,9 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 
     <p>Un modificateur de type entier permet d'assigner un niveau de
     s&eacute;v&eacute;rit&eacute; &agrave; un item de format. L'item consid&eacute;r&eacute; ne
-    sera journalis&eacute; que si la s&eacute;v&eacute;rit&eacute; du message n'est pas
-    plus haute que le niveau de s&eacute;v&eacute;rit&eacute; sp&eacute;cifi&eacute;. Les
+    sera journalis&eacute; que si le message journalis&eacute; poss&egrave;de un niveau de s&eacute;v&eacute;rit&eacute;
+    du nombre sp&eacute;cifi&eacute; ou sup&eacute;rieur (c&rsquo;est-&agrave;-dire que le nombre correspondant au
+    niveau de s&eacute;v&eacute;rit&eacute; du message est inf&eacute;rieur ou &eacute;gal au modificateur). Les
     valeurs possibles vont de 1 (alert) &agrave; 15 (trace8), en passant par 4
     (warn) ou 7 (debug).</p>
 
@@ -1677,11 +1742,12 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
 <tr>
     <td><code>%4{Referer}i</code></td>
     <td>N'enregistre le contenu de l'en-t&ecirc;te <code>Referer</code> que si
-    la s&eacute;v&eacute;rit&eacute; du message de journalisation est sup&eacute;rieure &agrave; 4.</td>
+    la s&eacute;v&eacute;rit&eacute; du message de journalisation est 4 (avertissement) ou sup&eacute;rieure
+    (niveaux 1 &agrave; 4 : alerte, critique, erreur, avertissement).</td>
     </tr>
 </table>
 
-    <p>Certains items de format acceptent des param&egrave;tres suppl&eacute;mentaires
+    <p>Certains sp&eacute;cificateurs de format acceptent des param&egrave;tres suppl&eacute;mentaires
     entre accolades.</p>
 
     <table class="bordered"><tr class="header"><th>Cha&icirc;ne&nbsp;de&nbsp;format</th> <th>Description</th></tr>
@@ -2231,11 +2297,10 @@ clients</td></tr>
 Apache</td></tr>
 </table>
     <p>Cette directive permet de modifier les r&egrave;gles qui s'appliquent &agrave; la ligne
-    de requ&ecirc;te HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.1.1">RFC 7230
-    &sect;3.1.1</a>) et aux champs des en-t&ecirc;tes des requ&ecirc;tes HTTP (<a href="https://tools.ietf.org/html/rfc7230#section-3.2">RFC 7230
-    &sect;3.2</a>), qui s'appliquent maintenant par d&eacute;faut ou en utilisant
-    l'option <code>Strict</code>. L'option <code>Unsafe</code>
-    a &eacute;t&eacute; ajout&eacute;e pour pouvoir restaurer les anciens
+    de requ&ecirc;te HTTP (<a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.1.1">RFC 7230</a>) et aux champs des en-t&ecirc;tes
+    des requ&ecirc;tes HTTP (<a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.2">RFC 7230</a>), qui s'appliquent
+    maintenant par d&eacute;faut ou en utilisant l'option <code>Strict</code>. L'option
+    <code>Unsafe</code> a &eacute;t&eacute; ajout&eacute;e pour pouvoir restaurer les anciens
     comportements n&eacute;cessaires aux anciens modules et applications et aux agents
     utilisateurs personnalis&eacute;s consid&eacute;r&eacute;s comme obsol&egrave;tes.</p>
 
@@ -2254,14 +2319,12 @@ Apache</td></tr>
     <dd>
     <p>Avant l'introduction de cette directive, les interpr&eacute;teurs de requ&ecirc;tes du
     serveur HTTP Apache tol&eacute;raient un grand nombre de formats en entr&eacute;e qui
-    n'&eacute;taient pas forc&eacute;ment conformes au protocole. <a href="https://tools.ietf.org/html/rfc7230#section-9.4">RFC 7230 &sect;9.4
-    Request Splitting</a> et <a href="https://tools.ietf.org/html/rfc7230#section-9.5">&sect;9.5 Response
-    Smuggling</a> ne rappellent que deux des risques potentiels induits par des
-    requ&ecirc;tes non conformes, alors que <a href="https://tools.ietf.org/html/rfc7230#section-3.5">RFC 7230
-    &sect;3.5</a> signale les risques encourus par l'acceptation de blancs non
-    conformes dans les lignes de requ&ecirc;te. Avec l'introduction de cette
-    directive, toutes les r&egrave;gles de grammaire de la sp&eacute;cification doivent &ecirc;tre
-    respect&eacute;es dans le mode d'op&eacute;rations par d&eacute;faut <code>Strict</code>.</p>
+    n'&eacute;taient pas forc&eacute;ment conformes au protocole. <a href="https://www.rfc-editor.org/rfc/rfc7230#section-9.4">RFC 7230</a> (Request Splitting) et <a href="https://www.rfc-editor.org/rfc/rfc7230#section-9.5">RFC 7230</a> (Response Smuggling) ne rappellent que deux des
+    risques potentiels induits par des requ&ecirc;tes non conformes, alors que <a href="https://www.rfc-editor.org/rfc/rfc7230#section-3.5">RFC 7230</a> "Message Parsing Robustness" signale les risques
+    encourus par l'acceptation de blancs non conformes dans les lignes de
+    requ&ecirc;te. Avec l'introduction de cette directive, toutes les r&egrave;gles de
+    grammaire de la sp&eacute;cification doivent &ecirc;tre respect&eacute;es dans le mode
+    d'op&eacute;rations par d&eacute;faut <code>Strict</code>.</p>
 
     <div class="warning"><h3>Risques de s&eacute;curit&eacute; li&eacute;s au mode Unsafe</h3>
     <p>Il est fortement d&eacute;conseill&eacute; aux utilisateurs d'utiliser le mode
@@ -2292,15 +2355,14 @@ Apache</td></tr>
     </dd>
     <dt>RegisteredMethods|LenientMethods</dt>
     <dd>
-    <p>La section de la <a href="https://tools.ietf.org/html/rfc7231#section-4.1">RFC 7231
-    &sect;4.1</a> "Request Methods" "Overview" indique que les serveurs doivent
-    renvoyer un message d'erreur lorsque la ligne de requ&ecirc;te comporte une
-    m&eacute;thode non support&eacute;e. C'est d&eacute;j&agrave; le cas lorsque l'option
-    <code>LenientMethods</code> est utilis&eacute;e, mais les administrateurs ont la
-    possibilit&eacute; de limiter les m&eacute;thodes utilis&eacute;es via l'option
-    <code>RegisteredMethods</code> en enregistrant toute m&eacute;thode non standard
-    via la directive <code class="directive">RegisterHttpMethod</code>, en particulier
-    si l'option <code>Unsafe</code> est utilis&eacute;e.</p>
+    <p>La section "Overview" de la <a href="https://www.rfc-editor.org/rfc/rfc7231#section-4.1">RFC 7231</a> "Request
+    Methods" indique que les serveurs doivent renvoyer un message d'erreur
+    lorsque la ligne de requ&ecirc;te comporte une m&eacute;thode non support&eacute;e. C'est d&eacute;j&agrave;
+    le cas lorsque l'option <code>LenientMethods</code> est utilis&eacute;e, mais les
+    administrateurs ont la possibilit&eacute; de limiter les m&eacute;thodes utilis&eacute;es via
+    l'option <code>RegisteredMethods</code> en enregistrant toute m&eacute;thode non
+    standard via la directive <code class="directive">RegisterHttpMethod</code>, en
+    particulier si l'option <code>Unsafe</code> est utilis&eacute;e.</p>
 
     <div class="warning"><h3>Compatibilit&eacute; avec le mandat direct</h3>
     <p>L'option
@@ -2320,13 +2382,12 @@ Apache</td></tr>
       </dd>
       <dt>Allow0.9|Require1.0</dt>
       <dd>
-    <p>La section de la <a href="https://tools.ietf.org/html/rfc2616#section-19.6">RFC 2616
-    &sect;19.6</a> "Compatibility With Previous Versions" encouragait les
-    serveurs HTTP &agrave; supporter les anciennes requ&ecirc;tes HTTP/0.9. La RFC 7230 va
-    cependant &agrave; son encontre via sa pr&eacute;conisation "Le souhait de supporter les
-    requ&ecirc;tes HTTP/0.9 a &eacute;t&eacute; supprim&eacute;" et y adjoint des commentaires dans <a href="https://tools.ietf.org/html/rfc7230#appendix-A">RFC 7230 Appendix
-    A</a>. A ce titre, l'option <code>Require1.0</code> permet &agrave; l'utilisateur
-    d'inhiber le comportement induit par l'option par d&eacute;faut
+    <p>La section "Compatibility With Previous Versions" de la <a href="https://www.rfc-editor.org/rfc/rfc2616#section-19.6">RFC 2616</a> encouragait les serveurs HTTP &agrave; supporter les
+    anciennes requ&ecirc;tes HTTP/0.9. La RFC 7230 va cependant &agrave; son encontre via sa
+    pr&eacute;conisation "Le souhait de supporter les requ&ecirc;tes HTTP/0.9 a &eacute;t&eacute; supprim&eacute;"
+    et y adjoint des commentaires dans <a href="https://www.rfc-editor.org/rfc/rfc7230#appendix-A">RFC 7230</a>
+    Appendix A. A ce titre, l'option <code>Require1.0</code> permet &agrave;
+    l'utilisateur d'inhiber le comportement induit par l'option par d&eacute;faut
     <code>Allow0.9</code>.</p>
 
     <div class="example"><h3>Exemple de requ&ecirc;te provoquant l'envoi d'un message HTTP 400 en
@@ -2898,7 +2959,11 @@ certaines m&eacute;thodes HTTP</td></tr>
     <div class="warning">Une section <code class="directive">&lt;LimitExcept&gt;</code> doit toujours &ecirc;tre pr&eacute;f&eacute;r&eacute;e &agrave;
     une section <code class="directive">&lt;Limit&gt;</code> pour la
     restriction d'acc&egrave;s, car une section <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> fournit une protection contre
-    les m&eacute;thodes arbitraires.</div>
+    les m&eacute;thodes arbitraires. Voir aussi la <a href="../sections.html#merging">documentation sur la fusion des sections de
+    configuration</a> pour un avertissement &agrave; propos de la mani&egrave;re dont une
+    directive <code class="directive">&lt;Limit&gt;</code> au sein d&rsquo;une section
+    <code class="directive"><a href="#location">&lt;Location&gt;</a></code> peut
+    outrepasser silencieusement les directives d&rsquo;une section <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.</div>
 
     <p>Les directives <code class="directive">&lt;Limit&gt;</code> et
     <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
@@ -3290,9 +3355,14 @@ sp&eacute;cifi&eacute;es</td></tr>
     URL est un chemin d'URL de la forme
     <code>/chemin/</code>. <em>Aucun protocole, nom d'h&ocirc;te, port, ou cha&icirc;ne
     de requ&ecirc;te ne doivent appara&icirc;tre.</em> Pour les requ&ecirc;tes mandat&eacute;es, l'URL
-    sp&eacute;cifi&eacute;e doit &ecirc;tre de la forme
+    &agrave; comparer d&eacute;pend du type de mandataire. Avec un mandataire <strong>direct
+    (forward)</strong> (configur&eacute; via <code class="directive"><a href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a></code>), l'URL
+    &agrave; comparer doit &ecirc;tre de la forme
     <code>protocole://nom_serveur/chemin</code>, et vous devez inclure
-    le pr&eacute;fixe.</p>
+    le pr&eacute;fixe. Avec un mandataire <strong>inverse (reverse)</strong> (configur&eacute;
+    via <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> ou <code class="directive"><a href="../mod/mod_proxy.html#rewriterule ... [p]">RewriteRule ... [P]</a></code>), la requ&ecirc;te arrive en
+    tant que chemin d&rsquo;URL local ; il faut donc utiliser <code>/chemin/</code>,
+    comme vous le feriez pour la requ&ecirc;te originale.</p>
 
     <p>L'URL peut contenir des caract&egrave;res g&eacute;n&eacute;riques. Dans une cha&icirc;ne
     avec caract&egrave;res g&eacute;n&eacute;riques, <code>?</code> correspond &agrave; un caract&egrave;re
@@ -4156,9 +4226,13 @@ particulier</td></tr>
       Le serveur va suivre les liens symboliques dans le r&eacute;pertoire
       concern&eacute;. Il s'agit de la valeur par d&eacute;faut.
       <div class="note">
-      <p>Bien que le serveur suive les liens symboliques, il ne modifie
+      <p>Quand le serveur suit les liens symboliques, il ne modifie
       <em>pas</em> le nom de chemin concern&eacute; d&eacute;fini par la section
       <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.</p>
+
+      <p>D&eacute;sactiver cette option emp&ecirc;che aussi <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      d&rsquo;agir dans un contexte de r&eacute;pertoire (fichiers <code>.htaccess</code> et
+      sections <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>.</p>
       
       <p>Les options <code>FollowSymLinks</code> et
       <code>SymLinksIfOwnerMatch</code> ne fonctionnent que dans les
@@ -4370,6 +4444,13 @@ seulement depuis la version 2.3.3 sous Windows.</td></tr>
         
         <p>Sp&eacute;cifier des protocoles non disponibles ou d&eacute;sactiv&eacute;s n'aura
 	aucun effet, et ceux-ci seront simplement ignor&eacute;s.</p>
+
+	<div class="note"><h3>Note</h3> <p>Le protocole <code>http/1.1</code> est
+	toujours disponible, m&ecirc;me s&rsquo;il est exclu de cette directive. Cette
+	derni&egrave;re permet de sp&eacute;cifier les protocoles suppl&eacute;mentaires disponibles
+	pour la n&eacute;gociation, ainsi que leur ordre de pr&eacute;f&eacute;rence lorsqu&rsquo;elle est
+	utilis&eacute;e avec la directive
+	<code class="directive">ProtocolsHonorOrder</code>.</p></div>
         
         <p>Si un serveur virtuel ne poss&egrave;de pas de directive Protocols
 	propre, il h&eacute;rite des protocoles sp&eacute;cifi&eacute;s pour le serveur
@@ -4866,8 +4947,10 @@ s'authentifier lui-m&ecirc;me</td></tr>
     serveur virtuel, lorsqu'elle est utilis&eacute;e dans un contexte de <a href="../vhosts/name-based.html">serveurs virtuels &agrave; base de noms</a>.</p>
 
     <p>Cette directive est aussi utilis&eacute;e lors de la cr&eacute;ation d'URLs de
-    redirection relatives quand la directive <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> est d&eacute;finie &agrave; une valeur autre
-    que la valeur par d&eacute;faut.</p>
+    redirection relatives quand la directive
+    <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> est d&eacute;finie &agrave;
+    <code>On</code>. Si <code>UseCanonicalName</code> est d&eacute;finie &agrave;
+    <code>DNS</code>, une recherche DNS inverse est effectu&eacute;e</p>
     
     <p>Par exemple, si le nom de la
     machine h&eacute;bergeant le serveur web est
@@ -4931,6 +5014,12 @@ s'authentifier lui-m&ecirc;me</td></tr>
     </code></p></div>
     </div>
 
+    <div class="warning"> 
+    <p>Les adresses IPv6 ne sont actuellement pas prises
+    en charge par la directive <code class="directive">ServerName</code> et produisent
+    une erreur au d&eacute;marrage du serveur, m&ecirc;me si elles sont entour&eacute;es de
+    crochets. Il s&rsquo;agit d&rsquo;un <a href="https://bz.apache.org/bugzilla/show_bug.cgi?id=52178">probl&egrave;me connu</a>.</p></div>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -4954,10 +5043,22 @@ de nom acc&eacute;d&eacute; par un navigateur incompatible</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>La directive <code class="directive">ServerPath</code> permet de d&eacute;finir
-    le nom de chemin d'URL h&eacute;rit&eacute; d'un h&ocirc;te, &agrave; utiliser avec les <a href="../vhosts/">serveurs virtuels &agrave; base de nom</a>.</p>
+    le nom de chemin d'URL h&eacute;rit&eacute; d'un h&ocirc;te, &agrave; utiliser avec les <a href="../vhosts/name-based.html">serveurs virtuels &agrave; base de nom</a>.</p>
+
+    <div class="note"><p>Il s&rsquo;agit d&rsquo;une fonctionnalit&eacute; patrimoniale qui permet d&rsquo;assurer
+    une compatibilit&eacute; avec les clients HTTP/1.0 qui n&rsquo;envoient pas d&rsquo;en-t&ecirc;te
+    <code>Host:</code>. Lorsqu&rsquo;un tel client soumet un URL correspondant &agrave; la
+    valeur de la directive <code class="directive">ServerPath</code> d&rsquo;un serveur
+    virtuel, la requ&ecirc;te est servie depuis ce serveur virtuel. En pratique, tous
+    les clients HTTP modernes envoient l&rsquo;en-t&ecirc;te <code>Host:</code>, ce qui rend
+    cette directive inutile.</p></div>
 
 <h3>Voir aussi</h3>
 <ul>
+<li><a href="../vhosts/name-based.html">Prise en charge des serveurs
+virtuels &agrave; base de nom</a></li>
+<li><a href="../vhosts/examples.html#serverpath">Exemple d&rsquo;utilisation de
+ServerPath</a></li>
 <li><a href="../vhosts/">Documentation sur les serveurs virtuels
 du serveur HTTP Apache</a></li>
 </ul>
@@ -5171,14 +5272,18 @@ gestionnaire particulier</td></tr>
     <code>None</code>.</p>
 
     <div class="note"><h3>Note</h3>
-    <p>Comme <code class="directive">SetHandler</code> l'emporte sur la
-    d&eacute;finition des gestionnaires par d&eacute;faut, le comportement habituel
-    consistant &agrave; traiter les URLs se terminant par un slash (/) comme
-    des r&eacute;pertoires ou des fichiers index est d&eacute;sactiv&eacute;.</p></div>
+    <p>Comme <code class="directive">SetHandler</code> l'emporte sur la d&eacute;finition des
+    gestionnaires par d&eacute;faut, le comportement habituel consistant &agrave; traiter les
+    URLs se terminant par un slash (/) comme des r&eacute;pertoires ou des fichiers
+    index est d&eacute;sactiv&eacute;. Cette directive outrepasse aussi la directive
+    <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code>, car un
+    gestionnaire est d&eacute;j&agrave; explicitement assign&eacute; &agrave; la requ&ecirc;te.
+    </p></div>
 
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -5353,6 +5458,11 @@ derni&egrave;re.
     y compris les en-t&ecirc;tes de fractionnement avec le corps de la
     r&eacute;ponse. Dans le cas d'un serveur mandataire, la taille du corps de
     requ&ecirc;te n'est pas limit&eacute;e &agrave; 64Kb.</p>
+
+    <p>Les directives <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>
+    ou <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> ne
+    permettent pas de restreindre la m&eacute;thode <code>TRACE</code>. Pour ce faire,
+    utilisez la directive <code class="directive">TraceEnable</code>.</p>
 
     <div class="note"><h3>Note</h3>
     <p>Bien que certains pr&eacute;tendent le contraire, activer la m&eacute;thode

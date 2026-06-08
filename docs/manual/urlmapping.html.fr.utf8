@@ -29,8 +29,6 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requ&ecirc;te pour d&eacute;terminer le noeud du syst&egrave;me de fichier &agrave; partir duquel le
@@ -58,15 +56,12 @@ URLs</a></li>
 <h2 id="documentroot">Racine des documents (DocumentRoot) <a title="Lien permanent" href="#documentroot" class="permalink">&para;</a></h2>
 
     <p>La m&eacute;thode par d&eacute;faut de httpd pour d&eacute;terminer quel fichier servir pour
-    une requ&ecirc;te donn&eacute;e, consiste &agrave; extraire le chemin du fichier de la requ&ecirc;te
-    (la partie de l'URL qui suit le nom d'h&ocirc;te et le port), puis de l'ajouter
-    &agrave; la fin de la valeur de la directive
-    <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> d&eacute;finie dans vos fichiers
-    de configuration.
-    Ainsi, les fichiers et r&eacute;pertoires
-    situ&eacute;s en dessous de <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
-    constituent l'arborescence de base des documents qui seront visibles
-    depuis le web.</p>
+    une requ&ecirc;te donn&eacute;e, consiste &agrave; extraire le <a href="directive-dict.html#Syntax">chemin de la requ&ecirc;te</a> (la partie de
+    l'URL qui suit le nom d'h&ocirc;te et le port), puis de l'ajouter &agrave; la fin de la
+    valeur de la directive <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
+    d&eacute;finie dans vos fichiers de configuration.  Ainsi, les fichiers et
+    r&eacute;pertoires situ&eacute;s en dessous de <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> constituent l'arborescence de base
+    des documents qui seront visibles depuis le web.</p>
 
     <p>Par exemple, si la directive
     <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code> contient

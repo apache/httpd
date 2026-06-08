@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_mime.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Associe les extensions des fichiers demand&eacute;s avec l'action
 d&eacute;clench&eacute;e par ces fichiers et avec leur contenu (type MIME, langage,
 jeu de caract&egrave;re et codage)</td></tr>
@@ -193,7 +191,6 @@ multiples <a title="Lien permanent" href="#multipleext" class="permalink">&para;
 # Pour tous les fichiers sans extension&nbsp;:
 &lt;FilesMatch "^[^.]+$"&gt;
     ForceType text/plain
-    AddDefaultCharset UTF-8
     AddDefaultCharset UTF-8
 &lt;/FilesMatch&gt;</pre>
 

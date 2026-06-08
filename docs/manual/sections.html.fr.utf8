@@ -29,8 +29,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement &agrave; des r&eacute;pertoires, fichiers, h&ocirc;tes,
 ou URLs particuliers.  Ce document d&eacute;crit comment utiliser les conteneurs de
@@ -65,11 +63,10 @@ s'appliqueront &agrave; toutes les requ&ecirc;tes. Si leurs conditions ne sont p
 directives qu'ils contiennent seront ignor&eacute;es.</p>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-contient des directives qui ne seront appliqu&eacute;es que si un param&egrave;tre
-appropri&eacute; a &eacute;t&eacute; d&eacute;fini dans la ligne de commande de <code class="program"><a href="./programs/httpd.html">httpd</a></code>.
-Par exemple,
-avec la configuration suivante, toutes les requ&ecirc;tes seront redirig&eacute;es vers
-un autre site si le serveur est d&eacute;marr&eacute; en utilisant la ligne de commande&nbsp;:
+contient des directives qui ne seront appliqu&eacute;es que si un param&egrave;tre appropri&eacute; a
+&eacute;t&eacute; d&eacute;fini dans la ligne de commande de <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Par exemple,
+avec la configuration suivante, toutes les requ&ecirc;tes seront redirig&eacute;es vers un
+autre site si le serveur est d&eacute;marr&eacute; en utilisant la ligne de commande&nbsp;:
 <code>httpd -DClosedForNow</code>&nbsp;:</p>
 
 <pre class="prettyprint lang-config">&lt;IfDefine ClosedForNow&gt;
@@ -114,7 +111,7 @@ et configurations de httpd.</p>
 <p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
 <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> et
 <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
-peuvent inverser leur test conditionnel en le faisant pr&eacute;c&eacute;der d'un &nbsp;&laquo;&nbsp;!&nbsp;&raquo;.
+peuvent inverser leur test conditionnel en le faisant pr&eacute;c&eacute;der d'un &laquo;&nbsp;!&nbsp;&raquo;.
 De plus, ces sections peuvent &ecirc;tre imbriqu&eacute;es afin de d&eacute;finir des restrictions
 plus complexes.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
@@ -213,15 +210,31 @@ toute requ&ecirc;te commen&ccedil;ant par la cha&icirc;ne de caract&egrave;res <
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 n'a pas besoin de faire r&eacute;f&eacute;rence &agrave; un &eacute;l&eacute;ment du syst&egrave;me de fichiers.
 &Agrave; ce titre, l'exemple suivant montre comment faire correspondre une URL
-particuli&egrave;re &agrave; un gestionnaire interne du serveur HTTP Apache fourni par le module
+particuli&egrave;re &agrave; un gestionnaire interne fourni par le module
 <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
 Il n'est pas n&eacute;cessaire de trouver un fichier nomm&eacute; <code>server-status</code>
 dans le syst&egrave;me de fichiers.</p>
 
-<pre class="prettyprint lang-config">&lt;Location "/server-status"&gt;
+<pre class="prettyprint lang-config"># Un URL vers un gestionnaire interne&nbsp;:
+&lt;Location "/server-status"&gt;
     SetHandler server-status
+&lt;/Location&gt;
+
+# Un chemin d&rsquo;URL vers un dorsal de mandataire inverse&nbsp;:
+&lt;Location "/app"&gt;
+    ProxyPass "http://backend.example.com/"
+    ProxyPassReverse "http://backend.example.com/"
+&lt;/Location&gt;
+
+# Interdire l&rsquo;acc&egrave;s &agrave; un chemin d&rsquo;URL sans tenir compte de ce qui le traite&nbsp;:
+&lt;Location "/private"&gt;
+    Require all denied
 &lt;/Location&gt;</pre>
 
+
+<p>&Eacute;tant donn&eacute; que la section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> op&egrave;re sur des URLs, et non sur des chemins du
+syst&egrave;me de fichiers, il s'agit du conteneur appropri&eacute; pour la configuration du
+mandataire et les points de terminaison fournis par les modules.</p>
 
 
 <h3 id="overlapping-webspace">Espace web imbriqu&eacute;</h3>
@@ -468,21 +481,31 @@ sont interpr&eacute;t&eacute;es.</p>
     &eacute;valu&eacute;es mais selon l'ordre dans lequel elles apparaissent dans le fichier
     de configuration.</li>
     <li>Les sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> (groupe 1 ci-dessus)
-    sont trait&eacute;es dans l'ordre du r&eacute;pertoire le plus court vers le plus long.
+    sont trait&eacute;es dans l'ordre du r&eacute;pertoire le plus court vers le plus long
+    (sans tenir compte de leur ordre d&rsquo;apparition dans le fichier de
+    configuration).
     Par exemple, <code>&lt;Directory "/var/web/dir"&gt;</code> sera
     trait&eacute;e avant <code>&lt;Directory
     "/var/web/dir/subdir"&gt;</code>.</li>
-    <li>Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au m&ecirc;me
-    r&eacute;pertoire, elles sont trait&eacute;es selon l'ordre dans lequel elles
-    apparaissent dans le fichier de configuration.</li>
-    <li>Les sections de configuration incluses &agrave; l'aide de la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont trait&eacute;es comme si elles se
+    <li>Si plusieurs sections <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au m&ecirc;me r&eacute;pertoire, elles
+    sont trait&eacute;es selon l'ordre dans lequel elles apparaissent dans le fichier
+    de configuration. La m&ecirc;me r&egrave;gle s&rsquo;applique lorsque plusieurs sections
+    <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>,
+    <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ou <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> ciblent &agrave; la m&ecirc;me
+    ressource.</li>
+    <li>Les sections de configuration incluses &agrave; laide de la directive <code class="directive"><a href="./mod/core.html#include">Include</a></code> sont trait&eacute;es comme si elles se
     trouvaient r&eacute;ellement dans le fichier qui les inclut &agrave; la position de la
     directive
     <code class="directive"><a href="./mod/core.html#include">Include</a></code>.</li>
     <li>Les sections situ&eacute;es &agrave; l'int&eacute;rieur de sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     sont appliqu&eacute;es <em>apr&egrave;s</em> les sections correspondantes situ&eacute;es en
     dehors de la d&eacute;finition du serveur virtuel, ce qui permet au serveur virtuel
-    de pr&eacute;valoir sur la configuration du serveur global.</li>
+    de pr&eacute;valoir sur la configuration du serveur global. Notez qu&rsquo;&agrave; la
+    diff&eacute;rence des autres types de section, un seul <code class="directive"><a href="./mod/core.html#serveur virtuel">&lt;serveur virtuel&gt;</a></code> est s&eacute;lectionn&eacute; pour une requ&ecirc;te
+    &mdash;&nbsp;les directives de plusieurs serveurs virtuels correspondants ne sont
+    jamais fusionn&eacute;es. Voir <a href="vhosts/details.html">Correspondance des
+    serveurs virtuels</a> pour des d&eacute;tails &agrave; propos de la mani&egrave;re dont les
+    serveurs virtuels sont s&eacute;lectionn&eacute;s.</li>
     <li>Quand la requ&ecirc;te est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,
     le conteneur <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
     prend la place du conteneur <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> dans l'ordre de traitement.</li>
@@ -494,9 +517,21 @@ sont interpr&eacute;t&eacute;es.</p>
     peut vous y aider.
         </li>
         <li>Lorsqu'une section <code class="directive"><a href="./mod/core.html#if">&lt;If&gt;</a></code> est utilis&eacute;e dans un fichier <code>.htaccess</code>, les
-	directives incluses dans un r&eacute;pertoire parent seront fusionn&eacute;es
-	<em>apr&egrave;s</em> les directives non-incluses dans un sous-r&eacute;pertoire.
+	directives incluses dans un "directory" parent seront fusionn&eacute;es
+	<em>apr&egrave;s</em> les directives non-incluses dans un "directory" enfant.
 	</li>
+	<li><div class="warning"><h3>Avertissement&nbsp;: une directive
+	&lt;Limit&gt; au sein d&rsquo;une section &lt;Location&gt; peut accorder un
+	acc&egrave;s silencieusement</h3>
+        <p>Utiliser la directive <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code> au sein d&rsquo;une section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> pour restreindre
+	la liste des m&eacute;thodes HTTP autoris&eacute;es peut donner des r&eacute;sultats
+	inattendus. Pour les m&eacute;thodes non sp&eacute;cifi&eacute;es par la directive <code class="directive"><a href="./mod/core.html#limit">&lt;Limit&gt;</a></code>, la section <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> h&ocirc;te est trait&eacute;e comme
+	n&rsquo;imposant aucune condition d&rsquo;autorisation, ce qui a effectivement pour
+	effet d&rsquo;accorder l&rsquo;acc&egrave;s et outrepasse toute &eacute;ventuelle restriction
+	d&rsquo;une section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> qui, autrement, aurait d&ucirc; s&rsquo;appliquer.
+	C&rsquo;est pourquoi il est pr&eacute;f&eacute;rable d&rsquo;utiliser la directive <code class="directive"><a href="./mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> ou de d&eacute;finir les
+	autorisations sans restriction sur les m&eacute;thodes.</p>
+        </div></li>
     </ul>
 
 	<div class="note"><h3>Note technique</h3>

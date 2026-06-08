@@ -1,5 +1,124 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.4.69
+
 Changes with Apache 2.4.68
+
+  *) SECURITY: CVE-2026-49975: mod_http2 denial of service
+     (cve.mitre.org)
+     Memory Allocation with Excessive Size Value vulnerability in
+     Apache HTTP Server's mod_http leads to denial of service via
+     malicious HTTP requests.
+     This issue affects Apache HTTP Server: from 2.4.17 through
+     2.4.67.
+     Credits: Quang Luong of Calif.IO in collaboration with OpenAI
+     Codex
+
+  *) SECURITY: CVE-2026-48913: mod_http2 memory corruption when file
+     handles exhausted (cve.mitre.org)
+     Use After Free vulnerability in Apache HTTP Server module
+     mod_http2 when file handles are already exhausted.
+     This issue affects Apache HTTP Server: from 2.4.55 through
+     2.4.67.
+     Credits: Sam Lovejoy, IBM X-Force Offensive Research (XOR)
+
+  *) SECURITY: CVE-2026-44631: Heap Underflow in `ap_regname` via
+     Signed Char Overflow (cve.mitre.org)
+     Buffer Underwrite vulnerability in Apache HTTP Server on crafted
+     regular expressions in the configuration.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-44186: Loop in `proxy_ftp_handler` in
+     mod_proxy_ftp (cve.mitre.org)
+     Loop with Unreachable Exit Condition ('Infinite Loop')
+     vulnerability in the mod_proxy_ftp module in Apache HTTP Server
+     with an attacker controlled backend FTP server.
+     This issue affects undefined: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-44185: Stack Buffer Over-Read in mod_ssl OCSP
+     `send_request` (cve.mitre.org)
+     Buffer Over-read vulnerability in Apache HTTP Server via
+     outbound OCSP requests to an attacker controlled OCSP server
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-44119: escalation of privilege through
+     expressions in .htaccess in multiple modules (cve.mitre.org)
+     Improper Privilege Management vulnerability in Apache HTTP
+     Server 2.4.67 and earlier allows local .htaccess authors to read
+     files with the privileges of the httpd user.
+     This issue affects Apache HTTP Server: from through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Lucian Nitescu
+
+  *) SECURITY: CVE-2026-43951: OOB Read in `merge_response_headers`
+     can cause crash (cve.mitre.org)
+     Out-of-bounds Read vulnerability in Apache HTTP Server with
+     mod_headers and mod_mime and multiple response languages.
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-42536: mod_xml2enc heap overflow
+     (cve.mitre.org)
+     Heap-based Buffer Overflow vulnerability in Apache HTTP Server
+     with mod_xml2enc, xml2StartParse, and untrusted content
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-42535: mod_dav_fs protected directory access
+     (cve.mitre.org)
+     A path handling issue in mod_dav_fs in Apache 2.4.67 and
+     earlier allows a WebDAV content author to directly manipulate
+     trusted DAV property databases, potentially causing child
+     process crashes.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     this issue.
+     Credits: Zhenpeng (Leo) Lin at depthfirst
+
+  *) SECURITY: CVE-2026-34356: ProxyPassReverseCookieMap buffer
+     overflow (cve.mitre.org)
+     Heap-based Buffer Overflow vulnerability in Apache HTTP Server
+     with malicious backend servers and ProxyPassReverseCookie*
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Arkadi Vainbrand
+
+  *) SECURITY: CVE-2026-34355: mod_proxy_html buffer overflow
+     (cve.mitre.org)
+     A buffer overflow in mod_proxy_html in Apache HTTP Server 2.4.67
+     and earlier allows an attack by an untrusted backend.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     this issue.
+     Credits: Elhanan Haenel
+
+  *) SECURITY: CVE-2026-29170: mod_proxy_ftp XSS (cve.mitre.org)
+     A cross-site scripting vulnerability exists in mod_proxy_ftp's
+     HTML directory list generation in Apache HTTP Server 2.4.67 and
+     earlier when listing FTP directory contents either via forward
+     or reverse proxy configuration.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     this issue.
+     Credits: Pavel Kohout, Aisle Research, Aisle.com
+
+  *) SECURITY: CVE-2026-29167: mod_ldap per-dir use-after-free
+     (cve.mitre.org)
+     Use After Free vulnerability in Apache HTTP Server with mod_ldap
+     in per-directory configuration
+     This issue affects Apache HTTP Server: from 2.4.0 through 2.4.67.
+     Users are recommended to upgrade to version 2.4.68, which fixes
+     the issue.
+     Credits: Pavel Kohout, Aisle Research, Aisle.com
 
   *) mod_ssl, ab: Add support for OpenSSL 4.0.  [Joe Orton]
 

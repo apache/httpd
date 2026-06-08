@@ -32,8 +32,6 @@
 <a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_setenvif.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Permet de d&eacute;finir des variables d'environnement en fonction
 de certainescaract&eacute;ristiques de la requ&ecirc;te</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -169,7 +167,7 @@ attributs de la requ&ecirc;te</td></tr>
     se pr&eacute;senter sous l'une des trois formes suivantes :</p>
 
 <ol>
-<li>Un champ d'en-t&ecirc;te de requ&ecirc;te HTTP (voir la <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour
+<li>Un champ d'en-t&ecirc;te de requ&ecirc;te HTTP (voir la <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a> pour
     plus d'information &agrave; leur propos) ; par exemple : <code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, ou
     <code>Accept-Language</code>. Il est possible d'utiliser une

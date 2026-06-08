@@ -265,6 +265,7 @@ h2earlyhints	mod/mod_http2.html#h2earlyhints
 h2maxdataframelen	mod/mod_http2.html#h2maxdataframelen
 h2maxheaderblocklen	mod/mod_http2.html#h2maxheaderblocklen
 h2maxsessionstreams	mod/mod_http2.html#h2maxsessionstreams
+h2maxstreamerrors	mod/mod_http2.html#h2maxstreamerrors
 h2maxworkeridleseconds	mod/mod_http2.html#h2maxworkeridleseconds
 h2maxworkers	mod/mod_http2.html#h2maxworkers
 h2minworkers	mod/mod_http2.html#h2minworkers
@@ -353,6 +354,7 @@ limitxmlrequestbody	mod/core.html#limitxmlrequestbody
 listen	mod/mpm_common.html#listen
 listenbacklog	mod/mpm_common.html#listenbacklog
 listencoresbucketsratio	mod/mpm_common.html#listencoresbucketsratio
+listentcpdeferaccept	mod/mpm_common.html#listentcpdeferaccept
 loadfile	mod/mod_so.html#loadfile
 loadmodule	mod/mod_so.html#loadmodule
 location	mod/core.html#location
@@ -395,6 +397,7 @@ maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
 mdactivationdelay	mod/mod_md.html#mdactivationdelay
 mdbaseserver	mod/mod_md.html#mdbaseserver
+mdcacertificatefile	mod/mod_md.html#mdcacertificatefile
 mdcachallenges	mod/mod_md.html#mdcachallenges
 mdcertificateagreement	mod/mod_md.html#mdcertificateagreement
 mdcertificateauthority	mod/mod_md.html#mdcertificateauthority
@@ -411,6 +414,7 @@ mdcontactemail	mod/mod_md.html#mdcontactemail
 mddrivemode	mod/mod_md.html#mddrivemode
 mdexternalaccountbinding	mod/mod_md.html#mdexternalaccountbinding
 mdhttpproxy	mod/mod_md.html#mdhttpproxy
+mdinitialdelay	mod/mod_md.html#mdinitialdelay
 mdmatchnames	mod/mod_md.html#mdmatchnames
 mdmember	mod/mod_md.html#mdmember
 mdmembers	mod/mod_md.html#mdmembers
@@ -424,6 +428,7 @@ mdprivatekeys	mod/mod_md.html#mdprivatekeys
 mdprofile	mod/mod_md.html#mdprofile
 mdprofilemandatory	mod/mod_md.html#mdprofilemandatory
 mdrenewmode	mod/mod_md.html#mdrenewmode
+mdrenewviaari	mod/mod_md.html#mdrenewviaari
 mdrenewwindow	mod/mod_md.html#mdrenewwindow
 mdrequirehttps	mod/mod_md.html#mdrequirehttps
 mdretrydelay	mod/mod_md.html#mdretrydelay
@@ -690,6 +695,7 @@ sslusername	mod/mod_ssl.html#sslusername
 sslusestapling	mod/mod_ssl.html#sslusestapling
 sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
+sslvhostsnipolicy	mod/mod_ssl.html#sslvhostsnipolicy
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
 stricthostcheck	mod/core.html#stricthostcheck

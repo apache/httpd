@@ -549,13 +549,33 @@ NoDecode option available in 2.3.12 and later.</td></tr>
       followed by a comma-separated list, without spaces, of options that
       may be set using the <code class="directive"><a href="#options">Options</a></code> directive.
 
-      <div class="note"><h3>Implicit disabling of Options</h3>
-      <p>Even though the list of options that may be used in .htaccess files
-         can be limited with this directive, as long as any <code class="directive"><a href="#options">Options</a></code> directive is allowed any
-         other inherited option can be disabled by using the non-relative
-         syntax.  In other words, this mechanism cannot force a specific option
-         to remain <em>set</em> while allowing any others to be set.
-      </p></div>
+      <div class="warning"><h3>Implicit disabling of Options</h3>
+      <p>This restriction only controls which options a
+         <code>.htaccess</code> file may <em>enable</em>. It does not
+         prevent inherited options from being <em>disabled</em>.</p>
+
+      <p>When a <code class="directive"><a href="#options">Options</a></code> directive
+         in <code>.htaccess</code> uses absolute syntax (without
+         <code>+</code> or <code>-</code> prefixes), it <em>replaces</em>
+         the entire inherited option set. Any previously active options
+         not listed are implicitly turned off&mdash;even options that are
+         not in the <code>AllowOverride</code> permitted list.</p>
+
+      <p>For example, if the server configuration sets:</p>
+      <pre class="prettyprint lang-config">Options Indexes FollowSymLinks ExecCGI
+AllowOverride Options=Indexes</pre>
+
+      <p>and a <code>.htaccess</code> file contains:</p>
+      <pre class="prettyprint lang-config">Options Indexes</pre>
+
+      <p>then <code>FollowSymLinks</code> and <code>ExecCGI</code> are
+         implicitly disabled for that directory, even though the
+         <code>AllowOverride</code> line only permits setting
+         <code>Indexes</code>.</p>
+
+      <p>In short, this mechanism cannot force a specific option to
+         remain <em>set</em> while allowing any others to be set.</p>
+      </div>
 
       <pre class="prettyprint lang-config">AllowOverride Options=Indexes,MultiViews</pre>
 
@@ -1697,26 +1717,28 @@ ErrorLogFormat "[%t] [%l] [pid %P] %F: %E: [client %a] %M"</pre>
         <td>The current time</td></tr>
 <tr><td><code>%{u}t</code></td>
         <td>The current time including micro-seconds</td></tr>
-<tr class="odd"><td><code>%{cu}t</code></td>
+<tr class="odd"><td><code>%{m}t</code></td>
+        <td>The current time including milliseconds</td></tr>
+<tr><td><code>%{cu}t</code></td>
         <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds</td></tr>
-<tr><td><code>%{cuz}t</code></td>
+<tr class="odd"><td><code>%{cuz}t</code></td>
         <td>The current time in ISO 8601 extended format (compact), including
             micro-seconds and time zone in the ISO 8601:2000 standard format.
             Available since 2.4.58 only</td></tr>
-<tr class="odd"><td><code>%{%-format}t</code></td>
+<tr><td><code>%{%-format}t</code></td>
 	<td>The current time formatted per the <code>strftime(3)</code> function.
 	    Available since 2.4.58 only</td></tr>
-<tr><td><code>%v</code></td>
+<tr class="odd"><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="#servername">ServerName</a></code>
             of the current server.</td></tr>
-<tr class="odd"><td><code>%V</code></td>
+<tr><td><code>%V</code></td>
         <td>The server name of the server serving the request according to the
             <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>
             setting.</td></tr>
-<tr><td><code>\&nbsp;</code> (backslash space)</td>
+<tr class="odd"><td><code>\&nbsp;</code> (backslash space)</td>
         <td>Non-field delimiting space</td></tr>
-<tr class="odd"><td><code>%&nbsp;</code> (percent space)</td>
+<tr><td><code>%&nbsp;</code> (percent space)</td>
         <td>Field delimiter (no output)</td></tr>
 </table>
 

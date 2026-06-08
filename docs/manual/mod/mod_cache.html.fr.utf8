@@ -31,8 +31,6 @@
 <a href="../ja/mod/mod_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Filtre de mise en cache HTTP conforme &agrave; la RFC 2616</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>cache_module</td></tr>
@@ -48,7 +46,7 @@
     d'environnement.</div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> impl&eacute;mente un <strong>filtre de mise
-    en cache de contenu HTTP</strong> conforme &agrave; la <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>, avec
+    en cache de contenu HTTP</strong> conforme &agrave; la <a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>, avec
     support de la mise en cache des r&eacute;ponses dont le contenu a &eacute;t&eacute;
     n&eacute;goci&eacute; et comportant l'en-t&ecirc;te Vary.</p>
 
@@ -57,7 +55,7 @@
     jour, et peut apporter un gain de performances significatif si le
     serveur original supporte les <strong>requ&ecirc;tes
     conditionnelles</strong> en prenant en compte l'en-t&ecirc;te de requ&ecirc;te
-    HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.26">If-None-Match</a>.
+    HTTP If-None-Match (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.26">RFC 2616</a>).
     Le contenu n'est ainsi r&eacute;g&eacute;n&eacute;r&eacute; que lorsqu'il a &eacute;t&eacute; modifi&eacute;, et non
     lorsqu'il a expir&eacute;.</p>
 
@@ -88,8 +86,7 @@
     &eacute;ventuellement compress&eacute; par le filtre <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.</p>
 
     <p>Dans le mode de fonctionnement normal, <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>
-    peut &ecirc;tre contr&ocirc;l&eacute; par les en-t&ecirc;tes <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9">Cache-Control</a>
-    et <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">Pragma</a>
+    peut &ecirc;tre contr&ocirc;l&eacute; par les en-t&ecirc;tes Cache-Control (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.9">RFC 2616</a>) et Pragma (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.32">RFC 2616</a>)
     envoy&eacute;s par un client dans une requ&ecirc;te, ou par un serveur dans une
     r&eacute;ponse. Dans des circonstances exceptionnelles,
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> peut cependant &ecirc;tre configur&eacute; pour
@@ -99,17 +96,17 @@
     s'ins&eacute;rer entre le client et le serveur, et ce type de configuration
     ne doit donc &ecirc;tre utiliser qu'en cas de n&eacute;cessit&eacute; absolue.</p>
 
-    <p>La RFC 2616 permet au cache de renvoyer des donn&eacute;es p&eacute;rim&eacute;es
-    pendant que l'entr&eacute;e p&eacute;rim&eacute;e correspondante est mise &agrave; jour depuis
-    le serveur original, et <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> supporte cette
-    fonctionnalit&eacute; lorsque la directive <code class="directive"><a href="#cachelock">CacheLock</a></code> est configur&eacute;e en
-    cons&eacute;quence. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
-    contenant un code de r&eacute;ponse 110. La RFC 2616 permet aussi au cache
-    de renvoyer des donn&eacute;es p&eacute;rim&eacute;es lorsque la tentative de mise &agrave; jour
-    des donn&eacute;es p&eacute;rim&eacute;es renvoie une erreur 500 ou sup&eacute;rieure, et cette
-    fonctionnalit&eacute; est support&eacute;e par d&eacute;faut par
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.46">Warning</a>
-    contenant un code de r&eacute;ponse 111.</p>
+    <p>La RFC 2616 permet au cache de renvoyer des donn&eacute;es p&eacute;rim&eacute;es pendant que
+    l'entr&eacute;e p&eacute;rim&eacute;e correspondante est mise &agrave; jour depuis le serveur original,
+    et <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> supporte cette fonctionnalit&eacute; lorsque la
+    directive <code class="directive"><a href="#cachelock">CacheLock</a></code> est configur&eacute;e
+    en cons&eacute;quence. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP Warning (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.46">RFC 2616</a>) contenant un code de r&eacute;ponse 110. La RFC 2616
+    permet aussi au cache de renvoyer des donn&eacute;es p&eacute;rim&eacute;es lorsque la tentative
+    de mise &agrave; jour des donn&eacute;es p&eacute;rim&eacute;es renvoie une erreur 500 ou sup&eacute;rieure, et
+    cette fonctionnalit&eacute; est support&eacute;e par d&eacute;faut par
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. De telles r&eacute;ponses comportent un en-t&ecirc;te HTTP
+    Warning (<a href="https://www.rfc-editor.org/rfc/rfc2616#section-14.46">RFC 2616</a>) contenant un code de r&eacute;ponse
+    111.</p>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requiert les services d'un ou
     plusieurs modules de gestion de stockage. La distribution Apache de base
@@ -456,6 +453,9 @@ sp&eacute;cifi&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
 </table>
+    <div class="note"><p>Cette directive n&rsquo;est valable que dans les sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> dans des contextes de
+    r&eacute;pertoire. Elle ne l&rsquo;est pas dans les sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>.</p></div>
+    
     <p>La directive <code class="directive">CacheDisable</code> enjoint
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> de <em>ne pas</em> mettre en cache l'URL
     sp&eacute;cifi&eacute;e par <var>cha&icirc;ne URL</var>, ainsi que les URLs de niveaux
