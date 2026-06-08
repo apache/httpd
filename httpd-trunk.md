@@ -1,11 +1,13 @@
 # Apache httpd — `trunk` (2.5.x/2.6) vs `2.4.x`: Functional Difference Analysis
 
 **Date:** 2026-06-08
-**Repository:** `apache/httpd` git mirror (local clone)
+**Repository:** `apache/httpd` SVN working copy (`https://svn.apache.org/repos/asf/httpd/httpd/trunk`, r1935140)
 **Branches compared:** `trunk` (`2.5.1-dev`, MMN `20211221:31`) vs `2.4.x` (`2.4.68-dev`, MMN `20120211:142`)
-**Merge base:** r-level divergence at commit `5405226ae2` (2011-11-10). Since divergence:
+**Merge base:** Branches diverged at SVN r1179239 (2011-11-10). Since divergence:
 ~12,560 commits trunk-only, ~11,446 commits 2.4.x-only. The vast majority of 2.4.x work is
 back-ported trunk work; this document isolates what is genuinely *new in trunk only*.
+Note: commit hashes cited in evidence rows (e.g. `6bf5bd6cb2`) are from the ASF git mirror of the
+SVN history and cannot be resolved directly from this working copy.
 
 > Note: trunk is the development line that will become **2.6 / 2.5.x**. The bundled APR (1.7.x in
 > `srclib/`) is the other big structural difference but is a build-time matter, not a runtime
@@ -18,9 +20,9 @@ back-ported trunk work; this document isolates what is genuinely *new in trunk o
 Differences were derived mechanically from the two branches, not from CHANGES prose (CHANGES is an
 unreliable signal because most entries are later back-ported):
 
-1. **Module/file set diff** — `git ls-tree` of `modules/`, `server/`, `include/` across both branches.
-2. **Directive diff** — every `AP_INIT_*` directive name extracted from all `.c` files in each branch
-   and compared (`trunk` 709 directives vs `2.4.x` 637).
+1. **Module/file set diff** — `svn list` / `find` of `modules/`, `server/`, `include/` across both branches.
+2. **Directive diff** — every `AP_INIT_*` directive name extracted from all `.c` and `.h` files in each
+   branch and compared (`trunk` 730 directives vs `2.4.x` 637; count reflects r1935140).
 3. **Reverse check** — directives/modules present in **2.4.x but absent in trunk** were individually
    investigated to prove they are intentional removals, not regressions.
 4. **Maturity dating** — last-commit date per trunk-only module as a back-port-readiness signal.
@@ -57,7 +59,7 @@ deliberate deprecations. ✅
 | `mod_log_json` | loggers | Structured JSON access logging. | 2021-03 | **Candidate** — self-contained logger. |
 | `mod_journald` | loggers | Log to systemd `journald`. | 2020-04 | **Candidate** (Linux-only; already advertised in the 2.6 new-features doc). |
 | `mod_syslog` | loggers | Log to syslog as a provider. | 2017-02 | **Candidate** (already advertised in the 2.6 new-features doc). |
-| `mod_allowhandlers` | aaa | Restrict which handlers may run in a context (`AllowHandlers`). | 2012-11 | **Candidate** — small, stable, self-contained. |
+| `mod_allowhandlers` | aaa | Restrict which handlers may run in a context (`AllowHandlers`). | 2013-05 | **Candidate** — small, stable, self-contained. |
 | `mod_policy` (`modules/test/`) | test | Enforce outgoing-request policies / cache-correctness (`Policy*` directives). | 2026-06 | **Hold** — lives under `modules/test/`; experimental. |
 | `mod_noloris` (`modules/experimental/`) | experimental | Slowloris mitigation (`MaxClientConnections`, `TrustedProxy`, `ClientRecheckTime`). | 2018-08 | **Hold** — experimental tree; not maintained recently. |
 | `mod_ssl_ct` + `ssl_ct_*` | ssl | Certificate Transparency (RFC 6962) — SCT handling (`CT*` directives). | 2024-04 | **Hold / do-not-backport** — rejects OpenSSL 3.x (must be `--disable`d on modern builds); largely superseded by CA-side CT. |
@@ -117,19 +119,28 @@ most worth tracking for backport:
 - `ProxyAsyncDelay`, `ProxyAsyncIdleTimeout`, `ProxyWebsocketAsyncDelay`, `ProxyWebsocketIdleTimeout`
   — asynchronous write-completion / Upgrade(d)-protocol handling under async MPMs.
 
-**mod_ssl** — `SSLPolicy` (apply a named bundle of SSL settings; `SSLPolicy*` family).
+**mod_ssl** — `SSLPolicy` (apply a named bundle of SSL settings), `SSLVHostSNIPolicy` (per-vhost SNI
+policy: `strict|secure|authonly|insecure`), `SSLECHKeyDir` (TLS Encrypted Client Hello key directory;
+build-gated on `HAVE_OPENSSL_ECH`).
 
 **Other modules**
 - `mod_mime`: `MimeOptions`.
 - `mod_mime_magic`: `MimeMagicDecompression` (explicitly NOT RFC-compliant; off by default).
 - `mod_autoindex`: `IndexForbiddenReturn404`.
+- `mod_alias`: `AliasPreservePath` — maps the full path tail after an alias declared inside a
+  `<Location>` (2023-07).
 - `mod_session_cookie`: `SessionCookieMaxAge`.
 - `mod_dav_fs`: `DAVLockDBType`, `DAVHonorMtimeHeader`; `mod_dav` MS ext: `DAVMSext`, `DAVquota`.
-- `mod_cache`: `Warning` handling.
+- `mod_http2`: `H2WebSockets` (RFC 8441 WebSocket bootstrap over HTTP/2; off by default),
+  `H2EarlyHint` (add headers to 103 Early Hints responses).
+- `mod_cache`: behavioral change — RFC-conformant `Warning` response-header handling (not a new
+  directive).
 
 ### 2E. Other trunk-only core/build features (already on the live 2.6 page)
 
 - `Listen options=...` per-listener socket options (incl. `multipathtcp`, PR 69292).
+- `ListenTCPDeferAccept` — configures the `TCP_DEFER_ACCEPT` socket option value on listen sockets
+  (previously hard-coded); defined in `include/ap_listen.h` (2025-08).
 - **systemd socket activation** (build-time enable, run-time toggle via `mod_systemd`).
 - **IPv6 zone/scope** support in `Listen`/`VirtualHost` (requires APR ≥ 1.7.0 — gated by trunk's
   bundled APR).
@@ -162,6 +173,6 @@ most worth tracking for backport:
 - The engine refactors in §2C (core/http split, generic-HTTP filter split, `ap_method_mask_t`,
   bucket REQUEST/RESPONSE/HEADERS types, `ssl_var_lookup` signature change) — these are the *defining*
   2.6 ABI changes and intentionally cannot go to a stable line.
-- Experimental MPMs `motorz`, `simple`.
+- Experimental MPM `mpm_simple` (long-dormant proof-of-concept). `mpm_motorz` is **not** in this tier — see §2B.
 - `mod_noloris`, `mod_policy` (experimental/test trees), `mod_ssl_ct` (OpenSSL-3-incompatible),
   `mod_serf`, `mod_lbmethod_rr` (example).
