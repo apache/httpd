@@ -45,7 +45,30 @@
       <dd>The <directive module="mpm_common">Listen</directive>
       directive now supports an optional <code>options=...</code>
       argument, allowing per-listener socket options to be
-      configured.</dd>
+      configured, including the <code>multipathtcp</code> option to
+      enable Multipath TCP where supported by the platform.</dd>
+
+      <dt>Asynchronous filtering and write completion</dt>
+      <dd>The new <directive module="core">AsyncFilter</directive>
+      directive declares which filter types support asynchronous
+      handling, and support for asynchronous write completion has been
+      extended throughout the core.  This underpins the asynchronous
+      proxying and WebSocket handling described below.</dd>
+
+      <dt>HTTP/1.1 strictness controls</dt>
+      <dd>New core directives give finer control over HTTP/1.1
+      conformance: <directive module="core">HttpExpectStrict</directive>
+      controls whether a <code>417</code> is returned when a client
+      omits a <code>100-Continue</code> expectation, and
+      <directive module="core">HttpContentLengthHeadZero</directive>
+      controls <code>Content-Length</code> handling for
+      <code>HEAD</code> requests.</dd>
+
+      <dt>Per-context log level overrides</dt>
+      <dd>The new <directive module="core">LogLevelOverride</directive>
+      directive allows the log level to be overridden for individual
+      client IP addresses, easing targeted debugging on a live
+      server.</dd>
 
       <dt><code>systemd</code> socket activation</dt>
       <dd><program>httpd</program> can now be configured to start via
@@ -71,12 +94,38 @@
   <section id="newmods">
     <title>New Modules</title>
     <dl>
-<!--      <dt><module>mod_ssl_ct</module></dt>
-      <dd>Fill me in.</dd> -->
+      <dt><module>mod_auth_bearer</module>, <module>mod_autht_core</module>,
+          <module>mod_autht_jwt</module></dt>
+      <dd>A new authentication-token (<em>autht</em>) provider framework
+      has been added alongside the existing authn/authz provider stacks.
+      <module>mod_auth_bearer</module> implements
+      <rfc>6750</rfc> <code>Bearer</code> token authentication as a
+      front-end (analogous to <module>mod_auth_basic</module>),
+      <module>mod_autht_core</module> hosts the autht provider registry,
+      and <module>mod_autht_jwt</module> provides JSON Web Token
+      signing and verification.</dd>
+
+      <dt><module>mod_crypto</module></dt>
+      <dd>This new module can encrypt and decrypt request and response
+      bodies via input and output filters, using the APR crypto
+      drivers.</dd>
 
       <dt><module>mod_journald</module>, <module>mod_syslog</module></dt>
       <dd>These new modules provide support for logging to syslog or
       <code>journald</code>.</dd>
+
+      <dt>mod_log_json</dt>
+      <dd>This new module provides structured access logging in JSON
+      format.</dd>
+
+      <dt><module>mod_proxy_beacon</module></dt>
+      <dd>This new module lets back-end reverse-proxy servers announce
+      themselves over a UDP datagram channel so that they are
+      automatically added to their front-end proxy balancer.</dd>
+
+      <dt><module>mod_allowhandlers</module></dt>
+      <dd>This new module restricts which handlers may run in a given
+      context, providing an additional layer of access control.</dd>
 
 </dl>
   </section>
@@ -93,14 +142,50 @@
         <li>The <code>SSLKEYLOGFILE</code> environment variable can
         now be set to log private key material for off-line decryption
         of SSL/TLS protocol dumps using third-party tools.</li>
+        <li>The new <directive module="mod_ssl">SSLPolicy</directive>
+        directive allows a named bundle of SSL settings to be defined
+        once and applied to multiple virtual hosts.</li>
       </ul></dd>
+
+      <dt><module>mod_proxy</module>, <module>mod_proxy_wstunnel</module></dt>
+      <dd>Proxying can now run asynchronously under the event MPM,
+      freeing worker threads while waiting on slow back-ends.  This
+      includes asynchronous handling of <code>Upgrade</code>d
+      protocols and WebSockets, tuned by the new
+      <directive module="mod_proxy">ProxyAsyncDelay</directive>,
+      <directive module="mod_proxy">ProxyAsyncIdleTimeout</directive>,
+      <code>ProxyWebsocketAsyncDelay</code> and
+      <code>ProxyWebsocketIdleTimeout</code> directives.</dd>
+
+      <dt><module>mod_http2</module></dt>
+      <dd>HTTP/2 gains support for bootstrapping WebSockets as described
+      in <rfc>8441</rfc> (enabled with the new <code>H2WebSockets</code>
+      directive), the new <code>H2EarlyHint</code> directive for adding
+      headers carried in a <code>103 Early Hints</code> response, and
+      accurate accounting of bytes sent for the <code>%O</code> log
+      format.</dd>
+
+      <dt><module>mod_dav</module></dt>
+      <dd>WebDAV gains directory quota support
+      (<directive module="mod_dav_fs">DAVquota</directive>), Microsoft
+      WebDAV protocol extensions
+      (<directive module="mod_dav">DAVMSext</directive>), the
+      <code>DAVHonorMtimeHeader</code> and <code>DAVLockDBType</code>
+      directives, and improved strong-ETag compliance.</dd>
+
+      <dt>Other module enhancements</dt>
+      <dd><module>mod_autoindex</module> adds
+      <directive module="mod_autoindex">IndexForbiddenReturn404</directive>;
+      <module>mod_mime</module> adds <code>MimeOptions</code>; and
+      <module>mod_session_cookie</module> adds
+      <code>SessionCookieMaxAge</code>.</dd>
 
       <dt><module>mod_cgid</module></dt>
       <dd>If configured with <code>--enable-cgid-fdpassing</code>, the
       CGI daemon will set up stderr handling in the same way as
       mod_cgi.</dd>
 
-      
+
     </dl>
   </section>
 
@@ -114,18 +199,43 @@
     </dl>
   </section>
 
-  <section id="documentation">
-    <title>Documentation</title>
-    <dl>
-        <dt>Fill me in</dt>
-        <dd>The <module>mod_example</module> documentation fill me in.</dd>
-
-    </dl>
-  </section>
-
   <section id="developer">
     <title>Module Developer Changes</title>
     <dl>
+      <dt>Core / HTTP module separation</dt>
+
+      <dd>A large amount of code has been moved out of the
+      <code>http</code> module into the core server &#8212; including the
+      default handler, the default input and output filters, and the
+      core configuration directives &#8212; so that the server can run
+      with or without the HTTP module loaded.  As part of this work
+      <code>ap_set_etag()</code> moved from the <code>http</code> module
+      into the core.</dd>
+
+      <dt>New metadata bucket types and HTTP filter split</dt>
+
+      <dd>New <code>REQUEST</code>, <code>RESPONSE</code> and
+      <code>HEADERS</code> metadata bucket types have been added to the
+      API, along with a new method for setting the standard
+      <code>Date</code> and <code>Server</code> response headers and
+      helpers for formatting parts of HTTP/1.x (headers, end chunks) for
+      reuse outside the core, e.g. in <module>mod_proxy</module>.  The
+      <code>HTTP_IN</code> filter has been split into a generic-HTTP
+      filter and an HTTP/1.x-specific <code>HTTP1_BODY_IN</code> filter,
+      and a new <code>body_indeterminate</code> flag on
+      <code>request_rec</code> indicates that a request body may be
+      present and must be read or discarded.</dd>
+
+      <dt>Strong ETag support and request binary notes</dt>
+
+      <dd>A concept of "binary notes" has been added to
+      <code>request_rec</code>, allowing packed bit flags to be set on a
+      request.  The first such note, <code>AP_REQUEST_STRONG_ETAG</code>,
+      lets modules force a strong ETag to comply with RFC requirements
+      such as those mandated by various WebDAV extensions.  New functions
+      <code>ap_make_etag_ex()</code> and <code>ap_set_etag_fd()</code>
+      give full control over ETag generation.</dd>
+
       <dt>New type <code>ap_method_mask_t</code>.</dt>
 
       <dd>The <code>ap_method_mask_t</code> type has been added and is
@@ -139,6 +249,12 @@
       takes a <code>const char *</code><em>name</em> argument and
       returns a <code>const char *</code> string value.  The pool
       argument must now be non-NULL.</dd>
+
+      <dt>Removed APIs</dt>
+
+      <dd>Corresponding with the removal of the <code>Content-MD5</code>
+      header, the <code>ap_md5digest()</code> and
+      <code>ap_md5contextTo64()</code> functions have been removed.</dd>
 
     </dl>
     <p>The developer documentation contains a
