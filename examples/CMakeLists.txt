@@ -26,7 +26,7 @@ apply_target_flags(example_apr_miniserver)
 
 # -- quic_server_test: requires OpenSSL internal headers and static archives --
 # ossl_quic_tserver_* symbols are hidden in libssl.so; only accessible via libssl.a.
-if(NOT MISSING_OPENSSL_STATIC AND TARGET openssl_static)
+if(NOT MISSING_OPENSSL_INTERNAL AND TARGET openssl_static)
   add_executable(example_quic_server_test quic_server_test.c)
   set_target_properties(example_quic_server_test PROPERTIES OUTPUT_NAME quic_server_test)
   target_link_libraries(example_quic_server_test PRIVATE openssl_static nghttp3)
