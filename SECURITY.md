@@ -47,7 +47,7 @@ Processing of requests by remote untrusted users (HTTP clients) MUST
 NOT crash or prematurely terminate server processes, nor gain code
 execution privileges.  In the default configuration, timeouts are
 applied to most aspects of HTTP request handling such that a single
-client SHOULD NOT tie up a single processing thread or process
+idle client connection SHOULD NOT tie up a single processing thread or process
 indefinitely.
 
 It is the responsibility of the server administrator to tune and
