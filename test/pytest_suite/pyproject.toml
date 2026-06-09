@@ -1,0 +1,29 @@
+[project]
+name = "httpd-pytest"
+version = "0.1.0"
+description = "Self-contained pytest port of the Apache httpd integration test suite"
+requires-python = ">=3.11"
+dependencies = [
+    "pytest>=8.0",
+    "httpx>=0.27",
+]
+
+[tool.pytest.ini_options]
+# Eventually tests live under ../t/ per category (apache, modules, ssl, ...).
+# Phase 1 ships the framework + smoke/parity tests under tests/.
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+# Make the framework package (python/apache_pytest) importable from conftest and
+# tests regardless of import mode.
+pythonpath = ["."]
+# importlib import mode lets same-named test modules coexist across category
+# dirs (e.g. ssl/test_all.py and php/test_all.py) without __init__.py files or
+# import-file-mismatch collisions.
+addopts = "-ra --import-mode=importlib"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.uv]
+package = false

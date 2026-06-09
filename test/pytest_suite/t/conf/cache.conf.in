@@ -1,0 +1,25 @@
+#
+# Config for mod_cache tests
+#
+
+<IfModule mod_cache.c>
+    <VirtualHost mod_cache>
+    <IfModule mod_disk_cache.c>
+
+            CacheEnable    disk /cache/
+            CacheRoot      @SERVERROOT@/conf/cacheroot/ 
+            CacheDirLevels 1
+            CacheDirLength 1
+
+   </IfModule>
+   <IfModule mod_cache_disk.c>
+
+            CacheEnable    disk /cache/
+            CacheRoot      @SERVERROOT@/conf/cacheroot/ 
+            CacheDirLevels 1
+            CacheDirLength 1
+
+   </IfModule>
+   DocumentRoot @SERVERROOT@/htdocs/modules/cache
+   </VirtualHost>
+</IfModule>

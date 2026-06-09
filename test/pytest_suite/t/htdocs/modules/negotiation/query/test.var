@@ -1,0 +1,7 @@
+URI: test
+
+URI: test.pl
+Content-Type: text/html; qs=1.0
+
+URI: test.html
+Content-Type: text/html; qs=0.8

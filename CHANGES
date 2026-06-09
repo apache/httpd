@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.4.69
 
+  *) pytest_suite: Port of the old PERL test framework to Python
+     and pytest. Now included in the source tree under ./test
+     [Jim Jagielski]
+
 Changes with Apache 2.4.68
 
   *) SECURITY: CVE-2026-49975: mod_http2 denial of service

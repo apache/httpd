@@ -1,0 +1,11 @@
+<!--#set var="x" value="foo bar"-->
+<!--#if expr="$x = /^foo/ && $x = /bar$/" -->
+pass
+<!--#else -->
+fail
+<!--#endif -->
+<!--#if expr="($x = /^foo/) && ($x = /bar$/)" -->
+pass
+<!--#else -->
+fail
+<!--#endif -->

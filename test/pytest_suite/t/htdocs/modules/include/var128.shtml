@@ -1,0 +1,4 @@
+<!--#set var="HTTP_COOKIE" value="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz" -->
+<!--#if expr="$HTTP_COOKIE = /(.+)/" -->
+<!--#echo var="1" -->
+<!--#endif -->
