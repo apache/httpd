@@ -150,11 +150,11 @@ CURRENT RELEASE NOTES:
     . mod_proxy_http2
     . mod_md
     . documentation
-    . non-Unix build
+    . non-Unix build, and cmake-based build
     . non-Unix, single-platform code
     . routine APLOGNO() backports
     . .gdbinit
-    . CI configuration and scripts
+    . Tests, CI configuration and scripts
     . mod_tls
 
 RELEASE SHOWSTOPPERS:
