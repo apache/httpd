@@ -1,0 +1,291 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="motorz.xml.meta">
+<name>motorz</name>
+<description>Un MPM (Multi-Processing Module) événementiel léger, rapide et
+autonome basé sur l'ensemble de requêtes et le pool de threads APR,
+particulièrement adapté comme mandataire inverse</description>
+<status>MPM</status>
+<sourcefile>motorz.c</sourcefile>
+<identifier>mpm_motorz_module</identifier>
+
+<summary>
+    <p>Le MPM <module>motorz</module> est une implémentation évènementielle
+    asynchrone. Il combine un ensemble fixe de processus enfants de style prefork
+    avec un cœur construit sur l’ensemble de requêtes d’<glossary>APR</glossary>
+    et un jeu de threads partagés. Chaque processus enfant exécute un ou
+    plusieurs threads <dfn>sondeurs</dfn> dédiés qui surveillent les sockets et
+    les compteurs de délai tout en répartissant les évènements d’entrée/sortie prêts
+    et les compteurs de délai expirés parmi un jeu de threads de travail. Les
+    threads de travail ne sondent jamais ; ils ne font que traiter les
+    connexions/requêtes qui leur sont envoyées.</p>
+
+    <p>Le but est de concevoir un MPM rapide, efficace, autonome et compact qui
+    fonctionne sur les plateformes Unix modernes en s’appuyant le plus possible
+    sur APR, tout en prenant en charge la gestion des connexions asynchrones
+    nécessaire à l’efficacité des connexions persistantes et de HTTP/2.</p>
+
+    <p>Pour utiliser le MPM <module>motorz</module>, ajoutez
+    <code>--with-mpm=motorz</code> aux arguments du script
+    <program>configure</program> lors de la construction de
+    <program>httpd</program>, ou construisez le en tant que module chargeable
+    avec <code>--enable-mpms-shared=motorz</code>.</p>
+
+</summary>
+
+<seealso><a href="event.html">Le MPM event</a></seealso>
+<seealso><a href="worker.html">Le MPM worker</a></seealso>
+<seealso><a href="prefork.html">Le MPM prefork</a></seealso>
+<seealso><a href="../bind.html">Définir les adresses et ports qu’utilise le
+serveur HTTP Apache</a></seealso>
+
+<section id="how-it-works"><title>Comment cela fonctionne-t-il</title>
+    <p><module>motorz</module> utilise prefork comme cadre pour la gestion des
+    processus et un cœur à base d’évènements pour la gestion des connexions. Un
+    seul processus de contrôle (le parent) lance un nombre fixe de processus
+    enfants, ce nombre étant défini par la directive <directive
+    module="mpm_common">StartServers</directive>. À la différence des MPM
+    <module>worker</module> et <module>event</module>, le nombre de processus
+    enfants ne varie pas avec la charge : <module>motorz</module> maintient un
+    jeu de processus statique en les remplaçant nombre pour nombre lorsqu’ils
+    quittent. Le parallélisme de traitement au sein d’un hôte est mis en œuvre
+    en ajoutant des threads de travail (<directive
+    module="mpm_common">ThreadsPerChild</directive>) et, lorsque le cheminement
+    du processus de sondage/répartition constitue un goulot d’étranglement, des
+    threads sondeurs (<directive>PollersPerChild</directive>), au lieu de lancer
+    davantage de processus.</p>
+
+    <p>Chaque processus enfant exécute :</p>
+    <ul>
+        <li><strong>Un ou plusieurs threads sondeurs.</strong> Chaque sondeur
+	possède ses propres domaine de sondage, sonnerie de chronomètre (avec un
+	mutex de protection) et liste de recyclage du jeu de transactions non
+	bloquante, de sorte que les sondeurs n’interfèrent pas les uns avec les
+	autres. Un thread sondeur sonde, répartit les évènements d’entrée/sortie
+	prêts et les délais expirés au sein du jeu de threads de travail, et (en
+	ce qui concerne le thread sondeur qui possède le socket d’écoute)
+	accepte de nouvelles connexions. Le nombre de threads sondeurs est
+	contrôlé par la directive <directive>PollersPerChild</directive>.</li>
+
+        <li><strong>Un jeu de threads de travail partagé</strong> (<directive
+	module="mpm_common">ThreadsPerChild</directive>) qui gère la connexion
+	proprement dite et traite les requêtes qui lui sont envoyées. Les
+	threads de travail ne sondent jamais.</li>
+
+        <li><strong>Un superviseur</strong> (le thread principal de l’enfant)
+	qui surveille <directive
+	module="mpm_common">MaxConnectionsPerChild</directive> et la
+	"pipe-of-death / generation", enjoint les threads sondeurs de ralentir
+	et les rejoint lorsqu’ils quittent.</li>
+    </ul>
+
+    <p>Une connexion est attribuée à un thread sondeur au moment de
+    l'acceptation (round-robin) et le reste pendant toute sa durée de vie : elle
+    réinitialise et fait passer à l’état expiré le domaine de sondage et la
+    sonnerie du chronomètre de ce thread sondeur. Utiliser plusieurs threads
+    sondeurs augmente le plafond de débit par rapport à celui d’un sondage par
+    thread unique ; ainsi l’acceptation, la répartition des évènements et
+    l’expiration du délai sont réglées par
+    <directive>PollersPerChild</directive> au lieu d’être sérialisées sur un
+    seul thread.</p>
+
+    <p>Alors que le processus parent est en général démarré en tant que
+    <code>root</code> sous Unix de façon à se lier au port 80, les processus
+    enfants et les threads sont lancés par le serveur sous un utilisateur moins
+    privilégié. Les directives <directive module="mod_unixd">User</directive> et
+    <directive module="mod_unixd">Group</directive> permettent de définir les
+    privilèges des processus enfants du serveur HTTP Apache. Les processus enfants
+    doivent pouvoir lire tout le contenu destiné à être servi, mais cela mis à
+    part, doivent posséder le moins de privilèges possible.</p>
+
+    <p>La directive <directive
+    module="mpm_common">MaxConnectionsPerChild</directive> permet de contrôler
+    la fréquence à laquelle le serveur recycle les processus en retirant les
+    anciens et en en lançant de nouveaux.</p>
+</section>
+
+<section id="async-connections"><title>Gestion des connexions asynchrones</title>
+    <p><module>motorz</module> se définit lui-même comme un MPM asynchrone.
+    Lorsqu’un thread de travail termine la phase active d’une connexion (par
+    exemple, une connexion persistante HTTP entre les requêtes ou une connexion
+    attendant une entrée/sortie), il confie le socket à son thread sondeur au
+    lieu de maintenir un thread de travail inactif. Le thread sondeur attend le
+    prochain évènement sur ce socket (dans les limites du délai défini par la
+    directive <directive module="mpm_common">Timeout</directive>) et n’attribue
+    la connexion à un thread de travail que s’il y a quelque chose à faire. Cela
+    libère les threads de travail des connexions persistantes inactives et
+    permet une gestion efficace de HTTP/2 où la connexion principale est reprise
+    par le MPM entre les requêtes.</p>
+
+    <p>La fermeture avec délai (lingering close) n’est, elle non plus, pas
+    bloquante : plutôt que de bloquer un thread de travail pendant la durée du
+    délai de fermeture, le socket en cours de vidage est confié à la boucle de
+    sondage avec un délai d’inaction limité ; ainsi, le thread de travail est
+    replacé dans le pool immédiatement.</p>
+
+    <p>Les modules qui acceptent une connexion totalement asynchrone (la
+    suspendant et la réactivant plus tard) sont pris en charge ; une connexion
+    suspendue est parquée et réarmée sur son propre thread sondeur lorsqu’elle
+    est réactivée.</p>
+</section>
+
+<section id="admission-control"><title>Contrôle d’admission</title>
+    <p>Pour qu’un processus enfant reste fiable en cas de surcharge,
+    <module>motorz</module> applique une pression en retour (backpressure) à
+    l’écouteur. Lorsque le pool de threads de travail sature, le thread sondeur
+    qui possède les sockets d’écoute les enlève de son domaine de sondage et
+    arrête d’accepter ; il les réajoute lorsque la liste de demandes se
+    vide. Cela a pour effet de limiter la taille de la file d’attente de
+    travaux et la mémoire consommée par connexion, au lieu de les laisser
+    grandir sans limite. La décision se base sur le décompte des threads
+    inactifs, en attente et actifs dans le pool de threads de travail, avec
+    hystérèse pour éviter un basculement excessif des écouteurs entre « on » et
+    « off ».</p>
+
+    <note><title>ThreadsPerChild et contrôle d’admission</title>
+    <p>Ètant donné que la marque des « basses eaux » du contrôle d’admission est
+    une fraction de la valeur de la directive <directive
+    module="mpm_common">ThreadsPerChild</directive>, une très petite valeur pour
+    cette dernière (en particulier <code>ThreadsPerChild 1</code>) fait que les
+    écouteurs ne sont réactivés que lorsque la file d’attente de travaux est
+    totalement vide, ce qui dégrade sévèrement le débit. Une valeur d’au moins 4
+    pour <code>ThreadsPerChild</code> est fortement recommandée ; si cette
+    valeur est inférieure à 4, le serveur émet un avertissement.</p>
+    </note>
+</section>
+
+<section id="relationship"><title>Liens de parenté avec les autres MPMs</title>
+    <p><module>motorz</module> utilise prefork pour la gestion des processus et
+    un pool de threads de travail APR, avec des threads sondeurs qui
+    répartissent le travail au sein du pool de threads de travail. Cette
+    approche est différente de la conception écouteur,thread de travail/fdqueue
+    du MPM <module>event</module> dans laquelle les threads de travail réarment
+    eux-mêmes un domaine de sondage partagé et sûr en ce qui concerne les
+    threads.</p>
+
+    <p>La charge de travail détermine si l’ajout de threads sondeurs peut aider.
+    Si les threads de travail constituent le goulot d’étranglement du
+    CPU#8212;c’est en général le cas pour le traitement réel des
+    requêtes#8212;les threads sondeurs ne sont pas le facteur de limitation et
+    une valeur de la directive <directive>PollersPerChild</directive> au delà
+    de 1 ou 2 sera de peu d’effet. La conception à plusieurs threads sondeurs
+    supprime le plafond <em>structurel</em> de la conception à thread sondeur
+    unique, mais le débit par hôte reste tout de même gouverné par le CPU de
+    travail.</p>
+
+    <note><title>Pas de ServerLimit / modification dynamique du nombre de
+    processus</title>
+    <p>À la différence des MPMs <module>worker</module> et
+    <module>event</module>, <module>motorz</module> ne modifie pas le nombre de
+    processus enfants avec la charge et ne définit pas de plafond séparé avec
+    <directive module="mpm_common">ServerLimit</directive>. Le nombre de
+    processus enfants est fixé par la directive <directive
+    module="mpm_common">StartServers</directive> qui agit de ce fait comme une
+    limite physique du démon, et il n’y a pas de contrôles du style <directive
+    module="mpm_common">MinSpareThreads</directive>, <directive
+    module="mpm_common">MaxSpareThreads</directive> ou <directive
+    module="mpm_common">MaxRequestWorkers</directive>. Il est possible de
+    définir le parallélisme du traitement avec la directive <directive
+    module="mpm_common">ThreadsPerChild</directive> (et, si le processus de
+    sondage sature, avec la directive <directive>PollersPerChild</directive>).</p>
+    </note>
+</section>
+
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxConnectionsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+<directivesynopsis location="mod_unixd"><name>User</name>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>PollersPerChild</name>
+<description>Nombre de threads sondeurs par processus enfant</description>
+<syntax>PollersPerChild <var>number</var></syntax>
+<default>PollersPerChild 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>motorz</module></modulelist>
+
+<usage>
+    <p>La directive <directive>PollersPerChild</directive> permet de définir le
+    nombre de threads sondeurs pour chaque processus enfant. Chaque thread
+    sondeur possède ses propres domaine de sondage, sonnerie de chronomètre et
+    liste de recyclage de connexion, et gère une partie des connexions du
+    processus enfant ; ajouter des threads sondeurs augmente donc la fréquence à
+    laquelle un seul processus enfant peut accepter des connexions et répartir
+    les évènements d’entrée/sortie et les expirations de délai.</p>
+
+    <p>Une valeur de <code>0</code> (la valeur par défaut) signifie que le
+    nombre de threads sondeurs est calculé <em>automatiquement</em> : il est
+    déduit du nombre de CPUs en ligne, plafonné à un maximum codé en dur. Dans
+    tous les cas, le nombre de threads sondeurs est contraint de façon qu’il ne
+    dépasse jamais la valeur de la directive <directive
+    module="mpm_common">ThreadsPerChild</directive> et ne soit jamais inférieur
+    à un.</p>
+
+    <p>Étant donné que la répartition d’évènements est rarement le goulot
+    d’étranglement pour le traitement des requêtes réelles&#8212;il s’agit en
+    général du CPU de travail&#8212;des valeurs au-delà de un ou deux améliorent
+    rarement le débit. Augmenter <directive>PollersPerChild</directive> s’avère
+    principalement utile pour les charges de travail dominées par une rotation
+    très importante des connexions ou un grand nombre de connexions à base
+    d’évènements et inactives, où le processus de sondage/acceptation devient la
+    limite.</p>
+
+    <note><title>Exemple</title>
+    <highlight language="config">
+StartServers       2
+ThreadsPerChild   64
+ThreadLimit       64
+PollersPerChild    2
+    </highlight>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
