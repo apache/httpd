@@ -1114,17 +1114,20 @@ MDMessageCmd /etc/apache/md-message
         <name>MDServerStatus</name>
         <description>Control if Managed Domain information is added to <code>server-status</code>.</description>
         <syntax>MDServerStatus on|off</syntax>
-        <default>MDServerStatus on</default>
+        <default>MDServerStatus off</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
             <p>
-                Apaches '<code>server-status</code>' handler allows you configure a resource to monitor
-                what is going on. This includes now a section listing all Managed Domains
-                with the DNS names, renewal status, lifetimes and main properties.
+                If enabled, adds a section to the
+                <module>mod_status</module> '<code>server-status</code>' handler
+                output which lists all Managed Domains with the DNS
+                names, renewal status, lifetimes and main properties.
             </p><p>
-                You can switch that off using this directive.
+                As with '<code>md-status</code>', the '<code>server-status</code>' output
+                <strong>must</strong> be protected from public view
+                using appropriate authorization restrictions.
             </p>
         </usage>
     </directivesynopsis>
