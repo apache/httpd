@@ -538,7 +538,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     /* handle module indexes and such */
     rconf = (void **)ap_create_request_config(r->pool);
 
-    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module));
+    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof *temp_core);
     rconf[AP_CORE_MODULE_INDEX] = (void *)temp_core;
     r->request_config = (ap_conf_vector_t *)rconf;
     ap_set_module_config(r->request_config, &cgid_module, (void *)&req->ugid);
@@ -873,7 +873,7 @@ static int cgid_server(void *data)
             errfileno = STDERR_FILENO;
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, main_server,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, main_server,
                           "using passed fd %d as stderr", errfileno);
             /* Limit the received fd lifetime to pool lifetime */
             apr_pool_cleanup_register(ptrans, (void *)((long)errfileno),
@@ -1739,8 +1739,8 @@ static void add_ssi_vars(request_rec *r)
     }
 }
 
-static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
-                       apr_bucket_brigade *bb, const char *command)
+static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
+                                apr_bucket_brigade *bb, const char *command)
 {
     char **env;
     int sd;
@@ -1758,30 +1758,29 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     env = ap_create_environment(r->pool, r->subprocess_env);
 
     if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
-        return retval;
+        return APR_EGENERAL;
     }
 
-    send_req(sd, NULL, r, command, env, SSI_REQ);
+    rv = send_req(sd, NULL, r, command, env, SSI_REQ);
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                      "could not send request to cgi daemon (for SSI)");
+        return rv;
+    }
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
     info->conf = conf;
     info->r = r;
     rv = get_cgi_pid(r, conf, &(info->pid));
-    if (APR_SUCCESS == rv) {             
-        /* for this type of request, the script is invoked through an
-         * intermediate shell process...  cleanup_script is only able
-         * to knock out the shell process, not the actual script
-         */
-        apr_pool_cleanup_register(r->pool, info,
-                                  cleanup_script,
-                                  apr_pool_cleanup_null);
-    }
-    else { 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi PID (for SSI)");
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r, "error determining cgi daemon PID (for SSI)");
+        return rv;
     }
 
-    apr_pool_cleanup_register(r->pool, info,
-                              cleanup_script,
+    /* For this type of request, the script is invoked through an
+     * intermediate shell process...  cleanup_script is only able to
+     * knock out the shell process, not the actual script. */
+    apr_pool_cleanup_register(r->pool, info, cleanup_script,
                               apr_pool_cleanup_null);
 
     /* We are putting the socket discriptor into an apr_file_t so that we can
