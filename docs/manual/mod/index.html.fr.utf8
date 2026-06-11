@@ -56,8 +56,9 @@ disponibles</dd>
 modules multi-processus (MPM)</dd>
 <dt><a href="event.html">event</a></dt><dd>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> con&ccedil;ue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</dd>
-<dt><a href="motorz.html">motorz</a></dt><dd>A lean, fast, self-contained event-driven Multi-Processing Module
-built on the APR pollset and thread pool especially suited as a reverse proxy</dd>
+<dt><a href="motorz.html">motorz</a></dt><dd>Un MPM (Multi-Processing Module) &eacute;v&eacute;nementiel l&eacute;ger, rapide et
+autonome bas&eacute; sur l'ensemble de requ&ecirc;tes et le pool de threads APR,
+particuli&egrave;rement adapt&eacute; comme mandataire inverse</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Module multi-processus impl&eacute;mentant un serveur web bas&eacute;
 exclusivement sur les threads et optimis&eacute; pour Novell
 NetWare</dd>

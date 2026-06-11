@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_brotli.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_brotli.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Compression du contenu via Brotli avant sa livraison au client</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>brotli_module</td></tr>
@@ -98,7 +96,7 @@ SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-brotli</pre>
       <p>Si vous voulez restreindre la compression &agrave; certains types MIME
       particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Dans l'exemple
       suivant, l'activation de la compression est restreinte aux fichiers html
-      de la documentation d'Apache :</p>
+      de la documentation d'Apache httpd&nbsp;:</p>
 
       <pre class="prettyprint lang-config">&lt;Directory "/your-server-root/manual"&gt;
     AddOutputFilterByType BROTLI_COMPRESS text/html
@@ -228,9 +226,18 @@ compression</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliCompressionMaxInputBlock</code> permet
-    de sp&eacute;cifier la taille maximale du bloc de donn&eacute;es en entr&eacute;e entre 16 et 24,
-    sachant que plus cette taille sera grande, plus grande sera la quantit&eacute; de
-    m&eacute;moire consomm&eacute;e.</p>
+    de sp&eacute;cifier la taille maximale du bloc de donn&eacute;es en entr&eacute;e sous la forme
+    de 2&nbsp;&eacute;lev&eacute; &agrave; une puissance &eacute;gale &agrave; <var>value</var>. Cette derni&egrave;re doit
+    &ecirc;tre comprise entre&nbsp;16 et&nbsp;24, ce qui repr&eacute;sente des blocs de 64&nbsp;Ko &agrave; 16&nbsp;Mo.
+    Des blocs de taille plus grande peuvent am&eacute;liorer la compression, mais
+    n&eacute;cessitent davantage de m&eacute;moire. Lorsque cette directive n&rsquo;est pas d&eacute;finie,
+    la taille de bloc est automatiquement calcul&eacute;e en fonction de la valeur de
+    qualit&eacute; d&eacute;finie.
+    </p>
+
+    <div class="example"><h3>Blocs en entr&eacute;e de taille d&eacute;finie &agrave; 1&nbsp;Mo</h3><pre class="prettyprint lang-config"># 2^20 = blocs de 1&nbsp;Mo
+BrotliCompressionMaxInputBlock 20</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -246,8 +253,18 @@ compression</td></tr>
     <p>La directive <code class="directive">BrotliCompressionQuality</code> permet de
     sp&eacute;cifier la qualit&eacute; de la compression (une valeur entre 0 et
     11). Les valeurs les plus hautes correspondent &agrave; une compression de
-    meilleure qualit&eacute; mais plus lente.
+    meilleure qualit&eacute; mais plus lente. La valeur par d&eacute;faut&nbsp;5 est un bon
+    compromis pour du contenu dynamique.
   </p>
+
+  <div class="example"><h3>Compression rapide pour du contenu dynamique</h3><pre class="prettyprint lang-config"># La valeur de qualit&eacute;&nbsp;4 est &agrave; peu pr&egrave;s &eacute;quivalente &agrave; gzip niveau&nbsp;6
+BrotliCompressionQuality 4</pre>
+</div>
+
+    <div class="example"><h3>Compression maximale pour les ressources statiques</h3><pre class="prettyprint lang-config"># Meilleur taux de compression mais tr&egrave;s lent &mdash;&nbsp;ne convient qu&rsquo;&agrave; la mise en
+# cache
+BrotliCompressionQuality 11</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -262,8 +279,20 @@ compression</td></tr>
 </table>
     <p>La directive <code class="directive">BrotliCompressionWindow</code> permet de
     sp&eacute;cifier la taille de la fen&ecirc;tre de compression glissante brotli (une
-    valeur comprise entre 10 et 24). Une taille de fen&ecirc;tre plus grande peut
-    am&eacute;liorer la qualit&eacute; de la compression mais consomme d'avantage de m&eacute;moire.</p>
+    valeur comprise entre 10 et 24, repr&eacute;sentant une fen&ecirc;tre de
+    2^<var>value</var> octets. Par exemple, 18&nbsp;(la valeur par d&eacute;faut) donne une
+    fen&ecirc;tre de 256&nbsp;Ko, alors que&nbsp;24 en donne une de 16&nbsp;Mo. Une taille de fen&ecirc;tre
+    plus grande peut am&eacute;liorer la qualit&eacute; de la compression mais consomme
+    d'avantage de m&eacute;moire.</p>
+
+    <div class="example"><h3>Fen&ecirc;tre mod&eacute;r&eacute;e pour une utilisation raisonnable de m&eacute;moire</h3><pre class="prettyprint lang-config"># fen&ecirc;tre de 1&nbsp;Mo (2^20&nbsp;octets)
+BrotliCompressionWindow 20</pre>
+</div>
+
+    <div class="example"><h3>Fen&ecirc;tre maximale pour la meilleure compression</h3><pre class="prettyprint lang-config"># fen&ecirc;tre de 16&nbsp;Mo (2^24&nbsp;octets) &mdash;&nbsp;n&eacute;cessite une quantit&eacute; de m&eacute;moire
+# significative pour chaque connexion
+BrotliCompressionWindow 24</pre>
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -272,6 +301,7 @@ compression</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enregistre le taux de compression dans une note &agrave; des fins de
 journalisation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BrotliFilterNote [<var>type</var>] <var>notename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_brotli</td></tr>

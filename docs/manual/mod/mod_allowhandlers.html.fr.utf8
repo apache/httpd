@@ -30,8 +30,6 @@
 <a href="../es/mod/mod_allowhandlers.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/mod_allowhandlers.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Facilite la d&eacute;finition de la liste des gestionnaires HTTP
 qui peuvent &ecirc;tre utilis&eacute;s pour le serveur</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>

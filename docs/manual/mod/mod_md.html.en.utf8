@@ -186,16 +186,17 @@
                 If there is an error with an MD it will be shown here as well. This let's 
                 you assess problems without digging through your server logs.
             </p><p>
-                There is also a new 'md-status' handler available to give you the MD information 
-                from 'server-status' in JSON format. You configure it as
+                There is also a new '<code>md-status</code>' handler available to give you the MD information 
+                from '<code>server-status</code>' in JSON format. You configure it as
             </p>
             <pre class="prettyprint lang-config">&lt;Location "/md-status"&gt;
   SetHandler md-status
+  Require host example.com
 &lt;/Location&gt;</pre>
 
             <p>
-                on your server. As with 'server-status' you will want to add 
-                authorization for this. 
+                on your server. As with '<code>server-status</code>' you <strong>must</strong> protect
+                the <code>md-status</code> output from public view using authorization restrictions (such as <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>). 
             </p><p>
                 If you just want to check the JSON status of a specific domain, simply append 
                 that to your status url:
@@ -247,7 +248,7 @@
 &lt;/MDomain&gt;</pre>
 
             <p>
-                and use the 'server-status' and/or <code class="directive"><a href="#mdmessagecmd">MDMessageCmd</a></code> to see how it operates. You will
+                and use the '<code>server-status</code>' and/or <code class="directive"><a href="#mdmessagecmd">MDMessageCmd</a></code> to see how it operates. You will
                 see if Stapling information is there, how long it is valid, from where it came and
                 when it will be refreshed.
             </p><p>
@@ -452,13 +453,13 @@
             </p><p>
                 If you configure more than one URL, each one is tried in a round-robin
                 fashion after a number of failures. You can configure how quickly or
-                delayed that happens via the <code class="directive">MDRetryDelay</code> and
-                <code class="directive">MDRetryFailover</code> directives. The default setting
+                delayed that happens via the <code class="directive"><a href="#mdretrydelay">MDRetryDelay</a></code> and
+                <code class="directive"><a href="#mdretryfailover">MDRetryFailover</a></code> directives. The default setting
                 makes a failover after about half a day of trying.
             </p><p>
                 All other settings apply to each of these URLs. It is therefore
                 not possible to have two with different
-                <code class="directive">MDExternalAccountBinding</code>s, for example.
+                <code class="directive"><a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></code>s, for example.
             </p><p>
                 For testing, CAs commonly offer a second service URL.
                 The 'test' service does not give certificates valid in a browser,
@@ -558,7 +559,7 @@
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                This is part of the 'server-status' HTML user interface and has nothing to 
+                This is part of the '<code>server-status</code>' HTML user interface and has nothing to 
                 do with the core functioning itself. It defines the link offered on that 
                 page for easy checking of a certificate monitor. The SHA256 fingerprint 
                 of the certificate is appended to the configured url.
@@ -656,9 +657,11 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.58 and later</td></tr>
 </table>
             <p>
-                Set the way MDChallengeDns01 command is invoked, e.g the number and
-                types of arguments. See <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>
+                Set the way <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>
+                command is invoked, e.g the number and types of arguments.
+                See <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>
                 for the differences.
+            </p><p>
                 This setting is global and cannot be varied per domain.
             </p>
         
@@ -807,8 +810,10 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.58 and later</td></tr>
 </table>
             <p>
-                The mode `all` is the behavior as in all previous versions. Both ServerName
-                and ServerAlias are inspected to find the MDomain matching a VirtualHost.
+                The mode `all` is the behavior as in all previous versions. Both
+                <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
+                and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> are inspected
+                to find the <code class="directive"><a href="#mdomain">MDomain</a></code> matching a VirtualHost.
                 This automatically detects coverage, even when you only have added
                 one of the names to an MDomain.
             </p><p>
@@ -1182,18 +1187,18 @@ MDomain example2.org auto
             <p>
                 This about a non-standard ACME extension by Let's Encrypt.
             </p><p>
-                Lets Encrypt supports Certificate Profiles in their CA. This,
+                Let's Encrypt supports Certificate Profiles in their CA. This,
                 among some other details, let's you select the lifetime of the
                 certificates you get. The "classic" profile is the default and
                 will keep the 90 days, the "tlsserver" profile is also 90 days
                 with a max of 25 Subject Alternative Names. The "shortlived"
                 profile will issue certificates with only 6 days of validity.
             </p><p>
-                If you do not change your mod_md configuration, you will
+                If you do not change your <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> configuration, you will
                 continue to get the 90 days certificates. Should you believe
                 that a shorter lifetime is beneficial for you (and take the
                 risk that the renewal time is way shorter),
-+                you can configure the profile to use via 'MDProfile shortlived'.
+                you can configure the profile to use via 'MDProfile shortlived'.
            </p><p>
                 The profile names are defined by the CA. If a profile you
                 configure is not available, no profile will be used and
@@ -1214,6 +1219,7 @@ MDomain example2.org auto
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.4.64 and later</td></tr>
 </table>
             <p>
                 Controls if a <code class="directive"><a href="#mdprofile">MDProfile</a></code>
@@ -1272,7 +1278,7 @@ MDomain example2.org auto
             <p>
                 En-/Disable certificate renewals triggered via the ACME ARI
                 extension (rfc9773). These renewals happen *in addition* to
-                the mechanism controlled by <code class="directive">MDRenewWindow</code>.
+                the mechanism controlled by <code class="directive"><a href="#mdrenewwindow">MDRenewWindow</a></code>.
            </p><p>
                 ACME ARI allows an ACME CA to somewhat shape incoming renewal
                 traffic. More importantly though, it can inform clients of
@@ -1292,7 +1298,7 @@ MDomain example2.org auto
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-            If the validity of the certificate falls below duration, mod_md
+            If the validity of the certificate falls below duration, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code>
             will get a new signed certificate.
             </p><p>
             Normally, certificates are valid for around 90 days and mod_md will renew 
@@ -1411,7 +1417,7 @@ MDRenewWindow 10%</pre>
             <p>
                 The number of consecutive errors on renewing a certificate before
                 another CA is selected. This only applies to configurations that
-                have more than one <code class="directive">MDCertificateAuthority</code>
+                have more than one <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>
                 specified.
             </p>
         
@@ -1419,19 +1425,22 @@ MDRenewWindow 10%</pre>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="mdserverstatus"><span id="MDServerStatus">MDServerStatus</span> Directive <a title="Permanent link" href="#mdserverstatus" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if Managed Domain information is added to server-status.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Control if Managed Domain information is added to <code>server-status</code>.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MDServerStatus on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDServerStatus on</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MDServerStatus off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-                Apaches 'server-status' handler allows you configure a resource to monitor
-                what is going on. This includes now a section listing all Managed Domains
-                with the DNS names, renewal status, lifetimes and main properties.
+                If enabled, adds a section to the
+                <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> '<code>server-status</code>' handler
+                output which lists all Managed Domains with the DNS
+                names, renewal status, lifetimes and main properties.
             </p><p>
-                You can switch that off using this directive.
+                As with '<code>md-status</code>', the '<code>server-status</code>' output
+                <strong>must</strong> be protected from public view
+                using appropriate authorization restrictions.
             </p>
         
 </div>
@@ -1578,11 +1587,12 @@ MDRenewWindow 10%</pre>
 </table>
             <p>
                 Enable this to use a lock file on server startup when
-                <code class="directive">MDStoreDir</code> is synchronized with the server
+                <code class="directive"><a href="#mdstoredir">MDStoreDir</a></code> is synchronized with the server
                 configuration and renewed certificates are activated.
             </p><p>
                 Locking is intended for setups in a cluster that have a shared
-                file system for MDStoreDir. It will protect the activation of
+                file system for <code class="directive"><a href="#mdstoredir">MDStoreDir</a></code>.
+                It will protect the activation of
                 renewed certificates when cluster nodes are restarted/reloaded
                 at the same time. Under the condition that the shared file
                  system does support file locking.
@@ -1618,8 +1628,8 @@ MDRenewWindow 10%</pre>
                 window left. With the default, this mean 9 days for certificates from
                 Let's Encrypt.
             </p><p>
-                It also applies to Managed Domains with static certificate files (
-                see <code class="directive"><a href="#mdcertificatefile">MDCertificateFile</a></code>).
+                It also applies to Managed Domains with static certificate files (see
+                <code class="directive"><a href="#mdcertificatefile">MDCertificateFile</a></code>).
             </p>
         
 </div>

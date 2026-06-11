@@ -1,0 +1,416 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en"><head><META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_beacon - Apache HTTP Server Version 2.5</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
+<script src="../style/scripts/prettify.min.js">
+</script>
+
+<link href="../images/favicon.png" rel="shortcut icon"></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p>
+<p class="apache">Apache HTTP Server Version 2.5</p>
+<img alt="" src="../images/feather.png"></div>
+<div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
+<div id="path">
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">HTTP Server</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.5</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_proxy_beacon</h1>
+<button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_beacon.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Dynamic Balancer membership where backends announce themselves
+to the reverse proxy over unicast UDP datagrams</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module&nbsp;Identifier:</a></th><td>proxy_beacon_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source&nbsp;File:</a></th><td>mod_proxy_beacon.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.5 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module lets backend servers <em>announce themselves</em> to a
+    front-end reverse proxy, which then adds each announcing backend as a live
+    member (worker) of a <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> balancer. When a
+    backend stops announcing, the proxy takes it out of rotation. This provides
+    self-registering, self-healing balancer membership without editing the proxy
+    configuration or driving the <code>balancer-manager</code> by hand.</p>
+
+    <p>Communication uses plain <strong>unicast UDP</strong> datagrams (not
+    multicast, which is filtered on most networks and does not traverse the
+    public Internet). The data flows from backend to proxy:</p>
+
+    <ul>
+      <li>The reverse proxy binds a UDP socket and <em>receives</em> on a
+          stable address (<code class="directive">ProxyBeaconListen</code>).</li>
+      <li>Each backend periodically <em>sends</em> a short announcement datagram
+          to the proxy (<code class="directive">ProxyBeaconAddress</code>), advertising
+          its own routable URL
+          (<code class="directive">ProxyBeaconAdvertise</code>).</li>
+    </ul>
+
+    <p>Datagrams are fire-and-forget: a lost announcement is recovered by the
+    next periodic one, and reordering is rejected by a per-backend timestamp
+    check, so no connection, reconnect, or framing layer is needed.</p>
+
+    <p>On the proxy, <code class="directive">ProxyBeaconBalancer</code> names the balancer
+    that announced backends are added to. Membership changes are applied using
+    the same internal mechanism as the <code>balancer-manager</code> web
+    interface, so a backend added this way behaves exactly like a statically
+    configured or manually added
+    <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>, and is visible and
+    editable in the <code>balancer-manager</code>.</p>
+
+    <p>This module <em>requires</em> the service of
+    <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> and <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>. The
+    background work (listening, publishing, adding and evicting members) runs in
+    a single <code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code> child process, so it is not available
+    under the <code>prefork</code> MPM behaviour where that singleton cannot
+    run.</p>
+
+<div class="warning"><h3>Authentication</h3>
+    <p>Any host that can reach the proxy's receive port could otherwise announce
+    an arbitrary backend URL and cause the proxy to send client traffic to it
+    (and a UDP source address is trivially spoofable). Set
+    <code class="directive">ProxyBeaconSecret</code> to the same value on the proxy and on
+    every backend so that announcements are authenticated with a keyed
+    message-authentication code (MAC) and a timestamp. When a secret is
+    configured the proxy drops any announcement that is not validly signed and
+    recent. If no secret is configured the channel is <strong>unauthenticated</strong>
+    and the proxy logs a warning at startup.</p>
+</div>
+
+<div class="note"><h3>Confidentiality</h3>
+    <p>Announcements are authenticated but not encrypted; the payload is
+    operational metadata (backend URLs), not secret data. Transport
+    confidentiality (e.g. DTLS) is not currently provided and would be a separate
+    future layer.</p>
+</div>
+
+</div>
+<div id="quickview"><h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif"> <a href="#examples">Usage example</a></li>
+</ul><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconaddress">ProxyBeaconAddress</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconadvertise">ProxyBeaconAdvertise</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconbalancer">ProxyBeaconBalancer</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconinterval">ProxyBeaconInterval</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconlisten">ProxyBeaconListen</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconmaxskew">ProxyBeaconMaxSkew</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeaconsecret">ProxyBeaconSecret</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#proxybeacontimeout">ProxyBeaconTimeout</a></li>
+</ul>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_proxy_beacon">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_proxy_beacon">Report a bug</a></li></ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code></li>
+<li><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="examples">Usage example <a title="Permanent link" href="#examples" class="permalink">&para;</a></h2>
+    
+
+    <p>The following pair of configurations sets up a self-registering balancer.
+    The backends require no knowledge of each other and the proxy needs no
+    pre-declared <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>
+    entries &mdash; only an empty balancer with room to grow.</p>
+
+    <p>On the <strong>reverse proxy</strong>:</p>
+    <pre class="prettyprint lang-config"># Receive backend announcements on the cluster network interface (UDP).
+ProxyBeaconListen 0.0.0.0:5555
+ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconBalancer  cluster
+
+# A backend is dropped from rotation if it does not announce for 30 seconds.
+ProxyBeaconTimeout   30
+
+# An initially-empty balancer with spare slots for the dynamic members.
+&lt;Proxy balancer://cluster&gt;
+  ProxySet growth=16
+&lt;/Proxy&gt;
+ProxyPass        "/" "balancer://cluster/"
+ProxyPassReverse "/" "balancer://cluster/"</pre>
+
+
+    <p>On each <strong>backend</strong> server:</p>
+    <pre class="prettyprint lang-config"># Announce this backend's routable origin to the proxy every 10 seconds (UDP).
+ProxyBeaconAddress   proxy.example.com:5555
+ProxyBeaconAdvertise http://10.0.0.5:8080
+ProxyBeaconSecret    "a-long-random-shared-cluster-secret"
+ProxyBeaconInterval  10</pre>
+
+
+    <p>When a backend starts it begins sending announcements. The proxy
+    verifies each announcement against the shared secret, adds
+    <code>http://10.0.0.5:8080</code> as a member of
+    <code>balancer://cluster</code>, and enables it. If that backend later stops
+    announcing for longer than <code class="directive">ProxyBeaconTimeout</code>, the proxy
+    disables the member (taking it out of rotation); a subsequent announcement
+    re-enables it.</p>
+
+    <div class="note">
+    <p>A backend added at runtime occupies one of the balancer's growth slots
+    for the lifetime of the server process; it is disabled rather than removed
+    when it stops announcing, matching the behaviour of the
+    <code>balancer-manager</code> (which can add, but not remove, workers at
+    runtime). Size <code>growth</code> for the maximum number of backends you
+    expect to register.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconaddress"><span id="ProxyBeaconAddress">ProxyBeaconAddress</span> Directive <a title="Permanent link" href="#proxybeaconaddress" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Address of the reverse proxy to which a backend sends its
+announcements</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconAddress <em>address:port</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconAddress</code> directive marks a server as an
+    announcement <em>sender</em> (a backend). It sends UDP datagrams to the
+    proxy's <code class="directive">ProxyBeaconListen</code> address given by
+    <em>address:port</em>, e.g. <code>proxy.example.com:5555</code> (a leading
+    scheme such as <code>tcp://</code> is accepted and ignored). Because UDP is
+    connectionless, a backend may be started before the proxy is available:
+    early datagrams are simply dropped and the next interval retries.</p>
+
+    <p>Use <code class="directive">ProxyBeaconAdvertise</code> to specify the routable URL
+    the backend announces. <code class="directive">ProxyBeaconAddress</code> and
+    <code class="directive">ProxyBeaconListen</code> are mutually exclusive on the same
+    server.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconadvertise"><span id="ProxyBeaconAdvertise">ProxyBeaconAdvertise</span> Directive <a title="Permanent link" href="#proxybeaconadvertise" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The routable URL a backend announces to the reverse proxy</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconAdvertise <em>url</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconAdvertise</code> directive sets the backend's
+    own reachable origin (for example <code>http://10.0.0.5:8080</code>) that the
+    proxy will add as a <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code>.
+    It must be a full <code>scheme://host[:port]</code> URL that the proxy can
+    reach &mdash; not the local listen address &mdash; and is validated when the
+    configuration is parsed.</p>
+
+    <p>This directive is used on a backend, alongside
+    <code class="directive">ProxyBeaconAddress</code>. If it is omitted, the backend still
+    sends a heartbeat but advertises no URL, so the proxy logs the
+    announcement without adding a member.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconbalancer"><span id="ProxyBeaconBalancer">ProxyBeaconBalancer</span> Directive <a title="Permanent link" href="#proxybeaconbalancer" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Name of the balancer that announced backends are added to</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconBalancer <em>name</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconBalancer</code> directive names the balancer,
+    on the reverse proxy, into which announced backends are inserted as members.
+    Give the bare balancer name (for example <code>cluster</code> for
+    <code>balancer://cluster</code>); a leading <code>balancer://</code> is
+    accepted and stripped.</p>
+
+    <p>The named balancer must exist and have spare capacity. Declare it with a
+    <code class="directive"><a href="../mod/mod_proxy.html#<proxy>">&lt;Proxy&gt;</a></code> block and a
+    <code>growth</code> setting (or rely on
+    <code class="directive"><a href="../mod/mod_proxy.html#balancergrowth">BalancerGrowth</a></code>) so there are free
+    slots for the dynamically added members. This directive is used together
+    with <code class="directive">ProxyBeaconListen</code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconinterval"><span id="ProxyBeaconInterval">ProxyBeaconInterval</span> Directive <a title="Permanent link" href="#proxybeaconinterval" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How often a backend publishes its announcement</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconInterval <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyBeaconInterval 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconInterval</code> directive sets how frequently
+    a backend (a <code class="directive">ProxyBeaconAddress</code> server) publishes its
+    announcement. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds; the default is 5 seconds.</p>
+
+    <p>The interval must be meaningfully smaller than the proxy's
+    <code class="directive">ProxyBeaconTimeout</code>, so that the occasional lost or
+    delayed announcement does not cause a healthy backend to be evicted.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconlisten"><span id="ProxyBeaconListen">ProxyBeaconListen</span> Directive <a title="Permanent link" href="#proxybeaconlisten" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Address on which the reverse proxy receives backend
+beacons</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconListen [<em>address</em>][:<em>port</em>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconListen</code> directive marks a server as
+    the beacon <em>receiver</em> (the reverse proxy). It binds a UDP socket to
+    the given address, e.g. <code>0.0.0.0:5555</code> to receive on all
+    interfaces. A leading scheme (such as <code>tcp://</code>) is accepted and
+    ignored.</p>
+
+    <p>The address and port are both optional and, when omitted, are inherited
+    from this server's own address and port (its <code class="directive"><a href="../mod/core.html#listen">Listen</a></code>/<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>). With no argument at all, the beacon
+    listener binds the server's own address and port; given just an address it
+    inherits the port, and so on. Because UDP and TCP are independent port
+    spaces, binding the beacon socket to the server's port does <em>not</em>
+    collide with the server's TCP listener &mdash; letting the beacon channel
+    share the service endpoint, which also identifies the proxy to backends by
+    its real address. (The listener binds in an unprivileged child, so a
+    privileged port such as 80 or 443 cannot be shared this way; use the
+    server's port only when it is non-privileged.)</p>
+
+    <p>Backends send to this address via
+    <code class="directive">ProxyBeaconAddress</code>. The directive should be used
+    together with <code class="directive">ProxyBeaconBalancer</code>; without it,
+    announcements are received and logged but no members are added.
+    <code class="directive">ProxyBeaconListen</code> and
+    <code class="directive">ProxyBeaconAddress</code> are mutually exclusive on the same
+    server.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconmaxskew"><span id="ProxyBeaconMaxSkew">ProxyBeaconMaxSkew</span> Directive <a title="Permanent link" href="#proxybeaconmaxskew" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximum allowed age of a signed announcement</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconMaxSkew <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconMaxSkew</code> directive sets the anti-replay
+    window used when <code class="directive">ProxyBeaconSecret</code> is configured: the
+    proxy rejects any announcement whose signed timestamp differs from the
+    current time by more than this amount, in either direction. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds.</p>
+
+    <p>If unset, the default is 30 seconds. A larger window tolerates greater
+    clock skew between hosts; a smaller window bounds the freshness check. Note
+    that the per-backend strictly-increasing-timestamp check (see
+    <code class="directive">ProxyBeaconSecret</code>) blocks replays regardless of this
+    window. This directive is used on the proxy.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeaconsecret"><span id="ProxyBeaconSecret">ProxyBeaconSecret</span> Directive <a title="Permanent link" href="#proxybeaconsecret" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pre-shared secret used to authenticate announcements</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconSecret <em>secret</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconSecret</code> directive sets a pre-shared
+    cluster secret. It must be configured with the <em>same</em> value on the
+    reverse proxy and on every backend. The backend (sender) signs each
+    announcement with a keyed message-authentication code (a SipHash MAC) derived
+    from the secret, together with a timestamp; the proxy (receiver) recomputes the MAC and
+    checks the timestamp, dropping any announcement that is forged, tampered
+    with, or replayed. Replayed messages are caught two ways: a freshness window
+    (<code class="directive">ProxyBeaconMaxSkew</code>) rejects old timestamps, and a
+    per-backend check rejects any announcement whose timestamp does not strictly
+    advance, so a captured-and-resent message (for example, one replayed to keep
+    a dead backend from being evicted) is dropped.</p>
+
+    <p>If <code class="directive">ProxyBeaconSecret</code> is set on the proxy, every
+    announcement must carry a valid, recent MAC or it is rejected. If the
+    secrets on the proxy and a backend differ, that backend's announcements are
+    silently rejected (and logged), which appears as the backend never joining
+    the balancer.</p>
+
+    <p>If no secret is configured the channel is unauthenticated and the proxy
+    emits a warning when it starts listening. Because the secret is stored in
+    the configuration file, restrict that file's permissions as you would for a
+    private key.</p>
+
+    <div class="note"><h3>Clock synchronisation</h3>
+    <p>The timestamp-based replay protection compares the announcement's time
+    against the proxy's clock, so the proxy and backends must have reasonably
+    synchronised clocks (for example via NTP). See
+    <code class="directive">ProxyBeaconMaxSkew</code>.</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="proxybeacontimeout"><span id="ProxyBeaconTimeout">ProxyBeaconTimeout</span> Directive <a title="Permanent link" href="#proxybeacontimeout" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>How long the proxy waits, without an announcement, before a backend
+is taken out of rotation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyBeaconTimeout <em>interval</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyBeaconTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_beacon</td></tr>
+</table>
+    <p>The <code class="directive">ProxyBeaconTimeout</code> directive sets how long the
+    reverse proxy will wait for an announcement from a backend before disabling
+    that backend's balancer member (taking it out of rotation). A later
+    announcement from the same backend re-enables it. It uses the
+    <a href="directive-dict.html#Syntax">time-interval</a> directive syntax and
+    defaults to seconds.</p>
+
+    <p>The default, <code>0</code>, disables eviction entirely: backends are
+    added when they announce but are never automatically removed. Set this to a
+    small multiple of the backends' <code class="directive">ProxyBeaconInterval</code> to
+    enable self-healing membership. This directive is used on the proxy.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_beacon.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2026 The Apache Software Foundation.<br>Licensed under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/quickreference.html">Directives</a> | <a href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a> | <a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2">Report a bug</a></p></div><script><!--//--><![CDATA[//><!--
+if (typeof(prettyPrint) !== 'undefined') {
+    prettyPrint();
+}
+var langToggle = document.querySelector('.lang-toggle');
+var topLang = document.querySelector('.toplang');
+if (langToggle && topLang) {
+    langToggle.addEventListener('click', function() { topLang.classList.toggle('open'); });
+}
+var qv = document.getElementById('quickview');
+if (qv) {
+    document.body.appendChild(qv);
+    var qvBtn = document.createElement('button');
+    qvBtn.className = 'qv-toggle';
+    qvBtn.setAttribute('aria-label', 'Toggle page navigation');
+    qvBtn.innerHTML = '&#9776;';
+    document.body.appendChild(qvBtn);
+    qvBtn.addEventListener('click', function() {
+        var isOpen = qv.classList.toggle('open');
+        if (isOpen) {
+            qv.style.top = window.scrollY + 10 + 'px';
+        }
+    });
+    window.addEventListener('scroll', function() { qv.classList.remove('open'); });
+}
+//--><!]]></script>
+</body></html>

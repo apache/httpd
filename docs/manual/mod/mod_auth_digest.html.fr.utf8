@@ -30,8 +30,6 @@
 <a href="../fr/mod/mod_auth_digest.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condens&eacute;s
 MD5</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
@@ -176,18 +174,33 @@ concernant l'authentification &agrave; base de condens&eacute;s</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="authdigestnccheck">Directive <span id="AuthDigestNcCheck">AuthDigestNcCheck</span> <a title="Lien permanent" href="#authdigestnccheck" class="permalink">&para;</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou d&eacute;sactive la v&eacute;rification du nombre d'envois du
-nombre &agrave; valeur unique (nonce) par le serveur</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou d&eacute;sactive la v&eacute;rification du compteur d'envois du
+nombre &agrave; valeur unique (nonce) par le client</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestNcCheck On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>AuthDigestNcCheck Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale, serveur virtuel, r&eacute;pertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Surcharges autoris&eacute;es:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
-    <div class="note">
-      Non encore impl&eacute;ment&eacute;.
-    </div>
-    
+    <p>La directive AuthDigestNcCheck permet d'activer ou de d&eacute;sactiver
+    la v&eacute;rification du compteur d'envois du nombre &agrave; valeur unique (nonce)
+    par le client. Le compteur d'envois est un compteur s&eacute;quentiel que le client
+    incr&eacute;mente &agrave; chaque requ&ecirc;te en utilisant le m&ecirc;me nombre &agrave; valeur unique.
+    Cette v&eacute;rification permet de d&eacute;tecter les attaques par rejeu.</p>
+
+    <p>Cette fonctionnalit&eacute; n&eacute;cessite la prise en charge de la m&eacute;moire partag&eacute;e
+    sur la plateforme. Si cette directive est d&eacute;finie &agrave; <code>On</code> alors
+    que la m&eacute;moire partag&eacute;e n&rsquo;est pas disponible, le serveur renverra une erreur
+    au d&eacute;marrage.</p>
+
+    <p>Bien qu&rsquo;il soit recommand&eacute; de le faire du point de vue de la s&eacute;curit&eacute;,
+    activer cette directive a des implications en mati&egrave;re de performance&nbsp;:
+    toutes les requ&ecirc;tes comportant un en-t&ecirc;te
+    <code>Authorization</code> doivent &ecirc;tre s&eacute;rialis&eacute;es au sein d&rsquo;une section
+    critique pour comparer de mani&egrave;re sure les valeurs du compteur d&rsquo;envois du
+    nombre &agrave; valeur unique. Sur les serveurs &agrave; fort trafic, cela peut ne pas &ecirc;tre
+    n&eacute;gligeable.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

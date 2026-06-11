@@ -200,8 +200,8 @@ des utilisateurs et de leurs mots de passe</td></tr>
 condens&eacute;s du d&eacute;fit et de sa r&eacute;ponse</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Les URIs qui se trouvent dans le m&ecirc;me espace de protection
 concernant l'authentification &agrave; base de condens&eacute;s</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive la v&eacute;rification du nombre d'envois du
-nombre &agrave; valeur unique (nonce) par le serveur</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive la v&eacute;rification du compteur d'envois du
+nombre &agrave; valeur unique (nonce) par le client</td></tr>
 <tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>secondes</var></a></td><td> 300 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Dur&eacute;e de validit&eacute; du nombre &agrave; valeur unique du
 serveur (nonce)</td></tr>
 <tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>nom fournisseur</var>
@@ -1116,7 +1116,7 @@ l'en-t&ecirc;te Vary.</td></tr>
 version HTTP.</td></tr>
 <tr class="odd"><td><a href="mod_policy.html#policyversionurl">PolicyVersionURL <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL contenant la description de la politique de filtrage
 des requ&ecirc;tes en fonction du num&eacute;ro de version HTTP.</td></tr>
-<tr><td><a href="motorz.html#pollersperchild">PollersPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of poll threads per child process</td></tr>
+<tr><td><a href="motorz.html#pollersperchild">PollersPerChild <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Nombre de threads sondeurs par processus enfant</td></tr>
 <tr class="odd"><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td> FAST </td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Fait un compromis entre d'une part l'efficacit&eacute; et la
 vitesse de traitement et d'autre part la s&eacute;curit&eacute; &agrave; l'encontre des codes
 malicieux supportant les privil&egrave;ges.</td></tr>

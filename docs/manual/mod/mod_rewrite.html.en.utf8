@@ -1136,8 +1136,9 @@ guide for complete details.
       section of the mod_rewrite introduction.</p>
 
       <p>The <a id="rhs" name="rhs"><em>Substitution</em></a> of a
-      rewrite rule is the string that replaces the original URL-path that
-      was matched by <em>Pattern</em>.  The <em>Substitution</em> may
+      rewrite rule is the string that replaces the URL-path (see
+      <a href="#what_is_matched">"What is matched?"</a> above)
+      when the rule's conditions are met.  The <em>Substitution</em> may
       be a:</p>
 
       <dl>
