@@ -344,7 +344,7 @@ static apr_status_t close_unix_socket(void *thefd)
 {
     int fd = (int)((long)thefd);
 
-    return close(fd);
+    return close(fd) < 0 ? errno : APR_SUCCESS;
 }
 
 /* Read from the socket dealing with incomplete messages and signals.
@@ -433,13 +433,18 @@ static apr_status_t sock_read(int fd, void *vbuf, size_t buf_size)
 static apr_status_t sock_write(int fd, const void *buf, size_t buf_size)
 {
     int rc;
+    const char *b = buf;
+    size_t written = 0;
 
     do {
-        rc = write(fd, buf, buf_size);
-    } while (rc < 0 && errno == EINTR);
-    if (rc < 0) {
-        return errno;
-    }
+        do {
+            rc = write(fd, b + written, buf_size - written);
+        } while (rc < 0 && errno == EINTR);
+        if (rc < 0) {
+            return errno;
+        }
+        written += rc;
+    } while (written < buf_size);
 
     return APR_SUCCESS;
 }
@@ -1078,7 +1083,7 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
             return DECLINED;
         }
         if (strlen(tmp_sockname) > sizeof(server_addr->sun_path) - 1) {
-            tmp_sockname[sizeof(server_addr->sun_path)] = '\0';
+            tmp_sockname[sizeof(server_addr->sun_path) - 1] = '\0';
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, main_server, APLOGNO(01254)
                         "The length of the ScriptSock path exceeds maximum, "
                         "truncating to %s", tmp_sockname);
