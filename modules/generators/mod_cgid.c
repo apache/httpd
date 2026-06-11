@@ -192,6 +192,8 @@ typedef struct {
 } cgid_rlimit_t;
 #endif
 
+#define ENV_COUNT_MAX (256)
+
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
     unsigned long conn_id; /* connection id; daemon uses this as a hash value
@@ -201,7 +203,7 @@ typedef struct {
     pid_t ppid;            /* sanity check for config problems leading to
                             * wrong cgid socket use
                             */
-    int env_count;
+    unsigned env_count;
     ap_unix_identity_t ugid;
     apr_size_t filename_len;
     apr_size_t argv0_len;
@@ -518,6 +520,11 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     if (stat != APR_SUCCESS) {
         return stat;
     }
+
+    if (req->loglevel > APLOG_TRACE8) {
+        return APR_EINVAL;
+    }
+
     r->server->log.level = req->loglevel;
     if (req->req_type == GETPID_REQ) {
         /* no more data sent for this request */
@@ -525,13 +532,14 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* Sanity check the structure received. */
-    if (req->env_count < 0 || req->uri_len == 0
-        || req->filename_len > APR_PATH_MAX || req->filename_len == 0
-        || req->argv0_len > APR_PATH_MAX || req->argv0_len == 0
-        || req->loglevel > APLOG_TRACE8) {
+    if (req->env_count > ENV_COUNT_MAX
+        || req->filename_len == 0 || req->filename_len > APR_PATH_MAX
+        || req->argv0_len == 0 || req->argv0_len > APR_PATH_MAX
+        || req->uri_len == 0 || req->uri_len > APR_PATH_MAX
+        || req->args_len > APR_PATH_MAX) {
         return APR_EINVAL;
     }
-    
+
     /* handle module indexes and such */
     rconf = (void **)ap_create_request_config(r->pool);
 
@@ -564,6 +572,9 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
 
         if ((stat = sock_read(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
             return stat;
+        }
+        if (curlen > APR_PATH_MAX) {
+            return APR_EINVAL;
         }
         environ[i] = apr_pcalloc(r->pool, curlen + 1);
         if ((stat = sock_read(fd, environ[i], curlen)) != APR_SUCCESS) {
