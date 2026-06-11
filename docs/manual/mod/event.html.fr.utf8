@@ -101,7 +101,7 @@ propose le MPM <code class="module"><a href="../mod/worker.html">worker</a></cod
     
     <p>Ce module MPM tente de r&eacute;soudre le "probl&egrave;me keep
     alive" de HTTP. Lorsqu'un client a effectu&eacute; une premi&egrave;re requ&ecirc;te, il peut
-    garder la connexion ouverte et envoyer les requ&ecirc;tes suivante en utilisant le
+    garder la connexion ouverte et envoyer les requ&ecirc;tes suivantes en utilisant le
     m&ecirc;me socket, ce qui diminue consid&eacute;rablement la charge qui aurait &eacute;t&eacute;
     induite par la cr&eacute;ation de nouvelles connexions TCP. Cependant, le
     fonctionnement du serveur HTTP Apache impose de r&eacute;server un couple processus

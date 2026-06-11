@@ -29,6 +29,8 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requ&ecirc;te pour d&eacute;terminer le noeud du syst&egrave;me de fichier &agrave; partir duquel le
