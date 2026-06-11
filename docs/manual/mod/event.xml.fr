@@ -66,7 +66,7 @@ propose le MPM <module>worker</module>, avec l'unique addition de la directive
     
     <p>Ce module MPM a été conçu à l'origine pour résoudre le "problème keep
     alive" de HTTP. Lorsqu'un client a effectué une première requête, il peut
-    garder la connexion ouverte et envoyer les requêtes suivante en utilisant le
+    garder la connexion ouverte et envoyer les requêtes suivantes en utilisant le
     même socket, ce qui diminue considérablement la charge qui aurait été
     induite par la création de nouvelles connexions TCP. Cependant, le
     fonctionnement du serveur HTTP Apache impose de réserver un couple processus
