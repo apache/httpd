@@ -20,6 +20,9 @@ on:
       - '**.md'
       - changes-entries/*
 
+permissions:
+  contents: read
+
 env:
   MARGS: "-j2"
   CFLAGS: "-g"
