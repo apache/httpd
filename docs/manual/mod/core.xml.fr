@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934488:1934979 (outdated) -->
+<!-- English Revision: 1934979 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -517,16 +517,36 @@ autorisés à transiter dans les URLs tels quels</description>
       pouvant être définies à l'aide de la directive <directive
       module="core">Options</directive>.
 
-      <note><title>Désactivation implicite des options</title>
-      <p>Bien que la liste des options disponibles dans les fichiers
-      .htaccess puisse être limitée par cette directive, tant qu'un
-      directive <directive module="core">Options</directive> est
-      autorisée, toute autre option héritée peut être désactivée en
-      utilisant la syntaxe non-relative. En d'autres termes, ce
-      mécanisme ne peut pas forcer une option spécifique à rester
-      <em>activée</em> tout en permettant à toute autre option d'être
-      activée.
-      </p></note>
+      <note type="warning"><title>Désactivation implicite des options</title>
+      <p>Cette restriction ne contrôle que les options qu’un fichier
+      <code>.htaccess</code> peut <em>activer</em>. Elle n’empêche pas la
+      <em>désactivation</em> des options héritées.</p>
+
+      <p>Lorsqu’une directive <directive module="core">Options</directive> dans
+      un fichier <code>.htaccess</code> utilise une syntaxe absolue (sans
+      préfixe <code>+</code> ou <code>-</code>), elle <em>remplace</em> la
+      totalité du jeu d’options héritées. Toute option auparavant active qui
+      n’est pas listée est implicitement désactivée&mdash;il en est de même pour
+      les options qui ne sont pas dans la liste <code>AllowOverride</code> des
+      options permises.</p>
+
+      <p>Par exemple, si la configuration définit :</p>
+      <highlight language="config">
+Options Indexes FollowSymLinks ExecCGI
+AllowOverride Options=Indexes
+      </highlight>
+      <p>et si un fichier <code>.htaccess</code> contient :</p>
+      <highlight language="config">
+Options Indexes
+      </highlight>
+      <p>les options <code>FollowSymLinks</code> et <code>ExecCGI</code> seront
+      implicitement désactivée pour le répertoire concerné, même si la ligne
+      <code>AllowOverride</code> ne fait que permettre la définition de l’option
+      <code>Indexes</code>.</p>
+
+      <p>En bref, ce mécanisme ne peut pas forcer une option spécifique à rester
+      <em>définie</em> tout en permettant la définition de toutes les autres.</p>
+      </note>
 
       <highlight language="config">
       AllowOverride Options=Indexes,MultiViews
