@@ -1,4 +1,3 @@
-/* Auto-generated - do not edit */
 /*
  * Copyright (c) 2026 The mod_http3 Project Authors. All rights reserved.
  *
@@ -17,18 +16,17 @@
  * limitations under the License.
  */
 
-#ifndef MOD_HTTP3_VERSION_H
-#define MOD_HTTP3_VERSION_H
+#ifndef H3_UTIL_H
+#define H3_UTIL_H
 
-#define MOD_HTTP3_VERSION_MAJOR 0
-#define MOD_HTTP3_VERSION_MINOR 0
-#define MOD_HTTP3_VERSION_PATCH 15
+#include <apr_pools.h>
 
-// Construct a 24-bit packed version number from major, minor and patch. Version 1.2.3 becomes 0x010203.
-#define MOD_HTTP3_MAKE_VERSION(major, minor, patch) (((major) << 16) | ((minor) << 8) | (patch))
+#include <nghttp3/nghttp3.h>
 
-#define MOD_HTTP3_VERSION MOD_HTTP3_MAKE_VERSION(MOD_HTTP3_VERSION_MAJOR, MOD_HTTP3_VERSION_MINOR, MOD_HTTP3_VERSION_PATCH)
+#include "h3_ssl.h"
 
-#define MOD_HTTP3_VERSION_STRING "0.0.15"
+void make_nv(nghttp3_nv* nv, const char* name, const char* value);
+char* get_openssl_error_string(apr_pool_t* p);
+void ERR_print_errors_log(struct h3ssl* h3ssl);
 
-#endif
+#endif /* H3_UTIL_H */
