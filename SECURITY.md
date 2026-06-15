@@ -103,15 +103,21 @@ CVE-2012-0031.
 ## Delegated Configuration 
 
 Server configuration can be delegated to trusted local site authors by
-allowing use of .htaccess files in non-default configurations.  Local
-site authors are trusted to not attack the server with malformed or
-malicious .htaccess files (for example, files of excessive size).
+allowing use of .htaccess files in some configurations (see
+https://httpd.apache.org/docs/2.4/howto/htaccess.html).  Site authors
+gain a significant degree of control over, and access to, the server
+at run-time:
+
+* site authors are trusted to not attack the server with malformed or
+  malicious .htaccess files (for example, files of excessive size).
+
+* site authors gain access to some data (such as files or the
+  environment) which is otherwise restricted.
 
 In configurations supporting in-process scripting language interpreters
-which are not sandboxed, such as `mod_lua` or `mod_php`, local site
-authors have equivalent privileges to the less-privileged server user.
-
-(### TODO something about AllowOverride)
+which are not sandboxed, such as `mod_lua` or `mod_php`,
+site authors have exactly equivalent privileges to the user which the
+server runs as.
 
 ## Dependent Services
 
