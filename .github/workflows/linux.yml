@@ -7,6 +7,7 @@ on:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - '**.md'
       - changes-entries/*
     tags:
       - 2.*
@@ -16,13 +17,14 @@ on:
       - 'docs/**'
       - STATUS
       - CHANGES
+      - '**.md'
       - changes-entries/*
 
 env:
   MARGS: "-j2"
   CFLAGS: "-g"
   # This will need updating as the ubuntu-latest image changes:
-  PHP_FPM: "/usr/sbin/php-fpm8.1"
+  PHP_FPM: "/usr/sbin/php-fpm8.3"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
