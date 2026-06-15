@@ -227,8 +227,9 @@ utilisateurs.</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le support de
 la r&eacute;partition de charge</dd>
-<dt><a href="mod_proxy_beacon.html">mod_proxy_beacon</a></dt><dd>Dynamic Balancer membership where backends announce themselves
-to the reverse proxy over unicast UDP datagrams</dd>
+<dt><a href="mod_proxy_beacon.html">mod_proxy_beacon</a></dt><dd>Inscription dynamique comme membre d&rsquo;un r&eacute;partiteur de charge o&ugrave;
+les serveurs dorsaux s&rsquo;annoncent eux-m&ecirc;mes au mandataire inverse &agrave; l&rsquo;aide de
+datagrammes UDP unicast</dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd>Extension de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le traitement
 des requ&ecirc;tes <code>CONNECT</code></dd>
 <dt><a href="mod_proxy_express.html">mod_proxy_express</a></dt><dd>Extension &agrave; <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> pour le mandatement

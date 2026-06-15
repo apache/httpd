@@ -33,8 +33,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Fonctionnalit&eacute;s de base du serveur HTTP Apache toujours
 disponibles</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Noyau httpd</td></tr></table>
@@ -577,16 +575,34 @@ autoris&eacute;s &agrave; transiter dans les URLs tels quels</td></tr>
       suivi d'une liste d'options, s&eacute;par&eacute;es par des virgules (sans espaces),
       pouvant &ecirc;tre d&eacute;finies &agrave; l'aide de la directive <code class="directive"><a href="#options">Options</a></code>.
 
-      <div class="note"><h3>D&eacute;sactivation implicite des options</h3>
-      <p>Bien que la liste des options disponibles dans les fichiers
-      .htaccess puisse &ecirc;tre limit&eacute;e par cette directive, tant qu'un
-      directive <code class="directive"><a href="#options">Options</a></code> est
-      autoris&eacute;e, toute autre option h&eacute;rit&eacute;e peut &ecirc;tre d&eacute;sactiv&eacute;e en
-      utilisant la syntaxe non-relative. En d'autres termes, ce
-      m&eacute;canisme ne peut pas forcer une option sp&eacute;cifique &agrave; rester
-      <em>activ&eacute;e</em> tout en permettant &agrave; toute autre option d'&ecirc;tre
-      activ&eacute;e.
-      </p></div>
+      <div class="warning"><h3>D&eacute;sactivation implicite des options</h3>
+      <p>Cette restriction ne contr&ocirc;le que les options qu&rsquo;un fichier
+      <code>.htaccess</code> peut <em>activer</em>. Elle n&rsquo;emp&ecirc;che pas la
+      <em>d&eacute;sactivation</em> des options h&eacute;rit&eacute;es.</p>
+
+      <p>Lorsqu&rsquo;une directive <code class="directive"><a href="#options">Options</a></code> dans
+      un fichier <code>.htaccess</code> utilise une syntaxe absolue (sans
+      pr&eacute;fixe <code>+</code> ou <code>-</code>), elle <em>remplace</em> la
+      totalit&eacute; du jeu d&rsquo;options h&eacute;rit&eacute;es. Toute option auparavant active qui
+      n&rsquo;est pas list&eacute;e est implicitement d&eacute;sactiv&eacute;e&mdash;il en est de m&ecirc;me pour
+      les options qui ne sont pas dans la liste <code>AllowOverride</code> des
+      options permises.</p>
+
+      <p>Par exemple, si la configuration d&eacute;finit&nbsp;:</p>
+      <pre class="prettyprint lang-config">Options Indexes FollowSymLinks ExecCGI
+AllowOverride Options=Indexes</pre>
+
+      <p>et si un fichier <code>.htaccess</code> contient&nbsp;:</p>
+      <pre class="prettyprint lang-config">Options Indexes</pre>
+
+      <p>les options <code>FollowSymLinks</code> et <code>ExecCGI</code> seront
+      implicitement d&eacute;sactiv&eacute;e pour le r&eacute;pertoire concern&eacute;, m&ecirc;me si la ligne
+      <code>AllowOverride</code> ne fait que permettre la d&eacute;finition de l&rsquo;option
+      <code>Indexes</code>.</p>
+
+      <p>En bref, ce m&eacute;canisme ne peut pas forcer une option sp&eacute;cifique &agrave; rester
+      <em>d&eacute;finie</em> tout en permettant la d&eacute;finition de toutes les autres.</p>
+      </div>
 
       <pre class="prettyprint lang-config">AllowOverride Options=Indexes,MultiViews</pre>
 

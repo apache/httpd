@@ -1016,8 +1016,8 @@ inactifs</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente avant de r&eacute;essayer, doubl&eacute; &agrave; chaque erreur
 	cons&eacute;cutive</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
-	sont ajout&eacute;s ou non &agrave; server-status.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
+	sont ajout&eacute;s ou non &agrave; <code>server-status</code>.</td></tr>
 <tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Active l'agrafage pour les certificats non g&eacute;r&eacute;s par
 	mod_md.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour un ou plusieurs domaines.</td></tr>
@@ -1135,17 +1135,19 @@ connexion au MPM pour un traitement asynchrone</td></tr>
 <tr><td><a href="mod_proxy.html#proxyasyncidletimeout">ProxyAsyncIdleTimeout <var>time</var>[s]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;lai d&rsquo;inactivit&eacute; pour les connexions asynchrones de mandataire</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;termine la mani&egrave;re de traiter les lignes d'en-t&ecirc;te
 incorrectes d'une r&eacute;ponse</td></tr>
-<tr><td><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress <em>address:port</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address of the reverse proxy to which a backend sends its
-announcements</td></tr>
-<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The routable URL a backend announces to the reverse proxy</td></tr>
-<tr><td><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the balancer that announced backends are added to</td></tr>
-<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval <em>interval</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How often a backend publishes its announcement</td></tr>
-<tr><td><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen [<em>address</em>][:<em>port</em>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Address on which the reverse proxy receives backend
-beacons</td></tr>
-<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew <em>interval</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum allowed age of a signed announcement</td></tr>
-<tr><td><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret <em>secret</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Pre-shared secret used to authenticate announcements</td></tr>
-<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout <em>interval</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How long the proxy waits, without an announcement, before a backend
-is taken out of rotation</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconaddress">ProxyBeaconAddress <em>address:port</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse du mandataire inverse &agrave; laquelle un serveur dorsal envoie
+ses annonces</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconadvertise">ProxyBeaconAdvertise <em>url</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">L&rsquo;URL routable qu&rsquo;annonce le serveur dorsal au mandataire inverse</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconbalancer">ProxyBeaconBalancer <em>name</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Le nom du r&eacute;partiteur de charge auquel les serveurs dorsaux
+annonc&eacute;s sont ajout&eacute;s</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconinterval">ProxyBeaconInterval <em>interval</em></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">P&eacute;riodicit&eacute; de l&rsquo;envoi d&rsquo;annonces par le serveur dorsal</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconlisten">ProxyBeaconListen [<em>address</em>][:<em>port</em>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adresse sur laquelle le mandataire inverse re&ccedil;oit les annonces des
+serveurs dorsaux</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeaconmaxskew">ProxyBeaconMaxSkew <em>interval</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Age maximal autoris&eacute; d&rsquo;une annonce sign&eacute;e</td></tr>
+<tr><td><a href="mod_proxy_beacon.html#proxybeaconsecret">ProxyBeaconSecret <em>secret</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Phrase secr&egrave;te partag&eacute;e &agrave; l&rsquo;avance pour authentifier les annonces
+des serveurs dorsaux</td></tr>
+<tr class="odd"><td><a href="mod_proxy_beacon.html#proxybeacontimeout">ProxyBeaconTimeout <em>interval</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dur&eacute;e maximale de l&rsquo;absence d&rsquo;annonce d&rsquo;un serveur dorsal au bout
+de laquelle le mandataire enl&egrave;ve ce dernier de la rotation</td></tr>
 <tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>
 [<var>nom d'h&ocirc;te</var>|<var>nom d'h&ocirc;te partiel</var>]...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Interdit les requ&ecirc;tes mandat&eacute;es vers certains h&ocirc;tes</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domaine</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Nom de domaine par d&eacute;faut pour les requ&ecirc;tes
