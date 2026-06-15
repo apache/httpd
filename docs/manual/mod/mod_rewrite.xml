@@ -1,4 +1,4 @@
-<a?xml version="1.0"?>
+<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -1258,11 +1258,6 @@ sections and consider both set of statements, rather than only the last one.</li
 </highlight>
 </example>
 </note>
-
-      <p>For some hints on <glossary ref="regex">regular
-      expressions</glossary>, see
-      the <a href="../rewrite/intro.html#regex">mod_rewrite
-      Introduction</a>.</p>
 
       <p>For information on <glossary ref="regex">regular
       expressions</glossary>, including the use of the
