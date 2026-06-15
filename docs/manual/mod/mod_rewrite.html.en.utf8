@@ -172,49 +172,58 @@ URLs on the fly</td></tr>
       condition is determined to be true only if the the
       <em>CondPattern</em> does not match.</p>
 
-        <p><em>TestString</em> is a string which can contain the
+      
+      
+      
+
+      <p><a id="rewritecond-teststring" name="rewritecond-teststring"></a><strong>TestString</strong></p>
+
+      <p><em>TestString</em> is a string which can contain the
       following expanded constructs in addition to plain text:</p>
 
-      <ul>
-        <li>
-          <strong>RewriteRule backreferences</strong>: These are
-          backreferences of the form <strong><code>$N</code></strong>
+      
+
+      <p><a id="rewritecond-backreferences" name="rewritecond-backreferences"></a><strong>Backreferences</strong></p>
+
+      <dl>
+        <dt><strong><code>$N</code></strong> &mdash; RewriteRule backreferences</dt>
+        <dd>Backreferences of the form <code>$N</code>
           (0 &lt;= N &lt;= 9). $1 to $9 provide access to the grouped
           parts (in parentheses) of the pattern, from the
           <code>RewriteRule</code> which is subject to the current
           set of <code>RewriteCond</code> conditions. $0 provides
-          access to the whole string matched by that pattern.
+          access to the whole string matched by that pattern.</dd>
 
-          <div class="note">Backreferences are only defined if the pattern
-          matches. Thus, if the pattern is prefixed with
-          <code>!</code>, no backreferences are ever defined.</div>
-        </li>
-        <li>
-          <strong>RewriteCond backreferences</strong>: These are
-          backreferences of the form <strong><code>%N</code></strong>
+        <dt><strong><code>%N</code></strong> &mdash; RewriteCond backreferences</dt>
+        <dd>Backreferences of the form <code>%N</code>
           (0 &lt;= N &lt;= 9). %1 to %9 provide access to the grouped
           parts (again, in parentheses) of the pattern, from the last matched
           <code>RewriteCond</code> in the current set
           of conditions. %0 provides access to the whole string matched by
-          that pattern.
+          that pattern.</dd>
+      </dl>
 
-          <div class="note">Backreferences are only defined if the pattern
-          matches. Thus, if the pattern is prefixed with
-          <code>!</code>, no backreferences are ever defined.</div>
-        </li>
-        <li>
-          <strong>RewriteMap expansions</strong>: These are
-          expansions of the form <strong><code>${mapname:key|default}</code></strong>.
-          See <a href="#mapfunc">the documentation for
-          RewriteMap</a> for more details.
-        </li>
-        <li>
-          <strong>Server variables</strong>: These are variables of
-          the form
-            <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
-            <code>}</code></strong>
-          where <em>NAME_OF_VARIABLE</em> can be a string taken
-          from the following list:
+      <div class="note">Backreferences are only defined if the pattern
+      matches. Thus, if the pattern is prefixed with
+      <code>!</code>, no backreferences are ever defined.</div>
+
+      
+
+      <p><a id="rewritecond-mapexpansions" name="rewritecond-mapexpansions"></a><strong>RewriteMap Expansions</strong></p>
+
+      <p>These are expansions of the form <strong><code>${mapname:key|default}</code></strong>.
+      See <a href="#mapfunc">the documentation for
+      RewriteMap</a> for more details.</p>
+
+      
+
+      <p><a id="rewritecond-servervars" name="rewritecond-servervars"></a><strong>Server and CGI Variables</strong></p>
+
+      <p>These are variables of the form
+        <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
+        <code>}</code></strong>
+      where <em>NAME_OF_VARIABLE</em> can be a string taken
+      from the following list:</p>
 
           <table>
           
@@ -299,7 +308,7 @@ URLs on the fly</td></tr>
                 correspond to the similarly named HTTP
                 MIME-headers, C variables of the Apache HTTP Server or
                 <code>struct tm</code> fields of the Unix system.
-                Most are documented in the 
+                Most are documented in the
                 <a href="../expr.html#vars">Expressions doc</a>, in the
                 <a href="../env.html">Environment Variables doc</a>,
                 or the CGI specification (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>).</p>
@@ -309,7 +318,30 @@ URLs on the fly</td></tr>
                 <code class="directive"><a href="../mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
                 respectively.</p>
 
-                <p>Those that are special to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> include those below.</p>
+                <p>The variables SCRIPT_FILENAME and REQUEST_FILENAME
+                contain the same value - the value of the
+                <code>filename</code> field of the internal
+                <code>request_rec</code> structure of the Apache HTTP Server.
+                The first name is the commonly known CGI variable name
+                while the second is the appropriate counterpart of
+                REQUEST_URI (which contains the value of the
+                <code>uri</code> field of <code>request_rec</code>).</p>
+
+                <p>If a substitution occurred and the rewriting continues,
+                the value of both variables will be updated accordingly.</p>
+
+                <p>If used in per-server context (<em>i.e.</em>, before the
+                request is mapped to the filesystem) SCRIPT_FILENAME and
+                REQUEST_FILENAME cannot contain the full local filesystem
+                path since the path is unknown at this stage of processing.
+                Both variables will initially contain the value of REQUEST_URI
+                in that case. In order to obtain the full local filesystem
+                path of the request in per-server context, use an URL-based
+                look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
+                the final value of REQUEST_FILENAME.</p>
+
+                <p>Those that are special to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+                include those below.</p>
                 <dl>
                   <dt><code>API_VERSION</code></dt>
 
@@ -372,7 +404,7 @@ URLs on the fly</td></tr>
                   such as "/index.html".  This notably excludes the
                   query string which is available as its own variable
                   named <code>QUERY_STRING</code>. The value returned for
-                  <code>REQUEST_URI</code> 
+                  <code>REQUEST_URI</code>
                   has already been %-decoded, to re-encode it pass it through
                   the "escape" <a href="#mapfunc">mapping-function</a>.
                   Note that this server variable differs from the CGI
@@ -393,79 +425,63 @@ URLs on the fly</td></tr>
                   (decoded), unlike most other variables below.</dd>
 
                 </dl>
-        </li>
-      </ul>
 
-      <p>If the <em>TestString</em> has the special value <code>expr</code>,
-      the <em>CondPattern</em> will be treated as an
-      <a href="../expr.html">ap_expr</a>. HTTP headers referenced in the
-      expression will be added to the Vary header if the <code>novary</code>
-      flag is not given.</p>
+      
 
-      <p>Other things you should be aware of:</p>
+      <p><a id="rewritecond-prefixed" name="rewritecond-prefixed"></a><strong>Prefixed Variable Lookups</strong></p>
 
-      <ol>
-        <li>
-        <p>The variables SCRIPT_FILENAME and REQUEST_FILENAME
-        contain the same value - the value of the
-        <code>filename</code> field of the internal
-        <code>request_rec</code> structure of the Apache HTTP Server.
-        The first name is the commonly known CGI variable name
-        while the second is the appropriate counterpart of
-        REQUEST_URI (which contains the value of the
-        <code>uri</code> field of <code>request_rec</code>).</p>
-        <p>If a substitution occurred and the rewriting continues,
-        the value of both variables will be updated accordingly.</p>
-        <p>If used in per-server context (<em>i.e.</em>, before the
-        request is mapped to the filesystem) SCRIPT_FILENAME and
-        REQUEST_FILENAME cannot contain the full local filesystem
-        path since the path is unknown at this stage of processing.
-        Both variables will initially contain the value of REQUEST_URI
-        in that case. In order to obtain the full local filesystem
-        path of the request in per-server context, use an URL-based
-        look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
-        the final value of REQUEST_FILENAME.</p></li>
+      <p>In addition to the server variables above, the
+      <code>%{<em>PREFIX</em>:<em>name</em>}</code> syntax provides
+      access to additional sources:</p>
 
-        <li>
-        <code>%{ENV:variable}</code>, where <em>variable</em> can be
-        any environment variable, is also available.
-        This is looked-up via internal
+      <dl>
+        <dt><strong><code>%{ENV:variable}</code></strong></dt>
+        <dd>Where <em>variable</em> can be
+        any environment variable. This is looked-up via internal
         Apache httpd structures and (if not found there) via
-        <code>getenv()</code> from the Apache httpd server process.</li>
+        <code>getenv()</code> from the Apache httpd server process.</dd>
 
-        <li>
-        <code>%{SSL:variable}</code>, where <em>variable</em> is the
+        <dt><strong><code>%{SSL:variable}</code></strong></dt>
+        <dd>Where <em>variable</em> is the
         name of an <a href="mod_ssl.html#envvars">SSL environment
-        variable</a>, can be used whether or not
+        variable</a>. This can be used whether or not
         <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is loaded, but will always expand to
         the empty string if it is not.  Example:
         <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> may expand to
         <code>128</code>. These variables are available even without
         setting the <code>StdEnvVars</code> option of the
-        <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> directive.</li>
+        <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> directive.</dd>
 
-        <li>
-        <code>%{HTTP:header}</code>, where <em>header</em> can be
-        any HTTP MIME-header name, can always be used to obtain the
+        <dt><strong><code>%{HTTP:header}</code></strong></dt>
+        <dd>Where <em>header</em> can be
+        any HTTP MIME-header name. This can always be used to obtain the
         value of a header sent in the HTTP request.
         Example: <code>%{HTTP:Proxy-Connection}</code> is
         the value of the HTTP header
         ``<code>Proxy-Connection:</code>''.
-        <p>If a HTTP header is used in a condition this header is added to
+        <p>If an HTTP header is used in a condition, this header is added to
         the Vary header of the response in case the condition evaluates
         to true for the request. It is <strong>not</strong> added if the
         condition evaluates to false for the request. Adding the HTTP header
         to the Vary header of the response is needed for proper caching.</p>
         <p>It has to be kept in mind that conditions follow a short circuit
         logic in the case of the '<strong><code>ornext|OR</code></strong>' flag
-        so that certain conditions might not be evaluated at all.</p></li>
+        so that certain conditions might not be evaluated at all.</p></dd>
+      </dl>
 
-        <li>
-        <a id="LA-U" name="LA-U"><code>%{LA-U:variable}</code></a>
-        can be used for look-aheads which perform
-        an internal (URL-based) sub-request to determine the final
+      
+
+      <p><a id="rewritecond-lookahead" name="rewritecond-lookahead"></a><strong>Look-ahead Sub-requests</strong></p>
+
+      <p>These forms perform an internal sub-request to determine the
+      final value of a variable that is not yet available at the current
+      stage of processing:</p>
+
+      <dl>
+        <dt><a id="LA-U" name="LA-U"><strong><code>%{LA-U:variable}</code></strong></a></dt>
+        <dd>Performs an internal (URL-based) sub-request to determine the final
         value of <em>variable</em>. This can be used to access
-        variable for rewriting which is not available at the current
+        a variable for rewriting which is not available at the current
         stage, but will be set in a later phase.
         <p>For instance, to rewrite according to the
         <code>REMOTE_USER</code> variable from within the
@@ -478,14 +494,29 @@ URLs on the fly</td></tr>
         its <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
-        <code>%{REMOTE_USER}</code> in that context.</p></li>
+        <code>%{REMOTE_USER}</code> in that context.</p></dd>
 
-        <li>
-        <code>%{LA-F:variable}</code> can be used to perform an internal
-        (filename-based) sub-request, to determine the final value
-        of <em>variable</em>. Most of the time, this is the same as
-        LA-U above.</li>
-      </ol>
+        <dt><strong><code>%{LA-F:variable}</code></strong></dt>
+        <dd>Performs an internal (filename-based) sub-request to determine
+        the final value of <em>variable</em>. Most of the time, this is
+        the same as LA-U above.</dd>
+      </dl>
+
+      
+
+      <p><a id="rewritecond-expr" name="rewritecond-expr"></a><strong>Expression Syntax</strong></p>
+
+      <p>If the <em>TestString</em> has the special value <code>expr</code>,
+      the <em>CondPattern</em> will be treated as an
+      <a href="../expr.html">ap_expr</a>. HTTP headers referenced in the
+      expression will be added to the Vary header if the <code>novary</code>
+      flag is not given.</p>
+
+      
+      
+      
+
+      <p><a id="rewritecond-condpattern" name="rewritecond-condpattern"></a><strong>CondPattern</strong></p>
 
       <p><em>CondPattern</em> is the condition pattern,
        a regular expression which is applied to the
@@ -498,16 +529,18 @@ URLs on the fly</td></tr>
       additional syntax available to perform other useful tests against
       the <em>Teststring</em>:</p>
 
-      <ol>
-        <li>You can prefix the pattern string with a
+      
+
+      <p>You can prefix the pattern string with a
         '<code>!</code>' character (exclamation mark) to negate the result
         of the condition, no matter what kind of <em>CondPattern</em> is used.
-        </li>
+      </p>
 
-        <li>
-          You can perform lexicographical string comparisons:
+      
 
-          <dl>
+      <p><a id="rewritecond-stringcomp" name="rewritecond-stringcomp"></a><strong>String Comparisons</strong></p>
+
+      <dl>
             <dt><strong>&lt;CondPattern</strong></dt>
             <dd>Lexicographically precedes<br>
             Treats the <em>CondPattern</em> as a plain string and
@@ -547,21 +580,21 @@ URLs on the fly</td></tr>
             if <em>TestString</em> lexicographically follows
             <em>CondPattern</em>, or is equal to <em>CondPattern</em>
             (the two strings are equal, character for character).</dd>
-        </dl>
+      </dl>
+
         <div class="note"><h3>Note</h3>
         The string comparison operator is part of the <em>CondPattern</em>
         argument and must be included in the quotes if those are used. Eg.
-        
+
         <pre class="prettyprint lang-config">RewriteCond %{HTTP_USER_AGENT} "=This Robot/1.0"</pre>
 
         </div>
-        
-        </li>
 
-        <li>
-          You can perform integer comparisons:
-          <dl>
+      
 
+      <p><a id="rewritecond-intcomp" name="rewritecond-intcomp"></a><strong>Integer Comparisons</strong></p>
+
+      <dl>
             <dt><strong>-eq</strong></dt>
             <dd>Is numerically <strong>eq</strong>ual to<br>
             The <em>TestString</em> is treated as an integer, and is
@@ -606,32 +639,26 @@ URLs on the fly</td></tr>
             numerically compared to the <em>CondPattern</em>. True if
             the two are numerically different. This is equivalent to
             <code>!-eq</code>.</dd>
+      </dl>
 
-           </dl>
-        </li>
+      
 
-        <li>You can perform various file attribute tests:
+      <p><a id="rewritecond-fileattr" name="rewritecond-fileattr"></a><strong>File Attribute Tests</strong></p>
 
-
-          <dl>
-
+      <dl>
           <dt><strong>-d</strong></dt>
-
           <dd>Is <strong>d</strong>irectory.<br>
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a directory.
           </dd>
 
           <dt><strong>-f</strong></dt>
-
           <dd>Is regular <strong>f</strong>ile.<br>
-
              Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a regular file.
-        </dd>
+          </dd>
 
            <dt><strong>-F</strong></dt>
-
            <dd>Is existing file, via subrequest.<br>
             Checks whether or not <em>TestString</em> is a valid file,
             accessible via all the server's currently-configured
@@ -646,7 +673,6 @@ URLs on the fly</td></tr>
             </dd>
 
             <dt><strong>-l</strong></dt>
-
             <dd>Is symbolic <strong>l</strong>ink.<br>
             Treats the <em>TestString</em> as a pathname and tests
             whether or not it exists, and is a symbolic link. May also
@@ -685,18 +711,18 @@ URLs on the fly</td></tr>
             whether or not it exists, and has executable permissions.
             These permissions are determined according to
             the underlying OS.</dd>
+      </dl>
 
-          </dl>
-
-          For example:
+          <p>For example:</p>
 
         <pre class="prettyprint lang-config">RewriteCond /var/www/%{REQUEST_URI} !-f
 RewriteRule ^(.+) /other/archive/$1 [R]</pre>
 
 
-        </li>
+      
 
-        <li>
+      <p><a id="rewritecond-expr-pattern" name="rewritecond-expr-pattern"></a><strong>Expression Evaluation</strong></p>
+
            <p>If the <em>TestString</em> has the special value <code>expr</code>, the
            <em>CondPattern</em> will be treated as an
            <a href="../expr.html">ap_expr</a>.</p>
@@ -710,28 +736,31 @@ RewriteRule ^(.+) /other/archive/$1 [R]</pre>
            <pre class="prettyprint lang-config">RewriteCond expr "! %{HTTP_REFERER} -strmatch '*://%{HTTP_HOST}/*'"
 RewriteRule "^/images" "-" [F]</pre>
 
-        </li>
-     </ol>
 
-     <p>You can also set special flags for <em>CondPattern</em> by appending
+      
+      
+      
+
+      <p><a id="rewritecond-flags" name="rewritecond-flags"></a><strong>Flags</strong></p>
+
+     <p>You can set special flags for <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code class="directive">RewriteCond</code>
       directive, where <em>flags</em> is a comma-separated list of any of the
       following flags:</p>
-      
-      <ul>
-        <li>'<strong><code>nocase|NC</code></strong>'
-        (<strong>n</strong>o <strong>c</strong>ase)<br>
+
+      <dl>
+        <dt>'<strong><code>nocase|NC</code></strong>'</dt>
+        <dd>(<strong>n</strong>o <strong>c</strong>ase)<br>
         This makes the test case-insensitive - differences
         between 'A-Z' and 'a-z' are ignored, both in the
         expanded <em>TestString</em> and the <em>CondPattern</em>.
         This flag is effective only for comparisons between
         <em>TestString</em> and <em>CondPattern</em>. It has no
-        effect on filesystem and subrequest checks.</li>
+        effect on filesystem and subrequest checks.</dd>
 
-        <li>
-          '<strong><code>ornext|OR</code></strong>'
-          (<strong>or</strong> next condition)<br>
+        <dt>'<strong><code>ornext|OR</code></strong>'</dt>
+        <dd>(<strong>or</strong> next condition)<br>
           Use this to combine rule conditions with a local OR
           instead of the implicit AND. Typical example:
 
@@ -743,20 +772,24 @@ RewriteRule ...some special stuff for any of these hosts...</pre>
 
           Without this flag you would have to write the condition/rule
           pair three times.
-        </li>
+        </dd>
 
-        <li>'<strong><code>novary|NV</code></strong>'
-        (<strong>n</strong>o <strong>v</strong>ary)<br>
-        If a HTTP header is used in the condition, this flag prevents
+        <dt>'<strong><code>novary|NV</code></strong>'</dt>
+        <dd>(<strong>n</strong>o <strong>v</strong>ary)<br>
+        If an HTTP header is used in the condition, this flag prevents
         this header from being added to the Vary header of the response. <br>
         Using this flag might break proper caching of the response if
         the representation of this response varies on the value of this header.
         So this flag should be only used if the meaning of the Vary header
         is well understood.
-        </li>
-      </ul>
+        </dd>
+      </dl>
 
-      <p><strong>Example:</strong></p>
+      
+      
+      
+
+      <p><a id="rewritecond-examples" name="rewritecond-examples"></a><strong>Example</strong></p>
 
        <p>To rewrite the Homepage of a site according to the
         ``<code>User-Agent:</code>'' header of the request, you can
