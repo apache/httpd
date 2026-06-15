@@ -156,7 +156,7 @@ URLs on the fly</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Defines a condition under which rewriting will take place
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> RewriteCond
-      <em>TestString</em> <em>CondPattern</em> [<em>flags</em>]</code></td></tr>
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -205,7 +205,10 @@ URLs on the fly</td></tr>
 
       <div class="note">Backreferences are only defined if the pattern
       matches. Thus, if the pattern is prefixed with
-      <code>!</code>, no backreferences are ever defined.</div>
+      <code>!</code>, no backreferences are ever defined.
+      See <a href="../rewrite/tech.html#InternalRuleset">How the
+      Ruleset is Applied</a> for more details on the order in which
+      patterns are matched and backreferences populated.</div>
 
       
 
