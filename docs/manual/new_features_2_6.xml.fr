@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 1933854:1935151 (outdated) -->
+<!-- English Revision: 1935151 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -46,8 +46,32 @@ HTTP Apache</title>
       <dt>Options de la directive <code>Listen</code></dt>
       <dd>La directive <directive module="mpm_common">Listen</directive> prend
       maintenant en charge un argument facultatif <code>options=...</code>,
-      permettant de spécifier des options de socket par écouteur.</dd>
+      permettant de spécifier des options de socket par écouteur, en particulier
+      <code>multipathtcp</code> pour activer TCP multi-chemin s’il est pris en
+      charge par la plateforme.</dd>
 
+      <dt>Filtrage et complètement de saisie asynchrones</dt>
+      <dd>La nouvelle directive <directive module="core">AsyncFilter</directive>
+      permet de déclarer les types de filtre qui prennent en charge la gestion
+      asynchrone, et la prise en charge du complètement de saisie asynchrone a
+      été étendue à l'ensemble du noyau. Cela étaie la description de la gestion
+      asynchrone des serveurs mandataires et des WebSockets ci-après.</dd>
+
+      <dt>Contrôles de la stricte conformité à HTTP/1.1</dt>
+      <dd>De nouvelles directives du noyau permettent un contrôle plus fin de la
+      conformité à HTTP/1.1 : <directive
+      module="core">HttpExpectStrict</directive> contrôle si un code
+      <code>417</code> est renvoyé lorsqu’un client omet une prévision
+      <code>100-Continue</code>, et <directive
+      module="core">HttpContentLengthHeadZero</directive> contrôle la gestion de
+      <code>Content-Length</code> pour les requêtes <code>HEAD</code>.</dd>
+
+      <dt>Outrepassement du niveau de journalisation en fontion du contexte</dt>
+      <dd>La nouvelle directive <directive
+      module="core">LogLevelOverride</directive> permet d’outrepasser le niveau
+      de journalisation pour des adresses IP clientes individuelles, facilitant
+      ainsi le débogage ciblé sur un serveur en fonctionnement.</dd>
+ 
       <dt>Activation du socket <code>systemd</code></dt>
       <dd><program>httpd</program> peut maintenant être configuré pour démarrer
       via l’<a
@@ -75,12 +99,39 @@ HTTP Apache</title>
   <section id="newmods">
     <title>Nouveaux modules</title>
     <dl>
-<!--      <dt><module>mod_ssl_ct</module></dt>
-      <dd>Fill me in.</dd> -->
+      <dt><module>mod_auth_bearer</module>, <module>mod_autht_core</module>,
+          <module>mod_autht_jwt</module></dt>
+      <dd>Un nouveau cadriciel de fournisseur de jeton d’authentification
+      (<em>autht</em>) a été ajouté en plus des piles de fournisseurs
+      authn/authz existantes. <module>mod_auth_bearer</module> implémente
+      l’authentification à jeton <code>Bearer</code> de la <rfc>6750</rfc> en
+      tant que frontal (semblable à <module>mod_auth_basic</module>),
+      <module>mod_autht_core</module> héberge l’enregistrement du fournisseur
+      autht et <module>mod_autht_jwt</module> fournit la signature et la
+      vérification par jeton Web JSON.</dd>
 
+      <dt><module>mod_crypto</module></dt>
+      <dd>Ce nouveau module peut chiffrer et déchiffrer des corps de requête et
+      de réponse à l’aide de filtres en entrée et en sortie en utilisant les
+      pilotes crypto APR.</dd>
       <dt><module>mod_journald</module>, <module>mod_syslog</module></dt>
       <dd>Ces nouveaux modules permettent la prise en charge de la
       journalisation vers syslog ou <code>journald</code>.</dd>
+
+      <dt>mod_log_json</dt>
+      <dd>Ce nouveau module permet une journalisation des accès structurée au
+      format JSON.</dd>
+
+      <dt><module>mod_proxy_beacon</module></dt>
+      <dd>Ce nouveau module permet aux serveurs dorsaux des serveurs mandataires
+      inverses de s’annoncer eux-mêmes à l’aide de datagrammes UDP afin qu’ils
+      soient automatiquement ajoutés au répartiteur de charge de leur mandataire
+      frontal.</dd>
+
+      <dt><module>mod_allowhandlers</module></dt>
+      <dd>Ce nouveau module restreint la liste des gestionnaires qui peuvent
+      s’exécuter dans un certain contexte, fournissant ainsi une couche
+      supplémentaire de contrôle d’accès.</dd>
 
 </dl>
   </section>
@@ -98,7 +149,45 @@ HTTP Apache</title>
 	maintenant être définie pour enregistrer des informations de clé privée
 	pour déchiffrer hors-ligne des vidages du protocole SSL/TLS en utilisant
 	des outils tiers.</li>
+	<li>La nouvelle directive <directive
+	module="mod_ssl">SSLPolicy</directive> permet de définir une fois pour
+	toutes un ensemble de définitions SSL nommé et de l’appliquer à
+	plusieurs serveurs virtuels.</li>
       </ul></dd>
+
+      <dt><module>mod_proxy</module>, <module>mod_proxy_wstunnel</module></dt>
+      <dd>Le mandataire peut maintenant s’exécuter de manière asynchrone sous le
+      MPM event, libérant de ce fait les threads de travail lors de l’attente de
+      serveurs dorsaux lents. Cela inclut la gestion asynchrone des protocoles
+      <code>Upgrade</code>d et des WebSockets, personnalisés à l’aide des
+      nouvelles
+      directives <directive module="mod_proxy">ProxyAsyncDelay</directive>,
+      <directive module="mod_proxy">ProxyAsyncIdleTimeout</directive>,
+      <code>ProxyWebsocketAsyncDelay</code> et
+      <code>ProxyWebsocketIdleTimeout</code>.</dd>
+
+      <dt><module>mod_http2</module></dt>
+      <dd>HTTP/2 prend maintenant en charge du « bootstrap » des WebSockets comme
+      décrit dans la <rfc>8441</rfc> (activé à l’aide de la nouvelle directive
+      <code>H2WebSockets</code>), de la nouvelle directive
+      <code>H2EarlyHint</code> permettant d’ajouter des en-têtes à
+      une réponse <code>103 Early Hints</code> et d’un comptage précis des
+      octets envoyés pour le format de journalisation <code>%O</code>.</dd>
+
+      <dt><module>mod_dav</module></dt>
+      <dd>WebDAV prend maintenant en charge les quota de répertoire (directive
+      <directive module="mod_dav_fs">DAVquota</directive>), les extensions du
+      protocole WebDAV de Microsoft (directive <directive
+      module="mod_dav">DAVMSext</directive>), les directives
+      <code>DAVHonorMtimeHeader</code> et <code>DAVLockDBType</code>, et une
+      conformité accrue de l’ETag fort.</dd>
+
+      <dt>Autres améliorations de modules</dt>
+      <dd><module>mod_autoindex</module> ajoute la directive <directive
+      module="mod_autoindex">IndexForbiddenReturn404</directive>,
+      <module>mod_mime</module> ajoute  <code>MimeOptions</code> et
+      <module>mod_session_cookie</module> ajoute
+      <code>SessionCookieMaxAge</code>.</dd>
 
       <dt><module>mod_cgid</module></dt>
       <dd>Si le serveur a été configuré avec
@@ -119,18 +208,43 @@ HTTP Apache</title>
     </dl>
   </section>
 
-  <section id="documentation">
-    <title>Documentation</title>
-    <dl>
-        <dt>Complétez moi</dt>
-        <dd>La documentation de <module>mod_example</module> "Complétez moi".</dd>
-
-    </dl>
-  </section>
-
   <section id="developer">
     <title>Modifications pour le développeur de modules</title>
     <dl>
+      <dt>Séparation entre le noyau et le module <code>http</code></dt>
+
+      <dd>Une grande quantité de code a été déplacée du module <code>http</code>
+      vers le noyau du serveur &#8212; en particulier le gestionnaire par
+      défaut, les filtres en entrée et en sortie par défaut et les directives de
+      configuration du noyau &#8212; de façon que le serveur puisse fonctionner
+      que le module <code>http</code> soit chargé ou non. Le déplacement de
+      <code>ap_set_etag()</code> depuis le module <code>http</code> vers le
+      noyau était une partie de ce travail.</dd>
+
+      <dt>Nouveaux types de bloc de métadonnées et division du filtre HTTP</dt>
+
+      <dd>Les nouveaux types de bloc de métadonnées <code>REQUEST</code>,
+      <code>RESPONSE</code> et <code>HEADERS</code> ont été ajoutés à l’API,
+      ainsi qu’une nouvelle méthode pour définir les en-têtes de réponse
+      standards <code>Date</code> et <code>Server</code> et des aides au
+      formatage de parties de HTTP/1.x (en-têtes, segments de fin) à réutiliser
+      en dehors du noyau, par exemple dans <module>mod_proxy</module>. Le filtre
+      <code>HTTP_IN</code> a été divisé en un filtre HTTP générique et un filtre
+      spécifique à HTTP/1.x <code>HTTP1_BODY_IN</code>, et un nouveau drapeau
+      <code>body_indeterminate</code> sur <code>request_rec</code> indique qu’un
+      corps de requête peut être présent et doit être lu ou supprimé.</dd>
+
+      <dt>Prise en charge d’un ETag fort et notes binaires de requête</dt>
+
+      <dd>Un concept de « notes binaires » (binary notes) a été ajouté à
+      <code>request_rec</code>, permettant la définition des indicateurs de bits
+      compactés sur une requête. La première de ces notes,
+      <code>AP_REQUEST_STRONG_ETAG</code>, fait que les modules forcent la
+      compatibilité d’un ETag fort avec les exigences des RFC telles que celles
+      mandatées par diverses extensions de WebDav. Les nouvelles fonctions
+      <code>ap_make_etag_ex()</code> et <code>ap_set_etag_fd()</code> permettent
+      un contrôle total de la génération des ETag.</dd>
+
       <dt>Nouveau type <code>ap_method_mask_t</code></dt>
 
       <dd>Le type <code>ap_method_mask_t</code> a été ajouté et est maintenant
@@ -143,6 +257,12 @@ HTTP Apache</title>
       maintenant un argument <code>const char *</code><em>name</em> et renvoie
       une chaîne <code>const char *</code>. L’argument pool doit maintenant être
       non NULL.</dd>
+
+      <dt>APIs supprimées</dt>
+
+      <dd>Suite à la suppression de l’en-tête <code>Content-MD5</code>, les
+      fonctions <code>ap_md5digest()</code> et <code>ap_md5contextTo64()</code>
+      ont été supprimées.</dd>
 
     </dl>
     <p>La documentation du développeur contient une <a
