@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_md.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_md.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestion des domaines au sein des serveurs virtuels et obtention
     de certificats via le protocole ACME
     </td></tr>
@@ -521,16 +519,16 @@
 		Plut&ocirc;t que l'URL proprement dite, vous pouvez sp&eacute;cifier
 		'letsencrypt' ou 'buypass'.
             </p><p>
-                Si vous sp&eacute;cifiez plusieurs URLs, chacune d'entre elles est
+		Si vous sp&eacute;cifiez plusieurs URLs, chacune d'entre elles est
 		test&eacute;e en mode tourniquet ("round-robin") apr&egrave;s un certain
 		nombre d'&eacute;checs. Vous pouvez d&eacute;finir la rapidit&eacute; de ce processus
-		&agrave; l'aide des directives <code class="directive">MDRetryDelay</code> et
-		<code class="directive">MDRetryFailover</code>. Par d&eacute;faut, une demie
-		journ&eacute;e d'essais infructueux est consid&eacute;r&eacute;e comme un &eacute;chec.
+		&agrave; l'aide des directives <code class="directive"><a href="#mdretrydelay">MDRetryDelay</a></code> et <code class="directive"><a href="#mdretryfailover">MDRetryFailover</a></code>. Par d&eacute;faut, une
+		demie journ&eacute;e d'essais infructueux est consid&eacute;r&eacute;e comme un
+		&eacute;chec.
             </p><p>
-                Tous les autres r&eacute;glages s'appliquent &agrave; chacune de ces URLs. Il
+		Tous les autres r&eacute;glages s'appliquent &agrave; chacune de ces URLs. Il
 		est ainsi par exemple impossible d'en avoir deux avec des
-		directives <code class="directive">MDExternalAccountBinding</code>
+		directives <code class="directive"><a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></code>
 		diff&eacute;rentes.
 	    </p><p>
                 A des fins de test, les CAs fournissent en g&eacute;n&eacute;ral une seconde
@@ -754,12 +752,11 @@
 	Apache</td></tr>
 </table>
             <p>
-                Cette directive permet de d&eacute;finir de quelle mani&egrave;re est invoqu&eacute;e
-		la commande MDChallengeDns01, &agrave; savoir le nombre et le type de
-		ses arguments. Voir <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code> pour les
-		diff&eacute;rences.
-		Cette d&eacute;finition est globale et ne peut pas s'appliquer
-		diff&eacute;remment pour chaque domaine.
+		Cette directive permet de d&eacute;finir de quelle mani&egrave;re est invoqu&eacute;e
+		la commande <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code>, &agrave; savoir le nombre
+		et le type de ses arguments. Voir <code class="directive"><a href="#mdchallengedns01">MDChallengeDns01</a></code> pour les
+		diff&eacute;rences.  Cette d&eacute;finition est globale et ne peut pas
+		s'appliquer diff&eacute;remment pour chaque domaine.
             </p>
         
 </div>
@@ -931,11 +928,13 @@
 	Apache</td></tr>
 </table>
             <p>
-                Le mode `all` correspond au comportement de toutes les versions
-		pr&eacute;c&eacute;dentes. ServerName et ServerAlias sont inspect&eacute;s pour
-		trouver le MDomain qui correspond &agrave; un serveur virtuel. Les
-		recouvrements sont automatiquement d&eacute;tect&eacute;s, m&ecirc;me si vous n'avez
-		ajout&eacute; qu'un des noms &agrave; un MDomain.
+		Le mode `all` correspond au comportement de toutes les versions
+		pr&eacute;c&eacute;dentes. <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et
+		<code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> sont inspect&eacute;s
+		pour trouver le <code class="directive"><a href="#mdomain">MDomain</a></code>
+		qui correspond &agrave; un serveur virtuel. Les recouvrements sont
+		automatiquement d&eacute;tect&eacute;s, m&ecirc;me si vous n'avez ajout&eacute; qu'un des
+		noms &agrave; un MDomain.
             </p><p>
                 Cet automatisme pr&eacute;sente cependant des inconv&eacute;nients avec les
 		configurations plus complexes. Si vous d&eacute;finissez cette
@@ -1372,7 +1371,7 @@ MDomain example2.org auto
             <p>
                 Il s'agit d'une extension non standard d'ACME par Let's Encrypt.
             </p><p>
-		Lets Encrypt prend en charge les profiles de certificat dans
+		Let&rsquo;s Encrypt prend en charge les profiles de certificat dans
 		leurs CA. Cette fonctionnalit&eacute;, entre autres d&eacute;tails, vous
 		permet de d&eacute;finir la dur&eacute;e de validit&eacute; des certificats que vous
 		recevez. Le profile par d&eacute;faut &laquo;&nbsp;classic&nbsp;&raquo; conserve la valeur de
@@ -1381,13 +1380,13 @@ MDomain example2.org auto
 		profile &laquo;&nbsp;shortlived &raquo; d&eacute;livre des certificats dont la dur&eacute;e de
 		validit&eacute; est de 6&nbsp;jours seulement.
             </p><p>
-                Si vous ne modifiez pas la configuration de votre module mod_md,
-		vous continuerez &agrave; recevoir des certificats d'une dur&eacute;e de
-		validit&eacute; de 90&nbsp;jours. Si vous pensez qu'une dur&eacute;e de validit&eacute;
-		plus courte convient mieux &agrave; votre situation (et acceptez le
-		risque que le temps de renouvellement soit beaucoup plus court),
-		vous pouvez d&eacute;finir le profile &agrave; utiliser &agrave; l'aide de
-		&laquo;&nbsp;MDProfile shortlived &raquo;.
+		Si vous ne modifiez pas la configuration de votre module
+		<code class="module"><a href="../mod/mod_md.html">mod_md</a></code>, vous continuerez &agrave; recevoir des
+		certificats d'une dur&eacute;e de validit&eacute; de 90&nbsp;jours. Si vous
+		pensez qu'une dur&eacute;e de validit&eacute; plus courte convient mieux &agrave;
+		votre situation (et acceptez le risque que le temps de
+		renouvellement soit beaucoup plus court), vous pouvez d&eacute;finir le
+		profile &agrave; utiliser &agrave; l'aide de &laquo;&nbsp;MDProfile shortlived &raquo;.
            </p><p>
                 Les noms de profile sont d&eacute;finis par le CA. Si vous tentez de
 		d&eacute;finie un profile non valable, aucun profile ne sera utilis&eacute;,
@@ -1407,6 +1406,8 @@ MDomain example2.org auto
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.64 du serveur HTTP
+	Apache</td></tr>
 </table>
             <p>
                 Cette directive permet de contr&ocirc;ler si un <code class="directive"><a href="#mdprofile">MDProfile</a></code> que vous d&eacute;finissez est
@@ -1471,7 +1472,7 @@ MDomain example2.org auto
 		d&eacute;clenchement du renouvellement des certificats &agrave; l'aide de
 		l'extension ACME ARI (rfc9773). Ces renouvellements s'ajoutent &agrave;
 		ceux d&eacute;clench&eacute;s par le m&eacute;canisme contr&ocirc;l&eacute; &agrave; l'aide de la
-		directive <code class="directive">MDRenewWindow</code>.
+		directive <code class="directive"><a href="#mdrenewwindow">MDRenewWindow</a></code>.
            </p><p>
                 ACME ARI permet en quelque sorte &agrave; une CA ACME de fa&ccedil;onner le
 		trafic entrant des renouvellements. Plus important cependant,
@@ -1492,7 +1493,7 @@ MDomain example2.org auto
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
 </table>
             <p>
-            Lorsqu'un certificat arrive &agrave; expiration, mod_md va
+            Lorsqu'un certificat arrive &agrave; expiration, <code class="module"><a href="../mod/mod_md.html">mod_md</a></code> va
 	    tenter d'en obtenir un nouveau sign&eacute;.
             </p><p>
             Normalement, les certificats ont une validit&eacute; de 90 jours, et
@@ -1625,10 +1626,9 @@ MDRenewWindow 10%</pre>
 	Apache</td></tr>
 </table>
             <p>
-                Le nombre d'erreurs cons&eacute;cutives lors du renouvellement d'un
+		Le nombre d'erreurs cons&eacute;cutives lors du renouvellement d'un
 		certificat avant la s&eacute;lection d'une autre CA. Ne s'applique
-		qu'aux configurations pour lesquelles plusieurs
-		<code class="directive">MDCertificateAuthority</code> ont &eacute;t&eacute;
+		qu'aux configurations pour lesquelles plusieurs <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code> ont &eacute;t&eacute;
 		sp&eacute;cifi&eacute;es.
             </p>
         
@@ -1831,18 +1831,18 @@ MDRenewWindow 10%</pre>
 	Apache</td></tr>
 </table>
             <p>
-                D&eacute;finissez cette directive pour utiliser un fichier verrou au
-		d&eacute;marrage du serveur lorsque <code class="directive">MDStoreDir</code>
-		est synchronis&eacute; avec la configuration du serveur et si les
-		certificats renouvel&eacute;s sont activ&eacute;s.
+		D&eacute;finissez cette directive pour utiliser un fichier verrou au
+		d&eacute;marrage du serveur lorsque <code class="directive"><a href="#mdstoredir">MDStoreDir</a></code> est synchronis&eacute; avec la
+		configuration du serveur et si les certificats renouvel&eacute;s sont
+		activ&eacute;s.
             </p><p>
-                Le verrouillage a &eacute;t&eacute; impl&eacute;ment&eacute; pour les configurations de
-		cluster o&ugrave; MDStoreDir appartient &agrave; un syst&egrave;me de fichiers
-		partag&eacute;. L'activation des certificats renouvel&eacute;s sera alors
-		prot&eacute;g&eacute;e lorsque plusieurs noeuds du cluster sont red&eacute;marr&eacute;s ou
-		reconfigur&eacute;s simultan&eacute;ment ; ceci &agrave; condition bien entendu que
-		le syst&egrave;me de fichiers partag&eacute; prenne en charge le verrouillage
-		de fichier.
+		Le verrouillage a &eacute;t&eacute; impl&eacute;ment&eacute; pour les configurations de
+		cluster o&ugrave; <code class="directive"><a href="#mdstoredir">MDStoreDir</a></code>
+		appartient &agrave; un syst&egrave;me de fichiers partag&eacute;. L'activation des
+		certificats renouvel&eacute;s sera alors prot&eacute;g&eacute;e lorsque plusieurs
+		noeuds du cluster sont red&eacute;marr&eacute;s ou reconfigur&eacute;s simultan&eacute;ment
+		; ceci &agrave; condition bien entendu que le syst&egrave;me de fichiers
+		partag&eacute; prenne en charge le verrouillage de fichier.
             </p><p>
                 Le temps d'attente par d&eacute;faut pour obtenir le verrou est de 5
 		secondes. Si le verrou ne peut pas &ecirc;tre obtenu, une erreur est

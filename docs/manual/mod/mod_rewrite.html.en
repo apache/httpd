@@ -42,15 +42,16 @@ URLs on the fly</td></tr>
       path. However, it can also be used to redirect one URL to another URL, or
       to invoke an internal proxy fetch.</p>
 
-      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> provides a flexible and powerful way to
-      manipulate URLs using an unlimited number of rules. Each rule can have an
+      <p>It provides a flexible and powerful way to manipulate URLs using an
+      unlimited number of rules. Each rule can have an
       unlimited number of attached rule conditions, to allow you to rewrite URLs
       based on <a href="#rewritecond">server variables</a> (including HTTP
       headers, connection details, and timestamps), environment variables,
-      or other request properties.</p>
-
-      <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> can operate on the full URL-path, or any
-      portion of it, including the PATH_INFO or QUERY_STRING.</p>
+      or other request properties. Rules can operate on the
+      <a href="directive-dict.html#Syntax">URL-path</a> (including any
+      <a href="core.html#acceptpathinfo">trailing pathname information</a>)
+      and can also alter the
+      <a href="../expr.html#vars">query string</a>.</p>
 
       <p>A rewrite rule
       can be invoked in the server configuration files, or in <a class="glossarylink" href="../glossary.html#perdirectory" title="see glossary">per-directory</a> context. The substitution
@@ -73,7 +74,10 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif"> <a href="#rewriteoptions">RewriteOptions</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#rewriterule">RewriteRule</a></li>
 </ul>
-<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul></div>
+<h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mod_rewrite">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mod_rewrite">Report a bug</a></li></ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="rewrite/index.html">Guide to mod_rewrite</a></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="logging">Logging <a title="Permanent link" href="#logging" class="permalink">&para;</a></h2>
@@ -1223,11 +1227,6 @@ sections and consider both set of statements, rather than only the last one.</li
 &lt;/If&gt;</pre>
 </div>
 </div>
-
-      <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
-      expressions</a>, see
-      the <a href="../rewrite/intro.html#regex">mod_rewrite
-      Introduction</a>.</p>
 
       <p>For information on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
       expressions</a>, including the use of the
