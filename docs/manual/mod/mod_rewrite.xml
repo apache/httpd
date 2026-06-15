@@ -453,7 +453,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
 <description>Defines a condition under which rewriting will take place
 </description>
 <syntax> RewriteCond
-      <em>TestString</em> <em>CondPattern</em> [<em>flags</em>]</syntax>
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
