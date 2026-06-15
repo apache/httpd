@@ -247,7 +247,7 @@ URLs on the fly</td></tr>
                  CONTEXT_PREFIX<br>
                  CONTEXT_DOCUMENT_ROOT<br>
                  IPV6<br>
-                 PATH_INFO<br>
+                 <a class="glossarylink" href="../glossary.html#pathinfo" title="see glossary">PATH_INFO</a><br>
                  QUERY_STRING<br>
                  REMOTE_ADDR<br>
                  REMOTE_HOST<br>
