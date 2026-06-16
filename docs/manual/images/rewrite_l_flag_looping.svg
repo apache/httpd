@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 720" width="520" height="720">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; font-size: 10px; fill: #333; }
+      .title { font-size: 12px; font-weight: bold; }
+      .phase { font-size: 11px; font-weight: bold; fill: #444; }
+      .label { font-size: 9px; fill: #555; }
+      .small { font-size: 8px; fill: #666; font-style: italic; }
+      rect.process { fill: #e8e8e8; stroke: #333; stroke-width: 1.2; rx: 4; ry: 4; }
+      polygon.decision { fill: #fff8dc; stroke: #333; stroke-width: 1.2; }
+      rect.terminal { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.redirect { fill: #f8d7da; stroke: #333; stroke-width: 1.2; rx: 12; ry: 12; }
+      rect.phase-box { fill: #fafafa; stroke: #888; stroke-width: 1.2; rx: 8; ry: 8; }
+      rect.warn { fill: #f8d7da; stroke: #b33; stroke-width: 1.5; rx: 4; ry: 4; }
+      rect.end-flag { fill: #d4edda; stroke: #333; stroke-width: 1.2; rx: 4; ry: 4; }
+      line, polyline, path { stroke: #333; stroke-width: 1.2; fill: none; marker-end: url(#arrowhead); }
+      .dashed { stroke-dasharray: 5,4; }
+      .no-arrow { marker-end: none; }
+    </style>
+  </defs>
+
+  <text x="260" y="16" text-anchor="middle" class="title">Per-Directory Rewriting: [L] Flag Looping</text>
+
+  <!-- ==================== Request enters ==================== -->
+  <rect class="terminal" x="180" y="30" width="160" height="26"/>
+  <text x="260" y="47" text-anchor="middle">Request: /app/hello</text>
+  <line x1="260" y1="56" x2="260" y2="76"/>
+
+  <!-- ==================== PASS BOX ==================== -->
+  <rect class="phase-box" x="40" y="76" width="440" height="330"/>
+  <text x="55" y="93" class="phase">Per-directory rules (.htaccess) — one pass</text>
+
+  <!-- Strip prefix -->
+  <rect class="process" x="185" y="100" width="150" height="24"/>
+  <text x="260" y="116" text-anchor="middle">Strip directory prefix</text>
+  <line x1="260" y1="124" x2="260" y2="144"/>
+
+  <text x="260" y="139" text-anchor="middle" class="small">Pattern sees: "hello"</text>
+  <line x1="260" y1="144" x2="260" y2="160"/>
+
+  <!-- Get next rule -->
+  <rect class="process" x="195" y="160" width="130" height="24"/>
+  <text x="260" y="176" text-anchor="middle">Get next rule</text>
+  <line x1="260" y1="184" x2="260" y2="204"/>
+
+  <!-- Decision: Pattern matches? -->
+  <polygon class="decision" points="260,204 340,222 260,240 180,222"/>
+  <text x="260" y="225" text-anchor="middle">Pattern</text>
+  <text x="260" y="235" text-anchor="middle">matches?</text>
+
+  <!-- No → loop back to get next rule -->
+  <path d="M 180,222 C 140,222 135,195 135,185 C 135,170 145,165 195,168"/>
+  <text x="143" y="212" class="label">No</text>
+
+  <!-- Yes → check conditions -->
+  <line x1="260" y1="240" x2="260" y2="258"/>
+  <text x="268" y="253" class="label">Yes</text>
+
+  <!-- Decision: Conditions met? -->
+  <polygon class="decision" points="260,258 340,276 260,294 180,276"/>
+  <text x="260" y="279" text-anchor="middle">Conditions</text>
+  <text x="260" y="289" text-anchor="middle">met?</text>
+
+  <!-- No conditions → loop back -->
+  <path d="M 180,276 C 120,276 115,195 115,185 C 115,165 130,160 195,163"/>
+  <text x="123" y="268" class="label">No</text>
+
+  <!-- Yes → substitute -->
+  <line x1="260" y1="294" x2="260" y2="314"/>
+  <text x="268" y="309" class="label">Yes</text>
+
+  <!-- Substitute -->
+  <rect class="process" x="175" y="314" width="170" height="24"/>
+  <text x="260" y="330" text-anchor="middle">Substitute URL / filename</text>
+  <line x1="260" y1="338" x2="260" y2="358"/>
+
+  <!-- Decision: [END] flag? -->
+  <polygon class="decision" points="260,358 330,373 260,388 190,373"/>
+  <text x="260" y="376" text-anchor="middle">[END] flag?</text>
+
+  <!-- Yes [END] → exit completely -->
+  <line x1="330" y1="373" x2="430" y2="373"/>
+  <text x="345" y="367" class="label">Yes</text>
+  <rect class="end-flag" x="430" y="361" width="70" height="24"/>
+  <text x="465" y="377" text-anchor="middle">Done</text>
+
+  <!-- No [END] → check [L] -->
+  <line x1="260" y1="388" x2="260" y2="403"/>
+  <text x="268" y="398" class="label">No</text>
+
+  <!-- end of pass box -->
+
+  <!-- ==================== Below the pass box: subrequest decision ==================== -->
+  <line x1="260" y1="406" x2="260" y2="430"/>
+
+  <!-- Decision: [L] flag or end of rules? -->
+  <polygon class="decision" points="260,430 360,448 260,466 160,448"/>
+  <text x="260" y="448" text-anchor="middle">[L] or end</text>
+  <text x="260" y="458" text-anchor="middle">of rules?</text>
+
+  <!-- No [L] = more rules → loop back inside the box -->
+  <text x="148" y="442" class="label">More rules</text>
+  <path d="M 160,448 C 80,448 60,300 60,200 C 60,175 80,168 195,168" class="dashed"/>
+
+  <!-- Yes = [L] stops this pass -->
+  <line x1="260" y1="466" x2="260" y2="490"/>
+  <text x="268" y="482" class="label">[L] stops pass</text>
+
+  <!-- Internal subrequest -->
+  <rect class="process" x="160" y="490" width="200" height="30"/>
+  <text x="260" y="504" text-anchor="middle">Internal subrequest with</text>
+  <text x="260" y="516" text-anchor="middle">rewritten URL</text>
+  <line x1="260" y1="520" x2="260" y2="545"/>
+
+  <!-- Decision: Rule matches again? -->
+  <polygon class="decision" points="260,545 360,566 260,587 160,566"/>
+  <text x="260" y="563" text-anchor="middle">Same rule</text>
+  <text x="260" y="575" text-anchor="middle">matches again?</text>
+
+  <!-- No → done normally -->
+  <line x1="360" y1="566" x2="440" y2="566"/>
+  <text x="370" y="560" class="label">No</text>
+  <rect class="terminal" x="440" y="554" width="60" height="24"/>
+  <text x="470" y="570" text-anchor="middle">Done</text>
+
+  <!-- Yes → LOOP (back to top) -->
+  <line x1="260" y1="587" x2="260" y2="610"/>
+  <text x="268" y="602" class="label">Yes</text>
+
+  <!-- Decision: guarded by condition? -->
+  <polygon class="decision" points="260,610 370,630 260,650 150,630"/>
+  <text x="260" y="628" text-anchor="middle">Guarded by</text>
+  <text x="260" y="640" text-anchor="middle">RewriteCond?</text>
+
+  <!-- Yes → condition fails on 2nd pass → done -->
+  <line x1="370" y1="630" x2="440" y2="630"/>
+  <text x="380" y="624" class="label">Yes — cond</text>
+  <text x="380" y="634" class="label">fails 2nd pass</text>
+  <rect class="terminal" x="440" y="618" width="60" height="24"/>
+  <text x="470" y="634" text-anchor="middle">Done</text>
+
+  <!-- No guard → infinite loop -->
+  <line x1="260" y1="650" x2="260" y2="675"/>
+  <text x="268" y="666" class="label">No</text>
+  <rect class="warn" x="175" y="675" width="170" height="30"/>
+  <text x="260" y="691" text-anchor="middle" style="font-weight:bold; fill:#b33;">Infinite loop!</text>
+  <text x="260" y="703" text-anchor="middle" style="fill:#b33;">(500 error after 10 cycles)</text>
+
+</svg>
