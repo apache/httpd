@@ -8,9 +8,9 @@ demonstrate how an attacker can violate the security model.
 ## Supported Versions
 
 Currently the only supported version is the latest patch release of the
-`2.4.x` stable branch. Vulnerabilities which exist *only* in
-unreleased branches (such as `trunk`) may be treated as normal bug
-reports.
+`2.4.x` stable branch.  Vulnerabilities which exist *only* in
+unreleased branches (such as `trunk`) should be reported as normal bug
+reports via <https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2>.
 
 ## Reporting Vulnerabilities
 
@@ -36,7 +36,8 @@ Any security vulnerability SHOULD be reproducible:
 1. under a reasonable, supported configuration.
 2. without using third-party modules, or modules explicitly designed
   for debugging.
-3. under a standard build on a supported platform.
+3. using the *latest* released sources published via <https://httpd.apache.org/download.cgi#apache24>.
+4. under a standard build, on a supported platform.
 
 Issues which are reproducible only using instrumented builds (such as
 ASAN, or under valgrind) should be clearly explained as such.
