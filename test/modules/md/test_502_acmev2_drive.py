@@ -395,7 +395,7 @@ class TestDrivev2:
         # check new cert
         env.check_md_credentials([name, "test." + domain])
         new_cert = MDCertUtil(env.store_domain_file(name, 'pubcert.pem'))
-        assert not old_cert.same_serial_as(new_cert.get_serial)
+        assert not old_cert.same_serial_as(new_cert.get_serial())
 
     @pytest.mark.parametrize("renew_window,test_data_list", [
         ("14d", [
@@ -550,4 +550,4 @@ class TestDrivev2:
         # check: key file is encrypted PEM
         md = env.a2md(["list", name]).json['output'][0]
         acc = md['ca']['account']
-        MDCertUtil.validate_privkey(env.path_account_key(acc), lambda *args: encrypt_key)
+        MDCertUtil.validate_privkey(env.path_account_key(acc), encrypt_key)

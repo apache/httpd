@@ -208,8 +208,8 @@ class TestAutov2:
         # check temporary cert from server
         cert2 = MDCertUtil(env.path_fallback_cert(domain))
         assert cert1.same_serial_as(cert2), \
-            "Unexpected temporary certificate on vhost %s. Expected cn: %s , "\
-            "but found cn: %s" % (name_a, cert2.get_cn(), cert1.get_cn())
+            f"Unexpected temporary certificate on vhost {name_a}." \
+            f" Expected cn: {cert2}, but found cn: {cert1}"
 
     # test case: drive MD with only invalid challenges, domains should stay 503'd
     def test_md_702_006(self, env):
