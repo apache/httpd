@@ -648,7 +648,7 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
                                     base_product, MOD_MD_VERSION);
     acme->proxy_url = apr_pstrdup(p, proxy_url);
-    acme->max_retries = 99;
+    acme->max_retries = 9;
     acme->ca_file = ca_file;
 
     if (APR_SUCCESS != (rv = apr_uri_parse(p, url, &uri_parsed))) {
