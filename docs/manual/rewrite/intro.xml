@@ -68,6 +68,19 @@ can give an overwhelming amount of information, it is indispensable in
 debugging problems with <module>mod_rewrite</module> configuration, since
 it will tell you exactly how each rule is processed.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_simplified_overview.png"
+          alt="Simplified flowchart of mod_rewrite processing: request
+          arrives, check RewriteEngine On, iterate rules in order,
+          test pattern match and RewriteCond, apply substitution if
+          both pass, stop if L or END flag is set, otherwise continue
+          to next rule" /><br />
+      <dfn>Figure:</dfn> Simplified overview of how
+      <module>mod_rewrite</module> processes a request. See
+      <a href="tech.html">Technical Details</a> for the full
+      processing model including phases, flags, and looping.
+</p>
+
 </section>
 
 <section id="regex"><title>Regular Expressions</title>
@@ -212,7 +225,11 @@ RewriteRule "!^/admin" "/xyz.html" [R,L]
 
 <p class="figure">
       <img src="../images/rewrite_backreferences.png"
-      alt="Flow of RewriteRule and RewriteCond matching" /><br />
+      alt="Diagram showing how backreferences flow between
+      RewriteRule and RewriteCond: $1-$9 capture groups from the
+      RewriteRule pattern, %1-%9 capture groups from the most recent
+      RewriteCond TestString pattern, both available in the
+      substitution string and in subsequent RewriteCond TestStrings" /><br />
       <dfn>Figure 1:</dfn> The back-reference flow through a rule.<br />
       In this example, a request for <code>/test/1234</code> to host <code>admin.example.com</code> would be transformed into <code>/admin.foo?page=test&amp;id=1234&amp;host=admin.example.com</code>, provided that <code>%{DOCUMENT_ROOT}/test</code> is not an existing file.
 </p>
@@ -261,7 +278,10 @@ as <module>mod_request</module> paired with a custom filter.</note>
 
 <p class="figure">
       <img src="../images/syntax_rewriterule.png"
-      alt="Syntax of the RewriteRule directive" /><br />
+      alt="Annotated syntax diagram of the RewriteRule directive
+      showing three components: Pattern (regex matched against the
+      URL-path), Substitution (the replacement URL or path), and
+      optional Flags in square brackets" /><br />
       <dfn>Figure 2:</dfn> Syntax of the RewriteRule directive.
 </p>
 
@@ -350,7 +370,10 @@ argument is a list of flags that modify how the match is evaluated.</p>
 
 <p class="figure">
       <img src="../images/syntax_rewritecond.png"
-      alt="Syntax of the RewriteCond directive" /><br />
+      alt="Annotated syntax diagram of the RewriteCond directive
+      showing two components: TestString (variable or text to test)
+      and CondPattern (regex or comparison to evaluate), with optional
+      flags in square brackets" /><br />
       <dfn>Figure 3:</dfn> Syntax of the RewriteCond directive
 </p>
 
