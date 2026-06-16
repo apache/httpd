@@ -100,6 +100,7 @@ struct md_t {
     
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
     const char *dns01_cmd;          /* DNS challenge command, override global command */
+    const char *proxy_url;          /* Proxy URL, override global command */
 
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
@@ -185,6 +186,7 @@ struct md_t {
 #define MD_KEY_PROFILE          "profile"
 #define MD_KEY_PROFILE_MANDATORY "profile-mandatory"
 #define MD_KEY_PROTO            "proto"
+#define MD_KEY_PROXY_URL        "proxy-url"
 #define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"
 #define MD_KEY_RENEW            "renew"

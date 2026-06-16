@@ -297,6 +297,55 @@ class TestAutov2:
         assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
         env.check_md_complete(domain)
 
+    # Specify a valid http proxy for a single MDomain
+    def test_md_702_008b(self, env):
+        domain = self.test_domain
+        domains = [domain]
+        #
+        conf = MDConf(env, admin=f"admin@{domain}", proxy=True)
+        conf.add_drive_mode("always")
+        conf.start_md(domains)
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.install()
+        #
+        # - restart (-> drive), check that md is in store
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain])
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        env.check_md_complete(domain)
+
+    # Specify a non-working http proxy for MDomain A and a valid http proxy for MDomain B
+    def test_md_702_008c(self, env):
+        domain_a = f"a{self.test_domain}"
+        domain_b = f"b{self.test_domain}"
+        conf = MDConf(env, admin=f"admin@{domain_a}", proxy=True)
+        conf.start_md([domain_a])
+        conf.add(f"    MDHttpProxy http://localhost:1")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_a])
+        conf.start_md([domain_b])
+        conf.add(f"    MDHttpProxy http://localhost:{env.proxy_port}")
+        conf.end_md()
+        conf.add_vhost(domains=[domain_b])
+        conf.install()
+        assert env.apache_restart() == 0, f'{env.apachectl_stderr}'
+        assert env.await_completion([domain_b], restart=False)
+        md = env.await_error(domain_a)
+        assert md
+        assert md['renewal']['errors'] > 0
+        assert md['renewal']['last']['status-description'] == 'Connection refused'
+        assert 'account' not in md['ca']
+        #
+        env.httpd_error_log.ignore_recent(
+            lognos = [
+                "AH10056"   # Unsuccessful in contacting ACME server
+            ],
+            matches = [
+                r'.*Unsuccessful in contacting ACME server at .*'
+            ]
+        )
+
     # Force cert renewal due to critical remaining valid duration
     # Assert that new cert activation is delayed
     def test_md_702_009(self, env, acme):
