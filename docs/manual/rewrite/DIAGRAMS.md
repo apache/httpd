@@ -35,46 +35,16 @@ condition-guard escape path, and the unguarded infinite loop.
 
 ---
 
-## 3. Path Stripping and RewriteBase Pipeline
+## 3. ✅ Path Stripping and RewriteBase Pipeline
 
-**Target page:** htaccess.xml, "What URL does the rule see?" section
+**Status:** DONE — committed in r1935417 (trunk) and r1935418 (2.4.x).
+File: `rewrite_path_stripping.svg` / `.png` in `docs/manual/images/`.
+Referenced from htaccess.xml, "What URL does the rule see?" section.
 
-**Problem:** Users consistently get confused about what string the pattern
-actually matches against in per-directory context, what RewriteBase does,
-and how the substitution result is turned back into a full URL.
-
-**Proposed diagram — linear transformation pipeline:**
-```
-Incoming URL-path: /app/products/widget
-                        │
-                        ▼
-          ┌─────────────────────────┐
-          │  Strip directory prefix  │
-          │  Prefix: /app/           │
-          └─────────────────────────┘
-                        │
-                        ▼
-         Pattern matches: products/widget
-            (no leading slash)
-                        │
-                        ▼
-          ┌─────────────────────────┐
-          │     Apply substitution   │
-          │  Result: shop.php?item=widget │
-          └─────────────────────────┘
-                        │
-                        ▼
-          ┌─────────────────────────┐
-          │  Prepend RewriteBase    │
-          │  Base: /app/            │
-          └─────────────────────────┘
-                        │
-                        ▼
-     Internal subrequest: /app/shop.php?item=widget
-```
-
-Show the contrast: if substitution starts with `/` or `http://`,
-RewriteBase is not applied (absolute path bypasses prepend step).
+Shows the full per-directory URL transformation pipeline with a three-way
+branch after substitution: relative path (RewriteBase prepended →
+subrequest), absolute path starting with / (used as-is → subrequest),
+and absolute URI (external redirect, no subrequest).
 
 ---
 
@@ -138,30 +108,15 @@ the complete processing model including phases, flags, and looping."
 
 ---
 
-## 6. Flag Selection Guide
+## 6. ❌ Flag Selection Guide — WONTFIX as flowchart
 
-**Target page:** flags.xml (new figure at top of page)
+A decision-tree flowchart doesn't work for flags because flags are
+composable — you stack them (`[R=301,L]`, `[P,QSA]`, `[E=VAR:1,END]`).
+A flowchart's Yes/No branching implies mutual exclusion, which is wrong.
 
-**Problem:** The flags page is a long alphabetical reference. Users often
-don't know which flag they need. A decision-tree diagram would serve as a
-navigation aid.
-
-**Proposed diagram — decision tree:**
-```
-What do you want to do?
-├── Redirect the client to a different URL? → [R]
-├── Stop processing rules?
-│   ├── In server context? → [L]
-│   └── In .htaccess (stop completely)? → [END]
-├── Proxy the request to a backend? → [P]
-├── Set an environment variable? → [E]
-├── Set a MIME type? → [T]
-├── Skip the next N rules? → [S]
-├── Restart rule processing from the top? → [N]
-├── Send a specific HTTP status? → [R=4xx] or [F] / [G]
-├── Apply rule as last resort only? → [L] with conditions
-└── Pass through to next handler? → [PT]
-```
+**Instead:** A categorized quick-reference table was added directly to
+flags.xml, grouping flags by purpose with a "Common combos" column that
+shows typical stacking patterns.
 
 ---
 

@@ -233,7 +233,10 @@ RewriteRule "^/horses/ponies$" "/special-handler" [L]
       Figure 2 for more details.</p>
 <p class="figure">
       <img src="../images/rewrite_process_uri.png"
-          alt="Flow of RewriteRule and RewriteCond matching" /><br />
+          alt="Flowchart showing per-rule control flow: for each rule,
+          check pattern against URL, evaluate RewriteCond conditions,
+          apply substitution if both pass, then check flags to decide
+          whether to stop or continue to the next rule" /><br />
       <dfn>Figure 2:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>First the URL is matched against the
