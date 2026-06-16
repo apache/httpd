@@ -3,15 +3,15 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1934684:1935203 (outdated) -->
+<!-- English Revision: 1935203 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
- contributor license agreements.  See the NOTICE file distributed with
+ contributor license agreements. See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
  (the "License"); you may not use this file except in compliance with
- the License.  You may obtain a copy of the License at
+ the License. You may obtain a copy of the License at
 
      http://www.apache.org/licenses/LICENSE-2.0
 
@@ -28,19 +28,19 @@
 
 <summary>
 
-    <p>Ce document couvre l'installation et la compilation du serveur
-    HTTP Apache
-    sur les systèmes Unix et similaires seulement. Pour la compilation et
-    l'installation sous Windows, voir <a
-    href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
-    Windows</a> et <a href="platform/win_compiling.html">Compilation
-    d'Apache sous Microsoft Windows</a>. Pour les autres plateformes, se
-    référer à la documentation par
-     <a href="platform/">plateforme</a>.</p>
+    <p>Le serveur HTTP Apache est distribué sous forme de code source. Ce
+    document décrit la construction et l’installation du serveur à partir des
+    sources sous Unix et les systèmes de la famille d’Unix. Pour Windows, voir
+    <a href="platform/windows.html">Utiliser le serveur HTTP Apache avec
+    Microsoft Windows</a> et <a href="platform/win_compiling.html">Compilation
+    de httpd sous Microsoft Windows</a>. Pour les autres plateformes, se
+    référer à la documentation par <a href="platform/">plateforme</a>.</p>
 
-    <p>Apache httpd utilise <code>libtool</code> et <code>autoconf</code>
-    afin de créer un environnement de construction similaire à la plupart
-    des projets Open Source .</p>
+    <p>Si vous installez httpd depuis un paquet de distribution (RPM, DEB,
+    etc.), l’organisation de la configuration et les valeurs par défaut peuvent
+    être différentes de ce qui est décrit ici. Voir <a href="#thirdp">paquets
+    tiers</a> ci-après et consultez la documentation de votre distribution pour
+    les détails spécifiques à la plateforme.</p>
 
     <p>Si vous effectuez une mise à jour depuis une version mineure vers
     la suivante (par exemple, 2.4.66 à 2.4.67), veuillez passer à la section
@@ -50,55 +50,10 @@
 
 <seealso><a href="programs/configure.html">Configuration de l'arborescence
 	des sources</a></seealso>
-<seealso><a href="invoking.html">Démarrer Apache httpd</a></seealso>
+<seealso><a href="invoking.html">Démarrer httpd</a></seealso>
 <seealso><a href="stopping.html">Arrêt et redémarrage</a></seealso>
 
 <section id="overview"><title>Aperçu pour les plus pressés</title>
-
-    <dl>
-    <dt>Installation sous Fedora/CentOS/Red Hat Enterprise Linux</dt>
-    <dd>
-    <highlight language="sh">
-sudo dnf install httpd
-
-# Démarrage du service
-sudo systemctl start httpd
-
-# Arrêt du service
-sudo systemctl stop httpd
-
-# Redémarrage du service
-sudo systemctl restart httpd
-    </highlight>
-
-    <note type="warning">Voir la <a
-    href="https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-apache-http-server/index.html">documentation
-    du projet Fedora</a> pour des informations spécifiques à cette plateforme.</note>
-    </dd>
-
-    <dt>Installation sous Ubuntu/Debian</dt>
-    <dd>
-<highlight language="sh">
-sudo apt install apache2
-
-# Démarrage du service
-sudo systemctl start apache2
-
-# Arrêt du service
-sudo systemctl stop apache2
-
-# Redémarrage du service
-sudo systemctl restart apache2
-</highlight>
-
-    <note type="warning">Voir la <a
-    href="https://ubuntu.com/tutorials/install-and-configure-apache">documentation
-    d’Ubuntu</a> pour des informations spécifiques à cette plateforme.</note>
-
-    </dd>
-
-    <dt>Installation à partir des sources</dt>
-    <dd>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
@@ -161,21 +116,12 @@ $ cd httpd-NN
 
 	    <p>Chaque étape du processus de compilation et d'installation est
 	    décrite plus en détails ci-dessous, à commencer par les prérequis
-	    pour compiler et installer Apache httpd.</p>
-    </dd>
-    </dl>
-
-    <note type="warning">L'installation sous votre plateforme favorite n'est pas
-    traitée ici ? N'hésitez pas à nous <a
-    href="https://httpd.apache.org/docs-project/">aider à compléter cette
-    documentation</a> en nous faisant profiter de votre expérience.</note>
-
-
+	    pour compiler et installer httpd.</p>
 </section>
 
 <section id="requirements"><title>Prérequis</title>
 
-    <p>Les prérequis pour la construction et l’exécution d'Apache httpd sont les
+    <p>Les prérequis pour la construction et l’exécution de httpd sont les
     suivants:</p>
 
     <dl>
@@ -196,18 +142,17 @@ $ cd httpd-NN
       installées d'APR et APR-Util.</dd>
 
       <dt>Bibliothèque d'expressions rationnelles compatibles Perl
-      (PCRE)</dt>
-      <dd>Cette bibliothèque est nécessaire mais n'est plus fournie avec la
+      (PCRE2)</dt>
+      <dd>Cette bibliothèque est nécessaire mais n'est pas fournie avec la
       distribution de httpd. Téléchargez le code source depuis <a
-      href="https://www.pcre.org/">https://www.pcre.org</a> ou installez
-      un portage du paquet. Si votre suite de compilation ne trouve pas
-      le script pcre-config installé au cours du processus de
-      construction de PCRE, indiquez son chemin via l'option
-      <code>--with-pcre</code> du script <code>./configure</code>. Sur
-      certaines plateformes, vous devrez
-      peut-être installer les paquets <code>-dev</code> correspondants
-      pour permettre la compilation de httpd avec la version
-      installée de PCRE.</dd>
+      href="https://github.com/PCRE2Project/pcre2">https://github.com/PCRE2Project/pcre2</a>
+      ou installez le avec le gestionnaire de paquets de votre système. Si votre
+      système de construction ne trouve pas le script <code>pcre2-config</code>
+      installé par la construction de PCRE2, pointez vers lui en utilisant
+      l’option <code>--with-pcre</code>. Sur certaines plateformes, vous devrez
+      peut-être installer le paquet <code>-dev</code> correspondant (par exemple
+      <code>libpcre2-dev</code> ou <code>pcre2-devel</code>) pour permettre la
+      construction de httpd avec votre version installée de PCRE2.</dd>
 
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 200 Mo d'espace disque disponible
@@ -228,13 +173,11 @@ $ cd httpd-NN
       les outils de construction de base tels que <code>make</code>.</dd>
 
       <dt>Connaissance de l'heure exacte</dt>
-      <dd>Les éléments du protocole HTTP font référence à l'heure du jour. Par
-      conséquent, il est nécessaire d'équiper votre système d'un dispositif de
-      synchronisation du temps. À cet effet, la plupart des distributions
-      modernes de Linux fournissent <code>systemd-timesyncd</code> ou
-      <code>chrony</code>. Voir la <a href="https://www.ntp.org">page d'accueil
-      de NTP</a> pour plus de détails à propos du logiciel NTP et des serveurs
-      de temps publics.</dd>
+      <dd>Les entêtes du protocole HTTP utilisent un horodatage ; l’horloge de
+      votre système doit donc être précise. La plupart des distributions de
+      Linux activent <code>systemd-timesyncd</code> ou <code>chrony</code> par
+      défaut. Vérifiez que la synchronisation du temps est active sur votre
+      système avant d’exploiter un serveur en production.</dd>
 
       <dt><a href="https://www.perl.org/">Perl 5</a>
       [OPTIONNEL]</dt>
@@ -243,18 +186,16 @@ $ cd httpd-NN
       sont écrits en Perl).  Si le script <program>configure</program> ne trouve
       pas d'interpréteur Perl 5, vous ne pourrez pas utiliser les scripts qui en
       ont besoin.  Bien entendu, vous pourrez tout de même construire et
-      utiliser Apache httpd.</dd>
+      utiliser httpd.</dd>
 
     </dl>
 </section>
 
 <section id="download"><title>Téléchargement</title>
 
-    <p>Si vous voulez construire httpd depuis le code source, commencez par
-    télécharger l’archive tar du code source depuis le <a
+    <p>Téléchargez l’archive tar du code source depuis le <a
     href="https://httpd.apache.org/download.cgi">site de téléchargement du
-    serveur HTTP Apache</a>. Le processus de construction (décrit ci-après)
-    permet de personnaliser le serveur pour qu’il corresponde à vos besoins.</p>
+    serveur HTTP Apache</a>.</p>
 
     <p>Après le téléchargement, il est important de vérifier que vous disposez
     d'une version complète et non modifiée du serveur HTTP Apache.  Vous pouvez
@@ -283,15 +224,13 @@ $ tar xzf httpd-<em>NN</em>.tar.gz
 <section id="configure"><title>Configuration de l'arborescence des sources</title>
 
     <p>L'étape suivante consiste à configurer l'arborescence des sources
-    d'Apache en fonction de votre plateforme et de vos besoins personnels.
-    Le script  <program>configure</program>, situé à la racine du
-    répertoire de la distribution, a été conçu à cet effet
-    (Les développeurs qui téléchargent
-    une version non officielle de l'arborescence des sources d'Apache
-    devront disposer de
-    <code>autoconf</code> et <code>libtool</code> et
-    exécuter <code>buildconf</code> avant de passer à l'étape suivante,
-    ce qui n'est pas nécessaire pour les versions officielles).</p>
+    de httpd en fonction de votre plateforme et de vos besoins personnels.
+    Le script  <program>configure</program>, situé à la racine du répertoire de
+    la distribution, a été conçu à cet effet (Les développeurs qui téléchargent
+    une version non officielle de l'arborescence des sources de httpd
+    devront disposer de <code>autoconf</code> et <code>libtool</code> et
+    exécuter <code>buildconf</code> avant de passer à l'étape suivante, ce qui
+    n'est pas nécessaire pour les versions officielles).</p>
 
     <p>Pour configurer l'arborescence des sources avec les valeurs par défaut
     pour toutes les options, saisissez <code>./configure</code>.
@@ -299,33 +238,31 @@ $ tar xzf httpd-<em>NN</em>.tar.gz
     accepte toute une variété de variables et
     d'options de ligne de commande.</p>
 
-    <p>L'option la plus importante <code>--prefix</code> est le chemin
-    du répertoire d'installation d'Apache, car Apache doit être configuré
-    en fonction de ce chemin pour pouvoir fonctionner correctement.
-    Il est possible de définir plus finement le chemin d'installation des fichiers
-    à l'aide d'<a
+    <p>L'option la plus importante <code>--prefix</code> est le chemin du
+    répertoire d'installation de httpd, car httpd doit être
+    configuré en fonction de ce chemin pour pouvoir fonctionner correctement.
+    Il est possible de définir plus finement le chemin d'installation des
+    fichiers à l'aide d'<a
     href="programs/configure.html#installationdirectories">options
     supplémentaires de configure</a>.</p>
 
     <p>À ce niveau, vous pouvez aussi spécifier de quelles <a
     href="programs/configure.html#optionalfeatures">fonctionnalités</a> vous
-    voulez disposer dans Apache en activant ou désactivant des <a
-    href="mod/">modules</a>.  Apache est fourni avec un grand nombre de
+    voulez disposer dans httpd en activant ou désactivant des <a
+    href="mod/">modules</a>.  httpd est fourni avec un grand nombre de
     modules inclus par défaut. Ils seront compilés en tant qu'<a
-    href="dso.html">objets partagés (DSOs)</a> qui pourront être chargés
-    ou déchargés à l'exécution. Vous pouvez aussi choisir de compiler
-    les modules statiquement via l'option
-    <code>--enable-<var>module</var>=static</code>.</p>
-    <p>Des modules supplémentaires peuvent être activés à l'aide de l'option
-    <code>--enable-<var>module</var></code>, où
-    <var>module</var> est le nom du module sans la chaîne
-    <code>mod_</code> et où tout caractère de soulignement est converti
-    en tiret. D'une manière similaire,
-    vous pouvez désactiver des modules à l'aide de l'option
-    <code>--disable-<var>module</var></code>.  Faites très attention
-    en utilisant ces options, car <program>configure</program> n'est pas en
-    mesure de vous avertir si le module que vous avez spécifié n'existe pas ;
-    il ignorera l'option.</p>
+    href="dso.html">objets partagés (DSOs)</a> qui pourront être chargés ou
+    déchargés à l'exécution. Vous pouvez aussi choisir de compiler les modules
+    statiquement via l'option
+    <code>--enable-<var>module</var>=static</code>.</p> <p>Des modules
+    supplémentaires peuvent être activés à l'aide de l'option
+    <code>--enable-<var>module</var></code>, où <var>module</var> est le nom du
+    module sans la chaîne <code>mod_</code> et où tout caractère de soulignement
+    est converti en tiret. D'une manière similaire, vous pouvez désactiver des
+    modules à l'aide de l'option <code>--disable-<var>module</var></code>.
+    Faites très attention en utilisant ces options, car
+    <program>configure</program> n'est pas en mesure de vous avertir si le
+    module que vous avez spécifié n'existe pas ; il ignorera l'option.</p>
 
     <p>En outre, vous devrez peut-être fournir au script
     <program>configure</program> des informations supplémentaires sur
@@ -338,7 +275,7 @@ $ tar xzf httpd-<em>NN</em>.tar.gz
     </p>
 
     <p>Pour vous faire une idée des possibilités qui s'offrent à vous, voici
-    un exemple typique de compilation d'Apache avec le répertoire
+    un exemple typique de compilation de Apache httpd avec le répertoire
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
     particuliers et les deux modules additionnels <module>mod_ldap</module>
     et <module>mod_lua</module> :</p>
@@ -365,9 +302,11 @@ $ CC="pgcc" CFLAGS="-O2" \
 <section id="compile"><title>Construction</title>
 
     <p>Vous pouvez maintenant construire les différents éléments qui
-    composent le paquet Apache en lançant :</p>
+    composent le paquet Apache httpd en lançant :</p>
 
-<example>$ make</example>
+<example>
+<highlight language="sh">$ make</highlight>
+</example>
 
     <p>Vous devez être patient, car il faut plusieurs minutes pour compiler
     une configuration de base, et cette durée peut varier considérablement
@@ -380,7 +319,9 @@ $ CC="pgcc" CFLAGS="-O2" \
     d'installation défini par <em>PREFIX</em> (voir plus haut l'option
     <code>--prefix</code>) en lançant:</p>
 
-<example>$ make install</example>
+<example>
+<highlight language="sh">$ make install</highlight>
+</example>
 
     <p>Cette étape nécessite habituellement les privilèges
     de root, car <em>PREFIX</em> est en général un
@@ -397,9 +338,11 @@ $ CC="pgcc" CFLAGS="-O2" \
     éditant les <a href="configuring.html">fichiers de configuration</a>
     situés dans <code><em>PREFIX</em>/conf/</code>.</p>
 
-<example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
+<example>
+<highlight language="sh">$ vi <em>PREFIX</em>/conf/httpd.conf</highlight>
+</example>
 
-    <p>Consultez le manuel d'Apache situé dans
+    <p>Consultez le manuel de httpd situé dans
     <code><em>PREFIX</em>/docs/manual/</code> ou
     <a href="https://httpd.apache.org/docs/&httpd.docs;/"
     >https://httpd.apache.org/docs/&httpd.docs;/</a> pour la version la plus
@@ -410,9 +353,11 @@ $ CC="pgcc" CFLAGS="-O2" \
 <section id="test"><title>Test</title>
 
     <p>Vous pouvez maintenant <a href="invoking.html">démarrer</a> votre
-    serveur HTTP Apache en lançant:</p>
+    Serveur HTTP Apache en lançant :</p>
 
-<example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
+<example>
+<highlight language="sh">$ <em>PREFIX</em>/bin/apachectl -k start</highlight>
+</example>
 
     <p>Vous devriez alors pouvoir requérir votre premier document
     à l'aide de l'URL <code>http://localhost/</code>. La page web que vous
@@ -421,7 +366,9 @@ $ CC="pgcc" CFLAGS="-O2" \
     qui est généralement <code><em>PREFIX</em>/htdocs/</code>.
     Pour <a href="stopping.html">arrêter</a> le serveur, lancez:</p>
 
-<example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
+<example>
+<highlight language="sh">$ <em>PREFIX</em>/bin/apachectl -k stop</highlight>
+</example>
 </section>
 <section id="upgrading"><title>Mise à jour</title>
 
@@ -481,30 +428,63 @@ $ <em>PREFIX</em>/bin/apachectl -k start
     votre script <program>configure</program> original :</p>
 
      <example>
-     $ ./config.nice --prefix=/home/test/apache --with-port=90
+     <highlight language="sh">
+$ ./config.nice --prefix=/home/test/apache --with-port=90
+     </highlight>
      </example>
 
     </section>
 <section id="thirdp"><title>Paquets tiers</title>
 
-    <p>De nombreux tiers fournissent leur propre distribution du serveur HTTP
-    Apache à installer sur une plate-forme particulière. On peut citer les
-    différentes distributions Linux, divers paquets <a
-    href="https://httpd.apache.org/docs/trunk/en/platform/windows.html">Windows</a>,
-    macOS, et de nombreux autres.</p>
+    <p>De nombreux systèmes d’exploitation fournissent des paquets Apache httpd
+    préconstruits. Ces paquets permettent de démarrer rapidement, mais ils
+    diffèrent souvent d’une construction à partir des sources quant à
+    l’organisation du fichier de configuration, aux modules intégrés et aux
+    chemins par défaut. La documentation sur ce site décrit la construction du
+    serveur à partir des sources ; si vous utilisez un paquet de plateforme,
+    consultez la documentation de votre distribution pour les détails
+    spécifiques à la plateforme.</p>
 
-    <p>Notre license logicielle non seulement permet, mais aussi
-    encourage ce genre de redistribution. Cependant, ceci conduit à une
-    situation ou l'organisation de la configuration et les valeurs par
-    défaut de votre installation du serveur peuvent ne pas correspondre
-    à ce qui est écrit dans la documentation. Bien que fâcheuse, cette
-    situation n'est pas appelée à évoluer de sitôt.</p>
+    <p>Quelques exemples courants :</p>
 
-    <p>Une  <a
+    <dl>
+    <dt>Fedora / CentOS / Red Hat Enterprise Linux</dt>
+    <dd>
+    <highlight language="sh">
+sudo dnf install httpd
+sudo systemctl start httpd
+    </highlight>
+    <p>Voir <a
+    href="https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-apache-http-server/index.html">la
+    documentation du projet Fedora</a> pour l’organisation de la configuration
+    et des notes spécifiques à la plateforme.</p>
+    </dd>
+
+    <dt>Ubuntu / Debian</dt>
+    <dd>
+<highlight language="sh">
+sudo apt install apache2
+sudo systemctl start apache2
+</highlight>
+    <p>Voir <a
+    href="https://ubuntu.com/tutorials/install-and-configure-apache">documentation
+    d’Ubuntu</a> pour l’organisation de la configuration
+    et des notes spécifiques à la plateforme.</p>
+    </dd>
+    </dl>
+
+    <p>Notre licence logicielle non seulement permet, mais aussi encourage ce
+    genre de distribution tierce. Cependant, cela conduit à une situation ou
+    l'organisation de la configuration et les valeurs par défaut de votre
+    installation du serveur peuvent ne pas correspondre à ce qui est écrit dans
+    la documentation. Une <a
     href="https://cwiki.apache.org/confluence/display/httpd/DistrosDefaultLayout">description
-    de ces distributions tierces</a> est dans le wiki du serveur HTTP. Vous
-    devrez cependant vous familiariser par vous-même avec la gestion du paquet
-    de votre plate-forme particulière et les procédures d'installation.</p>
+    de ces distributions tierces</a> est disponible dans le wiki du serveur
+    HTTP.</p>
+
+    <note type="warning">Votre plateforme favorite n’est pas mentionnée ici ? <a
+    href="https://httpd.apache.org/docs-project/">Voilà une bonne occasion pour
+    vous d’améliorer cette documentation.</a></note>
 
 </section>
 </manualpage>

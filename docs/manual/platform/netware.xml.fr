@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874169:1933740 (outdated) -->
+<!-- English Revision: 1933740 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -29,6 +29,13 @@
 
   <summary>
 
+    <note type="warning">
+    <p>Novell NetWare est en fin de vie et n’est plus pris en charge. Ce
+    document est conservé à titre de référence historique seulement. Les liens
+    vers des ressources de Novell initialement référencées dans ce document ne
+    sont plus fonctionnels.</p>
+    </note>  
+
     <p>Ce document explique l'installation, la configuration et le
     lancement d'Apache 2.0 sous Novell NetWare 6.0 et les versions
     ultérieures. Si vous trouvez une bogue, ou voulez tout simplement
@@ -36,18 +43,18 @@
     notre <a href="http://httpd.apache.org/bug_report.html">page des
     rapports de bogues.</a></p>
 
-    <p>La page des rapports de bogues et la liste de diffusion dev-httpd
-    ne doivent pas être utilisées pour poser des questions à propos de
-    la configuration ou du lancement d'Apache. Avant de soumettre un
-    rapport de bogue ou une question, consultez ce document, la <a
-    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> ou tout autre sujet de la
-    documentation en rapport avec votre problème. Si vous n'avez
-    toujours pas résolu votre problème, postez votre question dans le
-    newsgroup <a
-    href="news://developer-forums.novell.com/novell.devsup.webserver">
-    novell.devsup.webserver</a>, où de nombreux utilisateurs d'Apache
-    sont prêts à répondre à toutes les nouvelles et obscures questions à
-    propos de l'utilisation d'Apache sous Netware.</p>
+    <p>La page des rapports de bogues et la liste de diffusion dev-httpd ne
+    doivent pas être utilisées pour poser des questions à propos de la
+    configuration ou du lancement d'Apache. Avant de soumettre un rapport de
+    bogue ou une question, consultez ce document, la <a
+    href="https://cwiki.apache.org/confluence/display/httpd/FAQ">FAQ</a> ou tout
+    autre sujet de la documentation en rapport avec votre problème. Si vous
+    n'avez toujours pas résolu votre problème, postez votre question dans le
+    newsgroup novell.devsup.webserver (par le passé à
+    <code>news://developer-forums.novell.com/novell.devsup.webserver</code>), où
+    de nombreux utilisateurs d'Apache sont prêts à répondre à toutes les
+    nouvelles et obscures questions à propos de l'utilisation d'Apache sous
+    Netware.</p>
 
     <p>Dans la majeure partie de ce document, vous êtes sensé avoir
     installé Apache à partir d'une distribution binaire. Si vous voulez
@@ -62,22 +69,19 @@
 
     <title>Prérequis</title>
 
-    <p>Apache 2.0 nécessite NetWare 6.0 service pack 3 et supérieurs
-    pour fonctionner. Si vous utilisez un service pack antérieur à SP3,
-    vous devez installer les dernières <a
-    href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
-    Netware pour C (LibC)</a>.</p>
+    <p>Apache 2.0 nécessite NetWare 6.0 service pack 3 et supérieurs pour
+    fonctionner. Si vous utilisez un service pack antérieur à SP3, vous devez
+    installer les dernières bibliothèques Netware pour C (LibC) (par le
+    passé à <code>http://developer.novell.com/ndk/libc.htm</code>).</p>
 
-    <p>Vous trouverez les service packs Netware <a
-    href="http://support.novell.com/misc/patlst.htm#nw">ici</a>.</p>
+    <p>Vous pouviez trouver les services packs Netware à cette adresse : <code>http://support.novell.com/misc/patlst.htm#nw</code>.</p>
 
-    <p>Apache 2.0 pour NetWare peut aussi fonctionner dans un
-    environnement NetWare 5.1, à partir du moment où le dernier service
-    pack ou la dernière version des <a
-    href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
-    Netware pour C (LibC)</a> ont été installés. <strong>ATTENTION
-    :</strong> Apache 2.0 pour NetWare n'a pas été testé dans cet
-    environnement car il n'a pas été conçu pour ce dernier.</p>
+    <p>Apache 2.0 pour NetWare peut aussi fonctionner dans un environnement
+    NetWare 5.1, à partir du moment où le dernier service pack ou la dernière
+    version des bibliothèques Netware pour C (LibC) (anciennement à
+    <code>http://developer.novell.com/ndk/libc.htm</code>) ont été installés.
+    <strong>ATTENTION :</strong> Apache 2.0 pour NetWare n'a pas été testé dans
+    cet environnement car il n'a pas été conçu pour ce dernier.</p>
 
   </section>
 
@@ -507,32 +511,27 @@
       compilation d'Apache pour Netware :</p>
 
       <ul>
-        <li>Metrowerks CodeWarrior 6.0 ou supérieur avec le <a
-	href="http://developer.novell.com/ndk/cwpdk.htm">NetWare PDK
-	3.0</a> ou supérieur.</li>
+	<li>Metrowerks CodeWarrior 6.0 ou supérieur avec le NetWare PDK 3.0
+	(anciennement à <code>http://developer.novell.com/ndk/cwpdk.htm</code>)
+	ou supérieur.</li>
 
-        <li>Les <a
-	href="http://developer.novell.com/ndk/libc.htm">Bibliothèques
-	Netware pour C (LibC)</a></li>
+	<li>Les bibliothèques Netware pour C (LibC) (anciennement à
+	<code>http://developer.novell.com/ndk/libc.htm</code>)</li>
 
-        <li>Les <a
-	href="http://developer.novell.com/ndk/cldap.htm">Bibliothèques
-	LDAP pour C</a></li>
+	<li>Les bibliothèques LDAP pour C (anciennement à
+	<code>http://developer.novell.com/ndk/cldap.htm</code>)</li>
 
         <li>Le <a href="http://www.gzip.org/zlib/">Code source de la
 	bibliothèque de compression ZLIB</a></li>
 
-        <li>L'utilitaire AWK (awk, gawk ou similaire). AWK peut être
-	téléchargé à <a
-	href="http://developer.novell.com/ndk/apache.htm"
-	>http://developer.novell.com/ndk/apache.htm</a>.
-	L'utilitaire doit se trouver dans votre chemin windows et avoir
-	pour nom <code>awk.exe</code>.</li>
+	<li>L'utilitaire AWK (awk, gawk ou similaire). AWK peut être téléchargé
+	à <code>http://developer.novell.com/ndk/apache.htm</code>.  L'utilitaire
+	doit se trouver dans votre chemin windows et avoir pour nom
+	<code>awk.exe</code>.</li>
 
-        <li>Pour utiliser les makefiles, vous devez disposer de GNU make
-	version 3.78.1 (GMake) disponible à <a
-	href="http://developer.novell.com/ndk/apache.htm"
-	>http://developer.novell.com/ndk/apache.htm</a>.</li>
+	<li>Pour utiliser les makefiles, vous devez disposer de GNU make version
+	3.78.1 (GMake) disponible à
+	<code>http://developer.novell.com/ndk/apache.htm</code>..</li>
       </ul>
 
     </section>
