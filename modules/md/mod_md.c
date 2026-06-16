@@ -857,6 +857,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     md_store_t *store;
     const char *proxy_url;
     const char *ca_certs;
+    const char *proxy_ca_certs;
 
     apr_pool_userdata_get(&data, mod_md_init_key, s->process->pool);
     if (data == NULL) {
@@ -897,8 +898,9 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
 
     proxy_url = apr_table_get(mc->env, MD_KEY_PROXY_URL);
     ca_certs = apr_table_get(mc->env, MD_KEY_CA_CERTS);
+    proxy_ca_certs = apr_table_get(mc->env, MD_KEY_PROXY_CA_CERTS);
 
-    rv = md_reg_create(&mc->reg, p, store, proxy_url, ca_certs,
+    rv = md_reg_create(&mc->reg, p, store, proxy_url, ca_certs, proxy_ca_certs,
                        mc->min_delay, mc->retry_failover,
                        mc->use_store_locks, mc->lock_wait_timeout);
     if (APR_SUCCESS != rv) {

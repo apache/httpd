@@ -248,6 +248,7 @@ static apr_status_t internals_setup(md_http_request_t *req)
     CURL *curl;
     apr_status_t rv = APR_SUCCESS;
     long ssl_options = 0;
+    long proxy_ssl_options = 0;
 
     curl = md_http_get_impl_data(req->http);
     if (!curl) {
@@ -315,6 +316,16 @@ static apr_status_t internals_setup(md_http_request_t *req)
         ssl_options |= CURLSSLOPT_NO_REVOKE;
 #endif
     }
+    if (req->proxy_ca_file) {
+        curl_easy_setopt(curl, CURLOPT_PROXY_CAINFO, req->proxy_ca_file);
+        /* for a custom CA, allow certificates checking to ignore the
+         * Schannel error CRYPT_E_NO_REVOCATION_CHECK (could be a missing OCSP
+         * responder URL in the certs???). See issue #361 */
+#ifdef CURLSSLOPT_NO_REVOKE
+        proxy_ssl_options |= CURLSSLOPT_NO_REVOKE;
+#endif
+    }
+
     if (req->unix_socket_path) {
         curl_easy_setopt(curl, CURLOPT_UNIX_SOCKET_PATH, req->unix_socket_path);
     }
@@ -355,6 +366,9 @@ static apr_status_t internals_setup(md_http_request_t *req)
 
     if (ssl_options)
         curl_easy_setopt(curl, CURLOPT_SSL_OPTIONS, ssl_options);
+
+    if (proxy_ssl_options)
+        curl_easy_setopt(curl, CURLOPT_PROXY_SSL_OPTIONS, proxy_ssl_options);
 
 leave:
     req->internals = (APR_SUCCESS == rv)? internals : NULL;

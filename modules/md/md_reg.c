@@ -48,6 +48,7 @@ struct md_reg_t {
     int can_https;
     const char *proxy_url;
     const char *ca_certs;
+    const char *proxy_ca_certs;
     int domains_frozen;
     md_timeslice_t *renew_window;
     md_timeslice_t *warn_window;
@@ -97,8 +98,9 @@ static apr_status_t load_props(md_reg_t *reg, apr_pool_t *p)
 
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *store,
                            const char *proxy_url, const char *ca_certs,
-                           apr_time_t min_delay, int retry_failover,
-                           int use_store_locks, apr_time_t lock_wait_timeout)
+                           const char *proxy_ca_certs, apr_time_t min_delay,
+                           int retry_failover, int use_store_locks,
+                           apr_time_t lock_wait_timeout)
 {
     md_reg_t *reg;
     apr_status_t rv;
@@ -113,6 +115,8 @@ apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *p, struct md_store_t *st
     reg->proxy_url = apr_pstrdup(p, proxy_url);
     reg->ca_certs = (ca_certs && apr_cstr_casecmp("none", ca_certs))?
                     apr_pstrdup(p, ca_certs) : NULL;
+    reg->proxy_ca_certs = (proxy_ca_certs && apr_cstr_casecmp("none", proxy_ca_certs))?
+                    apr_pstrdup(p, proxy_ca_certs) : NULL;
     reg->min_delay = min_delay;
     reg->retry_failover = retry_failover;
     reg->use_store_locks = use_store_locks;
@@ -1110,6 +1114,7 @@ static apr_status_t run_init(void *baton, apr_pool_t *p, ...)
     driver->store = md_reg_store_get(reg);
     driver->proxy_url = reg->proxy_url;
     driver->ca_certs = reg->ca_certs;
+    driver->proxy_ca_certs = reg->proxy_ca_certs;
     driver->md = md;
     driver->can_http = reg->can_http;
     driver->can_https = reg->can_https;

@@ -103,6 +103,8 @@ struct md_t {
     const char *proxy_url;          /* Proxy URL, override global command */
     const char *ca_certs;           /* root certificates to use for connections,
                                        override global command */
+    const char *proxy_ca_certs;     /* root certificates to use for proxy connections,
+                                       override global command */
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
@@ -188,6 +190,7 @@ struct md_t {
 #define MD_KEY_PROFILE          "profile"
 #define MD_KEY_PROFILE_MANDATORY "profile-mandatory"
 #define MD_KEY_PROTO            "proto"
+#define MD_KEY_PROXY_CA_CERTS   "proxy-ca-certs"
 #define MD_KEY_PROXY_URL        "proxy-url"
 #define MD_KEY_READY            "ready"
 #define MD_KEY_REGISTRATION     "registration"
