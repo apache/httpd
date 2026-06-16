@@ -43,7 +43,9 @@
     maintenance thread so that the number of idle threads is kept between
     <directive module="mpm_common">MinSpareThreads</directive> and
     <directive module="mpm_common">MaxSpareThreads</directive>.</p>
+
 </summary>
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
 uses</a></seealso>
 
