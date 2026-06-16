@@ -175,3 +175,7 @@ What do you want to do?
   future maintainers can edit them (e.g., Graphviz .dot, or draw.io XML).
 - Label simplified diagrams explicitly as overviews and link to
   the authoritative technical page.
+
+See README.md in ../images for more detail on format, fonts, colors,
+etc.
+
