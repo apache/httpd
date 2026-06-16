@@ -101,6 +101,16 @@ In <code>.htaccess</code> context, the directory prefix is
 <code>products/widget</code> - no leading slash, no
 <code>/app/</code> prefix.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_path_stripping.png"
+          alt="Flowchart showing the path stripping, substitution,
+          and RewriteBase pipeline in per-directory context, with
+          three outcomes: relative path (RewriteBase prepended),
+          absolute path (used as-is), and absolute URI (external
+          redirect)" /><br />
+      <dfn>Figure:</dfn> Per-directory path stripping and RewriteBase pipeline
+</p>
+
 <p>This means you must write your patterns differently depending on
 where the rule lives:</p>
 
