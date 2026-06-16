@@ -82,7 +82,7 @@ apr_status_t md_http_create(md_http_t **phttp, apr_pool_t *p, const char *user_a
     http->pool = p;
     http->impl = cur_impl;
     http->user_agent = apr_pstrdup(p, user_agent);
-    http->proxy_url = proxy_url? apr_pstrdup(p, proxy_url) : NULL;
+    http->proxy_url = apr_pstrdup(p, proxy_url);
     http->bucket_alloc = apr_bucket_alloc_create(p);
     if (!http->bucket_alloc) {
         return APR_EGENERAL;

@@ -61,7 +61,6 @@ static md_mod_conf_t defmc = {
 #else
     MD_DEFAULT_BASE_DIR,
 #endif
-    NULL,                      /* proxy url for outgoing http */
     NULL,                      /* md_reg_t */
     NULL,                      /* md_ocsp_reg_t */
     80,                        /* local http: port */
@@ -127,6 +126,7 @@ static md_srv_conf_t defconf = {
     1,                         /* staple others */
     1,                         /* ACME ARI renewals */
     NULL,                      /* dns01_cmd */
+    NULL,                      /* proxy URL */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -185,6 +185,7 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->staple_others = DEF_VAL;
     sc->ari_renewals = DEF_VAL;
     sc->dns01_cmd = NULL;
+    sc->proxy_url = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -209,6 +210,7 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->staple_others = from->staple_others;
     to->ari_renewals = from->ari_renewals;
     to->dns01_cmd = from->dns01_cmd;
+    to->proxy_url = from->proxy_url;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -236,6 +238,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->ari_renewals != DEF_VAL) md->ari_renewals = from->ari_renewals;
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
+    if (from->proxy_url) md->proxy_url = from->proxy_url;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -285,6 +288,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->staple_others = (add->staple_others != DEF_VAL)? add->staple_others : base->staple_others;
     nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
+    nsc->proxy_url = (add->proxy_url)? add->proxy_url : base->proxy_url;
     nsc->current = NULL;
     
     return nsc;
@@ -865,14 +869,20 @@ static const char *md_config_set_proxy(cmd_parms *cmd, void *arg, const char *va
     md_srv_conf_t *sc = md_config_get(cmd->server);
     const char *err;
 
-    if ((err = md_conf_check_location(cmd, MD_LOC_NOT_MD))) {
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
         return err;
     }
     md_util_abs_http_uri_check(cmd->pool, value, &err);
     if (err) {
         return err;
     }
-    sc->mc->proxy_url = value;
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_url = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_URL, value);
+    }
+
     (void)arg;
     return NULL;
 }
@@ -1471,8 +1481,6 @@ const char *md_config_gets(const md_srv_conf_t *sc, md_config_var_t var)
             return sc->ca_proto? sc->ca_proto : defconf.ca_proto;
         case MD_CONFIG_BASE_DIR:
             return sc->mc->base_dir;
-        case MD_CONFIG_PROXY:
-            return sc->mc->proxy_url;
         case MD_CONFIG_CA_AGREEMENT:
             return sc->ca_agreement? sc->ca_agreement : defconf.ca_agreement;
         case MD_CONFIG_NOTIFY_CMD:
