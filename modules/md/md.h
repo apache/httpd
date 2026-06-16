@@ -20,7 +20,6 @@
 #include <apr_time.h>
 
 #include "md_time.h"
-#include "md_version.h"
 
 struct apr_array_header_t;
 struct apr_hash_t;

@@ -44,7 +44,6 @@
 #include "md_reg.h"
 #include "md_status.h"
 #include "md_util.h"
-#include "md_version.h"
 #include "md_acme.h"
 #include "md_acme_authz.h"
 
@@ -878,7 +877,7 @@ static apr_status_t md_post_config_before_ssl(apr_pool_t *p, apr_pool_t *plog,
     }
     else {
         ap_log_error( APLOG_MARK, APLOG_INFO, 0, s, APLOGNO(10071)
-                     "mod_md (v%s), initializing...", MOD_MD_VERSION);
+                     "mod_md (v%s), initializing...", AP_SERVER_BASEREVISION);
     }
 
     (void)plog;

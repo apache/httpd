@@ -34,7 +34,6 @@
 #include "md_store.h"
 #include "md_result.h"
 #include "md_util.h"
-#include "md_version.h"
 
 #include "md_acme.h"
 #include "md_acme_acct.h"
@@ -647,7 +646,7 @@ apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
     acme->url = url;
     acme->p = p;
     acme->user_agent = apr_psprintf(p, "%s mod_md/%s", 
-                                    base_product, MOD_MD_VERSION);
+                                    base_product, AP_SERVER_BASEREVISION);
     acme->proxy_url = apr_pstrdup(p, proxy_url);
     acme->max_retries = 9;
     acme->ca_file = ca_file;

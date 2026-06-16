@@ -40,7 +40,6 @@
 #include "md_log.h"
 #include "md_reg.h"
 #include "md_util.h"
-#include "md_version.h"
 #include "md_acme.h"
 #include "md_acme_authz.h"
 

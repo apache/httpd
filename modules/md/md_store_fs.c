@@ -33,7 +33,6 @@
 #include "md_store.h"
 #include "md_store_fs.h"
 #include "md_util.h"
-#include "md_version.h"
 
 /**************************************************************************************************/
 /* file system based implementation of md_store_t */
