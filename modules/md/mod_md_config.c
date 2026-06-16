@@ -82,7 +82,6 @@ static md_mod_conf_t defmc = {
     &def_ocsp_renew_window,    /* default time to renew ocsp responses */
     "crt.sh",                  /* default cert checker site name */
     "https://crt.sh?q=",       /* default cert checker site url */
-    NULL,                      /* CA cert file to use */
     APR_TIME_C(0),             /* initial cert check delay */
     apr_time_from_sec(MD_SECS_PER_DAY/2), /* default time between cert checks */
     apr_time_from_sec(30),     /* minimum delay for retries */
@@ -127,6 +126,7 @@ static md_srv_conf_t defconf = {
     1,                         /* ACME ARI renewals */
     NULL,                      /* dns01_cmd */
     NULL,                      /* proxy URL */
+    NULL,                      /* CA cert file to use */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -186,6 +186,7 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->ari_renewals = DEF_VAL;
     sc->dns01_cmd = NULL;
     sc->proxy_url = NULL;
+    sc->ca_certs = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -211,6 +212,7 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->ari_renewals = from->ari_renewals;
     to->dns01_cmd = from->dns01_cmd;
     to->proxy_url = from->proxy_url;
+    to->ca_certs = from->ca_certs;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -239,6 +241,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->stapling != DEF_VAL) md->stapling = from->stapling;
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
     if (from->proxy_url) md->proxy_url = from->proxy_url;
+    if (from->ca_certs) md->ca_certs = from->ca_certs;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -289,6 +292,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->ari_renewals = (add->ari_renewals != DEF_VAL)? add->ari_renewals : base->ari_renewals;
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
     nsc->proxy_url = (add->proxy_url)? add->proxy_url : base->proxy_url;
+    nsc->ca_certs = (add->ca_certs)? add->ca_certs : base->ca_certs;
     nsc->current = NULL;
     
     return nsc;
@@ -1250,12 +1254,22 @@ static const char *md_config_set_activation_delay(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
-static const char *md_config_set_ca_certs(cmd_parms *cmd, void *dc, const char *path)
+static const char *md_config_set_ca_certs(cmd_parms *cmd, void *arg, const char *value)
 {
     md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
 
-    (void)dc;
-    sc->mc->ca_certs = path;
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_CA_CERTS, value);
+    }
+
+    (void)arg;
     return NULL;
 }
 
