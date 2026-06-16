@@ -124,7 +124,7 @@ Protocols h2 http/1.1 acme-tls/1
         </highlight>
         <p>
             And the `tls-alpn-01` challenge type is available.
-	</p>
+        </p>
         </note>
 
         <note><title>Wildcard Certificates</title>
@@ -540,8 +540,37 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         </contextlist>
         <compatibility>Since version 2.4.69, a proxy can be configured separately for each MDomain.</compatibility>
         <usage>
-            <p>Use the given http forward proxy URL to connect to the <directive module="mod_md">MDCertificateAuthority</directive>.
+            <p>
+                Use the given http forward proxy URL to connect to the <directive module="mod_md">MDCertificateAuthority</directive>.
                 Define this if your webserver can only reach the internet with a forward proxy.
+            </p>
+        </usage>
+    </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxyCACertificateFile</name>
+        <description>Sets the root (CA) certificates to use for TLS connections to the http-proxy.</description>
+        <syntax>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></syntax>
+        <default>MDHttpProxyCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Available in version 2.4.69 and later</compatibility>
+        <usage>
+            <p>
+                This is used for connections to the HTTPS forward proxy (<directive module="mod_md">MDHttpProxy</directive>).
+                It is needed if the certificate of the HTTPS proxy cannot be verified using the general CA root store.
+                This is sometimes the case in test setups or enterprise environments.
+            </p>
+            <p>
+                The certificate of the ACME server is verified with the root certificates set by
+                <directive module="mod_md">MDCACertificateFile</directive>, so you might need to use both settings.
+            </p>
+            <p>
+                Use "none" as path to disable explicitly.
+            </p>
+            <p>
+                This can be configured separately for each <directive module="mod_md">MDomain</directive>.
             </p>
         </usage>
     </directivesynopsis>
@@ -1623,6 +1652,7 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+        <compatibility>Since version 2.4.69, this can be configured separately for each MDomain.</compatibility>
         <usage>
             <p>
                 This is mainly used in test setups where the module needs to

@@ -115,6 +115,8 @@ typedef struct md_srv_conf_t {
     const char *proxy_url;             /* Proxy URL, override global command */
     const char *ca_certs;              /* root certificates to use for connections,
                                           override global command */
+    const char *proxy_ca_certs;        /* root certificates to use for proxy connections,
+                                          override global command */
 
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
     struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */

@@ -127,6 +127,7 @@ static md_srv_conf_t defconf = {
     NULL,                      /* dns01_cmd */
     NULL,                      /* proxy URL */
     NULL,                      /* CA cert file to use */
+    NULL,                      /* CA cert file to use for proxy */
     NULL,                      /* currently defined md */
     NULL,                      /* assigned md, post config */
     0,                         /* is_ssl, set during mod_ssl post_config */
@@ -187,6 +188,7 @@ static void srv_conf_props_clear(md_srv_conf_t *sc)
     sc->dns01_cmd = NULL;
     sc->proxy_url = NULL;
     sc->ca_certs = NULL;
+    sc->proxy_ca_certs = NULL;
 }
 
 static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
@@ -213,6 +215,7 @@ static void srv_conf_props_copy(md_srv_conf_t *to, const md_srv_conf_t *from)
     to->dns01_cmd = from->dns01_cmd;
     to->proxy_url = from->proxy_url;
     to->ca_certs = from->ca_certs;
+    to->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t *p)
@@ -242,6 +245,7 @@ static void srv_conf_props_apply(md_t *md, const md_srv_conf_t *from, apr_pool_t
     if (from->dns01_cmd) md->dns01_cmd = from->dns01_cmd;
     if (from->proxy_url) md->proxy_url = from->proxy_url;
     if (from->ca_certs) md->ca_certs = from->ca_certs;
+    if (from->proxy_ca_certs) md->proxy_ca_certs = from->proxy_ca_certs;
 }
 
 void *md_config_create_svr(apr_pool_t *pool, server_rec *s)
@@ -293,6 +297,7 @@ static void *md_config_merge(apr_pool_t *pool, void *basev, void *addv)
     nsc->dns01_cmd = (add->dns01_cmd)? add->dns01_cmd : base->dns01_cmd;
     nsc->proxy_url = (add->proxy_url)? add->proxy_url : base->proxy_url;
     nsc->ca_certs = (add->ca_certs)? add->ca_certs : base->ca_certs;
+    nsc->proxy_ca_certs = (add->proxy_ca_certs)? add->proxy_ca_certs : base->proxy_ca_certs;
     nsc->current = NULL;
     
     return nsc;
@@ -1273,6 +1278,25 @@ static const char *md_config_set_ca_certs(cmd_parms *cmd, void *arg, const char 
     return NULL;
 }
 
+static const char *md_config_set_proxy_ca_certs(cmd_parms *cmd, void *arg, const char *value)
+{
+    md_srv_conf_t *sc = md_config_get(cmd->server);
+    const char *err;
+
+    if ((err = md_conf_check_location(cmd, MD_LOC_ALL))) {
+        return err;
+    }
+
+    if (inside_md_section(cmd)) {
+        sc->proxy_ca_certs = value;
+    } else {
+        apr_table_set(sc->mc->env, MD_KEY_PROXY_CA_CERTS, value);
+    }
+
+    (void)arg;
+    return NULL;
+}
+
 static const char *md_config_set_eab(cmd_parms *cmd, void *dc,
                                      const char *keyid, const char *hmac)
 {
@@ -1411,6 +1435,8 @@ const command_rec md_cmds[] = {
                   "How long to delay activation of new certificates"),
     AP_INIT_TAKE1("MDCACertificateFile", md_config_set_ca_certs, NULL, RSRC_CONF,
                   "Set the CA file to use for connections"),
+    AP_INIT_TAKE1("MDHttpProxyCACertificateFile", md_config_set_proxy_ca_certs, NULL, RSRC_CONF,
+                  "Set the CA file to use for connections to the HTTP(S) proxy"),
     AP_INIT_TAKE12("MDExternalAccountBinding", md_config_set_eab, NULL, RSRC_CONF,
                   "Set the external account binding keyid and hmac values to use at CA"),
     AP_INIT_TAKE1("MDRetryDelay", md_config_set_min_delay, NULL, RSRC_CONF,

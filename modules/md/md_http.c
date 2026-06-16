@@ -36,6 +36,7 @@ struct md_http_t {
     const char *unix_socket_path;
     md_http_timeouts_t timeout;
     const char *ca_file;
+    const char *proxy_ca_file;
 };
 
 static md_http_impl_t *cur_impl;
@@ -107,6 +108,9 @@ apr_status_t md_http_clone(md_http_t **phttp,
         if (source_http->ca_file) {
             (*phttp)->ca_file = apr_pstrdup(p, source_http->ca_file);
         }
+        if (source_http->proxy_ca_file) {
+            (*phttp)->proxy_ca_file = apr_pstrdup(p, source_http->proxy_ca_file);
+        }
     }
     return rv;
 }
@@ -161,6 +165,11 @@ void md_http_set_stalling(md_http_request_t *req, long bytes_per_sec, apr_time_t
 void md_http_set_ca_file(md_http_t *http, const char *ca_file)
 {
     http->ca_file = ca_file;
+}
+
+void md_http_set_proxy_ca_file(md_http_t *http, const char *ca_file)
+{
+    http->proxy_ca_file = ca_file;
 }
 
 void md_http_set_unix_socket_path(md_http_t *http, const char *path)
@@ -235,6 +244,7 @@ static apr_status_t req_create(md_http_request_t **preq, md_http_t *http,
     req->proxy_url = http->proxy_url;
     req->timeout = http->timeout;
     req->ca_file = http->ca_file;
+    req->proxy_ca_file = http->proxy_ca_file;
     req->unix_socket_path = http->unix_socket_path;
     *preq = req;
     return rv;
