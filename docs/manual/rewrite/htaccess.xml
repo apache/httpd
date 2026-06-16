@@ -215,6 +215,14 @@ After the substitution is made, Apache re-processes the request from
 the top - including re-applying the <code>.htaccess</code> rules.
 This can lead to infinite loops.</p>
 
+<p class="figure">
+      <img src="../images/rewrite_l_flag_looping.png"
+          alt="Flowchart showing how the [L] flag causes looping in
+          per-directory context by triggering a subrequest that
+          re-enters the ruleset" /><br />
+      <dfn>Figure:</dfn> Per-directory [L] flag looping behavior
+</p>
+
 <p>Consider this rule:</p>
 
 <highlight language="config">
