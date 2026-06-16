@@ -151,6 +151,7 @@ apr_status_t md_acme_init(apr_pool_t *pool, const char *base_version, int init_s
  * @param p       pool to used
  * @param url     url of the server, optional if known at path
  * @param proxy_url optional url of a HTTP(S) proxy to use
+ * @param ca_file optional CA trust anchor file to use
  */
 apr_status_t md_acme_create(md_acme_t **pacme, apr_pool_t *p, const char *url,
                             const char *proxy_url, const char *ca_file);

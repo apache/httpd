@@ -101,7 +101,8 @@ struct md_t {
     struct apr_array_header_t *acme_tls_1_domains; /* domains supporting "acme-tls/1" protocol */
     const char *dns01_cmd;          /* DNS challenge command, override global command */
     const char *proxy_url;          /* Proxy URL, override global command */
-
+    const char *ca_certs;           /* root certificates to use for connections,
+                                       override global command */
     const struct md_srv_conf_t *sc; /* server config where it was defined or NULL */
     const char *defn_name;          /* config file this MD was defined */
     unsigned defn_line_number;      /* line number of definition */
@@ -126,6 +127,7 @@ struct md_t {
 #define MD_KEY_AUTHORIZATIONS   "authorizations"
 #define MD_KEY_BITS             "bits"
 #define MD_KEY_CA               "ca"
+#define MD_KEY_CA_CERTS         "ca-certs"
 #define MD_KEY_CA_URL           "ca-url"
 #define MD_KEY_CERT             "cert"
 #define MD_KEY_CERT_FILES       "cert-files"

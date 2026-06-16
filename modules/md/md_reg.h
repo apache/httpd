@@ -39,12 +39,12 @@ typedef struct md_reg_t md_reg_t;
  * @param pm memory pool to use for creation
  * @param store the store to base on
  * @param proxy_url optional URL of a proxy to use for requests
- * @param ca_file  optioinal CA trust anchor file to use
+ * @param ca_certs optional CA trust anchor file to use
  * @param min_delay minimum delay between renewal attempts for a domain
- * @param retry_failover numer of failed renewals attempt to fail over to alternate ACME ca
+ * @param retry_failover number of failed renewals attempt to fail over to alternate ACME ca
  */
 apr_status_t md_reg_create(md_reg_t **preg, apr_pool_t *pm, md_store_t *store,
-                           const char *proxy_url, const char *ca_file,
+                           const char *proxy_url, const char *ca_certs,
                            apr_time_t min_delay, int retry_failover,
                            int use_store_locks, apr_time_t lock_wait_timeout);
 
@@ -224,7 +224,7 @@ struct md_proto_driver_t {
     md_reg_t *reg;
     md_store_t *store;
     const char *proxy_url;
-    const char *ca_file;
+    const char *ca_certs;
     const md_t *md;
 
     int can_http;

@@ -75,7 +75,6 @@ struct md_mod_conf_t {
     md_timeslice_t *ocsp_renew_window; /* time before exp. that we start renewing ocsp resp. */
     const char *cert_check_name;       /* name of the linked certificate check site */
     const char *cert_check_url;        /* url "template for" checking a certificate */
-    const char *ca_certs;              /* root certificates to use for connections */
     apr_time_t initial_delay;          /* how long to delay the first cert renewal check */
     apr_time_t check_interval;         /* duration between cert renewal checks */
     apr_time_t min_delay;              /* minimum delay for retries */
@@ -114,6 +113,8 @@ typedef struct md_srv_conf_t {
 
     const char *dns01_cmd;             /* DNS challenge command, override global command */
     const char *proxy_url;             /* Proxy URL, override global command */
+    const char *ca_certs;              /* root certificates to use for connections,
+                                          override global command */
 
     md_t *current;                     /* md currently defined in <MDomainSet xxx> section */
     struct apr_array_header_t *assigned; /* post_config: MDs that apply to this server */
