@@ -52,6 +52,12 @@
     to handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+
+
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -78,6 +84,7 @@
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_prefork">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_prefork">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
+<li><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></li>
 <li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
 uses</a></li>
 </ul></div>

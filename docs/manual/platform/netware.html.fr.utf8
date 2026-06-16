@@ -27,8 +27,6 @@
 <a href="../fr/platform/netware.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ko/platform/netware.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
     <p>Ce document explique l'installation, la configuration et le
@@ -201,9 +199,10 @@
     "install" &agrave; la ligne de commande du makefile va provoquer la
     construction d'une distribution compl&egrave;te sous forme d'un paquetage
     dans le sous-r&eacute;pertoire <code>DIST</code>. Vous pouvez simplement
-    installer Apache en copiant la distribution cr&eacute;&eacute;e pr&eacute;c&eacute;demment &agrave; la
+    installer Apache en copiant la distribution cr&eacute;&eacute;e pr&eacute;c&eacute;demment par les
+    makefiles &agrave; la
     racine d'un volume Netware (voir <a href="#comp">Compilation
-    d'Apache pour NetWare</a> ci-dessous).</p>
+    d'Apache httpd pour NetWare</a> ci-dessous).</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">

@@ -56,6 +56,12 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
       it as a loadable module with
       <code>--enable-mpms-shared=motorz</code>.</p>
 
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_motorz_module modules/mod_mpm_motorz.so</pre>
+
+
 </div>
 <div id="quickview"><h3>Topics</h3>
 <ul id="topics">
@@ -84,6 +90,7 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</t
 </ul>
 <h3>Bugfix checklist</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">httpd changelog</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=motorz">Known issues</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=motorz">Report a bug</a></li></ul><h3>See also</h3>
 <ul class="seealso">
+<li><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></li>
 <li><a href="event.html">The event MPM</a></li>
 <li><a href="worker.html">The worker MPM</a></li>
 <li><a href="prefork.html">The prefork MPM</a></li>
