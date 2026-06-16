@@ -23,6 +23,8 @@
 #include <apr_time.h>
 #include <apr_date.h>
 
+#include <httpd.h>
+
 #include "md_json.h"
 #include "md.h"
 #include "md_acme.h"
