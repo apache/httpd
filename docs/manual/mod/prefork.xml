@@ -43,7 +43,15 @@
     to handle as many simultaneous requests as you expect to receive, but
     small enough to assure that there is enough physical RAM for all
     processes.</p>
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <highlight language="config">
+LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+    </highlight>
+
 </summary>
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
 uses</a></seealso>
 

@@ -49,8 +49,16 @@ built on the APR pollset and thread pool especially suited as a reverse proxy</d
       it as a loadable module with
       <code>--enable-mpms-shared=motorz</code>.</p>
 
+
+    <p>When built as a DSO module, it can be loaded with:</p>
+
+    <highlight language="config">
+LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
+    </highlight>
+
 </summary>
 
+<seealso><a href="../mpm.html">Multi-Processing Modules (MPMs)</a></seealso>
 <seealso><a href="event.html">The event MPM</a></seealso>
 <seealso><a href="worker.html">The worker MPM</a></seealso>
 <seealso><a href="prefork.html">The prefork MPM</a></seealso>
