@@ -173,15 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1934891 ^/httpd/httpd/trunk .
      +1: jim,
 
-  *) mod_md: change types of fields of ocsp_summary_ctx_t
-     More info in the trunk commit message.
-     Already part of mod_md upstream repos, so
-     will happen automatically when the 2.6.11 update
-     proposed below takes place.
-     trunk patch: https://svn.apache.org/1930710
-     2.4.x patch: svn merge -c 1930710 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, 
-
   *) modules/ssl/ssl_engine_vars.c (ssl_var_lookup_ssl_cert_remain):
      Fix off-by-one in tm_mday calculation, identified by Gemini.
      trunk patch: https://svn.apache.org/1931420
@@ -211,12 +202,6 @@ PATCHES/ISSUES THAT ARE BEING WORKED
              ints added at the end of core_server_config, the proposed merge
              does a minor bump only.
      minfrin: Two new directives need to be documented.
-
-  *) mod_md: Update to upstream 2.6.11
-     Contains OpenSSL 4.0.0 patch but also new functionality.
-     mod_md is CTR, so this item here is for making
-     the missing update visible. Needs check, whether upstream
-     includes all trunk changes.
 
 PATCHES/ISSUES THAT ARE STALLED
 
