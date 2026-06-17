@@ -179,6 +179,35 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
      +1: rjung, jorton, 
 
+  *) Constify static arrays of string constants.
+     trunk patch: https://svn.apache.org/1933659
+     2.4.x patch: svn merge -c 1933659 ^/httpd/httpd/trunk .
+     +1: rjung, 
+
+  *) include/httpd.h: Define HTTP_EARLY_HINTS (103) per RFC 8297.
+     modules/http/http_protocol.c (status_lines): Add 103 response.
+     Needed by backport 1934913 below.
+     trunk patch: https://svn.apache.org/1927935
+     2.4.x patch: svn merge -c 1927935 ^/httpd/httpd/trunk .
+     +1: rjung, 
+
+  *) Use HTTP_* and ap_is_*() macros instead of literal;
+     Use ap_strstr_c() instead of strstr() in mod_md.
+     trunk patch: https://svn.apache.org/1934913
+     2.4.x patch: svn merge -c 1934913 ^/httpd/httpd/trunk .
+     Merging is clean when ignoring include/httpd.h,
+     modules/http/http_filters.c and modules/test/mod_policy.c.
+     +1: rjung, 
+
+  *) modules/md/mod_md_config.c: Flip MDServerStatus to
+     disabled by default. mod_md is CTR, but probably not
+     the change in default behavior. Needs an explicit
+     hint in CHANGES after applying it.
+     Backport has a conflict in docs, easy to fix.
+     trunk patch: https://svn.apache.org/1935184
+     2.4.x patch: svn merge -c 1935184 ^/httpd/httpd/trunk .
+     +1: rjung, 
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
