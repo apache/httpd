@@ -3,10 +3,10 @@
 
 ##  What is it?
 
-The Apache HTTP Server is a powerful and flexible HTTP/1.1 compliant
+The Apache HTTP Server is a powerful, flexible, HTTP/1.1 and HTTP/2 compliant, and widely deployed
 web server.  Originally designed as a replacement for the NCSA HTTP
-Server, it has grown to be the most popular web server on the
-Internet.  As a project of the Apache Software Foundation, the
+Server, it has been in continuous development since 1995 and remains
+one of the foundational projects of the Apache Software Foundation. The
 developers aim to collaboratively develop and maintain a robust,
 commercial-grade, standards-based server with freely available
 source code.
