@@ -27,14 +27,33 @@ This is the documentation source for the [Apache HTTP Server](https://httpd.apac
 
 ## External Link Conventions
 
+### `<rfc>` — RFC References
 
-Always link to the IETF Datatracker for RFC references:
-```
-https://datatracker.ietf.org/doc/html/rfcNNNN
-```
-For section-specific links, use fragment anchors: `#section-N.N`
+Use the `<rfc>` tag for all RFC references. The element content is the
+RFC number (digits only). The rendered output is "RFC NNNN" linked to
+the canonical URL.
 
-Do NOT use `tools.ietf.org`, `www.rfc-editor.org`, `www.ietf.org/rfc/`, `www.w3.org/Protocols/`, `www.faqs.org/rfcs/`, or any other RFC mirror. These are legacy patterns — `datatracker.ietf.org` is the canonical standard for this documentation.
+```xml
+<rfc>7230</rfc>
+<rfc>9110</rfc>
+```
+
+To link to a numbered section, use the `section` attribute:
+```xml
+<rfc section="14.24">2616</rfc>
+```
+
+To link to a named anchor (appendix, named heading, etc.), use `anchor`:
+```xml
+<rfc anchor="appendix-B">7231</rfc>
+<rfc anchor="name-upgrade">9110</rfc>
+```
+
+Do **not** use both `section` and `anchor` on the same element.
+
+Do **not** use `<a href="...">` with RFC URLs when the `<rfc>` tag can
+express the link. Use `<a>` only for non-RFC resources, IETF drafts, or
+cases where the display text must differ from "RFC NNNN".
 
 ## Directive Syntax Definitions
 
