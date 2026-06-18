@@ -110,21 +110,28 @@
     <p>When you have a <code>httpd</code> built with <module>mod_http2</module> you need some
     basic configuration for it becoming active. The first thing, as with every httpd module,
     is that you need to load it:</p>
+<example>
     <highlight language="config">
 LoadModule http2_module modules/mod_http2.so
     </highlight>
+</example>
     
     <p>The second directive you need to add to your server configuration is</p>
+<example>
     <highlight language="config">
 Protocols h2 http/1.1
 </highlight>
+</example>
     <p>This allows h2, the secure variant, to be the preferred protocol on your server
     connections. When you want to enable all HTTP/2 variants, you simply write:</p>
+<example>
     <highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
+</example>
     <p>Depending on where you put this directive, it affects all connections or just
     the ones to a certain virtual host. You can nest it, as in:</p>
+<example>
     <highlight language="config">
 Protocols http/1.1
 &lt;VirtualHost ...&gt;
@@ -132,6 +139,7 @@ Protocols http/1.1
     Protocols h2 http/1.1
 &lt;/VirtualHost&gt;
 </highlight>
+</example>
 
     <p>This allows only HTTP/1 on connections, except SSL connections to <code>test.example.org</code>
     which offer HTTP/2.</p>
@@ -147,22 +155,28 @@ Protocols http/1.1
     <p>The order of protocols mentioned is also relevant. By default, the first one is the 
     most preferred protocol. When a client offers multiple choices, the one most to the 
     left is selected. In</p>
+<example>
     <highlight language="config">
 Protocols http/1.1 h2
 </highlight>
+</example>
     <p>the most preferred protocol is HTTP/1 and it will always be selected unless a 
     client <em>only</em> supports h2. Since we want to talk HTTP/2 to clients that
     support it, the better order is</p>
+<example>
     <highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
+</example>
 
     <p>There is one more thing to ordering: the client has its own preferences, too. If
     you want, you can configure your server to select the protocol most preferred by
     the client:</p>
+<example>
     <highlight language="config">
 ProtocolsHonorOrder Off
     </highlight>
+</example>
     <p>makes the order <em>you</em> wrote the Protocols irrelevant and only the client's
     ordering will decide.</p>
     <p>A last thing: the protocols you configure are not checked for correctness
@@ -210,12 +224,14 @@ ProtocolsHonorOrder Off
     <title>Useful tools to debug HTTP/2</title>
     <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
     your version supports HTTP/2 checking its <code>Features</code>:</p>
+<example>
     <highlight language="config">
     $ curl -V
     curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
     Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...] 
     Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
     </highlight>
+</example>
     <note><title>macOS Homebrew notes</title>
     <p>Homebrew's <code>curl</code> includes HTTP/2 support by default. Install with
     <code>brew install curl</code> and follow the displayed caveats to put it ahead
@@ -260,27 +276,35 @@ ProtocolsHonorOrder Off
     with it in Apache httpd?</p>
     <p><module>mod_http2</module> inspects response headers for <code>Link</code> headers
     in a certain format:</p>
+<example>
     <highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload
     </highlight>
+</example>
     <p>If the connection supports PUSH, these two resources will be sent to the
     client. As a web developer, you may set these headers either directly in
     your application response or you configure the server via</p>
+<example>
     <highlight language="config">
 &lt;Location /xxx.html&gt;
     Header add Link "&lt;/xxx.css&gt;;rel=preload"
     Header add Link "&lt;/xxx.js&gt;;rel=preload"
 &lt;/Location&gt;
     </highlight>
+</example>
     <p>If you want to use <code>preload</code> links without triggering a PUSH, you
     can use the <code>nopush</code> parameter, as in</p>
+<example>
     <highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload;nopush
     </highlight>
+</example>
     <p>or you may disable PUSHes for your server entirely with the directive</p>
+<example>
     <highlight language="config">
 H2Push Off
     </highlight>
+</example>
     <p>And there is more:</p>
     <p>The module will keep a diary of what has been PUSHed for each connection
     (hashes of URLs, basically) and will not PUSH the same resource twice. When
@@ -317,18 +341,22 @@ H2Push Off
     client before the response is even ready. This uses the HTTP feature called "Early Hints" and
     is described in <rfc>8297</rfc>.</p>
     <p>In order to use this, you need to explicitly enable it on the server via</p>
+<example>
     <highlight language="config">
 H2EarlyHints on
     </highlight>
+</example>
     <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
     <p>If this feature is on, you can use the directive <directive module="mod_http2">H2PushResource</directive> to 
     trigger early hints and resource PUSHes:</p>
+<example>
     <highlight language="config">
 &lt;Location /xxx.html&gt;
     H2PushResource /xxx.css
     H2PushResource /xxx.js
 &lt;/Location&gt;
     </highlight>
+</example>
     <p>This will send out a <code>"103 Early Hints"</code> response to a client as soon
     as the server <em>starts</em> processing the request. This may be much earlier than
     the time the first response headers have been determined, depending on your web
