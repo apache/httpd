@@ -30,6 +30,7 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu &ccedil;eviri g&uuml;ncel olmayabilir. Son değişiklikler i&ccedil;in İngilizce s&uuml;r&uuml;m ge&ccedil;erlidir.</div>
 
   <p>&Ccedil;ok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> y&ouml;nergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.

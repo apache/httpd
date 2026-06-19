@@ -145,8 +145,8 @@ module from each group.</p>
     an <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> directive like the
     following:</p>
 
-    <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
+</div>
 
     <p>Or, if you are just going to put the directives directly in
     your main server configuration file, you will of course need to
@@ -218,13 +218,13 @@ module from each group.</p>
     placed in <code>httpd.conf</code> inside a &lt;Directory
     "/usr/local/apache/htdocs/secret"&gt; section.</p>
 
-    <pre class="prettyprint lang-config">AuthType Basic
+<div class="example"><pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted Files"
 # (Following line optional)
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen</pre>
-
+</div>
 
     <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive selects
     the method that is used to authenticate the user. The most
@@ -310,18 +310,17 @@ person in <a title="Permanent link" href="#lettingmorethanonepersonin" class="pe
     (It's the <code>-c</code> that makes it create a new password
     file).</p>
 
-    <p>Now, you need to modify your <code>.htaccess</code> file or
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> block
-    to look like the following:</p>
+    <p>Now, you need to modify your <code>.htaccess</code> file to
+    look like the following:</p>
 
-    <pre class="prettyprint lang-config">AuthType Basic
+<div class="example"><pre class="prettyprint lang-config">AuthType Basic
 AuthName "By Invitation Only"
 # Optional line:
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName</pre>
-
+</div>
 
     <p>Now, anyone that is listed in the group <code>GroupName</code>,
     and has an entry in the <code>password</code> file, will be let in, if
@@ -331,12 +330,18 @@ Require group GroupName</pre>
     specific. Rather than creating a group file, you can just use
     the following directive:</p>
 
-    <pre class="prettyprint lang-config">Require valid-user</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require valid-user</pre>
+</div>
 
     <p>Using that rather than the <code>Require user rbowen</code>
     line will allow anyone in that is listed in the password file,
-    and who correctly enters their password.</p>
+    and who correctly enters their password. You can even emulate
+    the group behavior here, by just keeping a separate password
+    file for each group. The advantage of this approach is that
+    Apache only has to check one file, rather than two. The
+    disadvantage is that you have to maintain a bunch of password
+    files, and remember to reference the right one in the
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="possibleproblems">Possible problems <a title="Permanent link" href="#possibleproblems" class="permalink">&para;</a></h2>
@@ -372,14 +377,14 @@ Require group GroupName</pre>
 
     <p>To select a dbm file rather than a text file, for example:</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider dbm
-    AuthDBMUserFile "/www/passwords/passwd.dbm"
-    Require valid-user
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider dbm
+AuthDBMUserFile "/www/passwords/passwd.dbm"
+Require valid-user
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>Other options are available. Consult the
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> documentation for more details.</p>
@@ -394,15 +399,15 @@ Require group GroupName</pre>
     scheme that meets your needs. In the following example, both the
     file and LDAP based authentication providers are being used.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file ldap
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    Require valid-user
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file ldap
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+Require valid-user
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>In this example the file provider will attempt to authenticate
     the user first. If it is unable to authenticate the user, the LDAP
@@ -417,17 +422,17 @@ Require group GroupName</pre>
     authorization methods can also be used. In this example both file group
     authorization as well as LDAP group authorization is being used.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile "/usr/local/apache/passwd/groups"
-    Require group GroupName
-    Require ldap-group cn=mygroup,o=yourorg
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+AuthGroupFile "/usr/local/apache/passwd/groups"
+Require group GroupName
+Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>To take authorization a little further, authorization container
     directives such as
@@ -490,73 +495,15 @@ Require group GroupName</pre>
 
     <h3 id="reqaccessctrl">Using authorization providers for access control</h3>
         <p>Authentication by username and password is only part of the
-        story. Frequently you want to let people in based on something
-        other than who they are. Something such as where they are
-        coming from.</p>
+        story. You can also allow or deny access based on other
+        criteria, such as the client's IP address or hostname, using
+        the authorization providers <code>all</code>, <code>env</code>,
+        <code>host</code>, and <code>ip</code> with the
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+        directive.</p>
 
-        <p>The authorization providers <code>all</code>,
-        <code>env</code>, <code>host</code> and <code>ip</code> let you
-        allow or deny access based on other host based criteria such as
-        host name or ip address of the machine requesting a
-        document.</p>
-
-        <p>The usage of these providers is specified through the
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.
-        This directive registers the authorization providers
-        that will be called during the authorization stage of the request
-        processing. For example:</p>
-
-        <pre class="prettyprint lang-config">Require ip <var>address</var>
-        </pre>
-
-
-        <p>where <var>address</var> is an IP address (or a partial IP
-        address) or:</p>
-
-        <pre class="prettyprint lang-config">Require host <var>domain_name</var>
-        </pre>
-
-
-        <p>where <var>domain_name</var> is a fully qualified domain name
-        (or a partial domain name); you may provide multiple addresses or
-        domain names, if desired.</p>
-
-        <p>For example, if you have someone spamming your message
-        board, and you want to keep them out, you could do the
-        following:</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>Visitors coming from that address will not be able to see
-        the content covered by this directive. If, instead, you have a
-        machine name, rather than an IP address, you can use that.</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not host host.example.com
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>And, if you'd like to block access from an entire domain,
-        you can specify just part of an address or domain name:</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 192.168.205
-    Require not host phishers.example.com moreidiots.example
-    Require not host ke
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>Using <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
-        with multiple <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code> directives, each negated with <code>not</code>,
-        will only allow access, if all of negated conditions are true. In other words,
-        access will be blocked, if any of the negated conditions fails.</p>
-
+        <p>For full details and examples, see the
+        <a href="access.html">Access Control</a> howto.</p>
     
 
     <h3 id="filesystem">Access Control backwards compatibility</h3>
@@ -587,9 +534,8 @@ Require group GroupName</pre>
 <h2 id="socache">Authentication Caching <a title="Permanent link" href="#socache" class="permalink">&para;</a></h2>
     <p>There may be times when authentication puts an unacceptable load
     on a provider or on your network.  This is most likely to affect users
-    of <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (or third-party/custom providers).
-    To deal with this, HTTPD 2.3/2.4 introduces a new caching provider
-    <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> to cache credentials and reduce
+    of <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (or third-party/custom providers).  The
+    <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> module caches credentials and reduces
     the load on the origin provider(s).</p>
     <p>This may offer a substantial performance boost to some users.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

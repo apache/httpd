@@ -26,6 +26,8 @@
 <p><span>Langues Disponibles: </span><a href="../en/howto/reverse_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/howto/reverse_proxy.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p>En plus de ses fonctions de serveur web "basique", &agrave; savoir fournir du
     contenu statique et dynamique &agrave; l'utilisateur, Apache httpd (comme la

@@ -30,6 +30,8 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p>L'authentification est un processus qui vous permet de v&eacute;rifier
     qu'une personne est bien celle qu'elle pr&eacute;tend &ecirc;tre. L'autorisation

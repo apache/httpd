@@ -51,7 +51,7 @@
 <h2 id="host">Access control by host <a title="Permanent link" href="#host" class="permalink">&para;</a></h2>
     <p>
     If you wish to restrict access to portions of your site based on the
-    host address of your visitors, this is most easily done using
+    host address of your visitors, use
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
     </p>
 
@@ -72,9 +72,10 @@
 
     <p>The usage of these directives is:</p>
 
-    <pre class="prettyprint lang-config">Require host address
-Require ip ip.address</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require host <var>address</var>
+Require ip <var>ip.address</var>
+</pre>
+</div>
 
     <p>In the first form, <var>address</var> is a fully qualified
     domain name (or a partial domain name); you may provide multiple
@@ -84,12 +85,26 @@ Require ip ip.address</pre>
     partial IP address, a network/netmask pair, or a network/nnn CIDR
     specification. Either IPv4 or IPv6 addresses may be used.</p>
 
+<div class="example"><h3>Examples of IP address formats</h3><pre class="prettyprint lang-config"># Full IP address
+Require ip 10.2.3.4
+# Partial IP address (matches any host in the 172.20.0.0/16 range)
+Require ip 172.20
+# Network/netmask pair
+Require ip 192.168.1.0/255.255.255.0
+# Network/CIDR specification
+Require ip 192.168.1.0/24
+# IPv6 address
+Require ip 2001:db8::a00:20ff:fea7:ccea
+# IPv6 with CIDR
+Require ip 2001:db8:1::/48</pre>
+</div>
+
     <p>See <a href="../mod/mod_authz_host.html#requiredirectives">the
     mod_authz_host documentation</a> for further examples of this
     syntax.</p>
 
     <p>You can insert <code>not</code> to negate a particular requirement.
-    Note, that since a <code>not</code> is a negation of a value, it cannot 
+    Since a <code>not</code> is a negation of a value, it cannot
     be used by itself to allow or deny a request, as <em>not true</em>
     does not constitute <em>false</em>. Thus, to deny a visit using a negation,
     the block must have one element that evaluates as true or false.
@@ -97,28 +112,28 @@ Require ip ip.address</pre>
     board, and you want to keep them out, you could do the
     following:</p>
 
-    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
+<div class="example"><pre class="prettyprint lang-config">&lt;RequireAll&gt;
+Require all granted
+Require not ip 10.252.46.165
 &lt;/RequireAll&gt;</pre>
-
+</div>
 
     <p>Visitors coming from that address (<code>10.252.46.165</code>)
-    will not be able to see the content covered by this directive. If, 
-    instead, you have a machine name, rather than an IP address, you 
+    will not be able to see the content covered by this directive. If,
+    instead, you have a machine name, rather than an IP address, you
     can use that.</p>
 
-    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
-    </pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
+</pre>
+</div>
 
     <p>And, if you'd like to block access from an entire domain,
-    you can specify just part of an address or domain name:</p>
+    you can specify part of an address or domain name:</p>
 
-    <pre class="prettyprint lang-config">Require not ip 192.168.205
-Require not host phishers.example.com moreidiots.example
+<div class="example"><pre class="prettyprint lang-config">Require not ip 192.168.205
+Require not host phishers.example.com badguys.example
 Require not host gov</pre>
-
+</div>
 
     <p>Use of the <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, and <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> directives may be
     used to enforce more complex sets of requirements.</p>
@@ -133,17 +148,17 @@ Require not host gov</pre>
     based on user-agent (the browser type) you might do the
     following:</p>
 
-    <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require all denied
+<div class="example"><pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
+Require all denied
 &lt;/If&gt;</pre>
-
+</div>
 
     <p>Using the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     <code>expr</code> syntax, this could also be written as:</p>
 
 
-    <pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
+</div>
 
     <div class="note"><h3>Warning:</h3>
     <p>Access control by <code>User-Agent</code> is an unreliable technique,
@@ -166,11 +181,11 @@ Require not host gov</pre>
     <p>For example, if you wish to block access to a resource between 8pm
     and 7am, you can do this using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-    <pre class="prettyprint lang-config">RewriteEngine On
+<div class="example"><pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
-RewriteRule "^/fridge"     "-" [F]</pre>
-
+RewriteRule "^/fridge"     "-"       [F]</pre>
+</div>
 
     <p>This will return a 403 Forbidden response for any request after 8pm
     or before 7am. This technique can be used for any criteria that you wish

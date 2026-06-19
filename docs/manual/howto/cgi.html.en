@@ -58,25 +58,35 @@
 <h2 id="configuring">Configuring httpd to permit CGI <a title="Permanent link" href="#configuring" class="permalink">&para;</a></h2>
     
 
-    <p>In order to get your CGI programs to work properly, you'll
-    need to have httpd configured to permit CGI execution. There
-    are several ways to do this.</p>
+    <p>Your httpd configuration must permit CGI execution before
+    CGI programs will work. Several ways to do this are described
+    below.</p>
 
-    <div class="warning">Note: If httpd has been built with shared module
-    support you need to ensure that the module is loaded; in your
+    <p>CGI support is provided by two modules:
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> and <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>.
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> uses a dedicated external daemon to manage
+    CGI processes and is required when httpd runs a threaded MPM (such as
+    <code class="module"><a href="../mod/event.html">event</a></code> or <code class="module"><a href="../mod/worker.html">worker</a></code>).
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> runs CGI programs directly from within the
+    server process and is used with non-threaded MPMs like
+    <code class="module"><a href="../mod/prefork.html">prefork</a></code>, or on Windows. From a configuration
+    standpoint they are interchangeable &mdash; the directives are the same.
+    See the <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> and <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
+    reference pages for implementation details.</p>
+
+    <div class="warning">If httpd has been built with shared module
+    support, you need to ensure that the appropriate module is loaded. In your
     <code>httpd.conf</code> you need to make sure the
     <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
-    directive has not been commented out.  A correctly configured directive
-    may look like this:
+    directive has not been commented out. For a threaded MPM:
 
-    <pre class="prettyprint lang-config">LoadModule cgid_module modules/mod_cgid.so</pre>
+<div class="example"><pre class="prettyprint lang-config">LoadModule cgid_module modules/mod_cgid.so</pre>
+</div>
 
+     For Windows, or a non-threaded MPM like prefork:
 
-
-     On Windows, or using a non-threaded MPM like prefork,  A correctly 
-     configured directive may look like this:
-
-    <pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
+<div class="example"><pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
+</div>
 </div>
 
 
@@ -95,8 +105,8 @@
       <p>The <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
       directive looks like:</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
-
+<div class="example"><pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
+</div>
 
       <p>The example shown is from your default <code>httpd.conf</code>
       configuration file, if you installed httpd in the default
@@ -114,12 +124,12 @@
       treated as a CGI program.</p>
 
       <p>For example, if the URL
-      <code>http://www.example.com/cgi-bin/test.pl</code>
+      <code>http://www.example.com/cgi-bin/test.py</code>
       is requested, httpd will attempt to execute the file
-      <code>/usr/local/apache2/cgi-bin/test.pl</code>
-      and return the output. Of course, the file will have to
-      exist, and be executable, and return output in a particular
-      way, or httpd will return an error message.</p>
+      <code>/usr/local/apache2/cgi-bin/test.py</code>
+      and return the output. The file must exist, be executable,
+      and produce output in the expected format; otherwise httpd
+      returns an error.</p>
     
 
     <h3 id="nonscriptalias">CGI outside of ScriptAlias directories</h3>
@@ -136,8 +146,8 @@
       the main <code>cgi-bin</code> directory, they will need to be able to
       run CGI programs elsewhere.</p>
 
-      <p>There are two steps to allowing CGI execution in an arbitrary
-      directory.  First, the <code>cgi-script</code> handler must be
+      <p>Allowing CGI execution in an arbitrary directory requires
+      two steps.  First, the <code>cgi-script</code> handler must be
       activated using the <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> or <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> directive.  Second,
       <code>ExecCGI</code> must be specified in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.</p>
     
@@ -149,19 +159,19 @@
       file, to specify that CGI execution was permitted in a particular
       directory:</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
-    Options +ExecCGI
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
+Options +ExecCGI
 &lt;/Directory&gt;</pre>
-
+</div>
 
       <p>The above directive tells httpd to permit the execution
       of CGI files. You will also need to tell the server what
       files are CGI files. The following <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive tells the server to treat all
-      files with the <code>cgi</code> or <code>pl</code> extension as CGI
+      files with the <code>cgi</code> or <code>py</code> extension as CGI
       programs:</p>
 
-      <pre class="prettyprint lang-config">AddHandler cgi-script .cgi .pl</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AddHandler cgi-script .cgi .py</pre>
+</div>
     
 
     <h3 id="htaccess">.htaccess files</h3>
@@ -179,21 +189,21 @@
       <code>.cgi</code> in users' directories, you can use the
       following configuration.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
-    Options +ExecCGI
-    AddHandler cgi-script .cgi
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
+Options +ExecCGI
+AddHandler cgi-script .cgi
 &lt;/Directory&gt;</pre>
+</div>
 
-
-      <p>If you wish designate a <code>cgi-bin</code> subdirectory of
+      <p>To designate a <code>cgi-bin</code> subdirectory of
       a user's directory where everything will be treated as a CGI
       program, you can use the following.</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
-    Options ExecCGI
-    SetHandler cgi-script
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
+Options ExecCGI
+SetHandler cgi-script
 &lt;/Directory&gt;</pre>
-
+</div>
 
     
 
@@ -202,8 +212,8 @@
 <h2 id="writing">Writing a CGI program <a title="Permanent link" href="#writing" class="permalink">&para;</a></h2>
     
 
-    <p>There are two main differences between ``regular''
-    programming, and CGI programming.</p>
+    <p>CGI programming differs from regular programming in two
+    ways.</p>
 
     <p>First, all output from your CGI program must be preceded by
     a <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> header. This is HTTP header that tells the client
@@ -217,7 +227,7 @@
     <p>Secondly, your output needs to be in HTML, or some other
     format that a browser will be able to display. Most of the
     time, this will be HTML, but occasionally you might write a CGI
-    program that outputs a gif image, or other non-HTML
+    program that outputs a GIF image, or other non-HTML
     content.</p>
 
     <p>Apart from those two things, writing a CGI program will look
@@ -228,45 +238,41 @@
 
       <p>The following is an example CGI program that prints one
       line to your browser. Type in the following, save it to a
-      file called <code>first.pl</code>, and put it in your
+      file called <code>first.py</code>, and put it in your
       <code>cgi-bin</code> directory.</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl
-print "Content-type: text/html\n\n";
-print "Hello, World.";</pre>
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3
+print("Content-type: text/html\n")
+print("Hello, World.")</pre>
+</div>
 
-
-      <p>Even if you are not familiar with Perl, you should be able
-      to see what is happening here. The first line tells httpd
-      (or whatever shell you happen to be running under) that this
-      program can be executed by feeding the file to the
-      interpreter found at the location <code>/usr/bin/perl</code>.
-      The second line prints the content-type declaration we
-      talked about, followed by two carriage-return newline pairs.
-      This puts a blank line after the header, to indicate the end
-      of the HTTP headers, and the beginning of the body. The third
-      line prints the string "Hello, World.". And that's the end
-      of it.</p>
+      <p>The first line tells the operating system which interpreter
+      to use. The first <code>print</code> call outputs the
+      content-type header followed by a blank line (the
+      <code>\n</code> in the string plus the newline that
+      <code>print()</code> adds), which marks the end of HTTP
+      headers. The second <code>print</code> call outputs the body.
+      That is all a CGI program needs to produce a response.</p>
 
       <p>If you open your favorite browser and tell it to get the
       address</p>
 
       <div class="example"><p><code>
-        http://www.example.com/cgi-bin/first.pl
+        http://www.example.com/cgi-bin/first.py
       </code></p></div>
 
       <p>or wherever you put your file, you will see the one line
       <code>Hello, World.</code> appear in your browser window.
       It's not very exciting, but once you get that working, you'll
-      have a good chance of getting just about anything working.</p>
+      have a good chance of getting about anything working.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="troubleshoot">But it's still not working! <a title="Permanent link" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
-    <p>There are four basic things that you may see in your browser
-    when you try to access your CGI program from the web:</p>
+    <p>Four basic things may appear in your browser when you try to
+    access your CGI program from the web:</p>
 
     <dl>
       <dt>The output of your CGI program</dt>
@@ -308,9 +314,8 @@ print "Hello, World.";</pre>
       a file sufficient permissions to be executed by <code>nobody</code>
       is to give everyone execute permission on the file:</p>
 
-      <div class="example"><p><code>
-        chmod a+x first.pl
-      </code></p></div>
+<div class="example"><pre class="prettyprint lang-bash">chmod a+x first.py</pre>
+</div>
 
       <p>Also, if your program reads from, or writes to, any other
       files, those files will need to have the correct permissions
@@ -335,11 +340,11 @@ print "Hello, World.";</pre>
       program.</p>
 
       <p>A common manifestation of this is the path to the script
-      interpreter (often <code>perl</code>) indicated in the first
+      interpreter (often <code>python3</code>) indicated in the first
       line of your CGI program, which will look something like:</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl</pre>
-
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3</pre>
+</div>
 
       <p>Make sure that this is in fact the path to the
       interpreter.</p>
@@ -380,10 +385,10 @@ print "Hello, World.";</pre>
 
       <div class="example"><p><code>
       cd /usr/local/apache2/cgi-bin<br>
-      ./first.pl
+      ./first.py
       </code></p></div>
 
-      <p>(Do not call the <code>perl</code> interpreter.  The shell
+      <p>(Do not call the <code>python3</code> interpreter directly.  The shell
       and httpd should find the interpreter using the <a href="#pathinformation">path information</a> on the first line of
       the script.)</p>
 
@@ -423,7 +428,7 @@ print "Hello, World.";</pre>
       suexec will be activated.</p>
 
       <p>Unless you fully understand suexec, you should not be using it.
-      To disable suexec, simply remove (or rename) the <code class="program"><a href="../programs/suexec.html">suexec</a></code>
+      To disable suexec, remove (or rename) the <code class="program"><a href="../programs/suexec.html">suexec</a></code>
       binary pointed to by <code>SUEXEC_BIN</code> and then restart the
       server.  If, after reading about <a href="../suexec.html">suexec</a>,
       you still wish to use it, then run <code>suexec -V</code> to find
@@ -456,7 +461,7 @@ print "Hello, World.";</pre>
       <p>During the CGI transaction, the server and the browser
       also set environment variables, so that they can communicate
       with one another. These are things like the browser type
-      (Chrome, Firefox, Lynx), the server type (Apache httpd, Nginx, IIS),
+      (Chrome, Firefox, Lynx), the server type (httpd, Nginx, IIS),
       the name of the CGI program that is being run, and so on.</p>
 
       <p>These variables are available to the CGI programmer, and
@@ -464,7 +469,7 @@ print "Hello, World.";</pre>
       complete list of required variables is at
       Common Gateway Interface RFC (<a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a>).</p>
 
-      <p>This simple Perl CGI program will display all of the
+      <p>This simple Python CGI program will display all of the
       environment variables that are being passed around. Two
       similar programs are included in the
       <code>cgi-bin</code>
@@ -476,15 +481,13 @@ print "Hello, World.";</pre>
       <a href="../env.html">add your own environment variables</a>
       to the basic ones provided by default.</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl
-use strict;
-use warnings;
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3
+import os
 
-print "Content-type: text/html\n\n";
-foreach my $key (keys %ENV) {
-    print "$key --&gt; $ENV{$key}&lt;br&gt;";
-}</pre>
-
+print("Content-type: text/html\n")
+for key, value in os.environ.items():
+print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
+</div>
     
 
     <h3 id="stdin">STDIN and STDOUT</h3>
@@ -524,9 +527,9 @@ foreach my $key (keys %ENV) {
       <code>METHOD</code> attribute in the <code>FORM</code> tag.</p>
 
       <p>Your program is then responsible for splitting that string
-      up into useful information. Fortunately, there are libraries
-      and modules available to help you process this data, as well
-      as handle other of the aspects of your CGI program.</p>
+      up into useful information. Fortunately, libraries
+      and modules are available to help you process this data, as well
+      as handle other aspects of your CGI program.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -537,15 +540,14 @@ foreach my $key (keys %ENV) {
     code library, or module, to do most of the grunt work for you.
     This leads to fewer errors, and faster development.</p>
 
-    <p>If you're writing CGI programs in Perl, modules are
-    available on <a href="http://www.cpan.org/">CPAN</a>. The most
-    popular module for this purpose is <code>CGI.pm</code>. You might
-    also consider <code>CGI::Lite</code>, which implements a minimal
-    set of functionality, which is all you need in most programs.</p>
+    <p>If you're writing CGI programs in Python, the standard
+    library's <code>cgi</code> module (deprecated in Python 3.11,
+    removed in 3.13) handled form parsing. For current Python
+    versions, use the <code>urllib.parse</code> module to parse
+    query strings and form data. For more complex applications,
+    consider a lightweight WSGI framework, though that moves
+    beyond the scope of traditional CGI.</p>
 
-    <p>If you're writing CGI programs in C, there are a variety of
-    options. One of these is the <code>CGIC</code> library, from
-    <a href="https://web.mit.edu/wwwdev/www/cgic.html">https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="moreinfo">For more information <a title="Permanent link" href="#moreinfo" class="permalink">&para;</a></h2>
@@ -562,9 +564,9 @@ foreach my $key (keys %ENV) {
     program was in, and, if possible, the offending code. This will
     make finding your problem much simpler.</p>
 
-    <p>Note that questions about CGI problems should <strong>never</strong>
+    <div class="note">Questions about CGI problems should <strong>never</strong>
     be posted to the httpd bug database unless you are sure you
-    have found a problem in the httpd source code.</p>
+    have found a problem in the httpd source code.</div>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/howto/cgi.html" title="English">&nbsp;en&nbsp;</a> |
