@@ -39,23 +39,24 @@
     It focuses on making more efficient use of network resources. It does not change the fundamentals
     of HTTP, the semantics. There are still requests and responses and headers and all that. So, if
     you already know HTTP/1, you know 95% about HTTP/2 as well.</p>
-    <p>There has been a lot written about HTTP/2 and how it works. The most normative is, of course,
-    its <rfc>9113</rfc> (which obsoletes the original <rfc>7540</rfc>).
-    There you'll find the nuts and bolts.</p>
-    <p>But, as RFCs do, it's not really a good thing to read first. It's better to first understand
-    <em>what</em> a thing wants to do and then read the RFC about <em>how</em> it is done. A much
-    better document to start with is <a href="https://daniel.haxx.se/http2/">http2 explained</a>
-    by Daniel Stenberg, the author of <a href="https://curl.haxx.se">curl</a>. It is available in
-    an ever growing list of languages, too!</p>
-    <p>TL;DR: there are some new terms and gotchas that need to be kept in
+
+    <p>The protocol is defined in <rfc>9113</rfc> (which obsoletes the original
+    <rfc>7540</rfc>). For a more approachable introduction, see
+    <a href="https://daniel.haxx.se/http2/">http2 explained</a> by Daniel Stenberg,
+    the author of <a href="https://curl.haxx.se">curl</a>. It covers the motivation
+    and design of HTTP/2 without requiring you to parse RFC notation first.</p>
+
+    <p>In short: there are some new terms and gotchas that need to be kept in
     mind while reading this document:</p>
+
     <ul>
         <li>HTTP/2 is a <strong>binary protocol</strong>, as opposed to HTTP 1.1
         that is plain text. The latter is meant to be human readable (for example
         sniffing network traffic) while the former is not. More info in the official
         FAQ <a href="https://http2.github.io/faq/#why-is-http2-binary">question</a>.</li>
         <li><strong>h2</strong> is HTTP/2 over TLS (protocol negotiation via ALPN).</li>
-        <li><strong>h2c</strong> is HTTP/2 over TCP.</li>
+        <li><strong>h2c</strong> is HTTP/2 over cleartext TCP (without TLS). Note that
+        h2c has been removed from the current specification but httpd still supports it.</li>
         <li>A <strong>frame</strong> is the smallest unit of communication within
         an HTTP/2 connection, consisting of a header and a variable-length sequence
         of octets structured according to the frame type. More info in the official
@@ -88,7 +89,7 @@
   <section id="building">
     <title>Build httpd with HTTP/2 support</title>
     <p><module>mod_http2</module> uses the library of <a href="https://nghttp2.org">nghttp2</a>
-    as its implementation base. In order to build <module>mod_http2</module> you need at least version 1.2.1 of
+    as its implementation base. Building <module>mod_http2</module> requires at least version 1.2.1 of
     <code>libnghttp2</code> installed on your system.</p>
     <p>When you <code>./configure</code> your Apache httpd source tree, you need to give it 
     '<code>--enable-http2</code>' as additional argument to trigger the build of the module.
@@ -111,32 +112,32 @@
     basic configuration for it becoming active. The first thing, as with every httpd module,
     is that you need to load it:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 LoadModule http2_module modules/mod_http2.so
-    </highlight>
+</highlight>
 </example>
     
     <p>The second directive you need to add to your server configuration is</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Protocols h2 http/1.1
 </highlight>
 </example>
     <p>This allows h2, the secure variant, to be the preferred protocol on your server
-    connections. When you want to enable all HTTP/2 variants, you simply write:</p>
+    connections. When you want to enable all HTTP/2 variants, write:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
 </example>
-    <p>Depending on where you put this directive, it affects all connections or just
-    the ones to a certain virtual host. You can nest it, as in:</p>
+    <p>Depending on where you put this directive, it affects all connections or only
+    those to a specific virtual host. You can nest it, as in:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Protocols http/1.1
 &lt;VirtualHost ...&gt;
-    ServerName test.example.org
-    Protocols h2 http/1.1
+ServerName test.example.org
+Protocols h2 http/1.1
 &lt;/VirtualHost&gt;
 </highlight>
 </example>
@@ -147,7 +148,7 @@ Protocols http/1.1
     <p>The <directive module="mod_ssl">SSLCipherSuite</directive> needs to be configured with
     a strong TLS cipher suite. The current version of <module>mod_http2</module> does not enforce any cipher but most
     clients do so. Pointing a browser to a <code>h2</code> enabled server with an inappropriate
-    cipher suite will force it to simply refuse and fall back to HTTP 1.1. This is a common mistake
+    cipher suite causes it to refuse and fall back to HTTP 1.1. This is a common mistake
     made while configuring httpd for HTTP/2 the first time, so please keep it in mind to avoid
     long debugging sessions! If you want to be sure about the cipher suite to choose please avoid
     the ones listed in the HTTP/2 TLS reject list (<rfc section="9.2.2">9113</rfc>).</p>
@@ -156,7 +157,7 @@ Protocols http/1.1
     most preferred protocol. When a client offers multiple choices, the one most to the 
     left is selected. In</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Protocols http/1.1 h2
 </highlight>
 </example>
@@ -164,7 +165,7 @@ Protocols http/1.1 h2
     client <em>only</em> supports h2. Since we want to talk HTTP/2 to clients that
     support it, the better order is</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Protocols h2 h2c http/1.1
 </highlight>
 </example>
@@ -173,9 +174,9 @@ Protocols h2 h2c http/1.1
     you want, you can configure your server to select the protocol most preferred by
     the client:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 ProtocolsHonorOrder Off
-    </highlight>
+</highlight>
 </example>
     <p>makes the order <em>you</em> wrote the Protocols irrelevant and only the client's
     ordering will decide.</p>
@@ -225,12 +226,12 @@ ProtocolsHonorOrder Off
     <p>The first tool to mention is of course <a href="https://curl.haxx.se">curl</a>. Please make sure that
     your version supports HTTP/2 checking its <code>Features</code>:</p>
 <example>
-    <highlight language="config">
-    $ curl -V
-    curl 7.45.0 (x86_64-apple-darwin15.0.0) libcurl/7.45.0 OpenSSL/1.0.2d zlib/1.2.8 nghttp2/1.3.4
-    Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...] 
-    Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
-    </highlight>
+<highlight language="sh">
+$ curl -V
+curl 8.20.0 (x86_64-pc-linux-gnu) libcurl/8.20.0 OpenSSL/3.5.7 zlib/1.3.1 nghttp2/1.69.0
+Protocols: dict file ftp ftps gopher http https imap imaps ldap ldaps pop3 [...]
+Features: IPv6 Largefile NTLM NTLM_WB SSL libz TLS-SRP <strong>HTTP2</strong>
+</highlight>
 </example>
     <note><title>macOS Homebrew notes</title>
     <p>Homebrew's <code>curl</code> includes HTTP/2 support by default. Install with
@@ -277,33 +278,33 @@ ProtocolsHonorOrder Off
     <p><module>mod_http2</module> inspects response headers for <code>Link</code> headers
     in a certain format:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload, &lt;/xxx.js&gt;; rel=preload
-    </highlight>
+</highlight>
 </example>
     <p>If the connection supports PUSH, these two resources will be sent to the
     client. As a web developer, you may set these headers either directly in
     your application response or you configure the server via</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 &lt;Location /xxx.html&gt;
-    Header add Link "&lt;/xxx.css&gt;;rel=preload"
-    Header add Link "&lt;/xxx.js&gt;;rel=preload"
+Header add Link "&lt;/xxx.css&gt;;rel=preload"
+Header add Link "&lt;/xxx.js&gt;;rel=preload"
 &lt;/Location&gt;
-    </highlight>
+</highlight>
 </example>
     <p>If you want to use <code>preload</code> links without triggering a PUSH, you
     can use the <code>nopush</code> parameter, as in</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 Link &lt;/xxx.css&gt;;rel=preload;nopush
-    </highlight>
+</highlight>
 </example>
     <p>or you may disable PUSHes for your server entirely with the directive</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 H2Push Off
-    </highlight>
+</highlight>
 </example>
     <p>And there is more:</p>
     <p>The module will keep a diary of what has been PUSHed for each connection
@@ -320,13 +321,13 @@ H2Push Off
     PUSH might not always trigger the request/response/performance that one expects or 
     hopes for. There are various studies on this topic to be found on the web that explain
     benefits and weaknesses and how different features of client and network influence
-    the outcome. For example: just because the server PUSHes a resource does not mean
+    the outcome. For example: the fact that the server PUSHes a resource does not mean
     a browser will actually use the data.</p>
     <p>The major thing that influences the response being PUSHed is the request that was
     simulated. The request URL for a PUSH is given by the application, but where do the
     request headers come from? For example, will the PUSH request a <code>accept-language</code>
     header and if yes with what value?</p>
-    <p>Apache will look at the original request (the one that triggered the PUSH) and copy the 
+    <p>httpd will look at the original request (the one that triggered the PUSH) and copy the 
     following headers over to PUSH requests: <code>user-agent</code>, <code>accept</code>, 
     <code>accept-encoding</code>, <code>accept-language</code>, <code>cache-control</code>.</p>
     <p>All other headers are ignored. Cookies will also not be copied over. PUSHing resources
@@ -340,22 +341,22 @@ H2Push Off
     <p>An alternative to PUSHing resources is to send <code>Link</code> headers to the
     client before the response is even ready. This uses the HTTP feature called "Early Hints" and
     is described in <rfc>8297</rfc>.</p>
-    <p>In order to use this, you need to explicitly enable it on the server via</p>
+    <p>To use this, you need to explicitly enable it on the server via</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 H2EarlyHints on
-    </highlight>
+</highlight>
 </example>
     <p>(It is not enabled by default since some older browser tripped on such responses.)</p>
     <p>If this feature is on, you can use the directive <directive module="mod_http2">H2PushResource</directive> to 
     trigger early hints and resource PUSHes:</p>
 <example>
-    <highlight language="config">
+<highlight language="config">
 &lt;Location /xxx.html&gt;
-    H2PushResource /xxx.css
-    H2PushResource /xxx.js
+H2PushResource /xxx.css
+H2PushResource /xxx.js
 &lt;/Location&gt;
-    </highlight>
+</highlight>
 </example>
     <p>This will send out a <code>"103 Early Hints"</code> response to a client as soon
     as the server <em>starts</em> processing the request. This may be much earlier than
