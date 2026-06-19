@@ -27,6 +27,8 @@
 <a href="../es/howto/http2.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/http2.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Ce document est le guide de l'utilisateur de l'impl&eacute;mentation de HTTP/2
     dans Apache httpd. Cette fonctionnalit&eacute; en est au stade

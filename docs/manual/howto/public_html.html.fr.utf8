@@ -30,6 +30,8 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Sur les syst&egrave;mes multi-utilisateurs, on peut permettre &agrave; chaque
 utilisateur d'avoir un site web dans son r&eacute;pertoire home &agrave; l'aide de la

@@ -27,6 +27,8 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le contr&ocirc;le d'acc&egrave;s fait r&eacute;f&eacute;rence &agrave; tout concept de contr&ocirc;le
     d'acc&egrave;s &agrave; une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
