@@ -178,7 +178,6 @@ static volatile apr_uint32_t *opaque_counter;
 static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
-static const char     *opaque_mutex_type = "authdigest-opaque";
 static const char     *client_shm_filename;
 
 #define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
@@ -356,9 +355,6 @@ static int pre_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
     }
 
     rv = ap_mutex_register(pconf, client_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
-    if (rv != APR_SUCCESS)
-        return !OK;
-    rv = ap_mutex_register(pconf, opaque_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS)
         return !OK;
 
