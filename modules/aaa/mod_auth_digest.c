@@ -254,8 +254,6 @@ static apr_status_t rmm_free(apr_rmm_t *rmm, void *alloc)
     return apr_rmm_free(rmm, offset);
 }
 
-#if APR_HAS_SHARED_MEMORY
-
 static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 {
     unsigned long idx;
@@ -360,12 +358,16 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     return OK;
 }
 
-#endif /* APR_HAS_SHARED_MEMORY */
-
 static int pre_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     apr_status_t rv;
     void *retained;
+
+    if (!APR_HAS_SHARED_MEMORY) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, APLOGNO(10590)
+                     "mod_auth_digest cannot be used on platforms without shared memory support");
+        return !OK;
+    }
 
     rv = ap_mutex_register(pconf, client_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
     if (rv != APR_SUCCESS)
@@ -403,7 +405,6 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
         return OK;
 
-#if APR_HAS_SHARED_MEMORY
     /* Note: this stuff is currently fixed for the lifetime of the server,
      * i.e. even across restarts. This means that A) any shmem-size
      * configuration changes are ignored, and B) certain optimizations,
@@ -414,11 +415,7 @@ static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
      * last child dies. Therefore we can never clean up the old stuff,
      * creating a creeping memory leak.
      */
-    if (initialize_tables(s, p) != OK) {
-        return !OK;
-    }
-#endif  /* APR_HAS_SHARED_MEMORY */
-    return OK;
+    return initialize_tables(s, p);
 }
 
 static void initialize_child(apr_pool_t *p, server_rec *s)
@@ -542,14 +539,6 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
 
 static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 {
-#if !APR_HAS_SHARED_MEMORY
-    if (flag) {
-        return "AuthDigestNcCheck: ERROR: nonce-count checking "
-                     "is not supported on platforms without shared-memory "
-                     "support";
-    }
-#endif
-
     ((digest_config_rec *) config)->check_nc = flag;
     return NULL;
 }
