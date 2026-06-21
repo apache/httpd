@@ -950,7 +950,13 @@ static int get_digest_rec(request_rec *r, digest_header_rec *resp)
     }
 
     if (resp->opaque) {
-        resp->opaque_num = (unsigned long) strtol(resp->opaque, NULL, 16);
+        char *endptr;
+        long num;
+
+        errno = 0;
+        num = strtol(resp->opaque, &endptr, 16);
+        if (errno == 0 && *endptr == '\0' && num > 0)
+            resp->opaque_num = (unsigned long)num;
     }
 
     resp->auth_hdr_sts = VALID;
