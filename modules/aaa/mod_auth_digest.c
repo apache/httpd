@@ -174,10 +174,9 @@ static unsigned char *secret;
 
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
-static unsigned long  *opaque_cntr;
+static volatile apr_uint32_t *opaque_counter;
 static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
-static apr_global_mutex_t *opaque_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
 static const char     *opaque_mutex_type = "authdigest-opaque";
 static const char     *client_shm_filename;
@@ -214,11 +213,6 @@ static apr_status_t cleanup_tables(void *not_used)
     if (client_lock) {
         apr_global_mutex_destroy(client_lock);
         client_lock = NULL;
-    }
-
-    if (opaque_lock) {
-        apr_global_mutex_destroy(opaque_lock);
-        opaque_lock = NULL;
     }
 
     client_list = NULL;
@@ -267,7 +261,6 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_shm = NULL;
     client_rmm = NULL;
     client_lock = NULL;
-    opaque_lock = NULL;
     client_list = NULL;
 
     /*
@@ -329,20 +322,12 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
     /* setup opaque */
 
-    opaque_cntr = rmm_malloc(client_rmm, sizeof(*opaque_cntr));
-    if (opaque_cntr == NULL) {
+    opaque_counter = rmm_malloc(client_rmm, sizeof *opaque_counter);
+    if (opaque_counter == NULL) {
         log_error_and_cleanup("failed to allocate shared memory", -1, s);
         return !OK;
     }
-    *opaque_cntr = 1UL;
-
-    sts = ap_global_mutex_create(&opaque_lock, NULL, opaque_mutex_type, NULL,
-                                 s, ctx, 0);
-    if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
-        return !OK;
-    }
-
+    *opaque_counter = 1;
 
     /* setup one-time-nonce counter */
 
@@ -442,13 +427,6 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
                                       p);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
-        return;
-    }
-    sts = apr_global_mutex_child_init(&opaque_lock,
-                                      apr_global_mutex_lockfile(opaque_lock),
-                                      p);
-    if (sts != APR_SUCCESS) {
-        log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return;
     }
 }
@@ -1059,16 +1037,8 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
  */
 static client_entry *gen_client(const request_rec *r)
 {
-    unsigned long op;
+    apr_uint32_t op = apr_atomic_inc32(opaque_counter);
     client_entry new_entry = { 0, NULL, 0, "" }, *entry;
-
-    if (!opaque_cntr) {
-        return NULL;
-    }
-
-    apr_global_mutex_lock(opaque_lock);
-    op = (*opaque_cntr)++;
-    apr_global_mutex_unlock(opaque_lock);
 
     if (!(entry = add_client(op, &new_entry, r->server))) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01769)
