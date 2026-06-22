@@ -1650,8 +1650,14 @@ static int add_auth_info(request_rec *r)
         return OK;
     }
 
-    /* setup nextnonce
-     */
+    /* Don't add Authentication-Info for 401/407 responses. */
+    if (apr_table_get(r->err_headers_out,
+                      (r->proxyreq == PROXYREQ_PROXY)
+                      ? "Proxy-Authenticate" : "WWW-Authenticate")) {
+        return OK;
+    }
+
+    /* Set up nextnonce for one-time-nonces and expiring-nonce cases. */
     if (conf->nonce_lifetime > 0) {
         /* send nextnonce if current nonce will expire in less than 30 secs */
         if ((r->request_time - resp->nonce_time) > (conf->nonce_lifetime-NEXTNONCE_DELTA)) {
