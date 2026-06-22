@@ -93,19 +93,21 @@ Message format:
     BEACON url=http://host:port host=<h> pid=<n> seq=<n> ts=<usec> mac=<hex>
 
   url= is the routable backend origin the proxy adds as a BalancerMember. ts=
-  (microseconds since the epoch) and mac= are present only when a shared secret
-  is configured (see below). host=/pid=/seq= are informational.
+  (microseconds since the epoch) and mac= authenticate the message and are always
+  present, since a shared secret is required (see below). host=/pid=/seq= are
+  informational.
 
   A UDP datagram is delivered whole, so the receiver reads each message into a
   fixed stack buffer and NUL-terminates it (buf[len] = '\0') before parsing.
   The sender transmits strlen(msg) bytes (no trailing NUL on the wire).
 
 
-Authentication (ProxyBeaconSecret, optional but recommended):
-  Without a secret the channel is unauthenticated: anyone who can reach the
-  receiver port could announce a URL and hijack client traffic (the proxy logs a
-  warning at startup in this case). A UDP source address is trivially spoofable,
-  so authentication matters at least as much here as it would over a connection.
+Authentication (ProxyBeaconSecret, REQUIRED):
+  ProxyBeaconSecret must be set on every participating server (the receiver and
+  every sender); startup fails otherwise. There is no unauthenticated mode:
+  without a MAC, anyone who can reach the receiver port could announce a URL and
+  hijack client traffic, and a UDP source address is trivially spoofable, so
+  authentication matters at least as much here as it would over a connection.
 
   With ProxyBeaconSecret set identically on the proxy and all backends, each
   announcement is signed with a SipHash-2-4 MAC over the message prefix (the key

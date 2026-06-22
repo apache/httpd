@@ -72,8 +72,9 @@
  * a keyed MAC (SipHash-2-4 via APR-util -- the same primitive mod_session_crypto
  * uses) plus a timestamp; the receiver recomputes the MAC and checks timestamp
  * freshness (anti-replay), dropping any forged, tampered, or stale message
- * before it is parsed/acted on.  Authentication is opt-in: with no secret the
- * channel behaves as before but logs a one-time "UNAUTHENTICATED" warning.  We
+ * before it is parsed/acted on.  Authentication is REQUIRED: ProxyBeaconSecret
+ * must be set on every server that participates in the channel (sender or
+ * listener), or startup fails -- there is no unauthenticated mode.  We
  * authenticate, not encrypt -- the payload (backend URLs) is not secret; for
  * transport confidentiality DTLS would be a separate, orthogonal future layer.
  *
@@ -150,7 +151,6 @@ typedef struct {
     apr_int64_t          max_skew;     /* ProxyBeaconMaxSkew, seconds (replay window) */
     apr_uint64_t         reject_count; /* listener: dropped-since-last-log counter */
     apr_time_t           last_reject_log; /* listener: reject-log rate limiter */
-    int                  warned_insecure; /* listener: emitted the one-time warning */
     int                  open_failed;     /* STARTING: socket open/listen/dial failed permanently */
 } beacon_ctx_t;
 
@@ -166,9 +166,9 @@ typedef struct {
  * announcement -- back off this long between attempts for a given url. */
 #define BEACON_RETRY_BACKOFF    apr_time_from_sec(60)
 
-/* Cap on tracked backend urls, to bound memory against an unauthenticated
- * channel announcing unboundedly many distinct urls.  Once reached, unknown
- * urls are dropped (rate-limited log) rather than tracked/added. */
+/* Cap on tracked backend urls, to bound memory against a buggy or compromised
+ * (authenticated) backend announcing unboundedly many distinct urls.  Once
+ * reached, unknown urls are dropped (rate-limited log) rather than tracked/added. */
 #define BEACON_MAX_MEMBERS      256
 
 /* Process-wide watchdog handle, like mod_proxy_hcheck's static watchdog. */
@@ -383,9 +383,10 @@ static const command_rec beacon_cmds[] = {
                   "proxy: seconds without an announcement after which a backend "
                   "is disabled (taken out of rotation); 0 disables eviction"),
     AP_INIT_TAKE1("ProxyBeaconSecret", beacon_set_secret, NULL, RSRC_CONF,
-                  "pre-shared cluster secret; set on both proxy and backends to "
-                  "authenticate announcements (SipHash MAC). Keep the conf file "
-                  "readable only by the server user."),
+                  "pre-shared cluster secret (REQUIRED); set to the same value on "
+                  "the proxy and all backends to authenticate announcements "
+                  "(SipHash MAC). Keep the conf file readable only by the server "
+                  "user."),
     AP_INIT_TAKE1("ProxyBeaconMaxSkew", beacon_set_maxskew, NULL, RSRC_CONF,
                   "proxy: max allowed seconds between an announcement's timestamp "
                   "and now (anti-replay window; requires NTP-synced clocks). "
@@ -543,15 +544,6 @@ static void beacon_cb_starting(beacon_ctx_t *ctx)
                          "ProxyBeaconBalancer; beacons will be logged only. "
                          "Set ProxyBeaconBalancer to add announced backends.",
                          ctx->addr);
-        }
-        /* Phase 4: warn once if we'll add members from an unauthenticated
-         * channel (anyone who can reach this port could announce a backend). */
-        if (ctx->balancer_name && !ctx->has_secret && !ctx->warned_insecure) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         APLOGNO(10572) "mod_proxy_beacon: beacon channel on %pI is "
-                         "UNAUTHENTICATED; set ProxyBeaconSecret on the proxy and "
-                         "all backends to require signed beacons", ctx->addr);
-            ctx->warned_insecure = 1;
         }
     }
     else if (ctx->role == BEACON_ROLE_SEND) {
@@ -763,8 +755,8 @@ static apr_status_t beacon_try_add(beacon_ctx_t *ctx, apr_pool_t *pool,
  *   - a previously-evicted member is re-enabled when it announces again;
  *   - an add that failed (e.g. balancer full) is retried only after a backoff,
  *     not on every announcement.
- * msg_ts is the signed timestamp (microseconds) from the verified message, or 0
- * when the channel is unauthenticated.
+ * msg_ts is the signed timestamp (microseconds) from the verified message; this
+ * path is only reached on the authenticated balancer path, so it is always set.
  */
 static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
                                 const char *url, apr_time_t now,
@@ -773,8 +765,8 @@ static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
     beacon_member_t *m = apr_hash_get(ctx->seen, url, APR_HASH_KEY_STRING);
 
     if (!m) {
-        /* Bound memory: don't track unboundedly many distinct urls (a concern
-         * on an unauthenticated channel). */
+        /* Bound memory: don't track unboundedly many distinct urls (defense in
+         * depth against a buggy or compromised authenticated backend). */
         if (apr_hash_count(ctx->seen) >= BEACON_MAX_MEMBERS) {
             beacon_log_throttled(ctx, now, "member table full");
             return;
@@ -788,12 +780,12 @@ static void beacon_handle_announce(beacon_ctx_t *ctx, apr_pool_t *pool,
         return;
     }
 
-    /* Anti-replay (2): on an authenticated channel, each url's signed ts must
-     * strictly increase.  A replayed (byte-identical) announcement carries a ts
-     * we've already accepted, so reject it -- this closes the in-window replay
-     * the freshness check alone allows (e.g. replaying a dead backend's last
-     * announcement to keep it from being evicted). */
-    if (ctx->has_secret && msg_ts <= m->last_ts) {
+    /* Anti-replay (2): each url's signed ts must strictly increase.  A replayed
+     * (byte-identical) announcement carries a ts we've already accepted, so
+     * reject it -- this closes the in-window replay the freshness check alone
+     * allows (e.g. replaying a dead backend's last announcement to keep it from
+     * being evicted). */
+    if (msg_ts <= m->last_ts) {
         beacon_log_throttled(ctx, now, "replayed/reordered ts");
         return;
     }
@@ -912,14 +904,13 @@ static void beacon_mac_hex(const beacon_ctx_t *ctx, const char *base,
     ap_bin2hex(mac, sizeof(mac), out);   /* writes BEACON_MAC_HEXLEN + NUL */
 }
 
-/* sender: return "<base> mac=<hex>" (signed) when a secret is set, else base. */
+/* sender: return "<base> mac=<hex>", appending the keyed MAC.  A secret is
+ * required on every participating server (enforced at config time), so this
+ * always signs. */
 static const char *beacon_sign(beacon_ctx_t *ctx, apr_pool_t *pool, const char *base)
 {
     char hex[BEACON_MAC_HEXLEN + 1];
 
-    if (!ctx->has_secret) {
-        return base;
-    }
     beacon_mac_hex(ctx, base, strlen(base), hex);
     return apr_psprintf(pool, "%s mac=%s", base, hex);
 }
@@ -1087,20 +1078,22 @@ static void beacon_cb_running(beacon_ctx_t *ctx, apr_pool_t *pool)
             buf[sz] = '\0';
             msg_str = buf;
 
-            /* Escape the untrusted payload before it can reach the log: a
-             * publisher -- or, on an unauthenticated channel, anyone who can
-             * reach the listen port -- could embed newline/control/ANSI
-             * sequences to forge or corrupt error-log lines. */
+            /* Escape the untrusted payload before it can reach the log: on the
+             * log-only path (no ProxyBeaconBalancer) messages are logged without
+             * MAC verification, so anyone who can reach the listen port could
+             * embed newline/control/ANSI sequences to forge or corrupt error-log
+             * lines.  (On the balancer path, forged messages are dropped at
+             * verification below and `safe` is only logged after it passes.) */
             safe = ap_escape_logitem(pool, msg_str);
 
-            /* Phase 4: when a secret is set, verify the MAC and freshness
-             * BEFORE logging or acting on the payload, so forged/tampered
-             * content is dropped (throttled) and never reaches the INFO log.
+            /* Phase 4: verify the MAC and freshness BEFORE logging or acting on
+             * the payload, so forged/tampered content is dropped (throttled) and
+             * never reaches the INFO log.  A secret is required (enforced at
+             * config time), so this always runs in the active (balancer) path.
              * msg_ts (microseconds) is the signed timestamp, used below for the
-             * per-url monotonic replay check.  Verification only matters in the
-             * active (balancer) path; with no balancer we take no action and
-             * the escaped payload is safe to log for diagnostics. */
-            if (ctx->balancer_name && ctx->has_secret) {
+             * per-url monotonic replay check.  With no balancer we take no action
+             * and the escaped payload is safe to log for diagnostics. */
+            if (ctx->balancer_name) {
                 const char *reason = "?";
                 if (!beacon_verify(ctx, msg_str, msg_now, &msg_ts, &reason)) {
                     beacon_log_throttled(ctx, msg_now, reason);
@@ -1209,6 +1202,20 @@ static int beacon_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         /* Only servers with a directive participate. */
         if (ctx->role == BEACON_ROLE_NONE) {
             continue;
+        }
+        /* ProxyBeaconSecret is required on every participating server (sender or
+         * listener): the channel is authenticated, with no unauthenticated mode.
+         * A UDP source address is trivially spoofable, so an unsigned channel
+         * would let anyone who can reach the listen port announce an arbitrary
+         * backend url and hijack client traffic.  Fail startup rather than run
+         * insecurely. */
+        if (!ctx->has_secret) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+                         APLOGNO(10572) "mod_proxy_beacon: ProxyBeaconSecret is "
+                         "required but not set; the beacon channel must be "
+                         "authenticated. Set ProxyBeaconSecret to the same value "
+                         "on the proxy and all backends.");
+            return !OK;
         }
         rv = beacon_register_callback(beacon_watchdog, AP_WD_TM_SLICE, ctx,
                                    beacon_watchdog_callback);

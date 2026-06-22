@@ -124,7 +124,7 @@ as an enabled member of `balancer://cluster` on the proxy. Stop one, and after
 | `ProxyBeaconListen [addr][:port]` | — | **Marks this server as the receiver.** Binds a UDP socket. `addr`/`port` are optional and inherited from the server's own `Listen`/`ServerName` when omitted (see note below). |
 | `ProxyBeaconBalancer name` | — | Balancer that announced backends are added to. Bare name (`cluster`); a leading `balancer://` is stripped. Must already exist with spare `growth`. |
 | `ProxyBeaconTimeout interval` | `0` (no eviction) | Seconds of silence before a member is disabled. `0` = add-only, never auto-remove. Set to a small multiple of the backends' interval to get self-healing. |
-| `ProxyBeaconSecret secret` | — (unauthenticated) | Shared cluster secret; **same value on proxy and all backends.** |
+| `ProxyBeaconSecret secret` | — (**required**) | Shared cluster secret; **same value on proxy and all backends.** The server fails to start if a participating server omits it. |
 | `ProxyBeaconMaxSkew interval` | `30` | Anti-replay freshness window: reject announcements whose signed timestamp is more than this far from now (either direction). |
 
 **Inheriting the listen address:** because UDP and TCP are separate port spaces,
@@ -141,7 +141,7 @@ this way — use an explicit high port there.)
 | `ProxyBeaconAddress addr:port` | — | **Marks this server as a sender.** UDP target = the proxy's `ProxyBeaconListen` address. |
 | `ProxyBeaconAdvertise url` | — | The routable `scheme://host[:port]` the proxy adds as a member. Omit it and the backend beacons but advertises nothing (logged, never added). |
 | `ProxyBeaconInterval interval` | `5` | How often this backend announces. Must be **meaningfully smaller** than the proxy's `ProxyBeaconTimeout`. |
-| `ProxyBeaconSecret secret` | — | Same shared secret as the proxy. |
+| `ProxyBeaconSecret secret` | — (**required**) | Same shared secret as the proxy. |
 
 > `ProxyBeaconListen` and `ProxyBeaconAddress` are **mutually exclusive** on the
 > same server — a server is either a receiver or a sender, not both.
@@ -160,8 +160,9 @@ unauthenticated channel is a route-hijack / SSRF risk: anyone who can reach the
 receive port could announce an arbitrary backend URL, and **UDP source addresses
 are trivially spoofable.**
 
-**Always set `ProxyBeaconSecret`** in production (identical on proxy and every
-backend). With it:
+`ProxyBeaconSecret` is therefore **required** (identical on proxy and every
+backend) — the server refuses to start if a participating server omits it, so
+there is no unauthenticated mode to fall into. With it:
 
 - Each announcement is signed with a **SipHash-2-4 MAC** plus a timestamp; the
   proxy recomputes the MAC (constant-time compare) and drops anything forged or
@@ -177,8 +178,6 @@ Operational notes:
 - **Clocks must be roughly in sync** (NTP). The timestamp check compares the
   announcement's time against the proxy's clock; widen `ProxyBeaconMaxSkew` if
   your hosts drift.
-- With **no secret**, the channel is unauthenticated and the proxy logs a
-  one-time `UNAUTHENTICATED` warning at startup.
 - The secret lives in your config file — **restrict its permissions like a
   private key.**
 - Announcements are **authenticated, not encrypted.** The payload is operational
@@ -233,7 +232,7 @@ Useful log signals (grep the error log):
 | `re-enabled backend ...` | a previously-evicted backend came back |
 | `dropped ... mac mismatch` | wrong/missing secret on a sender (or a forged datagram) |
 | `replayed/reordered ts` | a stale/duplicate datagram was rejected |
-| `UNAUTHENTICATED` (startup) | no `ProxyBeaconSecret` — channel is open |
+| `ProxyBeaconSecret is required` (startup) | a participating server has no `ProxyBeaconSecret` — startup aborts |
 
 **Common gotchas:**
 
