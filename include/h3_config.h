@@ -23,19 +23,78 @@
 
 #include <http_config.h>
 
-#include <apr_pools.h>
+extern const command_rec h3_cmds[];
 
-/* Server configuration structure */
-typedef struct
+typedef struct h3_server_conf h3_server_conf;
+
+struct h3_server_conf
 {
     const char* cert_path;
     const char* key_path;
     apr_port_t host_port;
-} h3_server_conf;
+    apr_port_t h3_port;
+};
 
+/**
+ * Look up the TCP Listen port of a vhost by scanning its `Port` and
+ * `Listen` directive state.
+ * @param s The server_rec.
+ * @return The TCP port, or 0 if undetermined.
+ */
+apr_port_t get_server_port(server_rec* s);
+
+/**
+ * ap_create_server_config callback: allocate a fresh zero-initialised
+ * h3_server_conf from @p p. All fields start as NULL/0.
+ * @param p Pool used for the allocation.
+ * @param s The vhost the config belongs to (unused).
+ * @return The new h3_server_conf.
+ */
 void* h3_create_server_config(apr_pool_t* p, server_rec* s);
+
+/**
+ * ap_merge_server_config callback: produce a child vhost config that
+ * inherits each unset field from the parent. cert/key/h3_port use the
+ * new value if non-NULL/non-zero, else the base.
+ * @param p         Pool for the merged config.
+ * @param base_conf Parent h3_server_conf.
+ * @param new_conf  Child h3_server_conf.
+ * @return The merged h3_server_conf.
+ */
 void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf);
+
+/**
+ * ap_create_dir_config callback. mod_http3 has no per-directory state;
+ * returns a 1-byte allocation so httpd takes ownership of a non-NULL
+ * pointer.
+ * @param p   Pool for the allocation.
+ * @param dir The directory path (unused).
+ * @return A 1-byte zero-initialised block.
+ */
+void* h3_create_dir_config(apr_pool_t* p, char* dir);
+
+/**
+ * ap_merge_dir_config callback. Identity merge: per-directory config is
+ * a no-op for mod_http3, so the base is returned unchanged.
+ * @param p    Pool for any allocation (unused).
+ * @param base Base per-dir config.
+ * @param add  Per-dir config being merged in (unused).
+ * @return The base per-dir config.
+ */
+void* h3_merge_dir_config(apr_pool_t* p, void* base, void* add);
+
+/**
+ * ap_post_config hook: resolve cert/key/h3_port for the listening vhost
+ * and log the resolved values. No-op in AP_SQ_MS_CREATE_PRE_CONFIG
+ * (pre-config phase). Returns OK if a fully-configured vhost is found,
+ * HTTP_INTERNAL_SERVER_ERROR otherwise.
+ * @param p     Config pool (unused).
+ * @param plog  Log pool (unused).
+ * @param ptemp Temp pool (unused).
+ * @param s     The first server_rec in the configuration.
+ * @return OK, or HTTP_INTERNAL_SERVER_ERROR if no vhost has both
+ *         H3CertificatePath and H3CertificateKeyPath set.
+ */
 int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_rec* s);
-extern const command_rec h3_cmds[];
 
 #endif /* H3_CONFIG_H */

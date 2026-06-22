@@ -21,21 +21,19 @@
 
 #include <httpd.h>
 
-#include <apr_network_io.h>
-#include <apr_thread_proc.h>
+#include <http_config.h>
+#include <http_log.h>
 
-#include "h3_config.h"
+#if defined(_WIN32)
+    #define HTTP3_PUBLIC __declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+    #define HTTP3_PUBLIC __attribute__((visibility("default")))
+#else
+    #define HTTP3_PUBLIC AP_MODULE_DECLARE_DATA
+#endif
 
-struct h3_stuff
-{
-    apr_pool_t* pchild;
-    server_rec* s;
-    h3_server_conf* conf;
-};
+HTTP3_PUBLIC extern module http3_module;
 
-extern apr_socket_t* dummy_socket;
-
-void* APR_THREAD_FUNC worker_thread_main(apr_thread_t* thread, void* data);
-void h3_child_init(apr_pool_t* pchild, server_rec* s);
+AP_MAYBE_UNUSED(static int* const aplog_module_index) = &(http3_module.module_index);
 
 #endif /* MOD_HTTP3_H */

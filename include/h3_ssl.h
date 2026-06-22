@@ -19,48 +19,20 @@
 #ifndef H3_SSL_H
 #define H3_SSL_H
 
-#include <httpd.h>
-
-#include <apr_pools.h>
-
 #include <openssl/ssl.h>
 
-#include <nghttp3/nghttp3.h>
-
-#include "h3.h"
-
-struct h3_request;
-
-/* 3 streams created by the server and 4 by the client (one is bidi) */
-struct ssl_id
-{
-    SSL* s;              /* the stream openssl uses in SSL_read(),  SSL_write etc */
-    uint64_t id;         /* the stream identifier the nghttp3 uses */
-    int status;          /* 0 or one the below status and origin */
-    int has607;          /* work around nghttp3_conn_read_stream returning  -607 on stream */
-    struct h3ssl* h3ssl; /* pointer to the h3ssl structure */
-};
-
-struct h3ssl
-{
-    struct h3_request* h3req; /* pointer to the first h3req hack for the moment */
-    int has_uni;              /* we have the 3 uni directional stream needed */
-    int c_terminated;         /* connection is terminated EVENT_ECD or EVENT_EC or something else */
-    int done;                 /* connection terminated EVENT_ECD, after EVENT_EC */
-    server_rec* s;            /* server for log and other stuff */
-    conn_rec* c;              /* connect to Apache HTTPD */
-    apr_pool_t* p;            /* pool from the pchild */
-    nghttp3_conn* h3conn;     /* pointer to nghttp3 connection */
-};
-
-/* h3ssl with events, 10 max for the moment */
-struct activeh3ssl
-{
-    struct h3ssl* receivedh3ssl[10]; /* pointer to the h3ssl with events, 10 max for the moment */
-    int current;
-};
-
-SSL_CTX* create_ctx(server_rec* s, const char* cert_path, const char* key_path);
-int create_socket(server_rec* s, uint16_t port);
+/**
+ * ALPN selection callback for the QUIC SSL_CTX. Negotiates "h3" as the
+ * single supported protocol. Per OpenSSL's SSL_CTX_set_alpn_select_cb
+ * contract.
+ * @param ssl     The SSL object performing the negotiation.
+ * @param out     Out: pointer to the selected protocol bytes.
+ * @param outlen  Out: length of the selected protocol.
+ * @param in      Wire-format ALPN extension from the peer.
+ * @param inlen   Length of @p in.
+ * @param arg     User data (unused).
+ * @return SSL_TLSEXT_ERR_OK on success, SSL_TLSEXT_ERR_ALERT_FATAL on no match.
+ */
+int h3_alpn_select_cb(SSL* ssl, const unsigned char** out, unsigned char* outlen, const unsigned char* in, unsigned int inlen, void* arg);
 
 #endif /* H3_SSL_H */

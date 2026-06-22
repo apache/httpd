@@ -18,176 +18,156 @@
 
 #include <httpd.h>
 
+#include <http_config.h>
 #include <http_log.h>
-#include <http_protocol.h>
 
+#include <apr_pools.h>
 #include <apr_strings.h>
+#include <apr_tables.h>
 
+#include <nghttp3/nghttp3.h>
+#include <openssl/ssl.h>
+
+#include "h3.h"
 #include "h3_callbacks.h"
-#include "h3_request.h"
-#include "h3_ssl.h"
+#include "h3_check.h"
+#include "h3_session.h"
+#include "mod_http3.h"
 
-int on_recv_header(nghttp3_conn* /*conn*/, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* /*stream_user_data*/)
+static int set_pseudo(h3_stream* stream, h3_session* session, int32_t token, nghttp3_vec* value)
 {
-    nghttp3_vec vname, vvalue;
-    struct h3ssl* h3ssl = (struct h3ssl*)user_data;
-    struct h3_request* h3req = get_h3_request(h3ssl, stream_id);
-    request_rec* r;
+    CHECK(session);
+    CHECK(stream);
+    CHECK(value);
 
-    if (h3req == NULL)
+    if (value->len == 0 || value->len >= 8192)
     {
-        ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_recv_header, create request");
-        h3req = create_h3_request(h3ssl, stream_id);
-    }
-
-    r = h3req->r;
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_recv_header, add header to request");
-    h3req->num_headers++;
-    vname = nghttp3_rcbuf_get_buf(name);
-    vvalue = nghttp3_rcbuf_get_buf(value);
-
-    /* Process uri */
-    if (token == NGHTTP3_QPACK_TOKEN__PATH)
-    {
-        /* :path */
-        if (vvalue.len == 0 || vvalue.len >= MAXURL)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Path too long or empty: %zu bytes (max %d)", vvalue.len, MAXURL);
-            return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
-        }
-        size_t len = vvalue.len + 1;
-        r->uri = apr_pcalloc(r->pool, len);
-        memcpy(r->uri, vvalue.base, vvalue.len);
-
-        /* add the unparsed_uri */
-        r->unparsed_uri = r->uri;
-        apr_uri_parse(r->pool, r->uri, &r->parsed_uri);
-        return 0;
-    }
-
-    /* Process scheme */
-    if (token == NGHTTP3_QPACK_TOKEN__SCHEME)
-    {
-        /* :scheme */
-        if (vvalue.len == 0 || vvalue.len >= MAXURL)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Scheme too long or empty: %zu bytes", vvalue.len);
-            return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
-        }
-        size_t len = vvalue.len + 1;
-        char* scheme = apr_pcalloc(r->pool, len);
-        memcpy(scheme, vvalue.base, vvalue.len);
-        apr_table_setn(r->headers_in, "Scheme", scheme);
-        return 0;
-    }
-
-    /* Process method */
-    if (token == NGHTTP3_QPACK_TOKEN__METHOD)
-    {
-        /* :method */
-        if (vvalue.len == 0 || vvalue.len >= MAXURL)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Invalid method length: %zu", vvalue.len);
-            return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
-        }
-        size_t len = vvalue.len + 1;
-        r->method = apr_pcalloc(r->pool, len);
-        memcpy((char*)r->method, vvalue.base, vvalue.len);
-        return 0;
-    }
-
-    /* Process authority */
-    if (token == NGHTTP3_QPACK_TOKEN__AUTHORITY)
-    {
-        /* :authority = Host */
-        if (vvalue.len == 0 || vvalue.len >= MAXURL)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Authority too long or empty: %zu bytes", vvalue.len);
-            return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
-        }
-        size_t len = vvalue.len + 1;
-        char* host = apr_pcalloc(r->pool, len);
-        memcpy(host, vvalue.base, vvalue.len);
-        apr_table_setn(r->headers_in, "Host", host);
-        return 0;
-    }
-
-    /* Received a single HTTP header. */
-    vname = nghttp3_rcbuf_get_buf(name);
-    vvalue = nghttp3_rcbuf_get_buf(value);
-    if (vname.len == 0 || vname.len >= MAXHEADER)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Header name too long or empty: %zu bytes", vname.len);
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "pseudo-header length %zu invalid", value->len);
         return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
     }
-    if (vvalue.len >= MAXHEADER)
+    char* copy = apr_pstrndup(session->pool, (const char*)value->base, value->len);
+    switch (token)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "Header value too long: %zu bytes", vvalue.len);
+    case NGHTTP3_QPACK_TOKEN__METHOD:
+        stream->method = copy;
+        break;
+    case NGHTTP3_QPACK_TOKEN__SCHEME:
+        stream->scheme = copy;
+        break;
+    case NGHTTP3_QPACK_TOKEN__PATH:
+        stream->path = copy;
+        break;
+    case NGHTTP3_QPACK_TOKEN__AUTHORITY:
+        stream->authority = copy;
+        break;
+    default:
         return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
     }
-    size_t ln = vname.len + 1;
-    size_t lv = vvalue.len + 1;
-    char* sname = apr_pcalloc(r->pool, ln);
-    memcpy(sname, vname.base, vname.len);
-    char* svalue = apr_pcalloc(r->pool, lv);
-    memcpy(svalue, vvalue.base, vvalue.len);
-    apr_table_setn(r->headers_in, sname, svalue);
     return 0;
 }
 
-int on_end_headers(nghttp3_conn* /*conn*/, int64_t stream_id, int /*fin*/, void* user_data, void* /*stream_user_data*/)
+int on_begin_headers(nghttp3_conn* conn, int64_t stream_id, void* user_data, void* stream_user_data)
 {
-    struct h3ssl* h3ssl = (struct h3ssl*)user_data;
-    struct h3_request* h3req = get_h3_request(h3ssl, stream_id);
-
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_end_headers!");
-    h3req->end_headers_received = 1;
-    return 0;
-}
-
-int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data, size_t datalen, void* conn_user_data, void* /*stream_user_data*/)
-{
-    struct h3ssl* h3ssl = (struct h3ssl*)conn_user_data;
-    struct h3_request* h3req = get_h3_request(h3ssl, stream_id);
-    request_rec* r;
-    char* postdata;
-
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_recv_data! %ld", (unsigned long)datalen);
-    if (h3req == NULL)
+    h3_session* session = user_data;
+    CHECK(session);
+    h3_stream* stream = stream_user_data;
+    if (!stream && session->pending.sid == stream_id)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "on_recv_data: h3req is NULL for stream %" PRIu64, stream_id);
+        stream = session->pending.h3s;
+    }
+    if (!stream)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "on_begin_headers for untracked sid=%lld", (long long)stream_id);
         return NGHTTP3_ERR_CALLBACK_FAILURE;
     }
-    r = h3req->r;
-    if (r == NULL)
+    if (stream->is_bidi && !stream->headers)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, h3ssl->s, "on_recv_data: request_rec is NULL!");
+        stream->headers = apr_table_make(session->pool, 10);
+    }
+    nghttp3_conn_set_stream_user_data(conn, stream_id, stream);
+    return 0;
+}
+
+int on_recv_header(nghttp3_conn* /*conn*/, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* stream_user_data)
+{
+    (void)stream_id;
+    h3_stream* stream = stream_user_data;
+    h3_session* session = user_data;
+    CHECK(session);
+    if (!stream)
+    {
+        return 0;
+    }
+    nghttp3_vec nv = nghttp3_rcbuf_get_buf(value);
+    if (IS_PSEUDO_TOKEN(token))
+    {
+        return set_pseudo(stream, session, token, &nv);
+    }
+    if (!stream->headers)
+    {
+        return 0;
+    }
+    apr_table_addn(stream->headers, apr_pstrndup(session->pool, (const char*)nghttp3_rcbuf_get_buf(name).base, nghttp3_rcbuf_get_buf(name).len), apr_pstrndup(session->pool, (const char*)nv.base, nv.len));
+    return 0;
+}
+
+int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int /*fin*/, void* /*user_data*/, void* stream_user_data)
+{
+    h3_stream* stream = stream_user_data;
+    if (stream && stream->is_bidi)
+    {
+        stream->headers_complete = 1;
+    }
+    nghttp3_conn_shutdown_stream_read(conn, stream_id);
+    return 0;
+}
+
+int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, size_t datalen, void* user_data, void* stream_user_data)
+{
+    (void)conn;
+    (void)stream_id;
+    (void)data;
+    (void)datalen;
+    (void)user_data;
+    (void)stream_user_data;
+    return 0;
+}
+
+int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* /*stream_user_data*/)
+{
+    h3_session* session = user_data;
+    CHECK(session);
+    CHECK(conn);
+    int rv = nghttp3_conn_add_ack_offset(conn, stream_id, datalen);
+    if (rv && rv != NGHTTP3_ERR_STREAM_NOT_FOUND)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_add_ack_offset failed: %d", rv);
         return NGHTTP3_ERR_CALLBACK_FAILURE;
     }
-    postdata = apr_palloc(r->pool, datalen);
-    memcpy(postdata, data, datalen);
-    apr_table_set(r->notes, "H3POSTDATA", postdata);
-    apr_table_set(r->notes, "H3POSTDATALEN", apr_psprintf(r->pool, "%" APR_SIZE_T_FMT, datalen));
     return 0;
 }
 
-int on_end_stream(nghttp3_conn* /*h3conn*/, int64_t stream_id, void* conn_user_data, void* /*stream_user_data*/)
+int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    struct h3ssl* h3ssl = (struct h3ssl*)conn_user_data;
-    struct h3_request* h3req = get_h3_request(h3ssl, stream_id);
-
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_end_stream on %" PRIu64, stream_id);
-    h3req->endstream = 1;
     return 0;
 }
 
-int on_stream_close(nghttp3_conn* /*h3conn*/, int64_t stream_id, uint64_t /*app_error_code*/, void* conn_user_data, void* /*stream_user_data*/)
+int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    struct h3ssl* h3ssl = (struct h3ssl*)conn_user_data;
-    struct h3_request* h3req = get_h3_request(h3ssl, stream_id);
+    return 0;
+}
 
-    h3req->closestream = 1;
-    ap_log_error(APLOG_MARK, APLOG_TRACE8, 0, h3ssl->s, "on_stream_close on %" PRIu64, stream_id);
-    cleanup_h3_request(h3ssl, h3req, stream_id);
+int on_stream_close(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
+{
+    h3_session* session = user_data;
+    CHECK(session);
+    h3_stream* stream = stream_user_data;
+    if (stream)
+    {
+        stream->done = 1;
+        h3_session_queue_free(session, stream->ssl_stream);
+        stream->ssl_stream = NULL;
+        apr_hash_set(session->streams, &stream_id, sizeof(stream_id), NULL);
+    }
     return 0;
 }

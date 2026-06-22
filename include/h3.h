@@ -24,48 +24,26 @@
 
 #include <nghttp3/version.h>
 
-#ifndef PATH_MAX
-    #define PATH_MAX 255
-#endif
-#ifndef MAXHEADER
-    #define MAXHEADER 255
-#endif
+#define NV_SET(nva, i, n, v) \
+    do \
+    { \
+        (nva)[(i)].name = (uint8_t*)(n); \
+        (nva)[(i)].namelen = strlen(n); \
+        (nva)[(i)].value = (uint8_t*)(v); \
+        (nva)[(i)].valuelen = strlen(v); \
+        (nva)[(i)].flags = NGHTTP3_NV_FLAG_NONE; \
+    } while (0)
 
-#define MAXREQPERCON 10
+#define IS_H3_REQUEST(r) (apr_table_get((r)->connection->notes, "IS_mod_http3") != NULL)
 
-#define nghttp3_arraylen(A) (sizeof(A) / sizeof(*(A)))
+#define IS_PSEUDO_TOKEN(t) ((t) == NGHTTP3_QPACK_TOKEN__METHOD || (t) == NGHTTP3_QPACK_TOKEN__SCHEME || (t) == NGHTTP3_QPACK_TOKEN__PATH || (t) == NGHTTP3_QPACK_TOKEN__AUTHORITY)
 
-/* status and origin of the streams the possible values are: */
-#define CLIENTUNIOPEN (1 << 0)  /* unidirectional open by the client (2, 6 and 10) */
-#define CLIENTCLOSED (1 << 1)   /* closed by the client */
-#define CLIENTBIDIOPEN (1 << 2) /* bidirectional open by the client (something like 0, 4, 8 ...) */
-#define SERVERUNIOPEN (1 << 3)  /* unidirectional open by the server (3, 7 and 11) XXX: Not used ???? */
-#define SERVERCLOSED (1 << 4)   /* closed by the server (us) */
-#define TOBEREMOVED (1 << 5)    /* marked for removing in read_from_ssl_ids, */
-                                /* it will be removed after processing all events */
-#define ISLISTENER (1 << 6)     /* the stream is a listener from SSL_new_listener() */
-#define ISCONNECTION (1 << 7)   /* the stream is a connection from SSL_accept_connection() */
-#define RETRYWRITE (1 << 8)     /* the stream still has some retry to write */
+#define STREAM_CHUNK_BYTES 4096
 
-#define MAXSSL_IDS 2000
-#define MAXURL 255
-
-/* The different possible terminations */
-#define TERM_ECD (1 << 0)
-#define TERM_EC (1 << 1)
-#define TERM_HLF (1 << 2)
-#define TERM_ERR (1 << 3) /* EC and an error */
+/* Low two bits of a QUIC stream id encode initiator and direction (RFC 9000). */
+#define H3_SID_IS_BIDI(sid) (((sid) & 0x2) == 0)
+#define H3_SID_IS_SERVER(sid) (((sid) & 0x1) == 1)
 
 #define OSSL_NELEM(x) (sizeof(x) / sizeof((x)[0]))
-
-/* -1 is the SSL error, 0 no error all OK */
-#define WAIT_DONE 1
-#define WAIT_HEADERS 2 /* waiting for headers */
-#define WAIT_CLOSE 3   /* waiting for the other side to close */
-#define WAIT_RETRY 4   /* waiting for the other side to send more data */
-#define TERMINATING 5  /* the connection is terminating / waiting for ECD */
-#define CLOSE_DONE 6   /* both side cleanly closed, connection terminated */
-#define CLOSE_ERROR 7  /* client closed without request */
-#define ERROR_LOGIC 8  /* some internal states were incorrect, process we should exit or abort() */
 
 #endif /* H3_H */

@@ -21,38 +21,24 @@
 
 #include <httpd.h>
 
-#include <apr_pools.h>
+#include "h3_session.h"
 
-#include "h3_conn.h"
+/**
+ * Build a synthetic conn_rec for a freshly accepted QUIC session. The
+ * returned conn_rec has no underlying socket; it's used as a parent for
+ * request_recs handed to ap_process_request.
+ * @param session The owning session (provides server, pool, etc.).
+ * @return A new conn_rec, or NULL on pool allocation failure.
+ */
+conn_rec* h3_synth_conn(h3_session* session);
 
-struct h3_request
-{
-    int64_t id_bidi;       /* streamid used to read request and send response */
-    apr_pool_t* h3reqpool; /* sub pool of the h3ssl->c->pool */
-    request_rec* r;        /* request to Apache HTTPD */
-
-    uint64_t totalsendbyte; /* for nghttp3_conn_add_ack_offset */
-    int finsend;            /* server has send a packet with fin=1 */
-    int endstream;          /* on_end_stream() was called */
-    int closestream;        /* on_stream_close() was called */
-
-    int num_headers;          /* number of headers received (for debugging purpose) */
-    int end_headers_received; /* h3 header received call back called */
-    int datadone;             /* h3 has given openssl all the data of the response */
-
-    uint8_t* ptr_data; /* pointer to the data to send */
-    size_t ldata;      /* amount of bytes to send */
-    int offset_data;   /* offset to next data to send */
-
-    struct h3_request* next; /* the next request in the list */
-
-    h3_conn_ctx_t* h3ctx; /* pointer to request/response we are processing */
-};
-
-struct h3ssl;
-
-struct h3_request* get_h3_request(struct h3ssl* h3ssl, int64_t stream_id);
-struct h3_request* create_h3_request(struct h3ssl* h3ssl, int64_t stream_id);
-void cleanup_h3_request(struct h3ssl* h3ssl, struct h3_request* h3req, int64_t stream_id);
+/**
+ * Take a fully-readable h3_stream and run it through Apache's request
+ * pipeline: build request_rec, invoke ap_process_request, capture the
+ * response, and submit it back to nghttp3.
+ * @param session The owning session.
+ * @param h3s     The stream (must have complete request headers + body).
+ */
+void h3_process_request(h3_session* session, h3_stream* h3s);
 
 #endif /* H3_REQUEST_H */

@@ -23,12 +23,23 @@
 
 #include <apr_pools.h>
 
-#include <openssl/ssl.h>
+#include "h3_config.h"
 
-#include "h3_ssl.h"
+/**
+ * ap_child_init hook: bring up the QUIC listener in the first available
+ * child process. Idempotent across children: subsequent children detect the
+ * port is already owned and skip socket creation.
+ * @param pchild The child process pool.
+ * @param s      The server_rec for the listener's vhost.
+ */
+void h3_child_init(apr_pool_t* pchild, server_rec* s);
 
-int run_quic_server(apr_pool_t* p, server_rec* s, SSL_CTX* ctx, int fd, struct ssl_id* ssl_ids);
-int process_h3ssl(struct h3ssl* h3ssl, struct ssl_id* ssl_ids, server_rec* s, apr_pool_t* p);
-int server(apr_pool_t* p, server_rec* s, unsigned long port, const char* cert_path, const char* key_path);
+/**
+ * Child-stop hook: tear down the QUIC listener, join worker threads, and
+ * release the SSL context. No-op if the child never owned the listener.
+ * @param pool     The pool used for any teardown allocations.
+ * @param graceful Non-zero for a graceful stop, zero for immediate.
+ */
+void h3_c1_child_stopping(apr_pool_t* pool, int graceful);
 
 #endif /* H3_SERVER_H */
