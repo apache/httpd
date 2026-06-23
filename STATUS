@@ -105,7 +105,7 @@ THINGS THAT SHOULD BE CONSIDERED EARLY IN THE 2.6/3.0 DEVELOPMENT CYCLE:
     - mod_access_compat
     - mod_imagemap
     - mod_privileges
-    - mod_dav_lock
+    - mod_noloris
     - mod_ssl_ct
     - OS/2 support
     - Netware support
