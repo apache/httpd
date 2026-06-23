@@ -1,3 +1,2 @@
-  *) mod_ssl: Fix OpenSSL compatibility macros for X509_get0_notBefore,
-     X509_get0_notAfter, and X509_get0_serialNumber with OpenSSL < 1.1.
+  *) mod_ssl: Fix compatibility with OpenSSL < 1.1.
      [Craig Lorentzen <crlorent amazon.com>]
