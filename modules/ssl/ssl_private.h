@@ -290,8 +290,9 @@
 #define EVP_PKEY_up_ref(pk)        (CRYPTO_add(&(pk)->references, +1, CRYPTO_LOCK_EVP_PKEY))
 #define ASN1_STRING_get0_data(x)   ((x)->data)
 #define ASN1_STRING_length(x)      ((int)(x)->length)
-#define X509_get0_before(x)        X509_get_before(x)
-#define X509_get0_after(x)         X509_get_after(x)
+#define X509_get0_serialNumber(x) X509_get_serialNumber(x)
+#define X509_get0_notBefore(x)        X509_get_notBefore(x)
+#define X509_get0_notAfter(x)         X509_get_notAfter(x)
 #else
 void init_bio_methods(void);
 void free_bio_methods(void);
