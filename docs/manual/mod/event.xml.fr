@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1873381:1935408 (outdated) -->
+<!-- English Revision: 1935408 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -42,8 +42,15 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     <program>configure</program> lorsque vous compilez le programme
     <program>httpd</program>.</p>
 
-</summary>
+    <p>Lorsque ce module est construit en tant que module DSO, il peut être
+chargé à l’aide de la commande :</p>
 
+    <highlight language="config">
+LoadModule mpm_event_module modules/mod_mpm_event.so
+    </highlight>
+
+</summary>
+<seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a></seealso>
 <seealso><a href="worker.html">Le MPM worker</a></seealso>
 
 <section id="event-worker-relationship"><title>Relations avec le MPM Worker</title>
