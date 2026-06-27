@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1414098:1935408 (outdated) -->
+<!-- English Revision: 1935408 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -45,7 +45,16 @@ multi-processus multi-thread</description>
     nombre de threads lancés par chaque processus enfant et <directive
     module="mpm_common">MaxRequestWorkers</directive>, qui définit le nombre
     global maximum de threads qui peuvent être lancés.</p>
+
+    <p>Lorsqu’il est construit en tant que module DSO, ce module peut être
+    chargé avec la commande :</p>
+
+    <highlight language="config">
+LoadModule mpm_worker_module modules/mod_mpm_worker.so
+    </highlight>
+
 </summary>
+<seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></seealso>
 
