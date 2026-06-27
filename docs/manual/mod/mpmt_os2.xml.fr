@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874169:1935408 (outdated) -->
+<!-- English Revision: 1935408 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,6 +49,7 @@ OS/2</description>
     module="mpm_common">MinSpareThreads</directive> et <directive
     module="mpm_common">MaxSpareThreads</directive>.</p>
 </summary>
+<seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a></seealso>
 <seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise Apache</a></seealso>
 
