@@ -83,14 +83,15 @@ datagrammes UDP unicast</description>
     <p>Tout hôte qui peut atteindre le port de réception du mandataire peut
     aussi annoncer un URL de serveur dorsal arbitraire et faire que le
     mandataire envoie le trafic du client à ce dernier (et une adresse source
-    UDP est facile à usurper). Définissez la directive
-    <directive>ProxyBeaconSecret</directive> à la même valeur sur le mandataire
-    et sur chaque serveur dorsal de façon que les annonces soient authentifiées
-    avec un message-authentication code (MAC) avec clé et un horodatage.
-    Lorsqu’une phrase secrète est configurée, le mandataire rejette toute
-    annonce qui n’est pas valablement signée et récente. Si aucune phrase
-    secrète n’est configurée, le canal n’est <strong>pas authentifié</strong> et
-    le mandataire journalise un avertissement au démarrage.</p>
+    UDP est facile à usurper). La directive
+    <directive>ProxyBeaconSecret</directive> est par conséquent
+    <strong>requise</strong> : elle doit être définie avec la même valeur sur le
+    mandataire et sur chaque serveur dorsal, et le serveur refusera de démarrer
+    si elle est omise sur un des serveurs impliqués. Les annonces sont
+    authentifiées avec un code d’authentification de message avec clé (MAC) et
+    un horodatage, et le mandataire rejette toute annonce qui n’est pas signée
+    de manière valable ou qui est trop ancienne. Il n’existe pas de mode non
+    autentifié.</p>
 </note>
 
 <note><title>Confidentialité</title>
@@ -362,18 +363,22 @@ des serveurs dorsaux</description>
     (par exemple pour empêcher l’éviction d’un serveur dorsal éteint) sera
     rejeté.</p>
 
-    <p>Si la directive <directive>ProxyBeaconSecret</directive> est définie sur
-    le mandataire, chaque annonce doit comporter un MAC valable et récent, sous
-    peine d’être rejetée. Si les phrases secrètes du mandataire et d’un serveur
-    dorsal diffèrent, les annonces de ce dernier seront rejetées silencieusement
-    (et journalisées), ce qui donne l’impression que le serveur dorsal n’a
-    jamais atteint le répartiteur de charge.</p>
+    <p>Cette directive est requise sur chaque serveur impliqué dans le canal du
+    mandataire phare &mdash; le mandataire
+    (<directive>ProxyBeaconListen</directive>) et chaque serveur dorsal
+    (<directive>ProxyBeaconAddress</directive>). Si elle est omise sur un de ces
+    serveurs, le serveur refusera de démarrer ; il n’existe pas de mode non
+    authentifié.</p>
 
-    <p>Si aucune phrase secrète n’est configurée, le canal n’est pas authentifié
-    et le mandataire émet un avertissement lorsqu’il commence à écouter. Étant
-    donné que la phrase secrète est stockée dans le fichier de configuration,
-    définissez les permissions de ce dernier comme s’il s’agissait d’une clé
-    privée.</p>
+    <p>Toute annonce dont le MAC n’est pas valable et récent sera rejetée. Si
+    les phrases secrètes du mandataire et d’un serveur dorsal diffèrent, les
+    annonces de ce dernier seront rejetées silencieusement (et journalisées), ce
+    qui donne l’impression que le serveur dorsal n’a jamais atteint le
+    répartiteur de charge.</p>
+
+    <p>Étant donné que la phrase secrète est stockée dans le fichier de
+    configuration, définissez les permissions de ce dernier comme s’il
+    s’agissait d’une clé privée.</p>
 
     <note><title>Synchronisation de l’horloge</title>
     <p>La protection contre la réémission basée sur l’horodatage compare le
