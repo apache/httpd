@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1935184 -->
+<!-- English Revision: 1935440 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -532,7 +532,7 @@ MDomain example2.org auto
 		à l'aide des directives <directive module="mod_md">MDRetryDelay</directive> et
 		<directive module="mod_md">MDRetryFailover</directive>. Par défaut, une demie
 		journée d'essais infructueux est considérée comme un échec.
-            </p><p>
+        </p><p>
                 Tous les autres réglages s'appliquent à chacune de ces URLs. Il
 		est ainsi par exemple impossible d'en avoir deux avec des
 		directives <directive module="mod_md">MDExternalAccountBinding</directive>
@@ -626,15 +626,53 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>À partir de la version 2.4.69, un mandataire peut être
+	configuré séparément pour chaque MDomain.</compatibility>
         <usage>
-	    <p>Cette directive permet de spécifier un serveur http mandataire
+	    <p>Utiliser l’URL du serveur http mandataire direct donné
 	    pour se connecter à l'autorité de certification spécifiée via
 	    <directive module="mod_md">MDCertificateAuthority</directive>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
-	    via un serveur mandataire.
+	    via un mandataire direct.
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxyCACertificateFile</name>
+        <description>Définition des certificats racine (CA) à utiliser pour les
+	connexions TLS avec le mandataire http.</description>
+        <syntax>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></syntax>
+        <default>MDHttpProxyCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.69 du serveur HTTP
+	Apache</compatibility>
+         <usage>
+            <p>
+                Cette directive est utilisée pour les connexions avec le
+		mandataire HTTPS direct (directive <directive
+		module="mod_md">MDHttpProxy</directive>). Elle est requise si le
+		certificat du mandataire HTTPS ne peut pas être vérifié en
+		utilisant le magasin général de la racine du CA. Cela se produit
+		parfois dans les environnements de test ou au sein d’une
+		entreprise.
+            </p>
+            <p>
+                Le certificat du serveur ACME est vérifié avec les certificats
+		racine définis via la directive <directive
+		module="mod_md">MDCACertificateFile</directive> ; vous serez
+		donc amené à utiliser les deux définitions.
+            </p>
+            <p>
+                Utilisez « none » comme chemin pour désactiver cette
+		fonctionnalité explicitement.
+            </p>
+	    <p> Cette directive peut être configurée séparément pour chaque
+	    <directive module="mod_md">MDomain</directive>.  </p>
+         </usage>
+     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDMember</name>
@@ -1923,6 +1961,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Depuis la version 2.4.69, cette directive peut être
+	définie séparément pour chaque MDomain.</compatibility>
         <usage>
             <p>
                 Cette directive est principalement utilisée dans les

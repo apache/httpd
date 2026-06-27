@@ -52,8 +52,16 @@ particulièrement adapté comme mandataire inverse</description>
     <program>httpd</program>, ou construisez le en tant que module chargeable
     avec <code>--enable-mpms-shared=motorz</code>.</p>
 
+    <p>Lorsque ce module est construit en tant que module DSO, il peut être
+    chargé avec la commande :</p>
+
+    <highlight language="config">
+LoadModule mpm_motorz_module modules/mod_mpm_motorz.so
+    </highlight>
+
 </summary>
 
+<seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a></seealso>
 <seealso><a href="event.html">Le MPM event</a></seealso>
 <seealso><a href="worker.html">Le MPM worker</a></seealso>
 <seealso><a href="prefork.html">Le MPM prefork</a></seealso>
@@ -256,9 +264,12 @@ serveur HTTP Apache</a></seealso>
     nombre de threads sondeurs pour chaque processus enfant. Chaque thread
     sondeur possède ses propres domaine de sondage, sonnerie de chronomètre et
     liste de recyclage de connexion, et gère une partie des connexions du
-    processus enfant ; ajouter des threads sondeurs augmente donc la fréquence à
-    laquelle un seul processus enfant peut accepter des connexions et répartir
-    les évènements d’entrée/sortie et les expirations de délai.</p>
+    processus enfant. Comme chaque thread sondeur accepte les connexions de
+    manière indépendante et répartit les évènements d’entrée/sortie et les
+    expirations de délai au sein du jeu de threads de travail, ajouter des
+    threads sondeurs augmente la fréquence à laquelle un seul processus enfant
+    peut gérer ces opérations en parallèle, plutôt que de les sérialiser sur un
+    seul thread sondeur.</p>
 
     <p>Une valeur de <code>0</code> (la valeur par défaut) signifie que le
     nombre de threads sondeurs est calculé <em>automatiquement</em> : il est
