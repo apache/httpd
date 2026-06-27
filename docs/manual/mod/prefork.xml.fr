@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1137744:1935407 (outdated) -->
+<!-- English Revision: 1935407 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -49,7 +49,16 @@ processus, sans thread</description>
     assez grande pour pouvoir traiter autant de requêtes simultanées que
     vous pensez recevoir, mais assez petite pour conserver suffisamment
     de mémoire RAM pour tous les processus.</p>
+
+    <p>Lorsqu’il est construit en tant que module DSO, ce module peut être
+    chargé avec la commande :</p>
+
+    <highlight language="config">
+LoadModule mpm_prefork_module modules/mod_mpm_prefork.so
+    </highlight>
+
 </summary>
+<seealso><a href="../mpm.html">Modules multi-processus(MPMs)</a></seealso>
 <seealso><a href="../bind.html">Définition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></seealso>
 

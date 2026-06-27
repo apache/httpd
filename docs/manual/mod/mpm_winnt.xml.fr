@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1673947:1935407 (outdated) -->
+<!-- English Revision: 1935407 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -109,6 +109,7 @@ AcceptFilter https none
 
 </summary>
 
+<seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a></seealso>
 <seealso><a href="../platform/windows.html">Utiliser le serveur HTTP
 Apache sous Microsoft Windows</a></seealso>
 
