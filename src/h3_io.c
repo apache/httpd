@@ -191,6 +191,23 @@ static void service_connection(h3_io_t* io, h3_session* session)
     server_rec* s = session->s;
     SSL* conn = session->ssl_conn;
 
+    while (!SSL_is_init_finished(conn) && io->thread_running)
+    {
+        wait_for_event(io->udp_fd, conn, 0);
+        if (!tick_engine(conn))
+        {
+            break;
+        }
+    }
+
+    if (!SSL_is_init_finished(conn))
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "QUIC handshake did not complete");
+        h3_session_destroy(session);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
+        return;
+    }
+
     if (h3_session_create_control_streams(session) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_session_create_control_streams failed");
