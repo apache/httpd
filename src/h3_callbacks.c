@@ -1,7 +1,11 @@
 /*
+ * Copyright 2024-2025 The OpenSSL Project Authors. All Rights Reserved.
  * Copyright (c) 2026 The mod_http3 Project Authors. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
+ *
+ * This file is derived from code originally distributed as part of
+ * the OpenSSL project and has been modified for use in mod_http3.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

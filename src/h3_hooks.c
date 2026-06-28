@@ -62,5 +62,7 @@ int h3_hook_http_create_request(request_rec* r)
     ap_add_input_filter_handle(h3_proto_in_filter_handle, NULL, r, r->connection);
     ap_add_input_filter_handle(h3_net_in_filter_handle, NULL, NULL, r->connection);
     ap_add_output_filter_handle(h3_net_out_filter_handle, NULL, NULL, r->connection);
+    r->output_filters = r->connection->output_filters;
+    r->proto_output_filters = r->connection->output_filters;
     return OK;
 }

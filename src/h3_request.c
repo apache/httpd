@@ -221,6 +221,6 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     }
     else
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %lld status=%d body=%zu", (long long)sid, status, body_len);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "queued response for stream %" APR_INT64_T_FMT ", status=%d, body=%" APR_SIZE_T_FMT, sid, status, body_len);
     }
 }

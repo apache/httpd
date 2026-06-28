@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include "h3_version.h"
 #include <httpd.h>
 
 #include <http_config.h>
@@ -143,7 +144,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         teardown(io);
         return APR_EGENERAL;
     }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "pid=%d port=%d (QUIC listener)", getpid(), (int)conf->h3_port);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "mod_http3 loaded with version: %d (%s) on pid=%d port=%d", MOD_HTTP3_VERSION, MOD_HTTP3_VERSION_STRING, getpid(), (int)conf->h3_port);
     child_h3_io = io;
     return APR_SUCCESS;
 }
