@@ -22,9 +22,6 @@
 #include "ap_slotmem.h"
 #include "heartbeat.h"
 
-#include <errno.h>
-#include <limits.h>
-
 #ifndef LBM_HEARTBEAT_MAX_LASTSEEN
 /* If we haven't seen a heartbeat in the last N seconds, don't count this IP
  * as allive.
