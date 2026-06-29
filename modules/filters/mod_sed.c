@@ -489,7 +489,7 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
 
 static const char *sed_add_expr(cmd_parms *cmd, void *cfg, const char *arg)
 {
-    int offset = (int) (long) cmd->info;
+    apr_size_t offset = (apr_size_t) cmd->info;
     sed_expr_config *sed_cfg =
                 (sed_expr_config *) (((char *) cfg) + offset);
     if (compile_sed_expr(sed_cfg, cmd, arg) != APR_SUCCESS) {
