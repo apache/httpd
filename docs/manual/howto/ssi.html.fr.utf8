@@ -72,11 +72,8 @@ statiques.</p>
     que le module <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> reconna&icirc;t et &eacute;value avant que la
     page ne soit envoy&eacute;e au client. Elle sont de la forme suivante&nbsp;:</p>
 
-<div class="example"><p><code>
-+</code></p><pre class="prettyprint lang-html">+&lt;!--#echo var="DATE_LOCAL" --&gt;
-+</pre>
-<p><code>
-+</code></p></div>
+<div class="example"><pre class="prettyprint lang-html">&lt;!--#echo var="DATE_LOCAL" --&gt;</pre>
+</div>
 
     <p>Lorsque la page est servie, ce fragment est remplac&eacute; par sa valeur&nbsp;:</p>
     
