@@ -29,8 +29,6 @@
 <a href="../ja/howto/cgi.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#intro">Introduction</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#configuring">Configurer httpd pour autoriser CGI</a></li>
@@ -60,24 +58,34 @@
 <h2 id="configuring">Configurer httpd pour autoriser CGI <a title="Lien permanent" href="#configuring" class="permalink">&para;</a></h2>
     
 
-    <p>httpd doit &ecirc;tre configur&eacute; pour permettre l'ex&eacute;cution des
-    programmes CGI, pour que vos programmes CGI puissent fonctionner
-    correctement. Il existe plusieurs m&eacute;thodes pour y parvenir.</p>
+    <p>La configuration de httpd doit autoriser l&rsquo;ex&eacute;cution de CGI pour que les
+    programmes CGI fonctionnent. Il existe plusieurs mani&egrave;res d&rsquo;y parvenir, qui
+    sont d&eacute;crites ci-apr&egrave;s.</p>
 
-    <div class="warning">Note: si httpd a &eacute;t&eacute; compil&eacute; avec le support
-    des modules partag&eacute;s (DSO), vous devez vous assurer que le module CGI est
-    charg&eacute; ; vous devez pour cela v&eacute;rifier que la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> correspondante n'a pas &eacute;t&eacute;
-    comment&eacute;e dans votre <code>httpd.conf</code>. Une directive correcte
-    doit ressembler &agrave; ceci :
+    <p>La prise en charge de CGI est assur&eacute;e par deux modules&nbsp;:
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> et <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>.
+    <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> utilise un d&eacute;mon externe d&eacute;di&eacute; pour g&eacute;rer les
+    processus CGI et est requis lorsque httpd utilise un MPM thread&eacute; (tel que
+    <code class="module"><a href="../mod/event.html">event</a></code> ou <code class="module"><a href="../mod/worker.html">worker</a></code>). <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>
+    ex&eacute;cute les programmes CGI directement depuis le processus du serveur et est
+    utilis&eacute; avec les MPMs non thread&eacute;s tels que <code class="module"><a href="../mod/prefork.html">prefork</a></code>, ou
+    sous Windows. Du point de vue de la configuration, ils sont interchangeables
+    &mdash;&nbsp;les directives sont les m&ecirc;mes. Voir les pages de r&eacute;f&eacute;rence de
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> et <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> pour les d&eacute;tails de
+    l&rsquo;impl&eacute;mentation.</p>
 
-    <pre class="prettyprint lang-config">LoadModule cgid_module modules/mod_cgid.so</pre>
+    <div class="warning">Si httpd a &eacute;t&eacute; compil&eacute; avec le support des modules
+    partag&eacute;s (DSO), vous devez vous assurer que le module appropri&eacute; est charg&eacute; ;
+    vous devez pour cela v&eacute;rifier que la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> correspondante n'a pas &eacute;t&eacute; comment&eacute;e
+    dans votre <code>httpd.conf</code>. Pour un MPM thread&eacute;&nbsp;:
 
+<div class="example"><pre class="prettyprint lang-config">LoadModule cgid_module modules/mod_cgid.so</pre>
+</div>
 
+     Pour Windows, ou un MPM non thread&eacute; comme prefork&nbsp;:
 
-     Sous Windows, ou si l'on utilise un module MPM non-thread&eacute; comme prefork,
-     une directive correctement configur&eacute;e sera du style :
-
-    <pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
+<div class="example"><pre class="prettyprint lang-config">LoadModule cgi_module modules/mod_cgi.so</pre>
+</div>
 </div>
 
 
@@ -93,8 +101,8 @@
       <p>La directive <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> se pr&eacute;sente comme suit
       :</p>
 
-      <pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
-
+<div class="example"><pre class="prettyprint lang-config">ScriptAlias "/cgi-bin/" "/usr/local/apache2/cgi-bin/"</pre>
+</div>
 
       <p>Cet exemple est tir&eacute; de votre fichier de configuration
       <code>httpd.conf</code> par d&eacute;faut, si vous avez install&eacute; httpd
@@ -115,12 +123,11 @@
       tant que programme CGI.</p>
 
       <p>Par exemple, si une requ&ecirc;te pour l'URL
-      <code>http://www.example.com/cgi-bin/test.pl</code> est
-      effectu&eacute;e, httpd tentera d'ex&eacute;cuter le fichier
-      <code>/usr/local/apache2/cgi-bin/test.pl</code> et en renverra la
-      sortie. Bien entendu, le fichier doit exister, &ecirc;tre ex&eacute;cutable, et
-      retourner sa sortie d'une mani&egrave;re particuli&egrave;re, sinon httpd
-      renverra un message d'erreur.</p>
+      <code>http://www.example.com/cgi-bin/test.py</code> est effectu&eacute;e, httpd
+      tentera d'ex&eacute;cuter le fichier
+      <code>/usr/local/apache2/cgi-bin/test.py</code> et en renverra la sortie.
+      Le fichier doit exister, &ecirc;tre ex&eacute;cutable, et produire une sortie sous le
+      format attendu, sinon httpd renverra un message d'erreur.</p>
     
 
     <h3 id="nonscriptalias">CGI en dehors des r&eacute;pertoires ScripAlias</h3>
@@ -158,20 +165,20 @@
       l'ex&eacute;cution des programmes CGI est permise depuis un r&eacute;pertoire
       particulier :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
-    Options +ExecCGI
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/usr/local/apache2/htdocs/somedir"&gt;
+Options +ExecCGI
 &lt;/Directory&gt;</pre>
-
+</div>
 
       <p>La directive ci-dessus indique &agrave; httpd qu'il doit permettre
       l'ex&eacute;cution des fichiers CGI. Vous devez aussi indiquer au serveur
       quels fichiers sont des fichiers CGI. La directive <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> suivante indique au
       serveur qu'il doit traiter tous les fichiers poss&eacute;dant une
-      extension <code>cgi</code> ou <code>pl</code> en tant que
+      extension <code>cgi</code> ou <code>py</code> en tant que
       programmes CGI :</p>
 
-      <pre class="prettyprint lang-config">AddHandler cgi-script .cgi .pl</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AddHandler cgi-script .cgi .py</pre>
+</div>
     
 
     <h3 id="htaccess">Fichiers .htaccess</h3>
@@ -191,21 +198,21 @@
       r&eacute;pertoire utilisateur, vous pouvez utiliser la configuration
       suivante :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
-    Options +ExecCGI
-    AddHandler cgi-script .cgi
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html"&gt;
+Options +ExecCGI
+AddHandler cgi-script .cgi
 &lt;/Directory&gt;</pre>
-
+</div>
 
       <p>Pour indiquer un sous-r&eacute;pertoire <code>cgi-bin</code> d'un
       r&eacute;pertoire utilisateur o&ugrave; tout fichier sera trait&eacute; en tant que
       programme CGI, vous pouvez utiliser ceci :</p>
 
-      <pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
-    Options ExecCGI
-    SetHandler cgi-script
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/home/*/public_html/cgi-bin"&gt;
+Options ExecCGI
+SetHandler cgi-script
 &lt;/Directory&gt;</pre>
-
+</div>
 
     
 
@@ -214,8 +221,8 @@
 <h2 id="writing">Ecrire un programme CGI <a title="Lien permanent" href="#writing" class="permalink">&para;</a></h2>
     
 
-    <p>Il y a deux diff&eacute;rences principales entre la programmation
-    "standard" et la programmation CGI.</p>
+    <p>La programmation CGI diff&egrave;re de la programmation
+    "standard" sur deux points.</p>
 
     <p>En premier lieu, toute sortie de votre programme CGI doit &ecirc;tre
     pr&eacute;c&eacute;d&eacute;e d'un en-t&ecirc;te <a class="glossarylink" href="../glossary.html#mime-type" title="voir glossaire">MIME-type</a>. Il s'agit d'un
@@ -229,7 +236,7 @@
     <p>En second lieu, votre sortie doit &ecirc;tre en HTML, ou tout autre
     format qu'un navigateur est en mesure d'afficher. La plupart du
     temps, il s'agira de HTML, mais occasionnellement, vous pouvez &ecirc;tre
-    amen&eacute; &agrave; &eacute;crire un programme CGI qui renvoie une image gif, ou un
+    amen&eacute; &agrave; &eacute;crire un programme CGI qui renvoie une image GIF, ou un
     autre type de contenu non-HTML.</p>
 
     <p>A part ces deux diff&eacute;rences, un programme CGI ressemblera &agrave; tout
@@ -241,32 +248,26 @@
       <p>L'exemple suivant est un exemple de programme CGI qui permet
       d'afficher une ligne de caract&egrave;res dans votre navigateur. Ecrivez
       ce qui suit, enregistrez le dans un fichier nomm&eacute;
-      <code>premier.pl</code>, et placez le dans votre r&eacute;pertoire
+      <code>premier.py</code>, et placez le dans votre r&eacute;pertoire
       <code>cgi-bin</code>.</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl
-print "Content-type: text/html\n\n";
-print "Hello, World.";</pre>
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3
+print("Content-type: text/html\n")
+print("Hello, World.")</pre>
+</div>
 
-
-      <p>M&ecirc;me si Perl ne vous est pas familier, vous devriez &ecirc;tre
-      capable de comprendre le fonctionnement de ce programme. La
-      premi&egrave;re ligne indique &agrave; httpd (ou &agrave; toute interface &agrave; partir de
-      laquelle le programme s'ex&eacute;cute) que ce programme peut &ecirc;tre
-      ex&eacute;cut&eacute; en fournissant son fichier &agrave; l'interpr&eacute;teur
-      <code>/usr/bin/perl</code>. La seconde ligne affiche la
-      d&eacute;claration du type de contenu consid&eacute;r&eacute;, suivie de deux paires
-      "Retour chariot - Nouvelle ligne". Ceci a pour effet d'ins&eacute;rer une
-      ligne vide apr&egrave;s l'en-t&ecirc;te pour marquer la fin des en-t&ecirc;tes HTTP,
-      et le d&eacute;but du corps du document. La troisi&egrave;me ligne affiche la
-      cha&icirc;ne de caract&egrave;res "Bonjour tout le monde . . .". Et c'est tout
-      ce dont vous avez besoin.</p>
+      <p>La premi&egrave;re ligne indique au syst&egrave;me d&rsquo;exploitation quel interpr&eacute;teur
+      utiliser. La premi&egrave;re invocation de print affiche l&rsquo;en-t&ecirc;te content-type
+      suivi d&rsquo;une ligne vide (le <code>\n</code> dans la cha&icirc;ne et la nouvelle
+      ligne qu&rsquo;ajoute <code>print()</code>), qui mat&eacute;rialise la fin des en-t&ecirc;tes
+      HTTP. La seconde invocation de print affiche le corps. C&rsquo;est l&agrave; tout ce
+      dont un programme CGI a besoin pour produire une r&eacute;ponse.</p>
 
       <p>Si vous ouvrez votre navigateur favori et lui indiquez
       l'adresse</p>
 
       <div class="example"><p><code>
-        http://www.example.com/cgi-bin/premier.pl
+        http://www.example.com/cgi-bin/premier.py
       </code></p></div>
 
       <p>ou toute autre URL correspondant &agrave; votre programme CGI, Vous
@@ -281,9 +282,8 @@ print "Hello, World.";</pre>
 <h2 id="troubleshoot">Mais &ccedil;a ne marche toujours pas ! <a title="Lien permanent" href="#troubleshoot" class="permalink">&para;</a></h2>
     
 
-    <p>Vous devriez voir au moins une des quatre sorties suivantes dans
-    votre navigateur lorsque vous essayez d'acc&eacute;der &agrave; votre programme
-    CGI depuis le web :</p>
+    <p>Quatre sorties basiques pourront appara&icirc;tre dans votre navigateur lorsque
+    vous essayez d'acc&eacute;der &agrave; votre programme CGI depuis le web :</p>
 
     <dl>
       <dt>Le flux de sortie de votre programme CGI</dt>
@@ -328,9 +328,8 @@ print "Hello, World.";</pre>
       <code>nobody</code>, il suffit de lui attribuer des droits
       d'ex&eacute;cution pour tout le monde :</p>
 
-      <div class="example"><p><code>
-        chmod a+x premier.pl
-      </code></p></div>
+<div class="example"><pre class="prettyprint lang-bash">chmod a+x first.py</pre>
+</div>
 
       <p>En outre, si votre programme doit pouvoir acc&eacute;der en lecture
       et/ou &eacute;criture &agrave; d'autres fichiers, ces derniers devront avoir les
@@ -357,12 +356,12 @@ print "Hello, World.";</pre>
       CGI.</p>
 
       <p>Un exemple typique de sp&eacute;cification de programme est le chemin
-      vers l'interpr&eacute;teur de script (souvent <code>perl</code>) que l'on
+      vers l'interpr&eacute;teur de script (souvent <code>python3</code>) que l'on
       trouve &agrave; la premi&egrave;re ligne de votre programme CGI et qui va
       ressembler &agrave; ceci :</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl</pre>
-
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3</pre>
+</div>
 
       <p>Assurez-vous qu'il s'agit bien du chemin correct vers
       l'interpr&eacute;teur.</p>
@@ -407,10 +406,10 @@ print "Hello, World.";</pre>
 
       <div class="example"><p><code>
       cd /usr/local/apache2/cgi-bin<br>
-      ./premier.pl
+      ./premier.py
       </code></p></div>
 
-      <p>(N'invoquez pas l'interpr&eacute;teur <code>perl</code>. Le shell et
+      <p>(N'invoquez pas l'interpr&eacute;teur <code>python3</code>. Le shell et
       httpd doivent &ecirc;tre capable de le d&eacute;terminer &agrave; partir de <a href="#pathinformation">l'information sur le chemin</a> situ&eacute;e sur
       la premi&egrave;re ligne du script.)</p>
 
@@ -456,7 +455,7 @@ print "Hello, World.";</pre>
 
       <p>Si vous ne ma&icirc;trisez pas le fonctionnement de suexec, il vous
       est d&eacute;conseill&eacute; de l'utiliser. Pour d&eacute;sactiver suexec, supprimer
-      simplement (ou renommez) l'ex&eacute;cutable <code class="program"><a href="../programs/suexec.html">suexec</a></code>
+      (ou renommez) l'ex&eacute;cutable <code class="program"><a href="../programs/suexec.html">suexec</a></code>
       point&eacute; par <code>SUEXEC_BIN</code> et red&eacute;marrez le serveur. Si
       apr&egrave;s une lecture de <a href="../suexec.html">suexec</a>, vous
       d&eacute;cidez quand-m&ecirc;me de l'utiliser, tapez la commande <code>suexec
@@ -501,7 +500,7 @@ print "Hello, World.";</pre>
       variables requises se trouve dans la <a href="https://www.rfc-editor.org/rfc/rfc3875">RFC 3875</a> (Common Gateway
       Interface).</p>
 
-      <p>Ce programme CGI basique en Perl permet d'afficher toutes les
+      <p>Ce programme CGI basique en Python permet d'afficher toutes les
       variables d'environnement qui sont &eacute;chang&eacute;es. Deux programmes
       similaires sont fournis avec la distribution de httpd et situ&eacute;s
       dans le r&eacute;pertoire <code>cgi-bin</code>.
@@ -513,15 +512,13 @@ print "Hello, World.";</pre>
       variables d'environnement</a> aux variables de base fournies par
       d&eacute;faut.</p>
 
-      <pre class="prettyprint lang-perl">#!/usr/bin/perl
-use strict;
-use warnings;
+<div class="example"><pre class="prettyprint lang-python">#!/usr/bin/env python3
+import os
 
-print "Content-type: text/html\n\n";
-foreach my $key (keys %ENV) {
-    print "$key --&gt; $ENV{$key}&lt;br&gt;";
-}</pre>
-
+print("Content-type: text/html\n")
+for key, value in os.environ.items():
+print(f"{key} --&gt; {value}&lt;br&gt;")</pre>
+</div>
     
 
     <h3 id="stdin">STDIN et STDOUT</h3>
@@ -579,15 +576,13 @@ foreach my $key (keys %ENV) {
     partie du travail de base pour vous. Ceci vous permettra de diminuer
     le nombre d'erreurs et d'acc&eacute;l&eacute;rer le d&eacute;veloppement.</p>
 
-    <p>Si vous &eacute;crivez des programmes CGI en Perl, des modules sont &agrave;
-    votre disposition &agrave; <a href="http://www.cpan.org/">CPAN</a>. A ce
-    sujet, le module le plus populaire est <code>CGI.pm</code>. Vous
-    pouvez aussi essayer <code>CGI::Lite</code>, qui impl&eacute;mente les
-    fonctionnalit&eacute;s strictement n&eacute;cessaires, mais suffisantes pour
-    la majorit&eacute; des programmes.</p>
-
-    <p>Si vous &eacute;crivez des programmes CGI en C, vous disposez de nombreuses
-    options. L'une d'elles est la biblioth&egrave;que <code>CGIC</code> de <a href="https://web.mit.edu/wwwdev/www/cgic.html">https://web.mit.edu/wwwdev/www/cgic.html</a>.</p>
+    <p>Si vous &eacute;crivez des programmes CGI en Python, le module <code>cgi</code>
+    de la biblioth&egrave;que standard (obsol&egrave;te dans Python 3.11, supprim&eacute; dans Python
+    3.13) prenait en charge l&rsquo;analyse de formulaire. Avec les versions actuelles
+    de Python, utilisez le module <code>urllib.parse</code> pour analyser les
+    cha&icirc;ne de param&egrave;tres et les donn&eacute;es de formulaire. Pour des applications
+    plus complexes, orientez-vous vers un cadriciel WSGI l&eacute;ger, bien que cela
+    aille au-del&agrave; du domaine de la CGI traditionnelle.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="moreinfo">Pour plus d'informations <a title="Lien permanent" href="#moreinfo" class="permalink">&para;</a></h2>
@@ -605,10 +600,10 @@ foreach my $key (keys %ENV) {
     programme CGI a &eacute;t&eacute; &eacute;crit, et, si possible, son code source. Ceci
     permettra une r&eacute;solution plus ais&eacute;e de votre probl&egrave;me.</p>
 
-    <p>Notez que les questions &agrave; propos de probl&egrave;mes CGI ne doivent
+    <div class="note">Les questions &agrave; propos de probl&egrave;mes CGI ne doivent
     <strong>jamais</strong> &ecirc;tre post&eacute;es dans la base de donn&eacute;es de
     bogues de httpd, &agrave; moins que vous ne soyez s&ucirc;r d'avoir trouv&eacute; un
-    probl&egrave;me dans le code source de httpd.</p>
+    probl&egrave;me dans le code source de httpd.</div>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/howto/cgi.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

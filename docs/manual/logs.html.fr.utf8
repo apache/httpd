@@ -210,7 +210,8 @@
     suivante consiste &agrave; analyser ces informations de fa&ccedil;on &agrave; pouvoir en
     extraire des statistiques utiles. L'analyse de journaux en g&eacute;n&eacute;ral est en
     dehors du sujet de ce document et ne fait pas vraiment partie int&eacute;grante
-    du travail du serveur web lui-m&ecirc;me.</p>
+    du travail du serveur web lui-m&ecirc;me.
+    </p>
 
     <p>Diff&eacute;rentes versions du d&eacute;mon Apache httpd utilisaient d'autres modules
     et directives pour contr&ocirc;ler la journalisation des acc&egrave;s, &agrave; l'instar de
@@ -233,7 +234,7 @@
       <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common</pre>
+CustomLog "logs/access_log" common</pre>
 
 
       <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
@@ -357,13 +358,14 @@ CustomLog logs/access_log common</pre>
 
         <dt><code>200</code> (<code>%&gt;s</code>)</dt>
 
-	<dd>C'est le code de statut que le serveur retourne au client. Cette
+        <dd>C'est le code de statut que le serveur retourne au client. Cette
 	information est tr&egrave;s importante car elle indique si la requ&ecirc;te a fait
-	l'objet d'une r&eacute;ponse positive (codes commen&ccedil;ant par 2), une redirection
-	(codes commen&ccedil;ant par 3), une erreur due au client (codes commen&ccedil;ant par
-	4), ou une erreur due au serveur (codes commen&ccedil;ant par 5). Vous
-	trouverez la liste compl&egrave;te des codes de statut possibles dans la
-	sp&eacute;cification HTTP (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
+	l'objet d'une r&eacute;ponse positive (codes commen&ccedil;ant par 2), une
+	redirection (codes commen&ccedil;ant par 3), une erreur due au client (codes
+	commen&ccedil;ant par 4), ou une erreur due au serveur (codes commen&ccedil;ant
+	par 5). Vous trouverez la liste compl&egrave;te des codes de statut possibles
+	dans la sp&eacute;cification
+	HTTP (<a href="https://www.rfc-editor.org/rfc/rfc2616">RFC 2616</a>) (RFC2616 section 10).</dd>
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
@@ -383,7 +385,7 @@ CustomLog logs/access_log common</pre>
       comme suit :</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
-CustomLog log/access_log combined</pre>
+CustomLog "log/access_log" combined</pre>
 
 
       <p>Ce format est identique au Common Log Format, avec deux champs
@@ -434,9 +436,9 @@ CustomLog log/access_log combined</pre>
       <code>AgentLog</code>.</p>
 
       <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
-CustomLog logs/access_log common
-CustomLog logs/referer_log "%{Referer}i -&gt; %U"
-CustomLog logs/agent_log "%{User-agent}i"</pre>
+CustomLog "logs/access_log" common
+CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
+CustomLog "logs/agent_log" "%{User-agent}i"</pre>
 
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
@@ -467,7 +469,7 @@ SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requ&ecirc;tes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requ&ecirc;tes
-CustomLog logs/access_log common env=!dontlog</pre>
+CustomLog "logs/access_log" common env=!dontlog</pre>
 
 
       <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
@@ -475,8 +477,8 @@ CustomLog logs/access_log common env=!dontlog</pre>
       utilisateurs dans un autre journal.</p>
 
       <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english
-        CustomLog logs/english_log common env=english
-        CustomLog logs/non_english_log common env=!english</pre>
+        CustomLog "logs/english_log" common env=english
+        CustomLog "logs/non_english_log" common env=!english</pre>
 
 
 	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
@@ -485,7 +487,7 @@ CustomLog logs/access_log common env=!dontlog</pre>
 
       <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
-CustomLog logs/access_log common-cache</pre>
+CustomLog "logs/access_log" common-cache</pre>
 
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'ex&eacute;cuter avant
@@ -523,106 +525,105 @@ LogFormat "%!200,304,302{Referer}i" refererlog</pre>
 <h2 id="rotation">Rotation des journaux <a title="Lien permanent" href="#rotation" class="permalink">&para;</a></h2>
     
 
-    <p>M&ecirc;me dans le cas d'un serveur mod&eacute;r&eacute;ment sollicit&eacute;, la quantit&eacute;
-    d'informations stock&eacute;es dans les fichiers journaux est tr&egrave;s importante.
-    Le fichier journal des acc&egrave;s grossit en g&eacute;n&eacute;ral d'1 Mo ou plus toutes
-    les 10000 requ&ecirc;tes. Il est par cons&eacute;quent n&eacute;cessaire d'effectuer
-    p&eacute;riodiquement la rotation des journaux en d&eacute;pla&ccedil;ant ou supprimant les
-    fichiers correspondants. On ne peut pas le faire pendant que le serveur
-    est en cours d'ex&eacute;cution, car Apache httpd va continuer &agrave; &eacute;crire dans l'ancien
-    fichier journal aussi longtemps qu'il le maintiendra ouvert.
-    C'est pourquoi le serveur doit &ecirc;tre
-    <a href="stopping.html">red&eacute;marr&eacute;</a> apr&egrave;s le d&eacute;placement ou la
-    suppression des fichiers journaux de fa&ccedil;on &agrave; ce qu'il en ouvre
-    de nouveaux.</p>
+    <p>M&ecirc;me sur un serveur mod&eacute;r&eacute;ment sollicit&eacute;, les fichiers journaux
+    grossissent rapidement &mdash;&nbsp;le journal des acc&egrave;s cro&icirc;t &agrave; peu pr&egrave;s de 1 Mo ou
+    plus toutes les 10000 requ&ecirc;tes. Sans rotation, les journaux consomment de
+    plus en plus d&rsquo;espace disque et deviennent difficiles &agrave; analyser. Il est
+    donc recommand&eacute; de configurer une rotation automatique des journaux d&egrave;s le
+    d&eacute;part.</p>
 
-    <p>Avec un red&eacute;marrage <em>graceful</em>, on peut faire en sorte que le
-    serveur ouvre de nouveaux fichiers journaux sans perdre de connexions
-    existantes ou en cours avec les clients. Cependant, pour que ceci soit
-    possible, le serveur doit continuer &agrave; &eacute;crire dans les anciens fichiers
-    journaux pendant qu'il termine le traitement des requ&ecirc;tes en cours.
-    Il est donc n&eacute;cessaire d'attendre un certain temps apr&egrave;s le r&eacute;d&eacute;marrage
-    avant d'effectuer tout traitement sur les fichiers journaux. Voici un
-    sc&eacute;nario typique dans lequel on effectue une simple rotation des
-    journaux en compressant les anciens fichiers correspondants afin
-    de gagner de l'espace disque :</p>
+    <h3 id="rotation-rotatelogs">Utilisation de rotatelogs (recommand&eacute;)</h3>
+      
 
-    <div class="example"><p><code>
-      mv access_log access_log.old<br>
-      mv error_log error_log.old<br>
-      apachectl graceful<br>
-      sleep 600<br>
-      gzip access_log.old error_log.old
-    </code></p></div>
+      <p>L&rsquo;approche la plus simple consiste &agrave; utiliser le programme
+      <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> int&eacute;gr&eacute; &agrave; httpd en utilisant la <a href="#piped">redirection des journaux</a>. Ce programme permet une
+      rotation des journaux sans avoir &agrave; red&eacute;marrer le serveur et sans outil
+      externe. Pour une rotation des journaux toutes les 24&nbsp;heures&nbsp;:</p>
 
-    <p>La section suivante pr&eacute;sente une autre m&eacute;thode de rotation des journaux
-    qui consiste &agrave; utiliser les
-    <a href="#piped">journaux redirig&eacute;s</a>.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined
+ErrorLog  "|/usr/local/apache/bin/rotatelogs /var/log/httpd/error_log 86400"</pre>
+</div>
+
+      <p>Pour une rotation lorsque la taille du journal atteint une certaine
+      valeur (par exemple 100 Mo)&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 100M" combined</pre>
+</div>
+
+      <p>Vous pouvez aussi utiliser un motif de nom de fichier avec horodatage
+      sous forme d&rsquo;une cha&icirc;ne au format <code>strftime</code>&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log.%Y-%m-%d 86400" combined</pre>
+</div>
+
+    <p>Voir <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> pour une description compl&egrave;te de ses
+    options, en particulier les temps de d&eacute;calage, les limitations de nombre de
+    fichiers et la compression.</p>
+    
+
+    <h3 id="rotation-logrotate">Utilisation de logrotate ou de la gestion des journaux par le
+      syst&egrave;me</h3>
+      
+
+      <p>La plupart des distributions de Linux fournissent le programme
+      <code>logrotate</code> qui effectue une rotation, une compression et une
+      expiration des fichiers journaux selon une planification. Si votre
+      distribution comporte d&eacute;j&agrave; une configuration de logrotate pour httpd
+      (examinez <code>/etc/logrotate.d/</code>), elle g&egrave;re peut-&ecirc;tre d&eacute;j&agrave; la
+      rotation pour vous.</p>
+
+      <p>Lorsqu&rsquo;on utilise un outil de rotation externe comme
+      <code>logrotate</code>, il faut faire en sorte que httpd r&eacute;ouvre ses
+      fichiers journaux quand les anciens ont &eacute;t&eacute; mis de c&ocirc;t&eacute;. Pour ce faire,
+      l&rsquo;approche standard est un red&eacute;marrage <em>graceful</em>&nbsp;:</p>
+
+<div class="example"><pre class="prettyprint lang-sh">/usr/sbin/apachectl graceful</pre>
+</div>
+
+      <p>Votre script <code>postrotate</code> dans la configuration de logrotate
+      doit contenir cette derni&egrave;re commande (ou la commande &eacute;quivalente
+      <code>systemctl reload</code>). Comme httpd continue d&rsquo;&eacute;crire dans
+      l&rsquo;ancien fichier jusqu&rsquo;&agrave; ce qu&rsquo;il re&ccedil;oive le signal, tout post-traitement
+      des fichiers ayant subi une rotation doit pr&eacute;voir un bref d&eacute;lai.</p>
+
+       
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif"></a></div>
 <div class="section">
 <h2 id="piped">Journaux redirig&eacute;s <a title="Lien permanent" href="#piped" class="permalink">&para;</a></h2>
     
 
-    <p>Nous avons vu que le d&eacute;mon httpd &eacute;crivait les informations de
-    journalisation des erreurs et des acc&egrave;s dans un fichier journal ;
-    il peut aussi
-    rediriger ces informations vers un autre processus par l'interm&eacute;diaire d'un
-    tube de communication (pipe). Cette fonctionnalit&eacute; am&eacute;liore
-    consid&eacute;rablement la souplesse de la journalisation, sans ajouter de code
-    au serveur principal. Pour rediriger les informations de journalisation
-    vers un tube de communication, remplacez simplement le nom de fichier
-    journal par
-    le caract&egrave;re pipe "<code>|</code>", suivi du nom de l'ex&eacute;cutable qui va
-    recueillir les entr&eacute;es de journal sur son entr&eacute;e
-    standard. Le serveur va
-    lancer le processus de redirection des journaux au moment du d&eacute;marrage du
-    serveur, et le relancera s'il cesse de fonctionner
-    pendant l'ex&eacute;cution du serveur.
-    (Nous d&eacute;nommons cette technique "journalisation
-    redirig&eacute;e fiable" gr&acirc;ce &agrave; cette derni&egrave;re fonctionnalit&eacute;.)</p>
+    <p>httpd peut &eacute;crire dans les fichiers journaux des erreurs et des acc&egrave;s &agrave;
+    travers un tube (pipe) vers un autre processus, plut&ocirc;t que d&rsquo;&eacute;crire
+    directement dans un fichier. Pour mettre en œuvre cette redirection,
+    remplacez le nom du fichier par le caract&egrave;re pipe "<code>|</code>", suivi de
+    la commande qui recevra les entr&eacute;es du journal sur son entr&eacute;e standard&nbsp;:</p>
 
-    <p>Les processus de journalisation redirig&eacute;e sont lanc&eacute;s par le processus
-    httpd parent, et h&eacute;ritent de l'UID de ce dernier. Cela signifie que les
-    programmes de journalisation dirig&eacute;e s'ex&eacute;cutent g&eacute;n&eacute;ralement en tant que
-    root. Il est donc tr&egrave;s important que ces programmes soient simples et
-    s&eacute;curis&eacute;s.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>Un des grands avantages de la journalisation redirig&eacute;e est la possibilit&eacute;
-    d'effectuer la rotation des journaux sans avoir &agrave; red&eacute;marrer le serveur. Pour
-    accomplir cette t&acirc;che, le serveur HTTP Apache fournit un programme simple
-    appel&eacute; <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Par exemple, pour une rotation des
-    journaux toutes les 24 heures, ajoutez ces lignes :</p>
+    <p>httpd d&eacute;marre le processus de redirection des journaux au d&eacute;marrage du
+    serveur et le red&eacute;marre automatiquement s&rsquo;il se plante (ce comportement est
+    parfois nomm&eacute; &laquo;&nbsp;journalisation redirig&eacute;e fiable&nbsp;&raquo;). L&rsquo;ensemble de la
+    commande &agrave; partir du caract&egrave;re pipe doit &ecirc;tre entour&eacute;e de guillemets &mdash;&nbsp;cette
+    syntaxe fonctionne pour les deux directives <code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> et <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>.</p>
 
-    <pre class="prettyprint lang-config">CustomLog "|/usr/local/apache/bin/rotatelogs /var/log/access_log 86400" common</pre>
+    <p>Les processus de redirection des journaux sont lanc&eacute;s par le processus
+    httpd parent et h&eacute;ritent de son identifiant utilisateur. Cela signifie en
+    g&eacute;n&eacute;ral qu&rsquo;ils s&rsquo;ex&eacute;cutent en tant que root&nbsp;; faites donc en sorte que les
+    programmes de redirection des journaux restent simples et s&eacute;curis&eacute;s.</p>
 
+    <p>Par d&eacute;faut, le processus de redirection des journaux est lanc&eacute;
+    directement, sans passer par un shell. Vous pouvez utiliser
+    "<code>|$</code>" &agrave; la place de "<code>|</code>" pour effectuer ce lancement
+    via un shell (en g&eacute;n&eacute;ral <code>/bin/sh -c</code>)&nbsp;:</p>
 
-    <p>Notez que l'ensemble de la commande qui sera appel&eacute;e par le tube de
-    communication a &eacute;t&eacute; plac&eacute;e entre guillemets. Bien que cet exemple
-    concerne le journal des acc&egrave;s, la m&ecirc;me technique peut &ecirc;tre utilis&eacute;e
-    pour le journal des erreurs.</p>
+<div class="example"><pre class="prettyprint lang-config">CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" combined</pre>
+</div>
 
-    <p>Comme la journalisation conditionnelle, la journalisation redirig&eacute;e est
-    un outil tr&egrave;s puissant, mais si elle existe, il est pr&eacute;f&eacute;rable d'utiliser
-    une solution plus simple comme le traitement &agrave; posteriori hors ligne.</p>
-
-
-  <p>Par d&eacute;faut, le processus de redirection du journal est lanc&eacute; sans
-  invoquer un shell. Pour invoquer un shell, utilisez "<code>|$</code>"
-  au lieu de "<code>|</code>" (en g&eacute;n&eacute;ral avec <code>/bin/sh -c</code>)
-  :</p>
-
-    <pre class="prettyprint lang-config"># Invocation de "rotatelogs" en utilisant un shell
-CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" common</pre>
-
-
-
-    <p>Il s'agissait du comportement par d&eacute;faut sous Apache 2.2. Selon
-    les sp&eacute;cificit&eacute;s du shell, ceci peut g&eacute;n&eacute;rer un processus shell
-    suppl&eacute;mentaire pour toute la dur&eacute;e du programme de redirection du
-    journal, et induire des probl&egrave;mes de gestion de signaux au cours du
-    red&eacute;marrage. La notation "<code>||</code>" est aussi support&eacute;e pour
-    des raisons de compatibilit&eacute; avec Apache 2.2 et est &eacute;quivalente &agrave;
-    "<code>|</code>".</p>
+    <p>La variante avec shell est parfois requise si votre commande redirig&eacute;e
+    utilise des fonctionnalit&eacute;s du shell comme les caract&egrave;res g&eacute;n&eacute;riques ou le
+    d&eacute;veloppement de variable. Dans la plupart des cas, il est pr&eacute;f&eacute;rable
+    d&rsquo;utiliser l&rsquo;invocation directe (sans passer par un shell).</p>
 
     <div class="note"><h3>Note &agrave; propos de la plateforme Windows</h3>
     <p>Notez que sous Windows, la m&eacute;moire allou&eacute;e au bureau (desktop
@@ -671,7 +672,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs   /var/log/access_log 86400" commo
     individuels. Consid&eacute;rons par exemple les directives suivantes :</p>
 
     <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
-CustomLog logs/access_log commonvhost</pre>
+CustomLog "logs/access_log" commonvhost</pre>
 
 
     <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
@@ -682,7 +683,7 @@ CustomLog logs/access_log commonvhost</pre>
 <h2 id="other">Autres fichiers journaux <a title="Lien permanent" href="#other" class="permalink">&para;</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparent&eacute;s</th><th>Directives Apparent&eacute;es</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_debug.html">mod_log_debug</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#bufferedlogs">BufferedLogs</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
     <h3>Enregistrement du nombre r&eacute;el d'octets envoy&eacute;s et re&ccedil;us</h3>
       
@@ -726,6 +727,15 @@ CustomLog logs/access_log commonvhost</pre>
       utilis&eacute;e que pendant la phase de test, et en aucun cas sur un
       serveur en production. Vous trouverez plus d'informations dans la
       documentation du module <a href="mod/mod_cgi.html">mod_cgi</a>.</p>
+    
+
+    <h3 id="debug">Journalisation de d&eacute;bogage configurable</h3>
+        
+
+        <p>La directive <code class="directive"><a href="./mod/mod_log_debug.html#logmessage">LogMessage</a></code>
+	vous permet de cr&eacute;er vos propres messages de journalisation
+	personnalis&eacute;s pour faciliter vos op&eacute;rations de d&eacute;bogage.
+        </p>
     
     
   </div></div>
