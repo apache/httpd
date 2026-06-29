@@ -58,6 +58,12 @@ particuli&egrave;rement adapt&eacute; comme mandataire inverse</td></tr>
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>, ou construisez le en tant que module chargeable
     avec <code>--enable-mpms-shared=motorz</code>.</p>
 
+    <p>Lorsque ce module est construit en tant que module DSO, il peut &ecirc;tre
+    charg&eacute; avec la commande&nbsp;:</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_motorz_module modules/mod_mpm_motorz.so</pre>
+
+
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
@@ -86,6 +92,7 @@ particuli&egrave;rement adapt&eacute; comme mandataire inverse</td></tr>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=motorz">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=motorz">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
+<li><a href="../mpm.html">Modules multi-processus (MPMs)</a></li>
 <li><a href="event.html">Le MPM event</a></li>
 <li><a href="worker.html">Le MPM worker</a></li>
 <li><a href="prefork.html">Le MPM prefork</a></li>
@@ -248,9 +255,12 @@ serveur HTTP Apache</a></li>
     nombre de threads sondeurs pour chaque processus enfant. Chaque thread
     sondeur poss&egrave;de ses propres domaine de sondage, sonnerie de chronom&egrave;tre et
     liste de recyclage de connexion, et g&egrave;re une partie des connexions du
-    processus enfant&nbsp;; ajouter des threads sondeurs augmente donc la fr&eacute;quence &agrave;
-    laquelle un seul processus enfant peut accepter des connexions et r&eacute;partir
-    les &eacute;v&egrave;nements d&rsquo;entr&eacute;e/sortie et les expirations de d&eacute;lai.</p>
+    processus enfant. Comme chaque thread sondeur accepte les connexions de
+    mani&egrave;re ind&eacute;pendante et r&eacute;partit les &eacute;v&egrave;nements d&rsquo;entr&eacute;e/sortie et les
+    expirations de d&eacute;lai au sein du jeu de threads de travail, ajouter des
+    threads sondeurs augmente la fr&eacute;quence &agrave; laquelle un seul processus enfant
+    peut g&eacute;rer ces op&eacute;rations en parall&egrave;le, plut&ocirc;t que de les s&eacute;rialiser sur un
+    seul thread sondeur.</p>
 
     <p>Une valeur de <code>0</code> (la valeur par d&eacute;faut) signifie que le
     nombre de threads sondeurs est calcul&eacute; <em>automatiquement</em>&nbsp;: il est
