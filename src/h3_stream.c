@@ -30,6 +30,7 @@
 
 #include "h3.h"
 #include "h3_check.h"
+#include "h3_config.h"
 #include "h3_session.h"
 #include "mod_http3.h"
 
@@ -123,11 +124,15 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s)
 {
     CHECK(session);
     CHECK(h3s);
+
+    h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
+    apr_size_t buf_size = conf->h3_stream_buffer_size;
+    unsigned char* buf = apr_palloc(session->pool, buf_size);
+
     for (;;)
     {
-        unsigned char buf[8192];
         size_t nread = 0;
-        int rv = SSL_read_ex(h3s->ssl_stream, buf, sizeof(buf), &nread);
+        int rv = SSL_read_ex(h3s->ssl_stream, buf, buf_size, &nread);
         if (rv == 1 && nread > 0)
         {
             session->pending.sid = h3s->stream_id;

@@ -24,6 +24,9 @@
 
 #include <nghttp3/version.h>
 
+#define h3_max_concurrent_streams_MAX 1000
+#define h3_stream_buffer_size_MAX (1024 * 1024)
+
 #define NV_SET(nva, i, n, v) \
     do \
     { \

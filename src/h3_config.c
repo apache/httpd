@@ -23,27 +23,28 @@
 #include <http_log.h>
 #include <http_main.h>
 
+#include <apr_cstr.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 
+#include <stdint.h>
 #include <unistd.h>
 
+#include "h3.h"
 #include "h3_check.h"
 #include "h3_config.h"
 #include "mod_http3.h"
 
-apr_port_t get_server_port(server_rec* s)
+apr_port_t get_server_port(const server_rec* s)
 {
-    server_addr_rec* sar = NULL;
-
-    for (sar = s->addrs; sar; sar = sar->next)
+    for (const server_addr_rec* sar = s->addrs; sar != NULL; sar = sar->next)
     {
         if (sar->host_port != 0)
         {
             return sar->host_port;
         }
     }
-    return 4433;
+    return 0;
 }
 
 void* h3_create_server_config(apr_pool_t* p, server_rec* /*s*/)
@@ -57,9 +58,11 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     h3_server_conf* base = (h3_server_conf*)base_conf;
     h3_server_conf* new = (h3_server_conf*)new_conf;
 
-    merged->cert_path = new->cert_path ? new->cert_path : base->cert_path;
-    merged->key_path = new->key_path ? new->key_path : base->key_path;
+    merged->h3_cert_path = new->h3_cert_path ? new->h3_cert_path : base->h3_cert_path;
+    merged->h3_key_path = new->h3_key_path ? new->h3_key_path : base->h3_key_path;
     merged->h3_port = new->h3_port ? new->h3_port : base->h3_port;
+    merged->h3_max_concurrent_streams = new->h3_max_concurrent_streams ? new->h3_max_concurrent_streams : base->h3_max_concurrent_streams;
+    merged->h3_stream_buffer_size = new->h3_stream_buffer_size ? new->h3_stream_buffer_size : base->h3_stream_buffer_size;
 
     return merged;
 }
@@ -78,12 +81,12 @@ static const char* set_string(cmd_parms* cmd, const char* arg, const char* field
 
 static const char* set_h3_cert_path(cmd_parms* cmd, void* /*dummy*/, const char* arg)
 {
-    return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, cert_path));
+    return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, h3_cert_path));
 }
 
 static const char* set_h3_key_path(cmd_parms* cmd, void* /*dummy*/, const char* arg)
 {
-    return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, key_path));
+    return set_string(cmd, arg, (const char*)offsetof(h3_server_conf, h3_key_path));
 }
 
 static const char* set_h3_port(cmd_parms* cmd, void* /*dummy*/, const char* arg)
@@ -92,19 +95,75 @@ static const char* set_h3_port(cmd_parms* cmd, void* /*dummy*/, const char* arg)
     {
         return "H3Port: empty port number";
     }
-    char* end = NULL;
-    long port = strtol(arg, &end, 10);
-    if (*end || port <= 0 || port > 65535)
+    apr_int64_t port = 0;
+    apr_status_t rv = apr_cstr_atoi64(&port, arg);
+    if (rv == APR_EINVAL)
     {
-        return apr_psprintf(cmd->pool, "H3Port: invalid port number '%s'", arg);
+        return apr_psprintf(cmd->pool, "H3Port: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3Port: '%s' is out of representable range", arg);
+    }
+    if (port < 1 || port > 65535)
+    {
+        return apr_psprintf(cmd->pool, "H3Port: '%s' is out of allowed range (1-65535)", arg);
     }
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
-    if (!conf)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, cmd->server, "mod_http3: server config missing in H3Port");
-        return "mod_http3: internal error: no server config";
-    }
+    CHECK(conf);
     conf->h3_port = (apr_port_t)port;
+    return NULL;
+}
+
+static const char* set_h3_max_concurrent_streams(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3MaxConcurrentStreams: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConcurrentStreams: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConcurrentStreams: '%s' is out of representable range", arg);
+    }
+    if (val == 0 || val > UINT16_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConcurrentStreams: '%s' is out of allowed range (1-%u)", arg, (unsigned)UINT16_MAX);
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_max_concurrent_streams = (apr_uint32_t)val;
+    return NULL;
+}
+
+static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3StreamBufferSize: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is out of representable range", arg);
+    }
+    if (val == 0 || val > h3_stream_buffer_size_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is out of allowed range (1-%lu)", arg, (unsigned long)h3_stream_buffer_size_MAX);
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_stream_buffer_size = (apr_size_t)val;
     return NULL;
 }
 
@@ -120,28 +179,31 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_re
         return OK;
     }
 
-    server_rec* current_server = s;
-    while (current_server)
+    for (server_rec* vs = s; vs; vs = vs->next)
     {
-        conf = ap_get_module_config(current_server->module_config, &http3_module);
-        if (conf->cert_path && conf->key_path)
+        h3_server_conf* vc = ap_get_module_config(vs->module_config, &http3_module);
+        if (vc->h3_cert_path && vc->h3_key_path)
         {
-            conf->host_port = get_server_port(current_server);
-            if (conf->h3_port == 0)
+            vc->host_port = get_server_port(vs);
+            if (vc->h3_port == 0)
             {
-                conf->h3_port = conf->host_port;
+                vc->h3_port = vc->host_port;
             }
+            if (vc->h3_max_concurrent_streams == 0)
+            {
+                vc->h3_max_concurrent_streams = h3_max_concurrent_streams_MAX;
+            }
+            if (vc->h3_stream_buffer_size == 0)
+            {
+                vc->h3_stream_buffer_size = h3_stream_buffer_size_MAX;
+            }
+            conf = vc;
             break;
         }
-        current_server = current_server->next;
     }
 
-    if (!conf || !conf->cert_path || !conf->key_path)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "mod_http3: no server configured with H3CertificatePath and H3CertificateKeyPath");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d", getpid(), conf->cert_path, conf->key_path, (int)conf->h3_port);
+    CHECK(conf || conf->h3_cert_path || conf->h3_key_path, return HTTP_INTERNAL_SERVER_ERROR;);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d", getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port);
     return OK;
 }
 
@@ -161,6 +223,8 @@ void* h3_merge_dir_config(apr_pool_t* p, void* base, void* add)
 const command_rec cmd_1 = AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3");
 const command_rec cmd_2 = AP_INIT_TAKE1("H3CertificateKeyPath", set_h3_key_path, NULL, RSRC_CONF, "Path to the SSL certificate key file for HTTP/3");
 const command_rec cmd_3 = AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)");
+const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 128)");
+const command_rec cmd_5 = AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream read/write buffer size in bytes (default: 65536)");
 
 const command_rec cmd_end = AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL);
-const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_end};
+const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_end};

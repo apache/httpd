@@ -29,10 +29,13 @@ typedef struct h3_server_conf h3_server_conf;
 
 struct h3_server_conf
 {
-    const char* cert_path;
-    const char* key_path;
     apr_port_t host_port;
+
+    const char* h3_cert_path;
+    const char* h3_key_path;
     apr_port_t h3_port;
+    apr_uint32_t h3_max_concurrent_streams;
+    apr_size_t h3_stream_buffer_size;
 };
 
 /**
@@ -41,7 +44,7 @@ struct h3_server_conf
  * @param s The server_rec.
  * @return The TCP port, or 0 if undetermined.
  */
-apr_port_t get_server_port(server_rec* s);
+apr_port_t get_server_port(const server_rec* s);
 
 /**
  * ap_create_server_config callback: allocate a fresh zero-initialised

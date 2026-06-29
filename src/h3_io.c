@@ -129,7 +129,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_mutex_create failed");
         return APR_EGENERAL;
     }
-    if (build_ssl_listener(io, conf->cert_path, conf->key_path) != APR_SUCCESS)
+    if (build_ssl_listener(io, conf->h3_cert_path, conf->h3_key_path) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "listener setup failed");
         teardown(io);

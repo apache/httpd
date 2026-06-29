@@ -33,6 +33,7 @@
 #include "h3.h"
 #include "h3_callbacks.h"
 #include "h3_check.h"
+#include "h3_config.h"
 #include "h3_session.h"
 #include "h3_stream.h"
 #include "mod_http3.h"
@@ -83,6 +84,10 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "nghttp3_conn_server_new failed");
         return APR_EGENERAL;
     }
+
+    h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
+    nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
+
     *psession = session;
     return APR_SUCCESS;
 }

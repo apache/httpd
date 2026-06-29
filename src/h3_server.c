@@ -40,7 +40,7 @@ static h3_server_conf* find_h3_server(server_rec* s, server_rec** out_server)
     while (current)
     {
         h3_server_conf* tmp = ap_get_module_config(current->module_config, &http3_module);
-        if (tmp && tmp->cert_path && tmp->key_path && !conf)
+        if (tmp && tmp->h3_cert_path && tmp->h3_key_path && !conf)
         {
             conf = tmp;
             conf->host_port = get_server_port(current);
