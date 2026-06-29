@@ -30,6 +30,8 @@
 <a href="../fr/mod/mod_proxy.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
+            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Serveur mandataire/passerelle multi-protocole</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>proxy_module</td></tr>
@@ -831,7 +833,8 @@ mandat&eacute;es</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>Les directives situ&eacute;es dans une section <code class="directive">&lt;Proxy&gt;</code> ne s'appliquent qu'au contenu
-    mandat&eacute; concern&eacute;. Les jokers de style shell sont autoris&eacute;s.</p>
+    mandat&eacute; concern&eacute; en utilisant une simple recherche de correspondance entre
+    une cha&icirc;ne et l&rsquo;URL. Les jokers de style shell sont aussi autoris&eacute;s.</p>
 
     <p>Par exemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
     contenu via votre serveur mandataire que les h&ocirc;tes appartenant &agrave;
@@ -2426,6 +2429,13 @@ ProxyRemote ftp http://ftpproxy.mydomain:8080</pre>
     sans attendre que le mandataire distant n'effectue une demande
     d'authentification. La variable d'environnement <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> n'est plus prise en
     compte si cet argument est utilis&eacute;.</p>
+
+    <div class="note"><h3>R&eacute;solution DNS et mandataires directs</h3>
+    <p>Lorsqu&rsquo;un mandataire direct (distant) est configur&eacute;, la r&eacute;solution DNS du
+    nom d&rsquo;h&ocirc;te originel/dorsal n&rsquo;est effectu&eacute;e que sur le mandataire direct.
+    Toute r&egrave;gle <code class="directive"><a href="#proxyblock">ProxyBlock</a></code> qui
+    restreint l&rsquo;acc&egrave;s &agrave; des adresses IP sp&eacute;cifiques doit &ecirc;tre d&eacute;finie sur le
+    mandataire direct.</p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

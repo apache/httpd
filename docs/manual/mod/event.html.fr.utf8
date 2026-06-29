@@ -30,8 +30,6 @@
 <a href="../es/mod/event.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/mod/event.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> con&ccedil;ue pour ne
 mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
@@ -50,6 +48,12 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     <code>--with-mpm=event</code> aux arguments du script
     <code class="program"><a href="../programs/configure.html">configure</a></code> lorsque vous compilez le programme
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+
+    <p>Lorsque ce module est construit en tant que module DSO, il peut &ecirc;tre
+charg&eacute; &agrave; l&rsquo;aide de la commande&nbsp;:</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_event_module modules/mod_mpm_event.so</pre>
+
 
 </div>
 <div id="quickview"><h3>Sujets</h3>
@@ -82,6 +86,7 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_event">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_event">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
+<li><a href="../mpm.html">Modules multi-processus (MPMs)</a></li>
 <li><a href="worker.html">Le MPM worker</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

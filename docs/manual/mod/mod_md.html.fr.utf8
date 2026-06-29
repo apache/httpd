@@ -355,6 +355,7 @@
 <li><img alt="" src="../images/down.gif"> <a href="#mddrivemode">MDDriveMode</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#mdhttpproxy">MDHttpProxy</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#mdhttpproxycacertificatefile">MDHttpProxyCACertificateFile</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#mdinitialdelay">MDInitialDelay</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#mdmatchnames">MDMatchNames</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#mdmember">MDMember</a></li>
@@ -432,6 +433,8 @@
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Depuis la version 2.4.69, cette directive peut &ecirc;tre
+	d&eacute;finie s&eacute;par&eacute;ment pour chaque MDomain.</td></tr>
 </table>
             <p>
                 Cette directive est principalement utilis&eacute;e dans les
@@ -530,7 +533,7 @@
 		&agrave; l'aide des directives <code class="directive"><a href="#mdretrydelay">MDRetryDelay</a></code> et
 		<code class="directive"><a href="#mdretryfailover">MDRetryFailover</a></code>. Par d&eacute;faut, une demie
 		journ&eacute;e d'essais infructueux est consid&eacute;r&eacute;e comme un &eacute;chec.
-            </p><p>
+        </p><p>
                 Tous les autres r&eacute;glages s'appliquent &agrave; chacune de ces URLs. Il
 		est ainsi par exemple impossible d'en avoir deux avec des
 		directives <code class="directive"><a href="#mdexternalaccountbinding">MDExternalAccountBinding</a></code>
@@ -894,14 +897,50 @@
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>&Agrave; partir de la version 2.4.69, un mandataire peut &ecirc;tre
+	configur&eacute; s&eacute;par&eacute;ment pour chaque MDomain.</td></tr>
 </table>
-	    <p>Cette directive permet de sp&eacute;cifier un serveur http mandataire
+	    <p>Utiliser l&rsquo;URL du serveur http mandataire direct donn&eacute;
 	    pour se connecter &agrave; l'autorit&eacute; de certification sp&eacute;cifi&eacute;e via
 	    <code class="directive"><a href="#mdcertificateauthority">MDCertificateAuthority</a></code>. Vous
 	    devez la d&eacute;finir si votre serveur web ne peut atteindre internet que
-	    via un serveur mandataire.
+	    via un mandataire direct.
             </p>
         
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="directive-section"><h2 id="mdhttpproxycacertificatefile">Directive <span id="MDHttpProxyCACertificateFile">MDHttpProxyCACertificateFile</span> <a title="Lien permanent" href="#mdhttpproxycacertificatefile" class="permalink">&para;</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>D&eacute;finition des certificats racine (CA) &agrave; utiliser pour les
+	connexions TLS avec le mandataire http.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">D&eacute;faut:</a></th><td><code>MDHttpProxyCACertificateFile none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration globale</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_md</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilit&eacute;:</a></th><td>Disponible &agrave; partir de la version 2.4.69 du serveur HTTP
+	Apache</td></tr>
+</table>
+            <p>
+                Cette directive est utilis&eacute;e pour les connexions avec le
+		mandataire HTTPS direct (directive <code class="directive"><a href="#mdhttpproxy">MDHttpProxy</a></code>). Elle est requise si le
+		certificat du mandataire HTTPS ne peut pas &ecirc;tre v&eacute;rifi&eacute; en
+		utilisant le magasin g&eacute;n&eacute;ral de la racine du CA. Cela se produit
+		parfois dans les environnements de test ou au sein d&rsquo;une
+		entreprise.
+            </p>
+            <p>
+                Le certificat du serveur ACME est v&eacute;rifi&eacute; avec les certificats
+		racine d&eacute;finis via la directive <code class="directive"><a href="#mdcacertificatefile">MDCACertificateFile</a></code>&nbsp;; vous serez
+		donc amen&eacute; &agrave; utiliser les deux d&eacute;finitions.
+            </p>
+            <p>
+                Utilisez &laquo;&nbsp;none&nbsp;&raquo; comme chemin pour d&eacute;sactiver cette
+		fonctionnalit&eacute; explicitement.
+            </p>
+	    <p> Cette directive peut &ecirc;tre configur&eacute;e s&eacute;par&eacute;ment pour chaque
+	    <code class="directive"><a href="#mdomain">MDomain</a></code>.  </p>
+         
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="directive-section"><h2 id="mdinitialdelay">Directive <span id="MDInitialDelay">MDInitialDelay</span> <a title="Lien permanent" href="#mdinitialdelay" class="permalink">&para;</a></h2>

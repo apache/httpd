@@ -498,6 +498,7 @@
 <li><a href="mod_md.html#mddrivemode">MDDriveMode</a></li>
 <li><a href="mod_md.html#mdexternalaccountbinding">MDExternalAccountBinding</a></li>
 <li><a href="mod_md.html#mdhttpproxy">MDHttpProxy</a></li>
+<li><a href="mod_md.html#mdhttpproxycacertificatefile">MDHttpProxyCACertificateFile</a></li>
 <li><a href="mod_md.html#mdinitialdelay">MDInitialDelay</a></li>
 <li><a href="mod_md.html#mdmatchnames">MDMatchNames</a></li>
 <li><a href="mod_md.html#mdmember">MDMember</a></li>

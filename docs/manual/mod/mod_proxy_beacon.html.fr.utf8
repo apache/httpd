@@ -88,14 +88,15 @@ datagrammes UDP unicast</td></tr>
     <p>Tout h&ocirc;te qui peut atteindre le port de r&eacute;ception du mandataire peut
     aussi annoncer un URL de serveur dorsal arbitraire et faire que le
     mandataire envoie le trafic du client &agrave; ce dernier (et une adresse source
-    UDP est facile &agrave; usurper). D&eacute;finissez la directive
-    <code class="directive">ProxyBeaconSecret</code> &agrave; la m&ecirc;me valeur sur le mandataire
-    et sur chaque serveur dorsal de fa&ccedil;on que les annonces soient authentifi&eacute;es
-    avec un message-authentication code (MAC) avec cl&eacute; et un horodatage.
-    Lorsqu&rsquo;une phrase secr&egrave;te est configur&eacute;e, le mandataire rejette toute
-    annonce qui n&rsquo;est pas valablement sign&eacute;e et r&eacute;cente. Si aucune phrase
-    secr&egrave;te n&rsquo;est configur&eacute;e, le canal n&rsquo;est <strong>pas authentifi&eacute;</strong> et
-    le mandataire journalise un avertissement au d&eacute;marrage.</p>
+    UDP est facile &agrave; usurper). La directive
+    <code class="directive">ProxyBeaconSecret</code> est par cons&eacute;quent
+    <strong>requise</strong>&nbsp;: elle doit &ecirc;tre d&eacute;finie avec la m&ecirc;me valeur sur le
+    mandataire et sur chaque serveur dorsal, et le serveur refusera de d&eacute;marrer
+    si elle est omise sur un des serveurs impliqu&eacute;s. Les annonces sont
+    authentifi&eacute;es avec un code d&rsquo;authentification de message avec cl&eacute; (MAC) et
+    un horodatage, et le mandataire rejette toute annonce qui n&rsquo;est pas sign&eacute;e
+    de mani&egrave;re valable ou qui est trop ancienne. Il n&rsquo;existe pas de mode non
+    autentifi&eacute;.</p>
 </div>
 
 <div class="note"><h3>Confidentialit&eacute;</h3>
@@ -376,18 +377,22 @@ des serveurs dorsaux</td></tr>
     (par exemple pour emp&ecirc;cher l&rsquo;&eacute;viction d&rsquo;un serveur dorsal &eacute;teint) sera
     rejet&eacute;.</p>
 
-    <p>Si la directive <code class="directive">ProxyBeaconSecret</code> est d&eacute;finie sur
-    le mandataire, chaque annonce doit comporter un MAC valable et r&eacute;cent, sous
-    peine d&rsquo;&ecirc;tre rejet&eacute;e. Si les phrases secr&egrave;tes du mandataire et d&rsquo;un serveur
-    dorsal diff&egrave;rent, les annonces de ce dernier seront rejet&eacute;es silencieusement
-    (et journalis&eacute;es), ce qui donne l&rsquo;impression que le serveur dorsal n&rsquo;a
-    jamais atteint le r&eacute;partiteur de charge.</p>
+    <p>Cette directive est requise sur chaque serveur impliqu&eacute; dans le canal du
+    mandataire phare &mdash; le mandataire
+    (<code class="directive">ProxyBeaconListen</code>) et chaque serveur dorsal
+    (<code class="directive">ProxyBeaconAddress</code>). Si elle est omise sur un de ces
+    serveurs, le serveur refusera de d&eacute;marrer&nbsp;; il n&rsquo;existe pas de mode non
+    authentifi&eacute;.</p>
 
-    <p>Si aucune phrase secr&egrave;te n&rsquo;est configur&eacute;e, le canal n&rsquo;est pas authentifi&eacute;
-    et le mandataire &eacute;met un avertissement lorsqu&rsquo;il commence &agrave; &eacute;couter. &Eacute;tant
-    donn&eacute; que la phrase secr&egrave;te est stock&eacute;e dans le fichier de configuration,
-    d&eacute;finissez les permissions de ce dernier comme s&rsquo;il s&rsquo;agissait d&rsquo;une cl&eacute;
-    priv&eacute;e.</p>
+    <p>Toute annonce dont le MAC n&rsquo;est pas valable et r&eacute;cent sera rejet&eacute;e. Si
+    les phrases secr&egrave;tes du mandataire et d&rsquo;un serveur dorsal diff&egrave;rent, les
+    annonces de ce dernier seront rejet&eacute;es silencieusement (et journalis&eacute;es), ce
+    qui donne l&rsquo;impression que le serveur dorsal n&rsquo;a jamais atteint le
+    r&eacute;partiteur de charge.</p>
+
+    <p>&Eacute;tant donn&eacute; que la phrase secr&egrave;te est stock&eacute;e dans le fichier de
+    configuration, d&eacute;finissez les permissions de ce dernier comme s&rsquo;il
+    s&rsquo;agissait d&rsquo;une cl&eacute; priv&eacute;e.</p>
 
     <div class="note"><h3>Synchronisation de l&rsquo;horloge</h3>
     <p>La protection contre la r&eacute;&eacute;mission bas&eacute;e sur l&rsquo;horodatage compare le

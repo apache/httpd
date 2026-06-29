@@ -32,8 +32,6 @@
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/worker.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Module multi-processus impl&eacute;mentant un serveur web hybride
 multi-processus multi-thread</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
@@ -53,6 +51,13 @@ multi-processus multi-thread</td></tr>
     ce MPM sont <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>, qui d&eacute;finit le
     nombre de threads lanc&eacute;s par chaque processus enfant et <code class="directive"><a href="../mod/mpm_common.html#maxrequestworkers">MaxRequestWorkers</a></code>, qui d&eacute;finit le nombre
     global maximum de threads qui peuvent &ecirc;tre lanc&eacute;s.</p>
+
+    <p>Lorsqu&rsquo;il est construit en tant que module DSO, ce module peut &ecirc;tre
+    charg&eacute; avec la commande&nbsp;:</p>
+
+    <pre class="prettyprint lang-config">LoadModule mpm_worker_module modules/mod_mpm_worker.so</pre>
+
+
 </div>
 <div id="quickview"><h3>Sujets</h3>
 <ul id="topics">
@@ -82,6 +87,7 @@ multi-processus multi-thread</td></tr>
 </ul>
 <h3>Traitement des bugs</h3><ul class="seealso"><li><a href="https://www.apache.org/dist/httpd/CHANGES_2.4">Journal des modifications de httpd</a></li><li><a href="https://bz.apache.org/bugzilla/buglist.cgi?bug_status=__open__&amp;list_id=144532&amp;product=Apache%20httpd-2&amp;query_format=specific&amp;order=changeddate%20DESC%2Cpriority%2Cbug_severity&amp;component=mpm_worker">Probl&egrave;mes connus</a></li><li><a href="https://bz.apache.org/bugzilla/enter_bug.cgi?product=Apache%20httpd-2&amp;component=mpm_worker">Signaler un bug</a></li></ul><h3>Voir aussi</h3>
 <ul class="seealso">
+<li><a href="../mpm.html">Modules multi-processus (MPMs)</a></li>
 <li><a href="../bind.html">D&eacute;finition des adresses et ports
 qu'utilise le serveur HTTP Apache</a></li>
 </ul></div>
