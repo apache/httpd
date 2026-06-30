@@ -178,6 +178,7 @@
 <highlight language="config">
 LogLevel info rewrite:trace5
 </highlight>
+</example>
 
     <p>This sets the main <directive>LogLevel</directive> to info, but
     turns it up to <code>trace5</code> for
@@ -243,6 +244,7 @@ LogLevel info rewrite:trace5
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 </highlight>
+</example>
 
       <p>This defines the <em>nickname</em> <code>common</code> and
       associates it with a particular log format string. The format
@@ -388,6 +390,7 @@ CustomLog "logs/access_log" common
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
 CustomLog "log/access_log" combined
 </highlight>
+</example>
 
       <p>This format is exactly the same as the Common Log Format,
       with the addition of two more fields. Each of the additional
@@ -444,6 +447,7 @@ CustomLog "logs/access_log" common
 CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
 CustomLog "logs/agent_log" "%{User-agent}i"
 </highlight>
+</example>
 
       <p>This example also shows that it is not necessary to define a
       nickname with the <directive
@@ -476,6 +480,7 @@ SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Log what remains
 CustomLog "logs/access_log" common env=!dontlog
 </highlight>
+</example>
 
       <p>As another example, consider logging requests from
       english-speakers to one log file, and non-english speakers to a
@@ -487,6 +492,7 @@ SetEnvIf Accept-Language "en" english
 CustomLog "logs/english_log" common env=english
 CustomLog "logs/non_english_log" common env=!english
 </highlight>
+</example>
 
       <p>In a caching scenario one would want to know about
       the efficiency of the cache. A very simple method to
@@ -498,6 +504,7 @@ SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
 CustomLog "logs/access_log" common-cache
 </highlight>
+</example>
 
       <p><module>mod_cache</module> will run before
       <module>mod_env</module> and, when successful, will deliver the
@@ -513,6 +520,7 @@ CustomLog "logs/access_log" common-cache
 LogFormat "%400,501{User-agent}i" browserlog
 LogFormat "%!200,304,302{Referer}i" refererlog
 </highlight>
+</example>
 
       <p>In the first example, the <code>User-agent</code> will be
       logged if the HTTP status code is 400 or 501. In other cases, a
@@ -697,6 +705,7 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" c
 LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
 CustomLog "logs/access_log" commonvhost
 </highlight>
+</example>
 
     <p>The <code>%v</code> is used to log the name of the virtual
     host that is serving the request. Then a program like <a
