@@ -73,10 +73,10 @@ statiques.</p>
     page ne soit envoyée au client. Elle sont de la forme suivante :</p>
 
 <example>
-+<highlight language="html">
-+&lt;!--#echo var="DATE_LOCAL" --&gt;
-+</highlight>
-+</example>
+<highlight language="html">
+&lt;!--#echo var="DATE_LOCAL" --&gt;
+</highlight>
+</example>
 
     <p>Lorsque la page est servie, ce fragment est remplacé par sa valeur :</p>
     
