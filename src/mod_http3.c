@@ -33,9 +33,8 @@
 #include "h3_server.h"
 #include "mod_http3.h"
 
-static void register_hooks(apr_pool_t* p)
+static void register_hooks(apr_pool_t* /*p*/)
 {
-    (void)p;
 
     ap_hook_post_config(h3_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(h3_hook_http_create_request, NULL, NULL, APR_HOOK_REALLY_FIRST);

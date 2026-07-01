@@ -49,7 +49,7 @@ static int set_pseudo(h3_stream* stream, h3_session* session, int32_t token, ngh
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "pseudo-header length %zu invalid", value->len);
         return NGHTTP3_ERR_MALFORMED_HTTP_HEADER;
     }
-    char* copy = apr_pstrndup(session->pool, (const char*)value->base, value->len);
+    char* copy = apr_pstrndup(stream->pool, (const char*)value->base, value->len);
     switch (token)
     {
     case NGHTTP3_QPACK_TOKEN__METHOD:
@@ -86,15 +86,14 @@ int on_begin_headers(nghttp3_conn* conn, int64_t stream_id, void* user_data, voi
     }
     if (stream->is_bidi && !stream->headers)
     {
-        stream->headers = apr_table_make(session->pool, 10);
+        stream->headers = apr_table_make(stream->pool, 10);
     }
     nghttp3_conn_set_stream_user_data(conn, stream_id, stream);
     return 0;
 }
 
-int on_recv_header(nghttp3_conn* /*conn*/, int64_t stream_id, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* stream_user_data)
+int on_recv_header(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int32_t token, nghttp3_rcbuf* name, nghttp3_rcbuf* value, uint8_t /*flags*/, void* user_data, void* stream_user_data)
 {
-    (void)stream_id;
     h3_stream* stream = stream_user_data;
     h3_session* session = user_data;
     CHECK(session);
@@ -111,7 +110,7 @@ int on_recv_header(nghttp3_conn* /*conn*/, int64_t stream_id, int32_t token, ngh
     {
         return 0;
     }
-    apr_table_addn(stream->headers, apr_pstrndup(session->pool, (const char*)nghttp3_rcbuf_get_buf(name).base, nghttp3_rcbuf_get_buf(name).len), apr_pstrndup(session->pool, (const char*)nv.base, nv.len));
+    apr_table_addn(stream->headers, apr_pstrndup(stream->pool, (const char*)nghttp3_rcbuf_get_buf(name).base, nghttp3_rcbuf_get_buf(name).len), apr_pstrndup(stream->pool, (const char*)nv.base, nv.len));
     return 0;
 }
 
@@ -126,14 +125,8 @@ int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int /*fin*/, void* /*u
     return 0;
 }
 
-int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, size_t datalen, void* user_data, void* stream_user_data)
+int on_recv_data(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, const uint8_t* /*data*/, size_t /*datalen*/, void* /*user_data*/, void* /*stream_user_data*/)
 {
-    (void)conn;
-    (void)stream_id;
-    (void)data;
-    (void)datalen;
-    (void)user_data;
-    (void)stream_user_data;
     return 0;
 }
 
@@ -151,13 +144,28 @@ int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen
     return 0;
 }
 
-int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
+int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* stream_user_data)
 {
+    h3_stream* stream = stream_user_data;
+    if (stream)
+    {
+        stream->done = 1;
+    }
     return 0;
 }
 
-int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* /*stream_user_data*/)
+int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_error_code, void* /*user_data*/, void* stream_user_data)
 {
+    h3_stream* stream = stream_user_data;
+    if (stream)
+    {
+        if (stream->ssl_stream)
+        {
+            SSL_STREAM_RESET_ARGS args = {app_error_code};
+            SSL_stream_reset(stream->ssl_stream, &args, sizeof(args));
+        }
+        stream->done = 1;
+    }
     return 0;
 }
 
@@ -172,6 +180,7 @@ int on_stream_close(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_er
         h3_session_queue_free(session, stream->ssl_stream);
         stream->ssl_stream = NULL;
         apr_hash_set(session->streams, &stream_id, sizeof(stream_id), NULL);
+        apr_pool_destroy(stream->pool);
     }
     return 0;
 }

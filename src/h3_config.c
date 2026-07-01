@@ -167,12 +167,11 @@ static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, co
     return NULL;
 }
 
-int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_rec* s)
+int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, server_rec* s)
 {
+    CHECK(ptemp);
+    CHECK(s);
     h3_server_conf* conf = NULL;
-    (void)plog;
-    (void)ptemp;
-    (void)p;
 
     if (ap_state_query(AP_SQ_MAIN_STATE) == AP_SQ_MS_CREATE_PRE_CONFIG)
     {
@@ -203,21 +202,38 @@ int h3_post_config(apr_pool_t* p, apr_pool_t* plog, apr_pool_t* ptemp, server_re
     }
 
     CHECK(conf || conf->h3_cert_path || conf->h3_key_path, return HTTP_INTERNAL_SERVER_ERROR;);
+
+    /* Validate cert and key files are readable */
+    apr_file_t* f = NULL;
+    if (apr_file_open(&f, conf->h3_cert_path, APR_READ, APR_OS_DEFAULT, ptemp) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "mod_http3: H3CertificatePath not readable: %s", conf->h3_cert_path);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    apr_file_close(f);
+    f = NULL;
+
+    if (apr_file_open(&f, conf->h3_key_path, APR_READ, APR_OS_DEFAULT, ptemp) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "mod_http3: H3CertificateKeyPath not readable: %s", conf->h3_key_path);
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    apr_file_close(f);
+
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d", getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port);
     return OK;
 }
 
-void* h3_create_dir_config(apr_pool_t* p, char* dir)
+void* h3_create_dir_config(apr_pool_t* p, char* /*dir*/)
 {
-    (void)dir;
+    CHECK(p);
     return apr_pcalloc(p, 1);
 }
 
-void* h3_merge_dir_config(apr_pool_t* p, void* base, void* add)
+void* h3_merge_dir_config(apr_pool_t* /*p*/, void* base, void* /*add*/)
 {
-    (void)base;
-    (void)add;
-    return apr_pcalloc(p, 1);
+    CHECK(base);
+    return base;
 }
 
 const command_rec cmd_1 = AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3");

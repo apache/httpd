@@ -42,9 +42,9 @@ ap_filter_rec_t* h3_net_out_filter_handle;
 ap_filter_rec_t* h3_proto_out_filter_handle;
 ap_filter_rec_t* h3_proto_in_filter_handle;
 
-apr_status_t h3_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
+apr_status_t h3_filter_out(ap_filter_t* /*f*/, apr_bucket_brigade* bb)
 {
-    (void)f;
+    CHECK(bb);
     apr_brigade_cleanup(bb);
     return APR_SUCCESS;
 }

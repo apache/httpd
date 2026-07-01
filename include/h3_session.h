@@ -62,6 +62,7 @@ struct h3_session
 struct h3_stream
 {
     h3_session* session;
+    apr_pool_t* pool;
     int64_t stream_id;
     SSL* ssl_stream;
     int done;

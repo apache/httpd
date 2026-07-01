@@ -32,11 +32,14 @@
 int h3_alpn_select_cb(SSL* /*ssl*/, const unsigned char** out, unsigned char* outlen, const unsigned char* in, unsigned int inlen, void* arg)
 {
     static const unsigned char h3[] = "\x02h3";
-    (void)arg;
+    CHECK(arg);
+    server_rec* s = arg;
 
     if (SSL_select_next_proto((unsigned char**)out, outlen, h3, sizeof(h3) - 1, in, inlen) == OPENSSL_NPN_NEGOTIATED)
     {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_http3: ALPN negotiated h3");
         return SSL_TLSEXT_ERR_OK;
     }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_http3: ALPN: client did not offer h3");
     return SSL_TLSEXT_ERR_NOACK;
 }

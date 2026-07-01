@@ -37,16 +37,7 @@
 h3_stream* h3_stream_find(h3_session* session, int64_t sid)
 {
     CHECK(session);
-    apr_hash_index_t* hi = NULL;
-    for (hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
-    {
-        h3_stream* cand = apr_hash_this_val(hi);
-        if (cand && cand->stream_id == sid)
-        {
-            return cand;
-        }
-    }
-    return NULL;
+    return apr_hash_get(session->streams, &sid, sizeof(sid));
 }
 
 void flush_nghttp3(h3_session* session)
@@ -110,12 +101,15 @@ h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl)
         SSL_set_app_data(stream_ssl, h3s);
         return h3s;
     }
+    apr_pool_t* stream_pool = NULL;
+    CHECK(apr_pool_create(&stream_pool, session->pool) == APR_SUCCESS);
     h3s = apr_pcalloc(session->pool, sizeof(*h3s));
     h3s->session = session;
+    h3s->pool = stream_pool;
     h3s->stream_id = sid;
     h3s->ssl_stream = stream_ssl;
     h3s->is_bidi = H3_SID_IS_BIDI(sid);
-    apr_hash_set(session->streams, &sid, sizeof(sid), h3s);
+    apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), h3s);
     SSL_set_app_data(stream_ssl, h3s);
     return h3s;
 }

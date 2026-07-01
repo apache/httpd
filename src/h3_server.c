@@ -81,9 +81,8 @@ void h3_child_init(apr_pool_t* pchild, server_rec* s)
     }
 }
 
-void h3_c1_child_stopping(apr_pool_t* p, int graceful)
+void h3_c1_child_stopping(apr_pool_t* /*p*/, int graceful)
 {
-    (void)p;
-    (void)graceful;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, "mod_http3: child stopping (graceful=%d)", graceful);
     h3_io_listen_stop(child_h3_io);
 }

@@ -53,7 +53,7 @@ static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char
     {
         return APR_EGENERAL;
     }
-    SSL_CTX_set_alpn_select_cb(io->ssl_ctx, h3_alpn_select_cb, NULL);
+    SSL_CTX_set_alpn_select_cb(io->ssl_ctx, h3_alpn_select_cb, io->server);
     io->ssl_listener = SSL_new_listener(io->ssl_ctx, 0);
     if (!io->ssl_listener || !SSL_set_fd(io->ssl_listener, io->udp_fd) || !SSL_listen(io->ssl_listener) || !SSL_set_blocking_mode(io->ssl_listener, 0))
     {
@@ -245,7 +245,12 @@ static void service_connection(h3_io_t* io, h3_session* session)
                         continue;
                     }
                     apr_thread_mutex_lock(session->lock);
-                    (void)track_stream(session, sid, s2);
+                    h3_stream* tracked = track_stream(session, sid, s2);
+                    if (!tracked)
+                    {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "track_stream failed for sid=%lld - freeing stream", (long long)sid);
+                        SSL_free(s2);
+                    }
                     apr_thread_mutex_unlock(session->lock);
                 }
 
@@ -278,9 +283,8 @@ struct worker_args
     h3_session* session;
 };
 
-static void* APR_THREAD_FUNC worker_thread(apr_thread_t* thread, void* data)
+static void* APR_THREAD_FUNC worker_thread(apr_thread_t* /*thread*/, void* data)
 {
-    (void)thread;
     struct worker_args* args = data;
     if (!args)
     {
@@ -318,9 +322,8 @@ apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
     return APR_SUCCESS;
 }
 
-void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data)
+void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* /*thread*/, void* data)
 {
-    (void)thread;
     h3_io_t* io = data;
     if (!io)
     {

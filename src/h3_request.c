@@ -205,16 +205,15 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
 
     apr_thread_mutex_lock(session->lock);
     h3s->dispatched = 1;
-    capture_response_body(h3s, h3ctx, session->pool);
+    capture_response_body(h3s, h3ctx, h3s->pool);
     int status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : HTTP_INTERNAL_SERVER_ERROR;
     size_t body_len = h3s->response_len;
     int64_t sid = h3s->stream_id;
     nghttp3_nv nva[64] = {0};
-    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, session->pool);
+    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
     nghttp3_data_reader dr = {.read_data = h3_session_read_data};
     int rv = nghttp3_conn_submit_response(session->ngh3, sid, nva, nvlen, body_len > 0 ? &dr : NULL);
     apr_thread_mutex_unlock(session->lock);
-    (void)r;
     if (rv)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "nghttp3_conn_submit_response failed: %d", rv);

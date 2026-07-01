@@ -38,23 +38,29 @@
 
 int h3_hook_post_read_request(request_rec* r)
 {
-    (void)r;
+    CHECK(r);
+    if (!IS_H3_REQUEST(r))
+    {
+        return DECLINED;
+    }
+    r->protocol = "HTTP/3.0";
+    r->proto_num = HTTP_VERSION(3, 0);
     return OK;
 }
 
-void h3_hook_pre_read_request(request_rec* r, conn_rec* c)
+void h3_hook_pre_read_request(request_rec* /*r*/, conn_rec* /*c*/)
 {
-    (void)r;
-    (void)c;
 }
 
 int h3_hook_access_checker(request_rec* r)
 {
+    CHECK(r);
     return IS_H3_REQUEST(r) ? OK : DECLINED;
 }
 
 int h3_hook_http_create_request(request_rec* r)
 {
+    CHECK(r);
     if (!IS_H3_REQUEST(r) || r->main != NULL)
     {
         return DECLINED;
