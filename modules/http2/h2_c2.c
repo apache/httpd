@@ -397,6 +397,7 @@ static apr_status_t h2_c2_filter_out(ap_filter_t* f, apr_bucket_brigade* bb)
                 ap_bucket_response *resp = e->data;
                 if (resp->status >= HTTP_OK) {
                     conn_ctx->has_final_response = 1;
+                    conn_ctx->header_only = AP_STATUS_IS_HEADER_ONLY(resp->status);
                     break;
                 }
             }

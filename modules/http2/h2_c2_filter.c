@@ -549,6 +549,7 @@ static apr_status_t pass_response(h2_conn_ctx_t *conn_ctx, ap_filter_t *f,
 
     if (response->status >= HTTP_OK) {
         conn_ctx->has_final_response = 1;
+        conn_ctx->header_only = AP_STATUS_IS_HEADER_ONLY(response->status);
     }
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, parser->c,
                   APLOGNO(03197) "h2_c2(%s): passed response %d",
@@ -757,6 +758,7 @@ apr_status_t h2_c2_filter_response_out(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     if (r->header_only || AP_STATUS_IS_HEADER_ONLY(r->status)) {
+        conn_ctx->header_only = 1;
         ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, f->c,
                       "h2_c2(%s): headers only, cleanup output brigade", conn_ctx->id);
         b = body_bucket? body_bucket : APR_BRIGADE_FIRST(bb);

@@ -164,3 +164,36 @@ class TestTimeout:
         piper.close()
         assert piper.response, f'{piper}'
         assert piper.response['status'] == 408, f"{piper.response}"
+
+    # A header-only response (204/304, or a HEAD request) legitimately
+    # carries no body and so no EOS, and must NOT be reset over HTTP/2.
+    # mod_cache revalidation of a cached, immediately-stale resource emits
+    # exactly such a 304 (EOR + Flush, no EOS). This guards the
+    # incomplete-response reset against re-opening PR 69580: the reset is
+    # for a truncation (a non-header-only response missing its EOS), never
+    # for a header-only one.
+    def test_h2_105_21(self, env):
+        cacheroot = f"{env.server_dir}/cacheroot"
+        env.mkpath(cacheroot)
+        conf = H2Conf(env)
+        conf.add(f"""
+            CacheRoot "{cacheroot}"
+            CacheEnable disk /
+            Header set Cache-Control "public, max-age=0"
+            """)
+        conf.add_vhost_test1()
+        conf.install()
+        assert env.apache_restart() == 0
+        url = env.mkurl("https", "test1", "/006/006.css")
+        # prime the cache (stored, immediately stale via max-age=0)
+        r = env.curl_get(url)
+        assert r.exit_code == 0, f'{r}'
+        assert r.response["status"] == 200
+        lm = r.response["header"]["last-modified"]
+        # revalidate: mod_cache freshens the stale entry and the origin returns a
+        # body-less 304. The h2 stream must close cleanly; a regression shows up
+        # as a curl exit (92, "stream not closed cleanly"), not as a 304.
+        r = env.curl_get(url, options=["-H", "Cache-Control: max-age=0",
+                                       "-H", f"if-modified-since: {lm}"])
+        assert r.exit_code == 0, f'304 stream was reset (curl {r.exit_code}): {r}'
+        assert r.response["status"] == 304, f'{r.response}'
