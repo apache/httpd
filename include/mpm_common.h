@@ -40,6 +40,7 @@
 #include "ap_config.h"
 #include "ap_mpm.h"
 #include "scoreboard.h"
+#include "apr_optional.h"
 
 #if APR_HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
@@ -559,6 +560,20 @@ AP_DECLARE_HOOK(void, child_stopped,
  * core's pre-config hook
  */
 void mpm_common_pre_config(apr_pool_t *pconf);
+
+/**
+ * Hooks for modules to report connections the MPM did not accept itself.
+ *
+ * MPMs that wait for their connection count to drain before stopping a child
+ * need this so externally accepted connections keep the child alive until
+ * they finish.
+ *
+ * Call ap_mpm_note_extra_connection_added() when such a connection starts,
+ * and ap_mpm_note_extra_connection_removed() when it ends. These functions
+ * may be NULL if the active MPM does not implement them.
+ */
+APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_added, (void));
+APR_DECLARE_OPTIONAL_FN(void, ap_mpm_note_extra_connection_removed, (void));
 
 #ifdef __cplusplus
 }
