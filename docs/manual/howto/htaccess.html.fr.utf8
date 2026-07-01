@@ -30,8 +30,6 @@
 <a href="../ko/howto/htaccess.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&ecirc;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Les fichiers <code>.htaccess</code> fournissent une m&eacute;thode pour
 modifier la configuration du serveur au niveau de chaque r&eacute;pertoire, sans
@@ -75,8 +73,8 @@ Includes - SSI)</a></li>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <pre class="prettyprint lang-config">AccessFileName ".config"</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AccessFileName ".config"</pre>
+</div>
     </div>
 
     <p>Les directives dans les fichiers <code>.htaccess</code> utilisent la m&ecirc;me
@@ -90,7 +88,7 @@ Includes - SSI)</a></li>
     directive est permise dans un fichier <code>.htaccess</code>,
     la documentation de cette directive contiendra une section Override,
     sp&eacute;cifiant quelle valeur doit prendre la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> pour que cette directive
-    soit trait&eacute;e.</p>
+    soit autoris&eacute;e.</p>
 
     <div class="note">La valeur par d&eacute;faut de la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> est <code>None</code>. Cela signifie
     que les fichiers <code>.htaccess</code> seront compl&egrave;tement ignor&eacute;s, &agrave; moins
@@ -145,25 +143,23 @@ Includes - SSI)</a></li>
     <code>.htaccess</code> est charg&eacute; en m&eacute;moire chaque fois qu'un
     document fait l'objet d'une requ&ecirc;te.</p>
 
-    <p>Notez aussi que httpd doit rechercher les fichiers
-    <code>.htaccess</code> dans tous les r&eacute;pertoires de niveau
-    sup&eacute;rieur, afin de rassembler toutes les directives qui s'appliquent
-    au r&eacute;pertoire courant (Voir la section <a href="#how">comment sont
-    appliqu&eacute;es les directives</a>). Ainsi, si un fichier fait l'objet
-    d'une requ&ecirc;te &agrave; partir d'un r&eacute;pertoire
-    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
-    fichiers suivants :</p>
+    <p>En outre, httpd doit rechercher des fichiers <code>.htaccess</code> dans
+    tous les r&eacute;pertoires de niveau sup&eacute;rieur pour rassembler la totalit&eacute; des
+    directives applicables (Voir la section <a href="#how">comment sont
+    appliqu&eacute;es les directives</a>). Ainsi, si un fichier fait l'objet d'une
+    requ&ecirc;te &agrave; partir d'un r&eacute;pertoire <code>/www/htdocs/exemple</code>, httpd
+    doit rechercher les fichiers suivants :</p>
 
-    <pre class="prettyprint lang-config">/.htaccess
+<div class="example"><pre class="prettyprint lang-config">/.htaccess
 /www/.htaccess
 /www/htdocs/.htaccess
 /www/htdocs/example/.htaccess</pre>
-
+</div>
 
     <p>En cons&eacute;quence, chaque acc&egrave;s &agrave; un fichier de ce r&eacute;pertoire
     n&eacute;cessite 4 acc&egrave;s au syst&egrave;me de fichiers suppl&eacute;mentaires pour
     rechercher des fichiers <code>.htaccess</code>, m&ecirc;me si
-    aucun de ces fichiers n'est pr&eacute;sent. Notez que cet exemple ne peut
+    aucun de ces fichiers n'est pr&eacute;sent. Cet exemple ne peut
     se produire que si les fichiers <code>.htaccess</code> ont &eacute;t&eacute;
     autoris&eacute;s pour le r&eacute;pertoire <code>/</code>, ce qui est rarement le
     cas.</p>
@@ -172,7 +168,7 @@ Includes - SSI)</a></li>
     utilisateurs de modifier la configuration du serveur, il peut en
     r&eacute;sulter des cons&eacute;quences sur lesquelles vous n'aurez aucun
     contr&ocirc;le. R&eacute;fl&eacute;chissez bien avant de donner ce privil&egrave;ge &agrave; vos
-    utilisateurs. Notez aussi que ne pas donner aux utilisateurs les
+    utilisateurs. Ne pas donner aux utilisateurs les
     privil&egrave;ges dont ils ont besoin va entra&icirc;ner une augmentation des
     demandes de support technique. Assurez-vous d'avoir inform&eacute;
     clairement vos utilisateurs du niveau de privil&egrave;ges que vous leur
@@ -187,41 +183,41 @@ Includes - SSI)</a></li>
     nommer individuellement les directives autoris&eacute;es, vous permettant ainsi un
     contr&ocirc;le plus fin que dans le cas de la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> seule&nbsp;:</p>
 
-    <pre class="prettyprint lang-config"># N&rsquo;autoriser que des directives sp&eacute;cifiques, pas des cat&eacute;gories enti&egrave;res de
+<div class="example"><pre class="prettyprint lang-config"># N&rsquo;autoriser que des directives sp&eacute;cifiques, pas des cat&eacute;gories enti&egrave;res de
 # directives
 AllowOverride None
 AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</pre>
-
+</div>
 
     <p>Avec cette configuration, toute directive non explicitement sp&eacute;cifi&eacute;e
     causera une erreur du serveur si elle est rencontr&eacute;e dans un fichier
     <code>.htaccess</code>. C&rsquo;est un bon compromis entre possibilit&eacute; et
     impossibilit&eacute; totales d&rsquo;outrepasser la configuration globale.</p>
 
-    <p>Notez que mettre un fichier <code>.htaccess</code> contenant une
-    directive dans un r&eacute;pertoire <code>/www/htdocs/exemple</code>
-    revient exactement au m&ecirc;me que mettre la m&ecirc;me directive dans une
-    section Directory <code>&lt;Directory "/www/htdocs/exemple"&gt;</code>
-    du fichier de configuration de votre serveur principal :</p>
+    <p>Placer une directive dans un fichier <code>.htaccess</code> dans un
+    r&eacute;pertoire <code>/www/htdocs/example</code> &eacute;quivaut exactement &agrave; placer
+    cette m&ecirc;me directive dans une section <code>&lt;Directory
+    "/www/htdocs/example"&gt;</code> de la configuration globale de votre
+    serveur&nbsp;:</p>
 
-    <p>Fichier <code>.htaccess</code> dans
-    <code>/www/htdocs/exemple</code> :</p>
+    <p>Fichier <code>.htaccess</code> dans <code>/www/htdocs/example</code>
+    :</p>
 
     <div class="example"><h3>Contenu du fichier .htaccess dans
-    <code>/www/htdocs/exemple</code></h3><pre class="prettyprint lang-config">AddType text/example ".exm"</pre>
-</div>
+    <code>/www/htdocs/example</code></h3><div class="example"><pre class="prettyprint lang-config">AddType text/example ".exm"</pre>
+</div></div>
 
     <div class="example"><h3>Section de votre fichier
-    <code>httpd.conf</code></h3><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs/example"&gt;
-    AddType text/example ".exm"
+    <code>httpd.conf</code></h3><div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs/example"&gt;
+AddType text/example ".exm"
 &lt;/Directory&gt;</pre>
-</div>
+</div></div>
 
     <p>L'utilisation des fichiers <code>.htaccess</code> peut &ecirc;tre
     enti&egrave;rement d&eacute;sactiv&eacute;e en d&eacute;finissant la directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> &agrave; <code>none</code> :</p>
 
-    <pre class="prettyprint lang-config">AllowOverride None</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AllowOverride None</pre>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="how">Comment sont appliqu&eacute;es les directives ? <a title="Lien permanent" href="#how" class="permalink">&para;</a></h2>
@@ -229,7 +225,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
     <p>Les directives de configuration situ&eacute;es dans un fichier
     <code>.htaccess</code> s'appliquent au r&eacute;pertoire dans lequel ce
     fichier <code>.htaccess</code> se trouve, ainsi qu'&agrave; tous ses
-    sous-r&eacute;pertoires. Cependant, il est important de garder &agrave; l'esprit
+    sous-r&eacute;pertoires. Cependant, souvenez-vous
     qu'il peut y avoir des fichiers <code>.htaccess</code> dans les
     r&eacute;pertoires de niveau sup&eacute;rieur. Les directives sont appliqu&eacute;es
     selon l'ordre dans lequel elles sont rencontr&eacute;es. Ainsi, les
@@ -246,19 +242,19 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
     <p>Dans le r&eacute;pertoire <code>/www/htdocs/exemple1</code> se trouve un
     fichier <code>.htaccess</code> contenant ce qui suit :</p>
 
-    <pre class="prettyprint lang-config">Options +ExecCGI</pre>
+<div class="example"><pre class="prettyprint lang-config">Options +ExecCGI</pre>
+</div>
 
-
-    <p>Note : "<code>AllowOverride Options</code>" doit &ecirc;tre pr&eacute;sent
+    <div class="note">"<code>AllowOverride Options</code>" doit &ecirc;tre pr&eacute;sent
     pour permettre l'utilisation de la directive "<code class="directive"><a href="../mod/core.html#options">Options</a></code>"  dans les fichiers
-    <code>.htaccess</code>.</p>
+    <code>.htaccess</code>.</div>
 
     <p>Dans le r&eacute;pertoire <code>/www/htdocs/exemple1/exemple2</code> se
     trouve un fichier <code>.htaccess</code> contenant ce qui suit
     :</p>
 
-    <pre class="prettyprint lang-config">Options Includes</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Options Includes</pre>
+</div>
 
     <p>Ainsi, &agrave; cause de ce second fichier <code>.htaccess</code> du
     r&eacute;pertoire <code>/www/htdocs/exemple1/exemple2</code>, l'ex&eacute;cution
@@ -282,14 +278,14 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
     d&eacute;finition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/htdocs"&gt;
-    AllowOverride All
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/htdocs"&gt;
+AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location "/"&gt;
-    Options +IncludesNoExec -ExecCGI
+Options +IncludesNoExec -ExecCGI
 &lt;/Location&gt;</pre>
-
+</div>
 
     <div class="note">Dans cet exemple, on consid&egrave;re que le chemin d&eacute;fini par la
     directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> est
@@ -307,15 +303,15 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond</
 
     <p>Contenu du fichier <code>.htaccess</code> :</p>
 
-    <pre class="prettyprint lang-config">AuthType Basic
+<div class="example"><pre class="prettyprint lang-config">AuthType Basic
 AuthName "Password Required"
 AuthUserFile "/www/passwords/password.file"
 AuthGroupFile "/www/passwords/group.file"
 Require group admins</pre>
+</div>
 
-
-    <p>Notez que <code>AllowOverride AuthConfig</code> doit &ecirc;tre pr&eacute;sent
-    pour que ces directives produisent leur effet.</p>
+    <div class="note"><code>AllowOverride AuthConfig</code> doit &ecirc;tre pr&eacute;sent
+    pour que ces directives produisent leur effet.</div>
 
     <p>Vous pouvez vous r&eacute;f&eacute;rer au <a href="auth.html">tutoriel sur
     l'authentification</a> pour une description plus d&eacute;taill&eacute;e de
@@ -330,14 +326,14 @@ Includes - SSI) <a title="Lien permanent" href="#ssi" class="permalink">&para;</
     on utilise les directives de configuration suivantes, plac&eacute;es dans un
     fichier <code>.htaccess</code> enregistr&eacute; dans le r&eacute;pertoire consid&eacute;r&eacute; :</p>
 
-    <pre class="prettyprint lang-config">Options +Includes
+<div class="example"><pre class="prettyprint lang-config">Options +Includes
 AddType text/html "shtml"
 AddHandler server-parsed shtml</pre>
+</div>
 
-
-    <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
+    <div class="note"><code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent &ecirc;tre tous les deux pr&eacute;sents pour que ces
-    directives puissent produire leur effet.</p>
+    directives puissent produire leur effet.</div>
 
     <p>Vous pouvez vous r&eacute;f&eacute;rer au <a href="ssi.html">tutoriel SSI</a>
     pour une description plus d&eacute;taill&eacute;e des SSI.</p>
@@ -350,7 +346,7 @@ diff&eacute;rentes dans un contexte de r&eacute;pertoire. En particulier, les r&
 sont relatives au r&eacute;pertoire courant, et non &agrave; l'URI original. Consid&eacute;rez
 les exemples suivants :</p>
 
-<pre class="prettyprint lang-config"># Dans httpd.conf
+<div class="example"><pre class="prettyprint lang-config"># Dans httpd.conf
 RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
 
 # Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire racine de vos
@@ -359,7 +355,7 @@ RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 
 # Dans un fichier .htaccess situ&eacute; dans le r&eacute;pertoire images/
 RewriteRule "^(.+)\.jpg" "$1.png"</pre>
-
+</div>
 
 <p>On voit que si le fichier <code>.htaccess</code> se situe &agrave; la racine
 de vos documents, le slash de t&ecirc;te est supprim&eacute; de la valeur de
@@ -369,7 +365,7 @@ la cha&icirc;ne <code>/images/</code> dispara&icirc;t de cette m&ecirc;me valeur
 remplacement. Il doit donc en &ecirc;tre de m&ecirc;me dans votre expression
 rationnelle.</p>
 
-<p>Notez aussi que dans un contexte <code>.htaccess</code>, les expressions
+<p>Dans un contexte <code>.htaccess</code>, les expressions
 rationnelles sont recompil&eacute;es &agrave; chaque requ&ecirc;te, alors que dans un contexte de
 configuration principale, elle ne sont compil&eacute;es qu&rsquo;une seule fois et mises en
 cache.</p>
@@ -393,21 +389,21 @@ pour une &eacute;tude d&eacute;taill&eacute;e de l'utilisation du module
     l&rsquo;ex&eacute;cution de programmes CGI dans un r&eacute;pertoire particulier. Pour y
     parvenir, vous pouvez utiliser la configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">Options +ExecCGI
+<div class="example"><pre class="prettyprint lang-config">Options +ExecCGI
 AddHandler cgi-script "cgi" "py"</pre>
-
+</div>
 
     <p>Alternativement, si vous souhaitez que tous les fichiers d'un
     r&eacute;pertoire donn&eacute; soient consid&eacute;r&eacute;s comme des programmes CGI, vous
     pouvez utiliser la configuration suivante :</p>
 
-    <pre class="prettyprint lang-config">Options +ExecCGI
+<div class="example"><pre class="prettyprint lang-config">Options +ExecCGI
 SetHandler cgi-script</pre>
+</div>
 
-
-    <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
+    <div class="note"><code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent &ecirc;tre tous les deux pr&eacute;sents pour que ces
-    directives puissent produire leur effet.</p>
+    directives puissent produire leur effet.</div>
 
     <p>Vous pouvez vous r&eacute;f&eacute;rer au <a href="cgi.html">tutoriel CGI</a>
     pour une description plus d&eacute;taill&eacute;e de la configuration et de la
@@ -429,8 +425,8 @@ SetHandler cgi-script</pre>
     d&eacute;nu&eacute; de sens dans votre ficher <code>.htaccess</code> et de recharger la
     page&nbsp;:</p>
 
-    <pre class="prettyprint lang-config">TestMe</pre>
-
+<div class="example"><pre class="prettyprint lang-config">TestMe</pre>
+</div>
 
     <p>Si aucune erreur (HTTP 500) n'est g&eacute;n&eacute;r&eacute;e par le
     serveur, il est pratiquement certain qu'une directive
@@ -442,12 +438,12 @@ SetHandler cgi-script</pre>
     utilis&eacute;e dans votre fichier <code>.htaccess</code> n'est pas
     permise.</p>
 
-    <pre class="prettyprint lang-config">[Tue May 06 09:12:31.528374 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here</pre>
-
+<div class="example"><pre class="prettyprint lang-config">[Thu Jun 18 09:12:31.528374 2026] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here</pre>
+</div>
 
 	<p>Cela signifie soit que vous utilisez une directive qui n'est
 	jamais permise dans les fichiers <code>.htaccess</code>, soit
-	que vous n'avez tout simplement pas d&eacute;fini la directive
+	que vous n'avez pas d&eacute;fini la directive
 	<code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> &agrave; un niveau
 	suffisant pour la directive que vous utilisez. Consultez la
 	documentation de cette directive pour d&eacute;terminer quel cas
@@ -456,8 +452,8 @@ SetHandler cgi-script</pre>
 	<p>Le journal des erreurs peut aussi vous signaler une erreur de
 	syntaxe dans l'usage de la directive elle-m&ecirc;me.</p>
 
-    <pre class="prettyprint lang-config">[Tue May 06 09:14:02.946218 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters</pre>
-
+<div class="example"><pre class="prettyprint lang-config">[Thu Jun 18 09:14:02.946218 2026] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters</pre>
+</div>
 
 	<p>Dans ce cas, le message d'erreur sera sp&eacute;cifique &agrave; l'erreur
 	de syntaxe que vous avez commise.</p>

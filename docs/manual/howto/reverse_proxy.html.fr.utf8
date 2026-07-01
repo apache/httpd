@@ -27,30 +27,20 @@
 <a href="../es/howto/reverse_proxy.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/reverse_proxy.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
-    <p>En plus de ses fonctions de serveur web "basique", &agrave; savoir fournir du
-    contenu statique et dynamique &agrave; l'utilisateur, Apache httpd (comme la
-    plupart des autres serveurs web) peut aussi assurer les fonctions de serveur
-    mandataire inverse, connu aussi sous le nom de serveur "passerelle".</p>
+    <p>En plus de servir directement du contenu statique et dynamique, Apache
+    httpd peut remplir les fonctions d&rsquo;un serveur mandataire inverse (parfois
+    appel&eacute; passerelle).</p>
 
-    <p>Dans un tel sc&eacute;nario, httpd ne g&eacute;n&egrave;re et n'h&eacute;berge pas lui-m&ecirc;me les
-    donn&eacute;es, le contenu &eacute;tant en g&eacute;n&eacute;ral obtenu &agrave; partir d'un ou plusieurs serveurs
-    d'arri&egrave;re-plan qui n'ont normalement aucune connexion directe avec le r&eacute;seau
-    externe. Lorsque httpd re&ccedil;oit une requ&ecirc;te en provenance d'un client, la
-    requ&ecirc;te proprement dite est <em>mandat&eacute;e</em> vers un de ces serveurs
-    d'arri&egrave;re-plan qui traite la requ&ecirc;te, g&eacute;n&egrave;re le contenu et l'envoie &agrave; httpd,
-    ce dernier g&eacute;n&eacute;rant la v&eacute;ritable r&eacute;ponse HTTP &agrave; destination du client.</p>
+    <p>Dans ce mode, httpd ne g&eacute;n&egrave;re pas le contenu lui-m&ecirc;me. Il redirige chaque
+    requ&ecirc;te client vers un ou plusieurs serveurs dorsaux qui n&rsquo;ont pas d&rsquo;acc&egrave;s
+    direct au r&eacute;seau externe. Le serveur dorsal traite la requ&ecirc;te et renvoie le
+    contenu &agrave; httpd qui, &agrave; son tour, envoie la r&eacute;ponse HTTP au client.</p>
 
-    <p>De nombreuses raisons peuvent vous motiver &agrave; utiliser cette
-    fonctionnalit&eacute;, mais elles sont souvent du domaine de la s&eacute;curit&eacute;, de
-    la haute disponibilit&eacute;, de la r&eacute;partition de charge et de
-    l'authentification/autorisation centralis&eacute;e. Il est alors indispensable que
-    l'organisation, la conception et l'architecture de l'infrastructure
-    d'arri&egrave;re-plan (les serveurs qui traitent au sens propre les requ&ecirc;tes) soient
-    isol&eacute;es et prot&eacute;g&eacute;es de l'ext&eacute;rieur ; vu du client, le serveur mandataire
-    inverse <em>est</em> le seul serveur accessible pouvant lui fournir du
+    <p>Les buts courants de ce dispositif comprennent la s&eacute;curit&eacute;, la haute
+    disponibilit&eacute;, la r&eacute;partition de charge et l&rsquo;authentification centralis&eacute;e.
+    L&rsquo;infrastructure dorsale doit &ecirc;tre isol&eacute;e du r&eacute;seau externe&nbsp;; du point de
+    vue du client, le mandataire inverse <em>est</em> la seule source de tout
     contenu.</p>
 
     <p>Voici un exemple typique d'impl&eacute;mentation de cette fonctionnalit&eacute; :</p>
@@ -59,12 +49,12 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#related">Mandataire inverse</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#simple">Mandatement inverse simple</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#cluster">Clusters et Balancers</a></li>
-<li><img alt="" src="../images/down.gif"> <a href="#config">Configuration du Balancer et des BalancerMembers</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#cluster">Grappes et r&eacute;partiteurs de charge</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#config">Configuration du r&eacute;partiteur de charge et de ses membres (workers)</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#failover">Gestion des indisponibilit&eacute;s (Failover)</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#manager">Gestion du r&eacute;partiteur de charge</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#health-check">V&eacute;rification dynamique du bon fonctionnement d'un serveur
-    d'arri&egrave;re-plan</a></li>
+    dorsal</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#status">Drapeaux d'&eacute;tat d'un membre du groupe de r&eacute;partition de charge</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -86,26 +76,25 @@
       unique :
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
-
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"</pre>
+</div>
 
     <p>
-      Pour &ecirc;tre sur que cette redirection soit effectu&eacute;e et que les en-t&ecirc;tes
-      <code>Location:</code> g&eacute;n&eacute;r&eacute;s par le serveur d'arri&egrave;re-plan soient
-      modifi&eacute;s pour pointer vers le mandataire inverse, et non vers le serveur
-      d'arri&egrave;re-plan, la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> est souvent requise :
+      Pour s&rsquo;assurer que les en-t&ecirc;tes <code>Location:</code> g&eacute;n&eacute;r&eacute;s par le
+      serveur dorsal soient modifi&eacute;s pour pointer vers le mandataire inverse, et
+      non vers le serveur d'arri&egrave;re-plan, la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> est en g&eacute;n&eacute;ral requise :
     </p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/"  "http://www.example.com/"
 ProxyPassReverse "/"  "http://www.example.com/"</pre>
+</div>
 
-
-    <p>Seules des URIs sp&eacute;cifiques peuvent &ecirc;tre mandat&eacute;es, comme le montre
+    <p>Il est possible de sp&eacute;cifier les URIs qui peuvent &ecirc;tre mandat&eacute;s, comme le montre
     l'exemple suivant :</p>
 
-    <pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com/"
+<div class="example"><pre class="prettyprint lang-config">ProxyPass "/images"  "http://www.example.com/"
 ProxyPassReverse "/images"  "http://www.example.com/"</pre>
-
+</div>
 
     <p>Dans l'exemple pr&eacute;c&eacute;dent, si le chemin d'une requ&ecirc;te commence par
     <code>/images</code>, elle sera redirig&eacute;e vers le serveur d'arri&egrave;re-plan
@@ -113,39 +102,38 @@ ProxyPassReverse "/images"  "http://www.example.com/"</pre>
     </p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="cluster">Clusters et Balancers <a title="Lien permanent" href="#cluster" class="permalink">&para;</a></h2>
+<h2 id="cluster">Grappes et r&eacute;partiteurs de charge <a title="Lien permanent" href="#cluster" class="permalink">&para;</a></h2>
     
 
     <p>
-      Utiliser un serveur d'arri&egrave;re-plan unique n'est cependant pas une solution
-      id&eacute;ale car ce dernier peut devenir indisponible ou surcharg&eacute;, et le
-      mandatement inverse vers ce serveur ne pr&eacute;sente alors plus aucun avantage.
-      La solution r&eacute;side dans la d&eacute;finition d'un groupe de serveurs
-      d'arri&egrave;re-plan qui vont se partager le traitement des requ&ecirc;tes via un
-      m&eacute;canisme de r&eacute;partition de charge et de gestion des indisponibilit&eacute;s pris
-      en charge par le mandataire. Ce groupe de r&eacute;partition est plus connu sous le nom de
-      <em>cluster</em>, mais dans la terminologie d'Apache httpd, on utilise
-      plut&ocirc;t le terme de <em>balancer</em>. Un balancer se d&eacute;finit en
-      utilisant les directives <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code> et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> comme suit :
+       La configuration &agrave; un seul serveur dorsal ci-avant comporte un d&eacute;faut
+       &eacute;vident&nbsp;: si ce serveur dorsal est &eacute;teint ou surcharg&eacute;, le contenu
+       mandat&eacute; ne sera pas disponible. Ce dont on a besoin ici est un groupe de
+       serveurs dorsaux parmi lesquels le serveur mandataire pourra basculer et
+       r&eacute;partir la charge. Ce groupe est parfois appel&eacute; <em>grappe</em>
+       (cluster)&nbsp;; Apache httpd le nomme <em>r&eacute;partiteur de charge</em>
+       (balancer). Un r&eacute;partiteur de charge se d&eacute;finit en utilisant les
+       directives <code class="directive"><a href="../mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>
+       et <code class="directive"><a href="../mod/mod_proxy.html#balancermember">BalancerMember</a></code> :
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
-    ProxySet lbmethod=bytraffic
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"</pre>
-
+</div>
 
     <p>
       Le protocole <code>balancer://</code> indique &agrave; httpd que l'on souhaite
-      cr&eacute;er un balancer nomm&eacute; <em>myset</em>. Ce balancer comporte deux serveurs
+      cr&eacute;er un r&eacute;partiteur de charge nomm&eacute; <em>myset</em>. Ce r&eacute;partiteur comporte deux serveurs
       d'arri&egrave;re-plan r&eacute;f&eacute;renc&eacute;s dans la terminologie httpd sous le nom de
       <em>BalancerMembers</em>. Avec cet exemple, toute requ&ecirc;te dont le chemin
       commence par <code>/images</code> sera mandat&eacute;e vers <em>un</em> des deux
-      serveurs d'arri&egrave;re-plan. La directive <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> d&eacute;finit ici pour le balancer
+      serveurs d'arri&egrave;re-plan. La directive <code class="directive"><a href="../mod/mod_proxy.html#proxyset">ProxySet</a></code> d&eacute;finit ici pour le r&eacute;partiteur
       <em>myset</em> un algorithme de
       r&eacute;partition de charge bas&eacute; sur le trafic entr&eacute;es/sorties.
     </p>
@@ -159,25 +147,25 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
-<h2 id="config">Configuration du Balancer et des BalancerMembers <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
+<h2 id="config">Configuration du r&eacute;partiteur de charge et de ses membres (workers) <a title="Lien permanent" href="#config" class="permalink">&para;</a></h2>
     
 
     <p>
-      Vous pouvez configurer de mani&egrave;re d&eacute;taill&eacute;e les <em>balancers</em> et
-      <em>workers</em> via les nombreux param&egrave;tres de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Par exemple, si vous souhaitez
-      que <code>http://www3.example.com:8080</code> traite avec un facteur 3 le
-      trafic avec un timeout d'une seconde, utilisez la configuration suivante :
+      Les r&eacute;partiteurs de charge et leurs membres sont configur&eacute;s &agrave; l&rsquo;aide de
+      param&egrave;tres de la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Par exemple, pour que
+      <code>http://www3.example.com:8080</code> g&egrave;re le trafic avec un facteur 3
+      et un d&eacute;lai d&rsquo;une seconde&nbsp;:
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    ProxySet lbmethod=bytraffic
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images"  "balancer://myset/"
 ProxyPassReverse "/images"  "balancer://myset/"</pre>
-
+</div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -185,9 +173,9 @@ ProxyPassReverse "/images"  "balancer://myset/"</pre>
     
 
     <p>
-      Vous pouvez aussi d&eacute;finir finement des sc&eacute;narios pour les cas
-      d'indisponibilit&eacute; d'un ou plusieurs serveurs d'arri&egrave;re-plan en sp&eacute;cifiant
-      quels serveurs doivent alors prendre le relai. Dans l'exemple suivant,
+      Vous pouvez d&eacute;finir finement des sc&eacute;narios pour les cas d'indisponibilit&eacute;
+      d'un ou plusieurs serveurs dorsaux en sp&eacute;cifiant quels r&eacute;partiteurs et
+      leurs membres doivent alors prendre le relai. Dans l'exemple suivant,
       trois sc&eacute;narios sont envisag&eacute;s : 
     </p>
     <ol>
@@ -216,30 +204,29 @@ ProxyPassReverse "/images"  "balancer://myset/"</pre>
       ou de standby pour chaque jeu de serveurs du r&eacute;partiteur de charge.
     </p>    
 
-    <pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://spare1.example.com:8080 status=+R
-    BalancerMember http://spare2.example.com:8080 status=+R
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
-    ProxySet lbmethod=byrequests
+<div class="example"><pre class="prettyprint lang-config">&lt;Proxy balancer://myset&gt;
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+BalancerMember http://spare1.example.com:8080 status=+R
+BalancerMember http://spare2.example.com:8080 status=+R
+BalancerMember http://hstandby.example.com:8080 status=+H
+BalancerMember http://bkup1.example.com:8080 lbset=1
+BalancerMember http://bkup2.example.com:8080 lbset=1
+ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"</pre>
-
+</div>
 
     <p>
       Les serveurs de remplacement &agrave; chaud remplacent les serveurs indisponibles
-      du m&ecirc;me jeu de serveurs du r&eacute;partiteur de charge. Un serveur est
-      consid&eacute;r&eacute; comme indisponible s'il est en maintenance, arr&ecirc;t&eacute; ou en erreur.
-      Les serveurs de standby &agrave; chaud sont utilis&eacute;s si tous les serveurs et
-      serveurs de remplacement du jeu de serveurs du r&eacute;partiteur de charge sont
-      indisponibles. Les jeux de serveurs du r&eacute;partiteur de charge (avec leurs
-      serveurs de standby et de remplacement &agrave; chaud respectifs) sont toujours
-      sollicit&eacute;s dans l'ordre du plus bas lbset vers le plus haut.
+      (en phase de vidage, arr&ecirc;t&eacute;s ou en &eacute;tat d&rsquo;erreur) du m&ecirc;me jeu de serveurs
+      du r&eacute;partiteur de charge.  Les serveurs de standby &agrave; chaud ne sont activ&eacute;s
+      que si tous les serveurs et serveurs de remplacement du jeu de serveurs du
+      r&eacute;partiteur de charge sont indisponibles. Les jeux de serveurs du
+      r&eacute;partiteur de charge sont sollicit&eacute;s dans l'ordre du plus bas lbset vers
+      le plus haut.
     </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -248,21 +235,19 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
     
 
     <p>
-     L'application <em>balancer-manager</em> fournie avec le mandataire inverse
-     d'Apache httpd en est un des outils les plus utiles. Comme
-     <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, <em>balancer-manager</em> affiche la
-     configuration et l'activit&eacute; actuelles des balancers actifs. L'affichage de
-     ces informations n'est cependant pas sa seule fonction ; il permet aussi de
-     modifier la plupart d'entre elles et m&ecirc;me d'ajouter des membres au groupe
-     de r&eacute;partition de charge en temps r&eacute;el. Pour activer ces fonctionnalit&eacute;s,
-     vous devez ajouter les lignes suivantes &agrave; votre fichier de configuration : 
+      Apache httpd comporte un <em>gestionnaire de r&eacute;partiteur de charge</em>
+      (balancer-manager) int&eacute;gr&eacute;. Comme <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, il affiche
+      la configuration et l&rsquo;&eacute;tat actuels de vos r&eacute;partiteurs de charge et de
+      leurs membres. Il vous permet aussi de les reconfigurer &agrave; l&rsquo;ex&eacute;cution
+      &mdash;&nbsp;par exemple pour ajouter de nouveaux membres &agrave; un r&eacute;partiteur existant.
+      Pour l&rsquo;activer, ajoutez les lignes suivantes &agrave; votre configuration&nbsp;:
     </p>
 
-    <pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
-    SetHandler balancer-manager
-    Require host localhost
+<div class="example"><pre class="prettyprint lang-config">&lt;Location "/balancer-manager"&gt;
+SetHandler balancer-manager
+Require host localhost
 &lt;/Location&gt;</pre>
-
+</div>
 
     <div class="warning"><h3>Avertissement</h3>
       <p>N'activez le <em>balancer-manager</em> que si vous avez d&eacute;j&agrave; <a href="../mod/mod_proxy.html#access">s&eacute;curis&eacute; votre serveur</a>.
@@ -277,9 +262,9 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page"></p>
 
     <p>
-      Ce formulaire permet &agrave; l'administrateur de modifier certains param&egrave;tres,
-      de d&eacute;sactiver ou d'ajouter certains serveurs d'arri&egrave;re-plan, et de
-      modifier les r&egrave;gles de r&eacute;partition de charge. Par exemple, si on clique
+      Ce formulaire permet de modifier certains param&egrave;tres,
+      de d&eacute;sactiver ou d'ajouter des serveurs dorsaux, et de
+      modifier les r&egrave;gles de r&eacute;partition de charge. Si l&rsquo;on clique
       sur le r&eacute;partiteur, la page suivante s'affiche : 
     </p>
     <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page"></p>
@@ -298,16 +283,15 @@ ProxyPassReverse "/images/"  "balancer://myset/"</pre>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="health-check">V&eacute;rification dynamique du bon fonctionnement d'un serveur
-    d'arri&egrave;re-plan <a title="Lien permanent" href="#health-check" class="permalink">&para;</a></h2>
+    dorsal <a title="Lien permanent" href="#health-check" class="permalink">&para;</a></h2>
     
 
     <p>
-      Avant que le mandataire httpd ne fasse appel &agrave; un serveur d'arri&egrave;re-plan, il
-      peut <em>"tester"</em> si ce dernier est disponible en d&eacute;finissant le
-      param&egrave;tre <code>ping</code> de ce serveur via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Cependant, il est souvent plus
+      Avant de mandater une requ&ecirc;te, httpd peut <em>"tester"</em> si le serveur
+      dorsal est disponible en d&eacute;finissant le param&egrave;tre <code>ping</code> de ce
+      serveur via la directive <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>. Cependant, il est souvent plus
       judicieux de v&eacute;rifier le bon fonctionnement d'un serveur <em>hors
-      bande</em> et de mani&egrave;re dynamique via le module
-      <code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code> d'Apache httpd.
+      ibande</em> via le module <code class="module"><a href="../mod/mod_proxy_hcheck.html">mod_proxy_hcheck</a></code>.
     </p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

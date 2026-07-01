@@ -30,8 +30,6 @@
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/auth.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>L'authentification est un processus qui vous permet de v&eacute;rifier
     qu'une personne est bien celle qu'elle pr&eacute;tend &ecirc;tre. L'autorisation
@@ -149,11 +147,11 @@ module de chaque groupe.</p>
     d'une directive <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code>
     du style :</p>
 
-    <pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
-
+<div class="example"><pre class="prettyprint lang-config">AllowOverride AuthConfig</pre>
+</div>
 
     <p>Si vous avez l'intention d'ajouter les directives directement
-    dans le fichier de configuration principal, vous devrez bien entendu
+ dans le fichier de configuration principal, vous devrez bien entendu
     poss&eacute;der les droits en &eacute;criture sur ce fichier.</p>
 
     <p>Vous devrez aussi conna&icirc;tre un tant soit peu la structure des
@@ -226,13 +224,13 @@ module de chaque groupe.</p>
     fichier <code>httpd.conf</code> &agrave; l'int&eacute;rieur d'une section &lt;Directory
     "/usr/local/apache/htdocs/secret"&gt; :</p>
 
-    <pre class="prettyprint lang-config">AuthType Basic
+<div class="example"><pre class="prettyprint lang-config">AuthType Basic
 AuthName "Restricted Files"
-# (Following line optional)
+# (La ligne suivante est facultative)
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen</pre>
-
+</div>
 
     <p>Examinons ces directives une &agrave; une. La directive <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> d&eacute;finit la m&eacute;thode
     utilis&eacute;e pour authentifier l'utilisateur. La m&eacute;thode la plus
@@ -328,14 +326,14 @@ plusieurs personnes <a title="Lien permanent" href="#lettingmorethanonepersonin"
     <p>Maintenant, vous devez modifier votre fichier
     <code>.htaccess</code> comme suit :</p>
 
-    <pre class="prettyprint lang-config">AuthType Basic
+<div class="example"><pre class="prettyprint lang-config">AuthType Basic
 AuthName "By Invitation Only"
-# Optional line:
+# Ligne facultative :
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName</pre>
-
+</div>
 
     <p>Maintenant, quiconque appartient au groupe
     <code>Nom-de-groupe</code>, et poss&egrave;de une entr&eacute;e dans le fichier
@@ -346,8 +344,8 @@ Require group GroupName</pre>
     l'acc&egrave;s &agrave; plusieurs personnes. Plut&ocirc;t que de cr&eacute;er un fichier de
     groupes, il vous suffit d'ajouter la directive suivante :</p>
 
-    <pre class="prettyprint lang-config">Require valid-user</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require valid-user</pre>
+</div>
 
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
     la ligne <code>Require valid-user</code> autorisera l'acc&egrave;s &agrave;
@@ -399,14 +397,14 @@ passe <a title="Lien permanent" href="#dbmdbd" class="permalink">&para;</a></h2>
     <p>Par exemple, pour s&eacute;lectionner un fichier dbm &agrave; la place d'un
     fichier texte :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider dbm
-    AuthDBMUserFile "/www/passwords/passwd.dbm"
-    Require valid-user
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider dbm
+AuthDBMUserFile "/www/passwords/passwd.dbm"
+Require valid-user
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>D'autres options sont disponibles. Consultez la documentation de
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> pour plus de d&eacute;tails.</p>
@@ -424,15 +422,15 @@ d'authentification <a title="Lien permanent" href="#multprovider" class="permali
     conjointement les fournisseurs d'authentification
     file et LDAP :</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file ldap
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    Require valid-user
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file ldap
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+Require valid-user
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>Dans cet exemple, le fournisseur file va tenter d'authentifier
     l'utilisateur en premier. S'il n'y parvient pas, le fournisseur LDAP
@@ -450,17 +448,17 @@ d'authentification <a title="Lien permanent" href="#multprovider" class="permali
     autorisation &agrave; base de fichier de groupes et une autorisation &agrave; base
     de groupes LDAP.</p>
 
-    <pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile "/usr/local/apache/passwd/groups"
-    Require group GroupName
-    Require ldap-group cn=mygroup,o=yourorg
+<div class="example"><pre class="prettyprint lang-config">&lt;Directory "/www/docs/private"&gt;
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+AuthGroupFile "/usr/local/apache/passwd/groups"
+Require group GroupName
+Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;</pre>
-
+</div>
 
     <p>Pour un sc&eacute;nario d'autorisation un peu plus avanc&eacute;, des
     directives de conteneur d'autorisation comme <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code> et
@@ -526,75 +524,14 @@ autorisation <a title="Lien permanent" href="#beyond" class="permalink">&para;</
 
     <h3 id="reqaccessctrl">Utilisation de fournisseurs
     d'autorisation pour le contr&ocirc;le d'acc&egrave;s</h3>
-        <p>La v&eacute;rification du nom d'utilisateur et du mot de passe ne
-	constituent qu'un aspect des m&eacute;thodes d'authentification.
-	Souvent, le contr&ocirc;le d'acc&egrave;s &agrave; certaines personnes n'est pas
-	bas&eacute; sur leur identit&eacute; ; il peut d&eacute;pendre, par exemple de leur
-	provenance.</p>
-
-        <p>Les fournisseurs d'autorisation <code>all</code>,
-	<code>env</code>, <code>host</code> et <code>ip</code> vous
-	permettent d'accorder ou refuser l'acc&egrave;s en
-	fonction de crit&egrave;res tels que le nom d'h&ocirc;te ou l'adresse
-	IP de la machine qui effectue la requ&ecirc;te.</p>
-
-        <p>L'utilisation de ces fournisseurs est sp&eacute;cifi&eacute;e &agrave; l'aide de
-	la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>. Cette directive
-	permet d'enregistrer quels fournisseurs d'autorisation
-	seront appel&eacute;s dans le processus d'autorisation au cours du
-	traitement de la requ&ecirc;te. Par exemple :</p>
-
-        <pre class="prettyprint lang-config">Require ip <var>address</var></pre>
-
-
-        <p>o&ugrave; <var>adresse</var> est une adresse IP (ou une adresse IP
-	partielle) ou :</p>
-
-        <pre class="prettyprint lang-config">Require host <var>domain_name</var></pre>
-
-
-        <p>o&ugrave; <var>nom_domaine</var> est un nom de domaine enti&egrave;rement
-	qualif&eacute; (ou un nom de domaine partiel) ; vous pouvez indiquer
-	plusieurs adresses ou noms de domaines, si vous le d&eacute;sirez.</p>
-
-        <p>Par exemple, si vous voulez rejeter les spams dont une
-	machine vous inonde, vous pouvez utiliser ceci :</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>Ainsi, les visiteurs en provenance de cette adresse ne
-	pourront pas voir le contenu concern&eacute; par cette directive. Si,
-	par contre, vous connaissez le nom de la machine, vous pouvez
-	utiliser ceci :</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not host host.example.com
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>Et si vous voulez interdire l'acc&egrave;s &agrave; toutes les machines
-	d'un domaine, vous pouvez sp&eacute;cifier une partie seulement de
-	l'adresse ou du nom de domaine :</p>
-
-        <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 192.168.205
-    Require not host phishers.example.com moreidiots.example
-    Require not host ke
-&lt;/RequireAll&gt;</pre>
-
-
-        <p>L'utilisation de la directive <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
-	avec de multiples directives <code class="directive"><a href="../mod/mod_authz_core.html#require">&lt;Require&gt;</a></code>, toutes avec la n&eacute;gation
-	<code>not</code>, n'accordera l'acc&egrave;s que si toutes les
-	conditions n&eacute;gatives sont v&eacute;rifi&eacute;es. En d'autres termes, l'acc&egrave;s
-	sera refus&eacute; si au moins une des conditions n&eacute;gatives n'est pas
-	v&eacute;rifi&eacute;e.</p>
+	<p>La v&eacute;rification du nom d'utilisateur et du mot de passe ne
+	constituent qu'un aspect des m&eacute;thodes d'authentification.  Vous pouvez
+	aussi autoriser ou interdire l&rsquo;acc&egrave;s en fonction d&rsquo;autres crit&egrave;res tels
+	que l&rsquo;adresse IP du client ou le nom d&rsquo;h&ocirc;te en utilisant les
+	fournisseurs d&rsquo;autorisation <code>all</code>, <code>env</code>,
+	<code>host</code> et <code>ip</code> avec la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>.</p>
+ 
+        <p>Pour des d&eacute;tails complets et des exemples, voir le tutoriel <a href="access.html">Access Control</a>.</p>
 
     
 
@@ -624,17 +561,14 @@ autorisation <a title="Lien permanent" href="#beyond" class="permalink">&para;</
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="socache">Mise en cache de l'authentification <a title="Lien permanent" href="#socache" class="permalink">&para;</a></h2>
-    <p>Dans certains cas, l'authentification constitue une charge
-    inacceptable pour un fournisseur d'authentification ou votre r&eacute;seau.
-    Ceci est susceptible d'affecter les utilisateurs du module
-    <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (ou les fournisseurs
-    tiers/personnalis&eacute;s). Pour r&eacute;soudre ce probl&egrave;me, HTTPD 2.3/2.4
-    propose un nouveau fournisseur de mise en cache,
-    <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>, qui permet de mettre en cache
-    les donn&eacute;es d'authentification, et ainsi r&eacute;duire la charge du/des
-    fournisseurs(s) originels.</p>
-    <p>Cette mise en cache apportera un gain en performance substantiel
-    &agrave; certains utilisateurs.</p>
+    <p>Dans certains cas, l'authentification constitue une charge inacceptable
+    pour un fournisseur d'authentification ou votre r&eacute;seau.  Ceci est
+    susceptible d'affecter les utilisateurs du module
+    <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> (ou les fournisseurs tiers/personnalis&eacute;s). Le
+    module <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code> met en cache les donn&eacute;es
+    d'authentification, et r&eacute;duit ainsi la charge du/des fournisseurs(s)
+    originels.</p> <p>Cette mise en cache apportera un gain en performance
+    substantiel &agrave; certains utilisateurs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="moreinformation">Pour aller plus loin . . . <a title="Lien permanent" href="#moreinformation" class="permalink">&para;</a></h2>
