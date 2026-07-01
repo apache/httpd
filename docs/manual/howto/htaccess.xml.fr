@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1934320:1935519 (outdated) -->
+<!-- English Revision: 1935519 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -56,7 +56,7 @@ modifier les fichiers de configuration principaux du serveur.</p>
             <directive module="mod_authn_core">AuthName</directive>
             <directive module="mod_authn_file">AuthUserFile</directive>
             <directive module="mod_authz_groupfile">AuthGroupFile</directive>
-            <directive module="mod_authz_core">Require</directive>
+ <directive module="mod_authz_core">Require</directive>
         </directivelist>
 
     </related>
@@ -81,9 +81,11 @@ modifier les fichiers de configuration principaux du serveur.</p>
       <code>.config</code>, vous pouvez mettre ceci dans le fichier de
       configuration de votre serveur :</p>
 
-      <highlight language="config">
-        AccessFileName ".config"
-      </highlight>
+<example>
+<highlight language="config">
+AccessFileName ".config"
+</highlight>
+</example>
     </note>
 
     <p>Les directives dans les fichiers <code>.htaccess</code> utilisent la même
@@ -102,7 +104,7 @@ modifier les fichiers de configuration principaux du serveur.</p>
     la documentation de cette directive contiendra une section Override,
     spécifiant quelle valeur doit prendre la directive <directive
     module="core">AllowOverride</directive> pour que cette directive
-    soit traitée.</p>
+    soit autorisée.</p>
 
     <note>La valeur par défaut de la directive <directive
     module="core">AllowOverride</directive> est <code>None</code>. Cela signifie
@@ -159,26 +161,26 @@ modifier les fichiers de configuration principaux du serveur.</p>
     <code>.htaccess</code> est chargé en mémoire chaque fois qu'un
     document fait l'objet d'une requête.</p>
 
-    <p>Notez aussi que httpd doit rechercher les fichiers
-    <code>.htaccess</code> dans tous les répertoires de niveau
-    supérieur, afin de rassembler toutes les directives qui s'appliquent
-    au répertoire courant (Voir la section <a href="#how">comment sont
-    appliquées les directives</a>). Ainsi, si un fichier fait l'objet
-    d'une requête à partir d'un répertoire
-    <code>/www/htdocs/exemple</code>, httpd doit rechercher les
-    fichiers suivants :</p>
+    <p>En outre, httpd doit rechercher des fichiers <code>.htaccess</code> dans
+    tous les répertoires de niveau supérieur pour rassembler la totalité des
+    directives applicables (Voir la section <a href="#how">comment sont
+    appliquées les directives</a>). Ainsi, si un fichier fait l'objet d'une
+    requête à partir d'un répertoire <code>/www/htdocs/exemple</code>, httpd
+    doit rechercher les fichiers suivants :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 /.htaccess
 /www/.htaccess
 /www/htdocs/.htaccess
 /www/htdocs/example/.htaccess
-    </highlight>
+</highlight>
+</example>
 
     <p>En conséquence, chaque accès à un fichier de ce répertoire
     nécessite 4 accès au système de fichiers supplémentaires pour
     rechercher des fichiers <code>.htaccess</code>, même si
-    aucun de ces fichiers n'est présent. Notez que cet exemple ne peut
+    aucun de ces fichiers n'est présent. Cet exemple ne peut
     se produire que si les fichiers <code>.htaccess</code> ont été
     autorisés pour le répertoire <code>/</code>, ce qui est rarement le
     cas.</p>
@@ -187,7 +189,7 @@ modifier les fichiers de configuration principaux du serveur.</p>
     utilisateurs de modifier la configuration du serveur, il peut en
     résulter des conséquences sur lesquelles vous n'aurez aucun
     contrôle. Réfléchissez bien avant de donner ce privilège à vos
-    utilisateurs. Notez aussi que ne pas donner aux utilisateurs les
+    utilisateurs. Ne pas donner aux utilisateurs les
     privilèges dont ils ont besoin va entraîner une augmentation des
     demandes de support technique. Assurez-vous d'avoir informé
     clairement vos utilisateurs du niveau de privilèges que vous leur
@@ -204,46 +206,58 @@ modifier les fichiers de configuration principaux du serveur.</p>
     contrôle plus fin que dans le cas de la directive <directive
     module="core">AllowOverride</directive> seule :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 # N’autoriser que des directives spécifiques, pas des catégories entières de
 # directives
 AllowOverride None
 AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
-    </highlight>
+</highlight>
+</example>
 
     <p>Avec cette configuration, toute directive non explicitement spécifiée
     causera une erreur du serveur si elle est rencontrée dans un fichier
     <code>.htaccess</code>. C’est un bon compromis entre possibilité et
     impossibilité totales d’outrepasser la configuration globale.</p>
 
-    <p>Notez que mettre un fichier <code>.htaccess</code> contenant une
-    directive dans un répertoire <code>/www/htdocs/exemple</code>
-    revient exactement au même que mettre la même directive dans une
-    section Directory <code>&lt;Directory "/www/htdocs/exemple"&gt;</code>
-    du fichier de configuration de votre serveur principal :</p>
+    <p>Placer une directive dans un fichier <code>.htaccess</code> dans un
+    répertoire <code>/www/htdocs/example</code> équivaut exactement à placer
+    cette même directive dans une section <code>&lt;Directory
+    "/www/htdocs/example"&gt;</code> de la configuration globale de votre
+    serveur :</p>
 
-    <p>Fichier <code>.htaccess</code> dans
-    <code>/www/htdocs/exemple</code> :</p>
+    <p>Fichier <code>.htaccess</code> dans <code>/www/htdocs/example</code>
+    :</p>
 
     <example><title>Contenu du fichier .htaccess dans
-    <code>/www/htdocs/exemple</code></title>
-    	<highlight language="config">AddType text/example ".exm"</highlight>
+    <code>/www/htdocs/example</code></title>
+<example>
+<highlight language="config">
+AddType text/example ".exm"
+</highlight>
+</example>
     </example>
 
     <example><title>Section de votre fichier
     <code>httpd.conf</code></title>
-      <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/htdocs/example"&gt;
-    AddType text/example ".exm"
+AddType text/example ".exm"
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
     </example>
 
     <p>L'utilisation des fichiers <code>.htaccess</code> peut être
     entièrement désactivée en définissant la directive <directive
     module="core">AllowOverride</directive> à <code>none</code> :</p>
 
-    <highlight language="config">AllowOverride None</highlight>
+<example>
+<highlight language="config">
+AllowOverride None
+</highlight>
+</example>
 </section>
 
 <section id="how"><title>Comment sont appliquées les directives ?</title>
@@ -251,7 +265,7 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
     <p>Les directives de configuration situées dans un fichier
     <code>.htaccess</code> s'appliquent au répertoire dans lequel ce
     fichier <code>.htaccess</code> se trouve, ainsi qu'à tous ses
-    sous-répertoires. Cependant, il est important de garder à l'esprit
+    sous-répertoires. Cependant, souvenez-vous
     qu'il peut y avoir des fichiers <code>.htaccess</code> dans les
     répertoires de niveau supérieur. Les directives sont appliquées
     selon l'ordre dans lequel elles sont rencontrées. Ainsi, les
@@ -268,18 +282,26 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
     <p>Dans le répertoire <code>/www/htdocs/exemple1</code> se trouve un
     fichier <code>.htaccess</code> contenant ce qui suit :</p>
 
-    <highlight language="config">Options +ExecCGI</highlight>
+<example>
+<highlight language="config">
+Options +ExecCGI
+</highlight>
+</example>
 
-    <p>Note : "<code>AllowOverride Options</code>" doit être présent
+    <note>"<code>AllowOverride Options</code>" doit être présent
     pour permettre l'utilisation de la directive "<directive
     module="core">Options</directive>"  dans les fichiers
-    <code>.htaccess</code>.</p>
+    <code>.htaccess</code>.</note>
 
     <p>Dans le répertoire <code>/www/htdocs/exemple1/exemple2</code> se
     trouve un fichier <code>.htaccess</code> contenant ce qui suit
     :</p>
 
-    <highlight language="config">Options Includes</highlight>
+<example>
+<highlight language="config">
+Options Includes
+</highlight>
+</example>
 
     <p>Ainsi, à cause de ce second fichier <code>.htaccess</code> du
     répertoire <code>/www/htdocs/exemple1/exemple2</code>, l'exécution
@@ -304,15 +326,17 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
     définition de toute autre option dans les fichiers
     <code>.htaccess</code>, vous pouvez utiliser :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/htdocs"&gt;
-    AllowOverride All
+AllowOverride All
 &lt;/Directory&gt;
 
 &lt;Location "/"&gt;
-    Options +IncludesNoExec -ExecCGI
+Options +IncludesNoExec -ExecCGI
 &lt;/Location&gt;
-    </highlight>
+</highlight>
+</example>
 
     <note>Dans cet exemple, on considère que le chemin défini par la
     directive <directive module="core">DocumentRoot</directive> est
@@ -331,16 +355,18 @@ AllowOverrideList Redirect RedirectMatch RewriteEngine RewriteRule RewriteCond
 
     <p>Contenu du fichier <code>.htaccess</code> :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AuthType Basic
 AuthName "Password Required"
 AuthUserFile "/www/passwords/password.file"
 AuthGroupFile "/www/passwords/group.file"
 Require group admins
-    </highlight>
+</highlight>
+</example>
 
-    <p>Notez que <code>AllowOverride AuthConfig</code> doit être présent
-    pour que ces directives produisent leur effet.</p>
+    <note><code>AllowOverride AuthConfig</code> doit être présent
+    pour que ces directives produisent leur effet.</note>
 
     <p>Vous pouvez vous référer au <a href="auth.html">tutoriel sur
     l'authentification</a> pour une description plus détaillée de
@@ -355,15 +381,17 @@ Includes - SSI)</title>
     on utilise les directives de configuration suivantes, placées dans un
     fichier <code>.htaccess</code> enregistré dans le répertoire considéré :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Options +Includes
 AddType text/html "shtml"
 AddHandler server-parsed shtml
-    </highlight>
+</highlight>
+</example>
 
-    <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
+    <note><code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent être tous les deux présents pour que ces
-    directives puissent produire leur effet.</p>
+    directives puissent produire leur effet.</note>
 
     <p>Vous pouvez vous référer au <a href="ssi.html">tutoriel SSI</a>
     pour une description plus détaillée des SSI.</p>
@@ -377,6 +405,7 @@ différentes dans un contexte de répertoire. En particulier, les règles
 sont relatives au répertoire courant, et non à l'URI original. Considérez
 les exemples suivants :</p>
 
+<example>
 <highlight language="config">
 # Dans httpd.conf
 RewriteRule "^/images/(.+)\.jpg" "/images/$1.png"
@@ -388,6 +417,7 @@ RewriteRule "^images/(.+)\.jpg" "images/$1.png"
 # Dans un fichier .htaccess situé dans le répertoire images/
 RewriteRule "^(.+)\.jpg" "$1.png"
 </highlight>
+</example>
 
 <p>On voit que si le fichier <code>.htaccess</code> se situe à la racine
 de vos documents, le slash de tête est supprimé de la valeur de
@@ -398,7 +428,7 @@ la chaîne <code>/images/</code> disparaît de cette même valeur de
 remplacement. Il doit donc en être de même dans votre expression
 rationnelle.</p>
 
-<p>Notez aussi que dans un contexte <code>.htaccess</code>, les expressions
+<p>Dans un contexte <code>.htaccess</code>, les expressions
 rationnelles sont recompilées à chaque requête, alors que dans un contexte de
 configuration principale, elle ne sont compilées qu’une seule fois et mises en
 cache.</p>
@@ -422,23 +452,27 @@ pour une étude détaillée de l'utilisation du module
     l’exécution de programmes CGI dans un répertoire particulier. Pour y
     parvenir, vous pouvez utiliser la configuration suivante :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Options +ExecCGI
 AddHandler cgi-script "cgi" "py"
-    </highlight>
+</highlight>
+</example>
 
     <p>Alternativement, si vous souhaitez que tous les fichiers d'un
     répertoire donné soient considérés comme des programmes CGI, vous
     pouvez utiliser la configuration suivante :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 Options +ExecCGI
 SetHandler cgi-script
-    </highlight>
+</highlight>
+</example>
 
-    <p>Notez que <code>AllowOverride Options</code> et <code>AllowOverride
+    <note><code>AllowOverride Options</code> et <code>AllowOverride
     FileInfo</code> doivent être tous les deux présents pour que ces
-    directives puissent produire leur effet.</p>
+    directives puissent produire leur effet.</note>
 
     <p>Vous pouvez vous référer au <a href="cgi.html">tutoriel CGI</a>
     pour une description plus détaillée de la configuration et de la
@@ -460,9 +494,11 @@ SetHandler cgi-script
     dénué de sens dans votre ficher <code>.htaccess</code> et de recharger la
     page :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 TestMe
-    </highlight>
+</highlight>
+</example>
 
     <p>Si aucune erreur (HTTP 500) n'est générée par le
     serveur, il est pratiquement certain qu'une directive
@@ -474,13 +510,15 @@ TestMe
     utilisée dans votre fichier <code>.htaccess</code> n'est pas
     permise.</p>
 
-    <highlight language="config">
-[Tue May 06 09:12:31.528374 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here
-    </highlight>
+<example>
+<highlight language="config">
+[Thu Jun 18 09:12:31.528374 2026] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: DirectoryIndex not allowed here
+</highlight>
+</example>
 
 	<p>Cela signifie soit que vous utilisez une directive qui n'est
 	jamais permise dans les fichiers <code>.htaccess</code>, soit
-	que vous n'avez tout simplement pas défini la directive
+	que vous n'avez pas défini la directive
 	<directive module="core">AllowOverride</directive> à un niveau
 	suffisant pour la directive que vous utilisez. Consultez la
 	documentation de cette directive pour déterminer quel cas
@@ -489,9 +527,11 @@ TestMe
 	<p>Le journal des erreurs peut aussi vous signaler une erreur de
 	syntaxe dans l'usage de la directive elle-même.</p>
 
-    <highlight language="config">
-[Tue May 06 09:14:02.946218 2025] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
-    </highlight>
+<example>
+<highlight language="config">
+[Thu Jun 18 09:14:02.946218 2026] [core:alert] [pid 12345] [client 192.168.1.50:54321] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
+</highlight>
+</example>
 
 	<p>Dans ce cas, le message d'erreur sera spécifique à l'erreur
 	de syntaxe que vous avez commise.</p>
