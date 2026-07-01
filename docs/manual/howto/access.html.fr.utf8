@@ -27,8 +27,6 @@
 <a href="../es/howto/access.html" hreflang="es" rel="alternate" title="Espa&ntilde;ol">&nbsp;es&nbsp;</a> |
 <a href="../fr/howto/access.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
     <p>Le contr&ocirc;le d'acc&egrave;s fait r&eacute;f&eacute;rence &agrave; tout concept de contr&ocirc;le
     d'acc&egrave;s &agrave; une ressource quelconque. Il est distinct du processus d'<a href="auth.html">authentification et d'autorisation</a>.</p>
@@ -48,7 +46,7 @@ d'acc&egrave;s</a></li>
 
     <p>Plusieurs modules peuvent intervenir dans le contr&ocirc;le d'acc&egrave;s.
     Les plus importants sont <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> et
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Ce document illustre aussi comment
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>. Ce document &eacute;galement aussi comment
     utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour le contr&ocirc;le
     d'acc&egrave;s.</p>
 
@@ -57,9 +55,8 @@ d'acc&egrave;s</a></li>
 <h2 id="host">Contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te du
 client <a title="Lien permanent" href="#host" class="permalink">&para;</a></h2>
     <p>
-    Si vous souhaitez restreindre l'acc&egrave;s &agrave; certaines parties de votre
-    site web en fonction de l'addresse de l'h&ocirc;te de vos visiteurs, le
-    plus simple pour y parvenir consiste &agrave; utiliser le module
+    Si vous souhaitez restreindre l'acc&egrave;s &agrave; certaines parties de votre site web
+    en fonction de l'adresse de l'h&ocirc;te de vos visiteurs, utilisez le module
     <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.
     </p>
 
@@ -79,9 +76,10 @@ client <a title="Lien permanent" href="#host" class="permalink">&para;</a></h2>
 
     <p>Les directives Require s'utilisent comme suit :</p>
 
-    <pre class="prettyprint lang-config">Require host address
-Require ip ip.address</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require host <var>address</var>
+Require ip <var>ip.address</var>
+</pre>
+</div>
 
     <p>Dans la premi&egrave;re forme, <var>nom-h&ocirc;te</var> est un nom de domaine
     pleinement qualifi&eacute; (fqdn), ou un nom de domaine partiel ; vous
@@ -92,46 +90,60 @@ Require ip ip.address</pre>
     sous-r&eacute;seau ou une sp&eacute;cification CIDR de la forme r&eacute;seau/nnn. Il est
     possible de sp&eacute;cifier des adresses IPv4 ou IPv6.</p>
 
+<div class="example"><h3>Exemples de formats d&rsquo;adresse IP</h3><pre class="prettyprint lang-config"># Adresse IP compl&egrave;te
+Require ip 10.2.3.4
+# Adresse IP partielle (correspond &agrave; tout h&ocirc;te dans la tranche 172.20.0.0/16)
+Require ip 172.20
+# Paire r&eacute;seau/masque
+Require ip 192.168.1.0/255.255.255.0
+# Sp&eacute;cification r&eacute;seau/CIDR
+Require ip 192.168.1.0/24
+# Adresse IPv6
+Require ip 2001:db8::a00:20ff:fea7:ccea
+# Adresse IPv6 avec CIDR
+Require ip 2001:db8:1::/48</pre>
+</div>
+
     <p>Voir <a href="../mod/mod_authz_host.html#requiredirectives">la
     documentation de mod_authz_host</a> pour d'autres exemples de cette
     syntaxe.</p>
 
     <p>Vous pouvez ins&eacute;rer le mot-cl&eacute; <code>not</code> pour inverser un
-    crit&egrave;re particulier. Notez que le mot <code>not</code> &eacute;tant la
-    n&eacute;gation d'une valeur, il ne peut pas &ecirc;tre utilis&eacute; pour autoriser
+    crit&egrave;re particulier. Le mot <code>not</code> r&eacute;alise la
+    n&eacute;gation sur la valeur, et ne peut pas &ecirc;tre utilis&eacute; seul pour autoriser
     ou interdire une requ&ecirc;te, car <em>non vrai</em> ne
-    sera pas interpret&eacute; par httpd comme <em>faux</em>. Ainsi, pour interdire la
+    veut pas ici forc&eacute;ment dire <em>faux</em>. Ainsi, pour interdire la
     visite d'une page &agrave; l'aide d'une n&eacute;gation, le bloc doit contenir un
-    &eacute;l&eacute;ment &eacute;valu&eacute; &agrave; vrai ou faux.
-    Par exemple, si quelqu'un est en train d'inonder
-    votre forum de messages ind&eacute;sirables, vous pouvez ajouter cette ligne pour lui refuser
+    &eacute;l&eacute;ment, qui sera &eacute;valu&eacute; &agrave; l'une des valeurs vrai ou faux.
+    Par exemple, si quelqu'un est en train de
+    spamer votre forum, vous pouvez ajouter cette ligne pour lui refuser
     l'acc&egrave;s :</p>
 
-    <pre class="prettyprint lang-config">&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
+<div class="example"><pre class="prettyprint lang-config">&lt;RequireAll&gt;
+Require all granted
+Require not ip 10.252.46.165
 &lt;/RequireAll&gt;</pre>
-
+</div>
 
     <p>Les visiteurs poss&eacute;dant cette adresse (<code>10.252.46.165</code>) ne pourront pas voir le
-    contenu concern&eacute; par cette directive. Si vous voulez interdire
+    contenu concern&eacute; par cette directive. Si vous voulez interdir
     l'acc&egrave;s &agrave; une machine en fonction de son nom, vous pouvez ajouter
     ceci :</p>
 
-    <pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
-    </pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require not host <var>host.example.com</var>
+</pre>
+</div>
 
     <p>Et si vous voulez interdire l'acc&egrave;s &agrave; un domaine particulier,
     vous pouvez sp&eacute;cifier des adresses IP partielles ou des noms de
     domaine, comme ceci :</p>
 
-    <pre class="prettyprint lang-config">Require not ip 192.168.205
-Require not host phishers.example.com moreidiots.example
+<div class="example"><pre class="prettyprint lang-config">Require not ip 192.168.205
+Require not host phishers.example.com badguys.example
 Require not host gov</pre>
+</div>
 
-
-    <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, et <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> permettent &eacute;galement de pr&eacute;ciser des
+    <p>Les directives <code class="directive"><a href="../mod/mod_authz_core.html#requireall">RequireAll</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#requireany">RequireAny</a></code>, et <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">RequireNone</a></code> ouvrent le champ &agrave; des
     crit&egrave;res d'acc&egrave;s plus complexes.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -145,17 +157,18 @@ arbitraires <a title="Lien permanent" href="#env" class="permalink">&para;</a></
     fonction du user-agent (le type de navigateur), vous pouvez
     sp&eacute;cifier ceci :</p>
 
-    <pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
-    Require all denied
+<div class="example"><pre class="prettyprint lang-config">&lt;If "%{HTTP_USER_AGENT} == 'BadBot'"&gt;
+Require all denied
 &lt;/If&gt;</pre>
+</div>
+
+    <p>En utilisant la syntaxe <code>expr</code> de la directive
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, l'exemple
+    pr&eacute;c&eacute;dent peut aussi s'&eacute;crire :</p>
 
 
-    <p>La syntaxe <code>expr</code> de la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> permet de r&eacute;&eacute;crire
-    l'exemple pr&eacute;c&eacute;dent de la mani&egrave;re suivante :</p>
-
-
-    <pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
-
+<div class="example"><pre class="prettyprint lang-config">Require expr %{HTTP_USER_AGENT} != 'BadBot'</pre>
+</div>
 
     <div class="note"><h3>Avertissement :</h3>
     <p>Contr&ocirc;ler l'acc&egrave;s en fonction de l'en-t&ecirc;te
@@ -179,18 +192,18 @@ d'acc&egrave;s <a title="Lien permanent" href="#rewrite" class="permalink">&para
     <p>Par exemple, pour bloquer l'acc&egrave;s &agrave; une ressources entre 20h et
     7h du matin, vous pouvez utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> :</p>
 
-    <pre class="prettyprint lang-config">RewriteEngine On
+<div class="example"><pre class="prettyprint lang-config">RewriteEngine On
 RewriteCond "%{TIME_HOUR}" "&gt;=20" [OR]
 RewriteCond "%{TIME_HOUR}" "&lt;07"
-RewriteRule "^/fridge"     "-" [F]</pre>
-
+RewriteRule "^/fridge" "-" [F]</pre>
+</div>
 
     <p>Toute requ&ecirc;te arrivant apr&egrave;s 20h ou avant 7h du matin provoquera
     l'envoi d'une r&eacute;ponse de type 403 Forbidden. Vous pouvez utiliser
     cette technique pour v&eacute;rifier toutes sortes de crit&egrave;res. En outre,
     si vous le pr&eacute;f&eacute;rez, vous pouvez rediriger ou r&eacute;&eacute;crire la requ&ecirc;te.</p>
 
-    <p>Notez que la directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, introduite &agrave; partir de la version 2.4,
+    <p>Notez que la directive <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>, ajout&eacute;e &agrave; partir de la version 2.4,
     permet de remplacer le module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> dans de
     nombreuses situations o&ugrave; il &eacute;tait traditionnellement utilis&eacute;, et
     il sera probablement pr&eacute;f&eacute;rable pour vous de tenter de l'utiliser

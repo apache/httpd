@@ -83,7 +83,7 @@
     certainement avoir acc&egrave;s &agrave; l'uid sous lequel le serveur est d&eacute;marr&eacute;, en
     l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
     l'acc&egrave;s en &eacute;criture au r&eacute;pertoire dans lequel les journaux sont stock&eacute;s
-    sans savoir exactement quelles en seraient les cons&eacute;quences ; voir le
+ sans savoir exactement quelles en seraient les cons&eacute;quences ; voir le
     document <a href="misc/security_tips.html">conseils sur la s&eacute;curit&eacute;</a>
     pour plus de d&eacute;tails.</p>
 
@@ -180,8 +180,8 @@
     <p>Pour ce faire, vous devez sp&eacute;cifier le nom du module dans votre
     directive <code class="directive">LogLevel</code> :</p>
 
-    <pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
-
+<div class="example"><pre class="prettyprint lang-config">LogLevel info rewrite:trace5</pre>
+</div>
 
     <p>Dans cet exemple, le niveau de journalisation g&eacute;n&eacute;ral est d&eacute;fini
     &agrave; info, et &agrave; <code>trace5</code> pour <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
@@ -233,9 +233,9 @@
 
       <p>Voici une configuration typique pour le journal des acc&egrave;s :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common</pre>
-
+</div>
 
       <p>Ici est d&eacute;finie l'<em>identit&eacute;</em> <code>common</code> qui est
       ensuite associ&eacute;e &agrave; une cha&icirc;ne de format de journalisation particuli&egrave;re.
@@ -384,9 +384,9 @@ CustomLog "logs/access_log" common</pre>
       "Combined Log Format" (Format de journalisation combin&eacute;). Il s'utilise
       comme suit :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
 CustomLog "log/access_log" combined</pre>
-
+</div>
 
       <p>Ce format est identique au Common Log Format, avec deux champs
       suppl&eacute;mentaires. Chacun de ces deux champs utilise la directive
@@ -435,11 +435,11 @@ CustomLog "log/access_log" combined</pre>
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
 CustomLog "logs/agent_log" "%{User-agent}i"</pre>
-
+</div>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
       une cha&icirc;ne de format &agrave; un alias au moyen de la directive
@@ -464,31 +464,31 @@ CustomLog "logs/agent_log" "%{User-agent}i"</pre>
       la variable d'environnement est d&eacute;finie.
       Quelques exemples :</p>
 
-      <pre class="prettyprint lang-config"># Marque les requ&ecirc;tes en provenance de l'interface loop-back
+<div class="example"><pre class="prettyprint lang-config"># Marque les requ&ecirc;tes en provenance de l'interface loop-back
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requ&ecirc;tes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requ&ecirc;tes
 CustomLog "logs/access_log" common env=!dontlog</pre>
-
+</div>
 
       <p>Autre exemple, imaginons l'enregistrement des requ&ecirc;tes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <pre class="prettyprint lang-config">        SetEnvIf Accept-Language "en" english
-        CustomLog "logs/english_log" common env=english
-        CustomLog "logs/non_english_log" common env=!english</pre>
-
+<div class="example"><pre class="prettyprint lang-config">SetEnvIf Accept-Language "en" english
+CustomLog "logs/english_log" common env=english
+CustomLog "logs/non_english_log" common env=!english</pre>
+</div>
 
 	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
 	int&eacute;ressant de conna&icirc;tre l'efficacit&eacute; du cache. Pour y parvenir,
 	on pourrait utiliser cette m&eacute;thode simple :</p>
 
-      <pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
+<div class="example"><pre class="prettyprint lang-config">SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
 CustomLog "logs/access_log" common-cache</pre>
-
+</div>
 
       <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'ex&eacute;cuter avant
       <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>, et si son action est couronn&eacute;e de
@@ -501,9 +501,9 @@ CustomLog "logs/access_log" common-cache</pre>
       valeurs de journalisation conditionnelles bas&eacute;es sur le code de la
       r&eacute;ponse HTTP :</p>
 
-      <pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%400,501{User-agent}i" browserlog
 LogFormat "%!200,304,302{Referer}i" refererlog</pre>
-
+</div>
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
       enregistr&eacute; si le code d'&eacute;tat HTTP est 400 ou 501. Dans le cas
@@ -671,9 +671,9 @@ ErrorLog  "|/usr/local/apache/bin/rotatelogs /var/log/httpd/error_log 86400"</pr
     journal, puis de s&eacute;parer ult&eacute;rieurement le journal en plusieurs journaux
     individuels. Consid&eacute;rons par exemple les directives suivantes :</p>
 
-    <pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
+<div class="example"><pre class="prettyprint lang-config">LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
 CustomLog "logs/access_log" commonvhost</pre>
-
+</div>
 
     <p>Le champ <code>%v</code> sert &agrave; enregistrer le nom de l'h&ocirc;te virtuel qui
     traite la requ&ecirc;te. Un programme tel que <a href="programs/split-logfile.html">split-logfile</a> peut ensuite &ecirc;tre utilis&eacute;

@@ -32,8 +32,6 @@
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="./zh-cn/mpm.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Ce document d&eacute;crit ce qu'est un Module Multi-Processus, ainsi
 que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP Apache.</p>
@@ -168,7 +166,7 @@ DSO (Dynamic Shared Object) <a title="Lien permanent" href="#dynamic" class="per
     modifiant la directive <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> concern&eacute;e, sans avoir &agrave;
     recompiler le serveur.</p>
 
-    <pre class="prettyprint lang-config">LoadModule mpm_prefork_module modules/mod_mpm_prefork.so</pre>
+    <pre class="prettyprint lang-config">LoadModule mpm_event_module modules/mod_mpm_event.so</pre>
 
 
     <p>Toute tentative de charger plusieurs modules MPM via la directive
