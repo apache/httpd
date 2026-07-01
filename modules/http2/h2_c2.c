@@ -805,7 +805,20 @@ static apr_status_t c2_process(h2_conn_ctx_t *conn_ctx, conn_rec *c)
      * request pool may have been deleted. */
     r = NULL;
     if (conn_ctx->beam_out) {
-        h2_beam_close(conn_ctx->beam_out, c);
+        if (conn_ctx->has_final_response
+            && !h2_beam_is_complete(conn_ctx->beam_out)
+            && !conn_ctx->header_only) {
+            /* A final response was started but its body never completed (no
+             * EOS), e.g. the CGI/handler timed out mid-body. Abort so the
+             * stream is RST_STREAM'd. Closing here would mark the beam complete
+             * and s_c2_done() would see nothing to reset, leaving the client
+             * hanging. Header-only responses (204/304/HEAD) carry no body EOS
+             * and are closed normally, not reset (PR 69580). */
+            h2_beam_abort(conn_ctx->beam_out, c);
+        }
+        else {
+            h2_beam_close(conn_ctx->beam_out, c);
+        }
     }
 
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, c,
