@@ -828,6 +828,21 @@ static apr_status_t decrement_connection_count(void *cs_)
     return APR_SUCCESS;
 }
 
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    int is_last_connection = !apr_atomic_dec32(&connection_count);
+
+    /* Wake a listener blocked waiting for connection_count to drain. */
+    if (listener_is_wakeable && is_last_connection && listener_may_exit) {
+        apr_pollset_wakeup(event_pollset);
+    }
+}
+
 static void notify_suspend(event_conn_state_t *cs)
 {
     ap_run_suspend_connection(cs->c, cs->r);
@@ -3466,6 +3481,10 @@ static void setup_slave_conn(conn_rec *c, void *csd)
     event_conn_state_t *cs;
     
     mcs = ap_get_module_config(c->master->conn_config, &mpm_event_module);
+    if (!mcs) {
+        /* Master connection is not managed by this MPM; nothing to inherit. */
+        return;
+    }
     
     cs = apr_pcalloc(c->pool, sizeof(*cs));
     cs->c = c;
@@ -3606,6 +3625,9 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     apr_status_t rv;
     const char *userdata_key = "mpm_event_module";
     int test_atomics = 0;
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
 
     debug = ap_exists_config_define("DEBUG");
 
