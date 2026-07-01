@@ -19,6 +19,7 @@
 #include <httpd.h>
 
 #include <http_config.h>
+#include <http_connection.h>
 #include <http_log.h>
 #include <http_protocol.h>
 #include <http_request.h>
@@ -70,6 +71,10 @@ conn_rec* h3_synth_conn(h3_session* session)
 #endif
     apr_table_setn(c->notes, "IS_mod_http3", "1");
     apr_table_setn(c->notes, "ssl-bypass", "1");
+
+    /* Run pre_connection hooks so modules init per-connection state. */
+    ap_pre_connection(c, NULL);
+
     session->c = c;
     return c;
 }
