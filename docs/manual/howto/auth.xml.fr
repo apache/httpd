@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1933687:1935509 (outdated) -->
+<!-- English Revision: 1935509 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -135,10 +135,14 @@ module de chaque groupe.</p>
     d'une directive <directive module="core">AllowOverride</directive>
     du style :</p>
 
-    <highlight language="config">AllowOverride AuthConfig</highlight>
+<example>
+<highlight language="config">
+AllowOverride AuthConfig
+</highlight>
+</example>
 
     <p>Si vous avez l'intention d'ajouter les directives directement
-    dans le fichier de configuration principal, vous devrez bien entendu
+ dans le fichier de configuration principal, vous devrez bien entendu
     posséder les droits en écriture sur ce fichier.</p>
 
     <p>Vous devrez aussi connaître un tant soit peu la structure des
@@ -211,14 +215,16 @@ module de chaque groupe.</p>
     fichier <code>httpd.conf</code> à l'intérieur d'une section &lt;Directory
     "/usr/local/apache/htdocs/secret"&gt; :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AuthType Basic
 AuthName "Restricted Files"
-# (Following line optional)
+# (La ligne suivante est facultative)
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 Require user rbowen
-    </highlight>
+</highlight>
+</example>
 
     <p>Examinons ces directives une à une. La directive <directive
     module="mod_authn_core">AuthType</directive> définit la méthode
@@ -322,15 +328,17 @@ plusieurs personnes</title>
     <p>Maintenant, vous devez modifier votre fichier
     <code>.htaccess</code> comme suit :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 AuthType Basic
 AuthName "By Invitation Only"
-# Optional line:
+# Ligne facultative :
 AuthBasicProvider file
 AuthUserFile "/usr/local/apache/passwd/passwords"
 AuthGroupFile "/usr/local/apache/passwd/groups"
 Require group GroupName
-    </highlight>
+</highlight>
+</example>
 
     <p>Maintenant, quiconque appartient au groupe
     <code>Nom-de-groupe</code>, et possède une entrée dans le fichier
@@ -341,7 +349,11 @@ Require group GroupName
     l'accès à plusieurs personnes. Plutôt que de créer un fichier de
     groupes, il vous suffit d'ajouter la directive suivante :</p>
 
-    <highlight language="config">Require valid-user</highlight>
+<example>
+<highlight language="config">
+Require valid-user
+</highlight>
+</example>
 
     <p>Le remplacement de la ligne <code>Require user rbowen</code> par
     la ligne <code>Require valid-user</code> autorisera l'accès à
@@ -394,15 +406,17 @@ passe</title>
     <p>Par exemple, pour sélectionner un fichier dbm à la place d'un
     fichier texte :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider dbm
-    AuthDBMUserFile "/www/passwords/passwd.dbm"
-    Require valid-user
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider dbm
+AuthDBMUserFile "/www/passwords/passwd.dbm"
+Require valid-user
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>D'autres options sont disponibles. Consultez la documentation de
     <module>mod_authn_dbm</module> pour plus de détails.</p>
@@ -420,16 +434,18 @@ d'authentification</title>
     conjointement les fournisseurs d'authentification
     file et LDAP :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file ldap
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    Require valid-user
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file ldap
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+Require valid-user
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>Dans cet exemple, le fournisseur file va tenter d'authentifier
     l'utilisateur en premier. S'il n'y parvient pas, le fournisseur LDAP
@@ -447,18 +463,20 @@ d'authentification</title>
     autorisation à base de fichier de groupes et une autorisation à base
     de groupes LDAP.</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Directory "/www/docs/private"&gt;
-    AuthName "Private"
-    AuthType Basic
-    AuthBasicProvider file
-    AuthUserFile "/usr/local/apache/passwd/passwords"
-    AuthLDAPURL ldap://ldaphost/o=yourorg
-    AuthGroupFile "/usr/local/apache/passwd/groups"
-    Require group GroupName
-    Require ldap-group cn=mygroup,o=yourorg
+AuthName "Private"
+AuthType Basic
+AuthBasicProvider file
+AuthUserFile "/usr/local/apache/passwd/passwords"
+AuthLDAPURL ldap://ldaphost/o=yourorg
+AuthGroupFile "/usr/local/apache/passwd/groups"
+Require group GroupName
+Require ldap-group cn=mygroup,o=yourorg
 &lt;/Directory&gt;
-    </highlight>
+</highlight>
+</example>
 
     <p>Pour un scénario d'autorisation un peu plus avancé, des
     directives de conteneur d'autorisation comme <directive
@@ -534,79 +552,16 @@ autorisation</title>
 
     <section id="reqaccessctrl"><title>Utilisation de fournisseurs
     d'autorisation pour le contrôle d'accès</title>
-        <p>La vérification du nom d'utilisateur et du mot de passe ne
-	constituent qu'un aspect des méthodes d'authentification.
-	Souvent, le contrôle d'accès à certaines personnes n'est pas
-	basé sur leur identité ; il peut dépendre, par exemple de leur
-	provenance.</p>
-
-        <p>Les fournisseurs d'autorisation <code>all</code>,
-	<code>env</code>, <code>host</code> et <code>ip</code> vous
-	permettent d'accorder ou refuser l'accès en
-	fonction de critères tels que le nom d'hôte ou l'adresse
-	IP de la machine qui effectue la requête.</p>
-
-        <p>L'utilisation de ces fournisseurs est spécifiée à l'aide de
-	la directive <directive
-	module="mod_authz_core">Require</directive>. Cette directive
-	permet d'enregistrer quels fournisseurs d'autorisation
-	seront appelés dans le processus d'autorisation au cours du
-	traitement de la requête. Par exemple :</p>
-
-        <highlight language="config">Require ip <var>address</var></highlight>
-
-        <p>où <var>adresse</var> est une adresse IP (ou une adresse IP
-	partielle) ou :</p>
-
-        <highlight language="config">Require host <var>domain_name</var></highlight>
-
-        <p>où <var>nom_domaine</var> est un nom de domaine entièrement
-	qualifé (ou un nom de domaine partiel) ; vous pouvez indiquer
-	plusieurs adresses ou noms de domaines, si vous le désirez.</p>
-
-        <p>Par exemple, si vous voulez rejeter les spams dont une
-	machine vous inonde, vous pouvez utiliser ceci :</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 10.252.46.165
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>Ainsi, les visiteurs en provenance de cette adresse ne
-	pourront pas voir le contenu concerné par cette directive. Si,
-	par contre, vous connaissez le nom de la machine, vous pouvez
-	utiliser ceci :</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not host host.example.com
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>Et si vous voulez interdire l'accès à toutes les machines
-	d'un domaine, vous pouvez spécifier une partie seulement de
-	l'adresse ou du nom de domaine :</p>
-
-        <highlight language="config">
-&lt;RequireAll&gt;
-    Require all granted
-    Require not ip 192.168.205
-    Require not host phishers.example.com moreidiots.example
-    Require not host ke
-&lt;/RequireAll&gt;
-        </highlight>
-
-        <p>L'utilisation de la directive <directive
-	module="mod_authz_core" type="section">RequireAll</directive>
-	avec de multiples directives <directive module="mod_authz_core"
-	type="section">Require</directive>, toutes avec la négation
-	<code>not</code>, n'accordera l'accès que si toutes les
-	conditions négatives sont vérifiées. En d'autres termes, l'accès
-	sera refusé si au moins une des conditions négatives n'est pas
-	vérifiée.</p>
+	<p>La vérification du nom d'utilisateur et du mot de passe ne
+	constituent qu'un aspect des méthodes d'authentification.  Vous pouvez
+	aussi autoriser ou interdire l’accès en fonction d’autres critères tels
+	que l’adresse IP du client ou le nom d’hôte en utilisant les
+	fournisseurs d’autorisation <code>all</code>, <code>env</code>,
+	<code>host</code> et <code>ip</code> avec la directive <directive
+	module="mod_authz_core">Require</directive>.</p>
+ 
+        <p>Pour des détails complets et des exemples, voir le tutoriel <a
+	href="access.html">Access Control</a>.</p>
 
     </section>
 
@@ -643,17 +598,14 @@ autorisation</title>
 </section>
 
 <section id="socache"><title>Mise en cache de l'authentification</title>
-    <p>Dans certains cas, l'authentification constitue une charge
-    inacceptable pour un fournisseur d'authentification ou votre réseau.
-    Ceci est susceptible d'affecter les utilisateurs du module
-    <module>mod_authn_dbd</module> (ou les fournisseurs
-    tiers/personnalisés). Pour résoudre ce problème, HTTPD 2.3/2.4
-    propose un nouveau fournisseur de mise en cache,
-    <module>mod_authn_socache</module>, qui permet de mettre en cache
-    les données d'authentification, et ainsi réduire la charge du/des
-    fournisseurs(s) originels.</p>
-    <p>Cette mise en cache apportera un gain en performance substantiel
-    à certains utilisateurs.</p>
+    <p>Dans certains cas, l'authentification constitue une charge inacceptable
+    pour un fournisseur d'authentification ou votre réseau.  Ceci est
+    susceptible d'affecter les utilisateurs du module
+    <module>mod_authn_dbd</module> (ou les fournisseurs tiers/personnalisés). Le
+    module <module>mod_authn_socache</module> met en cache les données
+    d'authentification, et réduit ainsi la charge du/des fournisseurs(s)
+    originels.</p> <p>Cette mise en cache apportera un gain en performance
+    substantiel à certains utilisateurs.</p>
 </section>
 
 <section id="moreinformation"><title>Pour aller plus loin . . .</title>

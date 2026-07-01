@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 1935553:1935724 (outdated) -->
+<!-- English Revision: 1935747 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -76,7 +76,7 @@
     certainement avoir accès à l'uid sous lequel le serveur est démarré, en
     l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
     l'accès en écriture au répertoire dans lequel les journaux sont stockés
-    sans savoir exactement quelles en seraient les conséquences ; voir le
+ sans savoir exactement quelles en seraient les conséquences ; voir le
     document <a href="misc/security_tips.html">conseils sur la sécurité</a>
     pour plus de détails.</p>
 
@@ -183,9 +183,11 @@
     <p>Pour ce faire, vous devez spécifier le nom du module dans votre
     directive <directive>LogLevel</directive> :</p>
 
-    <highlight language="config">
-    LogLevel info rewrite:trace5
-    </highlight>
+<example>
+<highlight language="config">
+LogLevel info rewrite:trace5
+</highlight>
+</example>
 
     <p>Dans cet exemple, le niveau de journalisation général est défini
     à info, et à <code>trace5</code> pour <module>mod_rewrite</module>.</p>
@@ -248,10 +250,12 @@
 
       <p>Voici une configuration typique pour le journal des accès :</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
-      </highlight>
+</highlight>
+</example>
 
       <p>Ici est définie l'<em>identité</em> <code>common</code> qui est
       ensuite associée à une chaîne de format de journalisation particulière.
@@ -401,10 +405,12 @@ CustomLog "logs/access_log" common
       "Combined Log Format" (Format de journalisation combiné). Il s'utilise
       comme suit :</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\"" combined
 CustomLog "log/access_log" combined
-      </highlight>
+</highlight>
+</example>
 
       <p>Ce format est identique au Common Log Format, avec deux champs
       supplémentaires. Chacun de ces deux champs utilise la directive
@@ -453,12 +459,14 @@ CustomLog "log/access_log" combined
       comment simuler les effets des directives <code>ReferLog</code> et
       <code>AgentLog</code>.</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
 CustomLog "logs/access_log" common
 CustomLog "logs/referer_log" "%{Referer}i -&gt; %U"
 CustomLog "logs/agent_log" "%{User-agent}i"
-      </highlight>
+</highlight>
+</example>
 
       <p>Cet exemple montre aussi qu'il n'est pas obligatoire d'associer
       une chaîne de format à un alias au moyen de la directive
@@ -483,34 +491,40 @@ CustomLog "logs/agent_log" "%{User-agent}i"
       la variable d'environnement est définie.
       Quelques exemples :</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 # Marque les requêtes en provenance de l'interface loop-back
 SetEnvIf Remote_Addr "127\.0\.0\.1" dontlog
 # Marque les requêtes pour le fichier robots.txt
 SetEnvIf Request_URI "^/robots\.txt$" dontlog
 # Journalise toutes les autres requêtes
 CustomLog "logs/access_log" common env=!dontlog
-      </highlight>
+</highlight>
+</example>
 
       <p>Autre exemple, imaginons l'enregistrement des requêtes en provenance
       d'utilisateurs de langue anglaise dans un journal, et celles des autres
       utilisateurs dans un autre journal.</p>
 
-      <highlight language="config">
-        SetEnvIf Accept-Language "en" english
-        CustomLog "logs/english_log" common env=english
-        CustomLog "logs/non_english_log" common env=!english
-      </highlight>
+<example>
+<highlight language="config">
+SetEnvIf Accept-Language "en" english
+CustomLog "logs/english_log" common env=english
+CustomLog "logs/non_english_log" common env=!english
+</highlight>
+</example>
 
 	<p>Dans le contexte d'une mise en cache, il peut être
 	intéressant de connaître l'efficacité du cache. Pour y parvenir,
 	on pourrait utiliser cette méthode simple :</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 SetEnv CACHE_MISS 1
 LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
 CustomLog "logs/access_log" common-cache
-      </highlight>
+</highlight>
+</example>
 
       <p><module>mod_cache</module> va s'exécuter avant
       <module>mod_env</module>, et si son action est couronnée de
@@ -524,10 +538,12 @@ CustomLog "logs/access_log" common-cache
       valeurs de journalisation conditionnelles basées sur le code de la
       réponse HTTP :</p>
 
-      <highlight language="config">
+<example>
+<highlight language="config">
 LogFormat "%400,501{User-agent}i" browserlog
 LogFormat "%!200,304,302{Referer}i" refererlog
-      </highlight>
+</highlight>
+</example>
 
       <p>Dans le premier exemple, le <code>User-agent</code> sera
       enregistré si le code d'état HTTP est 400 ou 501. Dans le cas
@@ -719,10 +735,12 @@ CustomLog "|$/usr/local/apache/bin/rotatelogs /var/log/httpd/access_log 86400" c
     journal, puis de séparer ultérieurement le journal en plusieurs journaux
     individuels. Considérons par exemple les directives suivantes :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 LogFormat "%v %p %h %l %u %t \"%r\" %&gt;s %b" commonvhost
 CustomLog "logs/access_log" commonvhost
-    </highlight>
+</highlight>
+</example>
 
     <p>Le champ <code>%v</code> sert à enregistrer le nom de l'hôte virtuel qui
     traite la requête. Un programme tel que <a

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1874148:1935520 (outdated) -->
+<!-- English Revision: 1935520 -->
 <!-- French translation : Lucien GENTIS -->
 
 <!--
@@ -27,27 +27,19 @@
   <title>Guide de configuration d'un mandataire inverse</title>
 
   <summary>
-    <p>En plus de ses fonctions de serveur web "basique", à savoir fournir du
-    contenu statique et dynamique à l'utilisateur, Apache httpd (comme la
-    plupart des autres serveurs web) peut aussi assurer les fonctions de serveur
-    mandataire inverse, connu aussi sous le nom de serveur "passerelle".</p>
+    <p>En plus de servir directement du contenu statique et dynamique, Apache
+    httpd peut remplir les fonctions d’un serveur mandataire inverse (parfois
+    appelé passerelle).</p>
 
-    <p>Dans un tel scénario, httpd ne génère et n'héberge pas lui-même les
-    données, le contenu étant en général obtenu à partir d'un ou plusieurs serveurs
-    d'arrière-plan qui n'ont normalement aucune connexion directe avec le réseau
-    externe. Lorsque httpd reçoit une requête en provenance d'un client, la
-    requête proprement dite est <em>mandatée</em> vers un de ces serveurs
-    d'arrière-plan qui traite la requête, génère le contenu et l'envoie à httpd,
-    ce dernier générant la véritable réponse HTTP à destination du client.</p>
+    <p>Dans ce mode, httpd ne génère pas le contenu lui-même. Il redirige chaque
+    requête client vers un ou plusieurs serveurs dorsaux qui n’ont pas d’accès
+    direct au réseau externe. Le serveur dorsal traite la requête et renvoie le
+    contenu à httpd qui, à son tour, envoie la réponse HTTP au client.</p>
 
-    <p>De nombreuses raisons peuvent vous motiver à utiliser cette
-    fonctionnalité, mais elles sont souvent du domaine de la sécurité, de
-    la haute disponibilité, de la répartition de charge et de
-    l'authentification/autorisation centralisée. Il est alors indispensable que
-    l'organisation, la conception et l'architecture de l'infrastructure
-    d'arrière-plan (les serveurs qui traitent au sens propre les requêtes) soient
-    isolées et protégées de l'extérieur ; vu du client, le serveur mandataire
-    inverse <em>est</em> le seul serveur accessible pouvant lui fournir du
+    <p>Les buts courants de ce dispositif comprennent la sécurité, la haute
+    disponibilité, la répartition de charge et l’authentification centralisée.
+    L’infrastructure dorsale doit être isolée du réseau externe ; du point de
+    vue du client, le mandataire inverse <em>est</em> la seule source de tout
     contenu.</p>
 
     <p>Voici un exemple typique d'implémentation de cette fonctionnalité :</p>
@@ -83,30 +75,35 @@
       unique :
     </p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 ProxyPass "/"  "http://www.example.com/"
-    </highlight>
+</highlight>
+</example>
 
     <p>
-      Pour être sur que cette redirection soit effectuée et que les en-têtes
-      <code>Location:</code> générés par le serveur d'arrière-plan soient
-      modifiés pour pointer vers le mandataire inverse, et non vers le serveur
-      d'arrière-plan, la directive <directive
-      module="mod_proxy">ProxyPassReverse</directive> est souvent requise :
+      Pour s’assurer que les en-têtes <code>Location:</code> générés par le
+      serveur dorsal soient modifiés pour pointer vers le mandataire inverse, et
+      non vers le serveur d'arrière-plan, la directive <directive
+      module="mod_proxy">ProxyPassReverse</directive> est en général requise :
     </p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 ProxyPass "/"  "http://www.example.com/"
 ProxyPassReverse "/"  "http://www.example.com/"
-    </highlight>
+</highlight>
+</example>
 
-    <p>Seules des URIs spécifiques peuvent être mandatées, comme le montre
+    <p>Il est possible de spécifier les URIs qui peuvent être mandatés, comme le montre
     l'exemple suivant :</p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 ProxyPass "/images"  "http://www.example.com/"
 ProxyPassReverse "/images"  "http://www.example.com/"
-    </highlight>
+</highlight>
+</example>
 
     <p>Dans l'exemple précédent, si le chemin d'une requête commence par
     <code>/images</code>, elle sera redirigée vers le serveur d'arrière-plan
@@ -115,42 +112,41 @@ ProxyPassReverse "/images"  "http://www.example.com/"
   </section>
 
   <section id="cluster">
-    <title>Clusters et Balancers</title>
+    <title>Grappes et répartiteurs de charge</title>
 
     <p>
-      Utiliser un serveur d'arrière-plan unique n'est cependant pas une solution
-      idéale car ce dernier peut devenir indisponible ou surchargé, et le
-      mandatement inverse vers ce serveur ne présente alors plus aucun avantage.
-      La solution réside dans la définition d'un groupe de serveurs
-      d'arrière-plan qui vont se partager le traitement des requêtes via un
-      mécanisme de répartition de charge et de gestion des indisponibilités pris
-      en charge par le mandataire. Ce groupe de répartition est plus connu sous le nom de
-      <em>cluster</em>, mais dans la terminologie d'Apache httpd, on utilise
-      plutôt le terme de <em>balancer</em>. Un balancer se définit en
-      utilisant les directives <directive module="mod_proxy"
-      type="section">Proxy</directive> et <directive
-      module="mod_proxy">BalancerMember</directive> comme suit :
+       La configuration à un seul serveur dorsal ci-avant comporte un défaut
+       évident : si ce serveur dorsal est éteint ou surchargé, le contenu
+       mandaté ne sera pas disponible. Ce dont on a besoin ici est un groupe de
+       serveurs dorsaux parmi lesquels le serveur mandataire pourra basculer et
+       répartir la charge. Ce groupe est parfois appelé <em>grappe</em>
+       (cluster) ; Apache httpd le nomme <em>répartiteur de charge</em>
+       (balancer). Un répartiteur de charge se définit en utilisant les
+       directives <directive module="mod_proxy" type="section">Proxy</directive>
+       et <directive module="mod_proxy">BalancerMember</directive> :
     </p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080
-    ProxySet lbmethod=bytraffic
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"
-    </highlight>
+</highlight>
+</example>
 
     <p>
       Le protocole <code>balancer://</code> indique à httpd que l'on souhaite
-      créer un balancer nommé <em>myset</em>. Ce balancer comporte deux serveurs
+      créer un répartiteur de charge nommé <em>myset</em>. Ce répartiteur comporte deux serveurs
       d'arrière-plan référencés dans la terminologie httpd sous le nom de
       <em>BalancerMembers</em>. Avec cet exemple, toute requête dont le chemin
       commence par <code>/images</code> sera mandatée vers <em>un</em> des deux
       serveurs d'arrière-plan. La directive <directive
-      module="mod_proxy">ProxySet</directive> définit ici pour le balancer
+      module="mod_proxy">ProxySet</directive> définit ici pour le répartiteur
       <em>myset</em> un algorithme de
       répartition de charge basé sur le trafic entrées/sorties.
     </p>
@@ -165,26 +161,28 @@ ProxyPassReverse "/images/"  "balancer://myset/"
   </section>
 
   <section id="config">
-    <title>Configuration du Balancer et des BalancerMembers</title>
+    <title>Configuration du répartiteur de charge et de ses membres (workers)</title>
 
     <p>
-      Vous pouvez configurer de manière détaillée les <em>balancers</em> et
-      <em>workers</em> via les nombreux paramètres de la directive <directive
-      module="mod_proxy">ProxyPass</directive>. Par exemple, si vous souhaitez
-      que <code>http://www3.example.com:8080</code> traite avec un facteur 3 le
-      trafic avec un timeout d'une seconde, utilisez la configuration suivante :
+      Les répartiteurs de charge et leurs membres sont configurés à l’aide de
+      paramètres de la directive <directive
+      module="mod_proxy">ProxyPass</directive>. Par exemple, pour que
+      <code>http://www3.example.com:8080</code> gère le trafic avec un facteur 3
+      et un délai d’une seconde :
     </p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    ProxySet lbmethod=bytraffic
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+ProxySet lbmethod=bytraffic
 &lt;/Proxy&gt;
 
 ProxyPass "/images"  "balancer://myset/"
 ProxyPassReverse "/images"  "balancer://myset/"
-    </highlight>
+</highlight>
+</example>
 
   </section>
 
@@ -192,9 +190,9 @@ ProxyPassReverse "/images"  "balancer://myset/"
     <title>Gestion des indisponibilités (Failover)</title>
 
     <p>
-      Vous pouvez aussi définir finement des scénarios pour les cas
-      d'indisponibilité d'un ou plusieurs serveurs d'arrière-plan en spécifiant
-      quels serveurs doivent alors prendre le relai. Dans l'exemple suivant,
+      Vous pouvez définir finement des scénarios pour les cas d'indisponibilité
+      d'un ou plusieurs serveurs dorsaux en spécifiant quels répartiteurs et
+      leurs membres doivent alors prendre le relai. Dans l'exemple suivant,
       trois scénarios sont envisagés : 
     </p>
     <ol>
@@ -223,31 +221,32 @@ ProxyPassReverse "/images"  "balancer://myset/"
       ou de standby pour chaque jeu de serveurs du répartiteur de charge.
     </p>    
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Proxy balancer://myset&gt;
-    BalancerMember http://www2.example.com:8080
-    BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
-    BalancerMember http://spare1.example.com:8080 status=+R
-    BalancerMember http://spare2.example.com:8080 status=+R
-    BalancerMember http://hstandby.example.com:8080 status=+H
-    BalancerMember http://bkup1.example.com:8080 lbset=1
-    BalancerMember http://bkup2.example.com:8080 lbset=1
-    ProxySet lbmethod=byrequests
+BalancerMember http://www2.example.com:8080
+BalancerMember http://www3.example.com:8080 loadfactor=3 timeout=1
+BalancerMember http://spare1.example.com:8080 status=+R
+BalancerMember http://spare2.example.com:8080 status=+R
+BalancerMember http://hstandby.example.com:8080 status=+H
+BalancerMember http://bkup1.example.com:8080 lbset=1
+BalancerMember http://bkup2.example.com:8080 lbset=1
+ProxySet lbmethod=byrequests
 &lt;/Proxy&gt;
 
 ProxyPass "/images/"  "balancer://myset/"
 ProxyPassReverse "/images/"  "balancer://myset/"
-    </highlight>
+</highlight>
+</example>
 
     <p>
       Les serveurs de remplacement à chaud remplacent les serveurs indisponibles
-      du même jeu de serveurs du répartiteur de charge. Un serveur est
-      considéré comme indisponible s'il est en maintenance, arrêté ou en erreur.
-      Les serveurs de standby à chaud sont utilisés si tous les serveurs et
-      serveurs de remplacement du jeu de serveurs du répartiteur de charge sont
-      indisponibles. Les jeux de serveurs du répartiteur de charge (avec leurs
-      serveurs de standby et de remplacement à chaud respectifs) sont toujours
-      sollicités dans l'ordre du plus bas lbset vers le plus haut.
+      (en phase de vidage, arrêtés ou en état d’erreur) du même jeu de serveurs
+      du répartiteur de charge.  Les serveurs de standby à chaud ne sont activés
+      que si tous les serveurs et serveurs de remplacement du jeu de serveurs du
+      répartiteur de charge sont indisponibles. Les jeux de serveurs du
+      répartiteur de charge sont sollicités dans l'ordre du plus bas lbset vers
+      le plus haut.
     </p>
 
   </section>
@@ -256,22 +255,22 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     <title>Gestion du répartiteur de charge</title>
 
     <p>
-     L'application <em>balancer-manager</em> fournie avec le mandataire inverse
-     d'Apache httpd en est un des outils les plus utiles. Comme
-     <module>mod_status</module>, <em>balancer-manager</em> affiche la
-     configuration et l'activité actuelles des balancers actifs. L'affichage de
-     ces informations n'est cependant pas sa seule fonction ; il permet aussi de
-     modifier la plupart d'entre elles et même d'ajouter des membres au groupe
-     de répartition de charge en temps réel. Pour activer ces fonctionnalités,
-     vous devez ajouter les lignes suivantes à votre fichier de configuration : 
+      Apache httpd comporte un <em>gestionnaire de répartiteur de charge</em>
+      (balancer-manager) intégré. Comme <module>mod_status</module>, il affiche
+      la configuration et l’état actuels de vos répartiteurs de charge et de
+      leurs membres. Il vous permet aussi de les reconfigurer à l’exécution
+      — par exemple pour ajouter de nouveaux membres à un répartiteur existant.
+      Pour l’activer, ajoutez les lignes suivantes à votre configuration :
     </p>
 
-    <highlight language="config">
+<example>
+<highlight language="config">
 &lt;Location "/balancer-manager"&gt;
-    SetHandler balancer-manager
-    Require host localhost
+SetHandler balancer-manager
+Require host localhost
 &lt;/Location&gt;
-    </highlight>
+</highlight>
+</example>
 
     <note type="warning"><title>Avertissement</title>
       <p>N'activez le <em>balancer-manager</em> que si vous avez déjà <a
@@ -287,9 +286,9 @@ ProxyPassReverse "/images/"  "balancer://myset/"
     <p class="centered"><img src="../images/bal-man.png" alt="balancer-manager page" /></p>
 
     <p>
-      Ce formulaire permet à l'administrateur de modifier certains paramètres,
-      de désactiver ou d'ajouter certains serveurs d'arrière-plan, et de
-      modifier les règles de répartition de charge. Par exemple, si on clique
+      Ce formulaire permet de modifier certains paramètres,
+      de désactiver ou d'ajouter des serveurs dorsaux, et de
+      modifier les règles de répartition de charge. Si l’on clique
       sur le répartiteur, la page suivante s'affiche : 
     </p>
     <p class="centered"><img src="../images/bal-man-b.png" alt="balancer-manager page" /></p>
@@ -310,16 +309,15 @@ ProxyPassReverse "/images/"  "balancer://myset/"
 
   <section id="health-check">
     <title>Vérification dynamique du bon fonctionnement d'un serveur
-    d'arrière-plan</title>
+    dorsal</title>
 
     <p>
-      Avant que le mandataire httpd ne fasse appel à un serveur d'arrière-plan, il
-      peut <em>"tester"</em> si ce dernier est disponible en définissant le
-      paramètre <code>ping</code> de ce serveur via la directive <directive
+      Avant de mandater une requête, httpd peut <em>"tester"</em> si le serveur
+      dorsal est disponible en définissant le paramètre <code>ping</code> de ce
+      serveur via la directive <directive
       module="mod_proxy">ProxyPass</directive>. Cependant, il est souvent plus
       judicieux de vérifier le bon fonctionnement d'un serveur <em>hors
-      bande</em> et de manière dynamique via le module
-      <module>mod_proxy_hcheck</module> d'Apache httpd.
+      ibande</em> via le module <module>mod_proxy_hcheck</module>.
     </p>
 
   </section>
