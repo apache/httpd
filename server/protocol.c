@@ -76,7 +76,7 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_old_write_func = NULL;
 
 
 /* Patterns to match in ap_make_content_type() */
-static const char *needcset[] = {
+static const char *const needcset[] = {
     "text/plain",
     "text/html",
     NULL

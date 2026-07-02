@@ -163,11 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Constify static arrays of string constants.
-     trunk patch: https://svn.apache.org/r1933659
-     2.4.x patch: svn merge -c 1933659 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
-
   *) include/httpd.h: Define HTTP_EARLY_HINTS (103) per RFC 8297.
      modules/http/http_protocol.c (status_lines): Add 103 response.
      Needed by backport 1934913 below.

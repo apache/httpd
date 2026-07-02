@@ -39,7 +39,7 @@ static ap_filter_rec_t *cache_invalidate_filter_handle;
 /**
  * Entity headers' names
  */
-static const char *MOD_CACHE_ENTITY_HEADERS[] = {
+static const char *const MOD_CACHE_ENTITY_HEADERS[] = {
     "Allow",
     "Content-Encoding",
     "Content-Language",
@@ -819,7 +819,7 @@ static apr_status_t cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     apr_time_t exp, date, lastmod, now;
     apr_off_t size = -1;
     cache_info *info = NULL;
-    const char *reason, **eh;
+    const char *reason, *const *eh;
     apr_pool_t *p;
     apr_bucket *e;
     apr_table_t *headers;

@@ -254,7 +254,7 @@ static const command_rec logio_cmds[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char *pre[] = { "mod_log_config.c", NULL };
+    static const char *const pre[] = { "mod_log_config.c", NULL };
 
     ap_hook_pre_connection(logio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_config(logio_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
