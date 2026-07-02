@@ -163,12 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) include/httpd.h: Define HTTP_EARLY_HINTS (103) per RFC 8297.
-     modules/http/http_protocol.c (status_lines): Add 103 response.
-     Needed by backport 1934913 below.
-     trunk patch: https://svn.apache.org/r1927935
-     2.4.x patch: svn merge -c 1927935 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
 
 ------------------------------------------------------------------------
 
@@ -179,24 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      trunk patch: http://svn.apache.org/r1934891
      2.4.x patch: svn merge -c 1934891 ^/httpd/httpd/trunk .
      +1: jim,
-
-  *) modules/ssl/ssl_engine_vars.c (ssl_var_lookup_ssl_cert_remain):
-     Fix off-by-one in tm_mday calculation, identified by Gemini.
-     trunk patch: https://svn.apache.org/1931420
-     2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
-
-  *) Constify static arrays of string constants.
-     trunk patch: https://svn.apache.org/r1933659
-     2.4.x patch: svn merge -c 1933659 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
-
-  *) include/httpd.h: Define HTTP_EARLY_HINTS (103) per RFC 8297.
-     modules/http/http_protocol.c (status_lines): Add 103 response.
-     Needed by backport 1934913 below.
-     trunk patch: https://svn.apache.org/r1927935
-     2.4.x patch: svn merge -c 1927935 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
 
   *) Use HTTP_* and ap_is_*() macros instead of literal;
      Use ap_strstr_c() instead of strstr() in mod_md.
