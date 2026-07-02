@@ -352,7 +352,101 @@ static int ssl_check_post_client_verify(request_rec *r, SSLSrvConfigRec *sc,
 }
 
 /*
- *  Access Handler, classic flavour, for SSL/TLS up to v1.2 
+ * Manually re-verify the peer certificate for the "quick" renegotiation
+ * path.  Split out of ssl_hook_Access_classic() so the X509 reference from
+ * SSL_get_peer_certificate() and the stack we may build are released on a
+ * single cleanup path instead of being duplicated across each error return.
+ * Returns OK on success, or an HTTP_* error.
+ */
+static int ssl_verify_peer_quick(request_rec *r, SSL *ssl, SSL_CTX *ctx)
+{
+    STACK_OF(X509) *cert_stack;
+    X509 *cert;
+    X509 *peer_cert;
+    X509_STORE *cert_store = NULL;
+    X509_STORE_CTX *cert_store_ctx;
+    int depth;
+    int rv = OK;
+
+    cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
+
+    /* SSL_get_peer_certificate() increments the X509 refcount; the reference
+     * is owned here and must be released with X509_free() unless ownership is
+     * transferred into a stack we then pop_free.
+     */
+    peer_cert = SSL_get_peer_certificate(ssl);
+    cert = peer_cert;
+
+    if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
+        if (!cert) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02222)
+                          "Cannot find peer certificate chain");
+            return HTTP_FORBIDDEN;
+        }
+
+        /* client cert is in the session cache, but there is
+         * no chain, since ssl3_get_client_certificate()
+         * sk_X509_shift-ed the peer cert out of the chain.
+         * we put it back here for the purpose of quick_renegotiation.
+         */
+        cert_stack = sk_X509_new_null();
+        sk_X509_push(cert_stack, cert);
+        peer_cert = NULL; /* ownership transferred to cert_stack */
+    }
+
+    if (!(cert_store ||
+          (cert_store = SSL_CTX_get_cert_store(ctx))))
+    {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02223)
+                      "Cannot find certificate storage");
+        rv = HTTP_FORBIDDEN;
+        goto cleanup;
+    }
+
+    if (!cert) {
+        cert = sk_X509_value(cert_stack, 0);
+    }
+
+    cert_store_ctx = X509_STORE_CTX_new();
+    if (!X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack)) {
+        X509_STORE_CTX_free(cert_store_ctx);
+        rv = HTTP_FORBIDDEN;
+        goto cleanup;
+    }
+    depth = SSL_get_verify_depth(ssl);
+
+    if (depth >= 0) {
+        X509_STORE_CTX_set_depth(cert_store_ctx, depth);
+    }
+
+    X509_STORE_CTX_set_ex_data(cert_store_ctx,
+                               SSL_get_ex_data_X509_STORE_CTX_idx(),
+                               (char *)ssl);
+
+    if (!X509_verify_cert(cert_store_ctx)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02224)
+                      "Re-negotiation verification step failed");
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
+    }
+
+    SSL_set_verify_result(ssl, X509_STORE_CTX_get_error(cert_store_ctx));
+    X509_STORE_CTX_cleanup(cert_store_ctx);
+    X509_STORE_CTX_free(cert_store_ctx);
+
+cleanup:
+    if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
+        /* we created this ourselves, so free it */
+        sk_X509_pop_free(cert_stack, X509_free);
+    }
+    if (peer_cert) {
+        X509_free(peer_cert);
+    }
+
+    return rv;
+}
+
+/*
+ *  Access Handler, classic flavour, for SSL/TLS up to v1.2
  *  where everything can be renegotiated and no one is happy.
  */
 static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirConfigRec *dc,
@@ -363,11 +457,9 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
     SSL_CTX *ctx = ssl ? SSL_get_SSL_CTX(ssl) : NULL;
     BOOL renegotiate = FALSE, renegotiate_quick = FALSE;
     X509 *peercert;
-    X509_STORE *cert_store = NULL;
-    X509_STORE_CTX *cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
     const SSL_CIPHER *cipher = NULL;
-    int depth, verify_old, verify, n, rc;
+    int verify_old, verify, n, rc;
     const char *ncipher_suite;
 
 #ifdef HAVE_SRP
@@ -719,93 +811,15 @@ static int ssl_hook_Access_classic(request_rec *r, SSLSrvConfigRec *sc, SSLDirCo
                       "Requesting connection re-negotiation");
 
         if (renegotiate_quick) {
-            STACK_OF(X509) *cert_stack;
-            X509 *cert;
-            X509 *peer_cert;
-
             /* perform just a manual re-verification of the peer */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02258)
                          "Performing quick renegotiation: "
                          "just re-verifying the peer");
 
-            cert_stack = (STACK_OF(X509) *)SSL_get_peer_cert_chain(ssl);
-
-            /* SSL_get_peer_certificate() increments the X509 refcount; the
-             * reference is owned here and must be released with X509_free()
-             * unless ownership is transferred into a stack we then pop_free.
-             */
-            peer_cert = SSL_get_peer_certificate(ssl);
-            cert = peer_cert;
-
-            if (!cert_stack || (sk_X509_num(cert_stack) == 0)) {
-                if (!cert) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02222)
-                                  "Cannot find peer certificate chain");
-
-                    return HTTP_FORBIDDEN;
-                }
-
-                /* client cert is in the session cache, but there is
-                 * no chain, since ssl3_get_client_certificate()
-                 * sk_X509_shift-ed the peer cert out of the chain.
-                 * we put it back here for the purpose of quick_renegotiation.
-                 */
-                cert_stack = sk_X509_new_null();
-                sk_X509_push(cert_stack, cert);
-                peer_cert = NULL; /* ownership transferred to cert_stack */
+            rc = ssl_verify_peer_quick(r, ssl, ctx);
+            if (rc != OK) {
+                return rc;
             }
-
-            if (!(cert_store ||
-                  (cert_store = SSL_CTX_get_cert_store(ctx))))
-            {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02223)
-                              "Cannot find certificate storage");
-
-                if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
-                    sk_X509_pop_free(cert_stack, X509_free);
-                }
-                if (peer_cert) X509_free(peer_cert);
-                return HTTP_FORBIDDEN;
-            }
-
-            if (!cert) {
-                cert = sk_X509_value(cert_stack, 0);
-            }
-
-            cert_store_ctx = X509_STORE_CTX_new();
-            if (!X509_STORE_CTX_init(cert_store_ctx, cert_store, cert, cert_stack)) {
-                X509_STORE_CTX_free(cert_store_ctx);
-                if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
-                    sk_X509_pop_free(cert_stack, X509_free);
-                }
-                if (peer_cert) X509_free(peer_cert);
-                return HTTP_FORBIDDEN;
-            }
-            depth = SSL_get_verify_depth(ssl);
-
-            if (depth >= 0) {
-                X509_STORE_CTX_set_depth(cert_store_ctx, depth);
-            }
-
-            X509_STORE_CTX_set_ex_data(cert_store_ctx,
-                                       SSL_get_ex_data_X509_STORE_CTX_idx(),
-                                       (char *)ssl);
-
-            if (!X509_verify_cert(cert_store_ctx)) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(02224)
-                              "Re-negotiation verification step failed");
-                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
-            }
-
-            SSL_set_verify_result(ssl, X509_STORE_CTX_get_error(cert_store_ctx));
-            X509_STORE_CTX_cleanup(cert_store_ctx);
-            X509_STORE_CTX_free(cert_store_ctx);
-
-            if (cert_stack != SSL_get_peer_cert_chain(ssl)) {
-                /* we created this ourselves, so free it */
-                sk_X509_pop_free(cert_stack, X509_free);
-            }
-            if (peer_cert) X509_free(peer_cert);
         }
         else {
             char peekbuf[1];
