@@ -163,12 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) modules/ssl/ssl_engine_vars.c (ssl_var_lookup_ssl_cert_remain):
-     Fix off-by-one in tm_mday calculation, identified by Gemini.
-     trunk patch: https://svn.apache.org/1931420
-     2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, jim
-
   *) Constify static arrays of string constants.
      trunk patch: https://svn.apache.org/r1933659
      2.4.x patch: svn merge -c 1933659 ^/httpd/httpd/trunk .
