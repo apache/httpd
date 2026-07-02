@@ -177,19 +177,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Fix off-by-one in tm_mday calculation, identified by Gemini.
      trunk patch: https://svn.apache.org/1931420
      2.4.x patch: svn merge -c 1931420 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, 
+     +1: rjung, jorton, jim
 
   *) Constify static arrays of string constants.
      trunk patch: https://svn.apache.org/r1933659
      2.4.x patch: svn merge -c 1933659 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, 
+     +1: rjung, jorton, jim
 
   *) include/httpd.h: Define HTTP_EARLY_HINTS (103) per RFC 8297.
      modules/http/http_protocol.c (status_lines): Add 103 response.
      Needed by backport 1934913 below.
      trunk patch: https://svn.apache.org/r1927935
      2.4.x patch: svn merge -c 1927935 ^/httpd/httpd/trunk .
-     +1: rjung, jorton, 
+     +1: rjung, jorton, jim
 
   *) Use HTTP_* and ap_is_*() macros instead of literal;
      Use ap_strstr_c() instead of strstr() in mod_md.
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: svn merge -c 1934913 ^/httpd/httpd/trunk .
      Merging is clean when ignoring include/httpd.h,
      modules/http/http_filters.c and modules/test/mod_policy.c.
-     +1: rjung, 
+     +1: rjung, jim
 
   *) modules/md/mod_md_config.c: Flip MDServerStatus to
      disabled by default. mod_md is CTR, but probably not
