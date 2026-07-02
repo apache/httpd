@@ -75,15 +75,21 @@ static void teardown(h3_io_t* io)
     }
     if (io->workers)
     {
-        apr_time_t deadline = apr_time_now() + apr_time_from_msec(5000);
-        while (apr_atomic_read32(&io->live_workers) > 0 && apr_time_now() < deadline)
+        /*
+         * Wait for all workers still using udp_fd/ssl_listener
+         * to finish before freeing shared state; log progress while
+         * live_workers > 0.
+         */
+        apr_time_t next_warning = apr_time_now() + apr_time_from_sec(5);
+        apr_uint32_t remaining;
+        while ((remaining = apr_atomic_read32(&io->live_workers)) > 0)
         {
+            if (apr_time_now() >= next_warning)
+            {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "teardown waiting for %u workers to finish in-flight connections", remaining);
+                next_warning = apr_time_now() + apr_time_from_sec(5);
+            }
             apr_sleep(50 * 1000);
-        }
-        apr_uint32_t remaining = apr_atomic_read32(&io->live_workers);
-        if (remaining > 0)
-        {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "teardown timed out waiting for %u workers", remaining);
         }
         apr_thread_mutex_lock(io->workers_lock);
         for (int i = 0; i < io->workers->nelts; i++)
@@ -134,6 +140,13 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "listener setup failed");
         teardown(io);
         return APR_EGENERAL;
+    }
+
+    io->note_conn_added = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    io->note_conn_removed = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
+    if (!io->note_conn_added || !io->note_conn_removed)
+    {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "active MPM lacks connection-count notifications; this child may exit while connections are still active");
     }
 
     io->thread_running = 1;
@@ -293,6 +306,10 @@ static void* APR_THREAD_FUNC worker_thread(apr_thread_t* /*thread*/, void* data)
     }
     service_connection(args->io, args->session);
     apr_atomic_dec32(&args->io->live_workers);
+    if (args->io->note_conn_removed)
+    {
+        args->io->note_conn_removed();
+    }
     return NULL;
 }
 
@@ -304,16 +321,33 @@ apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
     args->io = io;
     args->session = session;
     apr_atomic_inc32(&io->live_workers);
+    /*
+     * Tell the MPM about this connection before the worker thread can
+     * possibly finish and remove it, so the added/removed calls are
+     * strictly paired even if thread creation below fails right after.
+     */
+    if (io->note_conn_added)
+    {
+        io->note_conn_added();
+    }
     apr_threadattr_t* attr = NULL;
     if (apr_threadattr_create(&attr, io->pool) != APR_SUCCESS)
     {
         apr_atomic_dec32(&io->live_workers);
+        if (io->note_conn_removed)
+        {
+            io->note_conn_removed();
+        }
         return APR_EGENERAL;
     }
     apr_thread_t* t = NULL;
     if (apr_thread_create(&t, attr, worker_thread, args, io->pool) != APR_SUCCESS)
     {
         apr_atomic_dec32(&io->live_workers);
+        if (io->note_conn_removed)
+        {
+            io->note_conn_removed();
+        }
         return APR_EGENERAL;
     }
     apr_thread_mutex_lock(io->workers_lock);

@@ -21,7 +21,10 @@
 
 #include <httpd.h>
 
+#include <mpm_common.h>
+
 #include <apr_atomic.h>
+#include <apr_optional.h>
 #include <apr_pools.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
@@ -44,6 +47,9 @@ typedef struct h3_io_t
     apr_array_header_t* workers;
     volatile apr_uint32_t live_workers;
     volatile int thread_running;
+
+    APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;
+    APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_removed) * note_conn_removed;
 } h3_io_t;
 
 extern h3_io_t* child_h3_io;
