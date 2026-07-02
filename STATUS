@@ -206,7 +206,32 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport has a conflict in docs, easy to fix.
      trunk patch: https://svn.apache.org/r1935184
      2.4.x patch: svn merge -c 1935184 ^/httpd/httpd/trunk .
-     +1: rjung, 
+     +1: rjung, jim
+
+  *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
+     announcement -- backends self-register as balancer members over UDP.
+     trunk patch: https://svn.apache.org/r1934995
+                  https://svn.apache.org/r1935040
+                  https://svn.apache.org/r1935556
+     2.4.x patch: https://gist.github.com/jimjag/57b53171761dc1fa074de7aa4e9b979c
+     +1: jim, 
+
+  *) mpm_motorz: Add the MotorZ MPM to 2.4.x as a self-contained port
+     (multi-poller scale-out with new PollersPerChild directive, async
+     keep-alive/HTTP/2 handoff, concurrency hardening, motorz test suite).
+     trunk patch: https://svn.apache.org/r1934868
+     2.4.x patch: https://gist.github.com/jimjag/a93acf3e1a90689c2d1aa0c178a7dabf
+     +1: jim, 
+
+  *) mod_http2: Do not drop an in-flight response when a client sends a
+     graceful GOAWAY (error code 0) while streams it opened are still being
+     processed; drain the open streams instead of tearing the session down
+     (RFC 9113 compliant, bounded by Timeout). Async MPMs hit this far more
+     than event. Independently useful; also a prerequisite for mpm_motorz+h2.
+     trunk patch: https://svn.apache.org/r1934868
+        (the modules/http2/h2_session.c/.h portion of that commit)
+     2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
+     +1: jim, 
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
