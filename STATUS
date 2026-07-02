@@ -163,11 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) test/h2: ignore AH02430 for the whole TestRfc9113 class.
-     trunk patch: http://svn.apache.org/r1934891
-     2.4.x patch: svn merge -c 1934891 ^/httpd/httpd/trunk .
-     +1: jim,
-
   *) modules/ssl/ssl_engine_vars.c (ssl_var_lookup_ssl_cert_remain):
      Fix off-by-one in tm_mday calculation, identified by Gemini.
      trunk patch: https://svn.apache.org/1931420
