@@ -27,6 +27,13 @@ extern const command_rec h3_cmds[];
 
 typedef struct h3_server_conf h3_server_conf;
 
+typedef enum
+{
+    H3_FLAG_UNSET = 0,
+    H3_FLAG_ON,
+    H3_FLAG_OFF
+} h3_tri_flag;
+
 struct h3_server_conf
 {
     apr_port_t host_port;
@@ -36,6 +43,9 @@ struct h3_server_conf
     apr_port_t h3_port;
     apr_uint32_t h3_max_concurrent_streams;
     apr_size_t h3_stream_buffer_size;
+    apr_size_t h3_max_request_body_size;
+    h3_tri_flag h3_alt_svc;
+    apr_uint32_t h3_alt_svc_max_age;
 };
 
 /**

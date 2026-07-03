@@ -87,6 +87,7 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
 
     h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
     nghttp3_conn_set_max_concurrent_streams(session->ngh3, conf->h3_max_concurrent_streams);
+    nghttp3_conn_set_max_client_streams_bidi(session->ngh3, conf->h3_max_concurrent_streams);
 
     *psession = session;
     return APR_SUCCESS;
@@ -165,6 +166,7 @@ void h3_session_destroy(h3_session* session)
     }
     apr_thread_mutex_unlock(session->lock);
     apr_thread_mutex_destroy(session->lock);
+    apr_pool_destroy(session->pool);
 }
 
 void h3_session_queue_free(h3_session* session, SSL* ssl)

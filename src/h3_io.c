@@ -22,6 +22,7 @@
 #include <http_config.h>
 #include <http_log.h>
 
+#include <apr_allocator.h>
 #include <apr_atomic.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>
@@ -32,6 +33,7 @@
 #include <sys/select.h>
 #include <unistd.h>
 
+#include "h3.h"
 #include "h3_check.h"
 #include "h3_io.h"
 #include "h3_request.h"
@@ -208,7 +210,7 @@ static void service_connection(h3_io_t* io, h3_session* session)
     while (!SSL_is_init_finished(conn) && io->thread_running)
     {
         wait_for_event(io->udp_fd, conn, 0);
-        if (!tick_engine(conn))
+        if (!tick_engine(conn) || SSL_get_shutdown(conn))
         {
             break;
         }
@@ -237,15 +239,38 @@ static void service_connection(h3_io_t* io, h3_session* session)
         {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "servicing new QUIC connection");
             apr_pool_t* loop_pool = session->pool;
-            while (!session->aborted && io->thread_running)
+            apr_time_t goaway_deadline = 0;
+            while (!session->aborted)
             {
+                if (!io->thread_running && goaway_deadline == 0)
+                {
+                    /* Send GOAWAY to stop new streams. */
+                    apr_thread_mutex_lock(session->lock);
+                    nghttp3_conn_submit_shutdown_notice(session->ngh3);
+                    flush_nghttp3(session);
+                    apr_thread_mutex_unlock(session->lock);
+                    goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
+                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
+                }
+                if (goaway_deadline != 0)
+                {
+                    apr_thread_mutex_lock(session->lock);
+                    int drained = nghttp3_conn_is_drained2(session->ngh3);
+                    apr_thread_mutex_unlock(session->lock);
+                    if (drained || apr_time_now() >= goaway_deadline)
+                    {
+                        break;
+                    }
+                }
+
                 wait_for_event(io->udp_fd, conn, 0);
-                if (!io->thread_running)
+                if (!tick_engine(conn))
                 {
                     break;
                 }
-                if (!tick_engine(conn))
+                if (SSL_get_shutdown(conn))
                 {
+                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
                     break;
                 }
 
@@ -272,6 +297,12 @@ static void service_connection(h3_io_t* io, h3_session* session)
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
 
+                if (session->ngh3_dead)
+                {
+                    session->aborted = 1;
+                    break;
+                }
+
                 for (int i = 0; i < completed->nelts; i++)
                 {
                     h3_stream* h3s = ((h3_stream**)completed->elts)[i];
@@ -282,7 +313,30 @@ static void service_connection(h3_io_t* io, h3_session* session)
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
             }
+            if (goaway_deadline != 0 && !session->ngh3_dead)
+            {
+                apr_thread_mutex_lock(session->lock);
+                nghttp3_conn_shutdown(session->ngh3);
+                apr_thread_mutex_unlock(session->lock);
+            }
             apr_pool_destroy(c->pool);
+        }
+    }
+    if (session->ngh3_dead)
+    {
+        SSL_SHUTDOWN_EX_ARGS args = {.quic_error_code = session->abort_quic_error_code, .quic_reason = session->abort_reason};
+        for (int i = 0; i < 5 && SSL_shutdown_ex(conn, 0, &args, sizeof(args)) != 1; i++)
+        {
+            wait_for_event(io->udp_fd, conn, 1);
+            tick_engine(conn);
+        }
+    }
+    else
+    {
+        for (int i = 0; i < 5 && SSL_shutdown(conn) != 1; i++)
+        {
+            wait_for_event(io->udp_fd, conn, 1);
+            tick_engine(conn);
         }
     }
 
@@ -375,10 +429,33 @@ void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* /*thread*/, void* data)
             continue;
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "accepted new QUIC connection");
+        /* Make connection non-blocking. */
+        if (!SSL_set_blocking_mode(conn, 0))
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "SSL_set_blocking_mode failed for accepted connection - dropping it");
+            SSL_free(conn);
+            continue;
+        }
         SSL_set_default_stream_mode(conn, SSL_DEFAULT_STREAM_MODE_NONE);
         SSL_set_incoming_stream_policy(conn, SSL_INCOMING_STREAM_POLICY_ACCEPT, 0);
+
+        apr_allocator_t* allocator = NULL;
+        apr_pool_t* session_pool = NULL;
+        if (apr_allocator_create(&allocator) != APR_SUCCESS || apr_pool_create_ex(&session_pool, io->pool, NULL, allocator) != APR_SUCCESS)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to create session pool for new connection");
+            if (allocator)
+            {
+                apr_allocator_destroy(allocator);
+            }
+            SSL_free(conn);
+            continue;
+        }
+        apr_allocator_owner_set(allocator, session_pool);
+        apr_pool_tag(session_pool, "h3_session");
+
         h3_session* session = NULL;
-        if (h3_session_create(&session, io->server, io->ssl_listener, conn, io->pool) == APR_SUCCESS)
+        if (h3_session_create(&session, io->server, io->ssl_listener, conn, session_pool) == APR_SUCCESS)
         {
             if (h3_io_spawn_worker(io, session) != APR_SUCCESS)
             {
@@ -389,6 +466,7 @@ void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* /*thread*/, void* data)
         else
         {
             SSL_free(conn);
+            apr_pool_destroy(session_pool);
         }
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread exiting");

@@ -41,6 +41,7 @@ static void register_hooks(apr_pool_t* /*p*/)
     ap_hook_pre_read_request(h3_hook_pre_read_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(h3_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(h3_hook_access_checker, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_fixups(h3_hook_fixups, NULL, NULL, APR_HOOK_MIDDLE);
 
     h3_net_out_filter_handle = ap_register_output_filter("H3_NET_OUT", h3_filter_out, NULL, AP_FTYPE_NETWORK);
     h3_net_in_filter_handle = ap_register_input_filter("H3_NET_IN", h3_filter_in, NULL, AP_FTYPE_NETWORK);

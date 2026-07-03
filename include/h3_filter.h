@@ -26,6 +26,8 @@
 #include <apr_buckets.h>
 #include <apr_pools.h>
 
+struct h3_stream;
+
 typedef struct h3_conn_ctx_t
 {
     ap_bucket_response* resp;
@@ -33,6 +35,8 @@ typedef struct h3_conn_ctx_t
     apr_size_t dataheaplen;
     apr_pool_t* c3reqpool;
     server_rec* s;
+    /* Back-reference to the h3_stream. */
+    struct h3_stream* stream;
 } h3_conn_ctx_t;
 
 extern ap_filter_rec_t* h3_net_out_filter_handle;
@@ -62,15 +66,13 @@ apr_status_t h3_filter_out(ap_filter_t* f, apr_bucket_brigade* bb);
 apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb);
 
 /**
- * Protocol-layer input filter callback. Returns EOS to terminate the
- * input chain — H3 has no inbound request body.
- * @return APR_SUCCESS (with EOS bucket inserted) or APR_EOF.
+ * Protocol-layer input filter callback. Serves the request body.
+ * @return APR_SUCCESS, with data and/or an EOS bucket inserted into @p bb.
  */
 apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
 
 /**
- * Network-layer input filter callback. Same EOS stub as the protocol
- * filter; required for the network filter chain to be well-formed.
+ * Network-layer input filter callback. Unconditional EOS stub.
  * @return APR_SUCCESS (with EOS bucket inserted) or APR_EOF.
  */
 apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);

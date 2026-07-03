@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+#include "h3_config.h"
 #include <httpd.h>
 
 #include <http_config.h>
@@ -34,7 +35,37 @@
 #include "h3_check.h"
 #include "h3_filter.h"
 #include "h3_hooks.h"
+#include "h3_session.h"
 #include "mod_http3.h"
+
+int h3_hook_fixups(request_rec* r)
+{
+    CHECK(r);
+    if (!ap_is_initial_req(r))
+    {
+        return DECLINED;
+    }
+
+    h3_server_conf* conf = ap_get_module_config(r->server->module_config, &http3_module);
+
+    if (!conf || !conf->h3_cert_path || !conf->h3_key_path || conf->h3_port == 0)
+    {
+        return DECLINED;
+    }
+
+    if (conf->h3_alt_svc == H3_FLAG_OFF)
+    {
+        return DECLINED;
+    }
+
+    if (apr_table_get(r->headers_out, "Alt-Svc"))
+    {
+        return DECLINED;
+    }
+
+    apr_table_setn(r->headers_out, "Alt-Svc", apr_psprintf(r->pool, "h3=\":%d\"; ma=%u; persist=1", (int)conf->h3_port, (unsigned)conf->h3_alt_svc_max_age));
+    return OK;
+}
 
 int h3_hook_post_read_request(request_rec* r)
 {
@@ -55,7 +86,22 @@ void h3_hook_pre_read_request(request_rec* /*r*/, conn_rec* /*c*/)
 int h3_hook_access_checker(request_rec* r)
 {
     CHECK(r);
-    return IS_H3_REQUEST(r) ? OK : DECLINED;
+    if (!IS_H3_REQUEST(r))
+    {
+        return DECLINED;
+    }
+    /* Reject unprocessable bodies early. */
+    h3_conn_ctx_t* ctx = ap_get_module_config(r->request_config, &http3_module);
+    h3_stream* stream = ctx ? ctx->stream : NULL;
+    if (stream && stream->request_body_overflow)
+    {
+        return HTTP_REQUEST_ENTITY_TOO_LARGE;
+    }
+    if (stream && stream->body_truncated)
+    {
+        return HTTP_BAD_REQUEST;
+    }
+    return OK;
 }
 
 int h3_hook_http_create_request(request_rec* r)

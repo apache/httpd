@@ -22,6 +22,14 @@
 #include <httpd.h>
 
 /**
+ * ap_hook_fixups. For H3 requests, runs the fixups chain and returns OK. For
+ * non-H3 requests, returns DECLINED so the standard fixups chain runs.
+ * @param r The request being fixed up.
+ * @return OK for an H3 request, DECLINED for a non-H3 request.
+*/
+int h3_hook_fixups(request_rec* r);
+
+/**
  * ap_hook_post_read_request. No-op for H3; reserved for future
  * per-request initialisation. Always returns OK.
  * @param r The request (unused).
@@ -38,11 +46,9 @@ int h3_hook_post_read_request(request_rec* r);
 void h3_hook_pre_read_request(request_rec* r, conn_rec* c);
 
 /**
- * ap_hook_access_checker. Returns OK for H3 requests (already vetted
- * by the QUIC handshake / HTTP/3 framing), DECLINED for HTTP/1.x so
- * the standard access checker chain runs.
+ * ap_hook_access_checker. DECLINED for HTTP/1.x, otherwise OK/413/400.
  * @param r The request being checked.
- * @return OK if the request is H3, DECLINED otherwise.
+ * @return OK/413/400 for H3, DECLINED otherwise.
  */
 int h3_hook_access_checker(request_rec* r);
 

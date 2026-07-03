@@ -48,6 +48,10 @@ struct h3_session
     apr_hash_t* streams;
     int aborted;
 
+    int ngh3_dead;
+    uint64_t abort_quic_error_code;
+    const char* abort_reason;
+
     apr_array_header_t* pending_free;
 
     int control_streams_created;
@@ -72,6 +76,14 @@ struct h3_stream
 
     int headers_complete;
     int dispatched;
+
+    int body_complete;
+    int body_truncated;
+
+    const uint8_t* request_body;
+    size_t request_body_len;
+    size_t request_body_offset;
+    int request_body_overflow;
 
     const char* method;
     const char* scheme;

@@ -43,6 +43,7 @@ h3_stream* h3_stream_find(h3_session* session, int64_t sid)
 void flush_nghttp3(h3_session* session)
 {
     CHECK(session);
+    CHECK(!session->ngh3_dead, return;);
     for (;;)
     {
         nghttp3_vec vec[16] = {0};
@@ -114,6 +115,14 @@ h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl)
     return h3s;
 }
 
+static void mark_ngh3_dead(h3_session* session, int64_t stream_id, nghttp3_ssize liberr)
+{
+    session->ngh3_dead = 1;
+    session->abort_quic_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
+    session->abort_reason = nghttp3_strerror((int)liberr);
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "read_stream failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
+}
+
 static int drain_one_stream(h3_session* session, h3_stream* h3s)
 {
     CHECK(session);
@@ -136,7 +145,10 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s)
             session->pending.h3s = NULL;
             if (consumed < 0)
             {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_read_stream failed: %lld", (long long)consumed);
+                /* Mark dead if read fails. */
+                mark_ngh3_dead(session, h3s->stream_id, consumed);
+                h3s->done = 1;
+                break;
             }
             if (h3s->done)
             {
@@ -146,12 +158,17 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s)
         }
         if (SSL_get_error(h3s->ssl_stream, rv) == SSL_ERROR_ZERO_RETURN)
         {
-            nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
+            nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
+            if (consumed < 0)
+            {
+                mark_ngh3_dead(session, h3s->stream_id, consumed);
+            }
             h3s->done = 1;
+            h3s->body_complete = 1;
         }
         break;
     }
-    return h3s->is_bidi && h3s->headers_complete && !h3s->dispatched;
+    return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
 }
 
 apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool)
@@ -159,11 +176,26 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
     CHECK(session);
     CHECK(loop_pool);
     apr_array_header_t* completed = apr_array_make(loop_pool, 4, sizeof(h3_stream*));
-    apr_hash_index_t* hi = NULL;
-    for (hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+
+    apr_array_header_t* snapshot = apr_array_make(loop_pool, 8, sizeof(h3_stream*));
+    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
     {
         h3_stream* h3s = apr_hash_this_val(hi);
-        if (!h3s || !h3s->ssl_stream || h3s->done)
+        if (h3s)
+        {
+            *(h3_stream**)apr_array_push(snapshot) = h3s;
+        }
+    }
+
+    for (int i = 0; i < snapshot->nelts; i++)
+    {
+        if (session->ngh3_dead)
+        {
+            break;
+        }
+        h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
+
+        if (!h3s->ssl_stream || h3s->done)
         {
             continue;
         }
@@ -171,7 +203,7 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         {
             continue;
         }
-        if (drain_one_stream(session, h3s))
+        if (drain_one_stream(session, h3s) && !session->ngh3_dead)
         {
             h3_stream** slot = (h3_stream**)apr_array_push(completed);
             *slot = h3s;

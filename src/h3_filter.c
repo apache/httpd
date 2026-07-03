@@ -25,9 +25,12 @@
 #include <http_protocol.h>
 #include <http_request.h>
 
+#include <apr_buckets.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 #include <apr_tables.h>
+
+#include <string.h>
 
 #include <nghttp3/nghttp3.h>
 
@@ -70,6 +73,57 @@ static apr_status_t input_filter_eos(ap_filter_t* f, apr_bucket_brigade* bb, ap_
 apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
 {
     return input_filter_eos(f, bb, mode, block, readbytes);
+}
+
+/* Serve request body. */
+static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e /*block*/, apr_off_t readbytes)
+{
+    apr_bucket_alloc_t* ba = f->c->bucket_alloc;
+
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE && mode != AP_MODE_EXHAUSTIVE && mode != AP_MODE_SPECULATIVE)
+    {
+        /* AP_MODE_INIT, AP_MODE_EATCRLF: nothing for us to do. */
+        return APR_SUCCESS;
+    }
+
+    apr_size_t avail = h3s->request_body_len - h3s->request_body_offset;
+    if (avail == 0)
+    {
+        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(ba));
+        return APR_SUCCESS;
+    }
+
+    const uint8_t* unread = h3s->request_body + h3s->request_body_offset;
+    apr_size_t want = avail;
+    if (mode == AP_MODE_READBYTES || mode == AP_MODE_SPECULATIVE)
+    {
+        if (readbytes > 0 && (apr_size_t)readbytes < want)
+        {
+            want = (apr_size_t)readbytes;
+        }
+    }
+    else if (mode == AP_MODE_GETLINE)
+    {
+        const void* nl = memchr(unread, '\n', avail);
+        if (nl)
+        {
+            want = (apr_size_t)((const uint8_t*)nl - unread) + 1;
+        }
+    }
+    /* AP_MODE_EXHAUSTIVE: take everything remaining, as already set above. */
+
+    apr_bucket* b = apr_bucket_pool_create((const char*)unread, want, h3s->pool, ba);
+    APR_BRIGADE_INSERT_TAIL(bb, b);
+
+    if (mode != AP_MODE_SPECULATIVE)
+    {
+        h3s->request_body_offset += want;
+        if (h3s->request_body_offset >= h3s->request_body_len)
+        {
+            APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(ba));
+        }
+    }
+    return APR_SUCCESS;
 }
 
 static void capture_body_bucket(h3_conn_ctx_t* ctx, apr_bucket* b)
@@ -142,7 +196,13 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
 
 apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
 {
-    return input_filter_eos(f, bb, mode, block, readbytes);
+    h3_conn_ctx_t* ctx = (h3_conn_ctx_t*)ap_get_module_config(f->r->request_config, &http3_module);
+    h3_stream* h3s = ctx ? ctx->stream : NULL;
+    if (!h3s)
+    {
+        return input_filter_eos(f, bb, mode, block, readbytes);
+    }
+    return serve_request_body(f, h3s, bb, mode, block, readbytes);
 }
 
 void h3_filter_last(request_rec* r)

@@ -29,12 +29,15 @@
 #include <apr_strings.h>
 #include <apr_tables.h>
 
+#include <string.h>
+
 #include <nghttp3/nghttp3.h>
 #include <openssl/ssl.h>
 
 #include "h3.h"
 #include "h3_callbacks.h"
 #include "h3_check.h"
+#include "h3_config.h"
 #include "h3_session.h"
 #include "mod_http3.h"
 
@@ -114,19 +117,52 @@ int on_recv_header(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int32_t token,
     return 0;
 }
 
-int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int /*fin*/, void* /*user_data*/, void* stream_user_data)
+int on_end_headers(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, int fin, void* /*user_data*/, void* stream_user_data)
 {
     h3_stream* stream = stream_user_data;
     if (stream && stream->is_bidi)
     {
         stream->headers_complete = 1;
+        if (fin)
+        {
+            /* Request has no body. */
+            stream->body_complete = 1;
+        }
     }
-    nghttp3_conn_shutdown_stream_read(conn, stream_id);
     return 0;
 }
 
-int on_recv_data(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, const uint8_t* /*data*/, size_t /*datalen*/, void* /*user_data*/, void* /*stream_user_data*/)
+int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data, size_t datalen, void* /*user_data*/, void* stream_user_data)
 {
+    h3_stream* stream = stream_user_data;
+    if (!stream || !stream->is_bidi || !data || datalen == 0)
+    {
+        return 0;
+    }
+    if (stream->request_body_overflow)
+    {
+        /* Discard over-budget bytes. */
+        return 0;
+    }
+    h3_server_conf* conf = ap_get_module_config(stream->session->s->module_config, &http3_module);
+    if (stream->request_body_len + datalen > conf->h3_max_request_body_size)
+    {
+        stream->request_body_overflow = 1;
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, stream->session->s,
+                     "HTTP/3 request body for stream %" APR_INT64_T_FMT " exceeds H3MaxRequestBodySize "
+                     "(%" APR_SIZE_T_FMT " bytes); remaining body bytes will be discarded",
+                     stream_id, conf->h3_max_request_body_size);
+        return 0;
+    }
+    /* Append data to body buffer. */
+    uint8_t* combined = apr_palloc(stream->pool, stream->request_body_len + datalen);
+    if (stream->request_body_len)
+    {
+        memcpy(combined, stream->request_body, stream->request_body_len);
+    }
+    memcpy(combined + stream->request_body_len, data, datalen);
+    stream->request_body = combined;
+    stream->request_body_len += datalen;
     return 0;
 }
 
@@ -144,18 +180,29 @@ int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen
     return 0;
 }
 
-int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* /*user_data*/, void* stream_user_data)
+int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
 {
+    /* Send STOP_SENDING by freeing SSL object. */
+    h3_session* session = user_data;
+    CHECK(session);
     h3_stream* stream = stream_user_data;
     if (stream)
     {
+        if (stream->ssl_stream)
+        {
+            h3_session_queue_free(session, stream->ssl_stream);
+            stream->ssl_stream = NULL;
+        }
         stream->done = 1;
+        stream->body_complete = 1;
+        stream->body_truncated = 1;
     }
     return 0;
 }
 
 int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_error_code, void* /*user_data*/, void* stream_user_data)
 {
+    /* Send RESET_STREAM to abandon response. */
     h3_stream* stream = stream_user_data;
     if (stream)
     {

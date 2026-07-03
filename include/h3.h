@@ -26,6 +26,17 @@
 
 #define h3_max_concurrent_streams_MAX 1000
 #define h3_stream_buffer_size_MAX (1024 * 1024)
+#define h3_max_request_body_size_DEFAULT (10 * 1024 * 1024)
+#define h3_max_request_body_size_MAX (1024UL * 1024 * 1024)
+
+#define STREAM_CHUNK_BYTES (4 * 1024)
+
+#define H3_GOAWAY_GRACE_SECS 3
+
+#define H3_PORT_ACQUIRE_RETRY_MS 200
+
+#define H3_ALT_SVC_MAX_AGE_DEFAULT 86400
+#define H3_ALT_SVC_MAX_AGE_MAX (7UL * 24 * 3600)
 
 #define NV_SET(nva, i, n, v) \
     do \
@@ -40,8 +51,6 @@
 #define IS_H3_REQUEST(r) (apr_table_get((r)->connection->notes, "IS_mod_http3") != NULL)
 
 #define IS_PSEUDO_TOKEN(t) ((t) == NGHTTP3_QPACK_TOKEN__METHOD || (t) == NGHTTP3_QPACK_TOKEN__SCHEME || (t) == NGHTTP3_QPACK_TOKEN__PATH || (t) == NGHTTP3_QPACK_TOKEN__AUTHORITY)
-
-#define STREAM_CHUNK_BYTES 4096
 
 /* Low two bits of a QUIC stream id encode initiator and direction (RFC 9000). */
 #define H3_SID_IS_BIDI(sid) (((sid) & 0x2) == 0)

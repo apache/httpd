@@ -194,6 +194,14 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     {
         apr_table_overlap(r->headers_in, h3s->headers, APR_OVERLAP_TABLES_SET);
     }
+    if (h3s->request_body_len > 0)
+    {
+        apr_table_setn(r->headers_in, "Content-Length", apr_psprintf(r->pool, "%" APR_SIZE_T_FMT, h3s->request_body_len));
+
+        const char* method = h3s->method ? h3s->method : "?";
+        const char* overflow = h3s->request_body_overflow ? " (overflow)" : "";
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3 stream %" APR_INT64_T_FMT " %s body=%" APR_SIZE_T_FMT "%s", h3s->stream_id, method, h3s->request_body_len, overflow);
+    }
 
     apr_pool_t* c3reqpool = NULL;
     if (apr_pool_create(&c3reqpool, session->pool) != APR_SUCCESS)
@@ -204,6 +212,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     h3_conn_ctx_t* h3ctx = apr_pcalloc(c3reqpool, sizeof(h3_conn_ctx_t));
     h3ctx->c3reqpool = c3reqpool;
     h3ctx->s = s;
+    h3ctx->stream = h3s;
     ap_set_module_config(r->request_config, &http3_module, h3ctx);
 
     ap_process_request(r);
@@ -211,7 +220,8 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     apr_thread_mutex_lock(session->lock);
     h3s->dispatched = 1;
     capture_response_body(h3s, h3ctx, h3s->pool);
-    int status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : HTTP_INTERNAL_SERVER_ERROR;
+    /* Fallback to r->status if resp not populated. */
+    int status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : r->status;
     size_t body_len = h3s->response_len;
     int64_t sid = h3s->stream_id;
     nghttp3_nv nva[64] = {0};

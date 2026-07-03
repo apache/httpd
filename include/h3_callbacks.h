@@ -57,11 +57,10 @@ int on_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t token, nghttp3
 
 /**
  * nghttp3 end_headers callback. Marks the stream as having complete
- * request headers, so subsequent DATA frames can be dispatched.
+ * request headers and body if FIN is set.
  * @param conn            The nghttp3 connection.
  * @param stream_id       QUIC stream id whose headers just ended.
- * @param fin             Non-zero if a DATA frame immediately follows
- *                        (i.e. the request has no body).
+ * @param fin             Non-zero if request has no body.
  * @param user_data       The h3_session.
  * @param stream_user_data The h3_stream.
  * @return 0 on success, NGHTTP3_ERR_CALLBACK_FAILURE on missing stream.
@@ -69,9 +68,7 @@ int on_recv_header(nghttp3_conn* conn, int64_t stream_id, int32_t token, nghttp3
 int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int fin, void* user_data, void* stream_user_data);
 
 /**
- * nghttp3 recv_data callback. Consumes @p datalen bytes for @p stream_id.
- * The request dispatcher is invoked once a stream becomes fully readable
- * (HEADERS + DATA complete).
+ * nghttp3 recv_data callback. Appends request body for @p stream_id.
  * @param conn            The nghttp3 connection.
  * @param stream_id       QUIC stream id receiving data.
  * @param data            The DATA payload bytes.
@@ -95,11 +92,10 @@ int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, siz
 int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* stream_user_data);
 
 /**
- * nghttp3 stop_sending callback. Peer issued STOP_SENDING; mark the
- * stream aborted so the dispatcher skips it.
+ * nghttp3 stop_sending callback. Abort stream read side.
  * @param conn            The nghttp3 connection.
  * @param stream_id       QUIC stream id being stopped.
- * @param app_error_code  Application error code from STOP_SENDING.
+ * @param app_error_code  Application error code.
  * @param user_data       The h3_session.
  * @param stream_user_data The h3_stream.
  * @return 0 on success, NGHTTP3_ERR_CALLBACK_FAILURE on missing stream.
@@ -107,11 +103,10 @@ int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen
 int on_stop_sending(nghttp3_conn* conn, int64_t stream_id, uint64_t app_error_code, void* user_data, void* stream_user_data);
 
 /**
- * nghttp3 reset_stream callback. Peer reset the stream (RESET_STREAM);
- * mark the stream aborted.
+ * nghttp3 reset_stream callback. Abort stream write side.
  * @param conn            The nghttp3 connection.
  * @param stream_id       QUIC stream id being reset.
- * @param app_error_code  Application error code from RESET_STREAM.
+ * @param app_error_code  Application error code to signal.
  * @param user_data       The h3_session.
  * @param stream_user_data The h3_stream.
  * @return 0 on success, NGHTTP3_ERR_CALLBACK_FAILURE on missing stream.
