@@ -163,14 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) Use HTTP_* and ap_is_*() macros instead of literal;
-     Use ap_strstr_c() instead of strstr() in mod_md.
-     trunk patch: https://svn.apache.org/r1934913
-     2.4.x patch: svn merge -c 1934913 ^/httpd/httpd/trunk .
-     Merging is clean when ignoring include/httpd.h,
-     modules/http/http_filters.c and modules/test/mod_policy.c.
-     +1: rjung, jim, jorton
-
   *) modules/md/mod_md_config.c: Flip MDServerStatus to
      disabled by default. mod_md is CTR, but probably not
      the change in default behavior. Needs an explicit
@@ -210,17 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         (the modules/http2/h2_session.c/.h portion of that commit)
      2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
      +1: jim, 
-
-  *) mod_proxy_html: Fix comment handling
-     trunk patch: https://svn.apache.org/r1935931
-     2.4.x patch: svn merge -c 1935931 ^/httpd/httpd/trunk
-     +1: jorton,
-
-  *) mod_autoindex: Various minor fixes
-     trunk patch: https://svn.apache.org/r1935931
-     2.4.x patch: svn merge -c 1922994,1931451,1935002 ^/httpd/httpd/trunk
-     2.4.x PR: https://github.com/apache/httpd/pull/682
-     +1: jorton,
 
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
