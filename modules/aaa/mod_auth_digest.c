@@ -56,6 +56,7 @@
 #include "apr_errno.h"
 #include "apr_global_mutex.h"
 #include "apr_strings.h"
+#include "apr_atomic.h"
 
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
@@ -174,7 +175,7 @@ static unsigned char *secret;
 static apr_shm_t      *client_shm =  NULL;
 static apr_rmm_t      *client_rmm = NULL;
 static unsigned long  *opaque_cntr;
-static apr_time_t     *otn_counter;     /* one-time-nonce counter */
+static volatile apr_uint32_t *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static apr_global_mutex_t *opaque_lock = NULL;
 static const char     *client_mutex_type = "authdigest-client";
@@ -1032,15 +1033,8 @@ static const char *gen_nonce(apr_pool_t *p, apr_time_t now, const char *opaque,
     if (conf->nonce_lifetime != 0) {
         t.time = now;
     }
-    else if (otn_counter) {
-        /* this counter is not synch'd, because it doesn't really matter
-         * if it counts exactly.
-         */
-        t.time = (*otn_counter)++;
-    }
     else {
-        /* XXX: WHAT IS THIS CONSTANT? */
-        t.time = 42;
+        t.time = apr_atomic_inc32(otn_counter);
     }
     apr_base64_encode_binary(nonce, t.arr, sizeof(t.arr));
     gen_nonce_hash(nonce+NONCE_TIME_LEN, nonce, opaque, server, conf, realm);
