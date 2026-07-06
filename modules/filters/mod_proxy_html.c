@@ -337,7 +337,6 @@ static void pcomment(void *ctxt, const xmlChar *uchars)
         ap_fputs(ctx->f->next, ctx->bb, "<!--");
         AP_fwrite(ctx, chars, strlen(chars), 1);
         ap_fputs(ctx->f->next, ctx->bb, "-->");
-        dump_content(ctx);
     }
 }
 static void pendElement(void *ctxt, const xmlChar *uname)
