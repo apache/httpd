@@ -3606,18 +3606,9 @@ static int dav_method_unlock(request_rec *r)
         return HTTP_BAD_REQUEST;
     }
 
-    locktoken_txt = apr_pstrdup(r->pool, const_locktoken_txt);
-    if (locktoken_txt[0] != '<') {
-        /* ### should provide more specifics... */
-        return HTTP_BAD_REQUEST;
-    }
-    locktoken_txt++;
-
-    if (locktoken_txt[strlen(locktoken_txt) - 1] != '>') {
-        /* ### should provide more specifics... */
-        return HTTP_BAD_REQUEST;
-    }
-    locktoken_txt[strlen(locktoken_txt) - 1] = '\0';
+    err = dav_parse_locktoken(r->pool, const_locktoken_txt, &locktoken_txt);
+    if (err != NULL)
+        return dav_handle_err(r, err, NULL);
 
     if ((err = (*locks_hooks->parse_locktoken)(r->pool, locktoken_txt,
                                                &locktoken)) != NULL) {

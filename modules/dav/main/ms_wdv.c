@@ -36,13 +36,16 @@ static void delete_if_fixup(request_rec *r)
     const char *if_hdr;
     const char *cp;
     apr_size_t len;
+    int has_open, has_close;
 
     if ((if_hdr =  apr_table_get(r->headers_in, "If")) == NULL)
         goto out;
 
     /* check for parenthesis enclosed value */
     len = strlen(if_hdr);
-    if (if_hdr[0] != '(' || if_hdr[len - 1]!= ')')
+    has_open = (len > 0 && if_hdr[0] == '(');
+    has_close = (len > 0 && if_hdr[len - 1] == ')');
+    if (!has_open || !has_close)
         goto out;
 
     for (cp = if_hdr; *cp; cp++) {
@@ -197,10 +200,13 @@ static dav_error *mswdv_combined_lock(request_rec *r)
      * section 4.5 suggests using Lock-Token without brakets.
      */
     if (lock_token_hdr) {
-        apr_size_t len = strlen(lock_token_hdr);
+        char *parsed_locktoken;
 
-        if (lock_token_hdr[0] == '<' || lock_token_hdr[len - 1] == '>')
-            lock_token_hdr = apr_pstrndup(r->pool, lock_token_hdr + 1, len - 2);
+        err = dav_parse_locktoken(r->pool, lock_token_hdr, &parsed_locktoken);
+        if (err != NULL)
+            goto out;
+
+        lock_token_hdr = parsed_locktoken;
     }
 
     if (lock_timeout_hdr) {
@@ -832,4 +838,3 @@ DAV_DECLARE(apr_status_t) dav_mswdv_input(ap_filter_t *f,
 
     return APR_SUCCESS;
 }
-
