@@ -211,6 +211,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.4.x patch: https://gist.github.com/jimjag/fc124b8938cbe9321e7f8d2ad943241d
      +1: jim, 
 
+  *) mod_proxy_html: Fix comment handling
+     trunk patch: https://svn.apache.org/r1935931
+     2.4.x patch: svn merge -c 1935931 ^/httpd/httpd/trunk
+     +1: jorton,
+
+  *) mod_autoindex: Various minor fixes
+     trunk patch: https://svn.apache.org/r1935931
+     2.4.x patch: svn merge -c 1922994,1931451,1935002 ^/httpd/httpd/trunk
+     2.4.x PR: https://github.com/apache/httpd/pull/682
+     +1: jorton,
+
 PATCHES/ISSUES THAT ARE BEING WORKED
   [ New entries should be added at the START of the list ]
 
