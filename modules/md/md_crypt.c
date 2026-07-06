@@ -2226,7 +2226,7 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
     const ASN1_INTEGER *serial;
     BIGNUM *bn;
     int i = -1, sder_len;
-    unsigned char *ucp, sbuf[256];
+    unsigned char *ucp, *sbuf;
 
     *pari_cert_id = NULL;
     s_aki = X509_get_ext_d2i(cert->x509, NID_authority_key_identifier, &i, NULL);
@@ -2253,6 +2253,10 @@ apr_status_t md_cert_get_ari_cert_id(const char **pari_cert_id,
     }
     memset(&ser_buf, 0, sizeof(ser_buf));
     bn = ASN1_INTEGER_to_BN(serial, NULL);
+    if (!bn) {
+        return APR_EINVAL;
+    }
+    sbuf = apr_pcalloc(p, BN_num_bytes(bn));
     sder_len = BN_bn2bin(bn, sbuf);
     BN_free(bn);
     if (sder_len < 1)
