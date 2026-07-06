@@ -202,12 +202,13 @@ ssl_asn1_t *ssl_asn1_table_set(apr_hash_t *table, const char *key,
     apr_ssize_t klen = strlen(key);
     ssl_asn1_t *asn1 = apr_hash_get(table, key, klen);
     int derlen = i2d_PrivateKey(pkey, NULL);
+    apr_size_t length;
+    unsigned char *p;
+
     /* Encoding the key length can only fail in pathological cases which
      * cannot occur for a key which has already been loaded and used. */
     ap_assert(derlen > 0);
-
-    apr_size_t length = (apr_size_t)derlen;
-    unsigned char *p;
+    length = (apr_size_t)derlen;
 
     /* Re-use structure if cached previously. */
     if (asn1) {
