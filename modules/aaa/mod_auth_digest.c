@@ -29,7 +29,7 @@
  * Open Issues:
  *   - qop=auth-int (when streams and trailer support available)
  *   - nonce-format configurability
- *   - Proxy-Authorization-Info header is set by this module, but is
+ *   - Proxy-Authentication-Info header is set by this module, but is
  *     currently ignored by mod_proxy (needs patch to mod_proxy)
  *   - The source of the secret should be run-time directive (with server
  *     scope: RSRC_CONF)
@@ -1658,10 +1658,7 @@ static int authenticate_digest_user(request_rec *r)
     return OK;
 }
 
-/*
- * Authorization-Info header code
- */
-
+/* Authentication-Info header code. */
 static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
