@@ -1022,10 +1022,10 @@ static void stream_do_error_bucket(h2_stream *stream, apr_bucket *b)
     int err = ((ap_bucket_error *)(b->data))->status;
     ap_log_cerror(APLOG_MARK, APLOG_TRACE1, 0, stream->session->c1,
                   H2_STRM_MSG(stream, "error bucket received, err=%d"), err);
-    if (err >= 500) {
+    if (err >= HTTP_INTERNAL_SERVER_ERROR) {
         err = NGHTTP2_INTERNAL_ERROR;
     }
-    else if (err >= 400) {
+    else if (err >= HTTP_BAD_REQUEST) {
         err = NGHTTP2_STREAM_CLOSED;
     }
     else {
@@ -1649,7 +1649,7 @@ static apr_status_t stream_do_response(h2_stream *stream)
         goto cleanup;
     }
 
-    if (resp->status < 100) {
+    if (resp->status < HTTP_CONTINUE) {
         h2_stream_rst(stream, resp->status);
         goto cleanup;
     }
@@ -1691,8 +1691,8 @@ static apr_status_t stream_do_response(h2_stream *stream)
         && !stream->response
         && stream->request && stream->request->method
         && !strcmp("GET", stream->request->method)
-        && (resp->status < 400)
-        && (resp->status != 304)
+        && (resp->status < HTTP_BAD_REQUEST)
+        && (resp->status != HTTP_NOT_MODIFIED)
         && h2_session_push_enabled(stream->session)) {
         /* PUSH is possible and enabled on server, unless the request
          * denies it, submit resources to push */
@@ -1709,14 +1709,14 @@ static apr_status_t stream_do_response(h2_stream *stream)
     }
     h2_session_set_prio(stream->session, stream, stream->pref_priority);
 
-    if (resp->status == 103
+    if (resp->status == HTTP_EARLY_HINTS
         && !h2_config_sgeti(stream->session->s, H2_CONF_EARLY_HINTS)) {
         /* suppress sending this to the client, it might have triggered
          * pushes and served its purpose nevertheless */
         rv = APR_SUCCESS;
         goto cleanup;
     }
-    if (resp->status >= 200) {
+    if (resp->status >= HTTP_OK) {
         stream->response = resp;
     }
 

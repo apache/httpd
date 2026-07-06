@@ -1389,7 +1389,7 @@ int ap_proxy_http_process_response(proxy_http_req_t *req)
         } else {
             /* an http/0.9 response */
             backasswards = 1;
-            r->status = proxy_status = 200;
+            r->status = proxy_status = HTTP_OK;
             r->status_line = "200 OK";
             backend->close = 1;
         }

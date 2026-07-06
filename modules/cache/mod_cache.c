@@ -1687,10 +1687,10 @@ static apr_status_t cache_invalidate_filter(ap_filter_t *f,
     }
     else {
 
-        if (r->status > 299) {
+        if (r->status >= HTTP_MULTIPLE_CHOICES) {
 
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(02466)
-                    "cache: response status to '%s' method is %d (>299), not invalidating cached entity: %s", r->method, r->status, r->uri);
+                    "cache: response status to '%s' method is %d (>=HTTP_MULTIPLE_CHOICES), not invalidating cached entity: %s", r->method, r->status, r->uri);
 
         }
         else {

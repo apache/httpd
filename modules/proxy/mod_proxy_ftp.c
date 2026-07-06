@@ -1874,7 +1874,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     }
 
     r->status = HTTP_OK;
-    r->status_line = "200 OK";
+    r->status_line = ap_get_status_line(r->status);
 
     apr_rfc822_date(dates, r->request_time);
     apr_table_setn(r->headers_out, "Date", dates);

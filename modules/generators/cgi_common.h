@@ -480,7 +480,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
 
         location = apr_table_get(r->headers_out, "Location");
 
-        if (location && r->status == 200) {
+        if (location && r->status == HTTP_OK) {
             /* For a redirect whether internal or not, discard any
              * remaining stdout from the script, and log any remaining
              * stderr output, as normal. */
@@ -493,7 +493,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
             }
         }
 
-        if (location && location[0] == '/' && r->status == 200) {
+        if (location && location[0] == '/' && r->status == HTTP_OK) {
             /* This redirect needs to be a GET no matter what the original
              * method was.
              */
@@ -509,7 +509,7 @@ static int cgi_handle_response(request_rec *r, int nph, apr_bucket_brigade *bb,
             ap_internal_redirect_handler(location, r);
             return OK;
         }
-        else if (location && r->status == 200) {
+        else if (location && r->status == HTTP_OK) {
             /* XXX: Note that if a script wants to produce its own Redirect
              * body, it now has to explicitly *say* "Status: 302"
              */

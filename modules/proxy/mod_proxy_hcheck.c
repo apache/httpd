@@ -909,7 +909,7 @@ static apr_status_t hc_check_http(baton_t *baton, apr_thread_t *thread)
                          hc->s->name_ex, worker->s->name_ex);
             status = !OK;
         }
-    } else if (r->status < 200 || r->status > 399) {
+    } else if (r->status < HTTP_OK || r->status >= HTTP_BAD_REQUEST) {
         ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, ctx->s,
                      "Response status %i for %s (%s): failed", r->status,
                      hc->s->name_ex, worker->s->name_ex);

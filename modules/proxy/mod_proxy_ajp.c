@@ -491,7 +491,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (status != APR_SUCCESS) {
                     backend_failed = 1;
                 }
-                else if ((r->status == 401) && conf->error_override) {
+                else if ((r->status == HTTP_UNAUTHORIZED) && conf->error_override) {
                     const char *buf;
                     const char *wa = "WWW-Authenticate";
                     if ((buf = apr_table_get(r->headers_out, wa))) {
