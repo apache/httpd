@@ -86,7 +86,7 @@ typedef struct digest_config_struct {
     authn_provider_list *providers;
     apr_time_t    nonce_lifetime;
     int          check_nc;
-    const char  *algorithm;
+    const char  *algorithm; /* currently a constant (MD5). */
     char        *uri_list;
 } digest_config_rec;
 
@@ -556,15 +556,11 @@ static const char *set_nc_check(cmd_parms *cmd, void *config, int flag)
 
 static const char *set_algorithm(cmd_parms *cmd, void *config, const char *alg)
 {
-    if (!ap_cstr_casecmp(alg, "MD5-sess")) {
-        return "AuthDigestAlgorithm: ERROR: algorithm `MD5-sess' "
-                "is not implemented";
-    }
-    else if (ap_cstr_casecmp(alg, "MD5")) {
-        return apr_pstrcat(cmd->pool, "Invalid algorithm in AuthDigestAlgorithm: ", alg, NULL);
+    if (ap_cstr_casecmp(alg, "MD5")) {
+        return apr_pstrcat(cmd->pool, "Unsupported algorithm in AuthDigestAlgorithm: ", alg, NULL);
     }
 
-    ((digest_config_rec *) config)->algorithm = alg;
+    /* conf->algorithm remains the constant, "MD5". */
     return NULL;
 }
 
