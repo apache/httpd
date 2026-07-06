@@ -85,8 +85,7 @@
 typedef struct digest_config_struct {
     const char  *dir_name;
     authn_provider_list *providers;
-    apr_array_header_t *qop_list;
-    apr_sha1_ctx_t  nonce_ctx;
+    apr_sha1_ctx_t  nonce_ctx;    
     apr_time_t    nonce_lifetime;
     int          check_nc;
     const char  *algorithm;
@@ -472,7 +471,6 @@ static void *create_digest_dir_config(apr_pool_t *p, char *dir)
 
     conf = (digest_config_rec *) apr_pcalloc(p, sizeof(digest_config_rec));
     if (conf) {
-        conf->qop_list       = apr_array_make(p, 2, sizeof(char *));
         conf->nonce_lifetime = DFLT_NONCE_LIFE;
         conf->dir_name       = apr_pstrdup(p, dir);
         conf->algorithm      = DFLT_ALGORITHM;
@@ -558,22 +556,9 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 
 static const char *set_qop(cmd_parms *cmd, void *config, const char *op)
 {
-    digest_config_rec *conf = (digest_config_rec *) config;
-
-    if (!ap_cstr_casecmp(op, "none")) {
-        apr_array_clear(conf->qop_list);
-        *(const char **)apr_array_push(conf->qop_list) = "none";
-        return NULL;
+    if (ap_cstr_casecmp(op, "auth")) {
+        return "AuthDigestQop is deprecated: only 'auth' is supported";
     }
-
-    if (!ap_cstr_casecmp(op, "auth-int")) {
-        return "AuthDigestQop auth-int is not implemented";
-    }
-    else if (ap_cstr_casecmp(op, "auth")) {
-        return apr_pstrcat(cmd->pool, "Unrecognized qop: ", op, NULL);
-    }
-
-    *(const char **)apr_array_push(conf->qop_list) = op;
 
     return NULL;
 }
@@ -1179,18 +1164,7 @@ static void note_digest_auth_failure(request_rec *r,
     const char   *qop, *opaque, *opaque_param, *domain, *nonce;
 
     /* Setup qop */
-    if (apr_is_empty_array(conf->qop_list)) {
-        qop = ", qop=\"auth\"";
-    }
-    else if (!ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
-        qop = "";
-    }
-    else {
-        qop = apr_pstrcat(r->pool, ", qop=\"",
-                                   apr_array_pstrcat(r->pool, conf->qop_list, ','),
-                                   "\"",
-                                   NULL);
-    }
+    qop = ", qop=\"auth\"";
 
     /* Setup opaque */
 
@@ -1380,19 +1354,6 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
         return OK;
     }
 
-    if (!apr_is_empty_array(conf->qop_list) &&
-        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")) {
-        /* qop is none, client must not send a nonce count */
-        if (snc != NULL) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01772)
-                          "invalid nc %s received - no nonce count allowed when qop=none",
-                          snc);
-            return !OK;
-        }
-        /* qop is none, cannot check nonce count */
-        return OK;
-    }
-
     nc = strtol(snc, &endptr, 16);
     if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01773)
@@ -1472,19 +1433,6 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
 }
 
 /* The actual MD5 code... whee */
-
-/* RFC-2069 */
-static const char *old_digest(const request_rec *r,
-                              const digest_header_rec *resp)
-{
-    const char *ha2;
-
-    ha2 = ap_md5(r->pool, (unsigned char *)apr_pstrcat(r->pool, resp->method, ":",
-                                                       resp->uri, NULL));
-    return ap_md5(r->pool,
-                  (unsigned char *)apr_pstrcat(r->pool, resp->ha1, ":",
-                                               resp->nonce, ":", ha2, NULL));
-}
 
 /* RFC-2617 */
 static const char *new_digest(const request_rec *r,
@@ -1781,39 +1729,18 @@ static int authenticate_digest_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (resp->message_qop == NULL) {
-        /* old (rfc-2069) style digest */
-        if (!ap_memeq_timingsafe(old_digest(r, resp), resp->digest, MD5_DIGEST_LEN)) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01792)
-                          "user %s: password mismatch: %s", r->user,
-                          r->uri);
-            note_digest_auth_failure(r, conf, resp, 0);
-            return HTTP_UNAUTHORIZED;
-        }
+    if (resp->message_qop == NULL
+        || ap_cstr_casecmp(resp->message_qop, "auth")) {
+        /* RFC 2069-style Digest is no longer supported. */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10560)
+                      "invalid or missing qop value '%s', RFC 2069 is "
+                      "no longer supported: %s", resp->message_qop, r->uri);
+        note_digest_auth_failure(r, conf, resp, 0);
+        return HTTP_UNAUTHORIZED;
     }
     else {
-        const char *exp_digest;
-        int match = 0, idx;
-        const char **tmp = (const char **)(conf->qop_list->elts);
-        for (idx = 0; idx < conf->qop_list->nelts; idx++) {
-            if (!ap_cstr_casecmp(*tmp, resp->message_qop)) {
-                match = 1;
-                break;
-            }
-            ++tmp;
-        }
-
-        if (!match
-            && !(apr_is_empty_array(conf->qop_list)
-                 && !ap_cstr_casecmp(resp->message_qop, "auth"))) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01793)
-                          "invalid qop `%s' received: %s",
-                          resp->message_qop, r->uri);
-            note_digest_auth_failure(r, conf, resp, 0);
-            return HTTP_UNAUTHORIZED;
-        }
-
-        exp_digest = new_digest(r, resp);
+        /* RFC 2617 (or 7616)-style Digest hash calculation. */
+        const char *exp_digest = new_digest(r, resp);
         if (!exp_digest) {
             /* we failed to allocate a client struct */
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -1859,9 +1786,6 @@ static int add_auth_info(request_rec *r)
         return OK;
     }
 
-    /* 2069-style entity-digest is not supported (it's too hard, and
-     * there are no clients which support 2069 but not 2617). */
-
     /* setup nextnonce
      */
     if (conf->nonce_lifetime > 0) {
@@ -1884,15 +1808,7 @@ static int add_auth_info(request_rec *r)
     /* else nonce never expires, hence no nextnonce */
 
 
-    /* do rfc-2069 digest
-     */
-    if (!apr_is_empty_array(conf->qop_list) &&
-        !ap_cstr_casecmp(*(const char **)(conf->qop_list->elts), "none")
-        && resp->message_qop == NULL) {
-        /* use only RFC-2069 format */
-        ai = nextnonce;
-    }
-    else {
+    {
         const char *resp_dig, *ha1, *a2, *ha2;
 
         /* calculate rspauth attribute
