@@ -76,6 +76,10 @@ class HttpdErrorLog:
         for l in lognos:
             self._ignored_lognos.add(l)
 
+    def remove_ignored_lognos(self, lognos: List[str]):
+        for l in lognos:
+            self._ignored_lognos.discard(l)
+
     def _is_ignored(self, line: str) -> bool:
         if self._lookup_matches(line, self._ignored_matches):
             return True
