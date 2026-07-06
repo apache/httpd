@@ -186,12 +186,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-  *) test/h2: ignore AH02430 for the whole TestRfc9113 class.
-     trunk patch: http://svn.apache.org/r1934891
-     2.4.x patch: svn merge -c 1934891 ^/httpd/httpd/trunk .
-     +1: jim,
-     jorton: CTR for test/* changes
-
   *) mod_proxy_beacon: Add new module. Reverse-proxy UDP member
      announcement -- backends self-register as balancer members over UDP.
      trunk patch: https://svn.apache.org/r1934995
