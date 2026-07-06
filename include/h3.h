@@ -24,19 +24,28 @@
 
 #include <nghttp3/version.h>
 
-#define h3_max_concurrent_streams_MAX 1000
-#define h3_stream_buffer_size_MAX (1024 * 1024)
-#define h3_max_request_body_size_DEFAULT (10 * 1024 * 1024)
-#define h3_max_request_body_size_MAX (1024UL * 1024 * 1024)
+/* Directives default and maximum values. */
+#define H3_MAX_CONCURRENT_STREAMS_DEFAULT 100
+#define H3_MAX_CONCURRENT_STREAMS_MAX 1000
 
-#define STREAM_CHUNK_BYTES (4 * 1024)
+#define H3_MAX_CONNECTIONS_DEFAULT 256
+#define H3_MAX_CONNECTIONS_MAX 10000
 
-#define H3_GOAWAY_GRACE_SECS 3
+#define H3_STREAM_BUFFER_SIZE_DEFAULT (64 * 1024)
+#define H3_STREAM_BUFFER_SIZE_MAX (1024 * 1024)
 
-#define H3_PORT_ACQUIRE_RETRY_MS 200
+#define H3_MAX_REQUEST_BODY_SIZE_DEFAULT (10 * 1024 * 1024)
+#define H3_MAX_REQUEST_BODY_SIZE_MAX (1024UL * 1024 * 1024)
 
 #define H3_ALT_SVC_MAX_AGE_DEFAULT 86400
 #define H3_ALT_SVC_MAX_AGE_MAX (7UL * 24 * 3600)
+
+/* hidden directives */
+#define H3_GOAWAY_GRACE_SECS 3
+#define H3_HANDSHAKE_TIMEOUT_SEC 10
+#define H3_PORT_ACQUIRE_RETRY_MS 200
+
+#define STREAM_CHUNK_BYTES (4 * 1024)
 
 #define NV_SET(nva, i, n, v) \
     do \

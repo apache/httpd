@@ -62,6 +62,7 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_key_path = new->h3_key_path ? new->h3_key_path : base->h3_key_path;
     merged->h3_port = new->h3_port ? new->h3_port : base->h3_port;
     merged->h3_max_concurrent_streams = new->h3_max_concurrent_streams ? new->h3_max_concurrent_streams : base->h3_max_concurrent_streams;
+    merged->h3_max_connections = new->h3_max_connections ? new->h3_max_connections : base->h3_max_connections;
     merged->h3_stream_buffer_size = new->h3_stream_buffer_size ? new->h3_stream_buffer_size : base->h3_stream_buffer_size;
     merged->h3_max_request_body_size = new->h3_max_request_body_size ? new->h3_max_request_body_size : base->h3_max_request_body_size;
     merged->h3_alt_svc = new->h3_alt_svc != H3_FLAG_UNSET ? new->h3_alt_svc : base->h3_alt_svc;
@@ -144,6 +145,32 @@ static const char* set_h3_max_concurrent_streams(cmd_parms* cmd, void* /*dummy*/
     return NULL;
 }
 
+static const char* set_h3_max_connections(cmd_parms* cmd, void* /*dummy*/, const char* arg)
+{
+    if (!arg || !*arg)
+    {
+        return "H3MaxConnections: empty value";
+    }
+    apr_uint64_t val = 0;
+    apr_status_t rv = apr_cstr_atoui64(&val, arg);
+    if (rv == APR_EINVAL)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConnections: '%s' is not a number", arg);
+    }
+    if (rv == APR_ERANGE)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConnections: '%s' is out of representable range", arg);
+    }
+    if (val == 0 || val > H3_MAX_CONNECTIONS_MAX)
+    {
+        return apr_psprintf(cmd->pool, "H3MaxConnections: '%s' is out of allowed range (1-%u)", arg, (unsigned)H3_MAX_CONNECTIONS_MAX);
+    }
+    h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
+    CHECK(conf);
+    conf->h3_max_connections = (apr_uint32_t)val;
+    return NULL;
+}
+
 static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, const char* arg)
 {
     if (!arg || !*arg)
@@ -160,9 +187,9 @@ static const char* set_h3_stream_buffer_size(cmd_parms* cmd, void* /*dummy*/, co
     {
         return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is out of representable range", arg);
     }
-    if (val == 0 || val > h3_stream_buffer_size_MAX)
+    if (val == 0 || val > H3_STREAM_BUFFER_SIZE_MAX)
     {
-        return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is out of allowed range (1-%lu)", arg, (unsigned long)h3_stream_buffer_size_MAX);
+        return apr_psprintf(cmd->pool, "H3StreamBufferSize: '%s' is out of allowed range (1-%lu)", arg, (unsigned long)H3_STREAM_BUFFER_SIZE_MAX);
     }
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
@@ -186,9 +213,9 @@ static const char* set_h3_max_request_body_size(cmd_parms* cmd, void* /*dummy*/,
     {
         return apr_psprintf(cmd->pool, "H3MaxRequestBodySize: '%s' is out of representable range", arg);
     }
-    if (val == 0 || val > h3_max_request_body_size_MAX)
+    if (val == 0 || val > H3_MAX_REQUEST_BODY_SIZE_MAX)
     {
-        return apr_psprintf(cmd->pool, "H3MaxRequestBodySize: '%s' is out of allowed range (1-%lu)", arg, (unsigned long)h3_max_request_body_size_MAX);
+        return apr_psprintf(cmd->pool, "H3MaxRequestBodySize: '%s' is out of allowed range (1-%lu)", arg, (unsigned long)H3_MAX_REQUEST_BODY_SIZE_MAX);
     }
     h3_server_conf* conf = ap_get_module_config(cmd->server->module_config, &http3_module);
     CHECK(conf);
@@ -253,15 +280,19 @@ int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, s
             }
             if (vc->h3_max_concurrent_streams == 0)
             {
-                vc->h3_max_concurrent_streams = h3_max_concurrent_streams_MAX;
+                vc->h3_max_concurrent_streams = H3_MAX_CONCURRENT_STREAMS_DEFAULT;
+            }
+            if (vc->h3_max_connections == 0)
+            {
+                vc->h3_max_connections = H3_MAX_CONNECTIONS_DEFAULT;
             }
             if (vc->h3_stream_buffer_size == 0)
             {
-                vc->h3_stream_buffer_size = h3_stream_buffer_size_MAX;
+                vc->h3_stream_buffer_size = H3_STREAM_BUFFER_SIZE_DEFAULT;
             }
             if (vc->h3_max_request_body_size == 0)
             {
-                vc->h3_max_request_body_size = h3_max_request_body_size_DEFAULT;
+                vc->h3_max_request_body_size = H3_MAX_REQUEST_BODY_SIZE_DEFAULT;
             }
             if (vc->h3_alt_svc == H3_FLAG_UNSET)
             {
@@ -314,11 +345,12 @@ void* h3_merge_dir_config(apr_pool_t* /*p*/, void* base, void* /*add*/)
 const command_rec cmd_1 = AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3");
 const command_rec cmd_2 = AP_INIT_TAKE1("H3CertificateKeyPath", set_h3_key_path, NULL, RSRC_CONF, "Path to the SSL certificate key file for HTTP/3");
 const command_rec cmd_3 = AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)");
-const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 128)");
-const command_rec cmd_5 = AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream read/write buffer size in bytes (default: 65536)");
-const command_rec cmd_6 = AP_INIT_TAKE1("H3MaxRequestBodySize", set_h3_max_request_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 request body size in bytes, fully buffered in memory (default: 10485760)");
-const command_rec cmd_7 = AP_INIT_FLAG("H3AltSvc", set_h3_alt_svc, NULL, RSRC_CONF, "Whether to advertise HTTP/3 support via an Alt-Svc response header, required for browser discovery (default: on)");
-const command_rec cmd_8 = AP_INIT_TAKE1("H3AltSvcMaxAge", set_h3_alt_svc_max_age, NULL, RSRC_CONF, "Seconds a client may cache the Alt-Svc HTTP/3 advertisement for (default: 86400)");
+const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 1000)");
+const command_rec cmd_5 = AP_INIT_TAKE1("H3MaxConnections", set_h3_max_connections, NULL, RSRC_CONF, "Maximum concurrent QUIC/HTTP/3 connections per child process (default: 256)");
+const command_rec cmd_6 = AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream read/write buffer size in bytes (default: 65536)");
+const command_rec cmd_7 = AP_INIT_TAKE1("H3MaxRequestBodySize", set_h3_max_request_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 request body size in bytes, fully buffered in memory (default: 10485760)");
+const command_rec cmd_8 = AP_INIT_FLAG("H3AltSvc", set_h3_alt_svc, NULL, RSRC_CONF, "Whether to advertise HTTP/3 support via an Alt-Svc response header, required for browser discovery (default: on)");
+const command_rec cmd_9 = AP_INIT_TAKE1("H3AltSvcMaxAge", set_h3_alt_svc_max_age, NULL, RSRC_CONF, "Seconds a client may cache the Alt-Svc HTTP/3 advertisement for (default: 86400)");
 
 const command_rec cmd_end = AP_INIT_TAKE1(NULL, NULL, NULL, RSRC_CONF, NULL);
-const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_6, cmd_7, cmd_8, cmd_end};
+const command_rec h3_cmds[] = {cmd_1, cmd_2, cmd_3, cmd_4, cmd_5, cmd_6, cmd_7, cmd_8, cmd_9, cmd_end};

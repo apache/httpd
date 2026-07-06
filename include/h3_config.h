@@ -42,6 +42,7 @@ struct h3_server_conf
     const char* h3_key_path;
     apr_port_t h3_port;
     apr_uint32_t h3_max_concurrent_streams;
+    apr_uint32_t h3_max_connections;
     apr_size_t h3_stream_buffer_size;
     apr_size_t h3_max_request_body_size;
     h3_tri_flag h3_alt_svc;

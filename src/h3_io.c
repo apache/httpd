@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 
-#include "h3_version.h"
 #include <httpd.h>
 
 #include <http_config.h>
@@ -33,6 +32,9 @@
 #include <sys/select.h>
 #include <unistd.h>
 
+#include <stdio.h>
+#include <string.h>
+
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_io.h"
@@ -41,9 +43,18 @@
 #include "h3_socket.h"
 #include "h3_ssl.h"
 #include "h3_stream.h"
+#include "h3_threads.h"
+#include "h3_version.h"
 #include "mod_http3.h"
 
 h3_io_t* child_h3_io = NULL;
+
+int h3_io_at_connection_limit(h3_io_t* io)
+{
+    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
+    apr_uint32_t active = apr_atomic_read32(&io->live_workers) + (apr_uint32_t)io->pending_handshakes->nelts;
+    return active >= conf->h3_max_connections;
+}
 
 static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char* key)
 {
@@ -71,8 +82,8 @@ static void teardown(h3_io_t* io)
     if (io->event_thread)
     {
         io->thread_running = 0;
-        apr_sleep(1000 * 1000);
-        apr_thread_detach(io->event_thread);
+        apr_status_t status;
+        apr_thread_join(&status, io->event_thread);
         io->event_thread = NULL;
     }
     if (io->workers)
@@ -132,6 +143,7 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->server = s;
     io->udp_fd = udp_fd;
     io->workers = apr_array_make(pchild, 8, sizeof(apr_thread_t*));
+    io->pending_handshakes = apr_array_make(pchild, 4, sizeof(h3_pending_handshake));
     if (apr_thread_mutex_create(&io->workers_lock, APR_THREAD_MUTEX_DEFAULT, pchild) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_mutex_create failed");
@@ -172,8 +184,9 @@ void h3_io_listen_stop(h3_io_t* io)
     }
 }
 
-static void wait_for_event(int fd, SSL* ssl, int want_write)
+void wait_for_event(int fd, SSL* ssl, int want_write)
 {
+    (void)want_write;
     struct timeval max_tv = {1, 0}, tv = {0}, *tvp = &max_tv;
     int inf = 0;
     if (SSL_get_event_timeout(ssl, &tv, &inf) && !inf && (tv.tv_sec > 0 || tv.tv_usec > 0) && tv.tv_sec <= 1)
@@ -183,10 +196,17 @@ static void wait_for_event(int fd, SSL* ssl, int want_write)
     fd_set rfds, wfds;
     FD_ZERO(&rfds);
     FD_ZERO(&wfds);
-    FD_SET(fd, &rfds);
-    if (want_write && SSL_net_write_desired(ssl))
+    if (SSL_net_read_desired(ssl))
+    {
+        FD_SET(fd, &rfds);
+    }
+    if (SSL_net_write_desired(ssl))
     {
         FD_SET(fd, &wfds);
+    }
+    if (!FD_ISSET(fd, &rfds) && !FD_ISSET(fd, &wfds))
+    {
+        FD_SET(fd, &rfds);
     }
     if (select(fd + 1, &rfds, &wfds, NULL, tvp) < 0 && errno == EINTR)
     {
@@ -194,27 +214,159 @@ static void wait_for_event(int fd, SSL* ssl, int want_write)
     }
 }
 
-static int tick_engine(SSL* conn)
+int tick_engine(SSL* conn)
 {
     CHECK(conn);
     return SSL_handle_events(conn) == 1;
 }
 
-static void service_connection(h3_io_t* io, h3_session* session)
+void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
+{
+    h3_pending_handshake* pending = (h3_pending_handshake*)io->pending_handshakes->elts;
+    if (free_conn)
+    {
+        SSL_free(pending[index].conn);
+    }
+    if (index < io->pending_handshakes->nelts - 1)
+    {
+        pending[index] = pending[io->pending_handshakes->nelts - 1];
+    }
+    io->pending_handshakes->nelts--;
+}
+
+static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
+{
+    if (h3_io_at_connection_limit(io))
+    {
+        h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "rejecting QUIC connection: at H3MaxConnections limit (%u)", conf->h3_max_connections);
+        SSL_free(conn);
+        return APR_EGENERAL;
+    }
+
+    apr_allocator_t* allocator = NULL;
+    apr_pool_t* session_pool = NULL;
+    if (apr_allocator_create(&allocator) != APR_SUCCESS || apr_pool_create_ex(&session_pool, io->pool, NULL, allocator) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to create session pool for new connection");
+        if (allocator)
+        {
+            apr_allocator_destroy(allocator);
+        }
+        return APR_EGENERAL;
+    }
+    apr_allocator_owner_set(allocator, session_pool);
+    apr_pool_tag(session_pool, "h3_session");
+
+    h3_session* session = NULL;
+    if (h3_session_create(&session, io->server, io->ssl_listener, conn, session_pool) != APR_SUCCESS)
+    {
+        apr_pool_destroy(session_pool);
+        return APR_EGENERAL;
+    }
+    if (h3_session_create_control_streams(session) != APR_SUCCESS)
+    {
+        h3_session_destroy(session);
+        return APR_EGENERAL;
+    }
+    if (SSL_get_shutdown(conn))
+    {
+        h3_session_destroy(session);
+        return APR_EGENERAL;
+    }
+    if (h3_io_spawn_worker(io, session) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to spawn worker for new connection");
+        h3_session_destroy(session);
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
+
+void progress_pending_handshakes(h3_io_t* io)
+{
+    CHECK(io);
+    apr_time_t now = apr_time_now();
+    apr_time_t timeout = apr_time_from_sec(H3_HANDSHAKE_TIMEOUT_SEC);
+
+    for (int i = 0; i < io->pending_handshakes->nelts;)
+    {
+        h3_pending_handshake* pending = &((h3_pending_handshake*)io->pending_handshakes->elts)[i];
+        SSL* conn = pending->conn;
+
+        if (now - pending->accepted_at >= timeout)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake timed out after %d second(s)", H3_HANDSHAKE_TIMEOUT_SEC);
+            remove_pending_handshake(io, i, 1);
+            continue;
+        }
+
+        int finished = 0;
+        do
+        {
+            int rv = 0;
+            if (SSL_is_init_finished(conn))
+            {
+                rv = 1;
+            }
+            if (SSL_get_shutdown(conn) || !tick_engine(io->ssl_listener))
+            {
+                rv = -1;
+            }
+            if (SSL_get_shutdown(conn))
+            {
+                rv = -1;
+            }
+            rv = SSL_is_init_finished(conn) ? 1 : 0;
+
+            if (rv == 1)
+            {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
+                if (spawn_serviced_session(io, conn) != APR_SUCCESS)
+                {
+                    SSL_free(conn);
+                }
+                remove_pending_handshake(io, i, 0);
+                finished = 1;
+                break;
+            }
+            if (rv == -1)
+            {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete");
+                remove_pending_handshake(io, i, 1);
+                finished = 1;
+                break;
+            }
+        } while (SSL_net_read_desired(io->ssl_listener) || SSL_net_write_desired(io->ssl_listener));
+
+        if (!finished)
+        {
+            i++;
+        }
+    }
+}
+
+int prepare_accepted_connection(h3_io_t* io, SSL* conn)
+{
+    if (!SSL_set_blocking_mode(conn, 0))
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "SSL_set_blocking_mode failed for accepted connection - dropping it");
+        return 0;
+    }
+    SSL_set_default_stream_mode(conn, SSL_DEFAULT_STREAM_MODE_NONE);
+    SSL_set_incoming_stream_policy(conn, SSL_INCOMING_STREAM_POLICY_ACCEPT, 0);
+    h3_pending_handshake* pending = (h3_pending_handshake*)apr_array_push(io->pending_handshakes);
+    pending->conn = conn;
+    pending->accepted_at = apr_time_now();
+    return 1;
+}
+
+void service_connection(h3_io_t* io, h3_session* session)
 {
     CHECK(io);
     CHECK(session);
     server_rec* s = session->s;
     SSL* conn = session->ssl_conn;
-
-    while (!SSL_is_init_finished(conn) && io->thread_running)
-    {
-        wait_for_event(io->udp_fd, conn, 0);
-        if (!tick_engine(conn) || SSL_get_shutdown(conn))
-        {
-            break;
-        }
-    }
 
     if (!SSL_is_init_finished(conn))
     {
@@ -224,53 +376,67 @@ static void service_connection(h3_io_t* io, h3_session* session)
         return;
     }
 
-    if (h3_session_create_control_streams(session) != APR_SUCCESS)
+    if (!session->control_streams_created)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_session_create_control_streams failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "internal error: control streams not initialized before worker start");
+        h3_session_destroy(session);
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
+        return;
+    }
+
+    conn_rec* c = h3_synth_conn(session);
+    if (!c)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_synth_conn failed");
     }
     else
     {
-        conn_rec* c = h3_synth_conn(session);
-        if (!c)
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "servicing new QUIC connection");
+        apr_pool_t* scratch = NULL;
+        if (apr_pool_create(&scratch, session->pool) != APR_SUCCESS)
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_synth_conn failed");
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "failed to create scratch pool for connection loop");
+            h3_session_destroy(session);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
+            return;
         }
-        else
+        apr_time_t goaway_deadline = 0;
+        while (!session->aborted)
         {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "servicing new QUIC connection");
-            apr_pool_t* loop_pool = session->pool;
-            apr_time_t goaway_deadline = 0;
-            while (!session->aborted)
+            if (!io->thread_running && goaway_deadline == 0)
             {
-                if (!io->thread_running && goaway_deadline == 0)
+                /* Tell the client to stop opening new streams but finish in-flight ones */
+                apr_thread_mutex_lock(session->lock);
+                nghttp3_conn_submit_shutdown_notice(session->ngh3);
+                flush_nghttp3(session);
+                apr_thread_mutex_unlock(session->lock);
+                goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
+            }
+            if (goaway_deadline != 0)
+            {
+                apr_thread_mutex_lock(session->lock);
+                int drained = nghttp3_conn_is_drained2(session->ngh3);
+                apr_thread_mutex_unlock(session->lock);
+                if (drained || apr_time_now() >= goaway_deadline)
                 {
-                    /* Send GOAWAY to stop new streams. */
-                    apr_thread_mutex_lock(session->lock);
-                    nghttp3_conn_submit_shutdown_notice(session->ngh3);
-                    flush_nghttp3(session);
-                    apr_thread_mutex_unlock(session->lock);
-                    goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
+                    break;
                 }
-                if (goaway_deadline != 0)
-                {
-                    apr_thread_mutex_lock(session->lock);
-                    int drained = nghttp3_conn_is_drained2(session->ngh3);
-                    apr_thread_mutex_unlock(session->lock);
-                    if (drained || apr_time_now() >= goaway_deadline)
-                    {
-                        break;
-                    }
-                }
+            }
 
-                wait_for_event(io->udp_fd, conn, 0);
+            int keep_pumping;
+            do
+            {
+                keep_pumping = 0;
                 if (!tick_engine(conn))
                 {
+                    session->aborted = 1;
                     break;
                 }
                 if (SSL_get_shutdown(conn))
                 {
                     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
+                    session->aborted = 1;
                     break;
                 }
 
@@ -293,7 +459,8 @@ static void service_connection(h3_io_t* io, h3_session* session)
                 }
 
                 apr_thread_mutex_lock(session->lock);
-                apr_array_header_t* completed = drain_ready_streams(session, loop_pool);
+                apr_pool_clear(scratch);
+                apr_array_header_t* completed = drain_ready_streams(session, scratch);
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
 
@@ -312,15 +479,25 @@ static void service_connection(h3_io_t* io, h3_session* session)
                 apr_thread_mutex_lock(session->lock);
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
-            }
-            if (goaway_deadline != 0 && !session->ngh3_dead)
+
+                keep_pumping = SSL_net_read_desired(conn) || SSL_net_write_desired(conn);
+            } while (keep_pumping);
+
+            if (session->aborted)
             {
-                apr_thread_mutex_lock(session->lock);
-                nghttp3_conn_shutdown(session->ngh3);
-                apr_thread_mutex_unlock(session->lock);
+                break;
             }
-            apr_pool_destroy(c->pool);
+
+            wait_for_event(io->udp_fd, conn, 1);
         }
+        apr_pool_destroy(scratch);
+        if (goaway_deadline != 0 && !session->ngh3_dead)
+        {
+            apr_thread_mutex_lock(session->lock);
+            nghttp3_conn_shutdown(session->ngh3);
+            apr_thread_mutex_unlock(session->lock);
+        }
+        apr_pool_destroy(c->pool);
     }
     if (session->ngh3_dead)
     {
@@ -344,29 +521,6 @@ static void service_connection(h3_io_t* io, h3_session* session)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
 }
 
-struct worker_args
-{
-    h3_io_t* io;
-    h3_session* session;
-};
-
-static void* APR_THREAD_FUNC worker_thread(apr_thread_t* /*thread*/, void* data)
-{
-    struct worker_args* args = data;
-    if (!args)
-    {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, NULL, "worker_thread: NULL args");
-        return NULL;
-    }
-    service_connection(args->io, args->session);
-    apr_atomic_dec32(&args->io->live_workers);
-    if (args->io->note_conn_removed)
-    {
-        args->io->note_conn_removed();
-    }
-    return NULL;
-}
-
 apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
 {
     CHECK(io);
@@ -375,11 +529,7 @@ apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
     args->io = io;
     args->session = session;
     apr_atomic_inc32(&io->live_workers);
-    /*
-     * Tell the MPM about this connection before the worker thread can
-     * possibly finish and remove it, so the added/removed calls are
-     * strictly paired even if thread creation below fails right after.
-     */
+
     if (io->note_conn_added)
     {
         io->note_conn_added();
@@ -408,67 +558,4 @@ apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
     *(apr_thread_t**)apr_array_push(io->workers) = t;
     apr_thread_mutex_unlock(io->workers_lock);
     return APR_SUCCESS;
-}
-
-void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* /*thread*/, void* data)
-{
-    h3_io_t* io = data;
-    if (!io)
-    {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, NULL, "quic_event_thread: NULL io");
-        return NULL;
-    }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread started");
-    while (io->thread_running)
-    {
-        wait_for_event(io->udp_fd, io->ssl_listener, 1);
-        SSL_handle_events(io->ssl_listener);
-        SSL* conn = SSL_accept_connection(io->ssl_listener, SSL_ACCEPT_CONNECTION_NO_BLOCK);
-        if (!conn)
-        {
-            continue;
-        }
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "accepted new QUIC connection");
-        /* Make connection non-blocking. */
-        if (!SSL_set_blocking_mode(conn, 0))
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "SSL_set_blocking_mode failed for accepted connection - dropping it");
-            SSL_free(conn);
-            continue;
-        }
-        SSL_set_default_stream_mode(conn, SSL_DEFAULT_STREAM_MODE_NONE);
-        SSL_set_incoming_stream_policy(conn, SSL_INCOMING_STREAM_POLICY_ACCEPT, 0);
-
-        apr_allocator_t* allocator = NULL;
-        apr_pool_t* session_pool = NULL;
-        if (apr_allocator_create(&allocator) != APR_SUCCESS || apr_pool_create_ex(&session_pool, io->pool, NULL, allocator) != APR_SUCCESS)
-        {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to create session pool for new connection");
-            if (allocator)
-            {
-                apr_allocator_destroy(allocator);
-            }
-            SSL_free(conn);
-            continue;
-        }
-        apr_allocator_owner_set(allocator, session_pool);
-        apr_pool_tag(session_pool, "h3_session");
-
-        h3_session* session = NULL;
-        if (h3_session_create(&session, io->server, io->ssl_listener, conn, session_pool) == APR_SUCCESS)
-        {
-            if (h3_io_spawn_worker(io, session) != APR_SUCCESS)
-            {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to spawn worker for new connection");
-                h3_session_destroy(session);
-            }
-        }
-        else
-        {
-            SSL_free(conn);
-            apr_pool_destroy(session_pool);
-        }
-    }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread exiting");
-    return NULL;
 }

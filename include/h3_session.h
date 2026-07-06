@@ -54,6 +54,9 @@ struct h3_session
 
     apr_array_header_t* pending_free;
 
+    unsigned char* stream_read_buf;
+    apr_size_t stream_read_buf_size;
+
     int control_streams_created;
 
     struct

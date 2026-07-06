@@ -50,7 +50,15 @@ typedef struct h3_io_t
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_removed) * note_conn_removed;
+
+    apr_array_header_t* pending_handshakes;
 } h3_io_t;
+
+typedef struct h3_pending_handshake
+{
+    SSL* conn;
+    apr_time_t accepted_at;
+} h3_pending_handshake;
 
 extern h3_io_t* child_h3_io;
 
@@ -82,7 +90,57 @@ void h3_io_listen_stop(h3_io_t* io);
  */
 apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session);
 
-/** apr_thread_t entry point: drives OpenSSL's QUIC event loop for this child. */
-void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data);
+/**
+ * Check if the active connection limit (H3MaxConnections) is reached.
+ * @param io The h3_io_t instance to check.
+ * @return Non-zero if at the limit, zero otherwise.
+ */
+int h3_io_at_connection_limit(h3_io_t* io);
+
+/**
+ * Service the newly established session connection. Drives HTTP/3 request processing.
+ * @param io      The owning h3_io_t listener instance.
+ * @param session The h3_session to service.
+ */
+void service_connection(h3_io_t* io, h3_session* session);
+
+/**
+ * Wait for network read/write events using select().
+ * @param fd         The socket file descriptor.
+ * @param ssl        The SSL connection instance.
+ * @param want_write Unused parameter.
+ */
+void wait_for_event(int fd, SSL* ssl, int want_write);
+
+/**
+ * Handle engine events and progress the SSL listener.
+ * @param conn The SSL connection instance.
+ * @return 1 on success, 0 otherwise.
+ */
+int tick_engine(SSL* conn);
+
+/**
+ * Remove a connection from the pending handshake array.
+ * @param io        The owning h3_io_t listener instance.
+ * @param index     The index of the connection in the array.
+ * @param free_conn If non-zero, the connection's SSL object is freed.
+ */
+void remove_pending_handshake(h3_io_t* io, int index, int free_conn);
+
+/**
+ * Prepare a newly accepted connection before starting the handshake.
+ * Sets stream modes, Incoming Stream policies, and pushes it to the pending array.
+ * @param io   The owning h3_io_t listener instance.
+ * @param conn The newly accepted SSL connection instance.
+ * @return 1 on success, 0 otherwise.
+ */
+int prepare_accepted_connection(h3_io_t* io, SSL* conn);
+
+/**
+ * Progress handshakes for all pending connections, timing out stalled connections
+ * and spawning worker threads for completed handshakes.
+ * @param io The owning h3_io_t listener instance.
+ */
+void progress_pending_handshakes(h3_io_t* io);
 
 #endif /* H3_IO_H */

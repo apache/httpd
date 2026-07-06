@@ -41,6 +41,7 @@ apr_status_t h3_socket_open(apr_port_t port, apr_pool_t* pool, int* out_fd)
         ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "h3_socket_open: apr_socket_create failed");
         return rv;
     }
+    apr_socket_opt_set(sock, APR_IPV6_V6ONLY, 0);
     apr_sockaddr_t* addr = NULL;
     rv = apr_sockaddr_info_get(&addr, NULL, APR_INET6, port, 0, pool);
     if (rv != APR_SUCCESS)
