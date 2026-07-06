@@ -404,10 +404,6 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t sts;
 
-    if (!client_shm) {
-        return;
-    }
-
     /* Get access to rmm in child */
     sts = apr_rmm_attach(&client_rmm,
                          NULL,
@@ -663,8 +659,7 @@ static client_entry *get_client(unsigned long key, const request_rec *r)
     int bucket;
     client_entry *entry, *prev = NULL;
 
-
-    if (!key || !client_shm)  return NULL;
+    if (!key)  return NULL;
 
     bucket = key % client_list->tbl_len;
     entry  = client_list->table[bucket];
@@ -760,8 +755,7 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     int bucket;
     client_entry *entry;
 
-
-    if (!key || !client_shm) {
+    if (!key) {
         return NULL;
     }
 
@@ -1246,14 +1240,7 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
     const char *snc = resp->nonce_count;
     char *endptr;
 
-    if (conf->check_nc && !client_shm) {
-        /* Shouldn't happen, but just in case... */
-        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, APLOGNO(01771)
-                      "cannot check nonce count without shared memory");
-        return OK;
-    }
-
-    if (!conf->check_nc || !client_shm) {
+    if (!conf->check_nc) {
         return OK;
     }
 
