@@ -35,7 +35,7 @@ typedef struct h3_conn_ctx_t
     apr_size_t dataheaplen;
     apr_pool_t* c3reqpool;
     server_rec* s;
-    /* Back-reference to the h3_stream. */
+    /// Back-reference to the h3_stream.
     struct h3_stream* stream;
 } h3_conn_ctx_t;
 

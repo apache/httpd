@@ -345,7 +345,7 @@ void* h3_merge_dir_config(apr_pool_t* /*p*/, void* base, void* /*add*/)
 const command_rec cmd_1 = AP_INIT_TAKE1("H3CertificatePath", set_h3_cert_path, NULL, RSRC_CONF, "Path to the SSL certificate file for HTTP/3");
 const command_rec cmd_2 = AP_INIT_TAKE1("H3CertificateKeyPath", set_h3_key_path, NULL, RSRC_CONF, "Path to the SSL certificate key file for HTTP/3");
 const command_rec cmd_3 = AP_INIT_TAKE1("H3Port", set_h3_port, NULL, RSRC_CONF, "UDP port to listen on for QUIC/HTTP-3 (default: same as main server)");
-const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 1000)");
+const command_rec cmd_4 = AP_INIT_TAKE1("H3MaxConcurrentStreams", set_h3_max_concurrent_streams, NULL, RSRC_CONF, "Maximum number of concurrent HTTP/3 streams per connection (default: 100)");
 const command_rec cmd_5 = AP_INIT_TAKE1("H3MaxConnections", set_h3_max_connections, NULL, RSRC_CONF, "Maximum concurrent QUIC/HTTP/3 connections per child process (default: 256)");
 const command_rec cmd_6 = AP_INIT_TAKE1("H3StreamBufferSize", set_h3_stream_buffer_size, NULL, RSRC_CONF, "Per-stream read/write buffer size in bytes (default: 65536)");
 const command_rec cmd_7 = AP_INIT_TAKE1("H3MaxRequestBodySize", set_h3_max_request_body_size, NULL, RSRC_CONF, "Maximum HTTP/3 request body size in bytes, fully buffered in memory (default: 10485760)");

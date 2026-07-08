@@ -26,7 +26,7 @@
  * non-H3 requests, returns DECLINED so the standard fixups chain runs.
  * @param r The request being fixed up.
  * @return OK for an H3 request, DECLINED for a non-H3 request.
-*/
+ */
 int h3_hook_fixups(request_rec* r);
 
 /**
