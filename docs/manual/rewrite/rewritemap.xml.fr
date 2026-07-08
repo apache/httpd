@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932819:1934327 (outdated) -->
+<!-- English Revision: 1934327 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,23 +33,16 @@
     fournit des exemples pour chacun des différents types de
     <directive module="mod_rewrite">RewriteMap</directive>.</p>
 
-    <note type="warning">Notez que la plupart de ces exemples ne
-    fonctionneront pas en l'état dans le contexte de votre configuration
-    particulière ; vous devez donc vous attacher à les
-    comprendre, plutôt que de simplement les insérer dans votre
-    configuration par copier/coller.</note>
-
-  </summary>
+      </summary>
   <seealso><a href="../mod/mod_rewrite.html">Documentation du module
   mod_rewrite</a></seealso>
   <seealso><a href="intro.html">Introduction à mod_rewrite</a></seealso>
-  <seealso><a href="remapping.html">Redirection et remise en
-  correspondance</a></seealso>
-  <seealso><a href="access.html">Contrôle d'accès</a></seealso>
+  <seealso><a href="remapping.html">Redirection et remise en correspondance</a></seealso>
+  <seealso><a href="flags.html">Drapeaux des règles de réécriture</a></seealso>
   <seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
-  <seealso><a href="proxy.html">Mise en cache</a></seealso>
-  <seealso><a href="advanced.html">Techniques avancées</a></seealso>
+  <seealso><a href="htaccess.html">Réécritures par répertoire</a></seealso>
   <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
+  <seealso><a href="tech.html">Détails techniques</a></seealso>
 
   <section id="introduction">
     <title>Introduction</title>
@@ -154,7 +147,7 @@ exemples pour chacun d'entre eux.</p>
     module="mod_rewrite">RewriteRule</directive> :
     </p>
 
-   <p> <strong>Redirection d'un URI vers une version en minuscules
+   <p> <strong>Redirection d'un chemin d’URL vers une version en minuscules
    d'elle-même</strong></p>
     <highlight language="config">
 
@@ -413,7 +406,7 @@ directive <directive module="mod_rewrite">RewriteMap</directive>.</p>
     directive <directive module="core">Mutex</directive>.</p>
 
     <p>Voici un exemple simple qui remplace tous les tirets par des
-    caractères de soulignement dans l'URI de la requête.</p>
+    caractères de soulignement dans le chemin d’URL de la requête.</p>
 
     <p><strong>Configuration de la réécriture</strong></p>
     <highlight language="config">
@@ -431,16 +424,51 @@ for line in sys.stdin:
     print(line.strip().replace('-', '_'), flush=True)
     </highlight>
 
+    <p>Un exemple plus complet montre un motif typique pour qu’un programme de
+    correspondance prg: lise une ligne, recherche le résultat et l’affiche. La
+    sortie de diagnostic est écrite sur <code>STDERR</code> et termine sa course
+    dans le journal des erreurs de httpd.</p>
+
+    <p><strong>Configuration de la réécriture</strong></p>
+    <highlight language="config">
+RewriteMap vhost2docroot "prg:/www/bin/vhost_lookup.py"
+RewriteRule "^/(.*)$" "${vhost2docroot:%{HTTP_HOST}}/$1"
+    </highlight>
+
+    <p><strong>vhost_lookup.py</strong></p>
+    <highlight language="python">
+#!/usr/bin/env python3
+"""Associer un nom d’hôte au répertoire racine de ses documents."""
+import sys
+
+VHOSTS = {
+    "example.com": "/srv/www/example",
+    "blog.example.com": "/srv/www/blog",
+}
+
+for line in sys.stdin:
+    host = line.strip().lower()
+    docroot = VHOSTS.get(host)
+    if docroot:
+        print(docroot, flush=True)
+    else:
+        # "NULL" indique à mod_rewrite que la recherche a échoué
+        print("NULL", flush=True)
+        print(f"vhost_lookup: no match for {host!r}", file=sys.stderr)
+    </highlight>
+
 <note><title>Mises en garde !</title>
 <ul>
-<li>Votre programme doit être le plus
-simple possible. Si le programme se bloque, httpd va attendre
-indéfiniment une réponse de sa part, et par conséquent ne répondra plus
-aux requêtes.</li>
-<li>Assurez-vous de bien désactiver la mise en tampon dans votre
-programme. Dans l'exemple en Python ci-avant, cette opération s'effectue en
-passant <code>flush=True</code> à <code>print()</code>. Si les entrées/sorties sont mises en tampon, httpd va
-attendre une sortie, et va par conséquent se bloquer.</li>
+<li>Votre programme doit être le plus simple possible. Si le programme se
+bloque, httpd va attendre indéfiniment une réponse de sa part, et par conséquent
+ne répondra plus aux requêtes.</li>
+<li>Assurez-vous de bien désactiver la mise en tampon dans votre programme. Dans
+l'exemple en Python ci-avant, cette opération s'effectue en passant
+<code>flush=True</code> à <code>print()</code>. Si les entrées/sorties sont
+mises en tampon, httpd va attendre une sortie, et va par conséquent se bloquer.
+Il s’agit de la cause la plus courante pour laquelle le mappage prg: semble ne
+rien faire &mdash; le programme a la réponse mais httpd ne la verra jamais, car
+elle est prisonnière d’un tampon.</li>
 <li>Rappelez-vous qu'il n'existe qu'une copie du programme lancé au
 démarrage du serveur, et que toutes les requêtes vont devoir passer par
 ce goulot d'étranglement. Ceci peut provoquer des ralentissements
@@ -494,6 +522,78 @@ RewriteMap ma-requete "fastdbd:SELECT destination FROM rewrite WHERE source = %s
     règles imposées par votre base de données (comme la sensibilité à la casse).</p></note>
 
   </section>
+
+  <section id="sharding">
+
+  <title>Distribution de la charge (sharding) basée sur l'URL entre plusieurs serveurs dorsaux</title>
+
+  <dl>
+    <dt>Description :</dt>
+
+    <dd>
+      <p>Le « sharding » est une technique courante de distribution de la charge
+      de travail ou de l’espace de stockage. Lorsqu’on utilise cette méthode, un
+      serveur frontal va utiliser l’URL pour distribuer les utilisateurs ou
+      objets à des serveurs dorsaux de manière cohérente.</p>
+    </dd>
+
+    <dt>Solution :</dt>
+
+    <dd>
+      <p>Un mappage entre les utilisateurs et les serveurs cible est entretenu
+      dans des fichiers de mappage. Ces derniers sont sous la forme :</p>
+
+<example>
+utilisateur1  serveur_physique_de_utilisateur1<br />
+utilisateur2  serveur_physique_de_utilisateur2<br />
+# ... et ainsi de suite
+</example>
+
+  <p>Nous inscrivons ceci dans un fichier
+  <code>mappage.utilisateur-vers-serveur</code>. Le but est d’associer</p>
+
+<example>
+/u/utilisateur1/chemin
+</example>
+
+  <p>à</p>
+
+<example>
+http://serveur_physique_de_utilisateur1/u/utilisateur/chemin
+</example>
+
+      <p>de sorte que tous les chemins d’URL n’ont pas besoin d’être valables
+      sur chaque serveur dorsal physique. Le jeu de règles suivant fait cela
+      pour nous avec l’aide des fichiers de mappage, en supposant que server0
+      est un serveur par défaut qui sera utilisé si un utilisateur n’a pas
+      d’entrée dans le mappage :</p>
+
+<highlight language="config">
+RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"
+</highlight>
+    </dd>
+
+    <dt>Discussion :</dt>
+
+    <dd>
+      <p>Pour distribuer les requêtes aux différents serveurs dorsaux,
+      <module>mod_proxy_balancer</module> constitue une approche plus robuste et
+      configurable, avec la prise en charge d’un bilan de santé, d’une
+      pondération des charges et de la persistance des sessions. L’approche
+      basée sur un mappage txt: présentée ici est plus simple mais ne prend pas
+      en charge ces fonctionnalités.</p>
+    </dd>
+  </dl>
+
+  <p>Voir la documentation de <directive
+  module="mod_rewrite">RewriteMap</directive> pour une description plus complète
+  de la syntaxe de cette directive.
+</p>
+
+  </section>
+
   <section id="summary">
     <title>Résumé</title>
 
