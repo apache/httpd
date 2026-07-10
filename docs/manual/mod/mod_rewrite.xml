@@ -467,7 +467,7 @@ RewriteRule "^/ex/(.*)" "${examplemap:$1}"
       >and</strong> if these conditions are met.</p>
 
       <p>If the <em>CondPattern</em> is prefixed with a <code>!</code> the
-      condition is determined to be true only if the the
+      condition is determined to be true only if the
       <em>CondPattern</em> does not match.</p>
 
       <!-- ============================================================ -->
