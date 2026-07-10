@@ -39,6 +39,14 @@
 
 static volatile apr_uint32_t h3_conn_id_seq = 0;
 
+/// modules/loggers/mod_logio.c:52
+typedef struct
+{
+    apr_off_t bytes_in;
+    apr_off_t bytes_out;
+    apr_off_t bytes_last_request;
+} h3_logio_config_t;
+
 conn_rec* h3_synth_conn(h3_session* session)
 {
     CHECK(session);
@@ -72,8 +80,11 @@ conn_rec* h3_synth_conn(h3_session* session)
     apr_table_setn(c->notes, "IS_mod_http3", "1");
     apr_table_setn(c->notes, "ssl-bypass", "1");
 
-    /* Run pre_connection hooks so modules init per-connection state. */
-    ap_pre_connection(c, NULL);
+    module* logio = ap_find_linked_module("mod_logio.c");
+    if (logio)
+    {
+        ap_set_module_config(c->conn_config, logio, apr_pcalloc(cpool, sizeof(h3_logio_config_t)));
+    }
 
     session->c = c;
     return c;

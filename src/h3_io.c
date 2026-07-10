@@ -160,7 +160,9 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->note_conn_removed = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
     if (!io->note_conn_added || !io->note_conn_removed)
     {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "active MPM lacks connection-count notifications; this child may exit while connections are still active");
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "active MPM lacks connection-count notifications; upgrade your httpd to a version that supports mod_http3");
+        teardown(io);
+        return APR_EGENERAL;
     }
 
     io->thread_running = 1;
