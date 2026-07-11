@@ -1163,7 +1163,7 @@ RewriteRule  "^/$"                 "/homepage.std.html"     [L]
       on where the <directive>RewriteRule</directive> directive is defined. </p>
 
       <p>If the pattern is prefixed with a <code>!</code> the
-      substitution will be performed only if the the
+      substitution will be performed only if the
       <em>pattern</em> does not match.</p>
 
 <note><title><a id="what_is_matched" name="what_is_matched">What is matched?</a></title>
