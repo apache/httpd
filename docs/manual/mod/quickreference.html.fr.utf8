@@ -593,7 +593,7 @@ n'est pas trouv&eacute;</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>type m&eacute;dium</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Force le type de m&eacute;dium sp&eacute;cifi&eacute; dans le champ d'en-t&ecirc;te
 HTTP Content-Type pour les fichiers correspondants</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>nom-fichier</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit le nom de fichier du journal l&eacute;gal</td></tr>
-<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog<var>file</var>|<var>pipe</var>
+<tr><td><a href="mod_log_config.html#globallog" id="G" name="G">GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">D&eacute;finit le nom et le format du fichier journal</td></tr>
@@ -1219,7 +1219,7 @@ pas.</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>cha&icirc;ne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
 la r&eacute;&eacute;criture soit effectu&eacute;e
 </td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Active ou d&eacute;sactive l'ex&eacute;cution du
@@ -1230,7 +1230,7 @@ recherche de mots-cl&eacute;s</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure certaines options sp&eacute;ciales
 pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Mod&egrave;le</em> <em>Substitution</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
 <tr><td><a href="core.html#rlimitmem">RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les

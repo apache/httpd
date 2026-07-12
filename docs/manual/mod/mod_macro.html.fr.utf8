@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_macro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_macro.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Ce module permet d'utiliser des macros dans les fichiers
 de configuration Apache.</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
@@ -134,10 +132,13 @@ l'&eacute;valuation des expressions. Si cela se produit, c'est le nom de
 param&egrave;tre le plus long possible qui sera utilis&eacute;.</p>
 
 <p>Si vous d&eacute;sirez ins&eacute;rer une valeur dans une cha&icirc;ne, il est conseill&eacute;
-de l'entourer d'accolades afin d'&eacute;viter toute confusion :</p>
+de l'entourer de parenth&egrave;ses afin d'&eacute;viter toute confusion. La syntaxe
+<code>$(...)</code> doit &ecirc;tre utilis&eacute;e &agrave; la place de la syntaxe
+<code>${...}</code>, car cette derni&egrave;re entre en conflit avec la syntaxe de la
+variable <code class="directive"><a href="../mod/core.html#define">Define</a></code>&nbsp;:</p>
 
-<pre class="prettyprint lang-config">&lt;Macro DocRoot ${docroot}&gt;
-    DocumentRoot "/var/www/${docroot}/htdocs"
+<pre class="prettyprint lang-config">&lt;Macro DocRoot $(docroot)&gt;
+    DocumentRoot "/var/www/$(docroot)/htdocs"
 &lt;/Macro&gt;</pre>
 
 

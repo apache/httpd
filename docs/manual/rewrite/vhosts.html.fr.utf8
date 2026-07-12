@@ -26,8 +26,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/vhosts.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/vhosts.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
 <p>Ce document est un compl&eacute;ment &agrave; la <a href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
@@ -35,7 +33,7 @@
 virtuels dynamiquement configur&eacute;s en utilisant
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
-<div class="warning">L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est pas la
+<div class="warning">L'utilisation de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> n'est en g&eacute;n&eacute;ral pas la
 meilleure m&eacute;thode pour configurer des serveurs virtuels. Vous devez dans un
 premier temps tenter de r&eacute;soudre votre probl&egrave;me via ces  <a href="../vhosts/mass.html">d'autres m&eacute;thodes</a> avant d'avoir recours &agrave;
 <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Voir aussi le document <a href="avoid.html#vhosts">Comment &eacute;viter
@@ -49,7 +47,7 @@ virtuels via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite<
 <li><img alt="" src="../images/down.gif"> <a href="#xtra-conf">Utilisation d'un fichier de configuration
 du serveur virtuel s&eacute;par&eacute;</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avanc&eacute;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+correspondance</a></li><li><a href="htaccess.html">R&eacute;&eacute;critures dans un contexte de r&eacute;pertoire</a></li><li><a href="flags.html">Drapeaux de la r&egrave;gle RewriteRule</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="tech.html">D&eacute;tails techniques</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="per-hostname">Serveurs virtuels pour des noms d'h&ocirc;tes arbitraires <a title="Lien permanent" href="#per-hostname" class="permalink">&para;</a></h2>
@@ -65,9 +63,10 @@ correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</
     cr&eacute;er de nouvelle section VirtualHost.</p>
 
     <p>Dans cet exemple, nous supposons que nous utilisons le nom d'h&ocirc;te
-    <code>www.<strong>SITE</strong>.example.com</code> pour chaque
+    <code><strong>SITE</strong>.example.com</code> pour chaque
     utilisateur, et que nous servons leur contenu depuis
-    <code>/home/<strong>SITE</strong>/www</code>.</p>
+    <code>/home/<strong>SITE</strong>/www</code>. Nous souhaitons cependant que
+    <code>www.example.com</code> n'apparaisse pas dans cette mise en correspondance.</p>
     </dd>
 
     <dt>Solution :</dt>
@@ -79,8 +78,8 @@ correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</
 RewriteMap    lowercase int:tolower
 
 RewriteCond   %{HTTP_HOST} !^www\.
-RewriteCond   "${lowercase:%{<strong>HTTP_HOST</strong>}}"   "^www\.<strong>([^.]+)</strong>\.example\.com$"
-RewriteRule   "^(.*)" "/home/<strong>%1</strong>/www$1"</pre>
+RewriteCond   ${lowercase:%{<strong>HTTP_HOST</strong>}}   ^<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*)    /home/<strong>%1</strong>/www$1</pre>
 </dd>
 
 <dt>Discussion</dt>
@@ -101,6 +100,9 @@ doit &ecirc;tre cr&eacute;&eacute;e.</p>
 r&eacute;f&eacute;rences arri&egrave;res <code>%1</code>, <code>%2</code>, etc..., alors que
 les contenus des parenth&egrave;ses utilis&eacute;es dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> le sont dans les
 r&eacute;f&eacute;rences arri&egrave;res <code>$1</code>, <code>$2</code>, etc...</p>
+
+<p>La premi&egrave;re directive <code>RewriteCond</code> v&eacute;rifie si le nom d'h&ocirc;te
+commence par <code>www.</code> et si c'est le cas, la r&eacute;&eacute;criture est annul&eacute;e.</p>
 
 <p>
 Comme c'est le cas pour de nombreuses techniques discut&eacute;es dans ce
@@ -152,10 +154,10 @@ RewriteEngine On
 
 # un nom de serveur extrait d'un en-t&ecirc;te Host: peut &ecirc;tre dans n'importe
 # quelle casse
-RewriteMap  lowercase  int:tolower
+RewriteMap  lowercase  "int:tolower"
 
 ## on s'occupe tout d'abord des documents normaux :<br>
-# permet &agrave; Alias "/icons/" de fonctionner - r&eacute;p&eacute;ter pour les autres
+# permet &agrave; Alias /icons/ de fonctionner - r&eacute;p&eacute;ter pour les autres
 RewriteCond  "%{REQUEST_URI}"  "!^/icons/"
 # permet aux CGIs de fonctionner
 RewriteCond  "%{REQUEST_URI}"  "!^/cgi-bin/"
@@ -192,7 +194,7 @@ www.client-N.example.com  /www/clients/N<br>
 
 <pre class="prettyprint lang-config">RewriteEngine on
 
-RewriteMap   lowercase  int:tolower
+RewriteMap   lowercase  "int:tolower"
 
 # d&eacute;finit le fichier de correspondances
 RewriteMap   vhost      "txt:/www/conf/vhost.map"

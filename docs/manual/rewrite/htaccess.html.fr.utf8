@@ -6,7 +6,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>mod_rewrite et les fichiers .htaccess - Serveur HTTP Apache Version 2.4</title>
+<title>R&eacute;&eacute;critures au niveau r&eacute;pertoire - Serveur HTTP Apache Version 2.4</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet">
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size">
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css"><link rel="stylesheet" type="text/css" href="../style/css/prettify.css">
@@ -20,25 +20,416 @@
 <img alt="" src="../images/feather.png"></div>
 <div class="up"><a href="./"><img title="<-" alt="<-" src="../images/left.gif"></a></div>
 <div id="path">
-<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>mod_rewrite et les fichiers .htaccess</h1>
+<a href="https://www.apache.org/">Apache</a> &gt; <a href="https://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="https://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.4</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>R&eacute;&eacute;critures au niveau r&eacute;pertoire</h1>
 <button aria-label="Toggle language list" class="lang-toggle"><svg xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" height="16" width="16"><circle r="10" cy="12" cx="12"/><line y2="12" x2="22" y1="12" x1="2"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/htaccess.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
-<p>Ce document est un compl&eacute;ment de la <a href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
-<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il d&eacute;crit les changements apport&eacute;s aux r&egrave;gles
-lorsqu'on utilise <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> dans les fichiers .htaccess, et comment
-travailler avec ces changements.</p>
+<p>Utiliser <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> dans les fichiers
+<code>.htaccess</code> est une des configurations dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a> les plus courantes &mdash;&nbsp;et les
+plus sujettes &agrave; confusion. Ce document expose les principales diff&eacute;rences entre
+l&rsquo;utilisation de r&egrave;gles de r&eacute;&eacute;criture dans un contexte global au serveur et leur
+utilisation dans les fichiers <code>.htaccess</code>, et fournit un guide
+pratique pour &eacute;viter les pi&egrave;ges les plus courants.</p>
+
+<p>Pour des d&eacute;tails techniques de bas niveau &agrave; propos de la mani&egrave;re dont
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> traite les r&egrave;gles dans un contexte de r&eacute;pertoire,
+voir le document <a href="tech.html#InternalAPI">D&eacute;tails techniques</a>.</p>
 
 </div>
-<div id="quickview"><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Serveurs mandataires</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avanc&eacute;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#prerequisites">Pr&eacute;requis&nbsp;: AllowOverride</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#path-stripping">Quel URL la r&egrave;gle voit-elle&nbsp;?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritebase">Quand avez-vous besoin de RewriteBase&nbsp;?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#loops">Le drapeau [L] et les boucles infinies</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#rewritemap-restriction">RewriteMap ne peut pas &ecirc;tre d&eacute;clar&eacute;e
+dans un fichier .htaccess</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#context-restrictions">Quels contextes peuvent accueillir des
+r&egrave;gles de r&eacute;&eacute;criture&nbsp;?</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#inheritance">H&eacute;ritage des r&egrave;gles avec RewriteOptions</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#debugging">D&eacute;bogage des r&egrave;gles de r&eacute;&eacute;criture dans les
+fichiers .htaccess</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#caching">Mise en cache des &laquo;&nbsp;301 redirects&nbsp;&raquo; au niveau du
+navigateur</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
+correspondance</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="flags.html">Drapeaux de RewriteRule</a></li><li><a href="tech.html">D&eacute;tails techniques</a></li><li><a href="../mod/mod_rewrite.html#what_is_matched">Qu&rsquo;est-ce qui est
+compar&eacute;&nbsp;?</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="prerequisites">Pr&eacute;requis&nbsp;: AllowOverride <a title="Lien permanent" href="#prerequisites" class="permalink">&para;</a></h2>
+
+<p>Pour que des directives de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> dans un fichier
+<code>.htaccess</code> puissent &ecirc;tre trait&eacute;es, la configuration du serveur doit
+tout d&rsquo;abord les autoriser de la mani&egrave;re suivante&nbsp;:</p>
+
+<pre class="prettyprint lang-config">&lt;Directory "/var/www/htdocs"&gt;
+    AllowOverride FileInfo
+&lt;/Directory&gt;</pre>
+
+
+<p>Si au minimum <code>AllowOverride FileInfo</code> (ou <code>AllowOverride
+All</code>) n&rsquo;est pas pr&eacute;sente, toute directive de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+dans les fichiers <code>.htaccess</code> sera silencieusement ignor&eacute;e. Si vos
+r&egrave;gles semblent ne pas fonctionner, il s&rsquo;agit de la premi&egrave;re chose &agrave; v&eacute;rifier.</p>
+
+<p>En outre, soit <code>Options FollowSymLinks</code>, soit <code>Options
+SymLinksIfOwnerMatch</code> doit &ecirc;tre activ&eacute;e pour le r&eacute;pertoire en question.
+Comme une r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> peut
+associer un URL &agrave; un chemin arbitraire du syst&egrave;me de fichiers
+&mdash;&nbsp;fonctionnellement &eacute;quivalent &agrave; un lien symbolique
+&mdash;&nbsp;<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> refusera d&rsquo;op&eacute;rer dans un contexte de r&eacute;pertoire
+si aucune de ces options n&rsquo;est d&eacute;finie. Vous verrez alors l&rsquo;erreur suivante&nbsp;:</p>
+
+<div class="example"><p><code>
+AH00670: Options FollowSymLinks and SymLinksIfOwnerMatch are both off,
+so the RewriteRule directive is also forbidden due to its similar
+ability to circumvent directory restrictions
+</code></p></div>
+
+<p>Cette restriction s&rsquo;applique aux fichiers <code>.htaccess</code> et aux
+sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="path-stripping">Quel URL la r&egrave;gle voit-elle&nbsp;? <a title="Lien permanent" href="#path-stripping" class="permalink">&para;</a></h2>
+
+<p>Dans un contexte de serveur virtuel ou global au serveur, le motif de la
+r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est compar&eacute; &agrave;
+l&rsquo;ensemble du chemin d&rsquo;URL, en commen&ccedil;ant par une barre oblique. Dans un
+contexte de fichier <code>.htaccess</code>, le pr&eacute;fixe du r&eacute;pertoire est
+<strong>supprim&eacute;</strong>.</p>
+
+<p>Par exemple, si votre fichier <code>.htaccess</code> est dans
+<code>/var/www/htdocs/app/</code> et si une requ&ecirc;te arrive pour
+<code>/app/products/widget</code>, la r&egrave;gle RewriteRule ne voit que
+<code>products/widget</code> &mdash; pas de barre oblique en t&ecirc;te, pas de pr&eacute;fixe
+<code>/app/</code>.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_path_stripping.png" alt="Organigramme montrant la suppression du chemin, la substitution    et le pipeline de RewriteBase dans un contexte de r&eacute;pertoire, avec    trois r&eacute;sultats&nbsp;: un chemin relatif (pr&eacute;fix&eacute; par RewriteBase), un    chemin absolu (utilis&eacute; tel quel) et un URI absolu (redirection    externe)"><br>
+      <dfn>Figure&nbsp;:</dfn> Suppression du chemin dans un contexte de r&eacute;pertoire
+      et pipeline de RewriteBase
+</p>
+
+<p>Cela signifie que vous devez &eacute;crire vos motifs diff&eacute;remment en fonction de
+l&rsquo;emplacement des r&egrave;gles&nbsp;:</p>
+
+    <table class="bordered">
+        <tr>
+            <th>Emplacement de la r&egrave;gle</th>
+            <th>R&egrave;gle</th>
+        </tr>
+        <tr>
+            <td>Section VirtualHost</td>
+            <td><code>RewriteRule "^/app/products/(.+)$" "/app/shop.php?item=$1"</code></td>
+        </tr>
+        <tr>
+            <td>.htaccess dans /var/www/htdocs/app/</td>
+            <td><code>RewriteRule "^products/(.+)$" "shop.php?item=$1"</code></td>
+        </tr>
+    </table>
+
+<p>Notez que la version pour <code>.htaccess</code> n&rsquo;a de barre oblique de t&ecirc;te
+ni dans le motif, ni dans la substitution. Il s&rsquo;agit de la source de confusion
+la plus courante avec la r&eacute;&eacute;criture dans un contexte de r&eacute;pertoire.</p>
+
+<p>Lorsqu&rsquo;une substitution est effectu&eacute;e dans un contexte de r&eacute;pertoire, httpd
+g&eacute;n&egrave;re une nouvelle sous-requ&ecirc;te interne avec l&rsquo;URL r&eacute;&eacute;crit en red&eacute;marrant le
+traitement de la requ&ecirc;te depuis le d&eacute;but. Si la substitution est un chemin
+relatif, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>
+d&eacute;termine le pr&eacute;fixe &agrave; ajouter au chemin d&rsquo;URL. Ce m&eacute;canisme de sous-requ&ecirc;te
+peut aussi &ecirc;tre &agrave; l&rsquo;origine d&rsquo;un bouclage infini des r&egrave;gles &mdash; voir <a href="#loops">ci-apr&egrave;s</a>.</p>
+
+
+<div class="warning"><h3>Ne faites pas commencer vos motifs de .htaccess avec
+une barre oblique</h3>
+<p>&Eacute;tant donn&eacute; que le pr&eacute;fixe du r&eacute;pertoire (y compris la barre oblique de fin)
+est supprim&eacute; avant la mise en correspondance, les motifs dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a> ne correspondront
+<em>jamais</em> avec une adresse commen&ccedil;ant par une barre oblique. Un motif
+commen&ccedil;ant par <code>^/</code> ne correspondra jamais dans ce contexte. Une
+r&egrave;gle telle que <code>RewriteRule "^/foo" ...</code> plac&eacute;e dans un fichier
+<code>.htaccess</code> &eacute;chouera silencieusement &agrave; s&rsquo;appliquer &agrave; quelque requ&ecirc;te
+que ce soit.</p>
 </div>
+
+<p>Si vous devez faire une recherche de correspondance avec le chemin d&rsquo;URL
+original complet (y compris le pr&eacute;fixe de r&eacute;pertoire), utilisez
+<code>%{REQUEST_URI}</code> dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>&nbsp;:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_URI}" "^/admin/"
+RewriteRule "^.*$" "-" [F]</pre>
+
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewritebase">Quand avez-vous besoin de RewriteBase&nbsp;? <a title="Lien permanent" href="#rewritebase" class="permalink">&para;</a></h2>
+
+<p>Quand <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> effectue une substitution dans un fichier
+<code>.htaccess</code>, il doit retransformer le r&eacute;sultat relatif en un chemin
+d&rsquo;URL complet. La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> lui indique quel pr&eacute;fixe il doit
+ajouter.</p>
+
+<p>Par d&eacute;faut, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> est
+d&eacute;finie avec le chemin physique du fichier <code>.htaccess</code>. Dans la
+plupart des cas, cela correspond aux attentes, et vous n&rsquo;avez pas besoin de la
+d&eacute;finir explicitement. Il y a cependant des situations o&ugrave; vous devrez le faire&nbsp;:</p>
+
+<ul>
+<li><strong>Alias ou lien symbolique&nbsp;:</strong> Si le r&eacute;pertoire est atteint via
+une directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> ou un lien
+symbolique, le chemin d&rsquo;URL et le chemin du syst&egrave;me de fichiers diff&egrave;rent, et la
+directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> doit &ecirc;tre
+d&eacute;finie avec le chemin d&rsquo;URL.</li>
+
+<li><strong>Applications de sous-r&eacute;pertoire&nbsp;:</strong> Avec les cadriciels PHP,
+il est courant de placer un fichier <code>.htaccess</code> dans un
+sous-r&eacute;pertoire (par exemple <code>/var/www/htdocs/myapp/</code>) et de router
+toutes les requ&ecirc;tes vers un contr&ocirc;leur frontal&nbsp;:</li>
+</ul>
+
+<pre class="prettyprint lang-config"># Dans /var/www/htdocs/myapp/.htaccess
+RewriteEngine On
+RewriteBase "/myapp/"
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "index.php" [L]</pre>
+
+
+<div class="note">Dans ce cas particulier &mdash;&nbsp;routage de toutes les requ&ecirc;tes qui ne
+correspondent pas vers un contr&ocirc;leur frontal &mdash;&nbsp;la directive <a href="avoid.html#fallback-resource">FallbackResource</a> est une alternative &agrave;
+mod_rewrite plus simple et plus efficace.</div>
+
+<p>Sans la ligne <code>RewriteBase "/myapp/"</code>, l&rsquo;URL r&eacute;&eacute;crit risque de se
+r&eacute;soudre incorrectement, car <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ajouterait comme
+pr&eacute;fixe le chemin du syst&egrave;me de fichiers au lieu du chemin d&rsquo;URL.</p>
+
+<p>Si vous utilisez des URLs absolus (commen&ccedil;ant par <code>/</code> ou
+<code>http://</code>) dans vos substitutions, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> n&rsquo;aura aucun effet, car elle ne
+s&rsquo;applique qu&rsquo;aux substitutions relatives.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="loops">Le drapeau [L] et les boucles infinies <a title="Lien permanent" href="#loops" class="permalink">&para;</a></h2>
+
+<p>Dans le contexte global du serveur, le drapeau <code>[L]</code> signifie
+&laquo;&nbsp;arr&ecirc;ter le traitement du jeu de r&egrave;gles&nbsp;&raquo;. Dans le contexte des fichiers
+<code>.htaccess</code>, il a une signification subtilement diff&eacute;rente&nbsp;:
+&laquo;&nbsp;arr&ecirc;ter le traitement du jeu de r&egrave;gles <em>pour cette passe</em>&nbsp;&raquo;. Une fois
+la substitution effectu&eacute;e, httpd traite &agrave; nouveau la requ&ecirc;te depuis le d&eacute;but du
+jeu de r&egrave;gles &mdash;&nbsp;tout en appliquant &agrave; nouveau les r&egrave;gles du fichier
+<code>.htaccess</code>. Cela peut provoquer des boucles infinies.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_l_flag_looping.png" alt="Organigramme montrant la mani&egrave;re dont le drapeau [L] provoque une    boucle infinie dans un contexte de r&eacute;pertoire en d&eacute;clenchant une    sous-requ&ecirc;te qui r&eacute;ex&eacute;cute le jeu de r&egrave;gles"><br>
+      <dfn>Figure:</dfn> Risque de boucle infinie avec le drapeau [L] dans un
+      contexte de r&eacute;pertoire
+</p>
+
+<p>Consid&eacute;rez cette r&egrave;gle&nbsp;:</p>
+
+<pre class="prettyprint lang-config"># Dans .htaccess - risque de boucle infinie&nbsp;!
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>&Agrave; la premi&egrave;re passe, une requ&ecirc;te pour <code>/hello</code> est r&eacute;&eacute;crite en
+<code>/index.php?q=hello</code>. Puis la requ&ecirc;te est trait&eacute;e &agrave; nouveau, et
+l&agrave;, <code>index.php</code> correspond encore &agrave; <code>^(.*)$</code>, et la
+requ&ecirc;te est r&eacute;&eacute;crite en <code>/index.php?q=index.php</code>. Ce processus
+continue jusqu&rsquo;&agrave; ce que httpd atteigne sa limite de redirections internes et
+renvoie une erreur 500. Le message suivant sera alors enregistr&eacute; dans le journal
+des erreurs&nbsp;:</p>
+
+<div class="example"><p><code>
+AH00124: Request exceeded the limit of 10 internal redirects due to
+probable configuration error. Use 'LimitInternalRecursion' to increase
+the limit if necessary. Use 'LogLevel debug' to get a backtrace.
+</code></p></div>
+
+<p>Il existe plusieurs m&eacute;thodes pour interrompre la boucle infinie&nbsp;:</p>
+
+<p><strong>Option 1&nbsp;: utiliser le drapeau [END] (recommand&eacute;)</strong></p>
+
+<pre class="prettyprint lang-config">RewriteRule "^(.*)$" "/index.php?q=$1" [END]</pre>
+
+
+<p>Le drapeau <code>[END]</code> (disponible depuis la version 2.3.9 de httpd)
+arr&ecirc;te <em>tout</em> processus de r&eacute;&eacute;criture ult&eacute;rieur, y compris les passes
+suivantes. Il s&rsquo;agit de la m&eacute;thode la plus propre pour pr&eacute;venir les boucles
+infinies.</p>
+
+<p><strong>Option 2&nbsp;: ajouter une condition pour emp&ecirc;cher le traitement des URLs d&eacute;j&agrave; r&eacute;&eacute;crits</strong></p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>&Eacute;tant donn&eacute; que <code>index.php</code> existe en tant que fichier, la
+condition <code>!-f</code> fait que la r&egrave;gle est saut&eacute;e &agrave; la seconde passe.</p>
+
+<p><strong>Option 3&nbsp;: v&eacute;rifier la variable THE_REQUEST</strong></p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{THE_REQUEST}" "!index\.php"
+RewriteRule "^(.*)$" "/index.php?q=$1" [L]</pre>
+
+
+<p>La variable <code>%{THE_REQUEST}</code> contient la requ&ecirc;te originelle telle
+qu&rsquo;elle a &eacute;t&eacute; envoy&eacute;e par le client et non modifi&eacute;e par
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Sa v&eacute;rification emp&ecirc;che la r&egrave;gle de s&rsquo;appliquer aux
+URLs r&eacute;&eacute;crits.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="rewritemap-restriction">RewriteMap ne peut pas &ecirc;tre d&eacute;clar&eacute;e
+dans un fichier .htaccess <a title="Lien permanent" href="#rewritemap-restriction" class="permalink">&para;</a></h2>
+
+<p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ne peut
+&ecirc;tre d&eacute;clar&eacute;e que dans un contexte de serveur virtuel ou global au serveur, pas
+dans les fichiers <code>.htaccess</code> ou les sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>. Cependant, lorsqu&rsquo;un mappage
+est d&eacute;clar&eacute; dans la configuration globale du serveur, vous <em>pouvez</em>
+l&rsquo;utiliser dans un fichier <code>.htaccess</code>&nbsp;:</p>
+
+<pre class="prettyprint lang-config"># Dans httpd.conf ou dans un VirtualHost
+RewriteMap product2id "txt:/etc/apache2/productmap.txt"</pre>
+
+
+<pre class="prettyprint lang-config"># Dans .htaccess - utilisation du mappage d&eacute;clar&eacute; ci-avant
+RewriteEngine On
+RewriteRule "^product/(.+)$" "/prods.php?id=${product2id:$1|NOTFOUND}" [PT]</pre>
+
+
+<p>Cette restriction existe, car les fichiers <code>.htaccess</code> sont
+analys&eacute;s pour chaque requ&ecirc;te, et la r&eacute;p&eacute;tition de l&rsquo;initialisation du mappage
+(en particulier pour les types de mappage <code>dbm:</code>, <code>dbd:</code>
+et <code>prg:</code>) serait d&rsquo;un co&ucirc;t prohibitif en ressources.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="context-restrictions">Quels contextes peuvent accueillir des
+r&egrave;gles de r&eacute;&eacute;criture&nbsp;? <a title="Lien permanent" href="#context-restrictions" class="permalink">&para;</a></h2>
+
+<p>Les r&egrave;gles de r&eacute;&eacute;criture&nbsp;sont prises en charge dans les <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contextes de r&eacute;pertoire</a> (fichiers <a href="../howto/htaccess.html">.htaccess</a> et sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> et <code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code>).</p>
+
+<p>Bien que les r&egrave;gles de r&eacute;&eacute;criture soient syntaxiquement autoris&eacute;es dans les
+sections <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> et
+<code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> (et dans leurs
+&eacute;quivalents avec expressions rationnelles), cela n&rsquo;est pas pris en charge et ne
+devrait jamais &ecirc;tre n&eacute;cessaire. Les substitutions relatives, en particulier,
+sont susceptibles d&rsquo;&eacute;chouer dans ces contextes.</p>
+
+<div class="warning"><h3>Ces conteneurs modifient silencieusement le
+comportement des r&eacute;&eacute;critures</h3>
+<p>Placer une r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans
+une section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+<code class="directive"><a href="../mod/core.html#if">&lt;If&gt;</a></code> ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> &mdash; m&ecirc;me dans un
+<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> dans la
+configuration globale du serveur &mdash; fait silencieusement adopter un
+comportement de <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>.
+Cela signifie que la barre oblique de t&ecirc;te est supprim&eacute;e de l&rsquo;URL avant la
+comparaison avec le motif, que les substitutions d&eacute;clenchent une redirection
+interne (avec risque de boucle infinie), et que le drapeau <a href="../rewrite/flags.html#flag_l">[L]</a> n&rsquo;arr&ecirc;te plus strictement le
+traitement &mdash; utilisez plut&ocirc;t le drapeau <a href="../rewrite/flags.html#flag_end">[END]</a>.</p>
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="inheritance">H&eacute;ritage des r&egrave;gles avec RewriteOptions <a title="Lien permanent" href="#inheritance" class="permalink">&para;</a></h2>
+
+<p>Par d&eacute;faut, les r&egrave;gles de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>  ne sont <strong>pas
+h&eacute;rit&eacute;es</strong> par les sous-r&eacute;pertoires. Si vous d&eacute;finissez des r&egrave;gles dans
+<code>/var/www/htdocs/.htaccess</code>, elles ne s&rsquo;appliqueront qu&rsquo;au
+r&eacute;pertoire correspondant. Un fichier <code>.htaccess</code> dans un
+sous-r&eacute;pertoire contient initial un jeu de r&egrave;gles initial vide, &agrave; moins que vous
+n&rsquo;activiez explicitement l&rsquo;h&eacute;ritage.</p>
+
+<p>La directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>
+permet d&rsquo;effectuer cette activation&nbsp;:</p>
+
+<dl>
+<dt><code>RewriteOptions Inherit</code></dt>
+<dd>Les r&egrave;gles du contexte parent sont ajout&eacute;es &agrave; la fin du jeu de r&egrave;gles de
+l&rsquo;enfant. Le traitement des r&egrave;gles de l&rsquo;enfant est effectu&eacute; en premier, suivi du
+traitement des r&egrave;gles du parent. Utilisez cette fonctionnalit&eacute; lorsqu&rsquo;un
+sous-r&eacute;pertoire doit ajouter ses propre r&egrave;gles, tout en gardant actives les
+r&egrave;gles du parent.</dd>
+
+<dt><code>RewriteOptions InheritBefore</code></dt>
+<dd>Identique &agrave; <code>Inherit</code>, except&eacute; que les r&egrave;gles du parent sont
+trait&eacute;es avant celles de l&rsquo;enfant. Cela s&rsquo;av&egrave;re utile lorsque le parent d&eacute;finit
+un motif de contr&ocirc;leur frontal et que l&rsquo;enfant doit ajouter des exceptions.
+Disponible depuis la version 2.4.8 de httpd.</dd>
+
+
+<dt><code>RewriteOptions InheritDown</code></dt>
+<dd>Sp&eacute;cifiez cette option dans le parent pour que tous les contextes enfant
+h&eacute;ritent des r&egrave;gles du parent sans avoir &agrave; sp&eacute;cifier <code>Inherit</code>.
+Disponible depuis la version 2.4.8 de httpd.</dd>
+
+<dt><code>RewriteOptions InheritDownBefore</code></dt>
+<dd>Identique &agrave; <code>InheritDown</code>, except&eacute; que les r&egrave;gles du parent sont
+trait&eacute;es avant celles des enfants. Disponible depuis la version 2.4.8 de httpd.</dd>
+
+<dt><code>RewriteOptions IgnoreInherit</code></dt>
+<dd>Sp&eacute;cifiez cette option dans le contexte d&rsquo;un enfant pour que ce dernier
+renonce &agrave; l&rsquo;h&eacute;ritage qui avait &eacute;t&eacute; forc&eacute; par l&rsquo;option <code>InheritDown</code>
+d&rsquo;un parent. Disponible depuis la version 2.4.8 de httpd.</dd>
+
+<dt><code>RewriteOptions MergeBase</code></dt>
+<dd>Quand l&rsquo;h&eacute;ritage est activ&eacute;, la directive <code>RewriteBase</code> de chaque
+contexte s&rsquo;applique aux r&egrave;gles d&eacute;finies dans ce contexte, au lieu que la
+directive <code>RewriteBase</code> de l&rsquo;enfant s&rsquo;applique &agrave; toutes les r&egrave;gles
+h&eacute;rit&eacute;es. Disponible depuis la version 2.4.26 de httpd.</dd>
+</dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="debugging">D&eacute;bogage des r&egrave;gles de r&eacute;&eacute;criture dans les
+fichiers .htaccess <a title="Lien permanent" href="#debugging" class="permalink">&para;</a></h2>
+
+<p>Lorsque les r&egrave;gles de r&eacute;&eacute;criture dans les fichiers <code>.htaccess</code> ne
+fonctionnent pas comme vous le souhaitez, le journal des r&eacute;&eacute;critures est votre
+meilleur ami. Activez-le avec le niveau appropri&eacute;&nbsp;:</p>
+
+<pre class="prettyprint lang-config">LogLevel alert rewrite:trace3</pre>
+
+
+<p>Avec cette directive, le journal des erreurs montre exactement comment chaque
+r&egrave;gle est trait&eacute;e &mdash;&nbsp;&agrave; quoi les motifs ont &eacute;t&eacute; compar&eacute;s, les conditions ont-elles
+&eacute;t&eacute; satisfaites ou non et quelles substitutions ont &eacute;t&eacute; effectu&eacute;es. Le
+comportement du contexte de r&eacute;pertoire et la suppression d&rsquo;une partie du
+chemin sera visible dans ces entr&eacute;es du journal.</p>
+
+<div class="warning">ne conservez pas &agrave; &laquo;&nbsp;trace&nbsp;&raquo; le niveau de journalisation sur un
+serveur en production. Il g&eacute;n&egrave;re en effet un grand volume de donn&eacute;es en sortie
+et affecte les performances.</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="caching">Mise en cache des &laquo;&nbsp;301 redirects&nbsp;&raquo; au niveau du
+navigateur <a title="Lien permanent" href="#caching" class="permalink">&para;</a></h2>
+
+<p>Quand vous renvoyez une redirection <code>301 Moved Permanently</code> (via
+<code>[R=301]</code> ou <code class="directive"><a href="../mod/mod_alias.html#redirect permanent">Redirect permanent</a></code>), le navigateur est autoris&eacute; &agrave; mettre en cache
+cette r&eacute;ponse ind&eacute;finiment. Cela signifie que m&ecirc;me lorsque vous aurez corrig&eacute;
+une r&egrave;gle de redirection incorrecte dans votre configuration, les clients qui
+font &agrave; nouveau la m&ecirc;me requ&ecirc;te pourront se voir redirig&eacute;s vers l&rsquo;ancienne
+destination (incorrecte) sans jamais contacter &agrave; nouveau votre serveur.</p>
+
+<p>Lors d&rsquo;un d&eacute;bogage de r&egrave;gles de redirection, utilisez <code>[R=302]</code>
+(redirection temporaire) &agrave; la place de <code>[R=301]</code>. Ne repassez &agrave; 301
+que lorsque vous avez confirm&eacute; que la r&egrave;gle est correcte. Si vous avez d&eacute;j&agrave;
+renvoy&eacute; un code 301, les clients affect&eacute;s devront vider le cache de leur
+navigateur (ou utiliser une fen&ecirc;tre priv&eacute;e/incognito) pour voir un comportement
+correct.</p>
+
+<div class="note">Les moteurs de recherche mettent aussi en cache les redirections 301. Un
+code 301 incorrect peut prendre des jours ou des semaines avant d&rsquo;&ecirc;tre
+r&eacute;explor&eacute;, m&ecirc;me apr&egrave;s que la configuration a &eacute;t&eacute; corrig&eacute;e. C&rsquo;est une autre
+raison pour laquelle il vaut mieux faire ses tests avec un code 302.</div>
+
+</div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/rewrite/htaccess.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/htaccess.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
