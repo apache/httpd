@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 1932808:1934652 (outdated) -->
+<!-- English Revision: 1934652 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -685,7 +685,7 @@ journal</description>
     <example><title>Exemple</title>
       <highlight language="config">
 LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
-TransferLog logs/access_log
+TransferLog "logs/access_log"
       </highlight>
     </example>
 </usage>
@@ -694,7 +694,7 @@ TransferLog logs/access_log
 <directivesynopsis>
 <name>GlobalLog</name>
 <description>Définit le nom et le format du fichier journal</description>
-<syntax>GlobalLog<var>file</var>|<var>pipe</var>
+<syntax>GlobalLog <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>|
 expr=<var>expression</var>]</syntax>
