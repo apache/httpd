@@ -29,8 +29,6 @@
 <p><span>Langues Disponibles: </span><a href="../en/mod/mod_heartmonitor.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/mod/mod_heartmonitor.html" title="Fran&ccedil;ais">&nbsp;fr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Moniteur centralis&eacute; pour les serveurs d'origine mod_heartbeat</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Exp&eacute;rimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur&nbsp;de&nbsp;Module:</a></th><td>heartmonitor_module</td></tr>
@@ -111,10 +109,11 @@ serveur HTTP Apache</td></tr>
     contr&ocirc;ler la quantit&eacute; de m&eacute;moire partag&eacute;e allou&eacute;e pour le stockage
     des donn&eacute;es heartbeat lorsqu'on utilise
     <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>.</p>
-    <p>Pour utiliser un stockage de type fichier bidimensionnel (flat-file)
-    lorque le module <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code> n'est pas charg&eacute;, cette
-    directive doit &ecirc;tre d&eacute;finie &agrave; 0. La valeur doit &ecirc;tre soit &eacute;gale &agrave; 0, soit
-    sup&eacute;rieure ou &eacute;gale &agrave; 10.</p>
+
+    <p>D&eacute;finissez cette directive &agrave; <code>0</code> pour utiliser un stockage de
+    type fichier bidimensionnel (flat-file) au lieu de la m&eacute;moire partag&eacute;e
+    (c&rsquo;est-&agrave;-dire sans charger <code class="module"><a href="../mod/mod_slotmem_shm.html">mod_slotmem_shm</a></code>). Lorsqu&rsquo;on
+    utilise la m&eacute;moire partag&eacute;e, la valeur doit &ecirc;tre sup&eacute;rieure ou &eacute;gale &agrave;&nbsp;10.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>

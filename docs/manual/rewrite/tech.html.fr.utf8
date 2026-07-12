@@ -32,13 +32,13 @@
 <a href="../tr/rewrite/tech.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/tech.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Ce document passe en revue certains d&eacute;tails techniques &agrave; propos du
 module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de la mise en correspondance des URLs</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#InternalAPI">Phases de l'API</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#order">Module Processing Order</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#encoding">Encodage et d&eacute;codage des URLs</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#InternalRuleset">Traitement du jeu de r&egrave;gles</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
 correspondance</a></li><li><a href="flags.html">Drapeaux de r&eacute;&eacute;criture</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="htaccess.html">R&eacute;&eacute;critures en fonction du r&eacute;pertoire</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
@@ -80,48 +80,171 @@ correspondance</a></li><li><a href="flags.html">Drapeaux de r&eacute;&eacute;cri
     s'ex&eacute;cute au cours de la phase Fixup.</p>
 
     <p>Dans tous ces cas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> r&eacute;&eacute;crit le
-    <code>REQUEST_URI</code> soit vers une nouvelle URL, soit vers un
+    <code>REQUEST_URI</code> soit vers un nouvel URL, soit vers un
     nom de fichier.</p>
 
     <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>,
-    les r&egrave;gles sont appliqu&eacute;es durant la phase "Fixup" apr&egrave;s que l'URL a &eacute;t&eacute;
-    traduite en nom de fichier. Cela modifie ce &agrave; quoi correspond le motif et la
+    les r&egrave;gles sont appliqu&eacute;es durant la phase "Fixup" apr&egrave;s que l&rsquo;URL a &eacute;t&eacute;
+    traduit en nom de fichier. Cela modifie ce &agrave; quoi correspond le motif et la
     mani&egrave;re dont les substitutions sont g&eacute;r&eacute;es. Voir le document <a href="htaccess.html#path-stripping">R&eacute;&eacute;critures en fonction du
     r&eacute;pertoire</a> pour des d&eacute;tails pratiques &agrave; propos de la suppression du
-    chemin, de RewriteBase et de la mani&egrave;re d'&eacute;viter un bouclage.</p>
+    chemin, de RewriteBase et de la mani&egrave;re d&rsquo;&eacute;viter un bouclage.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="order">Module Processing Order <a title="Lien permanent" href="#order" class="permalink">&para;</a></h2>
+
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> agissent tous
+    les deux au cours de la phase de traduction de l&rsquo;URL en nom de fichier, mais
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> op&egrave;re en premier, quel que soit l&rsquo;ordre
+    d&rsquo;apparition des directives dans le fichier de configuration. Ce
+    comportement est d&eacute;termin&eacute; par la priorit&eacute; des points d&rsquo;accroche
+    qu&rsquo;enregistre chaque module, pas par l&rsquo;ordre du code source.</p>
+
+    <p>La cons&eacute;quence pratique&nbsp;: lorsque des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> et <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> (ou <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code>) sont pr&eacute;sentent simultan&eacute;ment
+    dans le m&ecirc;me contexte de serveur virtuel ou global au serveur, les r&egrave;gles de
+    r&eacute;&eacute;criture sont &eacute;valu&eacute;es en premier. Si une r&egrave;gle <code>RewriteRule</code>
+    correspond et r&eacute;&eacute;crit le chemin d&rsquo;URL (ou renvoie une redirection),
+    <code>Redirect</code> ne verra jamais la requ&ecirc;te.</p>
+
+<p class="figure">
+      <img src="../images/rewrite_module_order.png" alt="Comparaison c&ocirc;te-&agrave;-c&ocirc;te des ordres d&rsquo;op&eacute;ration des modules&nbsp;: dans    un contexte global au serveur, mod_rewrite op&egrave;re en premier lors de la    phase de traduction du chemin d&rsquo;URL en nom de fichier, mod_alias    op&egrave;rant en second&nbsp;; dans un contexte de r&eacute;pertoire, mod_alias op&egrave;re en    premier lors de la phase de traduction du chemin d&rsquo;URL en nom de    fichier, mod_rewrite op&eacute;rant plus tard lors de la phase de    correction"><br>
+      <dfn>Figure&nbsp;:</dfn> Inversion de l&rsquo;ordre d&rsquo;op&eacute;ration des modules entre les
+      contextes global au serveur et de r&eacute;pertoire
+</p>
+
+    <pre class="prettyprint lang-config"># Dans cette configuration, le Redirect n&rsquo;est jamais atteint pour /old,
+# car la r&egrave;gle RewriteRule s&rsquo;applique en premier &mdash;&nbsp;m&ecirc;me si
+# Redirect appara&icirc;t plus t&ocirc;t dans le fichier.
+Redirect "/old" "http://example.com/new"
+RewriteRule "^/old" "/other" [L]</pre>
+
+
+    <div class="note"><h3>Le contexte de r&eacute;pertoire inverse l&rsquo;ordre</h3>
+    <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>,
+    la situation est diff&eacute;rente. Les directives de <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>
+    comme <code>Redirect</code> s&rsquo;appliquent encore dans la phase de traduction
+    de l&rsquo;URL en nom de fichier, mais les directives de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> s&rsquo;appliquent plus tard, lors de la phase de
+    correction. Cela signifie que dans un contexte de r&eacute;pertoire,
+    <code>Redirect</code> est &eacute;valu&eacute;e <em>avant</em> l&rsquo;application des
+    r&egrave;gles <code>RewriteRule</code>.</p>
+    </div>
+
+    <p>Du fait de l&rsquo;incoh&eacute;rence entre les contextes, m&eacute;langer des directives de
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et de <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> dans la m&ecirc;me
+    port&eacute;e est une source courante de confusion. Un conseil simple&nbsp;: choisissez
+    un module pour une t&acirc;che donn&eacute;e. Si vous avez besoin de conditions de
+    r&eacute;&eacute;critures ou de comparaison de motif, utilisez exclusivement
+    <code>RewriteRule</code>. Si une simple redirection de pr&eacute;fixe suffit,
+    utilisez la directive <code>Redirect</code> et n&rsquo;ajoutez pas de r&egrave;gles de
+    r&eacute;&eacute;critures qui pourraient interagir avec elle.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="encoding">Encodage et d&eacute;codage des URLs <a title="Lien permanent" href="#encoding" class="permalink">&para;</a></h2>
+
+    <p>Apache httpd supprime l&rsquo;&eacute;chappement des caract&egrave;res encod&eacute;s pour l&rsquo;URL
+    dans le chemin d&rsquo;URL de la requ&ecirc;te avant que toute comparaison de motif de
+    directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> ne soit
+    effectu&eacute;e. Une requ&ecirc;te pour <code>/my%20page/cats%3Fdogs</code> est d&eacute;cod&eacute;e
+    en <code>/my page/cats?dogs</code>, et c&rsquo;est &agrave; cette cha&icirc;ne d&eacute;cod&eacute;e qu&rsquo;est
+    compar&eacute; le motif de la directive <code>RewriteRule</code>.</p>
+
+    <p>Cela signifie que vous ne pouvez pas &eacute;crire un motif correspondant &agrave; la
+    forme litt&eacute;rale de l&rsquo;URL encod&eacute;. Si vous devez distinguer
+    <code>/horses%2Fponies</code> de <code>/horses/ponies</code>, utilisez la
+    variable <code>%{THE_REQUEST}</code> dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> &mdash;&nbsp;cette variable conserve la
+    requ&ecirc;te originelle telle qu&rsquo;elle a &eacute;t&eacute; envoy&eacute;e par le client, avant tout
+    d&eacute;codage&nbsp;:</p>
+
+<pre class="prettyprint lang-config"># Ne correspond qu&rsquo;au caract&egrave;re encod&eacute; litt&eacute;ral %2F, 
+# pas au s&eacute;parateur de chemin r&eacute;el
+RewriteCond "%{THE_REQUEST}" "/horses%2F"
+RewriteRule "^/horses/ponies$" "/special-handler" [L]</pre>
+
+
+    <p>Apr&egrave;s la substitution, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> r&eacute;encode le chemin
+    d&rsquo;URL r&eacute;sultant en sortie. Plusieurs drapeaux permettent de contr&ocirc;ler ce
+    comportement&nbsp;:</p>
+
+    <ul>
+      <li><a href="flags.html#flag_b">[B]</a>&nbsp;: r&eacute;tablit l&rsquo;&eacute;chappement des
+      r&eacute;f&eacute;rences arri&egrave;res de fa&ccedil;on que les caract&egrave;res sp&eacute;ciaux captur&eacute;s dans le
+      chemin d&rsquo;URL d&eacute;cod&eacute; ne soient pas interpr&eacute;t&eacute;s comme des d&eacute;limiteurs dans
+      la substitution.</li>
+
+      <li><a href="flags.html#flag_bnp">[BNP]</a>&nbsp;: si [B] est actif, ce drapeau
+      encode les espaces en <code>%20</code> au lieu de <code>+</code> (convient
+      pour les &eacute;l&eacute;ments du chemin, pas pour la cha&icirc;ne de param&egrave;tres).</li>
+
+      <li><a href="flags.html#flag_ne">[NE]</a>&nbsp;: ce drapeau supprime
+      l&rsquo;&eacute;chappement par d&eacute;faut des caract&egrave;res sp&eacute;ciaux dans le r&eacute;sultat de la
+      substitution, permettant la transmission sans modification des litt&eacute;raux
+      <code>#</code>, <code>?</code> et d&rsquo;autres caract&egrave;res lors des
+      redirections externes.</li>
+    </ul>
+
+    <h3 id="allowencodedslashes">Directive AllowEncodedSlashes</h3>
+    
+
+    <p>Par d&eacute;faut, httpd renvoie un code 404 pour tout URL contenant une barre
+    oblique encod&eacute;e (<code>%2F</code>). La directive  <code class="directive"><a href="../mod/core.html#allowencodedslashes">AllowEncodedSlashes</a></code> permet de modifier ce
+    comportement&nbsp;:</p>
+
+    <ul>
+      <li><code>Off</code> (valeur par d&eacute;faut)&nbsp;: rejette <code>%2F</code> avec
+      un code 404.</li>
+      <li><code>On</code>&nbsp;: autorise <code>%2F</code> et le d&eacute;code en
+      <code>/</code> avant de le transmettre aux gestionnaires.</li>
+      <li><code>NoDecode</code>&nbsp;: autorise <code>%2F</code>, mais le conserve
+      sous sa forme encod&eacute;e de fa&ccedil;on que l&rsquo;application dorsale le distingue d&rsquo;un
+      s&eacute;parateur de chemin r&eacute;el.</li>
+    </ul>
+
+    <p>Lorsqu&rsquo;on utilise le drapeau <a href="flags.html#flag_b">[B]</a> avec des
+    URLs qui peuvent contenir des barres obliques encod&eacute;es, il est en g&eacute;n&eacute;ral
+    n&eacute;cessaire d&rsquo;utiliser <code>AllowEncodedSlashes NoDecode</code> pour &eacute;viter
+    que httpd ne rejette le r&eacute;sultat r&eacute;encod&eacute;.</p>
+
+    
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="InternalRuleset">Traitement du jeu de r&egrave;gles <a title="Lien permanent" href="#InternalRuleset" class="permalink">&para;</a></h2>
 
-      <p>Maintenant, quand <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se lance dans ces deux phases de
-      l'API, il lit le jeu de r&egrave;gles configur&eacute;es depuis la structure
-      contenant sa configuration (qui a &eacute;t&eacute; elle-m&ecirc;me cr&eacute;&eacute;e soit au
-      d&eacute;marrage d'Apache pour le contexte du serveur, soit lors du
-      parcours des r&eacute;pertoires par le noyau d'Apache pour le contexte de
-      r&eacute;pertoire). Puis le moteur de r&eacute;&eacute;criture est d&eacute;marr&eacute; avec le jeu
-      de r&egrave;gles contenu (une ou plusieurs r&egrave;gles associ&eacute;es &agrave; leurs
-      conditions). En lui-m&ecirc;me, le mode op&eacute;ratoire du moteur de
-      r&eacute;&eacute;criture d'URLs est exactement le m&ecirc;me dans les deux contextes
-      de configuration. Seul le traitement du r&eacute;sultat final diff&egrave;re.</p>
+      <p>Maintenant, quand <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se lance dans ces deux
+      phases de l'API, il lit le jeu de r&egrave;gles configur&eacute; depuis la structure
+      contenant sa configuration (qui a &eacute;t&eacute; elle-m&ecirc;me cr&eacute;&eacute;e soit au d&eacute;marrage
+      d'Apache httpd pour le contexte du serveur, soit lors du parcours des
+      r&eacute;pertoires par le noyau d'Apache httpd pour le contexte de r&eacute;pertoire).
+      Puis le moteur de r&eacute;&eacute;criture est d&eacute;marr&eacute; avec le jeu de r&egrave;gles contenu
+      (une ou plusieurs r&egrave;gles associ&eacute;es &agrave; leurs conditions). En lui-m&ecirc;me, le
+      mode op&eacute;ratoire du moteur de r&eacute;&eacute;criture d'URLs est exactement le m&ecirc;me dans
+      les deux contextes de configuration. Seul le traitement du r&eacute;sultat final
+      diff&egrave;re.</p>
 
-      <p>L'ordre dans lequel les r&egrave;gles sont d&eacute;finies est important car
-      le moteur de r&eacute;&eacute;criture les traite selon une chronologie
-      particuli&egrave;re (et pas tr&egrave;s &eacute;vidente). Le principe est le suivant :
-      le moteur de r&eacute;&eacute;criture traite les r&egrave;gles (les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) les unes
-      &agrave; la suite des autres, et lorsqu'une r&egrave;gle s'applique, il parcourt
-      les &eacute;ventuelles conditions (directives
-      <code>RewriteCond</code>directives) associ&eacute;es.
-      Pour des raisons historiques, les
-      conditions pr&eacute;c&egrave;dent les r&egrave;gles, si bien que le d&eacute;roulement du
-      contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 1 pour plus de
-      d&eacute;tails.</p>
 <p class="figure">
-      <img src="../images/rewrite_process_uri.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond"><br>
-      <dfn>Figure 1:</dfn>D&eacute;roulement du contr&ocirc;le &agrave; travers le jeu de
-      r&egrave;gles de r&eacute;&eacute;criture
+      <img src="../images/mod_rewrite_fig1.png" alt="Survol du processus de r&eacute;&eacute;criture par requ&ecirc;te lors des phases par    serveur et par r&eacute;pertoire"><br>
+      <dfn>Figure 1&nbsp;:</dfn>Le processus de r&eacute;&eacute;criture par requ&ecirc;te montrant les
+      deux phases du traitement des r&egrave;gles (par serveur et par r&eacute;pertoire)
 </p>
-      <p>L'URL est tout d'abord compar&eacute;e au
+
+      <p>L'ordre dans lequel les r&egrave;gles sont d&eacute;finies est important car le
+      moteur de r&eacute;&eacute;criture les traite selon une chronologie particuli&egrave;re (et pas
+      tr&egrave;s &eacute;vidente). Le principe est le suivant : le moteur de r&eacute;&eacute;criture
+      traite les r&egrave;gles (les directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) les unes &agrave; la suite des
+      autres, et lorsqu'une r&egrave;gle s'applique, il parcourt les &eacute;ventuelles
+      conditions (directives <code>RewriteCond</code>directives) associ&eacute;es.
+      Pour des raisons historiques, les conditions pr&eacute;c&egrave;dent les r&egrave;gles, si bien
+      que le d&eacute;roulement du contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 2 pour
+      plus de d&eacute;tails.</p>
+<p class="figure">
+      <img src="../images/rewrite_process_uri.png" alt="Organigramme montrant le flux de contr&ocirc;le par r&egrave;gle&nbsp;: pour chaque    r&egrave;gle, comparaison du motif avec l&rsquo;URL, &eacute;valuation des conditions    RewriteCond, application de la substitution si les deux op&eacute;rations    pr&eacute;c&eacute;dentes ont r&eacute;ussi, puis consultation des drapeaux pour d&eacute;terminer    si l&rsquo;on doit arr&ecirc;ter le traitement ou continuer avec la r&egrave;gle    suivante"><br>
+      <dfn>Figure 2&nbsp;:</dfn>Le flux de contr&ocirc;le en parcourant le jeu de r&egrave;gles de
+      r&eacute;&eacute;criture
+</p>
+      <p>L'URL est tout d'abord compar&eacute; au
       <em>Mod&egrave;le</em> de chaque r&egrave;gle. Lorsqu'une r&egrave;gle ne s'applique
       pas, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
       et passe &agrave; la r&egrave;gle suivante. Si l'URL correspond au
@@ -145,6 +268,15 @@ correspondance</a></li><li><a href="flags.html">Drapeaux de r&eacute;&eacute;cri
       suite jusqu'&agrave; la derni&egrave;re condition. Si toutes les conditions sont
       satisfaites, le traitement de la r&egrave;gle en cours se poursuit avec
       le remplacement de l'URL par la cha&icirc;ne de <em>Substitution</em>.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.png" alt="Flux des r&eacute;f&eacute;rences arri&egrave;res entre les directives RewriteRule et    RewriteCond"><br>
+      <dfn>Figure 3&nbsp;:</dfn>Le flux des r&eacute;f&eacute;rences arri&egrave;res dans une r&egrave;gle
+      Tout d&rsquo;abord, le motif de la r&egrave;gle RewriteRule est compar&eacute;&nbsp;; ses captures
+      ($1...$9) sont disponibles dans toutes les cha&icirc;nes de test des conditions
+      RewriteCond. Les derni&egrave;res captures du motif de la condition qui
+      correspondent (%1...%9) sont disponibles dans la substitution.
+</p>
 
 </div></div>
 <div class="bottomlang">

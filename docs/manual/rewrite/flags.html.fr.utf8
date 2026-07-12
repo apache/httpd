@@ -32,14 +32,13 @@
 <a href="../tr/rewrite/flags.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/flags.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 <p>Ce document d&eacute;crit les drapeaux disponibles dans la directive
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
 des explications d&eacute;taill&eacute;es et des exemples.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#flag_quickref">R&eacute;f&eacute;rence rapide des drapeaux</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#flag_b">B (&eacute;chappement dans les r&eacute;f&eacute;rences arri&egrave;res)</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#flag_bnp">BNP|backrefnoplus (ne pas &eacute;chapper
 l'espace en +)</a></li>
@@ -70,7 +69,7 @@ l'espace en +)</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#flag_unsafe_prefix_stat">UnsafePrefixStat</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#flag_unc">UNC</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection and remise en
-correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="advanced.html">Techniques avanc&eacute;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+correspondance</a></li><li><a href="htaccess.html">R&eacute;&eacute;critures par r&eacute;pertoire</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="rewritemap.html">Utilisation de RewriteMap</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="tech.html">D&eacute;tails techniques</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="introduction">Introduction <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
@@ -89,14 +88,146 @@ bien m&eacute;moriser ce que chaque drapeau est suppos&eacute; faire.
 Certains drapeaux acceptent un ou plusieurs arguments. Les drapeaux ne
 sont pas sensibles &agrave; la casse.</p>
 
-<p>Les drapeaux qui modifient les m&eacute;tadonn&eacute;es associ&eacute;es &agrave; la requ&ecirc;te
-(T=, H=, E=) n'ont aucun effet dans un contexte de r&eacute;pertoire ou de
-fichier htaccess, lorsqu'une substitution (autre que '-') est effectu&eacute;e
-au cours de la m&ecirc;me passe du processus de r&eacute;&eacute;criture.
-</p>
+<p>Les drapeaux qui modifient les m&eacute;tadonn&eacute;es associ&eacute;es &agrave; la requ&ecirc;te (T=, H=,
+E=) n'ont aucun effet dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de
+r&eacute;pertoire</a> ou de fichier htaccess, lorsqu'une substitution (autre que
+'-') est effectu&eacute;e au cours de la m&ecirc;me passe du processus de r&eacute;&eacute;criture.  </p>
 
 <p>Chaque drapeau disponible est pr&eacute;sent&eacute; ici, avec un exemple
 d'utilisation.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="flag_quickref">R&eacute;f&eacute;rence rapide des drapeaux <a title="Lien permanent" href="#flag_quickref" class="permalink">&para;</a></h2>
+
+<p>Les drapeaux peuvent &ecirc;tre combin&eacute;s&nbsp;: <code>[R=301,L]</code>, <code>[P,QSA]</code>,
+<code>[E=VAR:val,L]</code>. Cette table les groupe par fonction et les trie
+selon la fr&eacute;quence de leur utilisation.</p>
+
+<table class="bordered"><tr class="header">
+  <th>Drapeau</th>
+  <th>Fonction</th>
+  <th>Effet</th>
+  <th>Combinaisons courantes</th>
+</tr>
+<tr><td colspan="4"><em><strong>Contr&ocirc;le de flux</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_l">[L]</a></td>
+  <td>Derni&egrave;re r&egrave;gle</td>
+  <td>Arr&ecirc;te le traitement des r&egrave;gles (pour cette passe)</td>
+  <td>[R=301,L]  [F]  [G]</td>
+</tr>
+<tr>
+  <td><a href="#flag_end">[END]</a></td>
+  <td>Arr&ecirc;t complet</td>
+  <td>Arr&ecirc;te tout le processus de r&eacute;&eacute;criture (pas de r&eacute;entrance dans .htaccess)</td>
+  <td>[R=301,END]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_s">[S=N]</a></td>
+  <td>Saut</td>
+  <td>Sauter les N prochaines r&egrave;gles (logique if/else)</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_n">[N]</a></td>
+  <td>Instance suivante de la boucle</td>
+  <td>Red&eacute;marrer le traitement du jeu de r&egrave;gles &agrave; partir de la premi&egrave;re
+  (attention&nbsp;: risque de boucle infinie)</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_c">[C]</a></td>
+  <td>Cha&icirc;nage</td>
+  <td>Cha&icirc;ner la r&egrave;gle actuelle &agrave; la prochaine&nbsp;; si la r&egrave;gle actuelle &eacute;choue,
+  sauter les r&egrave;gles cha&icirc;n&eacute;es</td>
+  <td></td>
+</tr>
+<tr><td colspan="4"><em><strong>Redirection et mandatement</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_r">[R=code]</a></td>
+  <td>Redirection</td>
+  <td>Redirection externe (par d&eacute;faut 302). Utilisez Redirect/RedirectMatch pour
+  les cas simple</td>
+  <td>[R=301,L]  [R=302,L]</td>
+</tr>
+<tr>
+  <td><a href="#flag_p">[P]</a></td>
+  <td>Mandatement</td>
+  <td>Mandatement inverse vers une cible (n&eacute;cessite <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>)</td>
+  <td>[P,QSA]</td>
+</tr>
+<tr class="odd"><td colspan="4"><em><strong>Contr&ocirc;le d&rsquo;acc&egrave;s</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_f">[F]</a></td>
+  <td>Interdiction</td>
+  <td>Renvoie 403 (implique [L])</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_g">[G]</a></td>
+  <td>Parti</td>
+  <td>Renvoie 410 (implique [L])</td>
+  <td></td>
+</tr>
+<tr><td colspan="4"><em><strong>URL / cha&icirc;ne de param&egrave;tres</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_qsa">[QSA]</a></td>
+  <td>Ajout de la cha&icirc;ne de param&egrave;tres</td>
+  <td>Ajout de la cha&icirc;ne de param&egrave;tres originelle &agrave; la substitution</td>
+  <td>[QSA,L]  [P,QSA]</td>
+</tr>
+<tr>
+  <td><a href="#flag_qsd">[QSD]</a></td>
+  <td>Suppression de la cha&icirc;ne de param&egrave;tres</td>
+  <td>Supprime enti&egrave;rement la cha&icirc;ne de param&egrave;tres</td>
+  <td>[R=301,QSD,L]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_b">[B]</a></td>
+  <td>&Eacute;chappement des r&eacute;f&eacute;rences arri&egrave;res</td>
+  <td>R&eacute;encode les caract&egrave;res sp&eacute;ciaux dans les r&eacute;f&eacute;rences arri&egrave;res</td>
+  <td>[B,PT]</td>
+</tr>
+<tr>
+  <td><a href="#flag_ne">[NE]</a></td>
+  <td>Pas d&rsquo;&eacute;chappement</td>
+  <td>Pas d&rsquo;&eacute;chappement des caract&egrave;res sp&eacute;ciaux dans la sortie (pass #, ? through)</td>
+  <td>[R=301,NE,L]</td>
+</tr>
+<tr class="odd"><td colspan="4"><em><strong>Metadonn&eacute;es et gestionnaires</strong></em></td></tr>
+<tr>
+  <td><a href="#flag_e">[E]</a></td>
+  <td>D&eacute;finition d&rsquo;une variable d&rsquo;environnement</td>
+  <td>D&eacute;finit une variable d&rsquo;environnement</td>
+  <td>[E=VAR:val,L]</td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_t">[T]</a></td>
+  <td>Type MIME</td>
+  <td>For&ccedil;age du type de contenu</td>
+  <td></td>
+</tr>
+<tr>
+  <td><a href="#flag_h">[H]</a></td>
+  <td>Gestionnaire</td>
+  <td>For&ccedil;age d&rsquo;un gestionnaire de contenu</td>
+  <td></td>
+</tr>
+<tr class="odd">
+  <td><a href="#flag_pt">[PT]</a></td>
+  <td>Transmission r&eacute;sultat</td>
+  <td>Transmission du r&eacute;sultat au gestionnaire suivant (requis pour Alias/ScriptAlias)</td>
+  <td>[PT,L]</td>
+</tr>
+<tr><td colspan="4"><em><strong>Cookie</strong></em></td></tr>
+<tr class="odd">
+  <td><a href="#flag_co">[CO]</a></td>
+  <td>D&eacute;finir un cookie</td>
+  <td>D&eacute;finir un cookie HTTP pour la r&eacute;ponse</td>
+  <td>[CO=name:val:.domain,R=302,L]</td>
+</tr>
+</table>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_b">B (&eacute;chappement dans les r&eacute;f&eacute;rences arri&egrave;res) <a title="Lien permanent" href="#flag_b" class="permalink">&para;</a></h2>
@@ -164,6 +295,10 @@ RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B= ?]"</pre>
 
 <p>Pour d&eacute;finir la liste des caract&egrave;res &agrave; &eacute;chapper de cette mani&egrave;re, voir <a href="#flag_bne">#flag_bne</a> et <a href="#flag_bctls">#flag_bctls</a></p>
 
+<p>Voir <a href="tech.html#encoding">Encodage et d&eacute;codage des URLs</a> pour une
+explication d&eacute;taill&eacute;e de la mani&egrave;re dont httpd d&eacute;code les URIs avant la mise en
+correspondance des motifs.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_bnp">BNP|backrefnoplus (ne pas &eacute;chapper
@@ -181,6 +316,10 @@ RewriteRule "^search/(.*)$" "/search.php/$1" "[B,BNP]"</pre>
 <p>Ce drapeau est disponible &agrave; partir de la version 2.4.26 du serveur HTTP
 Apache.</p>
 
+<p>Voir <a href="tech.html#encoding">Encodage et d&eacute;codage des URLs</a> pour
+d&eacute;couvrir la mani&egrave;re dont l&rsquo;encodage est g&eacute;r&eacute; dans le tube (pipeline) de
+r&eacute;&eacute;criture.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_bctls">BCTLS <a title="Lien permanent" href="#flag_bctls" class="permalink">&para;</a></h2>
@@ -193,7 +332,7 @@ rejet&eacute;s lorsqu'ils sont copi&eacute;s dans la cha&icirc;ne de param&egrav
 RewriteRule "^search/(.*)$" "/search.php/$1" "[BCTLS]"</pre>
 
 
-<p>Ce drapeau est disponible &agrave; partir de la version 2.5.1 du serveur HTTP
+<p>Ce drapeau est disponible &agrave; partir de la version 2.4.57 du serveur HTTP
 Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -207,7 +346,7 @@ correspondant aux drapeaux [B] ou [BCTLS]. Ils ne seront donc pas &eacute;chapp&
 RewriteRule "^search/(.*)$" "/search.php?term=$1" "[B,BNE=/]"</pre>
 
  
-<p>Ce drapeau est disponible &agrave; partir de la version 2.5.1 du serveur HTTP
+<p>Ce drapeau est disponible &agrave; partir de la version 2.4.57 du serveur HTTP
 Apache.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
@@ -218,6 +357,18 @@ suivante. Autrement dit, si la r&egrave;gle s'applique, elle est trait&eacute;e
 normalement et passe le contr&ocirc;le &agrave; la r&egrave;gle suivante. Par contre, si
 elle ne s'applique pas, la r&egrave;gle suivante, ainsi que toutes les r&egrave;gles
 cha&icirc;n&eacute;es qui suivent, seront saut&eacute;es.</p>
+
+<pre class="prettyprint lang-config"># R&eacute;&eacute;crire les URLs des anciens produits vers la nouvelle application du
+# catalogue, et ajouter un param&egrave;tre de tra&ccedil;age &mdash;&nbsp;mais seulement pour ceux qui
+# sont r&eacute;&eacute;crits.
+RewriteRule "^/products/([0-9]+)$" "/catalog/item/$1" [C]
+RewriteRule "^/catalog/(.*)$" "/catalog/$1?via=legacy" [QSA]</pre>
+
+
+<p>Sans le drapeau [C], la seconde r&egrave;gle s&rsquo;appliquerait aux requ&ecirc;tes qui
+arrivent directement &agrave; <code>/catalog/</code>. Le cha&icirc;nage des deux r&egrave;gles
+permet de s&rsquo;assurer que la seconde r&egrave;gle ne s&rsquo;appliquera que si la premi&egrave;re
+s&rsquo;applique.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -262,7 +413,7 @@ ce style de cookie est interdit par le mod&egrave;le de s&eacute;curit&eacute; d
 <dl>
 <dt>Lifetime</dt>
 <dd>La dur&eacute;e de vie du cookie, en minutes.</dd>
-<dd>Une valeur de 0 indique une dur&eacute;e de vie correspondant &agrave; la session
+<dd>Une valeur de 0 indique une dur&eacute;e de vie correspondant &agrave; lasession
 courante du navigateur. Il s'agit de la valeur par d&eacute;faut.</dd>
 <dd>Une valeur n&eacute;gative indique que la d&eacute;finition du cookie doit &ecirc;tre annul&eacute;e
 dans le navigateur.</dd>
@@ -311,24 +462,26 @@ pour tous les URIs.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_dpi">DPI|discardpath <a title="Lien permanent" href="#flag_dpi" class="permalink">&para;</a></h2>
-<p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
-r&eacute;&eacute;crit est supprim&eacute;e.</p>
-<p>Ce drapeau est disponible dans les versions 2.2.12 et sup&eacute;rieures.</p>
-<p>Dans un contexte de r&eacute;pertoire, l'URI mis en comparaison par chaque
-r&egrave;gle <code class="directive">RewriteRule</code> est la concat&eacute;nation des
-valeurs courantes de l'URI et de PATH_INFO.</p>
+<p>Avec le drapeau DPI, la partie <a class="glossarylink" href="../glossary.html#pathinfo" title="voir glossaire">PATH_INFO</a>
+qui a &eacute;t&eacute; ajout&eacute;e au <a class="glossarylink" href="../glossary.html#urlpath" title="voir glossaire">chemin d&rsquo;URL</a> r&eacute;&eacute;crit est
+supprim&eacute;e.</p>
 
-<p>L'URI courant peut &ecirc;tre l'URI initial tel qu'il a &eacute;t&eacute; fourni par le
+<p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>, le
+<a class="glossarylink" href="../glossary.html#urlpath" title="voir glossaire">chemin d&rsquo;URL</a> que compare chaque
+<code class="directive">RewriteRule</code> est la concat&eacute;nation des valeurs courantes du
+chemin d&rsquo;URL et de PATH_INFO.</p>
+
+<p>Le chemin d&rsquo;URL actuel peut &ecirc;tre le chemin initial tel qu'il a &eacute;t&eacute; fourni par le
 client, le r&eacute;sultat d'une passe pr&eacute;c&eacute;dente du processus de r&eacute;&eacute;criture,
-ou le r&eacute;sultat de la r&egrave;gle pr&eacute;c&eacute;dente dans le processus courant de
+ou le r&eacute;sultat de la r&egrave;gle pr&eacute;c&eacute;dente de la passe actuelle du processus de
 r&eacute;&eacute;criture.</p>
 
-<p>Par contre, la partie PATH_INFO ajout&eacute;e &agrave; l'URI avant chaque r&egrave;gle ne
-refl&egrave;te que la valeur de PATH_INFO avant la passe courante du processus
-de r&eacute;&eacute;criture. En cons&eacute;quence, si de larges portions de l'URI
-correspondent et sont traduites via plusieurs directives
+<p>Par contre, la partie PATH_INFO ajout&eacute;e au chemin d&rsquo;URL avant chaque r&egrave;gle ne
+refl&egrave;te que la valeur de PATH_INFO avant la passe actuelle du processus
+de r&eacute;&eacute;criture. En cons&eacute;quence, si de larges portions du chemin d&rsquo;URL
+correspondent et sont copi&eacute;es dans une substitution via plusieurs directives
 <code class="directive">RewriteRule</code>, sans prendre en compte
-quelles parties de l'URI provenaient du PATH_INFO courant, l'URI final
+quelles parties du chemin d&rsquo;URL provenaient du PATH_INFO actuel, le chemin d&rsquo;URL final
 pourra se voir ajouter plusieurs copies de PATH_INFO.</p>
 
 <p>Utilisez ce drapeau pour toute substitution o&ugrave; la pr&eacute;sence du PATH_INFO qui
@@ -339,6 +492,17 @@ d&eacute;bute est oubli&eacute;. PATH_INFO ne sera pas recalcul&eacute; tant que
 courante du processus de r&eacute;&eacute;criture ne sera pas achev&eacute;e. Les r&egrave;gles
 suivantes de cette passe ne verront que le r&eacute;sultat direct des
 substitutions, sans aucun PATH_INFO ajout&eacute;.</p>
+
+<pre class="prettyprint lang-config"># Requ&ecirc;te&nbsp;: /app/script.php/extra/path (PATH_INFO contient /extra/path)
+# Sans le drapeau DPI, la substitution serait "script.php/extra/path" et
+# pourrait par accident copier PATH_INFO dans le r&eacute;sultat.
+RewriteRule "^script\.php(.*)$" "/new-app/handler$1" [DPI]</pre>
+
+
+<p>Le drapeau DPI supprime <code>/extra/path</code>, de sorte que seul le
+r&eacute;sultat de la substitution est transmis aux r&egrave;gles suivantes ou &agrave; la requ&ecirc;te
+finale.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_e">E|env <a title="Lien permanent" href="#flag_e" class="permalink">&para;</a></h2>
@@ -379,7 +543,7 @@ comme les programmes CGI, d'autres directives RewriteRule, ou des
 directives CustomLog.</p>
 
 <p>L'exemple suivant d&eacute;finit une variable d'environnement nomm&eacute;e 'image'
-avec une valeur de '1' si l'URI de la requ&ecirc;te correspond &agrave; un fichier
+avec une valeur de '1' si le chemin d&rsquo;URL de la requ&ecirc;te correspond &agrave; un fichier
 image. Cette variable d'environnement est ensuite utilis&eacute;e pour exclure
 une telle requ&ecirc;te du journal des acc&egrave;s.</p>
 
@@ -390,16 +554,83 @@ CustomLog "logs/access_log" combined env=!image</pre>
 <p>Notez que le m&ecirc;me effet peut &ecirc;tre obtenu &agrave; l'aide de la directive
 <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Cette technique
 est pr&eacute;sent&eacute;e &agrave; titre d'exemple et non de recommandation.</p>
+
+
+<p><strong>D&eacute;finir des variables d&rsquo;environnement pour tracer les r&eacute;&eacute;critures</strong></p>
+
+<p>Parfois, nous souhaitons &ecirc;tre au courant de l&rsquo;&eacute;tat de la situation lorsque
+nous effectuons une r&eacute;&eacute;criture. Par exemple, vous voudriez prendre note
+que vous avez effectu&eacute; cette r&eacute;&eacute;criture, de sorte que vous pourriez
+ult&eacute;rieurement voir si une requ&ecirc;te est arriv&eacute;e par l&rsquo;interm&eacute;daire de cette
+r&eacute;&eacute;criture. Une solution pour y parvenir est la d&eacute;finition d&rsquo;une variable
+d&rsquo;environnement.</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteRule   "^/horse/(.*)"   "/pony/$1" [E=<strong>rewritten:1</strong>]</pre>
+
+
+<p>Dans la suite de votre jeu de r&egrave;gles, vous pouvez consulter cette variable
+d&rsquo;environnement en utilisant une RewriteCond&nbsp;:</p>
+
+<pre class="prettyprint lang-config">RewriteCond "%{ENV:rewritten}"  =1</pre>
+
+
+<p>Notez que les variables d&rsquo;environnements ne survivent pas &agrave; une redirection
+externe. Vous devez alors utiliser le drapeau [CO] pour d&eacute;finir un cookie.</p>
+
+    <div class="note"><h3>Pr&eacute;fixe REDIRECT_ apr&egrave;s une redirection interne</h3>
+    <p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>,
+    une substitution r&eacute;ussie d&eacute;clenche une redirection interne. Lorsque cela se
+    produit, toutes les variables d&rsquo;environnement d&eacute;finies au cours de la passe
+    pr&eacute;c&eacute;dente &mdash;&nbsp;y compris celles cr&eacute;&eacute;es avec <code>[E=VAR:VAL]</code> &mdash;&nbsp;sont
+    renomm&eacute;es par l&rsquo;ajout du pr&eacute;fixe <code>REDIRECT_</code>. Une variable que
+    vous avez nomm&eacute;e <code>rewritten</code> devient ainsi
+    <code>REDIRECT_rewritten</code> dans la requ&ecirc;te redirig&eacute;e.</p>
+
+    <p>Pour tester la variable renomm&eacute;e, r&eacute;f&eacute;rencez-la avec le pr&eacute;fixe&nbsp;:</p>
+    </div>
+
+<pre class="prettyprint lang-config">RewriteRule   "^/horses/(.*)" "/ponies/$1" [E=rewritten:1]
+
+# &Agrave; la passe suivante, la variable a &eacute;t&eacute; renomm&eacute;e&nbsp;:
+RewriteCond "%{ENV:REDIRECT_rewritten}" =1
+RewriteRule "^/ponies/(.*)" "-" [E=seen_redirect:1,L]</pre>
+
+
+    <p>Si la requ&ecirc;te est redirig&eacute;e plusieurs fois, le pr&eacute;fixe est empil&eacute;&nbsp;:
+    <code>REDIRECT_REDIRECT_rewritten</code>, et ainsi de suite. Voir <a href="../env.html#redirect-vars">Variables REDIRECT_</a> pour la description
+    compl&egrave;te de ce m&eacute;canisme.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_end">END <a title="Lien permanent" href="#flag_end" class="permalink">&para;</a></h2>
 <p>L'utilisation du drapeau [END] permet non seulement de terminer le
 processus de r&eacute;&eacute;criture en cours (comme [L]), mais aussi d'emp&ecirc;cher tout
-processus de r&eacute;&eacute;criture ult&eacute;rieur dans un contexte de r&eacute;pertoire
-(htaccess).</p>
+processus de r&eacute;&eacute;criture ult&eacute;rieur dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte
+de r&eacute;pertoire</a>, ce qui en fait le drapeau pr&eacute;f&eacute;r&eacute; pour la plupart des
+r&egrave;gles de niveau r&eacute;pertoire.</p>
+
+<p>Dans un contexte de serveur virtuel ou global, [END] et [L] se comportent de
+mani&egrave;re identique. La diff&eacute;rence entre les deux se situe dans un contexte de
+r&eacute;pertoire o&ugrave; [L] interrompt la passe actuelle, mais o&ugrave; le jeu de r&egrave;gles est &agrave;
+nouveau appliqu&eacute; &agrave; l&rsquo;URL r&eacute;&eacute;crit. Cela peut provoquer des boucles infinies.
+[END] emp&ecirc;che tout processus de r&eacute;&eacute;criture ult&eacute;rieur en interrompant le cycle.</p>
+
+<pre class="prettyprint lang-config"># Dans .htaccess&nbsp;: routage de toutes les requ&ecirc;tes vers un contr&ocirc;leur frontal
+# ici, [L] proquerait une boucle infine, pas [END]
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/index.php" [END]</pre>
+
 
 <p>Ceci ne s'applique pas aux nouvelles requ&ecirc;tes r&eacute;sultant d'une
 redirection externe.</p>
+
+<p>Voir la discussion <a href="htaccess.html#loops">R&eacute;&eacute;critures dans un contexte
+de r&eacute;pertoire</a> pour une explication d&eacute;taill&eacute;e de la raison pour laquelle [L]
+se comporte diff&eacute;remment dans un contexte de r&eacute;pertoire, et des cas o&ugrave; [END]
+constitue le bon choix.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_f">F|forbidden <a title="Lien permanent" href="#flag_f" class="permalink">&para;</a></h2>
@@ -415,9 +646,9 @@ Forbidden.</p>
 <pre class="prettyprint lang-config">RewriteRule "\.exe" "-" [F]</pre>
 
 
-<p>Cet exemple utilise la syntaxe "-" pour la cible de r&eacute;&eacute;criture, ce
-qui signifie que l'URI de la requ&ecirc;te n'est pas modifi&eacute;. Il n'y a aucune
-raison de r&eacute;&eacute;crire un URI, si vous avez l'intention d'interdire la
+<p>Cet exemple utilise la syntaxe "-" pour la cible de r&eacute;&eacute;criture, ce qui
+signifie que le chemin d&rsquo;URL de la requ&ecirc;te n'est pas modifi&eacute;. Il n'y a aucune
+raison de r&eacute;&eacute;crire un chemin d&rsquo;URL, si vous avez l'intention d'interdire la
 requ&ecirc;te.</p>
 
 <p>Lorsqu'on utilise [F], [L] est implicite - c'est &agrave; dire que la
@@ -484,30 +715,11 @@ trait&eacute;e. Ce drapeau correspond &agrave; la commande Perl <code>last</code
 que la r&egrave;gle courante doit &ecirc;tre appliqu&eacute;e imm&eacute;diatement, sans tenir
 compte des r&egrave;gles ult&eacute;rieures.</p>
 
-<p>Si vous utilisez des r&egrave;gles <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans des fichiers
-<code>.htaccess</code> ou des sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, il est important d'avoir quelques
-notions sur la mani&egrave;re dont les r&egrave;gles sont trait&eacute;es. Pour simplifier,
-une fois les r&egrave;gles trait&eacute;es, la requ&ecirc;te r&eacute;&eacute;crite est pass&eacute;e &agrave; nouveau
-au moteur d'interpr&eacute;tation des URLs afin que ce dernier puisse la
-traiter. Il est possible qu'au cours du traitement de la requ&ecirc;te
-r&eacute;&eacute;crite, le fichier <code>.htaccess</code> ou la section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> soient &agrave; nouveau
-rencontr&eacute;s, entra&icirc;nant un nouveau traitement du jeu de r&egrave;gles depuis le
-d&eacute;but. Cette situation se pr&eacute;sente le plus souvent lorsqu'une des r&egrave;gles
-provoque une redirection - interne ou externe - ce qui r&eacute;initialise le
-traitement de la requ&ecirc;te.</p>
-
-<p>Si vous utilisez des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans un de ces contextes,
-il importe par cons&eacute;quent de pr&eacute;voir explicitement des &eacute;tapes permettant
-d'&eacute;viter un bouclage infini sur les r&egrave;gles,
-et de ne pas compter seulement sur
-le drapeau [L] pour terminer l'ex&eacute;cution d'une s&eacute;rie de r&egrave;gles, comme
-d&eacute;crit ci-dessous.</p>
-
-<p>Un autre drapeau, [END], permet non seulement d'interrompre le cycle
-courant du processus de r&eacute;&eacute;criture, mais aussi d'emp&ecirc;cher toute
-r&eacute;&eacute;criture ult&eacute;rieure dans le contexte de r&eacute;pertoire (htaccess). Ceci ne
-s'applique pas aux nouvelles requ&ecirc;tes r&eacute;sultant de redirections
-externes.</p>
+<p>Dans un <a class="glossarylink" href="../glossary.html#perdirectory" title="voir glossaire">contexte de r&eacute;pertoire</a>, [L]
+arr&ecirc;te la passe actuelle du jeu de r&egrave;gles, mais la requ&ecirc;te r&eacute;&eacute;crite peut &ecirc;tre
+trait&eacute;e &agrave; nouveau depuis le d&eacute;but du jeu de r&egrave;gles &mdash;&nbsp;ce qui peut provoquer des
+boucles infinies. Pour &eacute;viter ce probl&egrave;me, utilisez le drapeau <a href="#flag_end">[END]</a>, ou consultez le document <a href="htaccess.html#loops">R&eacute;&eacute;critures au niveau r&eacute;pertoire</a> pour une
+description d&eacute;taill&eacute;e du probl&egrave;me et des solutions alternatives.</p>
 
 <p>Dans l'exemple donn&eacute; ici, toute requ&ecirc;te est r&eacute;&eacute;crite en
 <code>index.php</code>, la requ&ecirc;te originale &eacute;tant ajout&eacute;e comme cha&icirc;ne
@@ -540,7 +752,7 @@ ceci jusqu'il n'y ait plus de A &agrave; remplacer.
 
 <p>Vous pouvez vous repr&eacute;senter ce traitement comme une boucle
 <code>while</code> : tant que le mod&egrave;le de la r&egrave;gle correspond (c'est &agrave;
-dire, tant que l'URI contient un <code>A</code>),
+dire, tant que le chemin d&rsquo;URL contient un <code>A</code>),
 effectuer la substitution (c'est &agrave; dire, remplacer le <code>A</code> par
 un <code>B</code>).</p>
 
@@ -558,7 +770,7 @@ RewriteRule "(.+)[&gt;&lt;;]$" "$1" [N=10]</pre>
 <h2 id="flag_nc">NC|nocase <a title="Lien permanent" href="#flag_nc" class="permalink">&para;</a></h2>
 <p>Avec le drapeau [NC], le mod&egrave;le de la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est compar&eacute; &agrave; la requ&ecirc;te de
 mani&egrave;re insensible &agrave; la casse. C'est &agrave; dire que cette comparaison
-s'effectue sans tenir compte des majuscules/minuscules dans l'URI
+s'effectue sans tenir compte des majuscules/minuscules dans le chemin URL
 compar&eacute;.</p>
 
 <p>Dans l'exemple suivant, toute requ&ecirc;te pour un fichier image sera
@@ -600,6 +812,10 @@ aurait &eacute;t&eacute; converti en son &eacute;quivalent hexad&eacute;cimal, <
 qui aurait provoqu&eacute; un code d'erreur "404 Not Found".
 </p>
 
+<p>Voir <a href="tech.html#encoding">Encodage et d&eacute;codage des URLs</a> pour une
+description compl&egrave;te de la mani&egrave;re dont httpd encode et d&eacute;code les URLs lors de
+la r&eacute;&eacute;criture.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_ns">NS|nosubreq <a title="Lien permanent" href="#flag_ns" class="permalink">&para;</a></h2>
@@ -627,6 +843,14 @@ Les images, scripts java, ou fichiers css, charg&eacute;s en tant que partie
 d'une page html, ne sont pas des sous-requ&ecirc;tes - le navigateur les
 appelle sous forme de requ&ecirc;tes HTTP &agrave; part enti&egrave;re.
 </p>
+
+<pre class="prettyprint lang-config"># Ne r&eacute;&eacute;crire que les requ&ecirc;tes directes vers le contr&ocirc;leur frontal, pas les
+# sous-requ&ecirc;tes des inclusions SSI ou de mod_dir.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "^(.*)$" "/app/index.php?page=$1" [NS,L]</pre>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_p">P|proxy <a title="Lien permanent" href="#flag_p" class="permalink">&para;</a></h2>
@@ -644,7 +868,7 @@ autrement dit, la requ&ecirc;te est imm&eacute;diatement envoy&eacute;e au manda
 toute r&egrave;gle ult&eacute;rieure sera ignor&eacute;e.</p>
 
 <p>
-Vous devez vous assurer que la cha&icirc;ne de substitution soit un URI valide
+Vous devez vous assurer que la cha&icirc;ne de substitution soit un URL valide
 (commen&ccedil;ant typiquement par <code>http://</code><em>nom-serveur</em>)
 qui puisse &ecirc;tre trait&eacute;e par le module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Dans
 le cas contraire, le module mandataire vous renverra une erreur.
@@ -655,12 +879,17 @@ local.</p>
 
 <div class="warning">
       <h3>Avertissement &agrave; propos de la s&eacute;curit&eacute;</h3>
-      <p>Lors de la construction de l'URL cible de la r&egrave;gle, il convient
-      de prendre en compte l'impact en mati&egrave;re de s&eacute;curit&eacute; qu'aura le
-      fait de permettre au client d'influencer le jeu d'URLs pour
-      lesquelles votre serveur agira en tant que mandataire.
-      Assurez-vous que la partie protocole://nom-serveur de l'URL soit
-      fixe, ou ne permette pas au client de l'influencer induement.</p>
+      <p>Lors de la construction de l'URL cible de la r&egrave;gle, il convient de
+      prendre en compte l'impact en mati&egrave;re de s&eacute;curit&eacute; qu'aura le fait de
+      permettre au client d'influencer le jeu d'URLs pour lesquelles votre
+      serveur agira en tant que mandataire. Si une partie de l&rsquo;URL cible est
+      d&eacute;riv&eacute;e de l&rsquo;entr&eacute;e de l&rsquo;utilisateur (r&eacute;f&eacute;rences arri&egrave;res, cha&icirc;nes de
+      param&egrave;tres, etc.), un attaquant pourra &ecirc;tre capable de faire que votre
+      serveur g&eacute;n&egrave;re des requ&ecirc;tes vers des h&ocirc;tes internes ou externes
+      arbitraires. Cette vuln&eacute;rabilit&eacute; est connue sous le nom de falsification
+      de requ&ecirc;te c&ocirc;t&eacute; serveur (Server-Side Request Forgery &mdash;&nbsp;SSRF). Assurez-vous
+      que la partie protocole://nom-serveur de l'URL soit fixe, ou ne permette
+      pas au client de l'influencer indument.</p>
 </div>
 
 <div class="warning">
@@ -687,7 +916,7 @@ utiliser ce drapeau.</p>
 <p>
 Par d&eacute;faut, la cible (ou cha&icirc;ne de substitution) d'une r&egrave;gle
 RewriteRule est sens&eacute;e &ecirc;tre un chemin de fichier. Avec le drapeau [PT],
-par contre, elle est trait&eacute;e comme un URI. Autrement dit, avec le
+par contre, elle est trait&eacute;e comme un chemin URL. Autrement dit, avec le
 drapeau [PT], le r&eacute;sultat de la r&egrave;gle  <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est pass&eacute; &agrave; nouveau au
 syst&egrave;me de mise en correspondance des URLs avec le syst&egrave;me de fichiers,
 de fa&ccedil;on &agrave; ce que les syst&egrave;mes de mise en correspondance bas&eacute;s sur les
@@ -722,7 +951,7 @@ r&eacute;&eacute;crire vers <code>-</code>.</p>
 <div class="section">
 <h2 id="flag_qsa">QSA|qsappend <a title="Lien permanent" href="#flag_qsa" class="permalink">&para;</a></h2>
 <p>
-Quand l'URI de remplacement contient une cha&icirc;ne de requ&ecirc;te, le
+Quand l'URL de remplacement contient une cha&icirc;ne de requ&ecirc;te, le
 comportement par d&eacute;faut de la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est de supprimer la <code>
 query string</code> (il s'agit des param&egrave;tres &eacute;ventuellement pass&eacute;s dans l'URL apr&egrave;s le
 caract&egrave;re <code>?</code>, usuellement pour les formulaires trait&eacute;s par la
@@ -745,10 +974,10 @@ autrement dit, la cha&icirc;ne de requ&ecirc;te (<code>query string</code>) exis
 <div class="section">
 <h2 id="flag_qsd">QSD|qsdiscard <a title="Lien permanent" href="#flag_qsd" class="permalink">&para;</a></h2>
 <p>
-Lorsque l'URI de la requ&ecirc;te contient une cha&icirc;ne de param&egrave;tres, et si
+Lorsque l'URL de la requ&ecirc;te contient une cha&icirc;ne de param&egrave;tres, et si
 l'URI cible n'en contient pas, le comportement par d&eacute;faut de la
 directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consiste &agrave; copier cette
-cha&icirc;ne de param&egrave;tres dans l'URI cible. Avec le drapeau [QSD], la cha&icirc;ne
+cha&icirc;ne de param&egrave;tres dans l'URL cible. Avec le drapeau [QSD], la cha&icirc;ne
 de param&egrave;tres est supprim&eacute;e.
 </p>
 
@@ -760,11 +989,17 @@ drapeau [QSD] qui l'emporte.
 </p>
 
 <p>
-Si l'URI cible poss&egrave;de une cha&icirc;ne de param&egrave;tres, le comportement par
+Si l'URL cible poss&egrave;de une cha&icirc;ne de param&egrave;tres, le comportement par
 d&eacute;faut sera respect&eacute; - c'est &agrave; dire que la cha&icirc;ne de param&egrave;tres
 originale sera supprim&eacute;e et remplac&eacute;e par la cha&icirc;ne de param&egrave;tres de
-l'URI cible.
+l'URL cible.
 </p>
+
+<pre class="prettyprint lang-config"># Redirection des anciens URLs &laquo;&nbsp;search&nbsp;&raquo; vers le nouveau chemin en supprimant
+# la cha&icirc;ne de param&egrave;tres. /search?q=term&amp;page=2 devient /find (cha&icirc;ne de
+# param&egrave;tres supprim&eacute;e)
+RewriteRule "^/search" "/find" [QSD,R=301,L]</pre>
+
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
@@ -780,6 +1015,20 @@ Cela peut s'av&eacute;rer utile lorsqu'on recherche un fichier dont le nom conti
 points d'interrogation. Si aucune cha&icirc;ne de param&egrave;tre n'est pr&eacute;sente dans la
 substitution, il est alors possible d'ajouter un point d'interrogation &agrave; la fin
 et d'utiliser ce drapeau.</p>
+
+<p>Par exemple, si une application patrimoniale attend une cha&icirc;ne de param&egrave;tres
+qui contient elle-m&ecirc;me un point d&rsquo;interrogation&nbsp;:</p>
+
+<pre class="prettyprint lang-config"># Associe /lookup/foo?bar &agrave; /app?type=foo?bar
+# Sans [QSL], le premier ? dans la substitution couperait le chemin, en
+# produisant incorrectement /app avec la cha&icirc;ne de param&egrave;tres type=foo?bar.
+# Avec [QSL], le DERNIER ? est utilis&eacute; comme d&eacute;limiteur.
+RewriteRule "^/lookup/(.*)" "/app?type=$1" [QSL,PT]</pre>
+
+
+<p>Sans [QSL], la substitution <code>/app?type=foo?bar</code> serait coup&eacute;e au
+premier <code>?</code>, perdant de ce fait le point d&rsquo;interrogation litt&eacute;ral de
+la valeur.</p>
 
 <p>Ce drapeau est disponible &agrave; partir de la version 2.4.19 du serveur HTTP
 Apache.</p>
@@ -812,7 +1061,7 @@ codes de redirection en utilisant leurs noms symboliques :
 
 <p>
 Vous utiliserez presque toujours [R] en conjonction avec [L] (c'est &agrave;
-dire [R,L]), car employ&eacute; seul, le drapeau [R] pr&eacute;fixe l'URI avec
+dire [R,L]), car employ&eacute; seul, le drapeau [R] pr&eacute;fixe le chemin URL avec
 <code>http://cet-h&ocirc;te[:ce-port]</code>, mais passe ensuite cette adresse
 &agrave; la r&egrave;gle suivante, ce qui provoquera le plus souvent des
 avertissements 'Invalid URI in request'.
@@ -822,19 +1071,32 @@ avertissements 'Invalid URI in request'.
 sp&eacute;cification de HTTP. Utiliser un code d'&eacute;tat non reconnu provoquera une erreur
 500 et l'enregistrement d'un message dans le journal des erreurs.</p>
 
+<div class="warning"><h3>[R=4xx] ne sert pas la substitution</h3>
+<p>Lorsqu&rsquo;un code d&rsquo;&eacute;tat en dehors de l&rsquo;intervalle 300-399 est sp&eacute;cifi&eacute; (par
+exemple <code>[R=403]</code> ou <code>[R=410]</code>), la cha&icirc;ne de substitution
+est ignor&eacute;e. L&rsquo;URL que vous avez saisi comme cible n&rsquo;est pas servi au client. &Agrave;
+la place, httpd renvoie le code d&rsquo;&eacute;tat sp&eacute;cifi&eacute; et le traite de la mani&egrave;re
+habituelle pour les r&eacute;ponses d'erreur (entre autres tout <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> configur&eacute;). Si vous souhaitez interdire
+l&rsquo;acc&egrave;s, les drapeaux <a href="#flag_f">[F]</a> et <a href="#flag_g">[G]</a>
+sont des solutions plus adapt&eacute;es pour exprimer la m&ecirc;me intention.</p>
+</div>
+
+<pre class="prettyprint lang-config"># Redirection des requ&ecirc;tes pour l&rsquo;ancien chemin de la documentation vers le
+# nouvel emplacement.
+RewriteRule "^/docs/(.*)$" "http://docs.example.com/$1" [R=301,L]</pre>
+
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_s">S|skip <a title="Lien permanent" href="#flag_s" class="permalink">&para;</a></h2>
-<p>Le drapeau [S] sert &agrave; sauter des r&egrave;gles que vous ne voulez pas voir
-ex&eacute;cuter. La syntaxe du drapeau [S] est [S=<em>N</em>], o&ugrave;
-<em>N</em> correspond au nombre de r&egrave;gles &agrave; sauter (sous
-r&eacute;serve que la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> corresponde et qu'au moins
-une condition <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
-pr&eacute;alable soit v&eacute;rifi&eacute;e). 
-Ceci peut s'interpr&eacute;ter comme une instruction
-<code>goto</code>  dans votre jeu de r&egrave;gles de r&eacute;&eacute;criture. Dans
-l'exemple suivant, nous ne voulons ex&eacute;cuter la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demand&eacute; ne
-correspond pas &agrave; un fichier existant.</p>
+<p>Le drapeau [S] sert &agrave; sauter des r&egrave;gles que vous ne voulez pas voir ex&eacute;cuter.
+La syntaxe du drapeau [S] est [S=<em>N</em>], o&ugrave; <em>N</em> correspond au nombre
+de r&egrave;gles &agrave; sauter (sous r&eacute;serve que la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> corresponde et qu'au moins une
+condition <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> pr&eacute;alable soit
+v&eacute;rifi&eacute;e).  Ceci peut s'interpr&eacute;ter comme une instruction <code>goto</code>
+dans votre jeu de r&egrave;gles de r&eacute;&eacute;criture. Dans l'exemple suivant, nous ne voulons
+ex&eacute;cuter la r&egrave;gle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si
+le chemin URL demand&eacute; ne correspond pas &agrave; un fichier existant.</p>
 <pre class="prettyprint lang-config"># La requ&ecirc;te concerne-t-elle un fichier qui n'existe pas ?
 RewriteCond "%{REQUEST_FILENAME}" !-f
 RewriteCond "%{REQUEST_FILENAME}" !-d
@@ -843,8 +1105,6 @@ RewriteRule ".?" "-" [S=2]
 
 RewriteRule "(.*\.gif)" "images.php?$1"
 RewriteRule "(.*\.html)" "docs.php?$1"</pre>
-
-
 
 
 <p>Cette technique trouve son utilit&eacute; dans le fait qu'une directive
@@ -917,9 +1177,31 @@ utiliser le drapeau <code>L</code> pour terminer la s&eacute;quence
 <div class="section">
 <h2 id="flag_unsafe_allow_3f">UnsafeAllow3F <a title="Lien permanent" href="#flag_unsafe_allow_3f" class="permalink">&para;</a></h2>
     <p>Il est n&eacute;cessaire de d&eacute;finir ce drapeau pour permettre &agrave; une r&eacute;&eacute;criture
-    de continuer si la requ&ecirc;te HTTP en cours d'&eacute;criture poss&egrave;de un point d'interrogation encod&eacute;, &laquo;&nbsp;%3f&nbsp;&raquo;, et si le r&eacute;sultat r&eacute;&eacute;crit contient un &laquo;&nbsp;?&nbsp;&raquo; dans
-    la substitution. Cela prot&egrave;ge d'une URL malveillante tirant avantage d'une
-    capture et d'une resubstitution du point d'interrogation encod&eacute;.</p>
+    de continuer si la requ&ecirc;te HTTP en cours d'&eacute;criture poss&egrave;de un point
+    d'interrogation encod&eacute;, &laquo;&nbsp;%3f&nbsp;&raquo;, et si le r&eacute;sultat r&eacute;&eacute;crit
+    contient un &laquo;&nbsp;?&nbsp;&raquo; dans la substitution. Cela prot&egrave;ge d'une URL
+    malveillante tirant avantage d'une capture et d'une resubstitution du point
+    d'interrogation encod&eacute;.</p>
+
+<pre class="prettyprint lang-config"># Un contr&ocirc;leur frontal PHP qui route toutes les requ&ecirc;tes via un &eacute;l&eacute;ment de la
+# cha&icirc;ne de param&egrave;tres.
+# Sans UnsafeAllow3F, une requ&ecirc;te comme /page%3Fname=test renverrait 403 Forbidden,
+# car le substitution r&eacute;&eacute;crite contient '?' alors que la requ&ecirc;te originelle
+# contient un caract&egrave;re encod&eacute; '%3F'.
+RewriteCond "%{REQUEST_FILENAME}" !-f
+RewriteCond "%{REQUEST_FILENAME}" !-d
+RewriteRule "(.+)" "index.php?route=$1" [L,QSA,UnsafeAllow3F]</pre>
+
+
+<div class="warning">
+L&rsquo;existence de ce drapeau est due &agrave; <a href="https://www.cve.org/CVERecord?id=CVE-2024-38474">CVE-2024-38474</a>. Ne
+l&rsquo;utilisez que dans les r&egrave;gles pour lesquelles vous &ecirc;tes certain qu&rsquo;un
+<code>%3F</code> saisi par l&rsquo;utilisateur dans la requ&ecirc;te ne peut pas &ecirc;tre
+exploit&eacute; pour manipuler la cha&icirc;ne de param&egrave;tres de la cible de substitution.
+Pr&eacute;f&eacute;rez autant que possible la restructuration des URLs pour &eacute;viter les points
+d&rsquo;interrogation encod&eacute;s.
+</div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_unsafe_prefix_stat">UnsafePrefixStat <a title="Lien permanent" href="#flag_unsafe_prefix_stat" class="permalink">&para;</a></h2>
@@ -927,11 +1209,29 @@ utiliser le drapeau <code>L</code> pour terminer la s&eacute;quence
     l'&eacute;chelle du serveur qui commencent par une variable ou une r&eacute;f&eacute;rence
     arri&egrave;re et se r&eacute;solvent en un chemin du syst&egrave;me de fichiers. Ces
     substitutions ne sont pas pr&eacute;fix&eacute;es par la racine des documents. Cela prot&egrave;ge
-    d'une URL malveillante faisant correspondre la substitution expans&eacute;e &agrave; un
+    d'un URL malveillant faisant correspondre la substitution d&eacute;velopp&eacute;e &agrave; un
     emplacement non souhait&eacute; du syst&egrave;me de fichiers.</p>
 
     <p>Disponible &agrave; partir de la version 2.5.1 du serveur HTTP Apache.</p>
- </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+
+<pre class="prettyprint lang-config"># Cette r&egrave;gle lance la substitution avec une r&eacute;f&eacute;rence arri&egrave;re.
+# Depuis la version 2.4.60, cette op&eacute;ration est rejet&eacute;e par d&eacute;faut pour emp&ecirc;cher
+# le chemin d&eacute;velopp&eacute; de s&rsquo;&eacute;chapper de la racine des documents (CVE-2024-38475).
+# N&rsquo;ajoutez UnsafePrefixStat qu&rsquo;apr&egrave;s avoir v&eacute;rifi&eacute; que la substitution ne peut
+# pas se r&eacute;soudre en un chemin du syst&egrave;me de fichiers en dehors de la racine des
+# documents de votre site.
+RewriteRule "^/mirror/(.+)$" "$1" [PT,UnsafePrefixStat]</pre>
+
+
+<div class="warning">
+L&rsquo;existence de ce drapeau est due &agrave; <a href="https://www.cve.org/CVERecord?id=CVE-2024-38475">CVE-2024-38475</a>. Sans
+lui, une substitution commen&ccedil;ant par une r&eacute;f&eacute;rence arri&egrave;re ou une variable qui
+correspond &agrave; un chemin existant du syst&egrave;me de fichiers pourrait permettre &agrave; des
+requ&ecirc;tes de s&rsquo;&eacute;chapper de la racine des documents. N&rsquo;utilisez ce drapeau
+qu&rsquo;apr&egrave;s avoir confirm&eacute; que la substitution est contrainte de mani&egrave;re ad&eacute;quate.
+</div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="flag_unc">UNC <a title="Lien permanent" href="#flag_unc" class="permalink">&para;</a></h2>
     <p>D&eacute;finir ce drapeau emp&ecirc;che la fusion des slashes de d&eacute;but multiples tels
@@ -940,6 +1240,21 @@ utiliser le drapeau <code>L</code> pour terminer la s&eacute;quence
     multiples litt&eacute;raux.</p>
 
     <p>Disponible &agrave; partir de la version 2.5.1 du serveur HTTP Apache.</p>
+
+<pre class="prettyprint lang-config"># Sous Windows, r&eacute;&eacute;criture vers un partage de fichiers UNC
+# en utilisant une variable
+# Sans [UNC], les barres obliques de t&ecirc;te dans la substitution seraient
+# fusionn&eacute;es (//server/share deviendrait /server/share).
+RewriteCond "%{HTTP_HOST}" "^(.+)\.internal$"
+RewriteRule "^/shared/(.*)$" "//%1/fileshare/$1" [UNC]</pre>
+
+
+<p>Ce drapeau n&rsquo;est pertinent que sous Windows. Il emp&ecirc;che httpd de fusionner
+les doubles barres obliques de t&ecirc;te (<code>//</code>) qui sont pr&eacute;sentes dans un
+chemin UNC lorsque ce dernier a &eacute;t&eacute; construit &agrave; partir d&rsquo;une r&eacute;f&eacute;rence arri&egrave;re
+ou d&rsquo;une variable. Si la substitution commence par des doubles barres obliques
+litt&eacute;rales, aucun drapeau n&rsquo;est n&eacute;cessaire.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../de/rewrite/flags.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

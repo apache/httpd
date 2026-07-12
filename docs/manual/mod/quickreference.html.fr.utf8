@@ -1350,7 +1350,7 @@ pas.</td></tr>
 <tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>chemin_URL</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">D&eacute;finit l'URL de base pour les r&eacute;&eacute;critures au niveau
 r&eacute;pertoire</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>cha&icirc;ne_de_test</em> <em>expression_de_comparaison</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
+      <em>TestString</em> [!]<em>CondPattern</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit une condition qui devra &ecirc;tre satisfaite pour que
 la r&eacute;&eacute;criture soit effectu&eacute;e
 </td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Active ou d&eacute;sactive l'ex&eacute;cution du
@@ -1361,7 +1361,7 @@ recherche de mots-cl&eacute;s</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure certaines options sp&eacute;ciales
 pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Mod&egrave;le</em> <em>Substitution</em> [<em>drapeaux</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
+      [!]<em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit les r&egrave;gles pour le moteur de r&eacute;&eacute;criture</td></tr>
 <tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limite le temps CPU allou&eacute; aux processus initi&eacute;s par les
 processus enfants d'Apache httpd</td></tr>
 <tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limite la m&eacute;moire allou&eacute;e aux processus initi&eacute;s par les

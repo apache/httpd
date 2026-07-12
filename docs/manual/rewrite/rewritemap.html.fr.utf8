@@ -32,8 +32,6 @@
 <a href="../tr/rewrite/rewritemap.html" hreflang="tr" rel="alternate" title="T&uuml;rk&ccedil;e">&nbsp;tr&nbsp;</a> |
 <a href="../zh-cn/rewrite/rewritemap.html" hreflang="zh-cn" rel="alternate" title="Simplified Chinese">&nbsp;zh-cn&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut &ecirc;tre p&eacute;rim&eacute;e. V&eacute;rifiez la version
-            anglaise pour les changements r&eacute;cents.</div>
 
 
     <p>Ce document est un compl&eacute;ment &agrave; la <a href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du
@@ -42,13 +40,7 @@
     fournit des exemples pour chacun des diff&eacute;rents types de
     <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
 
-    <div class="warning">Notez que la plupart de ces exemples ne
-    fonctionneront pas en l'&eacute;tat dans le contexte de votre configuration
-    particuli&egrave;re ; vous devez donc vous attacher &agrave; les
-    comprendre, plut&ocirc;t que de simplement les ins&eacute;rer dans votre
-    configuration par copier/coller.</div>
-
-  </div>
+      </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif"> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#int">int: fonction interne</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#txt">txt: tables de correspondances au format texte</a></li>
@@ -57,10 +49,10 @@
 <li><img alt="" src="../images/down.gif"> <a href="#dbm">dbm: Fichier condens&eacute; DBM</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#prg">prg: Programme de r&eacute;&eacute;criture externe</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#dbd">dbd ou fastdbd: requ&ecirc;te SQL</a></li>
+<li><img alt="" src="../images/down.gif"> <a href="#sharding">Distribution de la charge (sharding) bas&eacute;e sur l'URL entre plusieurs serveurs dorsaux</a></li>
 <li><img alt="" src="../images/down.gif"> <a href="#summary">R&eacute;sum&eacute;</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module
-  mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en
-  correspondance</a></li><li><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="proxy.html">Mise en cache</a></li><li><a href="advanced.html">Techniques avanc&eacute;es</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li></ul></div>
+  mod_rewrite</a></li><li><a href="intro.html">Introduction &agrave; mod_rewrite</a></li><li><a href="remapping.html">Redirection et remise en correspondance</a></li><li><a href="flags.html">Drapeaux des r&egrave;gles de r&eacute;&eacute;criture</a></li><li><a href="vhosts.html">Serveurs virtuels</a></li><li><a href="htaccess.html">R&eacute;&eacute;critures par r&eacute;pertoire</a></li><li><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></li><li><a href="tech.html">D&eacute;tails techniques</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
 <h2 id="introduction">Introduction <a title="Lien permanent" href="#introduction" class="permalink">&para;</a></h2>
@@ -168,7 +160,7 @@ exemples pour chacun d'entre eux.</p>
     fonction interne, et ins&eacute;rez-la dans votre <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> :
     </p>
 
-   <p> <strong>Redirection d'un URI vers une version en minuscules
+   <p> <strong>Redirection d'un chemin d&rsquo;URL vers une version en minuscules
    d'elle-m&ecirc;me</strong></p>
     <pre class="prettyprint lang-config">RewriteMap lc int:tolower
 RewriteRule "(.*)" "${lc:$1}" [R]</pre>
@@ -418,7 +410,7 @@ directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">R
     directive <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code>.</p>
 
     <p>Voici un exemple simple qui remplace tous les tirets par des
-    caract&egrave;res de soulignement dans l'URI de la requ&ecirc;te.</p>
+    caract&egrave;res de soulignement dans le chemin d&rsquo;URL de la requ&ecirc;te.</p>
 
     <p><strong>Configuration de la r&eacute;&eacute;criture</strong></p>
     <pre class="prettyprint lang-config">RewriteMap d2u "prg:/www/bin/dash2under.py" apache:apache
@@ -433,16 +425,49 @@ for line in sys.stdin:
     print(line.strip().replace('-', '_'), flush=True)</pre>
 
 
+    <p>Un exemple plus complet montre un motif typique pour qu&rsquo;un programme de
+    correspondance prg: lise une ligne, recherche le r&eacute;sultat et l&rsquo;affiche. La
+    sortie de diagnostic est &eacute;crite sur <code>STDERR</code> et termine sa course
+    dans le journal des erreurs de httpd.</p>
+
+    <p><strong>Configuration de la r&eacute;&eacute;criture</strong></p>
+    <pre class="prettyprint lang-config">RewriteMap vhost2docroot "prg:/www/bin/vhost_lookup.py"
+RewriteRule "^/(.*)$" "${vhost2docroot:%{HTTP_HOST}}/$1"</pre>
+
+
+    <p><strong>vhost_lookup.py</strong></p>
+    <pre class="prettyprint lang-python">#!/usr/bin/env python3
+"""Associer un nom d&rsquo;h&ocirc;te au r&eacute;pertoire racine de ses documents."""
+import sys
+
+VHOSTS = {
+    "example.com": "/srv/www/example",
+    "blog.example.com": "/srv/www/blog",
+}
+
+for line in sys.stdin:
+    host = line.strip().lower()
+    docroot = VHOSTS.get(host)
+    if docroot:
+        print(docroot, flush=True)
+    else:
+        # "NULL" indique &agrave; mod_rewrite que la recherche a &eacute;chou&eacute;
+        print("NULL", flush=True)
+        print(f"vhost_lookup: no match for {host!r}", file=sys.stderr)</pre>
+
+
 <div class="note"><h3>Mises en garde !</h3>
 <ul>
-<li>Votre programme doit &ecirc;tre le plus
-simple possible. Si le programme se bloque, httpd va attendre
-ind&eacute;finiment une r&eacute;ponse de sa part, et par cons&eacute;quent ne r&eacute;pondra plus
-aux requ&ecirc;tes.</li>
-<li>Assurez-vous de bien d&eacute;sactiver la mise en tampon dans votre
-programme. Dans l'exemple en Python ci-avant, cette op&eacute;ration s'effectue en
-passant <code>flush=True</code> &agrave; <code>print()</code>. Si les entr&eacute;es/sorties sont mises en tampon, httpd va
-attendre une sortie, et va par cons&eacute;quent se bloquer.</li>
+<li>Votre programme doit &ecirc;tre le plus simple possible. Si le programme se
+bloque, httpd va attendre ind&eacute;finiment une r&eacute;ponse de sa part, et par cons&eacute;quent
+ne r&eacute;pondra plus aux requ&ecirc;tes.</li>
+<li>Assurez-vous de bien d&eacute;sactiver la mise en tampon dans votre programme. Dans
+l'exemple en Python ci-avant, cette op&eacute;ration s'effectue en passant
+<code>flush=True</code> &agrave; <code>print()</code>. Si les entr&eacute;es/sorties sont
+mises en tampon, httpd va attendre une sortie, et va par cons&eacute;quent se bloquer.
+Il s&rsquo;agit de la cause la plus courante pour laquelle le mappage prg: semble ne
+rien faire &mdash; le programme a la r&eacute;ponse mais httpd ne la verra jamais, car
+elle est prisonni&egrave;re d&rsquo;un tampon.</li>
 <li>Rappelez-vous qu'il n'existe qu'une copie du programme lanc&eacute; au
 d&eacute;marrage du serveur, et que toutes les requ&ecirc;tes vont devoir passer par
 ce goulot d'&eacute;tranglement. Ceci peut provoquer des ralentissements
@@ -490,6 +515,75 @@ est envoy&eacute; au programme ; s'il ne s'arr&ecirc;te pas dans les 3 secondes,
     <p>Le nom de la requ&ecirc;te est transmis au pilote de base de donn&eacute;es en tant
     que label pour une requ&ecirc;te SQL pr&eacute;par&eacute;e, et doit donc respecter toutes les
     r&egrave;gles impos&eacute;es par votre base de donn&eacute;es (comme la sensibilit&eacute; &agrave; la casse).</p></div>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
+<div class="section">
+<h2 id="sharding">Distribution de la charge (sharding) bas&eacute;e sur l'URL entre plusieurs serveurs dorsaux <a title="Lien permanent" href="#sharding" class="permalink">&para;</a></h2>
+
+  
+
+  <dl>
+    <dt>Description&nbsp;:</dt>
+
+    <dd>
+      <p>Le &laquo;&nbsp;sharding&nbsp;&raquo; est une technique courante de distribution de la charge
+      de travail ou de l&rsquo;espace de stockage. Lorsqu&rsquo;on utilise cette m&eacute;thode, un
+      serveur frontal va utiliser l&rsquo;URL pour distribuer les utilisateurs ou
+      objets &agrave; des serveurs dorsaux de mani&egrave;re coh&eacute;rente.</p>
+    </dd>
+
+    <dt>Solution&nbsp;:</dt>
+
+    <dd>
+      <p>Un mappage entre les utilisateurs et les serveurs cible est entretenu
+      dans des fichiers de mappage. Ces derniers sont sous la forme&nbsp;:</p>
+
+<div class="example"><p><code>
+utilisateur1  serveur_physique_de_utilisateur1<br>
+utilisateur2  serveur_physique_de_utilisateur2<br>
+# ... et ainsi de suite
+</code></p></div>
+
+  <p>Nous inscrivons ceci dans un fichier
+  <code>mappage.utilisateur-vers-serveur</code>. Le but est d&rsquo;associer</p>
+
+<div class="example"><p><code>
+/u/utilisateur1/chemin
+</code></p></div>
+
+  <p>&agrave;</p>
+
+<div class="example"><p><code>
+http://serveur_physique_de_utilisateur1/u/utilisateur/chemin
+</code></p></div>
+
+      <p>de sorte que tous les chemins d&rsquo;URL n&rsquo;ont pas besoin d&rsquo;&ecirc;tre valables
+      sur chaque serveur dorsal physique. Le jeu de r&egrave;gles suivant fait cela
+      pour nous avec l&rsquo;aide des fichiers de mappage, en supposant que server0
+      est un serveur par d&eacute;faut qui sera utilis&eacute; si un utilisateur n&rsquo;a pas
+      d&rsquo;entr&eacute;e dans le mappage&nbsp;:</p>
+
+<pre class="prettyprint lang-config">RewriteEngine on
+RewriteMap    users-to-hosts      "txt:/path/to/map.users-to-hosts"
+RewriteRule   "^/u/([^/]+)/?(.*)" "http://${users-to-hosts:$1|server0}/u/$1/$2"</pre>
+
+    </dd>
+
+    <dt>Discussion&nbsp;:</dt>
+
+    <dd>
+      <p>Pour distribuer les requ&ecirc;tes aux diff&eacute;rents serveurs dorsaux,
+      <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> constitue une approche plus robuste et
+      configurable, avec la prise en charge d&rsquo;un bilan de sant&eacute;, d&rsquo;une
+      pond&eacute;ration des charges et de la persistance des sessions. L&rsquo;approche
+      bas&eacute;e sur un mappage txt: pr&eacute;sent&eacute;e ici est plus simple mais ne prend pas
+      en charge ces fonctionnalit&eacute;s.</p>
+    </dd>
+  </dl>
+
+  <p>Voir la documentation de <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> pour une description plus compl&egrave;te
+  de la syntaxe de cette directive.
+</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif"></a></div>
 <div class="section">
