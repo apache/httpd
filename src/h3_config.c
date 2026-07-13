@@ -307,7 +307,7 @@ int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, s
         }
     }
 
-    CHECK(conf || conf->h3_cert_path || conf->h3_key_path, return HTTP_INTERNAL_SERVER_ERROR;);
+    CHECK(conf && conf->h3_cert_path && conf->h3_key_path, return HTTP_INTERNAL_SERVER_ERROR;);
 
     /* Validate cert and key files are readable */
     apr_file_t* f = NULL;
