@@ -954,6 +954,13 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
         case 0x01: /* PROXY command */
             switch (hdr->v2.fam) {
                 case 0x11:  /* TCPv4 */
+                    if (ntohs(hdr->v2.len) < sizeof(hdr->v2.addr.ip4)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+                                      "RemoteIPProxyProtocol: address length %hu "
+                                      "too short for TCPv4",
+                                      (unsigned short)ntohs(hdr->v2.len));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET,
                                                 ntohs(hdr->v2.addr.ip4.src_port),
@@ -971,6 +978,13 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
 
                 case 0x21:  /* TCPv6 */
 #if APR_HAVE_IPV6
+                    if (ntohs(hdr->v2.len) < sizeof(hdr->v2.addr.ip6)) {
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+                                      "RemoteIPProxyProtocol: address length %hu "
+                                      "too short for TCPv6",
+                                      (unsigned short)ntohs(hdr->v2.len));
+                        return HDR_ERROR;
+                    }
                     ret = apr_sockaddr_info_get(&conn_conf->client_addr, NULL,
                                                 APR_INET6,
                                                 ntohs(hdr->v2.addr.ip6.src_port),
