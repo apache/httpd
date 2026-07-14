@@ -26,7 +26,7 @@ Vulnerabilities](http://httpd.apache.org/security/vulnerabilities_24.html)
 
 If an issue is reported against an aspect of the security model which
 is not documented here, it MUST be accompanied by a clear description
-of that aspect the model, showing why a trust boundary exists and how
+of that aspect of the model, showing why a trust boundary exists and how
 it is violated. It is helpful to use references to vulnerabilities
 previously disclosed by this project, the httpd documentation
 (see docs/manual), and to demonstrate common usage patterns.
@@ -81,7 +81,7 @@ configurable limits; e.g. LimitRequestFields limits the RAM
 consumption by HTTP headers, LimitXMLRequestBody limits the RAM
 consumption by parsing XML request documents.
 
-Example vulnerabilities which violated the model: CVE-2004-0942
+Example vulnerabilities which violated the model: CVE-2004-0942.
 
 ## Privilege separation on Unix platforms
 
@@ -107,7 +107,7 @@ model.
 Example vulnerabilities which violated the model: CVE-2007-3304,
 CVE-2012-0031.
 
-## Delegated Configuration 
+## Delegated Configuration
 
 Server configuration can be delegated to trusted local site authors by
 allowing use of .htaccess files in some configurations (see
