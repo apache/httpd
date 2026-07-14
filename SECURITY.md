@@ -42,6 +42,12 @@ Any security vulnerability SHOULD be reproducible:
 Issues which are reproducible only using instrumented builds (such as
 ASAN, or under valgrind) should be clearly explained as such.
 
+Issues which depend on a specially crafted server configuration MUST
+include references (such as public documentation) which show why that
+is a configuration that would arise naturally in common deployments.
+Special considerations also apply to any issues requiring `.htaccess`
+files, per the [Delegated Configuration](#delegated-configuration) section.
+
 ## Basic model
 
 Processing of requests by remote untrusted users (HTTP clients) MUST
@@ -110,10 +116,17 @@ gain a significant degree of control over, and access to, the server
 at run-time:
 
 * site authors are trusted to not attack the server with malformed or
-  malicious .htaccess files (for example, files of excessive size).
+  malicious .htaccess files
 
 * site authors gain access to some data (such as files or the
   environment) which is otherwise restricted.
+
+Examples of malicious `.htaccess` files include, but are not limited
+to:
+
+* configuration files of excessive size
+* configurations using deliberately constructed regular expressions
+  which are expensive to evaluate
 
 In configurations supporting in-process scripting language interpreters
 which are not sandboxed, such as `mod_lua` or `mod_php`,
