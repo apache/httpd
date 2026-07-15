@@ -30,6 +30,7 @@
 #include "apr_thread_mutex.h"
 #include "apr_proc_mutex.h"
 #include "apr_poll.h"
+#include "apr_atomic.h"
 
 #include <stdlib.h>
 
@@ -117,6 +118,7 @@
  * Actual definitions of config globals
  */
 
+static apr_uint32_t connection_count = 0;   /* Number of open connections */
 static int threads_per_child = 0;     /* Worker threads per child */
 static int ap_daemons_to_start = 0;
 static int min_spare_threads = 0;
@@ -509,6 +511,16 @@ static void check_infinite_requests(void)
     else {
         requests_this_child = INT_MAX;      /* keep going */
     }
+}
+
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&connection_count);
 }
 
 static void unblock_signal(int sig)
@@ -1328,6 +1340,12 @@ static void child_main(int child_num_arg, int child_bucket)
                      rv == AP_MPM_PODX_GRACEFUL ? ST_GRACEFUL : ST_UNGRACEFUL);
     }
 
+    if (terminate_mode == ST_GRACEFUL) {
+        while (apr_atomic_read32(&connection_count) > 0) {
+            apr_sleep(apr_time_from_msec(100));
+        }
+    }
+
     free(threads);
 
     clean_child_exit(resource_shortage ? APEXIT_CHILDSICK : 0);
@@ -2102,6 +2120,9 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_worker_module";
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
 
     debug = ap_exists_config_define("DEBUG");
 

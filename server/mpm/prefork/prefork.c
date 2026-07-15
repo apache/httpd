@@ -18,6 +18,7 @@
 #include "apr_portable.h"
 #include "apr_strings.h"
 #include "apr_thread_proc.h"
+#include "apr_atomic.h"
 #include "apr_signal.h"
 
 #define APR_WANT_STDIO
@@ -89,6 +90,7 @@
 
 /* config globals */
 
+static apr_uint32_t connection_count = 0;   /* Number of open connections */
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
@@ -229,6 +231,11 @@ static void clean_child_exit_ex(int code, int from_signal)
     if (pchild) {
         if (!code && !from_signal) {
             ap_run_child_stopping(pchild, !retained->mpm->is_ungraceful);
+            if (!retained->mpm->is_ungraceful) {
+                while (apr_atomic_read32(&connection_count) > 0) {
+                    apr_sleep(apr_time_from_msec(100));
+                }
+            }
             ap_run_child_stopped(pchild, !retained->mpm->is_ungraceful);
         }
         apr_pool_destroy(pchild);
@@ -379,6 +386,16 @@ static void just_die(int sig)
 
 /* volatile because it's updated from a signal handler */
 static int volatile die_now = 0;
+
+static void ap_mpm_note_extra_connection_added(void)
+{
+    apr_atomic_inc32(&connection_count);
+}
+
+static void ap_mpm_note_extra_connection_removed(void)
+{
+    apr_atomic_dec32(&connection_count);
+}
 
 static void stop_listening(int sig)
 {
@@ -1320,6 +1337,9 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     int no_detach, debug, foreground;
     apr_status_t rv;
     const char *userdata_key = "mpm_prefork_module";
+
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_added);
+    APR_REGISTER_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
 
     debug = ap_exists_config_define("DEBUG");
 
