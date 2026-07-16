@@ -163,14 +163,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  *) modules/md/mod_md_config.c: Flip MDServerStatus to
-     disabled by default. mod_md is CTR, but probably not
-     the change in default behavior. Needs an explicit
-     hint in CHANGES after applying it.
-     Backport has a conflict in docs, easy to fix.
-     trunk patch: https://svn.apache.org/r1935184
-     2.4.x patch: svn merge -c 1935184 ^/httpd/httpd/trunk .
-     +1: rjung, jim, jorton
 
 
 ------------------------------------------------------------------------
