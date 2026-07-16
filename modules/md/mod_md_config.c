@@ -77,7 +77,7 @@ static md_mod_conf_t defmc = {
     NULL,                      /* message cmd */
     NULL,                      /* env table */
     0,                         /* dry_run flag */
-    1,                         /* server_status_enabled */
+    0,                         /* server_status_enabled */
     1,                         /* certificate_status_enabled */
     &def_ocsp_keep_window,     /* default time to keep ocsp responses */
     &def_ocsp_renew_window,    /* default time to renew ocsp responses */
