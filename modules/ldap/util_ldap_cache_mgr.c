@@ -194,6 +194,14 @@ void util_ald_sgl_free(util_ald_cache_t *cache, util_compare_subgroup_t **sgl)
     util_ald_free(cache, *sgl);
 }
 
+void *util_ald_buffer_alloc(void *ctx, apr_size_t size)
+{
+    util_ald_cache_t *cache = ctx;
+
+    return util_ald_alloc(cache, size);
+}
+
+
 /*
  * Computes the hash on a set of strings. The first argument is the number
  * of strings to hash, the rest of the args are strings.

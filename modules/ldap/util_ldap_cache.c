@@ -156,24 +156,17 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 
         /* copy vals */
         if (node->vals) {
-            int k = node->numvals;
-            int i = 0;
-            if (!(newnode->vals = util_ald_alloc(cache, sizeof(char *) * (k+1)))) {
+            void *vals = util_ald_alloc(cache, node->vals_len);
+
+            if (!vals) {
                 util_ldap_search_node_free(cache, newnode);
                 return NULL;
             }
-            newnode->numvals = node->numvals;
-            for (;k;k--) {
-                if (node->vals[i]) {
-                    if (!(newnode->vals[i] = util_ald_strdup(cache, node->vals[i]))) {
-                        util_ldap_search_node_free(cache, newnode);
-                        return NULL;
-                    }
-                }
-                else
-                    newnode->vals[i] = NULL;
-                i++;
-            }
+
+            memcpy(vals, node->vals, node->vals_len);
+
+            newnode->vals = vals;
+            newnode->vals_len = node->vals_len;
         }
         else {
             newnode->vals = NULL;
@@ -199,16 +192,9 @@ void *util_ldap_search_node_copy(util_ald_cache_t *cache, void *c)
 
 void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 {
-    int i = 0;
     util_search_node_t *node = n;
-    int k = node->numvals;
 
     if (node->vals) {
-        for (;k;k--,i++) {
-            if (node->vals[i]) {
-                util_ald_free(cache, node->vals[i]);
-            }
-        }
         util_ald_free(cache, node->vals);
     }
     util_ald_free(cache, node->username);
@@ -250,7 +236,7 @@ int util_ldap_compare_node_compare(void *a, void *b)
 
     return (strcmp(na->dn, nb->dn) == 0 &&
             strcmp(na->attrib, nb->attrib) == 0 &&
-            strcmp(na->value, nb->value) == 0);
+            apr_buffer_cmp(na->value, nb->value) == 0);
 }
 
 void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
@@ -261,7 +247,7 @@ void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
     if (node) {
         if (!(node->dn = util_ald_strdup(cache, n->dn)) ||
             !(node->attrib = util_ald_strdup(cache, n->attrib)) ||
-            !(node->value = util_ald_strdup(cache, n->value)) ||
+            (APR_SUCCESS != apr_buffer_dup((apr_buffer_t **)&node->value, n->value, util_ald_buffer_alloc, cache)) ||
             ((n->subgroupList) && !(node->subgroupList = util_ald_sgl_dup(cache, n->subgroupList)))) {
             util_ldap_compare_node_free(cache, node);
             return NULL;
@@ -297,10 +283,10 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
 
     apr_ctime(date_str, node->lastcompare);
 
-    if (node->result == LDAP_COMPARE_TRUE) {
+    if (node->result == APR_COMPARE_TRUE) {
         cmp_result = "LDAP_COMPARE_TRUE";
     }
-    else if (node->result == LDAP_COMPARE_FALSE) {
+    else if (node->result == APR_COMPARE_FALSE) {
         cmp_result = "LDAP_COMPARE_FALSE";
     }
     else {
@@ -333,7 +319,7 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
                "</tr>",
                ap_escape_html(r->pool, node->dn),
                ap_escape_html(r->pool, node->attrib),
-               ap_escape_html(r->pool, node->value),
+               ap_escape_html(r->pool, apr_buffer_pstrdup(r->pool, node->value)),
                date_str,
                cmp_result,
                sub_groups_val,
