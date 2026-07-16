@@ -288,8 +288,10 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
 void progress_pending_handshakes(h3_io_t* io)
 {
     CHECK(io);
+    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
+    CHECK(conf);
     apr_time_t now = apr_time_now();
-    apr_time_t timeout = apr_time_from_sec(H3_HANDSHAKE_TIMEOUT_SEC);
+    apr_time_t timeout = apr_time_from_sec(conf->h3_handshake_timeout);
 
     for (int i = 0; i < io->pending_handshakes->nelts;)
     {
@@ -298,7 +300,7 @@ void progress_pending_handshakes(h3_io_t* io)
 
         if (now - pending->accepted_at >= timeout)
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake timed out after %d second(s)", H3_HANDSHAKE_TIMEOUT_SEC);
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake timed out after %u second(s)", (unsigned)conf->h3_handshake_timeout);
             remove_pending_handshake(io, i, 1);
             continue;
         }
@@ -357,6 +359,9 @@ int prepare_accepted_connection(h3_io_t* io, SSL* conn)
     }
     SSL_set_default_stream_mode(conn, SSL_DEFAULT_STREAM_MODE_NONE);
     SSL_set_incoming_stream_policy(conn, SSL_INCOMING_STREAM_POLICY_ACCEPT, 0);
+    h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
+    SSL_set_generic_value_uint(conn, SSL_VALUE_QUIC_IDLE_TIMEOUT, conf->h3_idle_timeout * 1000);
+
     h3_pending_handshake* pending = (h3_pending_handshake*)apr_array_push(io->pending_handshakes);
     pending->conn = conn;
     pending->accepted_at = apr_time_now();

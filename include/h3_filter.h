@@ -35,6 +35,8 @@ typedef struct h3_conn_ctx_t
     apr_size_t dataheaplen;
     apr_pool_t* c3reqpool;
     server_rec* s;
+    /// Set once the response body exceeds H3MaxResponseBodySize.
+    int response_too_large;
     /// Back-reference to the h3_stream.
     struct h3_stream* stream;
 } h3_conn_ctx_t;

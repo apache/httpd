@@ -36,6 +36,7 @@
 
 #include "h3.h"
 #include "h3_check.h"
+#include "h3_config.h"
 #include "h3_filter.h"
 #include "h3_session.h"
 #include "mod_http3.h"
@@ -126,14 +127,29 @@ static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucke
     return APR_SUCCESS;
 }
 
-static void capture_body_bucket(h3_conn_ctx_t* ctx, apr_bucket* b)
+static void capture_body_bucket(request_rec* r, h3_conn_ctx_t* ctx, apr_bucket* b)
 {
     CHECK(ctx);
     CHECK(b);
+    if (ctx->response_too_large)
+    {
+        return;
+    }
     const char* data = NULL;
     apr_size_t len = 0;
     if (apr_bucket_read(b, &data, &len, APR_BLOCK_READ) != APR_SUCCESS || !data || !len)
     {
+        return;
+    }
+    /* Read from the H3-owning vhost (ctx->s), not r->server: only it is defaulted in h3_post_config. */
+    h3_server_conf* conf = ap_get_module_config(ctx->s->module_config, &http3_module);
+    apr_size_t limit = conf ? conf->h3_max_response_body_size : H3_MAX_RESPONSE_BODY_SIZE_DEFAULT;
+    if (ctx->dataheaplen + len > limit)
+    {
+        ctx->response_too_large = 1;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "HTTP/3 response body for %s exceeds H3MaxResponseBodySize (%" APR_SIZE_T_FMT " bytes); aborting response with 500",
+                     r->uri, limit);
         return;
     }
     apr_size_t old = ctx->dataheaplen;
@@ -186,7 +202,7 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
         }
         else if (APR_BUCKET_IS_FILE(b) || APR_BUCKET_IS_MMAP(b) || APR_BUCKET_IS_HEAP(b) || APR_BUCKET_IS_TRANSIENT(b))
         {
-            capture_body_bucket(ctx, b);
+            capture_body_bucket(f->r, ctx, b);
         }
     }
 

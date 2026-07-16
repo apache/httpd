@@ -230,13 +230,34 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
 
     apr_thread_mutex_lock(session->lock);
     h3s->dispatched = 1;
-    capture_response_body(h3s, h3ctx, h3s->pool);
-    /* Fallback to r->status if resp not populated. */
-    int status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : r->status;
+
+    int status;
+    nghttp3_nv nva[64] = {0};
+    size_t nvlen;
+    if (h3ctx->response_too_large)
+    {
+        /* The partial body and its Content-Length no longer agree; send a clean error. */
+        static const char oversized_msg[] = "Response exceeded H3MaxResponseBodySize\n";
+        status = HTTP_INTERNAL_SERVER_ERROR;
+        char* status_str = apr_psprintf(h3s->pool, "%d", status);
+        NV_SET(nva, 0, ":status", status_str);
+        NV_SET(nva, 1, "content-type", "text/plain");
+        nvlen = 2;
+        uint8_t* body_copy = apr_palloc(h3s->pool, sizeof(oversized_msg) - 1);
+        memcpy(body_copy, oversized_msg, sizeof(oversized_msg) - 1);
+        h3s->response_data = body_copy;
+        h3s->response_len = sizeof(oversized_msg) - 1;
+    }
+    else
+    {
+        capture_response_body(h3s, h3ctx, h3s->pool);
+        /* Fallback to r->status if resp not populated. */
+        status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : r->status;
+        nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
+    }
+
     size_t body_len = h3s->response_len;
     int64_t sid = h3s->stream_id;
-    nghttp3_nv nva[64] = {0};
-    size_t nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
     nghttp3_data_reader dr = {.read_data = h3_session_read_data};
     int rv = nghttp3_conn_submit_response(session->ngh3, sid, nva, nvlen, body_len > 0 ? &dr : NULL);
     apr_thread_mutex_unlock(session->lock);
