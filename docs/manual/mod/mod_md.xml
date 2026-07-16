@@ -184,17 +184,18 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
                 If there is an error with an MD it will be shown here as well. This let's 
                 you assess problems without digging through your server logs.
             </p><p>
-                There is also a new 'md-status' handler available to give you the MD information 
-                from 'server-status' in JSON format. You configure it as
+                There is also a new '<code>md-status</code>' handler available to give you the MD information 
+                from '<code>server-status</code>' in JSON format. You configure it as
             </p>
             <highlight language="config">
 &lt;Location "/md-status">
   SetHandler md-status
+  Require host example.com
 &lt;/Location>
             </highlight>
             <p>
-                on your server. As with 'server-status' you will want to add 
-                authorization for this. 
+                on your server. As with '<code>server-status</code>' you <strong>must</strong> protect
+                the <code>md-status</code> output from public view using authorization restrictions (such as <module>mod_authz_host</module>). 
             </p><p>
                 If you just want to check the JSON status of a specific domain, simply append 
                 that to your status url:
@@ -249,7 +250,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 &lt;/MDomain>            
             </highlight>
             <p>
-                and use the 'server-status' and/or <directive module="mod_md">MDMessageCmd</directive> to see how it operates. You will
+                and use the '<code>server-status</code>' and/or <directive module="mod_md">MDMessageCmd</directive> to see how it operates. You will
                 see if Stapling information is there, how long it is valid, from where it came and
                 when it will be refreshed.
             </p><p>
@@ -1111,7 +1112,7 @@ MDMessageCmd /etc/apache/md-message
 
     <directivesynopsis>
         <name>MDServerStatus</name>
-        <description>Control if Managed Domain information is added to server-status.</description>
+        <description>Control if Managed Domain information is added to <code>server-status</code>.</description>
         <syntax>MDServerStatus on|off</syntax>
         <default>MDServerStatus on</default>
         <contextlist>
@@ -1119,7 +1120,7 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                Apaches 'server-status' handler allows you configure a resource to monitor
+                Apaches '<code>server-status</code>' handler allows you configure a resource to monitor
                 what is going on. This includes now a section listing all Managed Domains
                 with the DNS names, renewal status, lifetimes and main properties.
             </p><p>
@@ -1138,7 +1139,7 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                This is part of the 'server-status' HTML user interface and has nothing to 
+                This is part of the '<code>server-status</code>' HTML user interface and has nothing to 
                 do with the core functioning itself. It defines the link offered on that 
                 page for easy checking of a certificate monitor. The SHA256 fingerprint 
                 of the certificate is appended to the configured url.
