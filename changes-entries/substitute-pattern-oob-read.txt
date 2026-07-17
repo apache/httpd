@@ -1,0 +1,2 @@
+  *) mod_substitute: Fix crash or misbehaviour when loading a Substitute
+     directive with a missing closing delimiter.  [Joe Orton]
