@@ -950,6 +950,8 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
     switch (hdr->v2.ver_cmd & 0xF) {
         case 0x00: /* LOCAL command */
             /* keep local connection address for LOCAL */
+            conn_conf->client_addr = c->client_addr;
+            conn_conf->client_ip = c->client_ip;
             return HDR_DONE;
         case 0x01: /* PROXY command */
             switch (hdr->v2.fam) {
