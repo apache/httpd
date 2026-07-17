@@ -200,7 +200,7 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
             ctx->resp->pool = ctx->c3reqpool;
             APR_BUCKET_REMOVE(b);
         }
-        else if (APR_BUCKET_IS_FILE(b) || APR_BUCKET_IS_MMAP(b) || APR_BUCKET_IS_HEAP(b) || APR_BUCKET_IS_TRANSIENT(b))
+        else if (!APR_BUCKET_IS_METADATA(b))
         {
             capture_body_bucket(f->r, ctx, b);
         }

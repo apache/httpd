@@ -216,7 +216,7 @@ int on_reset_stream(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t app_
     return 0;
 }
 
-int on_stream_close(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
+int on_stream_close(nghttp3_conn* /*conn*/, int64_t /* stream_id */, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
 {
     h3_session* session = user_data;
     CHECK(session);
@@ -226,8 +226,6 @@ int on_stream_close(nghttp3_conn* /*conn*/, int64_t stream_id, uint64_t /*app_er
         stream->done = 1;
         h3_session_queue_free(session, stream->ssl_stream);
         stream->ssl_stream = NULL;
-        apr_hash_set(session->streams, &stream_id, sizeof(stream_id), NULL);
-        apr_pool_destroy(stream->pool);
     }
     return 0;
 }

@@ -32,6 +32,7 @@
 #include "h3_check.h"
 #include "h3_config.h"
 #include "h3_session.h"
+#include "h3_stream.h"
 #include "mod_http3.h"
 
 h3_stream* h3_stream_find(h3_session* session, int64_t sid)
@@ -60,18 +61,29 @@ void flush_nghttp3(h3_session* session)
             break;
         }
         size_t total = 0;
+        int blocked = 0;
         for (nghttp3_ssize k = 0; k < nvec; k++)
         {
             size_t w = 0;
             if (SSL_write_ex(h3s->ssl_stream, vec[k].base, vec[k].len, &w) <= 0)
             {
+                blocked = 1;
                 break;
             }
             total += w;
+            if (w < vec[k].len)
+            {
+                blocked = 1;
+                break;
+            }
         }
         if (total > 0)
         {
             nghttp3_conn_add_write_offset(session->ngh3, sid, total);
+        }
+        if (blocked)
+        {
+            break;
         }
         if (fin)
         {
@@ -123,10 +135,21 @@ static void mark_ngh3_dead(h3_session* session, int64_t stream_id, nghttp3_ssize
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "read_stream failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
 }
 
-static int drain_one_stream(h3_session* session, h3_stream* h3s)
+static void feed_stream_fin(h3_session* session, h3_stream* h3s)
+{
+    nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
+    if (consumed < 0)
+    {
+        mark_ngh3_dead(session, h3s->stream_id, consumed);
+    }
+    h3s->body_complete = 1;
+}
+
+static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
 {
     CHECK(session);
     CHECK(h3s);
+    CHECK(data_read);
 
     h3_server_conf* conf = ap_get_module_config(session->s->module_config, &http3_module);
     apr_size_t buf_size = conf->h3_stream_buffer_size;
@@ -137,12 +160,41 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s)
     }
     unsigned char* buf = session->stream_read_buf;
 
+    int read_state = SSL_get_stream_read_state(h3s->ssl_stream);
+    if (read_state == SSL_STREAM_STATE_FINISHED || read_state == SSL_STREAM_STATE_RESET_REMOTE || read_state == SSL_STREAM_STATE_CONN_CLOSED)
+    {
+        if (!h3s->body_complete)
+        {
+            feed_stream_fin(session, h3s);
+        }
+        if (SSL_get_stream_write_state(h3s->ssl_stream) == SSL_STREAM_STATE_FINISHED)
+        {
+            nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, NGHTTP3_H3_NO_ERROR);
+        }
+        return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
+    }
+
+    int loop_count = 0;
     for (;;)
     {
+        if (++loop_count > 1000)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "read loop stuck on stream %" APR_INT64_T_FMT " after 1000 iterations; aborting connection", h3s->stream_id);
+            h3s->done = 1;
+            session->aborted = 1;
+            break;
+        }
+        if (!h3s->ssl_stream)
+        {
+            h3s->done = 1;
+            break;
+        }
+
         size_t nread = 0;
         int rv = SSL_read_ex(h3s->ssl_stream, buf, buf_size, &nread);
         if (rv == 1 && nread > 0)
         {
+            *data_read = 1;
             session->pending.sid = h3s->stream_id;
             session->pending.h3s = h3s;
             nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, buf, nread, 0);
@@ -161,30 +213,34 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s)
             }
             continue;
         }
-        if (SSL_get_error(h3s->ssl_stream, rv) == SSL_ERROR_ZERO_RETURN)
+        if (rv == 1 || SSL_get_error(h3s->ssl_stream, rv) == SSL_ERROR_ZERO_RETURN)
         {
-            nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
-            if (consumed < 0)
-            {
-                mark_ngh3_dead(session, h3s->stream_id, consumed);
-            }
-            h3s->done = 1;
-            h3s->body_complete = 1;
+            feed_stream_fin(session, h3s);
         }
         break;
     }
     return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
 }
 
-apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool)
+apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool, int* data_read)
 {
     CHECK(session);
     CHECK(loop_pool);
+    CHECK(data_read);
+    *data_read = 0;
     apr_array_header_t* completed = apr_array_make(loop_pool, 4, sizeof(h3_stream*));
 
+    unsigned int total_streams = apr_hash_count(session->streams);
+    unsigned int iterations = 0;
     apr_array_header_t* snapshot = apr_array_make(loop_pool, 8, sizeof(h3_stream*));
     for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
     {
+        if (++iterations > total_streams + 100)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "hash iteration did not terminate after %u entries (hash reports %u) - hash corruption, aborting connection", iterations, total_streams);
+            session->aborted = 1;
+            break;
+        }
         h3_stream* h3s = apr_hash_this_val(hi);
         if (h3s)
         {
@@ -200,7 +256,7 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         }
         h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
 
-        if (!h3s->ssl_stream || h3s->done)
+        if (h3s->done || !h3s->ssl_stream)
         {
             continue;
         }
@@ -208,11 +264,35 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
         {
             continue;
         }
-        if (drain_one_stream(session, h3s) && !session->ngh3_dead)
+        if (drain_one_stream(session, h3s, data_read) && !session->ngh3_dead)
         {
             h3_stream** slot = (h3_stream**)apr_array_push(completed);
             *slot = h3s;
         }
     }
+
+    int done_but_has_ssl = 0;
+    for (int i = 0; i < snapshot->nelts; i++)
+    {
+        h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
+        if (!h3s->is_bidi || H3_SID_IS_SERVER(h3s->stream_id) || !h3s->done)
+        {
+            continue;
+        }
+        if (h3s->ssl_stream != NULL)
+        {
+            done_but_has_ssl++;
+        }
+        else if (h3s->dispatched)
+        {
+            apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), NULL);
+            apr_pool_destroy(h3s->pool);
+        }
+    }
+    if (done_but_has_ssl > 0)
+    {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, session->s, "%d stream(s) marked done but still holding an ssl_stream (total=%u, remaining=%u)", done_but_has_ssl, total_streams, apr_hash_count(session->streams));
+    }
+
     return completed;
 }

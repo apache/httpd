@@ -46,14 +46,15 @@ h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl);
 
 /**
  * Read whatever's available on the underlying SSL stream and drive the
- * matching nghttp3 stream state machine. Returns the set of stream ids that
+ * matching nghttp3 stream state machine. Returns the set of streams that
  * became fully readable (HEADERS+DATA complete) and ready for the request
  * dispatcher.
  * @param session   The session.
  * @param loop_pool Scratch pool for per-iteration allocations.
- * @return Array of int64_t stream ids (possibly empty), allocated in loop_pool.
+ * @param data_read Out: set to non-zero if any stream data was read, else zero.
+ * @return Array of h3_stream* (possibly empty), allocated in loop_pool.
  */
-apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool);
+apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_pool, int* data_read);
 
 /**
  * Look up an existing h3_stream by stream id.

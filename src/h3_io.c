@@ -33,6 +33,7 @@
 #include <unistd.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "h3.h"
@@ -67,6 +68,10 @@ static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char
         return APR_EGENERAL;
     }
     SSL_CTX_set_alpn_select_cb(io->ssl_ctx, h3_alpn_select_cb, io->server);
+    if (getenv("SSLKEYLOGFILE"))
+    {
+        SSL_CTX_set_keylog_callback(io->ssl_ctx, h3_keylog_cb);
+    }
     io->ssl_listener = SSL_new_listener(io->ssl_ctx, 0);
     if (!io->ssl_listener || !SSL_set_fd(io->ssl_listener, io->udp_fd) || !SSL_listen(io->ssl_listener) || !SSL_set_blocking_mode(io->ssl_listener, 0))
     {
@@ -255,6 +260,7 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
         {
             apr_allocator_destroy(allocator);
         }
+        SSL_free(conn);
         return APR_EGENERAL;
     }
     apr_allocator_owner_set(allocator, session_pool);
@@ -308,36 +314,48 @@ void progress_pending_handshakes(h3_io_t* io)
         int finished = 0;
         do
         {
-            int rv = 0;
-            if (SSL_is_init_finished(conn))
+            const char* why = NULL;
+            if (!tick_engine(io->ssl_listener))
             {
-                rv = 1;
+                why = "listener event processing failed";
             }
-            if (SSL_get_shutdown(conn) || !tick_engine(io->ssl_listener))
+            else if (SSL_get_shutdown(conn))
             {
-                rv = -1;
+                why = "peer closed the connection during the handshake";
             }
-            if (SSL_get_shutdown(conn))
+            if (why)
             {
-                rv = -1;
-            }
-            rv = SSL_is_init_finished(conn) ? 1 : 0;
-
-            if (rv == 1)
-            {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
-                if (spawn_serviced_session(io, conn) != APR_SUCCESS)
+                unsigned long ssl_err = ERR_peek_last_error();
+                char errbuf[256] = "no error in queue";
+                if (ssl_err != 0)
                 {
-                    SSL_free(conn);
+                    ERR_error_string_n(ssl_err, errbuf, sizeof(errbuf));
                 }
-                remove_pending_handshake(io, i, 0);
+                SSL_CONN_CLOSE_INFO cci;
+                memset(&cci, 0, sizeof(cci));
+                if (SSL_get_conn_close_info(conn, &cci, sizeof(cci)))
+                {
+                    const char* origin = (cci.flags & SSL_CONN_CLOSE_FLAG_LOCAL) ? "local" : "remote";
+                    const char* layer = (cci.flags & SSL_CONN_CLOSE_FLAG_TRANSPORT) ? "transport" : "app";
+                    const char* reason = cci.reason ? cci.reason : "";
+                    char detail[320];
+
+                    snprintf(detail, sizeof(detail), "%s %s err=0x%llx frame=0x%llx reason=\"%.*s\"", origin, layer, (unsigned long long)cci.error_code, (unsigned long long)cci.frame_type, (int)cci.reason_len, reason);
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s) close=[%s]", why, errbuf, detail);
+                }
+                else
+                {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s) [no conn_close_info]", why, errbuf);
+                }
+                remove_pending_handshake(io, i, 1);
                 finished = 1;
                 break;
             }
-            if (rv == -1)
+            if (SSL_is_init_finished(conn))
             {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete");
-                remove_pending_handshake(io, i, 1);
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
+                spawn_serviced_session(io, conn);
+                remove_pending_handshake(io, i, 0);
                 finished = 1;
                 break;
             }
@@ -447,8 +465,10 @@ void service_connection(h3_io_t* io, h3_session* session)
                     break;
                 }
 
+                int new_streams = 0;
                 for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
                 {
+                    new_streams++;
                     int64_t sid = (int64_t)SSL_get_stream_id(s2);
                     if (sid < 0)
                     {
@@ -465,13 +485,14 @@ void service_connection(h3_io_t* io, h3_session* session)
                     apr_thread_mutex_unlock(session->lock);
                 }
 
+                int data_read = 0;
                 apr_thread_mutex_lock(session->lock);
                 apr_pool_clear(scratch);
-                apr_array_header_t* completed = drain_ready_streams(session, scratch);
+                apr_array_header_t* completed = drain_ready_streams(session, scratch, &data_read);
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
 
-                if (session->ngh3_dead)
+                if (session->aborted || session->ngh3_dead)
                 {
                     session->aborted = 1;
                     break;
@@ -487,7 +508,7 @@ void service_connection(h3_io_t* io, h3_session* session)
                 flush_nghttp3(session);
                 apr_thread_mutex_unlock(session->lock);
 
-                keep_pumping = SSL_net_read_desired(conn) || SSL_net_write_desired(conn);
+                keep_pumping = (new_streams > 0 || data_read || completed->nelts > 0) && (SSL_net_read_desired(conn) || SSL_net_write_desired(conn));
             } while (keep_pumping);
 
             if (session->aborted)

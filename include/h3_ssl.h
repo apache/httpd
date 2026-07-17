@@ -35,4 +35,15 @@
  */
 int h3_alpn_select_cb(SSL* ssl, const unsigned char** out, unsigned char* outlen, const unsigned char* in, unsigned int inlen, void* arg);
 
+/**
+ * TLS key log callback for the QUIC SSL_CTX. Mirrors mod_ssl: appends
+ * NSS-format key log lines to the file named by the SSLKEYLOGFILE
+ * environment variable so captured QUIC sessions can be decrypted in
+ * wireshark. Debugging aid only - the file holds the sessions' traffic
+ * secrets; only register it when the variable is set.
+ * @param ssl  The SSL object the line belongs to (unused).
+ * @param line The NSS key log line to record.
+ */
+void h3_keylog_cb(const SSL* ssl, const char* line);
+
 #endif /* H3_SSL_H */

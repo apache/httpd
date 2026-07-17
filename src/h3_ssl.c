@@ -25,6 +25,9 @@
 
 #include <openssl/ssl.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "h3_check.h"
 #include "h3_ssl.h"
 #include "mod_http3.h"
@@ -42,4 +45,15 @@ int h3_alpn_select_cb(SSL* /*ssl*/, const unsigned char** out, unsigned char* ou
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_http3: ALPN: client did not offer h3");
     return SSL_TLSEXT_ERR_NOACK;
+}
+
+void h3_keylog_cb(const SSL* /*ssl*/, const char* line)
+{
+    const char* path = getenv("SSLKEYLOGFILE");
+    FILE* f = path ? fopen(path, "a") : NULL;
+    if (f)
+    {
+        fprintf(f, "%s\n", line);
+        fclose(f);
+    }
 }
