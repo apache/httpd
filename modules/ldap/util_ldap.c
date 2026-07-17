@@ -1013,11 +1013,10 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    ldap_cache_unlock(st, r);
 
     /* a simple compare? */
     if (!compare_dn_on_server) {
-        /* unlock this read lock */
+        ldap_cache_unlock(st, r);
         if (strcmp(dn, reqdn)) {
             ldc->reason = "DN Comparison FALSE (direct strcmp())";
             return LDAP_COMPARE_FALSE;
@@ -1030,22 +1029,18 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
 
     if (curl) {
         /* no - it's a server side compare */
-        ldap_cache_lock(st, r);
 
         /* is it in the compare cache? */
         newnode.reqdn = (char *)reqdn;
         node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
         if (node != NULL) {
             /* If it's in the cache, it's good */
-            /* unlock this read lock */
             ldap_cache_unlock(st, r);
             ldc->reason = "DN Comparison TRUE (cached)";
             return LDAP_COMPARE_TRUE;
         }
-
-        /* unlock this read lock */
-        ldap_cache_unlock(st, r);
     }
+    ldap_cache_unlock(st, r);
 
 start_over:
     if (failures > st->retries) {
@@ -1104,18 +1099,21 @@ start_over:
         result = LDAP_COMPARE_FALSE;
     }
     else {
-        if (curl) {
+        {
             /* compare successful - add to the compare cache */
             ldap_cache_lock(st, r);
-            newnode.reqdn = (char *)reqdn;
-            newnode.dn = (char *)dn;
+            curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+            if (curl) {
+                newnode.reqdn = (char *)reqdn;
+                newnode.dn = (char *)dn;
 
-            node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
-            if (   (node == NULL)
-                || (strcmp(reqdn, node->reqdn) != 0)
-                || (strcmp(dn, node->dn) != 0))
-            {
-                util_ald_cache_insert(curl->dn_compare_cache, &newnode);
+                node = util_ald_cache_fetch(curl->dn_compare_cache, &newnode);
+                if (   (node == NULL)
+                    || (strcmp(reqdn, node->reqdn) != 0)
+                    || (strcmp(dn, node->dn) != 0))
+                {
+                    util_ald_cache_insert(curl->dn_compare_cache, &newnode);
+                }
             }
             ldap_cache_unlock(st, r);
         }
@@ -1158,11 +1156,9 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    ldap_cache_unlock(st, r);
 
     if (curl) {
         /* make a comparison to the cache */
-        ldap_cache_lock(st, r);
         curtime = apr_time_now();
 
         the_compare_node.dn = (char *)dn;
@@ -1193,8 +1189,8 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                     ldc->reason = "Comparison no such attribute (cached)";
                 }
                 else {
-                    ldc->reason = apr_psprintf(r->pool, 
-                                              "Comparison undefined: (%d): %s (adding to cache)", 
+                    ldc->reason = apr_psprintf(r->pool,
+                                              "Comparison undefined: (%d): %s (adding to cache)",
                                               result, ldap_err2string(result));
                 }
 
@@ -1203,15 +1199,15 @@ static int uldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
                 /* and unlock this read lock */
                 ldap_cache_unlock(st, r);
 
-                ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r, 
-                              "ldap_compare_s(%pp, %s, %s, %s) = %s (cached)", 
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
+                              "ldap_compare_s(%pp, %s, %s, %s) = %s (cached)",
                               ldc->ldap, dn, attrib, value, ldap_err2string(result));
                 return result;
             }
         }
-        /* unlock this read lock */
-        ldap_cache_unlock(st, r);
     }
+    /* unlock this read lock */
+    ldap_cache_unlock(st, r);
 
 start_over:
     if (failures > st->retries) {
@@ -1256,36 +1252,39 @@ start_over:
     if ((LDAP_COMPARE_TRUE == result) ||
         (LDAP_COMPARE_FALSE == result) ||
         (LDAP_NO_SUCH_ATTRIBUTE == result)) {
-        if (curl) {
+        {
             /* compare completed; caching result */
             ldap_cache_lock(st, r);
-            the_compare_node.lastcompare = curtime;
-            the_compare_node.result = result;
-            the_compare_node.sgl_processed = 0;
-            the_compare_node.subgroupList = NULL;
+            curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+            if (curl) {
+                the_compare_node.lastcompare = curtime;
+                the_compare_node.result = result;
+                the_compare_node.sgl_processed = 0;
+                the_compare_node.subgroupList = NULL;
 
-            /* If the node doesn't exist then insert it, otherwise just update
-             * it with the last results
-             */
-            compare_nodep = util_ald_cache_fetch(curl->compare_cache,
+                /* If the node doesn't exist then insert it, otherwise just update
+                 * it with the last results
+                 */
+                compare_nodep = util_ald_cache_fetch(curl->compare_cache,
+                                                     &the_compare_node);
+                if (   (compare_nodep == NULL)
+                    || (strcmp(the_compare_node.dn, compare_nodep->dn) != 0)
+                    || (strcmp(the_compare_node.attrib,compare_nodep->attrib) != 0)
+                    || (strcmp(the_compare_node.value, compare_nodep->value) != 0))
+                {
+                    void *junk;
+
+                    junk = util_ald_cache_insert(curl->compare_cache,
                                                  &the_compare_node);
-            if (   (compare_nodep == NULL)
-                || (strcmp(the_compare_node.dn, compare_nodep->dn) != 0)
-                || (strcmp(the_compare_node.attrib,compare_nodep->attrib) != 0)
-                || (strcmp(the_compare_node.value, compare_nodep->value) != 0))
-            {
-                void *junk;
-
-                junk = util_ald_cache_insert(curl->compare_cache,
-                                             &the_compare_node);
-                if (junk == NULL) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01287)
-                                  "cache_compare: Cache insertion failure.");
+                    if (junk == NULL) {
+                        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01287)
+                                      "cache_compare: Cache insertion failure.");
+                    }
                 }
-            }
-            else {
-                compare_nodep->lastcompare = curtime;
-                compare_nodep->result = result;
+                else {
+                    compare_nodep->lastcompare = curtime;
+                    compare_nodep->result = result;
+                }
             }
             ldap_cache_unlock(st, r);
         }
@@ -1555,11 +1554,9 @@ static int uldap_cache_check_subgroups(request_rec *r,
     ldap_cache_lock(st, r);
     curnode.url = url;
     curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
-    ldap_cache_unlock(st, r);
 
     if (curl && curl->compare_cache) {
         /* make a comparison to the cache */
-        ldap_cache_lock(st, r);
 
         the_compare_node.dn = (char *)dn;
         the_compare_node.attrib = (char *)"objectClass";
@@ -1601,8 +1598,8 @@ static int uldap_cache_check_subgroups(request_rec *r,
                 }
             }
         }
-        ldap_cache_unlock(st, r);
     }
+    ldap_cache_unlock(st, r);
 
     if (!tmp_local_sgl && !sgl_cached_empty) {
         /* No Cached SGL, retrieve from LDAP */
@@ -1616,72 +1613,74 @@ static int uldap_cache_check_subgroups(request_rec *r,
                           dn);
         }
 
-      if (curl && curl->compare_cache) {
+      {
         /*
          * Find the generic group cache entry and add the sgl we just retrieved.
          */
         ldap_cache_lock(st, r);
+        curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+        if (curl && curl->compare_cache) {
+            the_compare_node.dn = (char *)dn;
+            the_compare_node.attrib = (char *)"objectClass";
+            the_compare_node.value = (char *)sgc_ents[base_sgcIndex].name;
+            the_compare_node.result = 0;
+            the_compare_node.sgl_processed = 0;
+            the_compare_node.subgroupList = NULL;
 
-        the_compare_node.dn = (char *)dn;
-        the_compare_node.attrib = (char *)"objectClass";
-        the_compare_node.value = (char *)sgc_ents[base_sgcIndex].name;
-        the_compare_node.result = 0;
-        the_compare_node.sgl_processed = 0;
-        the_compare_node.subgroupList = NULL;
-
-        compare_nodep = util_ald_cache_fetch(curl->compare_cache,
-                                             &the_compare_node);
-
-        if (compare_nodep == NULL) {
-            /*
-             * The group entry we want to attach our SGL to doesn't exist.
-             * We only got here if we verified this DN was actually a group
-             * based on the objectClass, but we can't call the compare function
-             * while we already hold the cache lock -- only the insert.
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01291)
-                          "Cache entry for %s doesn't exist", dn);
-            the_compare_node.result = LDAP_COMPARE_TRUE;
-            util_ald_cache_insert(curl->compare_cache, &the_compare_node);
             compare_nodep = util_ald_cache_fetch(curl->compare_cache,
                                                  &the_compare_node);
-            if (compare_nodep == NULL) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01292)
-                              "util_ldap: Couldn't retrieve group entry "
-                              "for %s from cache",
-                              dn);
-            }
-        }
 
-        /*
-         * We have a valid cache entry and a locally generated SGL.
-         * Attach the SGL to the cache entry
-         */
-        if (compare_nodep && !compare_nodep->sgl_processed) {
-            if (!tmp_local_sgl) {
-                /* We looked up an SGL for a group and found it to be empty */
-                if (compare_nodep->subgroupList == NULL) {
-                    compare_nodep->sgl_processed = 1;
+            if (compare_nodep == NULL) {
+                /*
+                 * The group entry we want to attach our SGL to doesn't exist.
+                 * We only got here if we verified this DN was actually a group
+                 * based on the objectClass, but we can't call the compare function
+                 * while we already hold the cache lock -- only the insert.
+                 */
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01291)
+                              "Cache entry for %s doesn't exist", dn);
+                the_compare_node.result = LDAP_COMPARE_TRUE;
+                util_ald_cache_insert(curl->compare_cache, &the_compare_node);
+                compare_nodep = util_ald_cache_fetch(curl->compare_cache,
+                                                     &the_compare_node);
+                if (compare_nodep == NULL) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(01292)
+                                  "util_ldap: Couldn't retrieve group entry "
+                                  "for %s from cache",
+                                  dn);
                 }
             }
-            else {
-                util_compare_subgroup_t *sgl_copy =
-                    util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01293)
-                             "Copying local SGL of len %d for group %s into cache",
-                             tmp_local_sgl->len, dn);
-                if (sgl_copy) {
-                    if (compare_nodep->subgroupList) {
-                        util_ald_sgl_free(curl->compare_cache,
-                                          &(compare_nodep->subgroupList));
+
+            /*
+             * We have a valid cache entry and a locally generated SGL.
+             * Attach the SGL to the cache entry
+             */
+            if (compare_nodep && !compare_nodep->sgl_processed) {
+                if (!tmp_local_sgl) {
+                    /* We looked up an SGL for a group and found it to be empty */
+                    if (compare_nodep->subgroupList == NULL) {
+                        compare_nodep->sgl_processed = 1;
                     }
-                    compare_nodep->subgroupList = sgl_copy;
-                    compare_nodep->sgl_processed = 1;
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(01294)
-                                 "Copy of SGL failed to obtain shared memory, "
-                                 "couldn't update cache");
+                    util_compare_subgroup_t *sgl_copy =
+                        util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, APLOGNO(01293)
+                                 "Copying local SGL of len %d for group %s into cache",
+                                 tmp_local_sgl->len, dn);
+                    if (sgl_copy) {
+                        if (compare_nodep->subgroupList) {
+                            util_ald_sgl_free(curl->compare_cache,
+                                              &(compare_nodep->subgroupList));
+                        }
+                        compare_nodep->subgroupList = sgl_copy;
+                        compare_nodep->sgl_processed = 1;
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server, APLOGNO(01294)
+                                     "Copy of SGL failed to obtain shared memory, "
+                                     "couldn't update cache");
+                    }
                 }
             }
         }
@@ -1770,10 +1769,8 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    ldap_cache_unlock(st, r);
 
     if (curl) {
-        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         search_nodep = util_ald_cache_fetch(curl->search_cache,
                                             &the_search_node);
@@ -1810,9 +1807,9 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                 return LDAP_SUCCESS;
             }
         }
-        /* unlock this read lock */
-        ldap_cache_unlock(st, r);
     }
+    /* unlock this read lock */
+    ldap_cache_unlock(st, r);
 
     /*
      * At this point, there is no valid cached search, so lets do the search.
@@ -1969,37 +1966,40 @@ start_over:
     /*
      * Add the new username to the search cache.
      */
-    if (curl) {
+    {
         ldap_cache_lock(st, r);
-        the_search_node.username = filter;
-        the_search_node.dn = *binddn;
-        the_search_node.bindpw = bindpw;
-        the_search_node.lastbind = apr_time_now();
-        the_search_node.vals = vals;
-        the_search_node.numvals = numvals;
+        curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+        if (curl) {
+            the_search_node.username = filter;
+            the_search_node.dn = *binddn;
+            the_search_node.bindpw = bindpw;
+            the_search_node.lastbind = apr_time_now();
+            the_search_node.vals = vals;
+            the_search_node.numvals = numvals;
 
-        /* Search again to make sure that another thread didn't ready insert
-         * this node into the cache before we got here. If it does exist then
-         * update the lastbind
-         */
-        search_nodep = util_ald_cache_fetch(curl->search_cache,
-                                            &the_search_node);
-        if ((search_nodep == NULL) ||
-            (strcmp(*binddn, search_nodep->dn) != 0)) {
+            /* Search again to make sure that another thread didn't ready insert
+             * this node into the cache before we got here. If it does exist then
+             * update the lastbind
+             */
+            search_nodep = util_ald_cache_fetch(curl->search_cache,
+                                                &the_search_node);
+            if ((search_nodep == NULL) ||
+                (strcmp(*binddn, search_nodep->dn) != 0)) {
 
-            /* Nothing in cache, insert new entry */
-            util_ald_cache_insert(curl->search_cache, &the_search_node);
-        }
-        else if ((!search_nodep->bindpw) ||
-            (strcmp(bindpw, search_nodep->bindpw) != 0)) {
+                /* Nothing in cache, insert new entry */
+                util_ald_cache_insert(curl->search_cache, &the_search_node);
+            }
+            else if ((!search_nodep->bindpw) ||
+                (strcmp(bindpw, search_nodep->bindpw) != 0)) {
 
-            /* Entry in cache is invalid, remove it and insert new one */
-            util_ald_cache_remove(curl->search_cache, search_nodep);
-            util_ald_cache_insert(curl->search_cache, &the_search_node);
-        }
-        else {
-            /* Cache entry is valid, update lastbind */
-            search_nodep->lastbind = the_search_node.lastbind;
+                /* Entry in cache is invalid, remove it and insert new one */
+                util_ald_cache_remove(curl->search_cache, search_nodep);
+                util_ald_cache_insert(curl->search_cache, &the_search_node);
+            }
+            else {
+                /* Cache entry is valid, update lastbind */
+                search_nodep->lastbind = the_search_node.lastbind;
+            }
         }
         ldap_cache_unlock(st, r);
     }
@@ -2046,10 +2046,8 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
     if (curl == NULL) {
         curl = util_ald_create_caches(st, url);
     }
-    ldap_cache_unlock(st, r);
 
     if (curl) {
-        ldap_cache_lock(st, r);
         the_search_node.username = filter;
         search_nodep = util_ald_cache_fetch(curl->search_cache,
                                             &the_search_node);
@@ -2080,9 +2078,9 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                 return LDAP_SUCCESS;
             }
         }
-        /* unlock this read lock */
-        ldap_cache_unlock(st, r);
     }
+    /* unlock this read lock */
+    ldap_cache_unlock(st, r);
 
     /*
      * At this point, there is no valid cached search, so lets do the search.
@@ -2178,35 +2176,38 @@ start_over:
     /*
      * Add the new username to the search cache.
      */
-    if (curl) {
+    {
         ldap_cache_lock(st, r);
-        the_search_node.username = filter;
-        the_search_node.dn = *binddn;
-        the_search_node.bindpw = NULL;
-        the_search_node.lastbind = apr_time_now();
-        the_search_node.vals = vals;
-        the_search_node.numvals = numvals;
+        curl = util_ald_cache_fetch(st->util_ldap_cache, &curnode);
+        if (curl) {
+            the_search_node.username = filter;
+            the_search_node.dn = *binddn;
+            the_search_node.bindpw = NULL;
+            the_search_node.lastbind = apr_time_now();
+            the_search_node.vals = vals;
+            the_search_node.numvals = numvals;
 
-        /* Search again to make sure that another thread didn't ready insert
-         * this node into the cache before we got here. If it does exist then
-         * update the lastbind
-         */
-        search_nodep = util_ald_cache_fetch(curl->search_cache,
-                                            &the_search_node);
-        if ((search_nodep == NULL) ||
-            (strcmp(*binddn, search_nodep->dn) != 0)) {
+            /* Search again to make sure that another thread didn't ready insert
+             * this node into the cache before we got here. If it does exist then
+             * update the lastbind
+             */
+            search_nodep = util_ald_cache_fetch(curl->search_cache,
+                                                &the_search_node);
+            if ((search_nodep == NULL) ||
+                (strcmp(*binddn, search_nodep->dn) != 0)) {
 
-            /* Nothing in cache, insert new entry */
-            util_ald_cache_insert(curl->search_cache, &the_search_node);
-        }
-        /*
-         * Don't update lastbind on entries with bindpw because
-         * we haven't verified that password. It's OK to update
-         * the entry if there is no password in it.
-         */
-        else if (!search_nodep->bindpw) {
-            /* Cache entry is valid, update lastbind */
-            search_nodep->lastbind = the_search_node.lastbind;
+                /* Nothing in cache, insert new entry */
+                util_ald_cache_insert(curl->search_cache, &the_search_node);
+            }
+            /*
+             * Don't update lastbind on entries with bindpw because
+             * we haven't verified that password. It's OK to update
+             * the entry if there is no password in it.
+             */
+            else if (!search_nodep->bindpw) {
+                /* Cache entry is valid, update lastbind */
+                search_nodep->lastbind = the_search_node.lastbind;
+            }
         }
         ldap_cache_unlock(st, r);
     }
