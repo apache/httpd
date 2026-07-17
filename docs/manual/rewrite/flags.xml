@@ -350,6 +350,13 @@ follows:</p>
 [CO=NAME:VALUE:DOMAIN:lifetime:path:secure:httponly:samesite]
 </example>
 
+<note type="warning">
+<title>Security Warning</title>
+<p>Exercise care when constructing the argument from backreferences or other
+variable expansion.  If any part of the argument is derived from user input,
+a malicious request may include delimeters or other unexpected values.</p>
+</note>
+
 <p>If a literal ':' character is needed in any of the cookie fields, an 
 alternate syntax is available.  To opt-in to the alternate syntax, the cookie 
 "Name" should be preceded with a ';' character, and field separators should be
