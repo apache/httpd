@@ -171,10 +171,10 @@ static char *get_cookie_param(request_rec *r, const char *name)
             if (start_cookie == cookies ||
                 start_cookie[-1] == ';' ||
                 start_cookie[-1] == ',' ||
-                isspace(start_cookie[-1])) {
+                apr_isspace(start_cookie[-1])) {
 
                 start_cookie += strlen(name);
-                while(*start_cookie && isspace(*start_cookie))
+                while(*start_cookie && apr_isspace(*start_cookie))
                     ++start_cookie;
                 if (*start_cookie++ == '=' && *start_cookie) {
                     /*
