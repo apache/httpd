@@ -1,0 +1,2 @@
+  *) mod_cern_meta: Reject HTTP framing headers in metadata files to prevent
+     response splitting.  [Joe Orton]
