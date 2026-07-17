@@ -22,11 +22,16 @@ with the .txt suffix, using the following template:
 Changes to server/*.[ch] use a "core:" prefix rather than "mod_foo:".
 
 The description should be as concise as possible, a maximum of three
-lines but ideally one or two. The credit for the change goes to the
-original patch author(s) and will usually match the "Submitted by: "
-tag in the commit message. For current committers, use only the
-name and not the e-mail address in the credit. Replace "@" in any
-e-mail addresses with a space to prevent address harvesting.
+lines but ideally one or two; describe the user-visible effect of the
+change rather than simply describing how the code was fixed. New
+modules or config directives do NOT need to be explained in detail,
+that is covered in the documentation.
+
+The credit for the change goes to the original patch author(s) and
+will usually match the "Submitted by: " tag in the commit message. For
+current committers, use only the name and not the e-mail address in
+the credit. Replace "@" in any e-mail addresses with a space to
+prevent address harvesting.
 
 Use a Bugzilla bug number in the PR reference.
 
