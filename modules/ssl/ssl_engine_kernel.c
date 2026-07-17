@@ -2195,7 +2195,7 @@ static apr_status_t set_challenge_creds(conn_rec *c, const char *servername,
 cleanup:
     if (our_data && cert) X509_free(cert);
     if (our_data && key) EVP_PKEY_free(key);
-    return APR_SUCCESS;
+    return rv;
 }
   
 /*
