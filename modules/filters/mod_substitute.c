@@ -627,7 +627,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     if (delim)
         from = ++ourline;
     if (from) {
-        if (*ourline != delim) {
+        if (*ourline && *ourline != delim) {
             while (*++ourline && *ourline != delim);
         }
         if (*ourline) {
@@ -636,7 +636,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
         }
     }
     if (to) {
-        if (*ourline != delim) {
+        if (*ourline && *ourline != delim) {
             while (*++ourline && *ourline != delim);
         }
         if (*ourline) {
