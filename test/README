@@ -73,20 +73,24 @@ The runner exits non-zero if either suite has failures.
 Running a suite directly
 ------------------------
 
-pytest_suite (from its own directory; it creates its own virtualenv):
+Both runtests.sh scripts create their own virtualenv on first run and can be
+invoked from any directory -- the paths below are just the convenient way to
+type them. The venv is (re)built automatically whenever it is missing or its
+pyproject.toml has changed, using `uv sync` if uv is installed and otherwise
+`python3 -m venv` + pip (reading the dependency list from pyproject.toml -- no
+uv required). To force a clean rebuild yourself, `rm -rf <suite>/.venv`.
 
-  cd pytest_suite
-  uv sync                                   # one-time: create the venv
-  ./runtests.sh --apxs=/path/to/apxs        # all tests
-  ./runtests.sh --php-fpm=/path/to/php-fpm tests/t/php   # PHP tests
-  ./runtests.sh -k rewrite -v               # any pytest args pass through
+pytest_suite (self-contained; the venv holds only pytest + httpx):
+
+  ./pytest_suite/runtests.sh --apxs=/path/to/apxs            # all tests
+  ./pytest_suite/runtests.sh --php-fpm=/path/to/php-fpm tests/t/php   # PHP tests
+  ./pytest_suite/runtests.sh -k rewrite -v                   # any pytest args pass through
 
 pyhttpd tests (need pyhttpd/config.ini from httpd's configure, plus curl,
 nghttp2/h2load, and -- for modules/md -- pyOpenSSL and an ACME test server):
 
-  pytest modules/http2                      # all HTTP/2 tests
-  pytest modules/core -k test_001           # a subset
-
+  ./pyhttpd/runtests.sh modules/http2       # all HTTP/2 tests
+  ./pyhttpd/runtests.sh modules/core -k test_001   # a subset
 
 Other contents
 --------------

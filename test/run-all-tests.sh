@@ -70,7 +70,14 @@ config_ini="$here/pyhttpd/config.ini"
 #             paths and go ONLY to pytest_suite. The pyhttpd side selects its
 #             tests via PYHTTPD_TARGETS (or its auto-detected default), since a
 #             pytest_suite path is meaningless there.
-# A flag that takes a separate-word value (-k NAME) keeps the value as a flag.
+#
+# The hard part is telling a positional test path from the value of a flag that
+# takes a separate word (e.g. `--tb short`, `--maxfail 3`, `-n 4`). We handle it
+# two ways: (a) the common value-flags -k/-m/-p are known to consume the next
+# word, and (b) any OTHER bare word is treated as a pysuite path only if it
+# actually exists on disk -- a flag value like "short"/"3"/"no" never does, so
+# it stays with `flags` (attached to its preceding flag) instead of being
+# misrouted to pysuite-only paths and stripped from what pyhttpd receives.
 only=""
 apxs_opt=""
 flags=""
@@ -89,7 +96,15 @@ for arg in "$@"; do
         --clean-modules) pysuite_flags="$pysuite_flags $arg" ;;  # pysuite-only; pyhttpd has no C modules
         -k|-m|-p) flags="$flags $arg"; expect_flagval=1 ;;  # take a value next
         -*)       flags="$flags $arg" ;;
-        *)        paths="$paths $arg" ;;
+        # A real pysuite path exists relative to pytest_suite/ (how users type
+        # it, e.g. "tests/t/php") or to our cwd; strip any ::nodeid suffix
+        # first. Anything else is a stray flag value -> keep it with the flags.
+        *)  if [ -e "$suite_dir/${arg%%::*}" ] || [ -e "${arg%%::*}" ]; then
+                paths="$paths $arg"
+            else
+                flags="$flags $arg"
+            fi
+            ;;
     esac
 done
 
@@ -110,6 +125,7 @@ php_args=""
 [ -n "${PHP_FPM:-}" ] && php_args="--php-fpm=$PHP_FPM"
 
 rc=0
+skipped=""   # names of suites that did NOT run (so we never report them "passed")
 
 run_pysuite() {
     echo "=========================================================="
@@ -134,6 +150,7 @@ run_pyhttpd() {
     if [ ! -f "$config_ini" ]; then
         echo "run-all-tests.sh: note: pyhttpd/config.ini not found;" >&2
         echo "  build httpd with its test config (configure) to run these." >&2
+        skipped="$skipped pyhttpd"
         return 0
     fi
     # runtests.sh manages the venv, prepends its bin/ to PATH (so CGI
@@ -159,6 +176,21 @@ case "$only" in
 esac
 
 echo "=========================================================="
-[ "$rc" -eq 0 ] && echo "ALL SUITES PASSED" || echo "SOME TESTS FAILED (rc=$rc)"
+if [ "$rc" -ne 0 ]; then
+    echo "SOME TESTS FAILED (rc=$rc)"
+elif [ -n "$skipped" ]; then
+    # Nothing failed, but at least one suite never ran -- don't claim success
+    # for a suite that was skipped (e.g. pyhttpd with no config.ini).
+    echo "PASSED, BUT SKIPPED:$skipped (not run -- see notes above)"
+else
+    echo "ALL SUITES PASSED"
+fi
 echo "=========================================================="
+
+# If a suite was skipped and the user explicitly asked for ONLY that suite,
+# treat "ran nothing" as a failure -- otherwise --only=pyhttpd could exit 0
+# having executed zero tests.
+if [ -n "$skipped" ] && [ -n "$only" ] && [ "$rc" -eq 0 ]; then
+    exit 3
+fi
 exit "$rc"
