@@ -129,8 +129,19 @@ class HttpdTestSetup:
         with open(dest, 'w') as fd:
             fd.write(t.substitute(var_map))
 
+    def _get_builtin_modules(self) -> set:
+        httpd_bin = os.path.join(self.env.bin_dir, 'httpd')
+        p = subprocess.run([httpd_bin, '-l'], capture_output=True, text=True)
+        builtin = set()
+        for line in p.stdout.splitlines():
+            match = re.match(r'^\s+mod_(.+)\.c$', line)
+            if match:
+                builtin.add(match.group(1))
+        return builtin
+
     def _make_modules_conf(self):
         loaded = set()
+        builtin_modules = self._get_builtin_modules()
         modules_conf = os.path.join(self.env.server_dir, 'conf/modules.conf')
         with open(modules_conf, 'w') as fd:
             # issue load directives for all modules we want that are shared
@@ -142,7 +153,9 @@ class HttpdTestSetup:
                 if m in loaded:
                     continue
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
-                if os.path.isfile(mod_path):
+                if m in builtin_modules:
+                    fd.write(f"#built-in: LoadModule {m}_module   \"{mod_path}\"\n")
+                elif os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
                 elif m in self.env.dso_modules:
                     missing_mods.append(m)
@@ -156,7 +169,7 @@ class HttpdTestSetup:
                 if m in loaded:
                     continue
                 mod_path = os.path.join(self.env.libexec_dir, f"mod_{m}.so")
-                if os.path.isfile(mod_path):
+                if m not in builtin_modules and os.path.isfile(mod_path):
                     fd.write(f"LoadModule {m}_module   \"{mod_path}\"\n")
                     loaded.add(m)
         if len(missing_mods) > 0:
@@ -238,8 +251,10 @@ class HttpdTestEnv:
 
     def __init__(self, pytestconfig=None):
         self._our_dir = os.path.dirname(inspect.getfile(Dummy))
+        self._config_ini = os.getenv("PYHTTPD_CONFIG",
+                                     os.path.join(self._our_dir, 'config.ini'))
         self.config = ConfigParser(interpolation=ExtendedInterpolation())
-        self.config.read(os.path.join(self._our_dir, 'config.ini'))
+        self.config.read(self._config_ini)
 
         self._bin_dir = self.config.get('global', 'bindir')
         self._apxs = self.config.get('global', 'apxs')
@@ -560,14 +575,14 @@ class HttpdTestEnv:
         if not os.path.exists(path):
             return os.makedirs(path)
 
-    def run(self, args, stdout_list=False, intext=None, inbytes=None, debug_log=True):
+    def run(self, args, stdout_list=False, intext=None, inbytes=None, debug_log=True, env=None):
         if debug_log:
             log.debug(f"run: {args}")
         start = datetime.now()
         if intext is not None:
             inbytes = intext.encode()
         p = subprocess.run(args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                           input=inbytes)
+                           input=inbytes, env=env)
         stdout_as_list = None
         if stdout_list:
             try:
@@ -661,13 +676,29 @@ class HttpdTestEnv:
         log.debug(f"Server still responding after {timeout}")
         return False
 
+    def _clean_path_env(self) -> dict:
+        # Strip shim directories (uv, plugin-injected) from PATH so CGI
+        # scripts spawned by httpd resolve python3 to a real interpreter.
+        # Also prepend the test-suite venv's bin/ if present so CGI scripts
+        # pick up packages installed there (e.g. multipart).
+        parts = [
+            p for p in os.environ.get('PATH', '').split(os.pathsep)
+            if '/shims' not in p
+        ]
+        venv_bin = os.path.join(self._our_dir, '.venv', 'bin')
+        if os.path.isdir(venv_bin) and venv_bin not in parts:
+            parts.insert(0, venv_bin)
+        env = os.environ.copy()
+        env['PATH'] = os.pathsep.join(parts)
+        return env
+
     def _run_apachectl(self, cmd) -> ExecResult:
         conf_file = 'stop.conf' if cmd == 'stop' else 'httpd.conf'
         args = [self._apachectl,
                 "-d", self.server_dir,
                 "-f", os.path.join(self._server_dir, f'conf/{conf_file}'),
                 "-k", cmd]
-        r = self.run(args)
+        r = self.run(args, env=self._clean_path_env())
         self._apachectl_stderr = r.stderr
         if r.exit_code != 0:
             log.warning(f"failed: {r}")
