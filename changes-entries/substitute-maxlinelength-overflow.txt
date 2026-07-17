@@ -1,0 +1,2 @@
+  *) mod_substitute: Fix SubstituteMaxLineLength to reject values too
+     large for the K/M/G suffix.  [Joe Orton]
