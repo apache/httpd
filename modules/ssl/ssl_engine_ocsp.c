@@ -80,7 +80,7 @@ static apr_uri_t *determine_responder_uri(SSLSrvConfigRec *sc, X509 *cert,
     }
 
     rv = apr_uri_parse(p, s, u);
-    if (rv || !u->hostname) {
+    if (rv || !u->hostname || !u->scheme) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c, APLOGNO(01919)
                       "failed to parse OCSP responder URI '%s'", s);
         return NULL;
