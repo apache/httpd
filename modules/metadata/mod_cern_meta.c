@@ -256,6 +256,18 @@ static int scan_meta_file(request_rec *r, apr_file_t *f)
             sscanf(l, "%d", &r->status);
             r->status_line = apr_pstrdup(r->pool, l);
         }
+        else if (!ap_cstr_casecmp(w, "Transfer-Encoding")
+                 || !ap_cstr_casecmp(w, "Content-Length")
+                 || !ap_cstr_casecmp(w, "Connection")
+                 || !ap_cstr_casecmp(w, "Trailer")
+                 || !ap_cstr_casecmp(w, "Upgrade")
+                 || !ap_cstr_casecmp(w, "Keep-Alive")
+                 || !ap_cstr_casecmp(w, "TE")) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, APLOGNO(10596)
+                          "forbidden HTTP framing header '%s' in meta file: %s",
+                          w, r->filename);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
         else {
             apr_table_set(tmp_headers, w, l);
         }
