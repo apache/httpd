@@ -27,8 +27,8 @@ optionally, a **`php-fpm`** binary for the PHP tests.
 ## Quick start
 
 ```sh
-# 1. Create the virtualenv (pytest + httpx). Needs `uv` (https://docs.astral.sh/uv/),
-#    or substitute a plain venv -- see "Environment" below.
+# 1. Create the virtualenv (pytest + httpx). Needs `uv` (https://docs.astral.sh/uv/);
+#    reads pyproject.toml + uv.lock. runtests.sh also does this for you on first run.
 uv sync
 
 # 2. Run the whole suite against your httpd build.

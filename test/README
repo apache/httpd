@@ -76,9 +76,9 @@ Running a suite directly
 Both runtests.sh scripts create their own virtualenv on first run and can be
 invoked from any directory -- the paths below are just the convenient way to
 type them. The venv is (re)built automatically whenever it is missing or its
-pyproject.toml has changed, using `uv sync` if uv is installed and otherwise
-`python3 -m venv` + pip (reading the dependency list from pyproject.toml -- no
-uv required). To force a clean rebuild yourself, `rm -rf <suite>/.venv`.
+pyproject.toml has changed, using `uv sync` (uv reads pyproject.toml + uv.lock).
+uv (https://docs.astral.sh/uv/) is required. To force a clean rebuild yourself,
+`rm -rf <suite>/.venv`.
 
 pytest_suite (self-contained; the venv holds only pytest + httpx):
 

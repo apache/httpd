@@ -19,33 +19,25 @@ set -eu
 here="$(cd "$(dirname "$0")" && pwd)"
 
 # --- ensure the venv exists and is current ----------------------------------
-# We invoke .venv/bin/pytest directly rather than `uv run` so the suite works
-# even where `uv run` is shimmed/unavailable.
+# The suite baselines on uv (https://docs.astral.sh/uv/) as its dependency and
+# venv manager: it reads pyproject.toml + uv.lock, so there is a single source
+# of truth for dependencies. We invoke .venv/bin/pytest directly rather than
+# `uv run` so the suite works even where `uv run` is shimmed/unavailable.
 #
 # Create $here/.venv on first run, and rebuild it when pyproject.toml is newer
-# than the venv (i.e. dependencies changed). Prefer uv (which reads
-# pyproject.toml + uv.lock); otherwise fall back to python3 -m venv + pip,
-# taking the dependency list straight from pyproject.toml so there is no second
-# copy to keep in sync. Absolute paths throughout, so this behaves identically
-# regardless of the caller's cwd. This block is kept byte-for-byte identical in
-# pytest_suite/runtests.sh and pyhttpd/runtests.sh -- edit both together.
+# than the venv (i.e. dependencies changed). Absolute paths throughout, so this
+# behaves identically regardless of the caller's cwd. This block is kept
+# byte-for-byte identical in pytest_suite/runtests.sh and pyhttpd/runtests.sh
+# -- edit both together.
 PYTEST="$here/.venv/bin/pytest"
 if [ ! -x "$PYTEST" ] || [ "$here/pyproject.toml" -nt "$here/.venv" ]; then
-    if command -v uv >/dev/null 2>&1; then
-        echo "runtests.sh: (re)creating $here/.venv via 'uv sync'..." >&2
-        uv sync --project "$here"
-    elif command -v python3 >/dev/null 2>&1; then
-        echo "runtests.sh: (re)creating $here/.venv via python3 + pip..." >&2
-        python3 -m venv "$here/.venv"
-        # Read [project].dependencies from pyproject.toml (one entry per line,
-        # double-quoted) so the install list never drifts from the manifest.
-        deps=$(awk -F'"' '/^dependencies = \[/{f=1; next} f && /^\]/{f=0} f && NF>=2 {print $2}' "$here/pyproject.toml")
-        # shellcheck disable=SC2086  # deps is an intentional word-split list
-        "$here/.venv/bin/pip" install --quiet $deps
-    else
-        echo "runtests.sh: ERROR: $PYTEST not found and neither 'uv' nor 'python3' is installed." >&2
+    if ! command -v uv >/dev/null 2>&1; then
+        echo "runtests.sh: ERROR: 'uv' is required but not installed." >&2
+        echo "  Install it from https://docs.astral.sh/uv/ and re-run." >&2
         exit 1
     fi
+    echo "runtests.sh: (re)creating $here/.venv via 'uv sync'..." >&2
+    uv sync --project "$here"
     # Mark the venv as freshly built so the staleness check above won't retrigger
     # until pyproject.toml changes again.
     touch "$here/.venv"
