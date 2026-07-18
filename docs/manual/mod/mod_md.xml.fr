@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
-<!-- English Revision: 1935077 -->
+<!-- English Revision: 1936207 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -220,19 +220,24 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 		aussi ici, ce qui vous permettra de visualiser les éventuels
 		problèmes sans devoir vous plonger dans les journaux du serveur.
             </p><p>
-                Il existe aussi un nouveau gestionnaire, "md-status", qui peut
+                Il existe aussi un nouveau gestionnaire,
+		« <code>md-status</code> », qui peut
 		vous fournir les informations à propos des domaines gérés à
-		partir de "server-status" et au format JSON. Vous pouvez le
+		partir de « <code>server-status</code> » et au format JSON. Vous pouvez le
 		configurer comme suit sur votre serveur :
             </p>
             <highlight language="config">
 &lt;Location "/md-status">
   SetHandler md-status
+  Require host example.com
 &lt;/Location>
             </highlight>
             <p>
-                Comme pour "server-status", vous devez
-		ajouter les autorisations nécessaires. 
+		sur votre serveur. Comme pour « <code>server-status</code> »,
+		vous <strong>devez</strong> protéger la sortie de
+		<code>md-status</code> de la vue du public en instaurant des
+		restrictions d’autorisation (telles que
+		<module>mod_authz_host</module>).		 
             </p><p>
                 Si vous ne souhaitez recevoir l'état JSON que pour un domaine
 		spécifique, ajoutez le simplement à votre URL d'état :
@@ -290,7 +295,7 @@ MDChallengeDns01 /usr/bin/acme-setup-dns
 &lt;/MDomain>            
             </highlight>
             <p>
-		et utilisez 'server-status' et/ou <directive
+		et utilisez « <code>server-status</code> » et/ou <directive
 		module="mod_md">MDMessageCmd</directive> pour voir comment tout
 		cela fonctionne. Vous pourrez alors vérifier si l'information
 		d'agrafage est présente, sa durée de validité, son origine et à
@@ -521,19 +526,16 @@ MDomain example2.org auto
 		Plutôt que l'URL proprement dite, vous pouvez spécifier
 		'letsencrypt' ou 'buypass'.
             </p><p>
-		Si vous spécifiez plusieurs URLs, chacune d'entre elles est
+                Si vous spécifiez plusieurs URLs, chacune d'entre elles est
 		testée en mode tourniquet ("round-robin") après un certain
 		nombre d'échecs. Vous pouvez définir la rapidité de ce processus
-		à l'aide des directives <directive
-		module="mod_md">MDRetryDelay</directive> et <directive
-		module="mod_md">MDRetryFailover</directive>. Par défaut, une
-		demie journée d'essais infructueux est considérée comme un
-		échec.
-            </p><p>
-		Tous les autres réglages s'appliquent à chacune de ces URLs. Il
+		à l'aide des directives <directive module="mod_md">MDRetryDelay</directive> et
+		<directive module="mod_md">MDRetryFailover</directive>. Par défaut, une demie
+		journée d'essais infructueux est considérée comme un échec.
+        </p><p>
+                Tous les autres réglages s'appliquent à chacune de ces URLs. Il
 		est ainsi par exemple impossible d'en avoir deux avec des
-		directives <directive
-		module="mod_md">MDExternalAccountBinding</directive>
+		directives <directive module="mod_md">MDExternalAccountBinding</directive>
 		différentes.
 	    </p><p>
                 A des fins de test, les CAs fournissent en général une seconde
@@ -624,15 +626,53 @@ MDCertificateAuthority https://acme-staging-v02.api.letsencrypt.org/directory
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>À partir de la version 2.4.69, un mandataire peut être
+	configuré séparément pour chaque MDomain.</compatibility>
         <usage>
-	    <p>Cette directive permet de spécifier un serveur http mandataire
+	    <p>Utiliser l’URL du serveur http mandataire direct donné
 	    pour se connecter à l'autorité de certification spécifiée via
 	    <directive module="mod_md">MDCertificateAuthority</directive>. Vous
 	    devez la définir si votre serveur web ne peut atteindre internet que
-	    via un serveur mandataire.
+	    via un mandataire direct.
             </p>
         </usage>
     </directivesynopsis>
+
+    <directivesynopsis>
+        <name>MDHttpProxyCACertificateFile</name>
+        <description>Définition des certificats racine (CA) à utiliser pour les
+	connexions TLS avec le mandataire http.</description>
+        <syntax>MDHttpProxyCACertificateFile <var>path-to-pem-file</var></syntax>
+        <default>MDHttpProxyCACertificateFile none</default>
+        <contextlist>
+            <context>server config</context>
+        </contextlist>
+        <compatibility>Disponible à partir de la version 2.4.69 du serveur HTTP
+	Apache</compatibility>
+         <usage>
+            <p>
+                Cette directive est utilisée pour les connexions avec le
+		mandataire HTTPS direct (directive <directive
+		module="mod_md">MDHttpProxy</directive>). Elle est requise si le
+		certificat du mandataire HTTPS ne peut pas être vérifié en
+		utilisant le magasin général de la racine du CA. Cela se produit
+		parfois dans les environnements de test ou au sein d’une
+		entreprise.
+            </p>
+            <p>
+                Le certificat du serveur ACME est vérifié avec les certificats
+		racine définis via la directive <directive
+		module="mod_md">MDCACertificateFile</directive> ; vous serez
+		donc amené à utiliser les deux définitions.
+            </p>
+            <p>
+                Utilisez « none » comme chemin pour désactiver cette
+		fonctionnalité explicitement.
+            </p>
+	    <p> Cette directive peut être configurée séparément pour chaque
+	    <directive module="mod_md">MDomain</directive>.  </p>
+         </usage>
+     </directivesynopsis>
 
     <directivesynopsis>
         <name>MDMember</name>
@@ -1321,22 +1361,23 @@ MDMessageCmd /etc/apache/md-message
     <directivesynopsis>
         <name>MDServerStatus</name>
         <description>Définit si les informations à propos des domaines gérés
-	sont ajoutés ou non à server-status.</description>
+	sont ajoutés ou non à <code>server-status</code>.</description>
         <syntax>MDServerStatus on|off</syntax>
-        <default>MDServerStatus on</default>
+        <default>MDServerStatus off</default>
         <contextlist>
             <context>server config</context>
         </contextlist>
         <usage>
-            <p>
-                Le gestionnaire d'Apache "server-status" vous permet de
-		configurer une ressource pour monitorer le fonctionnement du
-		serveur. Cette ressource inclut maintenant une section indiquant
-		tous les domaines gérés avec leur nom DNS, l'état de
-		renouvellement du certificat, la durée de vie de ce dernier,
-		ainsi que d'autres propriétés fondamentales.
-            </p><p>
-                Cette directive permet d'activer/désactiver cette ressource.
+	    <p>Si cette directive est activée, une section est ajoutée au
+	    gestionnaire « <code>server-status</code> » de
+	    <module>mod_status</module>, qui liste tous les domaines gérés avec
+	    leur nom DNS, l'état de renouvellement du certificat, la durée de
+	    vie de ce dernier, ainsi que d'autres propriétés fondamentales.
+	    </p><p>
+               Comme avec « <code>md-status</code> », la sortie de
+	       « <code>server-status</code> » <strong>doit</strong> être
+	       protégée de la vue du public en instaurant des restrictions
+	       d’autorisation appropriées.
             </p>
         </usage>
     </directivesynopsis>
@@ -1351,7 +1392,8 @@ MDMessageCmd /etc/apache/md-message
         </contextlist>
         <usage>
             <p>
-                Cette directive impacte l'interface utilisateur HTML 'server-status' et
+                Cette directive impacte l'interface utilisateur HTML
+		« <code>server-status</code> » et
 		n'a rien à voir avec le fonctionnement de mod_md proprement dit.
 		Elle permet de définir le lien qui s'affiche sur cette interface
 		pour accéder facilement à un moniteur de certificat. L'empreinte
@@ -1686,13 +1728,13 @@ MDMessageCmd /etc/apache/md-message
 		configuration du serveur et si les certificats renouvelés sont
 		activés.
             </p><p>
-		Le verrouillage a été implémenté pour les configurations de
-		cluster où <directive module="mod_md">MDStoreDir</directive>
-		appartient à un système de fichiers partagé. L'activation des
-		certificats renouvelés sera alors protégée lorsque plusieurs
-		noeuds du cluster sont redémarrés ou reconfigurés simultanément
-		; ceci à condition bien entendu que le système de fichiers
-		partagé prenne en charge le verrouillage de fichier.
+                Le verrouillage a été implémenté pour les configurations de
+		cluster où <directive module="mod_md">MDStoreDir</directive> appartient à un système de fichiers
+		partagé. L'activation des certificats renouvelés sera alors
+		protégée lorsque plusieurs noeuds du cluster sont redémarrés ou
+		reconfigurés simultanément ; ceci à condition bien entendu que
+		le système de fichiers partagé prenne en charge le verrouillage
+		de fichier.
             </p><p>
                 Le temps d'attente par défaut pour obtenir le verrou est de 5
 		secondes. Si le verrou ne peut pas être obtenu, une erreur est
@@ -1723,13 +1765,13 @@ MDMessageCmd /etc/apache/md-message
 	Apache</compatibility>
         <usage>
             <p>
-		Cette directive permet de définir de quelle manière est invoquée
-		la commande <directive
-		module="mod_md">MDChallengeDns01</directive>, à savoir le nombre
-		et le type de ses arguments. Voir <directive
+                Cette directive permet de définir de quelle manière est invoquée
+		la commande <directive module="mod_md">MDChallengeDns01</directive>, à savoir le nombre et le type de
+		ses arguments. Voir <directive
 		module="mod_md">MDChallengeDns01</directive> pour les
-		différences.  Cette définition est globale et ne peut pas
-		s'appliquer différemment pour chaque domaine.
+		différences.
+		Cette définition est globale et ne peut pas s'appliquer
+		différemment pour chaque domaine.
             </p>
         </usage>
     </directivesynopsis>
@@ -1821,13 +1863,13 @@ MDMessageCmd /etc/apache/md-message
 		profile «&nbsp;shortlived » délivre des certificats dont la durée de
 		validité est de 6&nbsp;jours seulement.
             </p><p>
-		Si vous ne modifiez pas la configuration de votre module
-		<module>mod_md</module>, vous continuerez à recevoir des
-		certificats d'une durée de validité de 90&nbsp;jours. Si vous
-		pensez qu'une durée de validité plus courte convient mieux à
-		votre situation (et acceptez le risque que le temps de
-		renouvellement soit beaucoup plus court), vous pouvez définir le
-		profile à utiliser à l'aide de «&nbsp;MDProfile shortlived ».
+                Si vous ne modifiez pas la configuration de votre module <module>mod_md</module>,
+		vous continuerez à recevoir des certificats d'une durée de
+		validité de 90&nbsp;jours. Si vous pensez qu'une durée de validité
+		plus courte convient mieux à votre situation (et acceptez le
+		risque que le temps de renouvellement soit beaucoup plus court),
+		vous pouvez définir le profile à utiliser à l'aide de
+		«&nbsp;MDProfile shortlived ».
            </p><p>
                 Les noms de profile sont définis par le CA. Si vous tentez de
 		définie un profile non valable, aucun profile ne sera utilisé,
@@ -1919,6 +1961,8 @@ MDMessageCmd /etc/apache/md-message
         <contextlist>
             <context>server config</context>
         </contextlist>
+	<compatibility>Depuis la version 2.4.69, cette directive peut être
+	définie séparément pour chaque MDomain.</compatibility>
         <usage>
             <p>
                 Cette directive est principalement utilisée dans les
