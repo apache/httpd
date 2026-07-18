@@ -26,9 +26,6 @@
 #include "apr_escape.h"
 #include "mod_watchdog.h"
 
-#include <errno.h>
-#include <stdlib.h>
-
 static const char *balancer_mutex_type = "proxy-balancer-shm";
 ap_slotmem_provider_t *storage = NULL;
 
@@ -1159,12 +1156,12 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
     /* First set the params */
     if (wsel) {
         const char *val;
+        int ival;
         int was_usable = PROXY_WORKER_IS_USABLE(wsel);
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, APLOGNO(01192) "settings worker params");
 
         if ((val = apr_table_get(params, "w_lf"))) {
-            int ival;
             if (balancer_parse_lbfactor(val, &ival)) {
                 wsel->s->lbfactor = ival;
                 if (bsel)
@@ -1188,49 +1185,41 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
          * on that # character, since the character == the flag
          */
         if ((val = apr_table_get(params, "w_status_I"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_IGNORE_ERRORS_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_N"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_DRAIN_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_D"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_DISABLED_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_H"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HOT_STANDBY_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_R"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HOT_SPARE_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_S"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_STOPPED_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_status_C"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 1, &ival)) {
                 ap_proxy_set_wstatus(PROXY_WORKER_HC_FAIL_FLAG, ival, wsel);
             }
         }
         if ((val = apr_table_get(params, "w_ls"))) {
-            int ival;
             if (balancer_parse_int(val, 0, 99, &ival)) {
                 wsel->s->lbset = ival;
              }
@@ -1244,13 +1233,11 @@ static int balancer_process_balancer_worker(request_rec *r, proxy_server_conf *c
             }
         }
         if ((val = apr_table_get(params, "w_hp"))) {
-            int ival;
             if (balancer_parse_int(val, 1, APR_INT32_MAX, &ival)) {
                 wsel->s->passes = ival;
              }
         }
         if ((val = apr_table_get(params, "w_hf"))) {
-            int ival;
             if (balancer_parse_int(val, 1, APR_INT32_MAX, &ival)) {
                 wsel->s->fails = ival;
              }
