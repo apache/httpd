@@ -52,6 +52,9 @@
 #define H3_GOAWAY_GRACE_SECS 3
 #define H3_PORT_ACQUIRE_RETRY_MS 200
 
+/* Initial capacity for the doubling-growth request/response body buffers. */
+#define H3_BODY_BUF_INIT_CAP (8 * 1024)
+
 #define STREAM_CHUNK_BYTES (4 * 1024)
 
 #define NV_SET(nva, i, n, v) \

@@ -49,7 +49,6 @@ static void register_hooks(apr_pool_t* /*p*/)
     h3_proto_out_filter_handle = ap_register_output_filter("H3_NET_OUT_PROTO", h3_filter_out_proto, NULL, AP_FTYPE_PROTOCOL);
 
     h3_proto_in_filter_handle = ap_register_input_filter("H3_NET_IN_PROTO", h3_filter_in_proto, NULL, AP_FTYPE_PROTOCOL);
-    ap_hook_insert_filter(h3_filter_last, NULL, NULL, APR_HOOK_LAST);
 
     ap_hook_child_init(h3_child_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_stopping(h3_c1_child_stopping, NULL, NULL, APR_HOOK_MIDDLE);

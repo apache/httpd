@@ -68,6 +68,8 @@ conn_rec* h3_synth_conn(h3_session* session)
     c->local_ip = apr_pstrdup(cpool, "0.0.0.0");
     c->client_ip = apr_pstrdup(cpool, "0.0.0.0");
     c->remote_host = apr_pstrdup(cpool, "unknown");
+    apr_sockaddr_info_get(&c->client_addr, c->client_ip, APR_INET, 0, 0, cpool);
+    apr_sockaddr_info_get(&c->local_addr, c->local_ip, APR_INET, 0, 0, cpool);
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
     c->log = &s->log;
     c->slaves = apr_array_make(cpool, 4, sizeof(void*));
@@ -226,7 +228,11 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     h3ctx->stream = h3s;
     ap_set_module_config(r->request_config, &http3_module, h3ctx);
 
+    ap_add_output_filter_handle(h3_proto_out_filter_handle, h3ctx, r, r->connection);
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "before ap_process_request");
     ap_process_request(r);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "after ap_process_request");
 
     apr_thread_mutex_lock(session->lock);
     h3s->dispatched = 1;
@@ -251,8 +257,11 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     else
     {
         capture_response_body(h3s, h3ctx, h3s->pool);
-        /* Fallback to r->status if resp not populated. */
-        status = (h3ctx->resp && h3ctx->resp->status) ? h3ctx->resp->status : r->status;
+        status = r->status;
+        if (status == 0)
+        {
+            status = 200;
+        }
         nvlen = build_response_nva(nva, OSSL_NELEM(nva), r, h3ctx, h3s->pool);
     }
 

@@ -154,14 +154,28 @@ int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data,
                      stream_id, conf->h3_max_request_body_size);
         return 0;
     }
-    /* Append data to body buffer. */
-    uint8_t* combined = apr_palloc(stream->pool, stream->request_body_len + datalen);
-    if (stream->request_body_len)
+    /* Grow the body buffer using a doubling strategy to avoid O(n^2) copies. */
+    size_t needed = stream->request_body_len + datalen;
+    if (needed > stream->request_body_capacity)
     {
-        memcpy(combined, stream->request_body, stream->request_body_len);
+        size_t new_cap = stream->request_body_capacity ? stream->request_body_capacity : H3_BODY_BUF_INIT_CAP;
+        while (new_cap < needed)
+        {
+            new_cap *= 2;
+        }
+        if (new_cap > conf->h3_max_request_body_size)
+        {
+            new_cap = conf->h3_max_request_body_size;
+        }
+        uint8_t* grown = apr_palloc(stream->pool, new_cap);
+        if (stream->request_body_len)
+        {
+            memcpy(grown, stream->request_body, stream->request_body_len);
+        }
+        stream->request_body = grown;
+        stream->request_body_capacity = new_cap;
     }
-    memcpy(combined + stream->request_body_len, data, datalen);
-    stream->request_body = combined;
+    memcpy((uint8_t*)stream->request_body + stream->request_body_len, data, datalen);
     stream->request_body_len += datalen;
     return 0;
 }

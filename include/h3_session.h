@@ -86,6 +86,7 @@ struct h3_stream
     const uint8_t* request_body;
     size_t request_body_len;
     size_t request_body_offset;
+    size_t request_body_capacity;
     int request_body_overflow;
 
     const char* method;

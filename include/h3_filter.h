@@ -33,6 +33,7 @@ typedef struct h3_conn_ctx_t
     ap_bucket_response* resp;
     char* dataheap;
     apr_size_t dataheaplen;
+    apr_size_t dataheapcap;
     apr_pool_t* c3reqpool;
     server_rec* s;
     /// Set once the response body exceeds H3MaxResponseBodySize.
@@ -78,13 +79,5 @@ apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input
  * @return APR_SUCCESS (with EOS bucket inserted) or APR_EOF.
  */
 apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes);
-
-/**
- * ap_hook_insert_filter callback. Attaches h3_proto_out_filter to the
- * main request (skipping subrequests) so the response is captured
- * before the network filter discards it.
- * @param r The main request.
- */
-void h3_filter_last(request_rec* r);
 
 #endif /* H3_FILTER_H */

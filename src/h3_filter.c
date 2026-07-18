@@ -79,6 +79,7 @@ apr_status_t h3_filter_in(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_
 /* Serve request body. */
 static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e /*block*/, apr_off_t readbytes)
 {
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "serve_request_body started, h3s=%p", (void*)h3s);
     apr_bucket_alloc_t* ba = f->c->bucket_alloc;
 
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE && mode != AP_MODE_EXHAUSTIVE && mode != AP_MODE_SPECULATIVE)
@@ -113,6 +114,7 @@ static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucke
     }
     /* AP_MODE_EXHAUSTIVE: take everything remaining, as already set above. */
 
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "serve_request_body: unread=%p, want=%" APR_SIZE_T_FMT, (void*)unread, want);
     apr_bucket* b = apr_bucket_pool_create((const char*)unread, want, h3s->pool, ba);
     APR_BRIGADE_INSERT_TAIL(bb, b);
 
@@ -124,6 +126,7 @@ static apr_status_t serve_request_body(ap_filter_t* f, h3_stream* h3s, apr_bucke
             APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(ba));
         }
     }
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "serve_request_body done, want=%" APR_SIZE_T_FMT ", offset=%" APR_SIZE_T_FMT, want, h3s->request_body_offset);
     return APR_SUCCESS;
 }
 
@@ -152,15 +155,24 @@ static void capture_body_bucket(request_rec* r, h3_conn_ctx_t* ctx, apr_bucket* 
                      r->uri, limit);
         return;
     }
-    apr_size_t old = ctx->dataheaplen;
-    char* combined = apr_palloc(ctx->c3reqpool, old + len);
-    if (old)
+    apr_size_t new_len = ctx->dataheaplen + len;
+    if (new_len > ctx->dataheapcap)
     {
-        memcpy(combined, ctx->dataheap, old);
+        apr_size_t new_cap = ctx->dataheapcap ? ctx->dataheapcap * 2 : H3_BODY_BUF_INIT_CAP;
+        while (new_cap < new_len)
+        {
+            new_cap *= 2;
+        }
+        char* new_heap = apr_palloc(ctx->c3reqpool, new_cap);
+        if (ctx->dataheaplen > 0)
+        {
+            memcpy(new_heap, ctx->dataheap, ctx->dataheaplen);
+        }
+        ctx->dataheap = new_heap;
+        ctx->dataheapcap = new_cap;
     }
-    memcpy(combined + old, data, len);
-    ctx->dataheap = combined;
-    ctx->dataheaplen = old + len;
+    memcpy(ctx->dataheap + ctx->dataheaplen, data, len);
+    ctx->dataheaplen = new_len;
 }
 
 apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
@@ -175,8 +187,10 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
 
     for (apr_bucket* b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b))
     {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "h3_filter_out_proto: received bucket type=%s length=%" APR_SIZE_T_FMT, b->type->name, b->length);
         if (AP_BUCKET_IS_ERROR(b))
         {
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "h3_filter_out_proto: generating error response");
             ap_send_error_response(f->r, 0);
             return OK;
         }
@@ -212,6 +226,7 @@ apr_status_t h3_filter_out_proto(ap_filter_t* f, apr_bucket_brigade* bb)
 
 apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
 {
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, f->c->base_server, "h3_filter_in_proto called, readbytes=%" APR_OFF_T_FMT, readbytes);
     h3_conn_ctx_t* ctx = (h3_conn_ctx_t*)ap_get_module_config(f->r->request_config, &http3_module);
     h3_stream* h3s = ctx ? ctx->stream : NULL;
     if (!h3s)
@@ -219,18 +234,4 @@ apr_status_t h3_filter_in_proto(ap_filter_t* f, apr_bucket_brigade* bb, ap_input
         return input_filter_eos(f, bb, mode, block, readbytes);
     }
     return serve_request_body(f, h3s, bb, mode, block, readbytes);
-}
-
-void h3_filter_last(request_rec* r)
-{
-    if (r->main != NULL)
-    {
-        return;
-    }
-    h3_conn_ctx_t* ctx = (h3_conn_ctx_t*)ap_get_module_config(r->request_config, &http3_module);
-    if (apr_table_get(r->connection->notes, "IS_mod_http3") == NULL || ctx == NULL)
-    {
-        return;
-    }
-    ap_add_output_filter_handle(h3_proto_out_filter_handle, ctx, r, r->connection);
 }

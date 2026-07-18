@@ -40,7 +40,6 @@
 
 int h3_hook_fixups(request_rec* r)
 {
-    CHECK(r);
     if (!ap_is_initial_req(r))
     {
         return DECLINED;
@@ -57,6 +56,8 @@ int h3_hook_fixups(request_rec* r)
     {
         return DECLINED;
     }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server, "h3_hook_fixups called");
 
     if (apr_table_get(r->headers_out, "Alt-Svc"))
     {
@@ -85,11 +86,11 @@ void h3_hook_pre_read_request(request_rec* /*r*/, conn_rec* /*c*/)
 
 int h3_hook_access_checker(request_rec* r)
 {
-    CHECK(r);
     if (!IS_H3_REQUEST(r))
     {
         return DECLINED;
     }
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server, "h3_hook_access_checker called");
     /* Reject unprocessable bodies early. */
     h3_conn_ctx_t* ctx = ap_get_module_config(r->request_config, &http3_module);
     h3_stream* stream = ctx ? ctx->stream : NULL;
