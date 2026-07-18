@@ -5,11 +5,11 @@ for a more flexible testing of Apache httpd.
 
 Install
 -------
-If not already installed, you will need to install 'pytest' and 'OpenSSL' for
-python:
-> apt install python3-pip
-> pip install -U pytest
-> pip install -U pyopenssl
+The Python dependencies (pytest, pyOpenSSL, etc.) are managed with uv
+(https://docs.astral.sh/uv/), which reads pyproject.toml + uv.lock and creates
+a local .venv. Install uv, then let pyhttpd/runtests.sh build the venv on first
+run (it invokes `uv sync` for you); or create it yourself:
+> uv sync
 
 And for 'h2load':
 > apt install nghttp2-client
