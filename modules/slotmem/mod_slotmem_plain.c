@@ -38,24 +38,31 @@ struct ap_slotmem_instance_t {
 static struct ap_slotmem_instance_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 
-static int slotmem_size_mul(apr_size_t a, apr_size_t b, apr_size_t *res)
+static apr_status_t slotmem_layout_sizes(apr_size_t item_size,
+                                         unsigned int item_num,
+                                         apr_size_t *basesize,
+                                         apr_size_t *totalsize)
 {
-    if (a != 0 && b > ((apr_size_t)-1) / a) {
-        return 0;
+    apr_size_t slotdata;
+    apr_size_t total;
+
+    if (item_num && item_size > APR_SIZE_MAX / item_num) {
+        return APR_EINVAL;
     }
+    slotdata = item_size * item_num;
 
-    *res = a * b;
-    return 1;
-}
-
-static int slotmem_size_add(apr_size_t a, apr_size_t b, apr_size_t *res)
-{
-    if (a > ((apr_size_t)-1) - b) {
-        return 0;
+    if (APR_SIZE_MAX - slotdata < item_num) {
+        return APR_EINVAL;
     }
+    total = slotdata + item_num;
 
-    *res = a + b;
-    return 1;
+    if (basesize) {
+        *basesize = slotdata;
+    }
+    if (totalsize) {
+        *totalsize = total;
+    }
+    return APR_SUCCESS;
 }
 
 static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
@@ -88,16 +95,14 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
     apr_size_t basesize;
-    apr_size_t inuse_size;
     apr_size_t alloc_size;
+    apr_status_t rv;
 
     const char *fname;
 
-    if (!slotmem_size_mul(item_size, (apr_size_t)item_num, &basesize)
-            || !slotmem_size_mul((apr_size_t)item_num, sizeof(char),
-                                 &inuse_size)
-            || !slotmem_size_add(basesize, inuse_size, &alloc_size)) {
-        return APR_EINVAL;
+    rv = slotmem_layout_sizes(item_size, item_num, &basesize, &alloc_size);
+    if (rv != APR_SUCCESS) {
+        return rv;
     }
 
     if (name) {
@@ -208,7 +213,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     if (id >= slot->num) {
         return APR_EINVAL;
     }
-    if (dest_len > slot->size) {
+    if (dest_len > slot->size || (dest_len && !dest)) {
         return APR_EINVAL;
     }
 
@@ -221,7 +226,9 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
         return ret;
     }
     *inuse=1;
-    memcpy(dest, ptr, dest_len); /* bounds check? */
+    if (dest_len) {
+        memcpy(dest, ptr, dest_len);
+    }
     return APR_SUCCESS;
 }
 
@@ -237,7 +244,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     if (id >= slot->num) {
         return APR_EINVAL;
     }
-    if (src_len > slot->size) {
+    if (src_len > slot->size || (src_len && !src)) {
         return APR_EINVAL;
     }
 
@@ -250,7 +257,9 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
         return ret;
     }
     *inuse=1;
-    memcpy(ptr, src, src_len); /* bounds check? */
+    if (src_len) {
+        memcpy(ptr, src, src_len);
+    }
     return APR_SUCCESS;
 }
 
