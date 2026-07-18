@@ -946,8 +946,8 @@ inactifs</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdretrydelay">MDRetryDelay <var>duration</var></a></td><td> 30s </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Temps d'attente avant de r&eacute;essayer, doubl&eacute; &agrave; chaque erreur
 	cons&eacute;cutive</td></tr>
 <tr><td><a href="mod_md.html#mdretryfailover">MDRetryFailover <var>number</var></a></td><td> 13 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Le nombre d'erreurs avant de se tourner vers un autre CA</td></tr>
-<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
-	sont ajout&eacute;s ou non &agrave; server-status.</td></tr>
+<tr class="odd"><td><a href="mod_md.html#mdserverstatus">MDServerStatus on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">D&eacute;finit si les informations &agrave; propos des domaines g&eacute;r&eacute;s
+	sont ajout&eacute;s ou non &agrave; <code>server-status</code>.</td></tr>
 <tr><td><a href="mod_md.html#mdstapleothers">MDStapleOthers on|off</a></td><td> on </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Active l'agrafage pour les certificats non g&eacute;r&eacute;s par
 	mod_md.</td></tr>
 <tr class="odd"><td><a href="mod_md.html#mdstapling">MDStapling on|off</a></td><td> off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Active l'agrafage pour un ou plusieurs domaines.</td></tr>
