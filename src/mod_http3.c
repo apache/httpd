@@ -23,6 +23,7 @@
 #include <http_main.h>
 #include <http_protocol.h>
 #include <http_request.h>
+#include <http_ssl.h>
 #include <mpm_common.h>
 
 #include <apr_pools.h>
@@ -35,6 +36,7 @@
 
 static void register_hooks(apr_pool_t* /*p*/)
 {
+    ap_hook_handler(h3_status_handler, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_post_config(h3_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(h3_hook_http_create_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
@@ -42,6 +44,9 @@ static void register_hooks(apr_pool_t* /*p*/)
     ap_hook_post_read_request(h3_hook_post_read_request, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_access_checker(h3_hook_access_checker, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_fixups(h3_hook_fixups, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_http_scheme(h3_hook_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_default_port(h3_hook_default_port, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_ssl_conn_is_ssl(h3_hook_ssl_conn_is_ssl, NULL, NULL, APR_HOOK_MIDDLE);
 
     h3_net_out_filter_handle = ap_register_output_filter("H3_NET_OUT", h3_filter_out, NULL, AP_FTYPE_NETWORK);
     h3_net_in_filter_handle = ap_register_input_filter("H3_NET_IN", h3_filter_in, NULL, AP_FTYPE_NETWORK);

@@ -92,6 +92,11 @@ conn_rec* h3_synth_conn(h3_session* session)
     return c;
 }
 
+static int is_connection_specific(const char* k)
+{
+    return !ap_cstr_casecmp(k, "Connection") || !ap_cstr_casecmp(k, "Keep-Alive") || !ap_cstr_casecmp(k, "Proxy-Connection") || !ap_cstr_casecmp(k, "Transfer-Encoding") || !ap_cstr_casecmp(k, "Upgrade") || !ap_cstr_casecmp(k, "TE");
+}
+
 static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r, h3_conn_ctx_t* h3ctx, apr_pool_t* dst_pool)
 {
     apr_table_t* hdrs = (h3ctx->resp && h3ctx->resp->headers) ? h3ctx->resp->headers : r->headers_out;
@@ -102,13 +107,18 @@ static size_t build_response_nva(nghttp3_nv* nva, size_t nva_cap, request_rec* r
 
     if (hdrs != NULL)
     {
+        const char* conn_hdr = apr_table_get(hdrs, "Connection");
         const apr_array_header_t* tarr = apr_table_elts(hdrs);
         const apr_table_entry_t* telts = (const apr_table_entry_t*)tarr->elts;
         for (int i = 0; i < tarr->nelts && nvlen < nva_cap; i++)
         {
             const char* k = telts[i].key;
             const char* v = telts[i].val;
-            if (!k || !v)
+            if (!k || !v || k[0] == ':')
+            {
+                continue;
+            }
+            if (is_connection_specific(k) || (conn_hdr && ap_find_token(dst_pool, conn_hdr, k)))
             {
                 continue;
             }

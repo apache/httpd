@@ -67,7 +67,8 @@
         (nva)[(i)].flags = NGHTTP3_NV_FLAG_NONE; \
     } while (0)
 
-#define IS_H3_REQUEST(r) (apr_table_get((r)->connection->notes, "IS_mod_http3") != NULL)
+#define IS_H3_CONN(c) (apr_table_get((c)->notes, "IS_mod_http3") != NULL)
+#define IS_H3_REQUEST(r) IS_H3_CONN((r)->connection)
 
 #define IS_PSEUDO_TOKEN(t) ((t) == NGHTTP3_QPACK_TOKEN__METHOD || (t) == NGHTTP3_QPACK_TOKEN__SCHEME || (t) == NGHTTP3_QPACK_TOKEN__PATH || (t) == NGHTTP3_QPACK_TOKEN__AUTHORITY)
 

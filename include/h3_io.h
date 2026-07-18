@@ -50,6 +50,10 @@ typedef struct h3_io_t
     apr_thread_mutex_t* workers_lock;
     apr_array_header_t* workers;
     volatile apr_uint32_t live_workers;
+    volatile apr_uint32_t total_connections;
+    volatile apr_uint32_t total_streams;
+    volatile apr_uint64_t total_bytes_read;
+    volatile apr_uint64_t total_bytes_written;
     volatile int thread_running;
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;

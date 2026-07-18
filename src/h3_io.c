@@ -383,6 +383,7 @@ int prepare_accepted_connection(h3_io_t* io, SSL* conn)
     h3_pending_handshake* pending = (h3_pending_handshake*)apr_array_push(io->pending_handshakes);
     pending->conn = conn;
     pending->accepted_at = apr_time_now();
+    apr_atomic_inc32(&io->total_connections);
     return 1;
 }
 
@@ -469,6 +470,7 @@ void service_connection(h3_io_t* io, h3_session* session)
                 for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
                 {
                     new_streams++;
+                    apr_atomic_inc32(&io->total_streams);
                     int64_t sid = (int64_t)SSL_get_stream_id(s2);
                     if (sid < 0)
                     {

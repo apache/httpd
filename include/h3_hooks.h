@@ -30,6 +30,31 @@
 int h3_hook_fixups(request_rec* r);
 
 /**
+ * ap_hook_http_scheme. H3 connections are always TLS, but mod_ssl does not
+ * manage them and declines; without this hook self-referential URLs
+ * (redirects, REQUEST_SCHEME) would claim "http".
+ * @param r The request.
+ * @return "https" for an H3 request, NULL to decline otherwise.
+ */
+const char* h3_hook_http_scheme(const request_rec* r);
+
+/**
+ * ap_hook_default_port. Companion to the scheme hook: keeps the default
+ * port for H3 request URLs at 443 instead of 80.
+ * @param r The request.
+ * @return 443 for an H3 request, 0 to decline otherwise.
+ */
+apr_port_t h3_hook_default_port(const request_rec* r);
+
+/**
+ * ap_hook_ssl_conn_is_ssl. Marks H3 connections as TLS-protected for
+ * ap_ssl_conn_is_ssl() consumers (mod_rewrite %{HTTPS}, expression parser).
+ * @param c The connection.
+ * @return OK for an H3 connection, DECLINED otherwise.
+ */
+int h3_hook_ssl_conn_is_ssl(conn_rec* c);
+
+/**
  * ap_hook_post_read_request. No-op for H3; reserved for future
  * per-request initialisation. Always returns OK.
  * @param r The request (unused).
@@ -60,5 +85,14 @@ int h3_hook_access_checker(request_rec* r);
  * @return OK on install, DECLINED to skip.
  */
 int h3_hook_http_create_request(request_rec* r);
+
+/**
+ * ap_hook_handler for the "http3-status" handler. Emits a JSON snapshot of
+ * this child's HTTP/3 metrics (live workers, connection/stream counts, and
+ * byte totals). Declines any other handler or a non-GET method.
+ * @param r The request being handled.
+ * @return OK when it serves "http3-status", DECLINED otherwise.
+ */
+int h3_status_handler(request_rec* r);
 
 #endif /* H3_HOOKS_H */

@@ -21,6 +21,7 @@
 #include <http_config.h>
 #include <http_log.h>
 
+#include <apr_atomic.h>
 #include <apr_hash.h>
 #include <apr_pools.h>
 
@@ -31,6 +32,7 @@
 #include "h3.h"
 #include "h3_check.h"
 #include "h3_config.h"
+#include "h3_io.h"
 #include "h3_session.h"
 #include "h3_stream.h"
 #include "mod_http3.h"
@@ -80,6 +82,10 @@ void flush_nghttp3(h3_session* session)
         if (total > 0)
         {
             nghttp3_conn_add_write_offset(session->ngh3, sid, total);
+            if (child_h3_io)
+            {
+                apr_atomic_add64(&child_h3_io->total_bytes_written, total);
+            }
         }
         if (blocked)
         {
@@ -194,6 +200,10 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
         int rv = SSL_read_ex(h3s->ssl_stream, buf, buf_size, &nread);
         if (rv == 1 && nread > 0)
         {
+            if (child_h3_io)
+            {
+                apr_atomic_add64(&child_h3_io->total_bytes_read, nread);
+            }
             *data_read = 1;
             session->pending.sid = h3s->stream_id;
             session->pending.h3s = h3s;

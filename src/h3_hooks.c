@@ -25,8 +25,10 @@
 #include <http_log.h>
 #include <http_protocol.h>
 #include <http_request.h>
+#include <http_ssl.h>
 #include <http_vhost.h>
 
+#include <apr_atomic.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
 #include <apr_tables.h>
@@ -35,14 +37,36 @@
 #include "h3_check.h"
 #include "h3_filter.h"
 #include "h3_hooks.h"
+#include "h3_io.h"
 #include "h3_session.h"
 #include "mod_http3.h"
+
+const char* h3_hook_http_scheme(const request_rec* r)
+{
+    return IS_H3_REQUEST(r) ? "https" : NULL;
+}
+
+apr_port_t h3_hook_default_port(const request_rec* r)
+{
+    return IS_H3_REQUEST(r) ? APR_URI_HTTPS_DEFAULT_PORT : 0;
+}
+
+int h3_hook_ssl_conn_is_ssl(conn_rec* c)
+{
+    return IS_H3_CONN(c) ? OK : DECLINED;
+}
 
 int h3_hook_fixups(request_rec* r)
 {
     if (!ap_is_initial_req(r))
     {
         return DECLINED;
+    }
+
+    if (IS_H3_REQUEST(r))
+    {
+        /* mod_ssl does not manage this connection, so it sets no TLS environment. */
+        apr_table_setn(r->subprocess_env, "HTTPS", "on");
     }
 
     h3_server_conf* conf = ap_get_module_config(r->server->module_config, &http3_module);
@@ -117,5 +141,44 @@ int h3_hook_http_create_request(request_rec* r)
     ap_add_output_filter_handle(h3_net_out_filter_handle, NULL, NULL, r->connection);
     r->output_filters = r->connection->output_filters;
     r->proto_output_filters = r->connection->output_filters;
+    return OK;
+}
+
+int h3_status_handler(request_rec* r)
+{
+    if (strcmp(r->handler, "http3-status"))
+    {
+        return DECLINED;
+    }
+
+    if (r->method_number != M_GET)
+    {
+        return DECLINED;
+    }
+
+    ap_set_content_type(r, "application/json");
+
+    if (!child_h3_io)
+    {
+        ap_rputs("{\"error\": \"HTTP/3 not enabled or initialized on this child process\"}\n", r);
+        return OK;
+    }
+
+    apr_uint32_t live = apr_atomic_read32(&child_h3_io->live_workers);
+    apr_uint32_t conns = apr_atomic_read32(&child_h3_io->total_connections);
+    apr_uint32_t streams = apr_atomic_read32(&child_h3_io->total_streams);
+    apr_uint64_t bytes_in = apr_atomic_read64(&child_h3_io->total_bytes_read);
+    apr_uint64_t bytes_out = apr_atomic_read64(&child_h3_io->total_bytes_written);
+
+    ap_rprintf(r,
+               "{\n"
+               "  \"live_workers\": %u,\n"
+               "  \"total_connections\": %u,\n"
+               "  \"total_streams\": %u,\n"
+               "  \"total_bytes_read\": %" APR_UINT64_T_FMT ",\n"
+               "  \"total_bytes_written\": %" APR_UINT64_T_FMT "\n"
+               "}\n",
+               live, conns, streams, bytes_in, bytes_out);
+
     return OK;
 }
