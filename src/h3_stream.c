@@ -82,6 +82,7 @@ void flush_nghttp3(h3_session* session)
         if (total > 0)
         {
             nghttp3_conn_add_write_offset(session->ngh3, sid, total);
+            nghttp3_conn_add_ack_offset(session->ngh3, sid, total);
             if (child_h3_io)
             {
                 apr_atomic_add64(&child_h3_io->total_bytes_written, total);

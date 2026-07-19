@@ -80,18 +80,6 @@ int on_end_headers(nghttp3_conn* conn, int64_t stream_id, int fin, void* user_da
 int on_recv_data(nghttp3_conn* conn, int64_t stream_id, const uint8_t* data, size_t datalen, void* user_data, void* stream_user_data);
 
 /**
- * nghttp3 acked_stream_data callback. The peer has acknowledged
- * @p datalen bytes of response data; advance the per-stream read offset.
- * @param conn            The nghttp3 connection.
- * @param stream_id       QUIC stream id whose response data was acked.
- * @param datalen         Number of bytes the peer has acknowledged.
- * @param user_data       The h3_session.
- * @param stream_user_data The h3_stream.
- * @return 0 on success, NGHTTP3_ERR_CALLBACK_FAILURE on nghttp3 error.
- */
-int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* stream_user_data);
-
-/**
  * nghttp3 stop_sending callback. Abort stream read side.
  * @param conn            The nghttp3 connection.
  * @param stream_id       QUIC stream id being stopped.

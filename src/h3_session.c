@@ -76,7 +76,7 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
         return rv;
     }
 
-    nghttp3_callbacks cb = {.acked_stream_data = on_acked_stream_data, .recv_header = on_recv_header, .end_headers = on_end_headers, .recv_data = on_recv_data, .stream_close = on_stream_close, .begin_headers = on_begin_headers, .stop_sending = on_stop_sending, .reset_stream = on_reset_stream};
+    nghttp3_callbacks cb = {.recv_header = on_recv_header, .end_headers = on_end_headers, .recv_data = on_recv_data, .stream_close = on_stream_close, .begin_headers = on_begin_headers, .stop_sending = on_stop_sending, .reset_stream = on_reset_stream};
     nghttp3_settings settings = {0};
     nghttp3_settings_default(&settings);
     if (nghttp3_conn_server_new(&session->ngh3, &cb, &settings, nghttp3_mem_default(), session) != 0)

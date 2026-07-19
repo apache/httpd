@@ -180,20 +180,6 @@ int on_recv_data(nghttp3_conn* /*conn*/, int64_t stream_id, const uint8_t* data,
     return 0;
 }
 
-int on_acked_stream_data(nghttp3_conn* conn, int64_t stream_id, uint64_t datalen, void* user_data, void* /*stream_user_data*/)
-{
-    h3_session* session = user_data;
-    CHECK(session);
-    CHECK(conn);
-    int rv = nghttp3_conn_add_ack_offset(conn, stream_id, datalen);
-    if (rv && rv != NGHTTP3_ERR_STREAM_NOT_FOUND)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "nghttp3_conn_add_ack_offset failed: %d", rv);
-        return NGHTTP3_ERR_CALLBACK_FAILURE;
-    }
-    return 0;
-}
-
 int on_stop_sending(nghttp3_conn* /*conn*/, int64_t /*stream_id*/, uint64_t /*app_error_code*/, void* user_data, void* stream_user_data)
 {
     /* Send STOP_SENDING by freeing SSL object. */
