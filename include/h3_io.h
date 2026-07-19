@@ -28,6 +28,7 @@
 #include <apr_pools.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
+#include <apr_thread_pool.h>
 
 #include <openssl/ssl.h>
 
@@ -60,6 +61,7 @@ typedef struct h3_io_t
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_removed) * note_conn_removed;
 
     apr_array_header_t* pending_handshakes;
+    apr_thread_pool_t* h3_worker_pool;
 } h3_io_t;
 
 typedef struct h3_pending_handshake
@@ -117,8 +119,9 @@ void service_connection(h3_io_t* io, h3_session* session);
  * @param fd         The socket file descriptor.
  * @param ssl        The SSL connection instance.
  * @param want_write Unused parameter.
+ * @param session    The session for wakeup pipe polling.
  */
-void wait_for_event(int fd, SSL* ssl, int want_write);
+void wait_for_event(int fd, SSL* ssl, int want_write, h3_session* session);
 
 /**
  * Handle engine events and progress the SSL listener.

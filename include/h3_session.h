@@ -47,6 +47,8 @@ struct h3_session
 
     apr_hash_t* streams;
     int aborted;
+    /* Number of streams write-blocked in nghttp3 (see flush_nghttp3). */
+    int blocked_streams;
 
     int ngh3_dead;
     uint64_t abort_quic_error_code;
@@ -58,6 +60,10 @@ struct h3_session
     apr_size_t stream_read_buf_size;
 
     int control_streams_created;
+
+    apr_file_t* wakeup_pipe[2];
+
+    volatile apr_uint32_t active_tasks;
 
     struct
     {
@@ -73,6 +79,8 @@ struct h3_stream
     int64_t stream_id;
     SSL* ssl_stream;
     int done;
+    /* QUIC stream send buffer was full; nghttp3 told to skip the stream. */
+    int write_blocked;
 
     request_rec* r;
     int is_bidi;

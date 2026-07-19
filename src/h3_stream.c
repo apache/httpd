@@ -25,6 +25,8 @@
 #include <apr_hash.h>
 #include <apr_pools.h>
 
+#include <stdlib.h>
+
 #include <nghttp3/nghttp3.h>
 
 #include <openssl/ssl.h>
@@ -43,56 +45,118 @@ h3_stream* h3_stream_find(h3_session* session, int64_t sid)
     return apr_hash_get(session->streams, &sid, sizeof(sid));
 }
 
+static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_id, nghttp3_ssize liberr);
+
+/* Re-enable write-blocked streams once their QUIC send buffer has room. */
+static void unblock_writable_streams(h3_session* session)
+{
+    if (session->blocked_streams <= 0)
+    {
+        return;
+    }
+    for (apr_hash_index_t* hi = apr_hash_first(NULL, session->streams); hi; hi = apr_hash_next(hi))
+    {
+        h3_stream* h3s = apr_hash_this_val(hi);
+        if (!h3s || !h3s->write_blocked)
+        {
+            continue;
+        }
+        uint64_t avail = 0;
+        if (h3s->ssl_stream && SSL_get_generic_value_uint(h3s->ssl_stream, SSL_VALUE_STREAM_WRITE_BUF_AVAIL, &avail) == 1 && avail == 0)
+        {
+            continue; /* still full */
+        }
+        h3s->write_blocked = 0;
+        session->blocked_streams--;
+        nghttp3_conn_unblock_stream(session->ngh3, h3s->stream_id);
+    }
+}
+
 void flush_nghttp3(h3_session* session)
 {
     CHECK(session);
     CHECK(!session->ngh3_dead, return;);
+    unblock_writable_streams(session);
     for (;;)
     {
         nghttp3_vec vec[16] = {0};
         int64_t sid = -1;
         int fin = 0;
         nghttp3_ssize nvec = nghttp3_conn_writev_stream(session->ngh3, &sid, &fin, vec, 16);
-        if (nvec <= 0)
+        if (nvec < 0)
         {
+            mark_ngh3_dead(session, "nghttp3_conn_writev_stream", sid, nvec);
             break;
+        }
+        if (nvec == 0 && sid < 0)
+        {
+            break; /* nothing left to send */
+        }
+        size_t expected = 0;
+        for (nghttp3_ssize k = 0; k < nvec; k++)
+        {
+            expected += vec[k].len;
         }
         h3_stream* h3s = h3_stream_find(session, sid);
         if (!h3s || !h3s->ssl_stream)
         {
-            break;
+            /* Stream is gone; swallow its queued bytes so the send queue keeps draining. */
+            nghttp3_conn_add_write_offset(session->ngh3, sid, expected);
+            nghttp3_conn_add_ack_offset(session->ngh3, sid, expected);
+            continue;
         }
         size_t total = 0;
         int blocked = 0;
+        int broken = 0;
         for (nghttp3_ssize k = 0; k < nvec; k++)
         {
             size_t w = 0;
-            if (SSL_write_ex(h3s->ssl_stream, vec[k].base, vec[k].len, &w) <= 0)
+            int wrv = SSL_write_ex(h3s->ssl_stream, vec[k].base, vec[k].len, &w);
+            if (wrv <= 0)
             {
-                blocked = 1;
+                if (SSL_get_error(h3s->ssl_stream, wrv) == SSL_ERROR_WANT_WRITE)
+                {
+                    blocked = 1;
+                }
+                else
+                {
+                    broken = 1;
+                }
                 break;
             }
             total += w;
             if (w < vec[k].len)
             {
+                /* Short write: stop, or the next vec would leave a gap in the stream. */
                 blocked = 1;
                 break;
             }
         }
-        if (total > 0)
+        if (total > 0 && child_h3_io)
         {
-            nghttp3_conn_add_write_offset(session->ngh3, sid, total);
-            nghttp3_conn_add_ack_offset(session->ngh3, sid, total);
-            if (child_h3_io)
-            {
-                apr_atomic_add64(&child_h3_io->total_bytes_written, total);
-            }
+            apr_atomic_add64(&child_h3_io->total_bytes_written, total);
         }
+        if (broken)
+        {
+            /* Peer reset: drop the remainder; teardown happens via the nghttp3 callbacks. */
+            nghttp3_conn_add_write_offset(session->ngh3, sid, expected);
+            nghttp3_conn_add_ack_offset(session->ngh3, sid, expected);
+            continue;
+        }
+        nghttp3_conn_add_write_offset(session->ngh3, sid, total);
+        nghttp3_conn_add_ack_offset(session->ngh3, sid, total);
         if (blocked)
         {
-            break;
+            /* Send buffer full: skip this stream instead of busy-looping on the same vec. */
+            if (!h3s->write_blocked)
+            {
+                h3s->write_blocked = 1;
+                session->blocked_streams++;
+                nghttp3_conn_block_stream(session->ngh3, sid);
+            }
+            continue;
         }
-        if (fin)
+        if (fin && total == expected)
         {
             SSL_stream_conclude(h3s->ssl_stream, 0);
         }
@@ -134,12 +198,12 @@ h3_stream* track_stream(h3_session* session, int64_t sid, SSL* stream_ssl)
     return h3s;
 }
 
-static void mark_ngh3_dead(h3_session* session, int64_t stream_id, nghttp3_ssize liberr)
+static void mark_ngh3_dead(h3_session* session, const char* op, int64_t stream_id, nghttp3_ssize liberr)
 {
     session->ngh3_dead = 1;
     session->abort_quic_error_code = nghttp3_err_infer_quic_app_error_code((int)liberr);
     session->abort_reason = nghttp3_strerror((int)liberr);
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "read_stream failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, session->s, "%s failed for stream %" APR_INT64_T_FMT " (%s, err=%" APR_INT64_T_FMT "); closing with QUIC error 0x%" APR_UINT64_T_HEX_FMT, op, stream_id, session->abort_reason, (apr_int64_t)liberr, session->abort_quic_error_code);
 }
 
 static void feed_stream_fin(h3_session* session, h3_stream* h3s)
@@ -147,7 +211,7 @@ static void feed_stream_fin(h3_session* session, h3_stream* h3s)
     nghttp3_ssize consumed = nghttp3_conn_read_stream(session->ngh3, h3s->stream_id, NULL, 0, 1);
     if (consumed < 0)
     {
-        mark_ngh3_dead(session, h3s->stream_id, consumed);
+        mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
     }
     h3s->body_complete = 1;
 }
@@ -214,7 +278,7 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
             if (consumed < 0)
             {
                 /* Mark dead if read fails. */
-                mark_ngh3_dead(session, h3s->stream_id, consumed);
+                mark_ngh3_dead(session, "nghttp3_conn_read_stream", h3s->stream_id, consumed);
                 h3s->done = 1;
                 break;
             }
@@ -286,18 +350,37 @@ apr_array_header_t* drain_ready_streams(h3_session* session, apr_pool_t* loop_po
     for (int i = 0; i < snapshot->nelts; i++)
     {
         h3_stream* h3s = ((h3_stream**)snapshot->elts)[i];
-        if (!h3s->is_bidi || H3_SID_IS_SERVER(h3s->stream_id) || !h3s->done)
+        if (h3s)
         {
-            continue;
-        }
-        if (h3s->ssl_stream != NULL)
-        {
-            done_but_has_ssl++;
-        }
-        else if (h3s->dispatched)
-        {
-            apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), NULL);
-            apr_pool_destroy(h3s->pool);
+            /* Only request streams are reclaimed; control streams live for the connection. */
+            if (h3s->is_bidi && !H3_SID_IS_SERVER(h3s->stream_id))
+            {
+                if (h3s->done && h3s->ssl_stream == NULL && h3s->dispatched)
+                {
+                    /* response_data is malloc'd on a worker thread, so free it explicitly. */
+                    if (h3s->write_blocked)
+                    {
+                        h3s->write_blocked = 0;
+                        session->blocked_streams--;
+                    }
+                    apr_hash_set(session->streams, &h3s->stream_id, sizeof(h3s->stream_id), NULL);
+                    if (h3s->response_data)
+                    {
+                        free((void*)h3s->response_data);
+                        h3s->response_data = NULL;
+                        h3s->response_len = 0;
+                        h3s->response_offset = 0;
+                    }
+                    if (h3s->pool)
+                    {
+                        apr_pool_destroy(h3s->pool);
+                    }
+                }
+                else if (h3s->done && h3s->ssl_stream != NULL)
+                {
+                    done_but_has_ssl++;
+                }
+            }
         }
     }
     if (done_but_has_ssl > 0)

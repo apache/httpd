@@ -55,7 +55,7 @@ void* APR_THREAD_FUNC quic_event_thread(apr_thread_t* thread, void* data)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "event thread started");
     while (io->thread_running)
     {
-        wait_for_event(io->udp_fd, io->ssl_listener, 1);
+        wait_for_event(io->udp_fd, io->ssl_listener, 1, NULL);
         SSL_handle_events(io->ssl_listener);
 
         for (;;)

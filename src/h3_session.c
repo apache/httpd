@@ -76,6 +76,13 @@ apr_status_t h3_session_create(h3_session** psession, server_rec* s, SSL* ssl_li
         return rv;
     }
 
+    rv = apr_file_pipe_create_ex(&session->wakeup_pipe[0], &session->wakeup_pipe[1], APR_FULL_NONBLOCK, pool);
+    if (rv != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_file_pipe_create_ex failed");
+        return rv;
+    }
+
     nghttp3_callbacks cb = {.recv_header = on_recv_header, .end_headers = on_end_headers, .recv_data = on_recv_data, .stream_close = on_stream_close, .begin_headers = on_begin_headers, .stop_sending = on_stop_sending, .reset_stream = on_reset_stream};
     nghttp3_settings settings = {0};
     nghttp3_settings_default(&settings);
@@ -150,6 +157,16 @@ void h3_session_destroy(h3_session* session)
         return;
     }
     apr_thread_mutex_lock(session->lock);
+    if (session->wakeup_pipe[0])
+    {
+        apr_file_close(session->wakeup_pipe[0]);
+        session->wakeup_pipe[0] = NULL;
+    }
+    if (session->wakeup_pipe[1])
+    {
+        apr_file_close(session->wakeup_pipe[1]);
+        session->wakeup_pipe[1] = NULL;
+    }
     if (session->ngh3)
     {
         nghttp3_conn_del(session->ngh3);

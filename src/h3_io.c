@@ -25,6 +25,8 @@
 #include <apr_atomic.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>
+#include <apr_portable.h>
+#include <apr_thread_pool.h>
 
 #include <openssl/err.h>
 #include <openssl/ssl.h>
@@ -91,6 +93,11 @@ static void teardown(h3_io_t* io)
         apr_thread_join(&status, io->event_thread);
         io->event_thread = NULL;
     }
+    if (io->h3_worker_pool)
+    {
+        apr_thread_pool_destroy(io->h3_worker_pool);
+        io->h3_worker_pool = NULL;
+    }
     if (io->workers)
     {
         /*
@@ -154,6 +161,11 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_mutex_create failed");
         return APR_EGENERAL;
     }
+    if (apr_thread_pool_create(&io->h3_worker_pool, 16, 64, pchild) != APR_SUCCESS)
+    {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_pool_create failed");
+        return APR_EGENERAL;
+    }
     if (build_ssl_listener(io, conf->h3_cert_path, conf->h3_key_path) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "listener setup failed");
@@ -191,7 +203,7 @@ void h3_io_listen_stop(h3_io_t* io)
     }
 }
 
-void wait_for_event(int fd, SSL* ssl, int want_write)
+void wait_for_event(int fd, SSL* ssl, int want_write, h3_session* session)
 {
     (void)want_write;
     struct timeval max_tv = {1, 0}, tv = {0}, *tvp = &max_tv;
@@ -203,6 +215,16 @@ void wait_for_event(int fd, SSL* ssl, int want_write)
     fd_set rfds, wfds;
     FD_ZERO(&rfds);
     FD_ZERO(&wfds);
+
+    int max_fd = fd;
+    apr_os_file_t wakeup_fd = -1;
+    if (session && session->wakeup_pipe[0])
+    {
+        apr_os_file_get(&wakeup_fd, session->wakeup_pipe[0]);
+        if (wakeup_fd > max_fd) max_fd = wakeup_fd;
+        FD_SET(wakeup_fd, &rfds);
+    }
+
     if (SSL_net_read_desired(ssl))
     {
         FD_SET(fd, &rfds);
@@ -211,13 +233,20 @@ void wait_for_event(int fd, SSL* ssl, int want_write)
     {
         FD_SET(fd, &wfds);
     }
-    if (!FD_ISSET(fd, &rfds) && !FD_ISSET(fd, &wfds))
+    if (!FD_ISSET(fd, &rfds) && !FD_ISSET(fd, &wfds) && (wakeup_fd < 0 || !FD_ISSET(wakeup_fd, &rfds)))
     {
         FD_SET(fd, &rfds);
     }
-    if (select(fd + 1, &rfds, &wfds, NULL, tvp) < 0 && errno == EINTR)
+    if (select(max_fd + 1, &rfds, &wfds, NULL, tvp) < 0 && errno == EINTR)
     {
         return;
+    }
+
+    if (wakeup_fd >= 0 && FD_ISSET(wakeup_fd, &rfds))
+    {
+        char buf[1];
+        apr_size_t len = 1;
+        apr_file_read(session->wakeup_pipe[0], buf, &len);
     }
 }
 
@@ -518,7 +547,7 @@ void service_connection(h3_io_t* io, h3_session* session)
                 break;
             }
 
-            wait_for_event(io->udp_fd, conn, 1);
+            wait_for_event(io->udp_fd, conn, 1, session);
         }
         apr_pool_destroy(scratch);
         if (goaway_deadline != 0 && !session->ngh3_dead)
@@ -534,7 +563,7 @@ void service_connection(h3_io_t* io, h3_session* session)
         SSL_SHUTDOWN_EX_ARGS args = {.quic_error_code = session->abort_quic_error_code, .quic_reason = session->abort_reason};
         for (int i = 0; i < 5 && SSL_shutdown_ex(conn, 0, &args, sizeof(args)) != 1; i++)
         {
-            wait_for_event(io->udp_fd, conn, 1);
+            wait_for_event(io->udp_fd, conn, 1, session);
             tick_engine(conn);
         }
     }
@@ -542,11 +571,15 @@ void service_connection(h3_io_t* io, h3_session* session)
     {
         for (int i = 0; i < 5 && SSL_shutdown(conn) != 1; i++)
         {
-            wait_for_event(io->udp_fd, conn, 1);
+            wait_for_event(io->udp_fd, conn, 1, session);
             tick_engine(conn);
         }
     }
 
+    while (apr_atomic_read32(&session->active_tasks) > 0)
+    {
+        apr_sleep(apr_time_from_msec(10));
+    }
     h3_session_destroy(session);
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
 }
