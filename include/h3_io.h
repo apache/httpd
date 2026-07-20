@@ -26,7 +26,6 @@
 #include <apr_atomic.h>
 #include <apr_optional.h>
 #include <apr_pools.h>
-#include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
 #include <apr_thread_pool.h>
 
@@ -48,14 +47,14 @@ typedef struct h3_io_t
     server_rec* server;
     int udp_fd;
     apr_thread_t* event_thread;
-    apr_thread_mutex_t* workers_lock;
-    apr_array_header_t* workers;
-    volatile apr_uint32_t live_workers;
+    apr_array_header_t* active_sessions;
+    volatile apr_uint32_t active_session_count;
     volatile apr_uint32_t total_connections;
     volatile apr_uint32_t total_streams;
     volatile apr_uint64_t total_bytes_read;
     volatile apr_uint64_t total_bytes_written;
     volatile int thread_running;
+    apr_file_t* wakeup_pipe[2];
 
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_added) * note_conn_added;
     APR_OPTIONAL_FN_TYPE(ap_mpm_note_extra_connection_removed) * note_conn_removed;
@@ -93,14 +92,6 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
 void h3_io_listen_stop(h3_io_t* io);
 
 /**
- * Spawn a worker thread that services a freshly accepted QUIC session.
- * @param io      The owning h3_io_t (used to register the new thread).
- * @param session The accepted session, already populated.
- * @return APR_SUCCESS on success, error code otherwise.
- */
-apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session);
-
-/**
  * Check if the active connection limit (H3MaxConnections) is reached.
  * @param io The h3_io_t instance to check.
  * @return Non-zero if at the limit, zero otherwise.
@@ -112,16 +103,13 @@ int h3_io_at_connection_limit(h3_io_t* io);
  * @param io      The owning h3_io_t listener instance.
  * @param session The h3_session to service.
  */
-void service_connection(h3_io_t* io, h3_session* session);
+void service_session_pass(h3_io_t* io, h3_session* session);
 
 /**
- * Wait for network read/write events using select().
- * @param fd         The socket file descriptor.
- * @param ssl        The SSL connection instance.
- * @param want_write Unused parameter.
- * @param session    The session for wakeup pipe polling.
+ * Wait for network read/write events using poll().
+ * @param io The listener whose socket and wakeup pipe should be polled.
  */
-void wait_for_event(int fd, SSL* ssl, int want_write, h3_session* session);
+void wait_for_event(h3_io_t* io);
 
 /**
  * Handle engine events and progress the SSL listener.
@@ -149,7 +137,7 @@ int prepare_accepted_connection(h3_io_t* io, SSL* conn);
 
 /**
  * Progress handshakes for all pending connections, timing out stalled connections
- * and spawning worker threads for completed handshakes.
+ * and adding completed connections to the event loop.
  * @param io The owning h3_io_t listener instance.
  */
 void progress_pending_handshakes(h3_io_t* io);

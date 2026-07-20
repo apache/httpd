@@ -238,9 +238,18 @@ static int drain_one_stream(h3_session* session, h3_stream* h3s, int* data_read)
         {
             feed_stream_fin(session, h3s);
         }
-        if (SSL_get_stream_write_state(h3s->ssl_stream) == SSL_STREAM_STATE_FINISHED)
+        if (h3s->ssl_stream)
         {
-            nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, NGHTTP3_H3_NO_ERROR);
+            /* A closed or reset connection leaves the write state unreadable; treat it as finished. */
+            int write_state = SSL_STREAM_STATE_FINISHED;
+            if (read_state != SSL_STREAM_STATE_CONN_CLOSED && read_state != SSL_STREAM_STATE_RESET_REMOTE)
+            {
+                write_state = SSL_get_stream_write_state(h3s->ssl_stream);
+            }
+            if (write_state == SSL_STREAM_STATE_FINISHED || write_state == SSL_STREAM_STATE_RESET_LOCAL)
+            {
+                nghttp3_conn_close_stream(session->ngh3, h3s->stream_id, NGHTTP3_H3_NO_ERROR);
+            }
         }
         return h3s->is_bidi && h3s->headers_complete && h3s->body_complete && !h3s->dispatched;
     }

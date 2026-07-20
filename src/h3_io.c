@@ -31,7 +31,7 @@
 #include <openssl/err.h>
 #include <openssl/ssl.h>
 
-#include <sys/select.h>
+#include <poll.h>
 #include <unistd.h>
 
 #include <stdio.h>
@@ -55,9 +55,11 @@ h3_io_t* child_h3_io = NULL;
 int h3_io_at_connection_limit(h3_io_t* io)
 {
     h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
-    apr_uint32_t active = apr_atomic_read32(&io->live_workers) + (apr_uint32_t)io->pending_handshakes->nelts;
+    apr_uint32_t active = (apr_uint32_t)io->active_sessions->nelts + (apr_uint32_t)io->pending_handshakes->nelts;
     return active >= conf->h3_max_connections;
 }
+
+/* h3_keylog_cb lives in h3_ssl.c on trunk; the upstream chain defines it inline here. */
 
 static apr_status_t build_ssl_listener(h3_io_t* io, const char* cert, const char* key)
 {
@@ -98,35 +100,19 @@ static void teardown(h3_io_t* io)
         apr_thread_pool_destroy(io->h3_worker_pool);
         io->h3_worker_pool = NULL;
     }
-    if (io->workers)
+    if (io->active_sessions)
     {
-        /*
-         * Wait for all workers still using udp_fd/ssl_listener
-         * to finish before freeing shared state; log progress while
-         * live_workers > 0.
-         */
+        /* Wait for event_thread to shut down and remove all active sessions. */
         apr_time_t next_warning = apr_time_now() + apr_time_from_sec(5);
-        apr_uint32_t remaining;
-        while ((remaining = apr_atomic_read32(&io->live_workers)) > 0)
+        while (io->active_sessions->nelts > 0)
         {
             if (apr_time_now() >= next_warning)
             {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "teardown waiting for %u workers to finish in-flight connections", remaining);
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "teardown waiting for %d connections to finish in-flight streams", io->active_sessions->nelts);
                 next_warning = apr_time_now() + apr_time_from_sec(5);
             }
             apr_sleep(50 * 1000);
         }
-        apr_thread_mutex_lock(io->workers_lock);
-        for (int i = 0; i < io->workers->nelts; i++)
-        {
-            apr_thread_t* t = ((apr_thread_t**)io->workers->elts)[i];
-            if (t)
-            {
-                apr_thread_detach(t);
-            }
-        }
-        io->workers->nelts = 0;
-        apr_thread_mutex_unlock(io->workers_lock);
     }
     if (io->ssl_listener)
     {
@@ -143,6 +129,13 @@ static void teardown(h3_io_t* io)
         h3_socket_close(io->udp_fd);
         io->udp_fd = -1;
     }
+    if (io->wakeup_pipe[0])
+    {
+        apr_file_close(io->wakeup_pipe[0]);
+        apr_file_close(io->wakeup_pipe[1]);
+        io->wakeup_pipe[0] = NULL;
+        io->wakeup_pipe[1] = NULL;
+    }
 }
 
 apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_conf* conf, int udp_fd)
@@ -154,11 +147,11 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->pool = pchild;
     io->server = s;
     io->udp_fd = udp_fd;
-    io->workers = apr_array_make(pchild, 8, sizeof(apr_thread_t*));
+    io->active_sessions = apr_array_make(pchild, 8, sizeof(h3_session*));
     io->pending_handshakes = apr_array_make(pchild, 4, sizeof(h3_pending_handshake));
-    if (apr_thread_mutex_create(&io->workers_lock, APR_THREAD_MUTEX_DEFAULT, pchild) != APR_SUCCESS)
+    if (apr_file_pipe_create_ex(&io->wakeup_pipe[0], &io->wakeup_pipe[1], APR_FULL_NONBLOCK, pchild) != APR_SUCCESS)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_mutex_create failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_file_pipe_create_ex failed");
         return APR_EGENERAL;
     }
     if (apr_thread_pool_create(&io->h3_worker_pool, 16, 64, pchild) != APR_SUCCESS)
@@ -177,21 +170,22 @@ apr_status_t h3_io_listen_start(apr_pool_t* pchild, server_rec* s, h3_server_con
     io->note_conn_removed = APR_RETRIEVE_OPTIONAL_FN(ap_mpm_note_extra_connection_removed);
     if (!io->note_conn_added || !io->note_conn_removed)
     {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "active MPM lacks connection-count notifications; upgrade your httpd to a version that supports mod_http3");
+        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "active MPM '%s' lacks connection-count notifications; upgrade your httpd to a version that supports mod_http3", ap_show_mpm());
         teardown(io);
         return APR_EGENERAL;
     }
 
     io->thread_running = 1;
+    child_h3_io = io;
     apr_threadattr_t* attr = NULL;
     if (apr_threadattr_create(&attr, pchild) != APR_SUCCESS || apr_thread_create(&io->event_thread, attr, quic_event_thread, io, pchild) != APR_SUCCESS)
     {
         io->thread_running = 0;
         teardown(io);
+        child_h3_io = NULL;
         return APR_EGENERAL;
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "mod_http3 loaded with version: %d (%s) on pid=%d port=%d", MOD_HTTP3_VERSION, MOD_HTTP3_VERSION_STRING, getpid(), (int)conf->h3_port);
-    child_h3_io = io;
     return APR_SUCCESS;
 }
 
@@ -200,53 +194,64 @@ void h3_io_listen_stop(h3_io_t* io)
     if (io)
     {
         teardown(io);
+        if (child_h3_io == io)
+        {
+            child_h3_io = NULL;
+        }
     }
 }
 
-void wait_for_event(int fd, SSL* ssl, int want_write, h3_session* session)
+void wait_for_event(h3_io_t* io)
 {
-    (void)want_write;
-    struct timeval max_tv = {1, 0}, tv = {0}, *tvp = &max_tv;
+    /* poll(), not select(): descriptors can exceed FD_SETSIZE. */
+    int timeout_ms = 1000;
+    struct timeval tv = {0};
     int inf = 0;
-    if (SSL_get_event_timeout(ssl, &tv, &inf) && !inf && (tv.tv_sec > 0 || tv.tv_usec > 0) && tv.tv_sec <= 1)
+    if (SSL_get_event_timeout(io->ssl_listener, &tv, &inf) && !inf && (tv.tv_sec > 0 || tv.tv_usec > 0) && tv.tv_sec <= 1)
     {
-        tvp = &tv;
-    }
-    fd_set rfds, wfds;
-    FD_ZERO(&rfds);
-    FD_ZERO(&wfds);
-
-    int max_fd = fd;
-    apr_os_file_t wakeup_fd = -1;
-    if (session && session->wakeup_pipe[0])
-    {
-        apr_os_file_get(&wakeup_fd, session->wakeup_pipe[0]);
-        if (wakeup_fd > max_fd) max_fd = wakeup_fd;
-        FD_SET(wakeup_fd, &rfds);
+        timeout_ms = (int)(tv.tv_sec * 1000 + tv.tv_usec / 1000);
+        if (timeout_ms <= 0)
+        {
+            timeout_ms = 1;
+        }
     }
 
-    if (SSL_net_read_desired(ssl))
+    struct pollfd pfds[2] = {{.fd = io->udp_fd, .events = 0}, {.fd = -1, .events = POLLIN}};
+    nfds_t npfds = 1;
+    if (io->wakeup_pipe[0])
     {
-        FD_SET(fd, &rfds);
+        apr_os_file_t wakeup_fd = -1;
+        apr_os_file_get(&wakeup_fd, io->wakeup_pipe[0]);
+        pfds[1].fd = wakeup_fd;
+        npfds = 2;
     }
-    if (SSL_net_write_desired(ssl))
+
+    if (SSL_net_read_desired(io->ssl_listener))
     {
-        FD_SET(fd, &wfds);
+        pfds[0].events |= POLLIN;
     }
-    if (!FD_ISSET(fd, &rfds) && !FD_ISSET(fd, &wfds) && (wakeup_fd < 0 || !FD_ISSET(wakeup_fd, &rfds)))
+    if (SSL_net_write_desired(io->ssl_listener))
     {
-        FD_SET(fd, &rfds);
+        pfds[0].events |= POLLOUT;
     }
-    if (select(max_fd + 1, &rfds, &wfds, NULL, tvp) < 0 && errno == EINTR)
+    if (!pfds[0].events && npfds == 1)
+    {
+        pfds[0].events = POLLIN;
+    }
+    if (!pfds[0].events)
+    {
+        pfds[0].events = POLLIN; /* force POLLIN to avoid missing UDP packets! */
+    }
+    if (poll(pfds, npfds, timeout_ms) < 0 && errno == EINTR)
     {
         return;
     }
 
-    if (wakeup_fd >= 0 && FD_ISSET(wakeup_fd, &rfds))
+    if (npfds == 2 && (pfds[1].revents & POLLIN))
     {
-        char buf[1];
-        apr_size_t len = 1;
-        apr_file_read(session->wakeup_pipe[0], buf, &len);
+        char buf[64];
+        apr_size_t len = sizeof(buf);
+        apr_file_read(io->wakeup_pipe[0], buf, &len);
     }
 }
 
@@ -272,14 +277,6 @@ void remove_pending_handshake(h3_io_t* io, int index, int free_conn)
 
 static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
 {
-    if (h3_io_at_connection_limit(io))
-    {
-        h3_server_conf* conf = ap_get_module_config(io->server->module_config, &http3_module);
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, io->server, "rejecting QUIC connection: at H3MaxConnections limit (%u)", conf->h3_max_connections);
-        SSL_free(conn);
-        return APR_EGENERAL;
-    }
-
     apr_allocator_t* allocator = NULL;
     apr_pool_t* session_pool = NULL;
     if (apr_allocator_create(&allocator) != APR_SUCCESS || apr_pool_create_ex(&session_pool, io->pool, NULL, allocator) != APR_SUCCESS)
@@ -298,6 +295,8 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
     h3_session* session = NULL;
     if (h3_session_create(&session, io->server, io->ssl_listener, conn, session_pool) != APR_SUCCESS)
     {
+        /* Ownership of conn stays here until a session holds it. */
+        SSL_free(conn);
         apr_pool_destroy(session_pool);
         return APR_EGENERAL;
     }
@@ -311,11 +310,18 @@ static apr_status_t spawn_serviced_session(h3_io_t* io, SSL* conn)
         h3_session_destroy(session);
         return APR_EGENERAL;
     }
-    if (h3_io_spawn_worker(io, session) != APR_SUCCESS)
+    conn_rec* c = h3_synth_conn(session);
+    if (!c)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "failed to spawn worker for new connection");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "h3_synth_conn failed");
         h3_session_destroy(session);
         return APR_EGENERAL;
+    }
+    *(h3_session**)apr_array_push(io->active_sessions) = session;
+    apr_atomic_inc32(&io->active_session_count);
+    if (io->note_conn_added)
+    {
+        io->note_conn_added();
     }
     return APR_SUCCESS;
 }
@@ -343,23 +349,36 @@ void progress_pending_handshakes(h3_io_t* io)
         int finished = 0;
         do
         {
+            int rv = 0;
             const char* why = NULL;
+
             if (!tick_engine(io->ssl_listener))
             {
+                rv = -1;
                 why = "listener event processing failed";
             }
             else if (SSL_get_shutdown(conn))
             {
+                rv = -1;
                 why = "peer closed the connection during the handshake";
             }
-            if (why)
+            else if (SSL_is_init_finished(conn))
             {
-                unsigned long ssl_err = ERR_peek_last_error();
-                char errbuf[256] = "no error in queue";
-                if (ssl_err != 0)
-                {
-                    ERR_error_string_n(ssl_err, errbuf, sizeof(errbuf));
-                }
+                rv = 1;
+            }
+
+            if (rv == 1)
+            {
+                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
+                spawn_serviced_session(io, conn);
+                remove_pending_handshake(io, i, 0);
+                finished = 1;
+                break;
+            }
+            if (rv == -1)
+            {
+                char errbuf[256] = {0};
+                ERR_error_string_n(ERR_peek_last_error(), errbuf, sizeof(errbuf));
                 SSL_CONN_CLOSE_INFO cci;
                 memset(&cci, 0, sizeof(cci));
                 if (SSL_get_conn_close_info(conn, &cci, sizeof(cci)))
@@ -374,17 +393,9 @@ void progress_pending_handshakes(h3_io_t* io)
                 }
                 else
                 {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s) [no conn_close_info]", why, errbuf);
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, io->server, "QUIC handshake did not complete: %s (%s)", why, errbuf);
                 }
                 remove_pending_handshake(io, i, 1);
-                finished = 1;
-                break;
-            }
-            if (SSL_is_init_finished(conn))
-            {
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, io->server, "QUIC handshake complete");
-                spawn_serviced_session(io, conn);
-                remove_pending_handshake(io, i, 0);
                 finished = 1;
                 break;
             }
@@ -416,209 +427,99 @@ int prepare_accepted_connection(h3_io_t* io, SSL* conn)
     return 1;
 }
 
-void service_connection(h3_io_t* io, h3_session* session)
+void service_session_pass(h3_io_t* io, h3_session* session)
 {
     CHECK(io);
     CHECK(session);
     server_rec* s = session->s;
     SSL* conn = session->ssl_conn;
 
-    if (!SSL_is_init_finished(conn))
+    if (session->aborted)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "QUIC handshake did not complete");
-        h3_session_destroy(session);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
         return;
     }
 
-    if (!session->control_streams_created)
+    if (!io->thread_running)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "internal error: control streams not initialized before worker start");
-        h3_session_destroy(session);
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
-        return;
-    }
-
-    conn_rec* c = h3_synth_conn(session);
-    if (!c)
-    {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "h3_synth_conn failed");
-    }
-    else
-    {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "servicing new QUIC connection");
-        apr_pool_t* scratch = NULL;
-        if (apr_pool_create(&scratch, session->pool) != APR_SUCCESS)
+        /* Tell the client to stop opening new streams but finish in-flight ones */
+        apr_thread_mutex_lock(session->lock);
+        if (!session->goaway_deadline)
         {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "failed to create scratch pool for connection loop");
-            h3_session_destroy(session);
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
-            return;
+            nghttp3_conn_submit_shutdown_notice(session->ngh3);
         }
-        apr_time_t goaway_deadline = 0;
-        while (!session->aborted)
+        flush_nghttp3(session);
+        int drained = nghttp3_conn_is_drained2(session->ngh3);
+        apr_thread_mutex_unlock(session->lock);
+        if (!session->goaway_deadline)
         {
-            if (!io->thread_running && goaway_deadline == 0)
-            {
-                /* Tell the client to stop opening new streams but finish in-flight ones */
-                apr_thread_mutex_lock(session->lock);
-                nghttp3_conn_submit_shutdown_notice(session->ngh3);
-                flush_nghttp3(session);
-                apr_thread_mutex_unlock(session->lock);
-                goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
-                ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
-            }
-            if (goaway_deadline != 0)
-            {
-                apr_thread_mutex_lock(session->lock);
-                int drained = nghttp3_conn_is_drained2(session->ngh3);
-                apr_thread_mutex_unlock(session->lock);
-                if (drained || apr_time_now() >= goaway_deadline)
-                {
-                    break;
-                }
-            }
-
-            int keep_pumping;
-            do
-            {
-                keep_pumping = 0;
-                if (!tick_engine(conn))
-                {
-                    session->aborted = 1;
-                    break;
-                }
-                if (SSL_get_shutdown(conn))
-                {
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
-                    session->aborted = 1;
-                    break;
-                }
-
-                int new_streams = 0;
-                for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
-                {
-                    new_streams++;
-                    apr_atomic_inc32(&io->total_streams);
-                    int64_t sid = (int64_t)SSL_get_stream_id(s2);
-                    if (sid < 0)
-                    {
-                        SSL_free(s2);
-                        continue;
-                    }
-                    apr_thread_mutex_lock(session->lock);
-                    h3_stream* tracked = track_stream(session, sid, s2);
-                    if (!tracked)
-                    {
-                        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "track_stream failed for sid=%lld - freeing stream", (long long)sid);
-                        SSL_free(s2);
-                    }
-                    apr_thread_mutex_unlock(session->lock);
-                }
-
-                int data_read = 0;
-                apr_thread_mutex_lock(session->lock);
-                apr_pool_clear(scratch);
-                apr_array_header_t* completed = drain_ready_streams(session, scratch, &data_read);
-                flush_nghttp3(session);
-                apr_thread_mutex_unlock(session->lock);
-
-                if (session->aborted || session->ngh3_dead)
-                {
-                    session->aborted = 1;
-                    break;
-                }
-
-                for (int i = 0; i < completed->nelts; i++)
-                {
-                    h3_stream* h3s = ((h3_stream**)completed->elts)[i];
-                    h3_process_request(session, h3s);
-                }
-
-                apr_thread_mutex_lock(session->lock);
-                flush_nghttp3(session);
-                apr_thread_mutex_unlock(session->lock);
-
-                keep_pumping = (new_streams > 0 || data_read || completed->nelts > 0) && (SSL_net_read_desired(conn) || SSL_net_write_desired(conn));
-            } while (keep_pumping);
-
-            if (session->aborted)
-            {
-                break;
-            }
-
-            wait_for_event(io->udp_fd, conn, 1, session);
+            session->goaway_deadline = apr_time_now() + apr_time_from_sec(H3_GOAWAY_GRACE_SECS);
+            ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "sent HTTP/3 GOAWAY; allowing up to %d more second(s) for in-flight streams", H3_GOAWAY_GRACE_SECS);
         }
-        apr_pool_destroy(scratch);
-        if (goaway_deadline != 0 && !session->ngh3_dead)
+        if (drained || apr_time_now() >= session->goaway_deadline)
         {
             apr_thread_mutex_lock(session->lock);
             nghttp3_conn_shutdown(session->ngh3);
+            flush_nghttp3(session);
             apr_thread_mutex_unlock(session->lock);
+            session->aborted = 1;
+            return;
         }
-        apr_pool_destroy(c->pool);
     }
+
+    if (SSL_get_shutdown(conn))
+    {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "QUIC connection terminated (idle timeout, peer close, or transport error)");
+        session->aborted = 1;
+        return;
+    }
+
+    apr_pool_t* scratch = NULL;
+    if (apr_pool_create(&scratch, session->pool) != APR_SUCCESS)
+    {
+        return;
+    }
+
+    for (SSL* s2 = NULL; (s2 = SSL_accept_stream(conn, SSL_ACCEPT_STREAM_NO_BLOCK)) != NULL;)
+    {
+        apr_atomic_inc32(&io->total_streams);
+        int64_t sid = (int64_t)SSL_get_stream_id(s2);
+        if (sid < 0)
+        {
+            SSL_free(s2);
+            continue;
+        }
+        apr_thread_mutex_lock(session->lock);
+        h3_stream* tracked = track_stream(session, sid, s2);
+        if (!tracked)
+        {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "track_stream failed for sid=%lld - freeing stream", (long long)sid);
+            SSL_free(s2);
+        }
+        apr_thread_mutex_unlock(session->lock);
+    }
+
+    int data_read = 0;
+    apr_thread_mutex_lock(session->lock);
+    apr_array_header_t* completed = drain_ready_streams(session, scratch, &data_read);
+    flush_nghttp3(session);
+    apr_thread_mutex_unlock(session->lock);
+    (void)data_read;
+
     if (session->ngh3_dead)
     {
-        SSL_SHUTDOWN_EX_ARGS args = {.quic_error_code = session->abort_quic_error_code, .quic_reason = session->abort_reason};
-        for (int i = 0; i < 5 && SSL_shutdown_ex(conn, 0, &args, sizeof(args)) != 1; i++)
-        {
-            wait_for_event(io->udp_fd, conn, 1, session);
-            tick_engine(conn);
-        }
-    }
-    else
-    {
-        for (int i = 0; i < 5 && SSL_shutdown(conn) != 1; i++)
-        {
-            wait_for_event(io->udp_fd, conn, 1, session);
-            tick_engine(conn);
-        }
+        session->aborted = 1;
+        apr_pool_destroy(scratch);
+        return;
     }
 
-    while (apr_atomic_read32(&session->active_tasks) > 0)
+    for (int i = 0; i < completed->nelts; i++)
     {
-        apr_sleep(apr_time_from_msec(10));
+        h3_stream* h3s = ((h3_stream**)completed->elts)[i];
+        h3_process_request(session, h3s);
     }
-    h3_session_destroy(session);
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "connection servicing done");
-}
 
-apr_status_t h3_io_spawn_worker(h3_io_t* io, h3_session* session)
-{
-    CHECK(io);
-    CHECK(session);
-    struct worker_args* args = apr_palloc(io->pool, sizeof(*args));
-    args->io = io;
-    args->session = session;
-    apr_atomic_inc32(&io->live_workers);
-
-    if (io->note_conn_added)
-    {
-        io->note_conn_added();
-    }
-    apr_threadattr_t* attr = NULL;
-    if (apr_threadattr_create(&attr, io->pool) != APR_SUCCESS)
-    {
-        apr_atomic_dec32(&io->live_workers);
-        if (io->note_conn_removed)
-        {
-            io->note_conn_removed();
-        }
-        return APR_EGENERAL;
-    }
-    apr_thread_t* t = NULL;
-    if (apr_thread_create(&t, attr, worker_thread, args, io->pool) != APR_SUCCESS)
-    {
-        apr_atomic_dec32(&io->live_workers);
-        if (io->note_conn_removed)
-        {
-            io->note_conn_removed();
-        }
-        return APR_EGENERAL;
-    }
-    apr_thread_mutex_lock(io->workers_lock);
-    *(apr_thread_t**)apr_array_push(io->workers) = t;
-    apr_thread_mutex_unlock(io->workers_lock);
-    return APR_SUCCESS;
+    apr_thread_mutex_lock(session->lock);
+    flush_nghttp3(session);
+    apr_thread_mutex_unlock(session->lock);
+    apr_pool_destroy(scratch);
 }

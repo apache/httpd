@@ -18,6 +18,7 @@
 
 #include <httpd.h>
 
+#include <ap_mpm.h>
 #include <http_config.h>
 #include <http_core.h>
 #include <http_log.h>
@@ -72,6 +73,13 @@ void* h3_merge_server_config(apr_pool_t* p, void* base_conf, void* new_conf)
     merged->h3_idle_timeout = new->h3_idle_timeout ? new->h3_idle_timeout : base->h3_idle_timeout;
 
     return merged;
+}
+
+/// Value of an MPM query, or -1 when the active MPM does not answer it.
+static int mpm_query(int code)
+{
+    int value = 0;
+    return ap_mpm_query(code, &value) == APR_SUCCESS ? value : -1;
 }
 
 static const char* set_string(cmd_parms* cmd, const char* arg, const char* field)
@@ -419,7 +427,8 @@ int h3_post_config(apr_pool_t* /*p*/, apr_pool_t* /*plog*/, apr_pool_t* ptemp, s
     }
     apr_file_close(f);
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d", getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port);
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "h3_post_config: pid=%d cert=%s key=%s h3_port=%d mpm=%s threaded=%d forked=%d max_threads=%d", getpid(), conf->h3_cert_path, conf->h3_key_path, (int)conf->h3_port, ap_show_mpm(), mpm_query(AP_MPMQ_IS_THREADED), mpm_query(AP_MPMQ_IS_FORKED),
+                 mpm_query(AP_MPMQ_MAX_THREADS));
     return OK;
 }
 

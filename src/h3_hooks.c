@@ -164,7 +164,7 @@ int h3_status_handler(request_rec* r)
         return OK;
     }
 
-    apr_uint32_t live = apr_atomic_read32(&child_h3_io->live_workers);
+    apr_uint32_t live = apr_atomic_read32(&child_h3_io->active_session_count);
     apr_uint32_t conns = apr_atomic_read32(&child_h3_io->total_connections);
     apr_uint32_t streams = apr_atomic_read32(&child_h3_io->total_streams);
     apr_uint64_t bytes_in = apr_atomic_read64(&child_h3_io->total_bytes_read);

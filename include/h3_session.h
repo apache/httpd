@@ -60,8 +60,7 @@ struct h3_session
     apr_size_t stream_read_buf_size;
 
     int control_streams_created;
-
-    apr_file_t* wakeup_pipe[2];
+    apr_time_t goaway_deadline;
 
     volatile apr_uint32_t active_tasks;
 

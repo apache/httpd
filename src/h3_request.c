@@ -23,6 +23,7 @@
 #include <http_log.h>
 #include <http_protocol.h>
 #include <http_request.h>
+#include <http_vhost.h>
 
 #include <apr_atomic.h>
 #include <apr_pools.h>
@@ -72,8 +73,10 @@ conn_rec* h3_synth_conn(h3_session* session)
     c->local_ip = apr_pstrdup(cpool, "0.0.0.0");
     c->client_ip = apr_pstrdup(cpool, "0.0.0.0");
     c->remote_host = apr_pstrdup(cpool, "unknown");
+    h3_server_conf* conf = ap_get_module_config(s->module_config, &http3_module);
+    apr_port_t vhost_port = (conf && conf->host_port) ? conf->host_port : (conf ? conf->h3_port : 0);
     apr_sockaddr_info_get(&c->client_addr, c->client_ip, APR_INET, 0, 0, cpool);
-    apr_sockaddr_info_get(&c->local_addr, c->local_ip, APR_INET, 0, 0, cpool);
+    apr_sockaddr_info_get(&c->local_addr, c->local_ip, APR_INET, vhost_port, 0, cpool);
     c->bucket_alloc = apr_bucket_alloc_create(cpool);
     c->log = &s->log;
     c->slaves = apr_array_make(cpool, 4, sizeof(void*));
@@ -85,6 +88,7 @@ conn_rec* h3_synth_conn(h3_session* session)
 #endif
     apr_table_setn(c->notes, "IS_mod_http3", "1");
     apr_table_setn(c->notes, "ssl-bypass", "1");
+    ap_update_vhost_given_ip(c);
 
     module* logio = ap_find_linked_module("mod_logio.c");
     if (logio)
@@ -154,6 +158,13 @@ typedef struct h3_stream_task {
     conn_rec* c;
 } h3_stream_task;
 
+static void set_stream_dispatched(h3_session* session, h3_stream* h3s, int dispatched)
+{
+    apr_thread_mutex_lock(session->lock);
+    h3s->dispatched = dispatched;
+    apr_thread_mutex_unlock(session->lock);
+}
+
 static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 {
     h3_stream_task* task = data;
@@ -170,20 +181,18 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     if (!r)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "stream_worker: ap_create_request returned NULL");
+        set_stream_dispatched(session, h3s, 0);
         apr_atomic_dec32(&session->active_tasks);
         apr_pool_destroy(c->pool);
         return NULL;
     }
     r->log = c->log ? c->log : &s->log;
     r->request_time = apr_time_now();
-    r->per_dir_config = r->server->lookup_defaults;
     r->connection->keepalive = AP_CONN_KEEPALIVE;
     r->protocol = "HTTP/3.0";
     r->proto_num = HTTP_VERSION(3, 0);
     r->method = apr_pstrdup(r->pool, h3s->method ? h3s->method : "GET");
     r->method_number = ap_method_number_of(r->method);
-    r->server = s;
-    r->connection->base_server = s;
     h3s->r = r;
 
     if (h3s->path)
@@ -193,29 +202,6 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     }
     if (h3s->authority)
     {
-        const char* port = NULL;
-        if (h3s->authority[0] == '[')
-        {
-            const char* rb = ap_strchr(h3s->authority, ']');
-            if (rb && rb[1] == ':')
-            {
-                port = rb + 1;
-            }
-        }
-        else
-        {
-            port = ap_strchr(h3s->authority, ':');
-        }
-        if (port)
-        {
-            char* end = NULL;
-            long pval = strtol(port + 1, &end, 10);
-            if (*end == '\0' && pval > 0 && pval <= 65535)
-            {
-                r->parsed_uri.port = (apr_port_t)pval;
-                r->parsed_uri.port_str = apr_pstrdup(r->pool, port + 1);
-            }
-        }
         apr_table_setn(r->headers_in, "Host", apr_pstrdup(r->pool, h3s->authority));
     }
     if (h3s->scheme)
@@ -239,6 +225,7 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     if (apr_pool_create(&c3reqpool, r->pool) != APR_SUCCESS)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_pool_create for h3ctx failed");
+        set_stream_dispatched(session, h3s, 0);
         apr_atomic_dec32(&session->active_tasks);
         apr_pool_destroy(c->pool);
         return NULL;
@@ -251,12 +238,27 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
 
     ap_add_output_filter_handle(h3_proto_out_filter_handle, h3ctx, r, r->connection);
 
+    ap_update_vhost_from_headers(r);
+    r->per_dir_config = r->server->lookup_defaults;
+
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "before ap_process_request");
-    ap_process_request(r);
+    if (r->status != HTTP_OK)
+    {
+        int err = r->status;
+        r->status = HTTP_OK;
+        ap_die(err, r);
+    }
+    else if (h3s->request_body_overflow)
+    {
+        ap_die(HTTP_REQUEST_ENTITY_TOO_LARGE, r);
+    }
+    else
+    {
+        ap_process_request(r);
+    }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "after ap_process_request");
 
     apr_thread_mutex_lock(session->lock);
-    h3s->dispatched = 1;
 
     int status;
     nghttp3_nv nva[64] = {0};
@@ -294,11 +296,11 @@ static void* APR_THREAD_FUNC stream_worker(apr_thread_t* thd, void* data)
     nghttp3_data_reader dr = {.read_data = h3_session_read_data};
     int rv = nghttp3_conn_submit_response(session->ngh3, sid, nva, nvlen, body_len > 0 ? &dr : NULL);
 
-    if (session->wakeup_pipe[1])
+    if (child_h3_io && child_h3_io->wakeup_pipe[1])
     {
         char wake = '1';
         apr_size_t len = 1;
-        apr_file_write(session->wakeup_pipe[1], &wake, &len);
+        apr_file_write(child_h3_io->wakeup_pipe[1], &wake, &len);
     }
 
     apr_thread_mutex_unlock(session->lock);
@@ -323,6 +325,16 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     CHECK(h3s);
     server_rec* s = session->s;
 
+    /* Reserve before queuing: the event loop can revisit the session before the worker starts. */
+    apr_thread_mutex_lock(session->lock);
+    if (h3s->dispatched)
+    {
+        apr_thread_mutex_unlock(session->lock);
+        return;
+    }
+    h3s->dispatched = 1;
+    apr_thread_mutex_unlock(session->lock);
+
     apr_allocator_t* c_alloc = NULL;
     apr_pool_t* cpool = NULL;
     if (apr_allocator_create(&c_alloc) != APR_SUCCESS || apr_pool_create_ex(&cpool, NULL, NULL, c_alloc) != APR_SUCCESS)
@@ -332,6 +344,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
         {
             apr_allocator_destroy(c_alloc);
         }
+        set_stream_dispatched(session, h3s, 0);
         return;
     }
     apr_allocator_owner_set(c_alloc, cpool);
@@ -340,6 +353,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     *c = *session->c;
     c->pool = cpool;
     c->master = session->c;
+    c->sbh = NULL;
     c->requests = apr_array_make(cpool, 4, sizeof(void*));
     c->notes = apr_table_copy(cpool, session->c->notes);
     c->conn_config = ap_create_conn_config(cpool);
@@ -360,6 +374,7 @@ void h3_process_request(h3_session* session, h3_stream* h3s)
     apr_status_t rv = apr_thread_pool_push(child_h3_io->h3_worker_pool, stream_worker, task, 0, NULL);
     if (rv != APR_SUCCESS)
     {
+        set_stream_dispatched(session, h3s, 0);
         apr_atomic_dec32(&session->active_tasks);
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "apr_thread_pool_push failed");
         apr_pool_destroy(cpool);
