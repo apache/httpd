@@ -963,7 +963,7 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
             switch (hdr->v2.fam) {
                 case 0x11:  /* TCPv4 */
                     if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip4)) {
-                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10597)
                                       "RemoteIPProxyProtocol: address length "
                                       "%" APR_SIZE_T_FMT " too short for TCPv4",
                                       remoteip_get_v2_len(hdr));
@@ -987,7 +987,7 @@ static remoteip_parse_status_t remoteip_process_v2_header(conn_rec *c,
                 case 0x21:  /* TCPv6 */
 #if APR_HAVE_IPV6
                     if (remoteip_get_v2_len(hdr) < sizeof(hdr->v2.addr.ip6)) {
-                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO()
+                        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c, APLOGNO(10598)
                                       "RemoteIPProxyProtocol: address length "
                                       "%" APR_SIZE_T_FMT " too short for TCPv6",
                                       remoteip_get_v2_len(hdr));
