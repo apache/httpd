@@ -505,7 +505,7 @@ ProxyPass "/examples" "http://backend.example.com/examples" timeout=10
 
 <usage>
     <p>Directives placed in <directive type="section">Proxy</directive>
-    sections apply only to matching proxied content.  Shell-style wildcards are
+    sections apply only to matching proxied content using a simple string prefix match against the URL.  Shell-style wildcards are also
     allowed.</p>
 
     <p>For example, the following will allow only hosts in
@@ -713,6 +713,13 @@ ProxyRemote "ftp" "http://ftpproxy.mydomain:8080"
     authentication challenge.  The <a
     href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> environment
     variable has no effect if this argument is used.</p>
+    
+    <note><title>DNS resolution and forward proxies</title>
+    <p>When a forward (remote) proxy is configured, DNS resolution of
+    the origin/backend hostname is only performed on the forward proxy.
+    Any <directive module="mod_proxy">ProxyBlock</directive> rules
+    which restrict access to specific IP addresses must be configured
+    at the forward proxy.</p></note>
 
 </usage>
 </directivesynopsis>
