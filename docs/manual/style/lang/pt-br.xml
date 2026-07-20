@@ -95,6 +95,8 @@
         <message id="experimental" letter="X">Experimental</message>
         <message id="external" letter="T">Externo</message>
 
+        <message id="deprecated" letter="D">Obsoleto</message>
+
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">configuração do servidor</message>
         <message id="virtualhost" letter="v">host virtual</message>

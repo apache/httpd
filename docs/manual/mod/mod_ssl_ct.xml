@@ -25,7 +25,7 @@
 <name>mod_ssl_ct</name>
 <description>Implementation of Certificate Transparency (RFC 6962)
 </description>
-<status>Extension</status>
+<status>Deprecated</status>
 <sourcefile>mod_ssl_ct.c</sourcefile>
 <identifier>ssl_ct_module</identifier>
 

@@ -24,7 +24,7 @@
 
 <name>mod_cern_meta</name>
 <description>CERN httpd metafile semantics</description>
-<status>Extension</status>
+<status>Deprecated</status>
 <sourcefile>mod_cern_meta.c</sourcefile>
 <identifier>cern_meta_module</identifier>
 

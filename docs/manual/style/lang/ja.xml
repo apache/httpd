@@ -90,6 +90,8 @@
         <message id="experimental" letter="X">Experimental</message>
         <message id="external" letter="T">External</message>
 
+        <message id="deprecated" letter="D">非推奨</message>
+
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">サーバ設定ファイル</message>
         <message id="virtualhost" letter="v">バーチャルホスト</message>

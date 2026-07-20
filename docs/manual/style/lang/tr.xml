@@ -97,6 +97,8 @@
         <message id="experimental" letter="D">Deneysel</message>
         <message id="external" letter="H">Harici</message>
 
+        <message id="deprecated" letter="K">Kullanımdan Kaldırıldı</message>
+
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">sunucu geneli</message>
         <message id="virtualhost" letter="k">sanal konak</message>
